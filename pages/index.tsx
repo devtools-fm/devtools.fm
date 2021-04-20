@@ -197,7 +197,7 @@ export default function Home() {
                   name="Justin Bennett"
                   data={{
                     description:
-                      'A wannabe engineer who loves building tools and thinking about ways to make tech more human',
+                      'An engineer who loves building tools and thinking about ways to make tech more human',
                     twitter: 'https://twitter.com/Zephraph',
                     github: 'https://github.com/Zephraph',
                     site: 'https://just-be.dev',
