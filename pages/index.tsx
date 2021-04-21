@@ -96,7 +96,7 @@ const Host = ({ name, data }: HostProps) => {
           {name}
         </a>
       </h3>
-      <ObjectInspector data={data} />
+      <ObjectInspector data={data} expandLevel={1} />
     </div>
   );
 };
