@@ -150,11 +150,16 @@ export default function Home() {
               : "linear-gradient(rgba(244,244,244,1) 0%, rgba(211,211,212,1) 99%, rgba(174,174,173,1) 100%)"
           }
           border={currentColorScheme === "dark" ? "#888" : undefined}
-          boxShadow="0 1px 1px rgba(0,0,0,0.07), 
-          0 2px 2px rgba(0,0,0,0.07), 
-          0 4px 4px rgba(0,0,0,0.07), 
-          0 8px 8px rgba(0,0,0,0.07),
-          0 16px 16px rgba(0,0,0,0.07)"
+          boxShadow={
+            currentColorScheme === "dark"
+              ? undefined
+              : `0 1px 2px rgba(0,0,0,0.07), 
+          0 2px 4px rgba(0,0,0,0.07), 
+          0 4px 8px rgba(0,0,0,0.07), 
+          0 8px 16px rgba(0,0,0,0.07),
+          0 16px 32px rgba(0,0,0,0.07), 
+          0 32px 64px rgba(0,0,0,0.07)`
+          }
         >
           <Navigation>
             <Navigation.Controls>
