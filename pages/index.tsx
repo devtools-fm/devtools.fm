@@ -228,7 +228,6 @@ export default function Home() {
                       site: "https://just-be.dev",
                       location: "Brooklyn, NY",
                       employer: "Artsy",
-                      pets: [{ type: "dog", name: "API" }],
                     }}
                   />
                 </div>
