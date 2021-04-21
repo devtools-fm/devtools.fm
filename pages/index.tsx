@@ -1,22 +1,31 @@
-import Head from 'next/head'
+import Head from "next/head";
+import {
+  Console,
+  ConsoleExpression,
+  ConsoleResultInspector,
+} from "@devtools-ds/console";
 import {
   chrome,
   firefox,
   useTheme,
   Theme,
   ColorScheme,
-} from '@devtools-ds/themes'
+} from "@devtools-ds/themes";
 import {
   ConsoleIcon,
   MoreInfoIcon,
   NewWindowIcon,
-  InfoIcon,
+  InspectorIcon,
   DataIcon,
-} from '@devtools-ds/icon'
-import { Navigation } from '@devtools-ds/navigation'
-import { ObjectInspector } from '@devtools-ds/object-inspector'
+} from "@devtools-ds/icon";
+import { Navigation } from "@devtools-ds/navigation";
+import { ObjectInspector } from "@devtools-ds/object-inspector";
+import { Browser } from "react-window-ui";
+import { useState } from "react";
+import dedent from "ts-dedent";
+import { DOMInspector } from "@devtools-ds/dom-inspector/dist";
 
-type ColoredTextColors = 'blue' | 'purple'
+type ColoredTextColors = "blue" | "purple";
 
 const coloredTextTheme: Record<
   Theme,
@@ -42,65 +51,73 @@ const coloredTextTheme: Record<
       purple: firefox.dark.pink02,
     },
   },
-}
+};
 
 const ColoredText = (props: {
-  children: React.ReactNode
-  color: 'blue' | 'purple'
+  children: React.ReactNode;
+  color: "blue" | "purple";
 }) => {
-  const { currentColorScheme, currentTheme } = useTheme({})
-  const color = coloredTextTheme[currentTheme][currentColorScheme][props.color]
+  const { currentColorScheme, currentTheme } = useTheme({});
+  const color = coloredTextTheme[currentTheme][currentColorScheme][props.color];
 
   return (
     <span className="font-semibold" style={{ color }}>
       {props.children}
     </span>
-  )
-}
+  );
+};
 
 const FooterLink = (
-  props: Omit<React.ComponentProps<'a'>, 'target' | 'rel' | 'className'>
+  props: Omit<React.ComponentProps<"a">, "target" | "rel" | "className">
 ) => {
-  return <a {...props} target="_blank" rel="noopener" className="underline" />
-}
-
-interface HostData {
-  twitter: string
-  github: string
-  location: string
-  employer: string
-  [key: string]: unknown
-}
-
-interface HostProps {
-  name: string
-  data: HostData
-}
-
-const Host = ({ name, data }: HostProps) => {
-  const { currentColorScheme, currentTheme } = useTheme({})
-
-  return (
-    <div>
-      <h3 className="mb-2">
-        <a
-          target="_blank"
-          rel="noopener"
-          href={data.twitter}
-          className="hover:underline"
-          style={{
-            color: coloredTextTheme[currentTheme][currentColorScheme].blue,
-          }}
-        >
-          {name}
-        </a>
-      </h3>
-      <ObjectInspector data={data} />
-    </div>
-  )
-}
+  return <a {...props} target="_blank" rel="noopener" className="underline" />;
+};
 
 export default function Home() {
+  const [history, setHistory] = useState<ConsoleExpression[]>([
+    {
+      id: "1",
+      expression: "getAboutInfo()",
+      result: dedent`No matter what type of code you write, you're going to be
+    dealing with developer tools. This podcast will explore the
+    bleeding edge of modern developer tooling all up and down the
+    stack. Come learn with us as we talk with industry leaders and
+    taste-makers from all of the programming world.`,
+    },
+    {
+      id: "2",
+      expression: "getHosts()",
+      result: [
+        [
+          "Andrew Lisowski",
+          {
+            description:
+              "A front-end dev with a passion for ergonomic developer tools, buttery smooth UX, and open source..",
+            twitter: "https://twitter.com/hipstersmoothie",
+            github: "https://github.com/hipstersmoothie",
+            location: "San Diego, CA",
+            employer: "Descript",
+            pets: [
+              { type: "dog", name: "Bonsai" },
+              { type: "dog", name: "Fred" },
+            ],
+          },
+        ],
+        [
+          "Justin Bennett",
+          {
+            description:
+              "An engineer who loves building tools and thinking about ways to make tech more human",
+            twitter: "https://twitter.com/Zephraph",
+            github: "https://github.com/Zephraph",
+            site: "https://just-be.dev",
+            location: "Brooklyn, NY",
+            employer: "Artsy",
+          },
+        ],
+      ],
+    },
+  ]);
   return (
     <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
       <Head>
@@ -114,7 +131,7 @@ export default function Home() {
             <h1 className=" bg-[#881180] py-4 px-6 w-[fit-content] rounded-xl">
               <span
                 className="flex items-center space-x-4 w-[fit-content] rounded-xl !text-black"
-                style={{ filter: 'invert()' }}
+                style={{ filter: "invert()" }}
               >
                 <ConsoleIcon
                   height="0"
@@ -129,107 +146,69 @@ export default function Home() {
           </div>
 
           <p className="text-lg text-center">
-            A podcast about{' '}
-            <ColoredText color="purple">developer tools</ColoredText> and the{' '}
+            A podcast about{" "}
+            <ColoredText color="purple">developer tools</ColoredText> and the{" "}
             <ColoredText color="blue">people</ColoredText> who make them.
           </p>
         </div>
 
-        <Navigation>
-          <Navigation.Controls>
-            <Navigation.TabList>
-              <Navigation.Tab id="about" icon={<InfoIcon inline />}>
-                About
-              </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<DataIcon inline />}>
-                Episodes
-              </Navigation.Tab>
-            </Navigation.TabList>
+        <Browser padding="32px 0 0 0" background="inherit">
+          <Navigation>
+            <Navigation.Controls>
+              <Navigation.TabList>
+                <Navigation.Tab id="about" icon={<ConsoleIcon inline />}>
+                  Console
+                </Navigation.Tab>
+                <Navigation.Tab id="episodes" icon={<InspectorIcon inline />}>
+                  Inspector
+                </Navigation.Tab>
+              </Navigation.TabList>
 
-            <Navigation.Right>
-              <Navigation.Button
-                icon={<NewWindowIcon inline />}
-                aria-label="New Window"
-              />
-
-              <Navigation.Divider />
-              <Navigation.Button
-                icon={<MoreInfoIcon inline />}
-                aria-label="More settings"
-              />
-            </Navigation.Right>
-          </Navigation.Controls>
-          <Navigation.Panels>
-            <Navigation.Panel className="pt-4 md:pt-6">
-              <p
-                className="mb-6 md:mb-10"
-                style={{
-                  fontFamily:
-                    "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, Arial, sans-serif",
-                }}
-              >
-                No matter what type of code you write, you're going to be
-                dealing with developer tools. This podcast will explore the
-                bleeding edge of modern developer tooling all up and down the
-                stack. Come learn with us as we talk with industry leaders and
-                taste-makers from all of the programming world.
-              </p>
-
-              <h2 className="text-xl md:text-2xl mb-4 md:mb-6">Hosts</h2>
-
-              <div className="space-y-4 md:space-y-6">
-                <Host
-                  name="Andrew Lisowski"
-                  data={{
-                    description:
-                      'A front-end dev with a passion for ergonomic developer tools, buttery smooth UX, and open source..',
-                    twitter: 'https://twitter.com/hipstersmoothie',
-                    github: 'https://github.com/hipstersmoothie',
-                    location: 'San Diego, CA',
-                    employer: 'Descript',
-                    pets: [
-                      { type: 'dog', name: 'Bonsai' },
-                      { type: 'dog', name: 'Fred' },
-                    ],
-                  }}
+              <Navigation.Right>
+                <Navigation.Button
+                  icon={<NewWindowIcon inline />}
+                  aria-label="New Window"
                 />
-                <Host
-                  name="Justin Bennett"
-                  data={{
-                    description:
-                      'An engineer who loves building tools and thinking about ways to make tech more human',
-                    twitter: 'https://twitter.com/Zephraph',
-                    github: 'https://github.com/Zephraph',
-                    site: 'https://just-be.dev',
-                    location: 'Brooklyn, NY',
-                    employer: 'Artsy',
-                    pets: [{ type: 'dog', name: 'API' }],
-                  }}
+
+                <Navigation.Divider />
+                <Navigation.Button
+                  icon={<MoreInfoIcon inline />}
+                  aria-label="More settings"
                 />
-              </div>
-            </Navigation.Panel>
-            <Navigation.Panel className="pt-4 md:pt-6">
-              Work in progress...
-            </Navigation.Panel>
-          </Navigation.Panels>
-        </Navigation>
+              </Navigation.Right>
+            </Navigation.Controls>
+            <Navigation.Panels>
+              <Navigation.Panel className="pt-4 md:pt-6">
+                <Console
+                  history={history}
+                  resultComponent={({ result }) => (
+                    <ObjectInspector expandLevel={4} data={result} />
+                  )}
+                />
+              </Navigation.Panel>
+              <Navigation.Panel className="pt-4 md:pt-6">
+                {/* <DOMInspector data={{}} expandLevel={2} /> */}
+              </Navigation.Panel>
+            </Navigation.Panels>
+          </Navigation>
+        </Browser>
       </main>
 
       <footer className="text-center mb-12 md:mb-16">
         <p className="mb-6">
-          Copyright © 2020{' '}
+          Copyright © 2020{" "}
           <FooterLink href="https://twitter.com/hipstersmoothie">
             Andrew Lisowski
           </FooterLink>
-          .{' '}
+          .{" "}
         </p>
 
         <p className="text-sm">
-          Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>{' '}
-          and{' '}
+          Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>{" "}
+          and{" "}
           <FooterLink href="https://tailwindcss.com">tailwindcss</FooterLink>.
-          Hosted on <FooterLink href="https://vercel.com">Vercel</FooterLink>{' '}
-          and the source code is on{' '}
+          Hosted on <FooterLink href="https://vercel.com">Vercel</FooterLink>{" "}
+          and the source code is on{" "}
           <FooterLink href="https://github.com/devtools-fm/devtools.fm">
             GitHub
           </FooterLink>
@@ -237,5 +216,5 @@ export default function Home() {
         </p>
       </footer>
     </div>
-  )
+  );
 }
