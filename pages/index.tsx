@@ -6,11 +6,11 @@ import {
 } from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
 
-import { Logo } from "./components/Logo";
-import { ColoredText } from "./components/ColoredText";
-import { Page } from "./components/Page";
-import { Browser } from "./components/Browser";
-import { justin, Host, andrew } from "./components/Host";
+import { Logo } from "components/Logo";
+import { ColoredText } from "components/ColoredText";
+import { Page } from "components/Page";
+import { Browser } from "components/Browser";
+import { justin, Host, andrew } from "components/Host";
 
 export default function Home() {
   return (
