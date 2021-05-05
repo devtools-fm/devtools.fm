@@ -1,0 +1,368 @@
+---
+title: The State of JavaScript Monorepo Tooling
+youtube: https://www.youtube.com/watch?v=pev5K7OcW-8
+buzzsprout: https://google.com
+---
+
+## Hosts
+
+- [Andrew Lisowski](https://twitter.com/hipstersmoothie)
+- [Justin Bennet](https://twitter.com/Zephraph)
+
+## Links
+
+- [auto](https://intuit.github.io/auto/)
+- [intuit](https://www.intuit.com)
+- [orta](https://orta.io)
+- [semantic-release](https://semantic-release.gitbook.io/semantic-release/)
+- [lerna](https://github.com/lerna/lerna)
+- [rush](https://rushjs.io)
+- [changesets](https://github.com/atlassian/changesets)
+- [probot](https://probot.github.io)
+- [nx](https://nx.dev)
+- [yarn](https://yarnpkg.com)
+- [palette](https://github.com/artsy/palette)
+- [turborepo](https://turborepo.com)
+- [mighty](https://www.mightyapp.com)
+- [stadia](https://stadia.google.com)
+
+### Tooltips
+
+- [alfred](https://www.alfredapp.com)
+- [1password](https://1password.com)
+- [semgrep](https://semgrep.dev)
+- [tj/n](https://github.com/tj/n)
+- [fig](https://withfig.com)
+- [astro](https://www.pscp.tv/w/1nAJELQkljlGL)
+
+<!-- SECTIONS -->
+
+[00:00:23] Introductions  
+[00:04:30] What the heck's a monorepo?!  
+[00:06:26] JS Monorepo Origins: lerna  
+[00:10:59] Monorepo Publishing  
+[00:16:19] rush: A different approach  
+[00:20:29] Atlassian's changesets  
+[00:25:27] NX: An mutli-tenant app toolkit  
+[00:28:15] Our Journeys to Monorepos  
+[00:32:08] Task Running  
+[00:37:52] Cloud Computing  
+[00:41:16] Tooltips  
+[00:41:24] Alfred  
+[00:42:41] semgrep  
+[00:45:42] tj/n - node version manager  
+[00:47:06] Fig  
+[00:50:53] Meeting Light: Foray into Pipes  
+[00:51:30] Astro: Modern Web Framework  
+[00:55:13] Conclusion  
+
+<!-- Transcript -->
+
+**Andrew:** Hello, welcome to the devtools.fm podcast. We're a bunch of developers talking about developer tools and the people who make them I'm Andrew Lisowski. And this is my cohost.
+
+**Justin:** I'm Justin Bennet.
+
+**Andrew:** And we're going to be talking about monorepo tooling today. Something that both me and Justin have, uh used quite a lot in our development careers.
+
+#### Introductions [00:00:23]
+
+So first let's start off with introducing ourselves. I'm Andrew . I'm the maintainer of auto and open source tool for automating your releases. And I do a lot of front-end code. What about you, Justin?
+
+**Justin:** Yeah. So, again, Justin, I, um currently , am an employee at artsy, but for much longer. I'll be going off to Recurse center to sort explore and build things. But but yeah I have a similar sort of background. I end up doing a lot of both tooling, front end stuff, performance related work,  sort of whatever I get into. But yeah this this the space of dev tooling is sort of like near and dear to both of our hearts, and it's actually how we met. So back when the Intuit team was early in like publishing auto, artsy was going through our own sorts of problems, and maybe it'd be good talk about like what auto is and what you use it for.
+
+**Andrew:** Yeah. So auto started out at, Intuit it as literally just like a bash script that we included in projects. And then, one of my coworkers actually coded it. And then when I saw it, I was like, wow, this makes just publishing things so much easier. Previously it had been something that I was like even kind of scared of to even broach the topic of publishing because there was a lot that goes into that.
+So we built auto, which is a TypeScript tool with a plugin system that allows you to automate all the different parts of your release. So that is everything from creating change logs, based on the pull requests, uh congratulating contributors, making releases, and actually publishing the code. It does it all for you in a with a plugin system so that you can graft it to whatever type of code you're releasing.
+And cool enough, someone actually has a PR up right now to add a plugin, to support scala projects, something that I've never even thought about. Just some random person in the community is adding it. And how auto really kind of got off the ground was with that initial blog post from artsy. You can go back and look at the star, the GitHub star count, and there's a sharp curve.
+I like to call it the, the Orta cliff, because it's only been like a steady rise. It it really, really started out there. And I thank them.
+
+**Justin:** Yeah. So at artsy, we'd had a really interesting thing at the time. We were talking a lot about how we do releases and where we're using semantic release, which I think is a fairly popular release tool in the community where like you have git commit that triggers the release process. But we had these projects that were chained together in many different uh repos leads well into our topic today, and we had to sort of build this like complex release process and people would forget to like add the semantic commits because it wasn't actually a part of our workflow we were just using it for releasing. So it was like this weird sort of like bolt on thing, and we were like, "why doesn't the... why Isn't this just like every time we merge PR?" That is the... that is the unit of change, because it is. It's like the unit of change that we uh sort of like use say now it's good for release. And I had started writing my own version of what auto is, and it's a hard problem, super hard problem.
+And, one of the members on my team, Chris, he was we should just find something else out there that already does this. Surely somebody else has written it, and Orta to went off and did some research 
+
+**Andrew:** There was one.
+
+**Justin:** yup. And here we are today.
+
+**Andrew:** Auto is by no means the first tool that solves this problem as Justin just mentioned, like semantic release basically does what auto does. There's also like probably half a dozen other,  tools out there that do the same thing, but based on pull requests, but the like key differentiator with auto was how it worked in a monorepo. Something that a lot of the code that I ended up writing at, Intuit ended up being in a monorepo.
+And like the base case for us was, has to work with enterprise, has to work in a monorepo and basically every open source tool at the time didn't work in enterprise and didn't work in a monorepo. So we set out to build our own. 
+
+#### What the heck's a monorepo?! [00:04:30]
+
+
+**Justin:** Well, it seems like a really good transition point. Why don't we talk about what a monorepo is?
+
+**Andrew:** Yeah. So, the monorepo, we're talking about, isn't all of your company's code in one repo. That is a bit different of idea. I think that's called a monolith. 
+
+**Justin:** Yeah. Yeah. So. So companies like Google, Facebook, Twitter, and other large tech companies have made this choice to have like a single repo. So if you're git, you can imagine that they just have like one repo for all their code across all their And like Google is pretty notorious for this. That's a vastly different use case than sort monorepo we're talking about here. You can still have a monorepo and not have a monolith, but uh you will find the the idea of a monorepos, so like many different packages in the same repo, is actually really common, especially in the JavaScript ecosystem. So tools like Babel, react, Next.js, Jest, if you've heard of or used any of these they all use this idea of a of a monorepo to help simplify maintainers lives. 
+
+**Andrew:** Yeah And that's what it did auto is built in such a way that we wanted all of it to be very reusable And uh so that's why we have our CLI in one package and our core another package, and then all of our plugins rely on the core while the CLI can just use the plugins with ease. It's also like a great tool if you're building open source packages and the thing you're building your packages for is already in a monorepo. There's a high chance that that one function that you need to use is actually distributed in a package in the monorepo. Whereas if everything was built into one package, you'd probably only have one entry point into the CLI and wouldn't actually be able to access any of the internal code. The monorepo allows you to kind of create an API for multiple levels in your project. 
+
+#### JS Monorepo Origins: lerna [00:06:26]
+
+
+**Justin:**  It's important to note that like tools like auto which help you release monorepos are one of many things in the ecosystem that makes this conceptual notion of having many packages in a single repository that are released independently possible. And we'd be really remiss in our duties here If we didn't talk about lerna, which is one of probably the most popular in the JavaScript ecosystem tools for managing multiple packages.
+
+**Andrew:** Yeah it's it's a tool that comes with all the parts, all the sub tools that you would need to manage a monorepo. So like a monorepo isn't just one thing, there's multiple parts to managing it. And that's kind of, I like to categorize all the available tools into three buckets. 
+You have your installers. Those are tools that help you manage the dependencies of a monorepo. They can also just be tools that help you manage your dependencies In general. 
+You have task running, which since now you have all these packages all your packages may have their own tasks such as linting, testing, and building. The task runners are meant to make running those tasks really easy from both the root of your monorepo, where all the packages are accessible, and then each package individually. 
+And then the last step of that, those are the tools you use in your day to day, the last step is the publisher and the publisher is kind of where auto comes in and makes the developer experience really nice in a JavaScript monorepo. But in the end it's actually all still based on the lerna implementation and really relies pretty heavily on it.
+
+**Justin:** Yeah So if we want to go back and look these like three categories conceptually with like examples. 
+So your installer would very much be like yarn, is a very common thing that's bundled with lerna for managing a monorepo. And the reason why yarn is often bundled is because it has this notion of workspaces which allows it to install or think about dependencies and multiple sub packages.  I guess it's notable that the latest version of NPM, NPM seven, also sort of like conceptually has that notion baked in. 
+Go up a next level and think about like a task runner. This is really firmly where lerna sort of lies and and shines. But again you know sort of it's it's a it's a bit of a gray area right cause a yarn also can do some of that with the notion workspaces. So you say yarn workspace, you know whatever, to run a particular command and particular work workspace. But the same is true with lerna and I think like lerna makes this a little bit easier because you can just run something all of your sub packages really simply.
+And then the publishers side, Andrew like saying, uh where auto really sits and kind of very nicely sits on top of to to do that. So I guess you could just use lerna if you're like manually deploying but...
+
+**Andrew:** Yeah lerna is like the batteries included monorepo tool. It has it is an installer. You can run lerna bootstrap to install all your dependencies and link up the folders. You can use it to run tasks, just like Justin was saying, and then it has a bunch of great publishing tools.  But I'd say of those three capabilities It has, it is good and bad at some of them. 
+So like first getting into monorepos I tried to set it up for the project I was working on at work, and the install took six minutes. And that is super long. We were using lerna bootstrap and it was just slow as hell, and then yarn workspaces came into our lives and made monorepos a thing we could actually use. Because yarns workspaces was basically a drop in replacement for a lerna bootstrap that was just like literally six times faster. Like it took a minute to install our dependencies instead of six minutes. So in terms of an installer, lerna's a pretty shitty installer. 
+I think it's a pretty good task runner It will run your tasks, It'll run them in a certain order. It knows about the topological sorting of your your monorepo. The topological sort literally just means what packages depend on what and what needs to build when. So you can run lerna run build and then give a stream as a flag and the stream flag tells lerna to show you all the output while it's going and you can see, "Oh it's actually building all my packages in the order that they need to be built." So it's a task runner It's pretty good. 
+
+#### Monorepo Publishing [00:10:59]
+
+Then in my opinion lerna really shines as a publisher, may not be the most automated experience, but like it... the amount of flags and different configuration and uh the the way the commands are set up really allow you to release your your code in the way you want to. It doesn't really like bake in any of its assumptions of how you should release your code, it gives you all the freedom in the world.
+
+**Justin:** Yeah sure. One of my favorite is this notion where you can either have all your sub packages in your monorepo be versioned the same way, so have this fixed versioning scheme, or they can be version independently where they can have their own sort of versioning independent their peers.  This was something that we use at artsy for our design system. So our design system is a small monorepo, has two packages in it, the design system itself and the site that powers design system. You know we we version these things independently because they independently, right? And I also just love how like auto straight into that. So that's that's cool. 
+
+**Andrew:** Yeah you guys were big proponents of that because when I was originally building auto. In reading though GitHub issues I was like, "Oh fixed versioning  that's what everybody uses, that's all I'm going to code." And then it quickly became apparent that a lot of people rely on multiple versions in their repo.
+
+**Justin:** Yeah And I think it's important to think about like this versioning thing and like it's different use cases. So I outlined how artsy had used it where we have these these two things that are bundled together in this repo, but they're fundamentally different, they're related, but they're But if you think about a tool like Babel, which I'm fairly certain uses fixed versioning, babel is building a single tool but they're like they're breaking down these packages for maintainability and and whatever their justifications are, but fundamentally at the end of the day they want all those to be representative of the version of the tool. 
+
+**Andrew:** Yeah it makes debugging so much easier. One of the Biggest bugs we'd always get from our users for our design system at Intuit was, "Oh no this thing's not being styled right, or it's not working in the right way." And our first question was always, "Do you have the same version of everything installed?" And it like that cured 90% of the problems, and if you don't have a fixed version it's a lot harder to grok how all of your packages are actually interacting with each other and what version ranges are actually acceptable. It's all just one version It's one version and you can move on to the next problem.
+
+**Justin:** Yeah I find of... If you're if you're going with an independent mode for your monorepo to to control your versioning how you designate or how you signal to sub packages  if they should be bumped or not is is an interesting sort of problem. So I'm gonna say to you what I think the behavior in auto is and you I'm wrong, but it seems like if you're you know releasing a pull requests with auto and you have lerna configured as independent then if you make changes into packages and then you're saying, "Hey this is a minor update." Then both of those packages will be released with a update, and there are various other tools that can help you manage you deployments and and they had different signals for how they manage versioning. So so again we talked about semantic release at early part of this right, so it could be it's a commit of a certain file in a certain package that has a label that's prefixed to it. 
+
+**Andrew:** Yeah, that's definitely something you could say is like not the best part of auto is that if maybe you don't want both of those packages to have a minor bump, maybe you just want one to have a minor bump and one to have a patch. That's not really possible with auto. The way it is possible is you break up your one PR into two PRS and have much more granular pull requests in your repository. Which really is a plus. It is kind of a burden on the developer to do that splitting up themselves. But it allows your consumers to have like two independent change log items of Oh this this package fixed a bug and this one added a feature and you can get that granularity,
+
+**Justin:** Yeah And it's a great point that talking about here about like this notion of the generation of change log auto does really well and and other tools in this space also do really well, and it's the thing that you have to you have to consider carefully when you're thinking about a monorepo because um again it depends on how your packages. If they're consumed together, like babel packages, then maybe you just want singular changelog to say, "Hey these all things changed together, um." But if they're not if they're consumed independently maybe it's a bit of a different story. 
+
+**Andrew:** Yeah And that that's definitely one of the things auto aims to aims to solve. It'll even create a package level change logs. Cause like a lot of the time when I'm upgrading a dependency the first thing I go do is like look if they have a changelog.md, and if that encompasses a whole monorepo it can kind of be a little too much when you're trying to do some dependency updates and it's much nicer to have that that granular approach. 
+
+**Justin:** Yeah, for sure I totally agree how about we talk about some of the other tools in this space.
+
+#### rush: A different approach [00:16:19]
+
+ So Andrew you wrote wrote a blog post on dev dot to that covers a lot of this and we'll link in the show notes. But one of the tools that really caught my eye because it sort of fell in all of these camps is rush. Now I haven't investigated this tool lot uh tell 
+
+**Andrew:** Rush is a really interesting tool. Most tools built after lerna have like the same set of assumptions. That you're going to have a root level package JSON and then a package JSON for each project in your repo is going to generally look and function like it did before it was a monorepo, but with rush they kind of like just throw that out the window and take their own approach to the whole problem.  
+Rush is like is in the similar vein of lerna in that it tries to be everything all again. It's an installer, it's a task runner, and a publisher. The way that it's different is it'll actually install every single dependency into a common folder rather than at the root level or at the package level.  I think they do this to get around  some of the weirdness that other approaches take.  The normal monorepo relies on the node package resolution. So they'll, it basically looks up and directories for node modules and if it finds a package there it's going to use it. And sometimes that can kind of lead to undesired behavior when you're developing your monorepo. It it might not be all that obvious that your sub package has a slightly different version of react that it installed, and then now all of a sudden reacts telling you, "Hey you got multiple versions of react what's going on here?" So they try to get around that problem by just taking a completely different approach.
+
+**Justin:** Yeah I find they're like sym linking strategy to be pretty interesting There's this other kind of weird problem that happens with monorepo is cause like if you're using yarn and lerna particularly so you install all your dependencies and they're hoisted sorta by default up into your sort of like main level, your root level in your repo has like all your dependencies installed. And then pretty much the only thing that ends up in the node modules directory for all your sub packages is like the executables that you might need.
+If you ever have a package that does something naughty like try to directly access something in node modules, which it shouldn't outside the required scope, but if you do that it'll break for you because the package is not there it's it's somewhere else. So this this approach is really interesting. The other thing that you pointed out in your blog post thought was really interesting is how they do versioning. Yeah You wanna talk a little bit about that?
+
+**Andrew:** They take a like of all the tools that we've talked about auto included they take such a different approach. None of it's automated and it's all kind of reliant on the developer making a pull request to run one of rush's command. They have to run the change command, and like it just included as part of the pull request and then merged into the repo as normal. And then when somebody runs rush publish they'll actually pick up all those change files and then uh construct the change logs and the releases out of them. 
+They take the versioning policy is set forth by lerna and kind of take them a step further. Whereas like lerna's an all or nothing. Where like either your entire repo has one version or everything has separate version and you gotta manage that shit yourself. Uh they A rush have a version policies where you can make separate parts of your repo have those fixed or independent versions. So this might be useful if say you have a core collection of packages for your application, like your CLI and your core code, that you want it to still have that fixed versioning so that uh those are always in sync. But you may have a bunch of plugins or a bunch of apps in the same repo that can have the independent versioning policy that uh will give you that much more fine Grain granularity.
+
+**Justin:** Yeah that's pretty cool I thought there I thought that was super unique.  Especially just because managing these are managing the versions in particular often a pain point. 
+
+#### Atlassian's changesets [00:20:29]
+
+This also reminds me of another tool and, I think Atlassian put this out,  called change sets. I've been seeing this a lot more recently. So from what I know about it you have this chain set file that you would put in your pull request and that's gonna list out what the version bumps should be if any and what changes are included in change it's hard to say, but anyway uh my understanding is once you merge that then the changeset will be sort of rolled up, version calculated, and that will result in maybe not as sort of broad scoped as rush because it it hits more and just like the release process and the version control kind of like in the same vein as auto it's an interesting also interesting approach. 
+
+**Andrew:** Yeah they take a much different approach to automation than auto does. Auto is basically like auto is going to do it all for you. You run it on the CI you don't touch it. Whereas with chain sets like once you merge the pull request with the chain set I think there's actually a bot you have to install to your repo, then the bot opens up a pull request where you have like the next version is being released And then I think it updates it as PRS are merged. So you you kind of feel like you have a more more of a hand in the process as the versions are going out. You don't have to release every pull request You might release every few pull requests.
+
+**Justin:** Gotcha Gotcha Yeah that's cool That's an interesting trade-off So one of the one of the challenges that auto has some times and it's it's a big enough of a trade off it's mentioned in the top of the read me is you can merge too fast. If you're merging PRS really quickly then they can sort of clobber each. And I have personally tried to sort of solve this within artsy's infrastructure by having like our builds are merged builds sort queue up uh not perfect though. Not perfect because if you're making a changelog change it will create a new commit, And then sort invalidates some of the stuff that's like queued up So... 
+
+**Andrew:** yeah That used to be a bigger problem Like uh there was a large window where you could fuck up your releases if you merge something during that window. But thanks to an open source contribution from somebody looking at semantic releases code, we didn't have we figured out how they were doing it and now we do it as literally late in the process as possible So I think there's only like a few seconds where if you merged a PR bad things would happen. So now I merge a lot more uh Nilly Willy but uh I left the warning in the docs cause it's it's still something you should think about.
+
+**Justin:** Yeah sure Uh I mean and that's a good point We I haven't personally that be an issue in time. So...
+
+**Andrew:** Yeah very long time And uh going back to change sets. I actually tried to make a change set plugin for auto, kind of like bending the together, but I don't really like the idea of like a tool taking like adding and removing files from my project as it's doing its thing. So instead of having a change set file I opted for using the pull request body as a place to write your change set. You get the same control as an owner of the repo, Since you can edit any pull request description. If somebody writes really bad release notes or maybe English isn't their first language and they don't get the point as smoothly across as you want, you can go in and edit it and still have really nice change logs. That's kind of a hidden feature of auto When when I tell people that it can do that they're like, "Wait, what?!"
+
+**Justin:** Yeah I remember I remember when added was super excited about. Long ago one of my multitude of side projects was trying to build a bot for auto which like helped you uh do some of that But unfortunately I never really finished that Uh but shout out to GitHub's pro bot team because probot the robot is awesome Uh ,anyway... 
+
+**Andrew:** I'm more or less against building layers on top of auto. I think I've built a tool that's like mostly simple enough that you should be able to use it pretty easily. And the second you introduce another layer on top of it it it just complicates the process. 
+Like there were multiple initiatives at Intuit to like kind of create a Jenkins build wrapper around auto that of set it up on your repo automatically, but that was never really all that automatic and it never really worked. And all I ended up doing was having people using auto that didn't know what auto did or how it should work, and then a lot of burden on me to support those people and explain the tool.
+
+**Justin:** Yeah I think I think that that notion of sort of over abstraction or or wrapping uh wrapping your dev tools in too many layers are you get far away from the tool is is a big challenge. And especially in this space of monorepos where it can seem like there's a lot going on anyway. 
+
+#### NX: An mutli-tenant app toolkit [00:25:27]
+
+This makes me think of a of another tool in your list, and I don't mean that a detriment this tool, but so there's this there's this uh tool called NX which is kind of I think of like a way to just like bootstrap projects almost because they have like so many like plugins to sort of help you build things it.
+
+**Andrew:**  Yeah In my doc I only call it a task runner but that's mainly because it kind of throws out the idea of what your monorepo is. Like the monorepos we've been talking about up until this point are kind of like a collection of node packages.  NX is built for maintaining a collection of apps. So uh like they don't they don't have a concept of publishing, and then adding publishing is kind of hard cause there's not even package JSONs for each of your apps. They're just it's it's way more configuration over convention, and they kind of throw out all those normal monorepo conventions out the window. 
+If we're putting like NX, rush, and lerna on a on a scale. Like lerna at the left NX at the right and Rush is in the middle where NX doesn't look anything like lerna in the end.
+
+**Justin:** Yeah sure Uh so that that notion of of building sorta multi-tenant apps is definitely the way that I discovered NX. So I was experimenting with this idea at artsy and I was at the time calling it artsy studio, and I was trying to build this thing off of Next.Js to essentially have just that. If you were going to build an internal dev tool you had this like one sort of monolithic or multi-tenant application that could break down into sub apps in the same way that talking about monorepos here. Um that same idea. So NX is a tool that does that really well Um I think uh this is actually something that another framework called blitz JS which builds off of next JS is doing really really well. So sort of the yeah Yeah Well they have their fork of Next.js now so It sort of started off conceptually in the same sort place And now they actually have documentation having multitenant apps. It's pretty neat, it's cool.
+
+**Andrew:** Yeah definitely something I'm going to be looking at. monorepos can definitely bend to how wanna use them 
+
+**Justin:** Yeah So that's when we start getting into this notion of larger monorepo a same I mean obviously not to the scale the things Google would think they look single monorepo with reframe what we've To been really talking about like mostly JavaScript ecosystem like packages in a single repo but the idea of like multi-tenant architecture that's still fascinating that's something that's still fascinating too because
+
+#### Our Journeys to Monorepos [00:28:15]
+
+In the same way like one of the reasons why one of the primary motivations for putting many small packages and in monorepo is because if don't you have to deploy these independently from separate repos you to have separate CI processes You have to have all this stuff that's all separate And you know God forbid they actually depend on some on each other in some way. Then you have to have tools like renovate to update versions of them between deployments. And that's thing...
+
+**Andrew:** Yeah let alone getting a pull request out to test something. So like the the problem that really led me to monorepos at the start was our apps architecture had like 26 different repos And for me to make a a change that I could see in the app I'd have to go through like three or four different repos making pull requests, publishing temporary versions, installing that to the next repo and then going on and on and on. Until I could have like at the top level here's my feature. And getting from point a to point B to me like sometimes an hour, and then if something changes in the end like gotta go back and do all of that again. So putting it all in the same repo really helped with that problem 
+
+**Justin:** Yep we were at artsy Uh So I I'd come in and we'd started building a design system, which we call palette which is its own thing, we have our sort of site, which is called force which is its own thing, and then we had this like kind of fork not of force, but like new sort of reinvisioning of artsy that was this like this big sort of react application that was in its own repo called But there was  like directional graph So for er palette was consumed by reaction which was consumed by force. So people were you know at the time that I started they would be like okay semantic commit for this thing It releases I need to remind myself to do a pull request. So I'm going to go to this other package after that thing is released and do an extra pull request to update the version and then go to this other thing. And I was just What are we doing?"
+
+**Andrew:** Yeah And and then uh you do all that and then you figure out, "Oh shit this one package I forgot about I should have updated and tested." And that's where all the failing tests actually are. If you have your codes in a monorepo it all has to build It all has to test It all has to. So like that is one of the biggest 
+
+**Justin:** Sure you know I think with dev tools it's always this there's it's always important to keep in mind like classic idiom choosing the right tool for the job 
+Um 
+but also just identifying when you need to choose a tool versus when to the environment So When we were thinking about palette artsy we choose we chose two tools that helped us solve problem. So auto was instrumental in that is why we started using a lot, and renovate, which I mentioned previously which is a dependency manager um or or an update not a dependency manager, It's like a it's an automated bot to update dependencies. So as new dependencies are published it'll automatically create a that you can merge to update your dependency.
+Those two tools together helped us like build this kind of like CI Rube Goldberg machine. Where would it would you know you would do it and the bots would just like open these PRS and merge them and publish and do all this stuff, and I was very proud of the fact that it worked but then stepping back and we're like Ugh you know this is um This is there's a lot going on here that doesn't need be. So eventually we wrapped reaction back into force and we still So we still use auto and we uh and we still use renovate but like for for problems. 
+
+**Andrew:** Yeah, you want to get away from herding the cats some point. some at 
+
+#### Task Running [00:32:08]
+
+Let's get back into talking about task running cause that's that's uh something that doesn't become a problem until it does. So when you have a small amount of packages in a repo, it can be pretty quick. Like running commands might not take that long running builds might not take that long, but once you start getting into the lots and lots of packages area things start to get a lot slower. And that's mainly because like the early tools, lerna's run and exec, have no concept of previous work done. So uh when you're running a build and you find that there's a type error in your app, you have to rebuild every single package that comes before it to actually get back to that build error and get onto the next one. so a lot of these tools now that are coming out take a different approach and try to make that experience better. So we've already talked about a few of them. Rush does this they'll actually take your dependency graph and uh build your packages in the right order And then if they don't directly depend they'll parallelize it but it also has a rebuild command where it has like some knowledge of what has been done and will only build what it needs to.
+
+**Justin:** Yeah this is this is sort of like classic computing right. Is like wanting to make your make your tasks as lazy possible. I gonna I'm going to inject a quick shout out to former colleague, uh and future former colleague uh David who is the author of patch package, which we could we can and probably will do a whole episode on by itself because magic, But at artsy he also wrote this tool called gudetama. Um which is the same character Japanese like a little naked egg guy... which it does the same sort of thing for your CI right. Like it looks at like okay when was the last time this command ran What were the conditions around it And sort of like builds uh like hashes that that tool for CI but these tools these task runners it's it's sort of important have a little bit more intelligence. 
+
+**Andrew:** Yeah And I think the F the first tool that uh is doing it in kind of like a SAAS oriented way is NX Like that's kind of the main selling point to me. They have their NX cloud, and since like it's since it's not convention and it is configuration they know a lot more about your repo because you tell them a lot about your repo, and then through that they're able to uh do those selective builds and maybe not build all your all your code before getting to that one error
+
+**Justin:** I You know I'm about don't know much much as much about what's new in this space as I We'd sort of like highlighted some tools that we were excited about. And and we're on this we're on this this notion of like a task runners and that being a little slow um Monorepos themselves can be doing operations on monorepos. And I mean of course if we were talking about like monorepos from the Google level you have a whole different like notion of speed right? Because like they have to think about how fast is their version. But if we narrow back down even if you're building a monorepo for something like Babel or website Um but There's this project called turbo repo out in the wild and I've heard about it And it's interesting, but that 
+
+**Andrew:** Yeah I've actually had a uh one-on-ones with Jared at this point to talk about it And 
+
+**Justin:** This is Jared 
+
+**Andrew:** at right?
+ Jared Palmer uh it takes those ideas that we just talked about for like rush where it has local rebuilds NX where it has cloud rebuilds And does does it all It it's basically a drop-in replacement for a lerna run, where you just do turbo run, and instead of doing the whole topological sort of your repo and linting everything in order and testing everything order and then building everything in order It it knows about all of that and can parallelize it to some degree And then it has a cache both local and remote that you can use. Why would you want to remote cache? Well say you just hired a developer to your team and you have this huge monorepo that requires lots of building, lots of linting and those tasks take a long time. When your new developer clones your repo and starts running turbo commands on it It can actually pull the results of those commands from the cloud and pull them to your local cache, so that your build might not take 10 minutes It might take 11 milliseconds just to run the build Cause like Hey we're just downloading things from a cache using them. So I th I think it's a pretty exciting tool That'll be That are really a lot of those larger open source projects 
+
+**Justin:** that's really awesome to hear that It makes me think of like uh so a lot of CI services will do a similar sort of thing with like Docker level Docker layer caching or they'll have like you have you know Docker containers for all your things but they'll have at least like the layer caches built up. So um you a hotter but it's that locally which is really interesting. I've always thought that I I  had sort of had been waiting for something that does the opposite that just like builds everything in the cloud Like you have like a thousand lambdas that startup and like just do these like little 
+
+**Andrew:** Don't want to do that I've done that. You don't want to do that!
+
+#### Cloud Computing [00:37:52]
+
+
+**Justin:** On a on a related note though it makes me also think of uh have you have you heard of the mighty browser 
+
+**Andrew:** I was just reading about it yesterday It uh it ruffled a bunch of feathers!
+
+**Justin:** A It did It did but it uses that How far have we you know what have we done It uses that same notion of like I'm going to push all this work up to the cloud Right So it's like doing that except for a web browser. 
+
+**Andrew:** Yeah 
+
+**Justin:** Chrome making your fans spin up fine We'll run it on a 
+
+**Andrew:** Yeah I don't know how I feel about mighty quite yet... there's lots of implications to running your browser in the cloud. But another example of the same thing of offloading work to the cloud that's pretty interesting is Google stadia. If you don't know what stadia is it is gaming in the cloud. So say you want to play Crisis 2 at max settings on your phone. Well you might have might not be a powerful but you you can you can count on Google servers being powerful enough to play it and then stream it to your phone. So like I think that's a super exciting place place to be. Like we get we might someday get to the point where your device doesn't really matter because your device is elsewhere.
+
+**Justin:** Yeah Maybe that should be a whole episode on its It also think of just like other tasks that are being pushed to cloud. So um development in the cloud using like a web based editor is not necessarily a new So I think back around 
+
+**Andrew:** Ah it's 
+
+**Justin:** Yeah yeah but I think back to the tools that I'm sort of familiar like um like cloud nine, which I think uh AWS owns now. but like know it was one of the first like web based like development environments. And now we have gitHub has its like own notion of what means to have a space the cloud. don't know I think that's it's it's also an pushing to the cloud. 
+
+**Andrew:** But it's funny though Cause it's like a kind of what what was old is new again Cause like we're we're young and we never developed like this but my dad when he was learning programming he had a computer that wasn't really doing the work It was hooked up into a mainframe where like all the work was done. So we're now kind of just doing that but over the air which is like it's it's funny how like the start of computing is now becoming modern bleeding edge Right
+sure for 
+
+**Justin:** for sure. I Feel like we're wandering far off the monorepo I do I you know there's that that is a common trend and it's really interesting, and I hope that in future episodes  of highlight some of the other like ways that that sort of notion of we originally did things one way and then we shifted another way and sort pendulum swings back. There's a lot of these days it's really interesting
+
+**Andrew:** Static websites 
+
+**Justin:** Static websites for sure. Uh It's it's uh it's an think. Cool Well shall we wrap up this episode?
+
+**Andrew:** Yeah sure! That was that was a great talk we had about monorepo tooling maybe a little bit all over the forgive us this is our first podcast. Like what are you going to expect?
+
+#### Tooltips [00:41:16]
+
+for Let's let's bounce and bounce back and forth with these. I'll go first with my dev tool tip of the week.
+
+#### Alfred [00:41:24]
+
+ This one is a classic developer tool, Not not in the same vein of the ones that we've been talking about, but Alfred. Like Everybody's been telling me to install it since I got a Mac book like 10 years ago but I finally installed it and by God it's really good. I've grappled with spotlights so much on so many computers. Like the example I give to my girlfriend is I try to open Spotify with spotlight and it just keeps opening up the installer, but Alfred doesn't do that It remembers what I chose.
+
+**Justin:** Yeah sure Alfred great one of the sort of instrumental things in my workflow 
+
+**Andrew:** I haven't really gotten into the workflows yet 
+
+**Justin:** Oh yeah they're good! 
+
+**Andrew:** Like making it really good. Like what sold me on like getting it after so long was the one password integration. Like I've I got my identity stolen a few times last year on various different sites and was like no more and I finally went all in on one password and it's been great.  I really like it and Alfred has the ability to take your your entries in one password and just open them and log you in automatically which just like mind blowing.
+
+**Justin:** Both tools Very awesome I also use them highly recommended.
+
+#### semgrep [00:42:41]
+
+I'll switch over to my dev tool uh which is a little bit different not necessarily a personal tool.
+Problem areas that I like a lot is thinking about refactoring especially automated refactoring at a large scale. So maybe if you're in the JavaScript ecosystem you've heard of code mods. Facebook has a a tool of the same name, codemod, that like sort does this idea of like having automated refactorings. And react to uses this a lot So they'll release a version that might have like some syntactical change something and to like ease developer adoption they'll write a codemod for it.
+But to to really sort of have that sort of functionality at a broader scale across potentially many languages, there's this really interesting tool called semgrep. So uh if you've ever used grep before you might know what that is you know it's like simple CLI tool to uh things. This lot more 
+
+**Andrew:** A fancy name for searching 
+
+**Justin:** yeah yeah yeah This is a lot more powerful gives a lot of semantic information about the code. So it's like you can search on very specific patterns and it's it's incredibly powerful and pretty cool. This is not the only tool in this space, there are others and unfortunately can't remember their names now but I will look them up and put them in show notes. There's one in particular, oh I think it's called like hive or something... I don't know, but it's made by uh one of the people at Sourcegraph and it's also really cool and has some other interesting properties, or I think it's comb, anyway one of I'll put that in the show notes though.
+
+**Andrew:** Yeah I'm interested to see how that works because the codemod tools you mentioned I'm pretty sure they work on ASTs. Uh do you know if this works in a similar way?
+
+**Justin:** Uh you know I'm I'm not well uh no uh it's not complete magic but I'm not a hundred percent sure. So this other tool that I've I'm trying to think of the name of, I think it actually might be comb, works a little bit more magically where it does not run on ASTs but has this like sort of pattern matching does. But it's it's like syntactically very smart. Semgrep is very smartwhat similar in that Uh I don't know specifically if parsing source code or turning it into an AST. One thing that I'll say about semgrep in particular obviously this is an tool I have personally but they also have this collection of patterns that you can download. So they'll have like Hey here's how you can find these security like this Cod classification of product. So I just thought that was a really uh interesting 
+
+**Andrew:** That's pretty cool It's like ESlint with refactoring.
+
+#### tj/n - node version manager [00:45:42]
+
+ So my next tool is a node version manager There's a whole bunch of them but a whole bunch of them are really hard to use and assume the wrong things. The one that I've settled on after years of searching between nvm, nodenv and all the rest is TJs n. Very simple uh hard to Google repo.  It's just like dead simple node version management. You run n auto it detects what version needs to install and it installs it for you without any fuss and without messing up the path on your system to node. Which is like a real key thing for me I want I want node to be where node and not to have like weird hoops being jumped through on my terminal just to run node.
+
+**Justin:** Yeah sure Um maybe I'll get a shot give a shout out in a similar vein I don't use N Uh but I use this tool called SDF, which is maybe not necessarily as directly ergonomic for just node but the nice thing is it manages uh versions for a lot of things. So I use it for node, I use it for Ruby, I use it for elixir. It like is pretty like got pretty good broad plugin support, which has been been pretty nice Uh again TA talking about the CLI ergonomic perspective Sometimes these tools are a little bit hard because it's hard to remember command that you're using. 
+
+#### Fig [00:47:06]
+
+So I'm actually going to give another tool tip um about this tool called fig. So fig is a early startup, they they just went through YC recently, but it's essentially uh They have a grand vision for what it will be but yeah it's a it's autocomplete for your terminal.  But it's like really good auto-complete. Um 
+
+**Andrew:** I've been lusting after it like
+
+**Justin:** I can send you an invite code 
+
+**Andrew:** Oh you should send me an invite code. Cause that it looks so much nicer. Like if if you've never built a CLI before you may not know what goes into giving bash or zsh completions, and let me tell you it sucks. Typically the tool will have to expose a separate command called install completions where it will like literally put bash code somewhere on your system in the hopes that your terminal will use it for completions. And those completions were not the best looking They're just plain text depending on the shell you're using they may or may not be the easiest thing to use. And uh it's it's just really hard to like make them for the random tool that you're using. The nice thing I've seen about fig is that it just like it's a very simple JSON structure to describe what should be be completed. And then it's all done within the UI of your OS not not like constrained to just your terminal where like menu's not might not be the best thing And in terminal those might live better in the OS land. So how have you like it so far?
+
+**Justin:** Indeed Uh I like it a lot It's it's incredibly magical, and they've got a lot of broad coverage for a lot of the things that I use. So it just works.
+things I talked to the to the founders of that a little while back and how they built that is just fascinating. So there's like this process that wraps your shell se every every like all your commands are sort of like running through that, and then when they see Hey you're you're trying to something out they actually use the accessibility API on Mac figure out like okay where's your terminal? Where's the input? Here, let me render this thing near. And uh it's technically complicated and very magical but it just works. It's great.
+
+**Andrew:** Yeah We'll have to get those guys on
+
+**Justin:** Oh yeah sure For sure
+
+**Andrew:** Yeah The coolest integration I've seen so far is when you type NPM install you can tab complete and search NPM straight straight from the terminal which crazy 
+
+**Justin:** addition Um I think they're hiring if you're looking for a job out there world, maybe they'll give me some swag for uh pitching for them
+
+**Andrew:** Yeah send 
+
+**Justin:** yeah Yeah One of the their long-term visions which I think is really fascinating, Maybe even something that I would like to experiment with in future, is like what is the future of the terminal look like like? If we could reenvision this thing that's really hasn't changed much in all these years what what might that look like.
+I know that's gonna that's gonna make a lot of people feel a lot uneasy Cause they're just like I just want my tools simple man but...
+
+**Andrew:** Yeah It's always crazy to me that like computers started at the terminal and now like the majority of computer users aren't going to know how or what a terminal does but that was like literally the only way to interface with the computer back back in the day.
+
+**Justin:** So and oftentimes one of the better ways, in my opinion. 
+
+**Andrew:** Yeah, I've I've recently been discovering the use of pipes and all that good stuff. I've never really been able to like really really understand when I would want to pipe things to other commands and through commands, but I'm getting it more and more. 
+
+#### Meeting Light: Foray into Pipes [00:50:53]
+
+Which leads me into my last tool tip which is my meeting light! I recently built a light that is connected up to my computer and automatically detects whether I'm in a meeting and turns the light on. Is that is actually on right now over there.  And to do that I used a terminal command called LSOF and I piped that into grep and now I actually understand what pipes do. So 10 years checkmark!
+
+**Justin:** Yeah So you have a you have a good write-up on that we'll add that to the show notes too.
+I guess the L Oh yeah Yeah 
+
+#### Astro: Modern Web Framework [00:51:30]
+
+the last thing for me, is not necessarily a tool more of a framework. I've always been super interested in front end frameworks as they are Um I mean I got my start early like in the angular days and I did a lot with vue and react and svelte Marco and like I don't a lot of them they're just really interesting technologies, There's a lot of constraints. It's a hard space. Uh and I really love innovating.
+So the team behind snowpack and sky pack
+Which snowpack is a tool to sort of help you bundle things or something with ESM I don't know I'm sorry I just butchered that Skypack is a CDN for ESM which I have a good grasp on what that is Uh but they're building a web framework called Astro and it reminds me a lot of of svelte and a lot of ways. So svelte is a front end framework or component interface I guess, compiler. So you have a template and the compiler goes through looks at what you put in the template and then generates out runtime code whether that's HTML, CSS, javaScript.
+So Astro does that same sort of thing but it's a little bit different Um by default it ships no JavaScript. So you build a page and you have this Astro file which looks a lot like a svelte component or like an HTML file really And you can import components And they can be react components, They can be svelte components, future vue components. You can use all these things together and by default it just server renders them and doesn't rehydrate. But you can add this little tag to say Hey I actually want to I want this thing to become interactive when it's visible or on the page load or when the main thread is idle. And it will only sort of hydrate that one component in that one specified way. So they're flipping the sort of emphasis where we only shipped JavaScript When you explicitly say, "Hey I need interactivity." In my mind this is huge because most pages for most things don't actually need javaScript.
+I think of artsy and we're a huge react app, we use graphql and relay and we have like style systems and style components and and all of these things And it's like many many many layers complexity and performance is an issue for us. For sure, but most of our pages very little. interactivity it's that that notion where if this on its head maybe you can get some better performance.
+Shout out to that I'll include the uh their intro post to that I don't think it's I think it's still uh closed beta right now but...
+
+**Andrew:** yeah That's that seems exciting, Still still very early on, but exciting. I like how all these tools are taking a page from next JS and using the pages folder like that That is such great DX.
+
+**Justin:** Yeah for sure Huge shout out to Next.js Uh and the whole Vercel team uh our our dev tools.fm site hosted on Versal and using Next.js So that's great!
+
+**Andrew:** Is that how you say it I thought it was vercel?
+
+**Justin:** Oh no Maybe
+
+**Andrew:** I'm sure I said they're old name wrong too. I called it Zeit, I think it's Zeit? I don't know!
+
+**Justin:** Gif Jif you know don't. Know sue me 
+
+**Andrew:** Which one is peanut butter?
+
+#### Conclusion [00:55:13]
+
+
+**Justin:** Indeed, Uh all right so we have taken a really long winding path then maybe a time to wind down.
+
+**Andrew:** So that was the intro episode of dev tools FM. I think future episodes might be less of just the two of us and more of us talking with the people who are making these tools. Just kind of get her foot out the door with this first one, but it was a lot of fun talking with Justin Uh I hope we continue this It was a lot of
+
+**Justin:** Yeah for sure For sure Uh we'll share a link to the podcast episode Uh Maybe on Twitter and give us some feedback on what you liked you didn't you'd would like hear more of. Also if you have ideas for guests uh we already have a bit of a long list now but uh if you make a interesting developer tool and you'd beyond or you know someone who does please let us know
