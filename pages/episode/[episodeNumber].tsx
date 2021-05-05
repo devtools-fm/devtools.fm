@@ -21,9 +21,9 @@ import { ColoredText } from "../components/ColoredText";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
-  h2: (props) => <h2 {...props} className="text-3xl mb-4 mt-6" />,
-  h3: (props) => <h3 {...props} className="text-2xl my-4" />,
-  h4: (props) => <h4 {...props} className="text-xl font-semibold underline" />,
+  h2: (props) => <h2 {...props} className="text-2xl mb-4 mt-6" />,
+  h3: (props) => <h3 {...props} className="text-xl my-4" />,
+  h4: (props) => <h4 {...props} className="text-lg font-semibold underline" />,
   p: (props) => <p {...props} className="my-4" />,
   strong: (props) => (
     <ColoredText
