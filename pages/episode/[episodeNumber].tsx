@@ -14,10 +14,10 @@ import renderToString from "next-mdx-remote/render-to-string";
 import hydrate from "next-mdx-remote/hydrate";
 import matter from "gray-matter";
 
-import { Browser } from "../components/Browser";
-import { Page } from "../components/Page";
+import { Browser } from "components/Browser";
+import { Page } from "components/Page";
 import { MdxRemote } from "next-mdx-remote/types";
-import { ColoredText } from "../components/ColoredText";
+import { ColoredText } from "components/ColoredText";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
