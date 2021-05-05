@@ -249,12 +249,17 @@ export default function Home() {
           .{" "}
         </p>
 
+        <p className="flex justify-center mb-6">
+          <FooterLink href="https://vercel.com?utm_source=devtools-fm&utm_campaign=oss">
+            <img src="/vercel.svg" />
+          </FooterLink>
+        </p>
+
         <p className="text-sm">
           Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>{" "}
           and{" "}
           <FooterLink href="https://tailwindcss.com">tailwindcss</FooterLink>.
-          Hosted on <FooterLink href="https://vercel.com">Vercel</FooterLink>{" "}
-          and the source code is on{" "}
+          The source code is on{" "}
           <FooterLink href="https://github.com/devtools-fm/devtools.fm">
             GitHub
           </FooterLink>
