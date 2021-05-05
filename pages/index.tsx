@@ -259,7 +259,7 @@ export default function Home() {
           Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>{" "}
           and{" "}
           <FooterLink href="https://tailwindcss.com">tailwindcss</FooterLink>.
-          The source code is on
+          The source code is on{" "}
           <FooterLink href="https://github.com/devtools-fm/devtools.fm">
             GitHub
           </FooterLink>
