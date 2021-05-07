@@ -17,6 +17,7 @@ export async function processMdx(
   const guests = new Set<string>();
   const [, runTime] = sectionsMdx.match(/^\[([\d:]+)\]/gm);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
+  const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/(\d+)-/);
 
   transcriptMdx.match(/^\*\*(\S+)\*\*/gm).map((m) => {
     const person = m.replace(/\*\*/g, "").replace(":", "");
@@ -32,6 +33,7 @@ export async function processMdx(
     guests: [...guests],
     runTime,
     youtubeId,
+    buzzSproutEpisodeId,
     frontMatter: data,
     showNotes: await renderToString(showNotesMdx, {
       components,

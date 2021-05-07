@@ -18,6 +18,7 @@ import { Page } from "components/Page";
 import { MdxRemote } from "next-mdx-remote/types";
 import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
+import Head from "next/head";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
@@ -35,6 +36,7 @@ const mdxComponents: MdxRemote.Components = {
 
 const Episode = ({
   youtubeId,
+  buzzSproutEpisodeId,
   showNotes,
   sections,
   transcript,
@@ -52,9 +54,19 @@ const Episode = ({
 
   return (
     <Page title={pageTitle}>
+      <Head>
+        <script
+          src={`https://www.buzzsprout.com/1772992/${buzzSproutEpisodeId}-devtools-fm-episode-1.js?container_id=buzzsprout-player`}
+          type="text/javascript"
+          charSet="utf-8"
+        />
+      </Head>
+
       <h1 className="text-3xl mt-8 mb-12">
         {pageTitle}: {frontMatter.title}
       </h1>
+
+      <div id="buzzsprout-player" />
 
       <Browser>
         <Navigation
