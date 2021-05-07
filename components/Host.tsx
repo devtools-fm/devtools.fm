@@ -48,7 +48,7 @@ export const Host = ({ name, data }: HostProps) => {
           target="_blank"
           rel="noopener"
           href={data.twitter}
-          className="hover:underline"
+          className="underline"
           style={{
             color: coloredTextTheme[currentTheme][currentColorScheme].blue,
           }}

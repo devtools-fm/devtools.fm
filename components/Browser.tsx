@@ -12,6 +12,7 @@ export const Browser = ({ children }: BrowserProps) => {
   return (
     <BrowserWindow
       padding="32px 0 0 0"
+      className="mb-12 md:mb-20"
       background="inherit"
       grayscale={true}
       topbarTitle="devtools.fm"

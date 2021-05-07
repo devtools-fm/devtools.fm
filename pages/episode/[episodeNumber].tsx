@@ -10,14 +10,13 @@ import { Navigation } from "@devtools-ds/navigation";
 import { useRouter } from "next/router";
 import path from "path";
 import fs from "fs";
-import renderToString from "next-mdx-remote/render-to-string";
 import hydrate from "next-mdx-remote/hydrate";
-import matter from "gray-matter";
 
 import { Browser } from "components/Browser";
 import { Page } from "components/Page";
 import { MdxRemote } from "next-mdx-remote/types";
 import { ColoredText } from "components/ColoredText";
+import { ProcessedMdx, processMdx } from "utils/processMdx";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
@@ -33,23 +32,13 @@ const mdxComponents: MdxRemote.Components = {
   ),
 };
 
-interface EpisodeProps {
-  showNotes: MdxRemote.Source;
-  sections: MdxRemote.Source;
-  transcript: MdxRemote.Source;
-  frontmatter: {
-    title: string;
-    youtube: string;
-    buzzsprout: string;
-  };
-}
-
 const Episode = ({
+  youtubeId,
   showNotes,
   sections,
   transcript,
-  frontmatter,
-}: EpisodeProps) => {
+  frontMatter,
+}: ProcessedMdx) => {
   const router = useRouter();
   const { episodeNumber } = router.query;
   const pageTitle = `Episode #${episodeNumber}`;
@@ -60,7 +49,7 @@ const Episode = ({
   return (
     <Page title={pageTitle}>
       <h1 className="text-3xl mt-8 mb-12">
-        {pageTitle}: {frontmatter.title}
+        {pageTitle}: {frontMatter.title}
       </h1>
 
       <Browser>
@@ -107,7 +96,7 @@ const Episode = ({
                   allowFullScreen
                   width="100%"
                   height="100%"
-                  src="https://www.youtube.com/embed/xkiw379QRU4"
+                  src={`https://www.youtube.com/embed/${youtubeId}`}
                   title="YouTube video player"
                   frameBorder="0"
                   className="absolute inset-0"
@@ -137,23 +126,12 @@ export async function getStaticProps({
   params: EpisodeNumberParams;
 }) {
   const episodeNumber = query.episodeNumber || params.episodeNumber;
-  const { data, content } = matter.read(
-    path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`)
+  const props = await processMdx(
+    path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
+    mdxComponents
   );
 
-  const [showNotesMdx, rest] = content.split("<!-- SECTIONS -->");
-  const [sectionsMdx, transcriptMdx] = rest.split("<!-- Transcript -->");
-  const showNotes = await renderToString(showNotesMdx, {
-    components: mdxComponents,
-  });
-  const sections = await renderToString(sectionsMdx, {
-    components: mdxComponents,
-  });
-  const transcript = await renderToString(transcriptMdx, {
-    components: mdxComponents,
-  });
-
-  return { props: { showNotes, sections, transcript, frontmatter: data } };
+  return { props };
 }
 
 export async function getStaticPaths() {

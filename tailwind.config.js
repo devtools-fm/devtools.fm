@@ -1,12 +1,14 @@
 module.exports = {
   mode: "jit",
-  darkMode: "class",
+  darkMode: "media",
   purge: ["./pages/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      divideColor: ['dark']
+    }
   },
   plugins: [],
 };

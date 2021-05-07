@@ -5,6 +5,7 @@ import {
   DataIcon,
 } from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
+import { useRouter } from "next/router";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
@@ -13,6 +14,8 @@ import { Browser } from "components/Browser";
 import { justin, Host, andrew } from "components/Host";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <Page title="devtools.fm">
       <div className="mt-10 mb-12">
@@ -28,13 +31,17 @@ export default function Home() {
       </div>
 
       <Browser>
-        <Navigation>
+        <Navigation index={0}>
           <Navigation.Controls>
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>
                 About
               </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<DataIcon inline />}>
+              <Navigation.Tab
+                id="episodes"
+                icon={<DataIcon inline />}
+                onMouseDown={() => router.push("/episodes")}
+              >
                 Episodes
               </Navigation.Tab>
             </Navigation.TabList>
@@ -73,9 +80,6 @@ export default function Home() {
                 <Host name="Andrew Lisowski" data={andrew} />
                 <Host name="Justin Bennett" data={justin} />
               </div>
-            </Navigation.Panel>
-            <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4">
-              Work in progress...
             </Navigation.Panel>
           </Navigation.Panels>
         </Navigation>
