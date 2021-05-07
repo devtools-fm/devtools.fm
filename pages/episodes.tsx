@@ -7,7 +7,7 @@ import {
 import { promises as fs } from "fs";
 import path from "path";
 import { Navigation } from "@devtools-ds/navigation";
-import Link from "next/Link";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import hydrate from "next-mdx-remote/hydrate";
 import { chrome, firefox, useTheme } from "@devtools-ds/themes";
