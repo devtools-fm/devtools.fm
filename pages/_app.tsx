@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
+import "@reach/tabs/styles.css";
 
 const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
   const { children, ...rest } = props;
