@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import path from "path";
 import fs from "fs";
 import hydrate from "next-mdx-remote/hydrate";
+import { useQueryParam, StringParam } from "use-query-params";
 
 import { Browser } from "components/Browser";
 import { Page } from "components/Page";
@@ -40,11 +41,14 @@ const Episode = ({
   frontMatter,
 }: ProcessedMdx) => {
   const router = useRouter();
+  const [view, setView] = useQueryParam("view", StringParam);
   const { episodeNumber } = router.query;
   const pageTitle = `Episode #${episodeNumber}`;
   const showNotesContent = hydrate(showNotes, { components: mdxComponents });
   const sectionsContent = hydrate(sections, { components: mdxComponents });
   const transcriptContent = hydrate(transcript, { components: mdxComponents });
+  const tabOrder = ["about", "episodes", "youtube", "transcript"];
+  const activeTab = view || tabOrder[0];
 
   return (
     <Page title={pageTitle}>
@@ -53,7 +57,23 @@ const Episode = ({
       </h1>
 
       <Browser>
-        <Navigation>
+        <Navigation
+          index={tabOrder.indexOf(activeTab)}
+          onChange={(index) => {
+            const searchParams = new URLSearchParams();
+            searchParams.set("view", tabOrder[index]);
+            const newurl =
+              window.location.protocol +
+              "//" +
+              window.location.host +
+              window.location.pathname +
+              "?" +
+              searchParams.toString();
+
+            window.history.pushState({ path: newurl }, "", newurl);
+            setView(tabOrder[index]);
+          }}
+        >
           <Navigation.Controls>
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>
@@ -62,10 +82,10 @@ const Episode = ({
               <Navigation.Tab id="episodes" icon={<ListIcon inline />}>
                 Sections
               </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<ConsoleIcon inline />}>
+              <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
                 YouTube
               </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<ClipboardIcon inline />}>
+              <Navigation.Tab id="transcript" icon={<ClipboardIcon inline />}>
                 Transcript
               </Navigation.Tab>
             </Navigation.TabList>
