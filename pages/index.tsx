@@ -46,7 +46,7 @@ export default function Home() {
 
       <Browser>
         <Navigation index={0} onChange={() => {}}>
-          <Navigation.Controls style={{ overflowX: "auto" }}>
+          <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>
                 About
@@ -74,7 +74,7 @@ export default function Home() {
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4">
+            <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4 focus:outline-none">
               <p
                 className="mb-6 md:mb-10"
                 style={{

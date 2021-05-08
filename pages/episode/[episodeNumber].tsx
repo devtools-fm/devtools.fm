@@ -81,7 +81,9 @@ const Episode = ({
       <ColoredText className="mt-4" color="blue">
         {episodeNumberString}:
       </ColoredText>
-      <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">{frontMatter.title}</h1>
+      <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">
+        {frontMatter.title}
+      </h1>
 
       <iframe
         className="mb-8 md:mb-12"
@@ -139,13 +141,13 @@ const Episode = ({
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="mx-3 mb-4">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               {showNotesContent}
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               {sectionsContent}
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               <div className="relative pb-[56.25%]">
                 <iframe
                   allowFullScreen
@@ -159,7 +161,7 @@ const Episode = ({
                 />
               </div>
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               {transcriptContent}
             </Navigation.Panel>
           </Navigation.Panels>
