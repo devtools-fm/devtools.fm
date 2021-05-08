@@ -64,7 +64,6 @@ const Episode = ({
   }
 
   const showNotesContent = hydrate(showNotes, { components: mdxComponents });
-  const sectionsContent = hydrate(sections, { components: mdxComponents });
   const transcriptContent = hydrate(transcript, { components: mdxComponents });
 
   return (
@@ -144,8 +143,13 @@ const Episode = ({
             <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               {showNotesContent}
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
-              {sectionsContent}
+            <Navigation.Panel className="mx-3 my-4 focus:outline-none">
+              {sections.map((section) => (
+                <div key={section.time} className="space-x-2">
+                  <ColoredText color="purple">{section.time}</ColoredText>
+                  <span>{section.title}</span>
+                </div>
+              ))}
             </Navigation.Panel>
             <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               <div className="relative pb-[56.25%]">

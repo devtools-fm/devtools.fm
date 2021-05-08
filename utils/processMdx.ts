@@ -5,6 +5,20 @@ import { PromiseValue } from "type-fest";
 
 const hosts = ["Andrew", "Justin"];
 
+function parseSections(raw: string) {
+  const sections: { time: string; title: string }[] = [];
+
+  raw.split("\n").map((line) => {
+    const [, time, title] = line.match(/^(\[[\d:]+\]) (.*)/) || [];
+
+    if (time && title) {
+      sections.push({ time, title: title.trim() });
+    }
+  });
+
+  return sections;
+}
+
 export async function processMdx(
   filename: string,
   components: MdxRemote.Components
@@ -16,10 +30,10 @@ export async function processMdx(
     .split("<!-- LINKS -->")[0]
     .split("<!-- DESCRIPTION -->")[1]
     .trim();
-  const [sectionsMdx, transcriptMdx] = rest.split("<!-- Transcript -->");
+  const [sections, transcriptMdx] = rest.split("<!-- Transcript -->");
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const guests = new Set<string>();
-  const runTimes = sectionsMdx.match(/^\[([\d:]+)\]/gm);
+  const runTimes = sections.match(/^\[([\d:]+)\]/gm);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
   const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/(\d+)-/);
 
@@ -43,9 +57,7 @@ export async function processMdx(
     showNotes: await renderToString(showNotesMdx, {
       components,
     }),
-    sections: await renderToString(sectionsMdx, {
-      components,
-    }),
+    sections: parseSections(sections),
     transcript: await renderToString(transcriptMdx, {
       components,
     }),
