@@ -93,7 +93,7 @@ export default function Home({ episodes }: HomeProps) {
                   <Link passHref href={`episode/${episode.number}`}>
                     <a
                       className={makeClass(
-                        "grid grid-cols-[1fr 2fr] gap-4 py-4 md:py-6",
+                        "grid grid-cols-[1fr 2fr] gap-4 pt-4",
                         styles.row
                       )}
                       style={{
@@ -118,14 +118,14 @@ export default function Home({ episodes }: HomeProps) {
                             Episode #{episode.number}
                           </ColoredText>
 
-                          <div className="text-lg md:text-xl mb-3 md:mb-4 font-bold dark:text-white">
+                          <div className="text-lg md:text-xl mb-3 md:mb-4 font-bold dark:text-gray-200">
                             {" "}
                             {episode.frontMatter.title}
                           </div>
                           <div>
                             <div className="flex space-x-2 mb-2 text-sm">
                               <ColoredText color="gray">Hosts:</ColoredText>
-                              <ul className="flex space-x-2">
+                              <ul className="flex space-x-2 dark:text-gray-400">
                                 {episode.hosts.map((person, index) => (
                                   <Fragment key={person}>
                                     <li>{person}</li>

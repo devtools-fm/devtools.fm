@@ -74,7 +74,7 @@ export default function Home() {
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4 focus:outline-none">
+            <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4 focus:outline-none dark:text-gray-200">
               <p
                 className="mb-6 md:mb-10"
                 style={{
@@ -90,7 +90,7 @@ export default function Home() {
 
               <h2 className="text-xl md:text-2xl mb-4 md:mb-6">Hosts</h2>
 
-              <div className="space-y-4 md:space-y-6">
+              <div className="space-y-4 md:space-y-6 ">
                 <Host name="Andrew Lisowski" data={andrew} />
                 <Host name="Justin Bennett" data={justin} />
               </div>
