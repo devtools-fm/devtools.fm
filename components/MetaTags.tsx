@@ -6,12 +6,13 @@ interface MetaTagsProps {
   image: string;
 }
 
-export const OgMetaTags = (props: MetaTagsProps) => {
+export const MetaTags = (props: MetaTagsProps) => {
   const url = "https://devtools.fm/";
 
   return (
     <Head>
       {/* <!-- Primary Meta Tags --> */}
+      <title>{props.title}</title>
       <meta name="title" content={props.title} />
       <meta name="description" content={props.description} />
 

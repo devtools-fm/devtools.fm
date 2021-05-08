@@ -18,7 +18,7 @@ import { Page } from "components/Page";
 import { MdxRemote } from "next-mdx-remote/types";
 import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
-import { OgMetaTags } from "components/OgMetaTags";
+import { MetaTags } from "components/MetaTags";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
@@ -43,24 +43,32 @@ const Episode = ({
   transcript,
   frontMatter,
 }: ProcessedMdx) => {
+
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const { episodeNumber } = router.query;
-  const title = `Episode #${episodeNumber}`;
+  const tabOrder = ["about", "episodes", "youtube", "transcript"];
+  const activeTab = view || tabOrder[0];
+  const pageTitle = `Episode #${episodeNumber}: ${frontMatter.title}`;
+  const tags = (
+    <MetaTags
+      title={pageTitle}
+      image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
+      description={description}
+    />
+  );
+
+  if (typeof window === "undefined") {
+    return tags;
+  }
+
   const showNotesContent = hydrate(showNotes, { components: mdxComponents });
   const sectionsContent = hydrate(sections, { components: mdxComponents });
   const transcriptContent = hydrate(transcript, { components: mdxComponents });
-  const tabOrder = ["about", "episodes", "youtube", "transcript"];
-  const activeTab = view || tabOrder[0];
-  const pageTitle = `${title}: ${frontMatter.title}`;
 
   return (
-    <Page title={title}>
-      <OgMetaTags
-        title={pageTitle}
-        image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
-        description={description}
-      />
+    <Page>
+      {tags}
 
       <h1 className="text-3xl mt-8 mb-12">{pageTitle}</h1>
 
@@ -176,7 +184,7 @@ export async function getStaticPaths() {
     .filter((p) => p.endsWith(".mdx"));
 
   return {
-    fallback: true,
+    fallback: false,
     paths: episodes.map((_, index) => ({
       params: { episodeNumber: String(index + 1) },
     })),

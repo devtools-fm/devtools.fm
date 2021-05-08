@@ -1,3 +1,4 @@
+import { AutoThemeProvider } from "@devtools-ds/themes";
 import Head from "next/head";
 
 const FooterLink = (
@@ -38,21 +39,21 @@ export const Footer = () => {
 };
 
 interface PageProps {
-  title: string;
   children: React.ReactNode;
 }
 
-export const Page = ({ title, children }: PageProps) => {
+export const Page = ({ children }: PageProps) => {
   return (
-    <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
-      <Head>
-        <title>{title}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <AutoThemeProvider autoStyle>
+      <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main className="flex flex-col flex-1">{children}</main>
+        <main className="flex flex-col flex-1">{children}</main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </AutoThemeProvider>
   );
 };

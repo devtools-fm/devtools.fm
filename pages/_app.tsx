@@ -1,5 +1,4 @@
 import React, { memo, useMemo } from "react";
-import { AutoThemeProvider } from "@devtools-ds/themes";
 import { QueryParamProvider as ContextProvider } from "use-query-params";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -54,15 +53,9 @@ const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
 const QueryParamProvider = memo(QueryParamProviderComponent);
 
 function MyApp({ Component, pageProps }: AppProps) {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
   return (
     <QueryParamProvider>
-      <AutoThemeProvider autoStyle>
         <Component {...pageProps} />
-      </AutoThemeProvider>
     </QueryParamProvider>
   );
 }

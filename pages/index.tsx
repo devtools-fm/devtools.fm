@@ -12,12 +12,26 @@ import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import { justin, Host, andrew } from "components/Host";
+import { MetaTags } from "components/MetaTags";
 
 export default function Home() {
   const router = useRouter();
+  const tags = (
+    <MetaTags
+      title="devtools.fm"
+      description="A podcast about developer tools by the people who make them."
+      image="og-image.png"
+    />
+  );
+
+  if (typeof window === "undefined") {
+    return tags;
+  }
 
   return (
-    <Page title="devtools.fm">
+    <Page>
+      {tags}
+
       <div className="mt-10 mb-12">
         <h1 className="flex justify-center mb-10">
           <Logo />
@@ -31,7 +45,7 @@ export default function Home() {
       </div>
 
       <Browser>
-        <Navigation index={0}>
+        <Navigation index={0} onChange={() => {}}>
           <Navigation.Controls>
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>

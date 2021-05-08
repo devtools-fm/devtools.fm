@@ -4,12 +4,12 @@ import {
   InfoIcon,
   DataIcon,
 } from "@devtools-ds/icon";
+import makeClass from "clsx";
 import { promises as fs } from "fs";
 import path from "path";
 import { Navigation } from "@devtools-ds/navigation";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import hydrate from "next-mdx-remote/hydrate";
 import { chrome, firefox, useTheme } from "@devtools-ds/themes";
 
 import { Logo } from "components/Logo";
@@ -17,8 +17,9 @@ import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
-
-const mdxComponents = {};
+import { Fragment } from "react";
+import styles from "../styles/episodes.module.css";
+import { MetaTags } from "components/MetaTags";
 
 interface HomeProps {
   episodes: ProcessedMdx[];
@@ -27,9 +28,22 @@ interface HomeProps {
 export default function Home({ episodes }: HomeProps) {
   const router = useRouter();
   const { currentColorScheme, currentTheme } = useTheme({});
+  const tags = (
+    <MetaTags
+      title="devtools.fm - Episodes"
+      description="A list of the the episodes."
+      image="og-image.png"
+    />
+  );
+
+  if (typeof window === "undefined") {
+    return tags;
+  }
 
   return (
-    <Page title="devtools.fm">
+    <Page>
+      {tags}
+
       <div className="mt-10 mb-12">
         <h1 className="flex justify-center mb-10">
           <Logo />
@@ -43,7 +57,7 @@ export default function Home({ episodes }: HomeProps) {
       </div>
 
       <Browser>
-        <Navigation index={1}>
+        <Navigation index={1} onChange={() => {}}>
           <Navigation.Controls>
             <Navigation.TabList>
               <Navigation.Tab
@@ -73,14 +87,16 @@ export default function Home({ episodes }: HomeProps) {
           </Navigation.Controls>
           <Navigation.Panels>
             <Navigation.Panel />
-            <Navigation.Panel className="md:p-4 md:pt-6 mx-3 mb-4 focus:outline-none">
+            <Navigation.Panel className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">
               <div className="divide-y-2 divide-gray-300 dark:divide-gray-200">
                 {episodes.map((episode) => (
                   <Link passHref href={`episode/${episode.number}`}>
                     <a
-                      className="grid grid-cols-2 gap-4 py-4 md:py-6"
+                      className={makeClass(
+                        "grid grid-cols-[1fr 2fr] gap-4 py-4 md:py-6",
+                        styles.row
+                      )}
                       style={{
-                        gridTemplateColumns: "1fr 2fr",
                         borderColor:
                           currentColorScheme === "dark"
                             ? chrome.dark.gray04
@@ -111,12 +127,12 @@ export default function Home({ episodes }: HomeProps) {
                               <ColoredText color="gray">Hosts:</ColoredText>
                               <ul className="flex space-x-2">
                                 {episode.hosts.map((person, index) => (
-                                  <>
+                                  <Fragment key={person}>
                                     <li>{person}</li>
                                     {index !== episode.hosts.length - 1
                                       ? ", "
                                       : ""}
-                                  </>
+                                  </Fragment>
                                 ))}
                               </ul>
                             </div>
@@ -125,12 +141,12 @@ export default function Home({ episodes }: HomeProps) {
                                 <ColoredText color="gray">Guests:</ColoredText>
                                 <ul className="flex space-x-2">
                                   {episode.guests.map((person, index) => (
-                                    <>
+                                    <Fragment key={person}>
                                       <li>{person}</li>
                                       {index !== episode.guests.length - 1
                                         ? ", "
                                         : ""}
-                                    </>
+                                    </Fragment>
                                   ))}
                                 </ul>
                               </div>
