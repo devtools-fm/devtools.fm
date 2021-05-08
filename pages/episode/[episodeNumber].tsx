@@ -1,4 +1,5 @@
 import {
+  ChevronLeftIcon,
   ClipboardIcon,
   ConsoleIcon,
   InfoIcon,
@@ -7,6 +8,7 @@ import {
   NewWindowIcon,
 } from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import path from "path";
 import fs from "fs";
@@ -48,10 +50,10 @@ const Episode = ({
   const { episodeNumber } = router.query;
   const tabOrder = ["about", "episodes", "youtube", "transcript"];
   const activeTab = view || tabOrder[0];
-  const pageTitle = `Episode #${episodeNumber}: ${frontMatter.title}`;
+  const episodeNumberString = `Episode #${episodeNumber}`;
   const tags = (
     <MetaTags
-      title={pageTitle}
+      title={`${episodeNumberString}: ${frontMatter.title}`}
       image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
       description={description}
     />
@@ -69,10 +71,20 @@ const Episode = ({
     <Page>
       {tags}
 
-      <h1 className="text-3xl mt-8 mb-12">{pageTitle}</h1>
+      <Link passHref href="/episodes">
+        <a className="py-4 flex items-center space-x-2 hover:pointer">
+          <ChevronLeftIcon size="medium" />
+          <span className="text-lg">All episodes</span>
+        </a>
+      </Link>
+
+      <ColoredText className="mt-4" color="blue">
+        {episodeNumberString}:
+      </ColoredText>
+      <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">{frontMatter.title}</h1>
 
       <iframe
-        className="mb-12"
+        className="mb-8 md:mb-12"
         src={`https://www.buzzsprout.com/1772992/${buzzSproutEpisodeId}?client_source=admin&amp;iframe=true`}
         width="100%"
         height="200"
