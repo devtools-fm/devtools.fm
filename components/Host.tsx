@@ -1,6 +1,5 @@
-import { useTheme } from "@devtools-ds/themes";
 import { ObjectInspector } from "@devtools-ds/object-inspector";
-import { coloredTextTheme } from "./ColoredText";
+import { ThemedLink } from "./ThemedLink";
 
 interface HostData {
   twitter: string;
@@ -39,22 +38,17 @@ export const andrew = {
 };
 
 export const Host = ({ name, data }: HostProps) => {
-  const { currentColorScheme, currentTheme } = useTheme({});
-
   return (
     <div>
       <h3 className="mb-2">
-        <a
+        <ThemedLink
           target="_blank"
           rel="noopener"
           href={data.twitter}
           className="underline"
-          style={{
-            color: coloredTextTheme[currentTheme][currentColorScheme].blue,
-          }}
         >
           {name}
-        </a>
+        </ThemedLink>
       </h3>
       <div className="max-w-full overflow-x-auto">
         <ObjectInspector data={data} expandLevel={1} />

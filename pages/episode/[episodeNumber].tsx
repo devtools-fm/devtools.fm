@@ -21,9 +21,10 @@ import { MdxRemote } from "next-mdx-remote/types";
 import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { MetaTags } from "components/MetaTags";
+import { ThemedLink } from "components/ThemedLink";
 
 const mdxComponents: MdxRemote.Components = {
-  a: (props) => <a {...props} className="text-blue-500 underline" />,
+  a: (props) => <ThemedLink {...props} />,
   h2: (props) => <h2 {...props} className="text-2xl mb-4 mt-6" />,
   h3: (props) => <h3 {...props} className="text-xl my-4" />,
   h4: (props) => <h4 {...props} className="text-lg font-semibold underline" />,
