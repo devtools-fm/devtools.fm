@@ -97,7 +97,7 @@ const Episode = ({
             setView(tabOrder[index]);
           }}
         >
-          <Navigation.Controls>
+          <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>
                 Show Notes

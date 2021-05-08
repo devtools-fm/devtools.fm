@@ -46,7 +46,7 @@ export default function Home() {
 
       <Browser>
         <Navigation index={0} onChange={() => {}}>
-          <Navigation.Controls>
+          <Navigation.Controls style={{ overflowX: "auto" }}>
             <Navigation.TabList>
               <Navigation.Tab id="about" icon={<InfoIcon inline />}>
                 About

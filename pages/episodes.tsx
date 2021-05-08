@@ -58,7 +58,7 @@ export default function Home({ episodes }: HomeProps) {
 
       <Browser>
         <Navigation index={1} onChange={() => {}}>
-          <Navigation.Controls>
+          <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               <Navigation.Tab
                 id="about"

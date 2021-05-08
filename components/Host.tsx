@@ -56,7 +56,9 @@ export const Host = ({ name, data }: HostProps) => {
           {name}
         </a>
       </h3>
-      <ObjectInspector data={data} expandLevel={1} />
+      <div className="max-w-full overflow-x-auto">
+        <ObjectInspector data={data} expandLevel={1} />
+      </div>
     </div>
   );
 };
