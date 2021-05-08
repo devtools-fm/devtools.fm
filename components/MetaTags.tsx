@@ -24,11 +24,11 @@ export const MetaTags = (props: MetaTagsProps) => {
       <meta property="og:image" content={props.image} />
 
       {/* <!-- Twitter --> */}
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={url} />
-      <meta property="twitter:title" content={props.title} />
-      <meta property="twitter:description" content={props.description} />
-      <meta property="twitter:image" content={props.image} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={url} />
+      <meta name="twitter:title" content={props.title} />
+      <meta name="twitter:description" content={props.description} />
+      <meta name="twitter:image" content={props.image} />
     </Head>
   );
 };
