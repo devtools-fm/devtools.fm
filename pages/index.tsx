@@ -20,7 +20,7 @@ export default function Home() {
     <MetaTags
       title="devtools.fm"
       description="A podcast about developer tools by the people who make them."
-      image="og-image.png"
+      image="https://devtools.fm/og-image.png"
     />
   );
 

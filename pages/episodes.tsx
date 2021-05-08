@@ -32,7 +32,7 @@ export default function Home({ episodes }: HomeProps) {
     <MetaTags
       title="devtools.fm - Episodes"
       description="A list of the the episodes."
-      image="og-image.png"
+      image="https://devtools.fm/og-image.png"
     />
   );
 

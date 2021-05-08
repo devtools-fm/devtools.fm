@@ -43,7 +43,6 @@ const Episode = ({
   transcript,
   frontMatter,
 }: ProcessedMdx) => {
-
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const { episodeNumber } = router.query;
