@@ -4,6 +4,10 @@ youtube: REPLACE_ME
 buzzsprout: REPLACE_ME
 ---
 
+<!-- DESCRIPTION -->
+
+<!-- LINKS -->
+
 ## Hosts
 
 - [Andrew Lisowski](https://twitter.com/hipstersmoothie)

@@ -18,6 +18,7 @@ import { Page } from "components/Page";
 import { MdxRemote } from "next-mdx-remote/types";
 import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
+import { OgMetaTags } from "components/OgMetaTags";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <a {...props} className="text-blue-500 underline" />,
@@ -36,6 +37,7 @@ const mdxComponents: MdxRemote.Components = {
 const Episode = ({
   youtubeId,
   buzzSproutEpisodeId,
+  description,
   showNotes,
   sections,
   transcript,
@@ -44,18 +46,23 @@ const Episode = ({
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const { episodeNumber } = router.query;
-  const pageTitle = `Episode #${episodeNumber}`;
+  const title = `Episode #${episodeNumber}`;
   const showNotesContent = hydrate(showNotes, { components: mdxComponents });
   const sectionsContent = hydrate(sections, { components: mdxComponents });
   const transcriptContent = hydrate(transcript, { components: mdxComponents });
   const tabOrder = ["about", "episodes", "youtube", "transcript"];
   const activeTab = view || tabOrder[0];
+  const pageTitle = `${title}: ${frontMatter.title}`;
 
   return (
-    <Page title={pageTitle}>
-      <h1 className="text-3xl mt-8 mb-12">
-        {pageTitle}: {frontMatter.title}
-      </h1>
+    <Page title={title}>
+      <OgMetaTags
+        title={pageTitle}
+        image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
+        description={description}
+      />
+
+      <h1 className="text-3xl mt-8 mb-12">{pageTitle}</h1>
 
       <iframe
         className="mb-12"

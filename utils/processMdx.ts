@@ -12,6 +12,10 @@ export async function processMdx(
   const { data, content } = matter.read(filename);
 
   const [showNotesMdx, rest] = content.split("<!-- SECTIONS -->");
+  const description = showNotesMdx
+    .split("<!-- LINKS -->")[0]
+    .split("<!-- DESCRIPTION -->")[1]
+    .trim();
   const [sectionsMdx, transcriptMdx] = rest.split("<!-- Transcript -->");
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const guests = new Set<string>();
@@ -30,6 +34,7 @@ export async function processMdx(
   return {
     number,
     hosts,
+    description,
     guests: [...guests],
     runTime,
     youtubeId,
