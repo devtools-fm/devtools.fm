@@ -25,25 +25,37 @@ export async function processMdx(
 ) {
   const { data, content } = matter.read(filename);
 
-  const [showNotesMdx, rest] = content.split("<!-- SECTIONS -->");
-  const description = showNotesMdx
+  const [showNotes, rest] = content.split("<!-- SECTIONS -->");
+  const description = showNotes
     .split("<!-- LINKS -->")[0]
     .split("<!-- DESCRIPTION -->")[1]
     .trim();
-  const [sections, transcriptMdx] = rest.split("<!-- Transcript -->");
+  const [sections, transcript] = rest.split("<!-- Transcript -->");
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const guests = new Set<string>();
   const runTimes = sections.match(/^\[([\d:]+)\]/gm);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
   const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/(\d+)-/);
 
-  transcriptMdx.match(/^\*\*(\S+)\*\*/gm).map((m) => {
+  transcript.match(/^\*\*(\S+)\*\*/gm).map((m) => {
     const person = m.replace(/\*\*/g, "").replace(":", "");
 
     if (!hosts.includes(person)) {
       guests.add(person);
     }
   });
+
+  const showNotesMdx = await renderToString(showNotes, {
+    components,
+  });
+
+  showNotesMdx.renderedOutput = "";
+
+  const transcriptMdx = await renderToString(transcript, {
+    components,
+  });
+
+  transcriptMdx.renderedOutput = "";
 
   return {
     number,
@@ -54,13 +66,9 @@ export async function processMdx(
     youtubeId,
     buzzSproutEpisodeId,
     frontMatter: data,
-    showNotes: await renderToString(showNotesMdx, {
-      components,
-    }),
+    showNotes: showNotesMdx,
     sections: parseSections(sections),
-    transcript: await renderToString(transcriptMdx, {
-      components,
-    }),
+    transcript: transcriptMdx,
   };
 }
 

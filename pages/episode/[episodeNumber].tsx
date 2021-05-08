@@ -22,6 +22,7 @@ import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { MetaTags } from "components/MetaTags";
 import { ThemedLink } from "components/ThemedLink";
+import { useEffect, useState } from "react";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <ThemedLink {...props} />,
@@ -141,7 +142,7 @@ const Episode = ({
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none min-h-[70vh]">
               {showNotesContent}
             </Navigation.Panel>
             <Navigation.Panel className="mx-3 my-4 focus:outline-none">
@@ -166,7 +167,7 @@ const Episode = ({
                 />
               </div>
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none min-h-[70vh]">
               {transcriptContent}
             </Navigation.Panel>
           </Navigation.Panels>
