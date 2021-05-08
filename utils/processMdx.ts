@@ -49,13 +49,9 @@ export async function processMdx(
     components,
   });
 
-  showNotesMdx.renderedOutput = "";
-
   const transcriptMdx = await renderToString(transcript, {
     components,
   });
-
-  transcriptMdx.renderedOutput = "";
 
   return {
     number,

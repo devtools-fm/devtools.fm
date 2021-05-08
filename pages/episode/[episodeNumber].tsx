@@ -142,7 +142,7 @@ const Episode = ({
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none min-h-[70vh] dark:text-gray-200">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
               {showNotesContent}
             </Navigation.Panel>
             <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-300">
@@ -167,7 +167,7 @@ const Episode = ({
                 />
               </div>
             </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none min-h-[70vh] dark:text-gray-200">
+            <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
               {transcriptContent}
             </Navigation.Panel>
           </Navigation.Panels>

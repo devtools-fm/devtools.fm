@@ -1,0 +1,27 @@
+diff --git a/node_modules/next-mdx-remote/hydrate.js b/node_modules/next-mdx-remote/hydrate.js
+index 7a8d00b..1e62015 100644
+--- a/node_modules/next-mdx-remote/hydrate.js
++++ b/node_modules/next-mdx-remote/hydrate.js
+@@ -33,9 +33,11 @@ module.exports = function hydrate(params, options) {
+   //
+   // once the hydration is complete, we update the state/memo value and
+   // react re-renders for us
+-  React.useEffect(
++  // DEVTOOLS.FM: Don't run async cause our content is critical!
++  // useMemo exectues the command immediatly so that we get no theme flickers
++  // during a render
++  React.useMemo(
+     function () {
+-      var handle = window.requestIdleCallback(function () {
+         // first we set up the scope which has to include the mdx custom
+         // create element function as well as any components we're using
+         var fullScope = Object.assign({ mdx: MDX.mdx }, components, scope)
+@@ -71,8 +73,6 @@ module.exports = function hydrate(params, options) {
+         // finally, set the the output as the new result so that react will re-render for us
+         // and cancel the idle callback since we don't need it anymore
+         setResult(result)
+-        window.cancelIdleCallback(handle)
+-      })
+     },
+     [compiledSource]
+   )
