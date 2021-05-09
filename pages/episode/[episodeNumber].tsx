@@ -2,6 +2,7 @@ import {
   ChevronLeftIcon,
   ClipboardIcon,
   ConsoleIcon,
+  DataIcon,
   InfoIcon,
   ListIcon,
   MoreInfoIcon,
@@ -14,6 +15,7 @@ import path from "path";
 import fs from "fs";
 import hydrate from "next-mdx-remote/hydrate";
 import { useQueryParam, StringParam } from "use-query-params";
+import { titleCase } from "title-case";
 
 import { Browser } from "components/Browser";
 import { Page } from "components/Page";
@@ -22,7 +24,7 @@ import { ColoredText } from "components/ColoredText";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { MetaTags } from "components/MetaTags";
 import { ThemedLink } from "components/ThemedLink";
-import { useEffect, useState } from "react";
+import { SectionsTab, ShowNotesTab } from "utils/processMdx";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <ThemedLink {...props} />,
@@ -38,15 +40,52 @@ const mdxComponents: MdxRemote.Components = {
   ),
 };
 
+const tabIcons = {
+  "SHOW NOTES": <InfoIcon inline />,
+  SECTIONS: <ListIcon inline />,
+  TRANSCRIPT: <ClipboardIcon inline />,
+} as const;
+
+const MdxPanel = ({ mdx }: { mdx: MdxRemote.Source }) => {
+  const showNotesContent = hydrate(mdx, {
+    components: mdxComponents,
+  });
+
+  return (
+    <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
+      {showNotesContent}
+    </Navigation.Panel>
+  );
+};
+
+const SectionsPanel = ({ sections }: SectionsTab) => {
+  return (
+    <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-300">
+      {sections.map((section) => (
+        <div key={section.time} className="space-x-2">
+          <ColoredText color="purple">{section.time}</ColoredText>
+          <span>{section.title}</span>
+        </div>
+      ))}
+    </Navigation.Panel>
+  );
+};
+
+const tabPanelRenderers = {
+  "SHOW NOTES": MdxPanel,
+  SECTIONS: SectionsPanel,
+  TRANSCRIPT: MdxPanel,
+} as const;
+
 const Episode = ({
   youtubeId,
   buzzSproutEpisodeId,
-  description,
-  showNotes,
-  sections,
-  transcript,
+  tabSections,
   frontMatter,
 }: ProcessedMdx) => {
+  const showNotesTab = tabSections.find(
+    (tabSection) => tabSection.type === "SHOW NOTES"
+  ) as ShowNotesTab;
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const { episodeNumber } = router.query;
@@ -57,16 +96,13 @@ const Episode = ({
     <MetaTags
       title={`${episodeNumberString}: ${frontMatter.title}`}
       image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
-      description={description}
+      description={showNotesTab.description}
     />
   );
 
   if (typeof window === "undefined") {
     return tags;
   }
-
-  const showNotesContent = hydrate(showNotes, { components: mdxComponents });
-  const transcriptContent = hydrate(transcript, { components: mdxComponents });
 
   return (
     <Page>
@@ -114,17 +150,15 @@ const Episode = ({
         >
           <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
-              <Navigation.Tab id="about" icon={<InfoIcon inline />}>
-                Show Notes
-              </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<ListIcon inline />}>
-                Sections
-              </Navigation.Tab>
+              {
+                (tabSections.map((tabSection) => (
+                  <Navigation.Tab id="about" icon={tabIcons[tabSection.type] || <DataIcon inline />}>
+                    {titleCase(tabSection.type.toLowerCase())}
+                  </Navigation.Tab>
+                )) as unknown) as JSX.Element
+              }
               <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
                 YouTube
-              </Navigation.Tab>
-              <Navigation.Tab id="transcript" icon={<ClipboardIcon inline />}>
-                Transcript
               </Navigation.Tab>
             </Navigation.TabList>
 
@@ -142,17 +176,11 @@ const Episode = ({
             </Navigation.Right>
           </Navigation.Controls>
           <Navigation.Panels>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
-              {showNotesContent}
-            </Navigation.Panel>
-            <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-300">
-              {sections.map((section) => (
-                <div key={section.time} className="space-x-2">
-                  <ColoredText color="purple">{section.time}</ColoredText>
-                  <span>{section.title}</span>
-                </div>
-              ))}
-            </Navigation.Panel>
+            {tabSections.map((tabSection) => {
+              const Panel = tabPanelRenderers[tabSection.type] || MdxPanel;
+              return <Panel {...(tabSection as any)} />;
+            })}
+
             <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
               <div className="relative pb-[56.25%]">
                 <iframe
@@ -166,9 +194,6 @@ const Episode = ({
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
               </div>
-            </Navigation.Panel>
-            <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
-              {transcriptContent}
             </Navigation.Panel>
           </Navigation.Panels>
         </Navigation>

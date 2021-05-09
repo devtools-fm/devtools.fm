@@ -4,7 +4,7 @@ youtube: REPLACE_ME
 buzzsprout: REPLACE_ME
 ---
 
-<!-- DESCRIPTION -->
+<!-- TAB: DESCRIPTION -->
 
 <!-- LINKS -->
 
@@ -15,10 +15,10 @@ buzzsprout: REPLACE_ME
 
 <!-- Paste show notes -->
 
-<!-- SECTIONS -->
+<!-- TAB: SECTIONS -->
 
 <!-- Paste sections -->
 
-<!-- TRANSCRIPT -->
+<!-- TAB: TRANSCRIPT -->
 
 <!-- Paste transcript -->
