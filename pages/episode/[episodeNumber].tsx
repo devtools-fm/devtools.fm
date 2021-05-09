@@ -25,6 +25,7 @@ import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { MetaTags } from "components/MetaTags";
 import { ThemedLink } from "components/ThemedLink";
 import { SectionsTab, ShowNotesTab } from "utils/processMdx";
+import { useState } from "react";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <ThemedLink {...props} />,
@@ -52,7 +53,7 @@ const MdxPanel = ({ mdx }: { mdx: MdxRemote.Source }) => {
   });
 
   return (
-    <Navigation.Panel className="mx-3 mb-4 focus:outline-none dark:text-gray-200">
+    <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-200">
       {showNotesContent}
     </Navigation.Panel>
   );
@@ -88,9 +89,10 @@ const Episode = ({
   ) as ShowNotesTab;
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
+  const [activeTab, activeTabSet] = useState(
+    view === undefined ? 0 : view==='youtube' ? tabSections.length : tabSections.findIndex((t) => t.type === view)
+  );
   const { episodeNumber } = router.query;
-  const tabOrder = ["about", "episodes", "youtube", "transcript"];
-  const activeTab = view || tabOrder[0];
   const episodeNumberString = `Episode #${episodeNumber}`;
   const tags = (
     <MetaTags
@@ -132,10 +134,15 @@ const Episode = ({
       />
       <Browser>
         <Navigation
-          index={tabOrder.indexOf(activeTab)}
+          index={activeTab}
           onChange={(index) => {
             const searchParams = new URLSearchParams();
-            searchParams.set("view", tabOrder[index]);
+            const newView =
+              index === tabSections.length
+                ? "youtube"
+                : tabSections[index].type;
+
+            searchParams.set("view", newView);
             const newurl =
               window.location.protocol +
               "//" +
@@ -145,14 +152,18 @@ const Episode = ({
               searchParams.toString();
 
             window.history.pushState({ path: newurl }, "", newurl);
-            setView(tabOrder[index]);
+            setView(newView);
+            activeTabSet(index);
           }}
         >
           <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               {
                 (tabSections.map((tabSection) => (
-                  <Navigation.Tab id="about" icon={tabIcons[tabSection.type] || <DataIcon inline />}>
+                  <Navigation.Tab
+                    id="about"
+                    icon={tabIcons[tabSection.type] || <DataIcon inline />}
+                  >
                     {titleCase(tabSection.type.toLowerCase())}
                   </Navigation.Tab>
                 )) as unknown) as JSX.Element

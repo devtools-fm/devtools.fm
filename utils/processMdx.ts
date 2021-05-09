@@ -66,7 +66,7 @@ export interface ShowNotesTab {
 }
 
 export interface MDXTab {
-  type: "MDX";
+  type: string;
   mdx: MdxRemote.Source;
 }
 
@@ -155,9 +155,8 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
 
       tabs.push(transcriptTab as TranscriptTab);
     } else {
-      const mdxTab: Partial<MDXTab> = {
-        type: "MDX",
-      };
+      const [, type] = line.match(TAB_SECTION_REGEX);
+      const mdxTab: Partial<MDXTab> = { type };
       let mdx = "";
 
       for (const transcriptLine of lineIterator) {
