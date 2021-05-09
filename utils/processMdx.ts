@@ -26,6 +26,12 @@ function getGitCreationDate(filename: string) {
   });
 }
 
+interface FrontMatter {
+  title: string;
+  youtube: string;
+  buzzsprout: string;
+}
+
 export async function processMdx(
   filename: string,
   components: MdxRemote.Components
@@ -69,7 +75,7 @@ export async function processMdx(
     runTime: runTimes[runTimes.length - 1],
     youtubeId,
     buzzSproutEpisodeId,
-    frontMatter: data,
+    frontMatter: data as FrontMatter,
     showNotes: showNotesMdx,
     sections: parseSections(sections),
     transcript: transcriptMdx,
