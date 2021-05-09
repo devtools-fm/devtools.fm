@@ -8,10 +8,12 @@ const FooterLink = (
 };
 
 export const Footer = () => {
+  const year = new Date().getFullYear();
+
   return (
     <footer className="text-center mb-12 md:mb-16 mt-8">
       <p className="mb-6">
-        Copyright © 2020{" "}
+        Copyright © {year}{" "}
         <FooterLink href="https://twitter.com/hipstersmoothie">
           Andrew Lisowski
         </FooterLink>
