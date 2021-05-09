@@ -1,4 +1,5 @@
 import renderToString from "next-mdx-remote/render-to-string";
+import { execSync } from "child_process";
 import matter from "gray-matter";
 import { MdxRemote } from "next-mdx-remote/types";
 import { PromiseValue } from "type-fest";
@@ -17,6 +18,12 @@ function parseSections(raw: string) {
   });
 
   return sections;
+}
+
+function getGitCreationDate(filename: string) {
+  return execSync(`git log --format=%aD ${filename} | tail -1`, {
+    encoding: "utf-8",
+  });
 }
 
 export async function processMdx(
@@ -57,6 +64,7 @@ export async function processMdx(
     number,
     hosts,
     description,
+    postCreationDate: getGitCreationDate(filename),
     guests: [...guests],
     runTime: runTimes[runTimes.length - 1],
     youtubeId,
