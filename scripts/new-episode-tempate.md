@@ -4,14 +4,9 @@ youtube: REPLACE_ME
 buzzsprout: REPLACE_ME
 ---
 
-<!-- TAB: DESCRIPTION -->
+<!-- TAB: SHOW NOTES -->
 
 <!-- LINKS -->
-
-## Hosts
-
-- [Andrew Lisowski](https://twitter.com/hipstersmoothie)
-- [Justin Bennet](https://twitter.com/Zephraph)
 
 <!-- Paste show notes -->
 

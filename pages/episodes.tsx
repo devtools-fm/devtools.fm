@@ -41,15 +41,15 @@ const EpisodeRow = (episode: ProcessedMdx) => {
   return (
     <Link passHref href={`episode/${episode.number}`}>
       <a
-        className={makeClass("grid grid-cols-[1fr 2fr] gap-4 pt-4", styles.row)}
+        className={makeClass("grid grid-cols-[1fr 2fr] gap-4 py-4 items-center", styles.row)}
         style={{
           borderColor:
             currentColorScheme === "dark" ? chrome.dark.gray04 : undefined,
         }}
       >
-        <div className="h-full w-full">
+        <div className="w-full h-[fit-content]">
           <img
-            className="w-full max-w-64 rounded-lg object-cover h-full"
+            className="w-full max-w-64 rounded-lg h-full"
             src={`https://i.ytimg.com/vi/${episode.youtubeId}/maxresdefault.jpg`}
           />
         </div>
@@ -193,5 +193,5 @@ export async function getStaticProps() {
     )
   );
 
-  return { props: { episodes: data } };
+  return { props: { episodes: data.reverse() } };
 }

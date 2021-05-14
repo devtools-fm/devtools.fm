@@ -192,7 +192,7 @@ export async function processMdx(
 
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
-  const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/(\d+)-/);
+  const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/\S+\/(\d+)/);
 
   const tabSections = await parseTabs(content, components);
   const sectionsTab = tabSections.find(
