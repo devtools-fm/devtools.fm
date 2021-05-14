@@ -1,12 +1,10 @@
 ---
-
 title: Patch-package with David Sheldrick
 youtube: https://www.youtube.com/watch?v=cK5cV4Ejd8o
 buzzsprout: https://www.buzzsprout.com/1772992/episodes/8521347
-
 ---
 
-<!-- TAB: DESCRIPTION -->
+<!-- TAB: SHOW NOTES -->
 
 In this episode we interview David Sheldrick, the creator of patch-package.
 
@@ -55,10 +53,6 @@ David
 - https://code.visualstudio.com/docs/editor/userdefinedsnippets
 - https://code.visualstudio.com/docs/editor/codebasics#_save-auto-save
 
-## Hosts
-
-- [Andrew Lisowski](https://twitter.com/hipstersmoothie)
-- [Justin Bennet](https://twitter.com/Zephraph)
 <!-- TAB: SECTIONS -->
 
 [00:00:42] Introductions
@@ -72,446 +66,388 @@ David
 [00:28:13] NFTs: Not so permanant
 [00:29:59] Tooltips
 [00:45:55] Conclusion
+
 <!-- TAB: TRANSCRIPT -->
 
-David Sheldrick - patch-package
+**Andrew:** Hello welcome to the devtools.fm podcast! This is a podcast about developer tools and the people make them. I'm Andrew . And this is my co-host Justin. Today. We're going to be doing our very first interview. If you've ever found a bug in your dependencies and needed to move faster than getting a pull request merged, you've probably used this wonderful package. Introducing David, how about you? Go ahead and introduce yourself and give us a little background.
 
-### Introductions [00:00:42]
+#### Introductions [00:00:42]
 
-David: [00:00:00] When I first created it, some people were like, "This is too powerful. Like you could just gonna end up with all these patch files." And they were right.
+**David:** hi, uh, I'm David. I, uh, I'm the author of patch package. The tool that was just alluded to, um, patch package is a tool that lets you fix problems with your node modules folder, and then save those fixes for use by you later on and by your team as well. So you can commit them to you and git repository. Do you want a background of me or.
 
-Andrew: [00:00:18] Hello welcome to the devtools.fm podcast! This is a podcast about developer tools and the people make them. I'm Andrew . And this is my co-host Justin. Today. We're going to be doing our very first interview. If you've ever found a bug in your dependencies and needed to move faster than getting a pull request merged, you've probably used this wonderful package. Introducing David, how about you? Go ahead and introduce yourself and give us a little background.
+**Andrew:** Yeah. Sure. What do you work on, what's what's your day to day like?
 
-David: [00:00:42] hi, uh, I'm David. I, uh, I'm the author of patch package. The tool that was just alluded to, um, patch package is a tool that lets you fix problems with your node modules folder, and then save those fixes for use by you later on and by your team as well. So you can commit them to you and git repository. Do you want a background of me or.
+**David:** Um, my day to day is, is I've been doing a lot of react, native infrastructure work at artsy, but a company that both I and Justin work at for now, and I'm going to be leaving soon. yeah. So for the past year or two, I've been doing a little bit of product work on Artsy's mobile app, but mostly I've been refactoring it. From like an old objective C app with a tiny bit of Swift and a little bit of react native into an almost completely react native app, um, which is going to be Android release coming very soon.
 
-Andrew: [00:01:07] Yeah. Sure. What do you work on, what's what's your day to day like?
+**Andrew:** So you're going to leave artsy soon? What are you planning to go to recourse center, too? Like what are your plans the future plans for the future?
 
-David: [00:01:10] Um, my day to day is, is I've been doing a lot of react, native infrastructure work at artsy, but a company that both I and Justin work at for now, and I'm going to be leaving soon. yeah. So for the past year or two, I've been doing a little bit of product work on Artsy's mobile app, but mostly I've been refactoring it. From like an old objective C app with a tiny bit of Swift and a little bit of react native into an almost completely react native app, um, which is going to be Android release coming very soon.
+**David:** My plans for the future are I'm joining a Bay area startup called poli.com, who creates a cap table management software for startup founders.
 
-Andrew: [00:01:48] So you're going to leave artsy soon? What are you planning to go to recourse center, too? Like what are your plans the future plans for the future?
+**Justin:** It's pretty cool, man. I'm super excited for you. Uh, hope that you're having a lot of fun out there. Um, I want to take a minute just to talk about. Your sort of legacy at artsy. It's something that I've been thinking about a lot recently, I love working with you because we vibe in this way. And like, we both really are passionate about building tooling and there's so many really interesting and cool tools that you've built over your time at artsy. And our last episode. I talked a little bit about gudetama, which I think is just such a fun project and, uh, does such a cool thing. And maybe you can talk a little bit about that too, but then there are other things that I think of is like, you sort of pioneered a way to move, uh, a unstrict typeScript project to strict type checking. Uh, that was like pretty novel and pretty interesting. And, and maybe you could also talk about that.
 
-David: [00:01:55] My plans for the future are I'm joining a Bay area startup called poli.com, who creates a cap table management software for startup founders.
+**David:** Sure. What'd you want to start?
 
-Justin: [00:02:05] It's pretty cool, man. I'm super excited for you. Uh, hope that you're having a lot of fun out there. Um, I want to take a minute just to talk about. Your sort of legacy at artsy. It's something that I've been thinking about a lot recently, I love working with you because we vibe in this way. And like, we both really are passionate about building tooling and there's so many really interesting and cool tools that you've built over your time at artsy. And our last episode. I talked a little bit about gudetama, which I think is just such a fun project and, uh, does such a cool thing. And maybe you can talk a little bit about that too, but then there are other things that I think of is like, you sort of pioneered a way to move, uh, a unstrict typeScript project to strict type checking. Uh, that was like pretty novel and pretty interesting. And, and maybe you could also talk about that.
+**Justin:** Where would you like to start?
 
-David: [00:03:00] Sure. What'd you want to start?
+**David:** The TypeScript thing is quite interesting. I think
 
-Justin: [00:03:02] Where would you like to start?
+**Justin:** Yeah.
 
-David: [00:03:04] The TypeScript thing is quite interesting. I think
+#### Incremental TypeScipt Migration [00:03:08]
 
-Justin: [00:03:07] Yeah.
+**David:** so we had this fairly large TypeScript code base. I don't know how many lines of code maybe 20,000 to 50,000 or so. it was all in non strict TypeScript because when the project originally adopted TypeScript, the developers were kind of scared of strict mode. they, they thought it would hurt velocity, which to be fair, it probably would have, because most of them had not done work with TypeScript before. But after everyone was comfortable with TypeScript, we started noticing runtime issues that would have been caught by strict mode.
+So we decided to adopt it. And the way that we did that was we turned the flag on and then everywhere that an error popped up, we added a Ts ignore comment, which basically tells TypeScript to ignore any errors on the following line. And I set up some tooling around those comments so that we could count how many there are.
+if the number increases because people are copying and pasting code, the CR checks will fail and developers will be told, Hey, uh, you're creating extra Ts ignore comments that shouldn't be there. at least he has ignored comments are kind of tagged with a particular strictness migration tag and.
+I was hoping to kind of game-ify this somehow and add like monthly stats to show how many of these comments have been removed by people, because the idea was to gradually remove them over time as you refactor code and fix little things, uh, that didn't pan out. but they have gradually decreased over time.
+And the code base is in a much better place now than it was before the strictness. Was switched on. So it worked  
 
-### Incremental TypeScipt Migration [00:03:08]
+**Andrew:** How many comments did you start out at?
 
-David: [00:03:08] so we had this fairly large TypeScript code base. I don't know how many lines of code maybe 20,000 to 50,000 or so. it was all in non strict TypeScript because when the project originally adopted TypeScript, the developers were kind of scared of strict mode. they, they thought it would hurt velocity, which to be fair, it probably would have, because most of them had not done work with TypeScript before. But after everyone was comfortable with TypeScript, we started noticing runtime issues that would have been caught by strict mode.
+**David:** It was, I think about a thousand, maybe even more than that.
 
-[00:03:40] So we decided to adopt it. And the way that we did that was we turned the flag on and then everywhere that an error popped up, we added a Ts ignore comment, which basically tells TypeScript to ignore any errors on the following line. And I set up some tooling around those comments so that we could count how many there are.
+**Andrew:** Did you do it like automatically, or is that someone manually going through and adding Ts ignore a thousand times?
 
-[00:04:01]if the number increases because people are copying and pasting code, the CR checks will fail and developers will be told, Hey, uh, you're creating extra Ts ignore comments that shouldn't be there. at least he has ignored comments are kind of tagged with a particular strictness migration tag and.
-
-[00:04:19]I was hoping to kind of game-ify this somehow and add like monthly stats to show how many of these comments have been removed by people, because the idea was to gradually remove them over time as you refactor code and fix little things, uh, that didn't pan out. but they have gradually decreased over time.
-
-[00:04:39] And the code base is in a much better place now than it was before the strictness. Was switched on. So it worked
-
-Andrew: [00:04:46] How many comments did you start out at?
-
-David: [00:04:48] It was, I think about a thousand, maybe even more than that.
-
-Andrew: [00:04:52] Did you do it like automatically, or is that someone manually going through and adding Ts ignore a thousand times?
-
-David: [00:04:57] yes. I wrote a little script to add the ignore comments, but it wasn't very, um, precise because. It's surprising the number of contexts in which one of these errors can occur, like in a JSX expression. so there's certain syntactical structures where just putting a comment above the line doesn't work.
+**David:** yes. I wrote a little script to add the ignore comments, but it wasn't very, um, precise because. It's surprising the number of contexts in which one of these errors can occur, like in a JSX expression. so there's certain syntactical structures where just putting a comment above the line doesn't work.
 
 So I wrote, I really don't think it was just puts a comment above the line. And then I went through all of them manually and checked whether they were actually valid and we fixed the ones that weren't. A lot of the time also I have to add in the exclamation mark operator, the postfix exclamation Mark operator in TypeScript, which says, ignore this null Or ignore this value that might be null. And just assume that it's there.
 
-Andrew: [00:05:40] And like how, how much has it pared down since then?
+**Andrew:** And like how, how much has it pared down since then?
 
-David: [00:05:43] I think that was between a year and a year and a half ago. I really, I don't know the numbers, but I could quickly figure them out for you. If you gave me a moment.
+**David:** I think that was between a year and a year and a half ago. I really, I don't know the numbers, but I could quickly figure them out for you. If you gave me a moment.
 
-Andrew: [00:05:51] Ah no, that's fine.
+**Andrew:** Ah no, that's fine.
 
-Justin: [00:05:52] The cool thing repo is that is that repo is actually open source. Um, so it's, eigan, it's our it's artsy's main app, um, and it is open source. So if people are interested in checking out, they can actually, we can actually link to the PR that added this in the show notes, which is a fun thing about working somewhere that does a lot of open source.
+**Justin:** The cool thing repo is that is that repo is actually open source. Um, so it's, eigan, it's our it's artsy's main app, um, and it is open source. So if people are interested in checking out, they can actually, we can actually link to the PR that added this in the show notes, which is a fun thing about working somewhere that does a lot of open source.
 
-Andrew: [00:06:11] Yeah. That's the cool thing about artsy is that you guys are just like so full into open source. It's like, I don't, I don't think too many people would know about artsy in like their day-to-day lives. Cause like. When would I need an art gallery app, but like so many people know about you from just open source subjects. It's such a cool thing.
+**Andrew:** Yeah. That's the cool thing about artsy is that you guys are just like so full into open source. It's like, I don't, I don't think too many people would know about artsy in like their day-to-day lives. Cause like. When would I need an art gallery app, but like so many people know about you from just open source subjects. It's such a cool thing.
 
-### patch-package [00:06:29]
 
-[00:06:29] Uh, speaking of open source that transitions quite nicely into talking about patch package, if our viewers don't know what patch package is, a package that helps you edit your node modules. And then use those edits? Uh, how about you explain to David.
+#### patch-package [00:06:29]
 
-David: [00:06:47] Yeah. So if you have a problem in one of your node modules, that's say, um, You're working on a react app and you're using a particular component library for a button and that button does not have any way to customize the, border radius. You can just go into that node modules, folder, find the package, edit the border radius, and then make a patch file for that package with my tool patch package. It's really simple, you just type patch package, and then the name of the, uh, the npm module. And then that file will be saved to your repository and you can commit to it. if you have like a tiny bit of setup in your package.json on file. Uh, then the patch will be applied for anyone who just installs the node modules by running yarn, install the NPM install and they'll get the border radius.
+Uh, speaking of open source that transitions quite nicely into talking about patch package, if our viewers don't know what patch package is, a package that helps you edit your node modules. And then use those edits? Uh, how about you explain to David.
 
-Andrew: [00:07:39] Yeah, it has wonderful UX, uh, like such, such a simple API. Does it all for you. You don't really have to think. It's it's really nice.
+**David:** Yeah. So if you have a problem in one of your node modules, that's say, um, You're working on a react app and you're using a particular component library for a button and that button does not have any way to customize the, border radius. You can just go into that node modules, folder, find the package, edit the border radius, and then make a patch file for that package with my tool patch package. It's really simple, you just type patch package, and then the name of the, uh, the npm module. And then that file will be saved to your repository and you can commit to it. if you have like a tiny bit of setup in your package.json on file. Uh, then the patch will be applied for anyone who just installs the node modules by running yarn, install the NPM install and they'll get the border radius.
 
-David: [00:07:48] thanks.
+**Andrew:** Yeah, it has wonderful UX, uh, like such, such a simple API. Does it all for you. You don't really have to think. It's it's really nice.
 
-Andrew: [00:07:48] Uh, the current project that I work on is rolling with about like 14 or 15 patches. It's like once he opened that can of worms, like you go there more and more and more.
+**David:** thanks.
 
-David: [00:07:59] Yeah, same with our projects. When I first created it, some people were like, "This is too powerful. Like you could just gonna end up with all these patch files." And they were right.
+**Andrew:** Uh, the current project that I work on is rolling with about like 14 or 15 patches. It's like once he opened that can of worms, like you go there more and more and more.
 
-Andrew: [00:08:11] They were right. do you try to make pull requests out of your patches usually, or is for the most part, is it like that border radius thing? Where it's you want to customize something that, you know, won't get merged upstream?
+**David:** Yeah, same with our projects. When I first created it, some people were like, "This is too powerful. Like you could just gonna end up with all these patch files." And they were right.
 
-David: [00:08:24] It's a mix of the two, very often. It's it's for packages that aren't being maintained anymore. And so you go to the GitHub repo, and you look at the pull requests and there's a bunch of pull requests that maybe even solve your issue from five years ago. They're just not getting merged. So you make the fix and then you move on with your life. and because those packages never get updated, there's no maintenance burden. And then yeah, for other things like the original. Issue that patch package was created for, was to add support for learning TypeScript files into the react native bundler. And that was very much a case where after creating some tooling, which was basically like, like a, custom version of what patch package became. I went to the react native repo and made a pull request for that. And eventually it got merged and we could remove our custom little patch package thing on that project. Uh, so yeah, it makes it a mix of both.
+**Andrew:** They were right. do you try to make pull requests out of your patches usually, or is for the most part, is it like that border radius thing? Where it's you want to customize something that, you know, won't get merged upstream?
 
-Andrew: [00:09:18] Yeah. I recently used patch package for exactly the same thing, uh, to modify the types. I feel like that's probably one of the easiest start out use cases for sure. We use this library called HLS JS and they had typings for the full version of their code, but not the light version. So all I did was create a patch where I renamed the file and then went on with my day.
+**David:** It's a mix of the two, very often. It's it's for packages that aren't being maintained anymore. And so you go to the GitHub repo, and you look at the pull requests and there's a bunch of pull requests that maybe even solve your issue from five years ago. They're just not getting merged. So you make the fix and then you move on with your life. and because those packages never get updated, there's no maintenance burden. And then yeah, for other things like the original. Issue that patch package was created for, was to add support for learning TypeScript files into the react native bundler. And that was very much a case where after creating some tooling, which was basically like, like a, custom version of what patch package became. I went to the react native repo and made a pull request for that. And eventually it got merged and we could remove our custom little patch package thing on that project. Uh, so yeah, it makes it a mix of both.
 
-[00:09:37] It was beautiful.
+**Andrew:** Yeah. I recently used patch package for exactly the same thing, uh, to modify the types. I feel like that's probably one of the easiest start out use cases for sure. We use this library called HLS JS and they had typings for the full version of their code, but not the light version. So all I did was create a patch where I renamed the file and then went on with my day.
 
-Justin: [00:09:39] Yeah. That's, that's often the same sort of use case that I have. I've been working on some tooling for this note, taking software called obsidian and. I discovered this library written for someone by someone in that community. He called monkey around. And the whole thing is this. This is for like monkey patching.
+It was beautiful.
+**Justin:** Yeah. That's, that's often the same sort of use case that I have. I've been working on some tooling for this note, taking software called obsidian and. I discovered this library written for someone by someone in that community. He called monkey around. And the whole thing is this. This is for like monkey patching.
 
-[00:09:57] You know, if you need to take some private API and wrap a functioning around it, like it like handles that use case and uninstalling your monkey patch and stuff, really cleanly, but like the types were not right. And. I am just like talking to this author, but like, you know, I put in a PR about like updated these things and he's like, I'm not really sure about this.
 
-[00:10:18] It's like, sure. It's more strict and more correct. But like, and I'm like, well, this is fine. I have this patch, so I'm good. You know? And it's yeah. It's, it's nice.
+You know, if you need to take some private API and wrap a functioning around it, like it like handles that use case and uninstalling your monkey patch and stuff, really cleanly, but like the types were not right. And. I am just like talking to this author, but like, you know, I put in a PR about like updated these things and he's like, I'm not really sure about this.
+It's like, sure. It's more strict and more correct. But like, and I'm like, well, this is fine. I have this patch, so I'm good. You know? And it's yeah. It's, it's nice.
 
-### patch-package: origins [00:10:27]
+#### patch-package: origins [00:10:27]
 
-Andrew: [00:10:27] When you were building this, were there any alternatives at the time, were there other packages trying to do this, or did you view this as like a completely new and novel idea?
+**Andrew:** When you were building this, were there any alternatives at the time, were there other packages trying to do this, or did you view this as like a completely new and novel idea?
 
-David: [00:10:37] that's an interesting question. so the idea came to me kind of subconsciously from someone that I was working with at the time, he was actually my manager. And he was working on like a proof of concept for, performance optimization for immutable JS. Do you remember that library, a library for immutable data structures in JavaScript?
+**David:** that's an interesting question. so the idea came to me kind of subconsciously from someone that I was working with at the time, he was actually my manager. And he was working on like a proof of concept for, performance optimization for immutable JS. Do you remember that library, a library for immutable data structures in JavaScript?
 
-[00:10:56] It was fairly popular back in 2015, but it's, it's fallen out of favor for sure. and he published his kind of research as a NPM project where he had to make a change to the internals of immutable JS in order for his kind of other code to make sense on like his performance measurement code to work.
+It was fairly popular back in 2015, but it's, it's fallen out of favor for sure. and he published his kind of research as a NPM project where he had to make a change to the internals of immutable JS in order for his kind of other code to make sense on like his performance measurement code to work.
+And he did that by creating a patch file for the node modules folder. And I just kind of saw that in the assumed that that's what everyone does when they want to change what's in the node modules folder. He had like a bit in his read me me that says run git apply patch file and it worked.
+so I just kind of absorbed that. And then it was like a year later when I had this problem with react native and I wanted to add TypeScript support. so yeah, it's I didn't find any other tools that did something similar. that was one, I think, which was for applying patches to package folders. I can't remember what it was called, but it, it just, wasn't the same thing.
+It didn't have anywhere near that level of UX. It didn't even seem to be used by anyone. So, yeah, I think it was novel at the time.
+**Andrew:** I've definitely seen that a pattern of applying patches to something, to make your code work in the wild. I contribute to a package called pkg. Where it'll take a node application and then bundle it into an executable for different platforms. And then the way that it actually does that is by applying patches to the C code for the node JS driver.
 
-[00:11:19] And he did that by creating a patch file for the node modules folder. And I just kind of saw that in the assumed that that's what everyone does when they want to change what's in the node modules folder. He had like a bit in his read me me that says run git apply patch file and it worked.
+And let me tell you that maintaining that is, is crazy. Like the amount of knowledge you have to have to be able to modify node JS to do this whole other thing is, is, just mind blowing.
+**David:** Yeah, that sounds insane.
 
-[00:11:34]so I just kind of absorbed that. And then it was like a year later when I had this problem with react native and I wanted to add TypeScript support. so yeah, it's I didn't find any other tools that did something similar. that was one, I think, which was for applying patches to package folders. I can't remember what it was called, but it, it just, wasn't the same thing.
+**Andrew:** It is. Yeah, I definitely got into trying to contribute to that project a little bit before I looked at the code. And then I saw that in the code and it was like, well, I'm way out of my depth here. I haven't written C like code in quite a while.
 
-[00:11:56] It didn't have anywhere near that level of UX. It didn't even seem to be used by anyone. So, yeah, I think it was novel at the time.
+**Justin:** And that's how we learn.
 
-Andrew: [00:12:04] I've definitely seen that a pattern of applying patches to something, to make your code work in the wild. I contribute to a package called pkg. Where it'll take a node application and then bundle it into an executable for different platforms. And then the way that it actually does that is by applying patches to the C code for the node JS driver.
 
-[00:12:28] And let me tell you that maintaining that is, is crazy. Like the amount of knowledge you have to have to be able to modify node JS to do this whole other thing is, is, just mind blowing.
+#### Contribuing Patches Back [00:13:00]
 
-David: [00:12:41] Yeah, that sounds insane.
+**Andrew:** Yeah. Yeah. I also had the idea to try to create a instead of a patch package, a patch pull request, but, uh, that has lots and lots of hurdles that are hard to deal with.
 
-Andrew: [00:12:42] It is. Yeah, I definitely got into trying to contribute to that project a little bit before I looked at the code. And then I saw that in the code and it was like, well, I'm way out of my depth here. I haven't written C like code in quite a while.
+**David:** what would that do?
 
-Justin: [00:12:58] And that's how we learn.
+**Andrew:** so like, it just like the idea of like, I just want to edit my node modules and get a patch and then. The next step is, Oh, I just want to edit my node modules and get a patch. And then also open a pull request with that. But I, you guys can see where the natural hurdles come in. Lots of, lots of compiling in the JavaScript community. Doesn't make that bit easy.
 
-### Contribuing Patches Back [00:13:00]
+**David:** Yeah, not it's really difficult. that came up a bunch of times in the patch package, uh, issues. People were suggesting that as a, feature and every time I was like, Oh, I really want to figure out a way to do this. Even, even if it's only works for like 30% of packages, but there's beyond the fact that packages are compiled for the most part in the JavaScript ecosystem. Um, that's like auth issues and other stuff that just makes it really tricky to do
 
-Andrew: [00:13:00] Yeah. Yeah. I also had the idea to try to create a instead of a patch package, a patch pull request, but, uh, that has lots and lots of hurdles that are hard to deal with.
+**Andrew:** The only way I could think of doing it is like source maps. But like, that sounds, that sounds like a hell I don't want to put myself through.
 
-David: [00:13:13] what would that do?
+**David:** you don't.
 
-Andrew: [00:13:15] so like, it just like the idea of like, I just want to edit my node modules and get a patch and then. The next step is, Oh, I just want to edit my node modules and get a patch. And then also open a pull request with that. But I, you guys can see where the natural hurdles come in. Lots of, lots of compiling in the JavaScript community. Doesn't make that bit easy.
+**Justin:** While we're talking about DX, you did add something fairly recently that while is not like as much of like putting a pull request. So that is pretty cool. So, you know, talk a little bit about the like issue creation, the automatic issue creation that you added to patch package.
 
-David: [00:13:35] Yeah, not it's really difficult. that came up a bunch of times in the patch package, uh, issues. People were suggesting that as a, feature and every time I was like, Oh, I really want to figure out a way to do this. Even, even if it's only works for like 30% of packages, but there's beyond the fact that packages are compiled for the most part in the JavaScript ecosystem. Um, that's like auth issues and other stuff that just makes it really tricky to do
+**David:** Yeah, so that's a nice kind of, uh, gets you half of the way. The, in the, when you create the patch, you are given the option to. run the command again with a command line flag, which is, I think create patch dash dash create patch and sorry no dash dash create issue. And what that will do is open a browser tab with the contents of the patch that you created, encoded as a query parameter in the URL.
 
-Andrew: [00:14:01] The only way I could think of doing it is like source maps. But like, that sounds, that sounds like a hell I don't want to put myself through.
+Which GitHub will then use as the issue body. So it opens an issue with the body already prefilled that says something like, "Hi, thanks for making this project. Uh, I ran into an issue and this patch fixed that problem for me." And it lists the patch in a rich diff format. this is, this got a lot of attention when it was first announced and people have been using it a lot as well.
+I haven't looked at the issue lately, but I made an issue where that is linked back to by the, um, the template issue. So like most of the time when people create these issues from patch package, they are indexed on this one issue on the patch package GitHub repo, and you can see all the times people found it helpful.
+**Justin:** I thought there was some clever telemetry for that feature.
 
-David: [00:14:08] you don't.
+**David:** I have, I think Fred K. Scott on Twitter to thanks for that suggestion.
 
-Justin: [00:14:10] While we're talking about DX, you did add something fairly recently that while is not like as much of like putting a pull request. So that is pretty cool. So, you know, talk a little bit about the like issue creation, the automatic issue creation that you added to patch package.
+**Justin:** There was another thing that I was thinking about recently that sort of like ties into this idea of like, Well more about like, it's more, I guess it's more about maintaining patches because as you get into a project and you're like patching a bunch of dependencies, sometimes you can forget why you patch dependencies. I'm pretty sure that you have some recommendations in the patch package repository to say essentially, "Hey, like add some comments to the section of code, to say why you did the thing." Um, And, and I've been like bouncing around in my head sort of semi-recently because I'm doing a few more patches is like, is this the thing that we get sort of like, Make a little bit more of a guided experience on and what would that look like? It's still not an easy thing, right? Because you don't know where you're making the patch and what the semantics are.
 
-David: [00:14:25] Yeah, so that's a nice kind of, uh, gets you half of the way. The, in the, when you create the patch, you are given the option to. run the command again with a command line flag, which is, I think create patch dash dash create patch and sorry no dash dash create issue. And what that will do is open a browser tab with the contents of the patch that you created, encoded as a query parameter in the URL.
+And like, there's, there's a lot of like in order to automatically add a comment. And I think this, this ties back to the TypeScript things that you're doing, right? Like in order to add a comment you need to know is a comment valid. Generally we were talking about like the things that you're patching and source, it's usually not a TSX file or a JSX file.
+Right? It's something that's already transpiled, but it could be, it could be, you don't know any, anybody can ship anything in node modules, really. Um, but anyway, a fun thought.
+**David:** I discovered recently that react native will actually learn TypeScript source files for you these days. And like, I forgot which libraries it is, but one of the coolest cal l stack libraries is shipped with TypeScript that gets alerted at dev time, which blew my mind.
 
-[00:14:55] Which GitHub will then use as the issue body. So it opens an issue with the body already prefilled that says something like, "Hi, thanks for making this project. Uh, I ran into an issue and this patch fixed that problem for me." And it lists the patch in a rich diff format. this is, this got a lot of attention when it was first announced and people have been using it a lot as well.
+**Andrew:** Yeah, it's a wild world out there.
 
-[00:15:20] I haven't looked at the issue lately, but I made an issue where that is linked back to by the, um, the template issue. So like most of the time when people create these issues from patch package, they are indexed on this one issue on the patch package GitHub repo, and you can see all the times people found it helpful.
 
-Justin: [00:15:39] I thought there was some clever telemetry for that feature.
-
-David: [00:15:43] I have, I think Fred K. Scott on Twitter to thanks for that suggestion.
-
-Justin: [00:15:48] There was another thing that I was thinking about recently that sort of like ties into this idea of like, Well more about like, it's more, I guess it's more about maintaining patches because as you get into a project and you're like patching a bunch of dependencies, sometimes you can forget why you patch dependencies. I'm pretty sure that you have some recommendations in the patch package repository to say essentially, "Hey, like add some comments to the section of code, to say why you did the thing." Um, And, and I've been like bouncing around in my head sort of semi-recently because I'm doing a few more patches is like, is this the thing that we get sort of like, Make a little bit more of a guided experience on and what would that look like? It's still not an easy thing, right? Because you don't know where you're making the patch and what the semantics are.
-
-[00:16:46] And like, there's, there's a lot of like in order to automatically add a comment. And I think this, this ties back to the TypeScript things that you're doing, right? Like in order to add a comment you need to know is a comment valid. Generally we were talking about like the things that you're patching and source, it's usually not a TSX file or a JSX file.
-
-[00:17:06] Right? It's something that's already transpiled, but it could be, it could be, you don't know any, anybody can ship anything in node modules, really. Um, but anyway, a fun thought.
-
-David: [00:17:20] I discovered recently that react native will actually learn TypeScript source files for you these days. And like, I forgot which libraries it is, but one of the coolest cal l stack libraries is shipped with TypeScript that gets alerted at dev time, which blew my mind.
-
-Andrew: [00:17:35] Yeah, it's a wild world out there.
-
-### David's Entrance into Open Source [00:17:38]
+#### David's Entrance into Open Source [00:17:38]
 
 So how did you, do you get your start in open source was patch package your first foray into it, or were there earlier attempts?
+**David:** I had one fairly succ-- Oh two fairly successful projects before that, the first one was in 2014 and I'd already been using GitHub for like five years at that point, I think. So I started a degree in computer science in 2010. And by that point, GitHub was already fast becoming the de facto way to put source code online.
 
-David: [00:17:45] I had one fairly succ-- Oh two fairly successful projects before that, the first one was in 2014 and I'd already been using GitHub for like five years at that point, I think. So I started a degree in computer science in 2010. And by that point, GitHub was already fast becoming the de facto way to put source code online.
+And they taught us how to use GitHub. And we used it for hosting, group projects and stuff like that. And my dissertation code is all on GitHub. So I was exposed to it in that way. And then I was doing, I was working as a research person in the university after I graduated. And one day I saw on how can you use those slash dot or something?
+This story about a new speed reading tool, a browser extension that would display the words on top of each other one after the other, so that you don't have to move your eyes as you read. And it was called spritz. I don't know if either of you remember seeing this, it was a big thing for a few days I saw this and I was like, this is super cool.
+I, I could make one of these cause they, they, they announced it without providing the actual browser extension. They said like, we're going to release this one day. And it was so easy to implement that a bunch of people did. And I was one of those people I made it in Angular as a browser extension and it picked up steam pretty quickly.
+It was like one of the better ones that people made in response to this announcement. people still. Are using it today, as far as I'm aware, I haven't used it for years, but it's still going. Uh, I don't think it's been updated at least my fork hasn't, but other people are still interested in it. And that's called Jetzt, J E T Z T.
+It's a German word, which means now.
+And then after that, well, I was also still working as a researcher because in academia you have a lot of spare time if you want. Like, I had almost no oversight as to what I was working on. People just pretty much said, you know, once a month you can have a meeting with your supervisor and they probably won't probe into what you're doing too much, as long as it looks like you're making progress.
+So I spent a lot of time working on just. Stuff that didn't matter. But eventually I did find a really interesting idea in the where I'm of reactive state management, around the time that react was picking up steam 2015. I made a library based on some stuff that I saw in the closure script community.
+And it was called the derivable JS and. You know I had never worked professionally as a software engineer. And then, you know, I've just been doing research on my own. I'd never even been the subject of code review before, you know, no one had ever looked at my code and gone, you should do things differently because X, Y, Z.
+So I published this thing and people started using it like people in Silicon Valley would. Using it to power their startups. And I was like, "Whoa."
+And they came back with--
+**Andrew:** You're like, please. No stop.
 
-[00:18:09] And they taught us how to use GitHub. And we used it for hosting, group projects and stuff like that. And my dissertation code is all on GitHub. So I was exposed to it in that way. And then I was doing, I was working as a research person in the university after I graduated. And one day I saw on how can you use those slash dot or something?
+**David:** I came back with all this feedback and I was like trying to incorporate it, but I just didn't have the same professional context that they have. I didn't understand a lot of the gripes. So I was, I didn't react well, and that project kind of died eventually. Uh, cause mobx came along, which was much better built by someone who knew what they were doing. Pretty much the same idea.
 
-[00:18:33] This story about a new speed reading tool, a browser extension that would display the words on top of each other one after the other, so that you don't have to move your eyes as you read. And it was called spritz. I don't know if either of you remember seeing this, it was a big thing for a few days I saw this and I was like, this is super cool.
+**Andrew:** That's interesting. So you started in academia and just kinda like futzed around until like what prompted you to move out of the research phase and kind of go into startup slash app development?
 
-[00:18:52] I, I could make one of these cause they, they, they announced it without providing the actual browser extension. They said like, we're going to release this one day. And it was so easy to implement that a bunch of people did. And I was one of those people I made it in Angular as a browser extension and it picked up steam pretty quickly.
+**David:** Well, that experience is what prompted me to leave academia. Actually, I realized that I didn't really know what I was doing. And in order to learn how to be a proper software engineer, I needed other people to give me feedback and I needed to build things that people actually use. And I needed to learn like how to structure it, uh, git log, all that professional stuff that they don't teach you in a computer science degree. I just was not learning because I didn't have people around me to tell me that stuff. So I joined a really nice company called futurist, which is like a-- just a digital consultancy based out of Finland and like 400 people. that was a really great experience for me. They told me all those things, a lot of those things, at least. It was there that I made patch package and started realizing what UX is and stuff like that.
 
-[00:19:12] It was like one of the better ones that people made in response to this announcement. people still. Are using it today, as far as I'm aware, I haven't used it for years, but it's still going. Uh, I don't think it's been updated at least my fork hasn't, but other people are still interested in it. And that's called Jetzt, J E T Z T.
+**Andrew:** Yeah, UX slash DX is definitely something of an afterthought with most tools. One of the main reasons I made auto was like, I just wanted excellent, DX in as little setup as possible. That's kind of, you know, why it's named auto.
 
-[00:19:33] It's a German word, which means now.
+**Justin:** So, so David, I'm curious being someone who is really interested in building tooling, I know that you have a lot. of really interesting opinions about tools. What's your least popular package or least well-known package that you think more people should know about?
 
-[00:19:35]And then after that, well, I was also still working as a researcher because in academia you have a lot of spare time if you want. Like, I had almost no oversight as to what I was working on. People just pretty much said, you know, once a month you can have a meeting with your supervisor and they probably won't probe into what you're doing too much, as long as it looks like you're making progress.
+**David:** So hard!
 
-[00:19:57] So I spent a lot of time working on just. Stuff that didn't matter. But eventually I did find a really interesting idea in the where I'm of reactive state management, around the time that react was picking up steam 2015. I made a library based on some stuff that I saw in the closure script community.
+**Justin:** you can't think of anything, I will volunteer something for you.
 
-[00:20:17] And it was called the derivable JS and. You know I had never worked professionally as a software engineer. And then, you know, I've just been doing research on my own. I'd never even been the subject of code review before, you know, no one had ever looked at my code and gone, you should do things differently because X, Y, Z.
+**David:** Uh, let me try and think. Can I quickly take a look at a package.json file?
 
-[00:20:36]So I published this thing and people started using it like people in Silicon Valley would. Using it to power their startups. And I was like, "Whoa."
+**Andrew:** Go for it. When you do so much, it's kind of hard to organize it in your head. I feel the same. I was watching hoarders yesterday and I saw the hoard and I was like, "Hey, it looks like my GitHub profiles. Look at all those repos."
 
-[00:20:44] And they came back with--
+**Justin:** Oh, yeah. Oh
 
-Andrew: [00:20:45] You're like, please. No stop.
+**Andrew:** Hoards of unfinished projects!
 
-David: [00:20:48] I came back with all this feedback and I was like trying to incorporate it, but I just didn't have the same professional context that they have. I didn't understand a lot of the gripes. So I was, I didn't react well, and that project kind of died eventually. Uh, cause mobx came along, which was much better built by someone who knew what they were doing. Pretty much the same idea.
+**Justin:** I was going back through artsy repos and I found a tool that I wrote that I have no recollection of writing. I wrote this tool called lint change that like only runs lint on some files that have changed or whatever. And it's like little, really small thing. No recollection that I wrote that at all. And it's like, got my fingerprints all over it, but I was like, "Oh wow, what was I doing? Why did I write that?"
 
-Andrew: [00:21:10] That's interesting. So you started in academia and just kinda like futzed around until like what prompted you to move out of the research phase and kind of go into startup slash app development?
 
-David: [00:21:21] Well, that experience is what prompted me to leave academia. Actually, I realized that I didn't really know what I was doing. And in order to learn how to be a proper software engineer, I needed other people to give me feedback and I needed to build things that people actually use. And I needed to learn like how to structure it, uh, git log, all that professional stuff that they don't teach you in a computer science degree. I just was not learning because I didn't have people around me to tell me that stuff. So I joined a really nice company called futurist, which is like a-- just a digital consultancy based out of Finland and like 400 people. that was a really great experience for me. They told me all those things, a lot of those things, at least. It was there that I made patch package and started realizing what UX is and stuff like that.
+#### ts-node Tips [00:23:43]
 
-Andrew: [00:22:16] Yeah, UX slash DX is definitely something of an afterthought with most tools. One of the main reasons I made auto was like, I just wanted excellent, DX in as little setup as possible. That's kind of, you know, why it's named auto.
+**David:** So I don't think of a package, but I can think of something that people don't really do, which they should do more, which is use TypeScript to check JavaScript files. Like if you're working on a small tool, don't write it in TypeScript files, write it in JavaScript files with JS dot comments to say what the types are and have TSC check those files.
 
-Justin: [00:22:31] So, so David, I'm curious being someone who is really interested in building tooling, I know that you have a lot. of really interesting opinions about tools. What's your least popular package or least well-known package that you think more people should know about?
+It's a surprisingly great experience these days. The not having a build step is awesome and not needing to ts node is awesome.
+**Andrew:** Yeah, I've been using Ts. No, lately. It's, it's nice, but there are definitely some drawbacks to using it. What drawbacks have you encountered?
 
-David: [00:22:48] So hard!
+**David:** the fact that by default, it just doesn't work if you have any type errors.  
 
-Justin: [00:22:52] you can't think of anything, I will volunteer something for you.
+**David :** So If you're doing development work in TypeScript files and you can't be bothered to make the type checker happy for like, just to check something, just print a console log statement or whatever, you just can't run the file. So annoying. And I, I tried to fix that by adding the no emit on error flag. As explicitly overriding it as false, but it didn't work. So I don't trust ts-node.
 
-David: [00:22:55] Uh, let me try and think. Can I quickly take a look at a package.json file?
+**Justin:** I have an alternate for both of you, if you're interested in doing this thing. So there's somebody I've followed for a while. Uh, that does a lot of, or at least did a lot of work in the vue community. If you've ever heard of egoist on GitHub or Twitter, just this developer who just like is insanely productive and just like writes like a new tool every week. It seems like, and it's, it's, it's crazy, but they released tool that's like es build register or something. So it it's, uh, an I'll link it in the show notes, but it's literally, you can just do like node -r and this package and just like feed it a TypeScript file and it'll just run and it's like super fast.
 
-Andrew: [00:23:01] Go for it. When you do so much, it's kind of hard to organize it in your head. I feel the same. I was watching hoarders yesterday and I saw the hoard and I was like, "Hey, it looks like my GitHub profiles. Look at all those repos."
+And if there's type errors, like, Yeah, it doesn't really care because it's using ES build, which just like strips all the, the TypeScript like stuff. Right? So super fast, super fun.
+**Andrew:** Yeah, that sounds like a good alternative. My main gripe with T S node is how slow it is. I was just like writing some basic scripts to automate a light in my room and running it through Ts, no took significantly longer than just running node.
 
-Justin: [00:23:15] Oh, yeah. Oh
+And, uh, I switched away then.
+**David :** Yeah. Yep. Running node on plain JavaScript files is just like no time at all.
 
-Andrew: [00:23:17] Hoards of unfinished projects!
+**Andrew:** Yeah, lightening quick.
 
-Justin: [00:23:19] I was going back through artsy repos and I found a tool that I wrote that I have no recollection of writing. I wrote this tool called lint change that like only runs lint on some files that have changed or whatever. And it's like little, really small thing. No recollection that I wrote that at all. And it's like, got my fingerprints all over it, but I was like, "Oh wow, what was I doing? Why did I write that?"
 
-### ts-node Tips [00:23:43]
-
-David: [00:23:43] So I don't think of a package, but I can think of something that people don't really do, which they should do more, which is use TypeScript to check JavaScript files. Like if you're working on a small tool, don't write it in TypeScript files, write it in JavaScript files with JS dot comments to say what the types are and have TSC check those files.
-
-[00:24:02]It's a surprisingly great experience these days. The not having a build step is awesome and not needing to ts node is awesome.
-
-Andrew: [00:24:11] Yeah, I've been using Ts. No, lately. It's, it's nice, but there are definitely some drawbacks to using it. What drawbacks have you encountered?
-
-David: [00:24:19] the fact that by default, it just doesn't work if you have any type errors.
-
-David : [00:24:25] So If you're doing development work in TypeScript files and you can't be bothered to make the type checker happy for like, just to check something, just print a console log statement or whatever, you just can't run the file. So annoying. And I, I tried to fix that by adding the no emit on error flag. As explicitly overriding it as false, but it didn't work. So I don't trust ts-node.
-
-Justin: [00:24:49] I have an alternate for both of you, if you're interested in doing this thing. So there's somebody I've followed for a while. Uh, that does a lot of, or at least did a lot of work in the vue community. If you've ever heard of egoist on GitHub or Twitter, just this developer who just like is insanely productive and just like writes like a new tool every week. It seems like, and it's, it's, it's crazy, but they released tool that's like es build register or something. So it it's, uh, an I'll link it in the show notes, but it's literally, you can just do like node -r and this package and just like feed it a TypeScript file and it'll just run and it's like super fast.
-
-[00:25:30] And if there's type errors, like, Yeah, it doesn't really care because it's using ES build, which just like strips all the, the TypeScript like stuff. Right? So super fast, super fun.
-
-Andrew: [00:25:42] Yeah, that sounds like a good alternative. My main gripe with T S node is how slow it is. I was just like writing some basic scripts to automate a light in my room and running it through Ts, no took significantly longer than just running node.
-
-[00:26:00] And, uh, I switched away then.
-
-David : [00:26:02] Yeah. Yep. Running node on plain JavaScript files is just like no time at all.
-
-Andrew: [00:26:07] Yeah, lightening quick.
-
-### deno [00:26:09]
+#### deno [00:26:09]
 
 I don't know how like deno deals with it because since they bake the TypeScript compiler in it seems like that's not something you'd want to do cause the TypeScript compiler in no way performanant. It's not built to be performant.
+**David :** Right. I think that's actually been a huge problem for them and they are trying to reimplement the TypeScript compiler in rust, I believe, which is like why
 
-David : [00:26:21] Right. I think that's actually been a huge problem for them and they are trying to reimplement the TypeScript compiler in rust, I believe, which is like why
+**Andrew:** Oh, my God.
 
-Andrew: [00:26:30] Oh, my God.
+**David :** Such a huge project.
 
-David : [00:26:31] Such a huge project.
+**Andrew:** You're going to top Anders?!
 
-Andrew: [00:26:32] You're going to top Anders?!
+**David :** Yeah.
 
-David : [00:26:34] Yeah.
+**Justin:** Best of luck to them. deno's is awesome.
 
-Justin: [00:26:35] Best of luck to them. deno's is awesome.
+**Andrew:** Yeah, that doesn't sound like a problem I'd want to solve.
 
-Andrew: [00:26:37] Yeah, that doesn't sound like a problem I'd want to solve.
+**David :** I could be completely wrong about that.
 
-David : [00:26:41] I could be completely wrong about that.
+**Andrew:** Just compile it to WebAssembly and hope for the best. Uh, no, I think, I think you're actually right. It was a few months back that the issue came up on Twitter and people were talking about how, deno wants to rip TypeScript out.
 
-Andrew: [00:26:43] Just compile it to WebAssembly and hope for the best. Uh, no, I think, I think you're actually right. It was a few months back that the issue came up on Twitter and people were talking about how, deno wants to rip TypeScript out.
+I still haven't used deno myself. you?
+**David :** No, I haven't.  
 
-[00:26:56] I still haven't used deno myself. you?
+**Justin:** It's really good. Orta had posted a tweet a little while back about talking about , he was using it for local scripts and I had a need to do this. Like I had a, one-off local script to reformat a bunch of markdown files. And I was like, "I don't really want to set up a whole new project for this."
 
-David : [00:26:58] No, I haven't.
+So I just wrote a little deno script. And it's nice because it's like, you have this one script and you run it and you give it explicit permissions. And it just downloads the dependencies for a URL and runs them. And there's no node modules. And I don't know, it feels good. It's , it's kind of fun.
+**Andrew:** Yeah, the node module is decisions that seems like one of the bigger contentious points about deno, I don't know how much I trust a URL. I don't know about you guys.
 
-Justin: [00:27:00] It's really good. Orta had posted a tweet a little while back about talking about , he was using it for local scripts and I had a need to do this. Like I had a, one-off local script to reformat a bunch of markdown files. And I was like, "I don't really want to set up a whole new project for this."
+**David :** I mean, if you can append, uh, uh, check sum to the end of the URL, then it's fine. But otherwise it's like, how do you know you're getting the same code every time?
 
-[00:27:17] So I just wrote a little deno script. And it's nice because it's like, you have this one script and you run it and you give it explicit permissions. And it just downloads the dependencies for a URL and runs them. And there's no node modules. And I don't know, it feels good. It's , it's kind of fun.
+**Andrew:** Yeah, that's one issue. my big issue is like, what, what if that file goes away? It seems... the internet is not very, very static. Links from 10 years ago. I'd be surprised if they work today. It just seems like a path to go down where your code will probably break someday because the files just aren't there anymore.
 
-Andrew: [00:27:32] Yeah, the node module is decisions that seems like one of the bigger contentious points about deno, I don't know how much I trust a URL. I don't know about you guys.
 
-David : [00:27:42] I mean, if you can append, uh, uh, check sum to the end of the URL, then it's fine. But otherwise it's like, how do you know you're getting the same code every time?
+**#### NFTs:** Not so permanant [00:28:13]
 
-Andrew: [00:27:51] Yeah, that's one issue. my big issue is like, what, what if that file goes away? It seems... the internet is not very, very static. Links from 10 years ago. I'd be surprised if they work today. It just seems like a path to go down where your code will probably break someday because the files just aren't there anymore.
-
-### NFTs: Not so permanant [00:28:13]
 
 A common problem in today's tech, same thing with NFTs.
+**Justin:** Yeah, you buy an NFT and it's just got a URL encoded in it, and then that URL no longer exists.
 
-Justin: [00:28:17] Yeah, you buy an NFT and it's just got a URL encoded in it, and then that URL no longer exists.
+**Andrew:** The craziest thing about NFTs to me, like, I don't think anybody past the developer really understands that the point that your art isn't stored on the blockchain, I think a lot of people think that.
 
-Andrew: [00:28:23] The craziest thing about NFTs to me, like, I don't think anybody past the developer really understands that the point that your art isn't stored on the blockchain, I think a lot of people think that.
+**David :** I didn't realize that. I thought you can actually encode like a JPEG as a string on the blockchain.
 
-David : [00:28:36] I didn't realize that. I thought you can actually encode like a JPEG as a string on the blockchain.
+No?
+**Andrew:** It'd be way too big and way too expensive. So what they do instead is... it's really a house of cards that's going to fall and it's going to cost a lot of people, a lot of money. So you know, like rarible or one of those websites that sells NFTs, what they'll typically do is they'll host the content for your NFT on IPFS, uh, which is kind of okay.
 
-[00:28:41] No?
+But instead of redirecting directly to IPFS, they put a layer in between where you like go to rarible and then you go to IPFS to get the file. So in reality, it's not decentralized at all. It's still centralized heavily on wherever you bought your NFT. If that place goes out of business, your NFT goes away basically.
+And then IPFS, I feel like is a whole another issue. Cause it's like, Someone has to pay for that, to be there all the time. And that's not that's I feel a lot of people hear crypto art and they're like, "Oh shit, that's forever. That makes total sense." But that's not what the reality at all.
+**David :** and that's the same as true of the blockchain itself. Like if people just turn off the computers, it goes away.
 
-Andrew: [00:28:42] It'd be way too big and way too expensive. So what they do instead is... it's really a house of cards that's going to fall and it's going to cost a lot of people, a lot of money. So you know, like rarible or one of those websites that sells NFTs, what they'll typically do is they'll host the content for your NFT on IPFS, uh, which is kind of okay.
+**Andrew:** Yeah. it's fun to tell people about a 51% attack that, that don't know how any of it works. And they're like, "That's possible?!"
 
-[00:29:07] But instead of redirecting directly to IPFS, they put a layer in between where you like go to rarible and then you go to IPFS to get the file. So in reality, it's not decentralized at all. It's still centralized heavily on wherever you bought your NFT. If that place goes out of business, your NFT goes away basically.
 
-[00:29:30] And then IPFS, I feel like is a whole another issue. Cause it's like, Someone has to pay for that, to be there all the time. And that's not that's I feel a lot of people hear crypto art and they're like, "Oh shit, that's forever. That makes total sense." But that's not what the reality at all.
+#### Tooltips [00:29:59]
 
-David : [00:29:46] and that's the same as true of the blockchain itself. Like if people just turn off the computers, it goes away.
+**Justin:** Shall we go to our tool tips.
 
-Andrew: [00:29:52] Yeah. it's fun to tell people about a 51% attack that, that don't know how any of it works. And they're like, "That's possible?!"
+**Andrew:** Yeah, let's let's do so, uh, let's do the same thing as last week where we just kind of like hop back and forth, sharing a tool, tip each. I'll go first.
 
-### Tooltips [00:29:59]
 
-Justin: [00:29:59] Shall we go to our tool tips.
-
-Andrew: [00:30:02] Yeah, let's let's do so, uh, let's do the same thing as last week where we just kind of like hop back and forth, sharing a tool, tip each. I'll go first.
-
-### relative-ci [00:30:11]
+#### relative-ci [00:30:11]
 
 So at my new job, I've been setting up a lot of build automation and developer tooling for the app we develop. And the thing I've been focusing on this week is bundle size statistics.
+In the past I've built and used a bunch of different tools that help me do this to varying degrees of success. In design systems CLI I even built a command that'll install the currently published package your testing. And then run it through Webpack and compare that against whatever's up in your PR.
+So you can see diff statistics. That's nice, but it's also super slow. We use it in our design system and we have 70 components. So running yarn to install the published version 70 times, you can imagine that that's going to be really, really slow. Then another problem with just running it on pull request is that you don't have those results stored anywhere.
+And if you want a store 'em somewhere, you might make a size change log markdown file. We did that for our design system. That kind of introduces more overhead and more things that your automated release process is doing. So the tool that I've found to actually alleviate this is a tool called relative CI.
+And it does all of that. All it is is a Webpack plugin. You put the Webpack plug-in in your config, you expose an environment variable, and it uploads all the stats to relative CI and it shows you a lot of nice visuals, too help debug and see what's actually in your bundle. And since it's a separate service, you can easily compare against builds and see where those regressions happen.
+Instead of having to like go back through your repositories PRS or this change log for your size. And it's been a lot nicer of an experience!
+**David :** Nice. How, how does it index the stats? Does it use git hashes?
 
-[00:30:25] In the past I've built and used a bunch of different tools that help me do this to varying degrees of success. In design systems CLI I even built a command that'll install the currently published package your testing. And then run it through Webpack and compare that against whatever's up in your PR.
+**Andrew:** When it shows you a build it'll show the PR, the commit that it was run on, and all of that, uh, it uses the Webpack stats to do it all. And the creator of it is super responsive. I've been DM-ing him on Twitter and helping fix a few little issues.
 
-[00:30:43] So you can see diff statistics. That's nice, but it's also super slow. We use it in our design system and we have 70 components. So running yarn to install the published version 70 times, you can imagine that that's going to be really, really slow. Then another problem with just running it on pull request is that you don't have those results stored anywhere.
+**Justin:** everything help you, like keep track of everything over time. Nice. Nice.
 
-[00:31:07] And if you want a store 'em somewhere, you might make a size change log markdown file. We did that for our design system. That kind of introduces more overhead and more things that your automated release process is doing. So the tool that I've found to actually alleviate this is a tool called relative CI.
+**Andrew:** Yeah, it has a dashboard. All that it's super cheap right now. The amount of work it saves you is I'd say like a good amount and it's only $15 a month for a team. So like in terms of SAAS that's almost nothing to pay.
 
-[00:31:24] And it does all of that. All it is is a Webpack plugin. You put the Webpack plug-in in your config, you expose an environment variable, and it uploads all the stats to relative CI and it shows you a lot of nice visuals, too help debug and see what's actually in your bundle. And since it's a separate service, you can easily compare against builds and see where those regressions happen.
+**Justin:** Charge more for your software. This is a lesson to everybody.
 
-[00:31:45] Instead of having to like go back through your repositories PRS or this change log for your size. And it's been a lot nicer of an experience!
+**Andrew:** Definitely put that enterprise option. Don't list a price. Just say, contact us. That's the way to go with your SAAS.
 
-David : [00:31:54] Nice. How, how does it index the stats? Does it use git hashes?
-
-Andrew: [00:32:01] When it shows you a build it'll show the PR, the commit that it was run on, and all of that, uh, it uses the Webpack stats to do it all. And the creator of it is super responsive. I've been DM-ing him on Twitter and helping fix a few little issues.
-
-Justin: [00:32:17] everything help you, like keep track of everything over time. Nice. Nice.
-
-Andrew: [00:32:20] Yeah, it has a dashboard. All that it's super cheap right now. The amount of work it saves you is I'd say like a good amount and it's only $15 a month for a team. So like in terms of SAAS that's almost nothing to pay.
-
-Justin: [00:32:35] Charge more for your software. This is a lesson to everybody.
-
-Andrew: [00:32:38] Definitely put that enterprise option. Don't list a price. Just say, contact us. That's the way to go with your SAAS.
-
-Justin: [00:32:45] How much can you pay?
+**Justin:** How much can you pay?
 
 How much do you got?
-
-Andrew: [00:32:48] Only you will find out.
+**Andrew:** Only you will find out.
 
 Okay, Justin, you're up next.
 
-### awesome-js-tooling-not-in-js [00:32:55]
+#### awesome-js-tooling-not-in-js [00:32:55]
 
-Justin: [00:32:55] So, uh, I'm going to share two things really quick and they're they're related. Um, so I I don't remember if I found this on GitHub or Twitter or what, but I found this, uh, awesome repo. So if you're not familiar with awesome repos, there's a ton of them on GitHub. That's just awesome something, right?
+**Justin:** So, uh, I'm going to share two things really quick and they're they're related. Um, so I I don't remember if I found this on GitHub or Twitter or what, but I found this, uh, awesome repo. So if you're not familiar with awesome repos, there's a ton of them on GitHub. That's just awesome something, right?
 
-[00:33:16]This one is JS tooling, not in JS. So it's things like. All this really interesting tooling that's like written in rust or go or something like that. So ES build a great example of this, right? Super fast, transpiler, but it's written and go. One of the things that I discovered in that was this project called paperclip.
+This one is JS tooling, not in JS. So it's things like. All this really interesting tooling that's like written in rust or go or something like that. So ES build a great example of this, right? Super fast, transpiler, but it's written and go. One of the things that I discovered in that was this project called paperclip.
 
-### paperclip.dev [00:33:40]
+#### paperclip.dev [00:33:40]
 
 It's the websites, paperclip.dev. If you want to check it out and it's incredibly fascinating. So the premise behind paperclip is that you are building a UI visual only components, but it gives you this, like Figma, like art workflow. And this sort of like subset of, or this like super set of HTML to sort of define it.
+So you define, like in your sort of HTML document for this component, like, uh, an art board kind of, and you can put your HTML, your CSS and and define , "Oh yeah, I'd have these kinds of props and like this kind of stuff." And there's a build process written in rust. That'll go through and take that file, that visual component and transfer it, or convert it, into a regular component for react, uh, right now as their target, but like eventually for svelte or for vue or for, you know, whatever framework that you want. So it takes this inversion of control principle, where like, you just want your visual components to really focus on just being visual.
+Like this is, this is your display. Only try to get as much state and stuff out of this display mode as you can. It makes that like first class gives you really a really great development experience. That's very fast, uh, because it's all native and then. Sort of converts to whatever environment you want.
+This to me has for a long time been sort of like working up to like the Holy grail of what I would like to see component development being, right. Because we have frameworks come and go, right? You have a project and react. and then you have to do this, like Ruby on rails thing. That's a little weird and a little different, but you have to define your components differently and all these different languages.
+And it's like, what if you could define your visual components and sort of a singular way and have that compiled to your target things like svelte, uh, and vue JS is doing this to do these days, gives you a template that kind of like, kind of does that. And you kind of have some flexibility, arguably even react.
+You can write your own reconciler, right? And like, have it rendered as something like react native. We're already seeing these technologies really take off, but this is the first time that I've seen something exactly like this. so they like we're going to focus on just what it means to build a visual component.
+We're going to let you compile it to what you want. We'll give you a really great development experience or really great editing experience. I'm super excited about it. It looks really cool. It's still in the early days, but yeah, that's my tooltip.
+David, what about you?
 
-[00:34:05] So you define, like in your sort of HTML document for this component, like, uh, an art board kind of, and you can put your HTML, your CSS and and define , "Oh yeah, I'd have these kinds of props and like this kind of stuff." And there's a build process written in rust. That'll go through and take that file, that visual component and transfer it, or convert it, into a regular component for react, uh, right now as their target, but like eventually for svelte or for vue or for, you know, whatever framework that you want. So it takes this inversion of control principle, where like, you just want your visual components to really focus on just being visual.
+#### Remapping caps lock [00:36:15]
 
-[00:34:47] Like this is, this is your display. Only try to get as much state and stuff out of this display mode as you can. It makes that like first class gives you really a really great development experience. That's very fast, uh, because it's all native and then. Sort of converts to whatever environment you want.
+**David :** so like I alluded to earlier, I'm not really that on the ball when it comes to like, interesting dev tools and stuff, but I do have a couple of developers set up tips that I would like to share. One is remap caps lock to escape. Caps lock is a useless key, unless he likes shouting at people a lot. So turn it into something more useful.
 
-[00:35:07] This to me has for a long time been sort of like working up to like the Holy grail of what I would like to see component development being, right. Because we have frameworks come and go, right? You have a project and react. and then you have to do this, like Ruby on rails thing. That's a little weird and a little different, but you have to define your components differently and all these different languages.
+And I think that the best thing for that is escape. I can't live without it now, especially as a vim keybindings user. It's saved my little finger, a lot of strain over the years.
 
-[00:35:28] And it's like, what if you could define your visual components and sort of a singular way and have that compiled to your target things like svelte, uh, and vue JS is doing this to do these days, gives you a template that kind of like, kind of does that. And you kind of have some flexibility, arguably even react.
-
-[00:35:46] You can write your own reconciler, right? And like, have it rendered as something like react native. We're already seeing these technologies really take off, but this is the first time that I've seen something exactly like this. so they like we're going to focus on just what it means to build a visual component.
-
-[00:36:02] We're going to let you compile it to what you want. We'll give you a really great development experience or really great editing experience. I'm super excited about it. It looks really cool. It's still in the early days, but yeah, that's my tooltip.
-
-[00:36:14] David, what about you?
-
-### Remapping caps lock [00:36:15]
-
-David : [00:36:15] so like I alluded to earlier, I'm not really that on the ball when it comes to like, interesting dev tools and stuff, but I do have a couple of developers set up tips that I would like to share. One is remap caps lock to escape. Caps lock is a useless key, unless he likes shouting at people a lot. So turn it into something more useful.
-
-[00:36:39] And I think that the best thing for that is escape. I can't live without it now, especially as a vim keybindings user. It's saved my little finger, a lot of strain over the years.
-
-### Code Snippets [00:36:49]
+#### Code Snippets [00:36:49]
 
 the other one is something that I only learned to do in the last year or so, which has use snippets. This might just be super obvious to everyone else, but snippets save a lot of time. Like trying to solve hard code problems and you're in a flow state. You don't want to be typing out boiler plate all the time. Snippets, just do all that for you. You just type three characters hit enter, and your, I dunno, your function declaration. Isn't that?
+**Andrew:** What snippet libraries in particular have you been using? Writing your own?
 
-Andrew: [00:37:20] What snippet libraries in particular have you been using? Writing your own?
+**David :** I've just been using yeah. Built-in uh, I've been customizing my vs code snippet configuration file. So just adding my own.
 
-David : [00:37:25] I've just been using yeah. Built-in uh, I've been customizing my vs code snippet configuration file. So just adding my own.
+**Andrew:** Yeah. I could probably lean into snippets, more, same thing with Emmett, it's there and be VS code and it's always auto completing the wrong things for me. I should probably try to learn to use it the right way.
 
-Andrew: [00:37:34] Yeah. I could probably lean into snippets, more, same thing with Emmett, it's there and be VS code and it's always auto completing the wrong things for me. I should probably try to learn to use it the right way.
 
-### awesome-webpack-perf [00:37:45]
+#### awesome-webpack-perf [00:37:45]
 
-[00:37:45] My second tool tip is in the same vein as Justin's, it's the awesome Webpack perf repo another awesome repo. If you don't know who started those, I think it was actually Sindre Sorhus, the package King himself. but the one I'm mentioning awesome-webpack-perf is every tool that you could possibly want to use to debug your Webpack problems and see where your bundles are splitting and all of that.
+My second tool tip is in the same vein as Justin's, it's the awesome Webpack perf repo another awesome repo. If you don't know who started those, I think it was actually Sindre Sorhus, the package King himself. but the one I'm mentioning awesome-webpack-perf is every tool that you could possibly want to use to debug your Webpack problems and see where your bundles are splitting and all of that.
+I usually go to my two main ones, which are webpack-bundle-aanalyzer, which has a really nice UI for seeing how your bundle splits up. And then another more classic one that I've used a lot in the pack is Webpack's analysed with instead of a Z as an S. And I think that's like, Five years old at this point, super old, but it allows you to like comb through all the modules and the assets and how they depend on each other. And it says harmony import specifier a lot. So you can know how they actually got into your bundle.
 
-[00:38:11] I usually go to my two main ones, which are webpack-bundle-aanalyzer, which has a really nice UI for seeing how your bundle splits up. And then another more classic one that I've used a lot in the pack is Webpack's analysed with instead of a Z as an S. And I think that's like, Five years old at this point, super old, but it allows you to like comb through all the modules and the assets and how they depend on each other. And it says harmony import specifier a lot. So you can know how they actually got into your bundle.
-
-### speed-measure-webpack-plugin [00:38:44]
+#### speed-measure-webpack-plugin [00:38:44]
 
 But the one tool that I think is kind of in a class of its own, even on the read me, there's no competitors to it is the speed-measure-webpack-plugin. And this is an awesome plugin. If you're trying to speed up your webpack builds, uh, particularly for dev mode. It just is an easy, plug-in no config
+you put it in your file and it will show you which loaders and which plug-ins took the most amount of time while Webpack was running. So you can optimize them away. Say if you're using terser in development mode, it might be adding 30 seconds to your startup time. And this plugin will show you outright that, "Hey. 30 seconds of your time is spent waiting for terser." And then you can use that information and turn terser off in your development builds. So that's, a great plugin. If you haven't ever heard of it.
 
-[00:39:03] you put it in your file and it will show you which loaders and which plug-ins took the most amount of time while Webpack was running. So you can optimize them away. Say if you're using terser in development mode, it might be adding 30 seconds to your startup time. And this plugin will show you outright that, "Hey. 30 seconds of your time is spent waiting for terser." And then you can use that information and turn terser off in your development builds. So that's, a great plugin. If you haven't ever heard of it.
+#### Phoenix Live View + Nerves [00:39:30]
 
-### Phoenix Live View + Nerves [00:39:30]
+**Justin:** I've got, I've got one more for today. One of the projects that I'm going to be working on a Recurse center is building my own keyboard, from scratch. I'm making a lot of really interesting decisions in this process. I'm using a raspberry PI to control my keyboard software or raspberry PI zero in particular.
 
-Justin: [00:39:30] I've got, I've got one more for today. One of the projects that I'm going to be working on a Recurse center is building my own keyboard, from scratch. I'm making a lot of really interesting decisions in this process. I'm using a raspberry PI to control my keyboard software or raspberry PI zero in particular.
+Um, and I have a lot of interesting reasons that I won't get into now on why I'm making that decision, but I'm using this project called nerves too power of the software. And nerves is this embedded, uh, framework for elixir for like building IOT devices. Has a lot of really interesting ramifications.
+Uh, I, I definitely recommend you check it out. I'm about to unpack a whole lot of stuff in a really short time. So I'm really sorry. if you have not really heard of elixir or Phoenix or anything in that, uh, in that ecosystem, elixir is this functional programming language that's built on Erling. Which is a language that's just existed for a long time.
+Erling handles like async operations really well has a really good story around that. And because it handles async operations so well, the elixir community has, designed this thing, called, Phoenix live view. So Phoenix is, their web framework sort of like Ruby on rails, like rails is to Ruby.
+Uh, Phoenix is to, is to elixir. So there's this thing called live view, which is like, Think react, but all your server are all, all your server, all your state is on the server instead of on the client. So your react components, state, imagine that just all living on the server and this little tiny thread that like processes, right?
+So that's what live you gives you, And there's this project that they release recently called live book. Live book is like an observable notebook or like a Jupiter notebook. Have you heard that? Where you can like write this elixir code in this page and run it and it all runs on the server and automatically updates in the notebook.
+All right. So I'm about to complete my tapestry here.
+So I ran across this.
+**Andrew:** Yeah,
 
-[00:39:52] Um, and I have a lot of interesting reasons that I won't get into now on why I'm making that decision, but I'm using this project called nerves too power of the software. And nerves is this embedded, uh, framework for elixir for like building IOT devices. Has a lot of really interesting ramifications.
+**Justin:** Yeah, well, I ran across this project called nerves live book. So what this allows you to do is have like a raspberry PI or a BeagleBone or something. This piece of hardware that's running this embedded firmware that you can serve this like live notebook to write some elixir, code that on the fly updates your firmware to do things like turn on an led, or play a sound, or like whatever you want right? To drive your firmware. So it's like, it's sort of like, like the Holy grail of like, hardware development. Because normally if you've doing an embedded project, you have to like flash your program onto this thing and like, you know, compile everything.
 
-[00:40:16] Uh, I, I definitely recommend you check it out. I'm about to unpack a whole lot of stuff in a really short time. So I'm really sorry. if you have not really heard of elixir or Phoenix or anything in that, uh, in that ecosystem, elixir is this functional programming language that's built on Erling. Which is a language that's just existed for a long time.
+And it's like this really slow process, but now you can hit a button on a webpage and it will like give you some results and do things in your hardware. Blows my mind. And I'm incredibly excited to play around with it more. Thanks for bearing with me for that long tail
+I'm done now.
+**Andrew:** And so you want to use this a lot of nerves, the live book thing to update the firmware on your raspberry pI for your
 
-[00:40:39]Erling handles like async operations really well has a really good story around that. And because it handles async operations so well, the elixir community has, designed this thing, called, Phoenix live view. So Phoenix is, their web framework sort of like Ruby on rails, like rails is to Ruby.
+**Justin:** yeah. Yeah. So I'm designing a split keyboard. And one of the things that I do is like on the off hand, I'm going to have like a little microcontroller that's like controlling, like saying, Hey, this button was pressed. Um, and there's a, this like communication protocol in the embedded world called I squared C it's just like how micro controllers can communicate to each other.
 
-[00:41:01] Uh, Phoenix is to, is to elixir. So there's this thing called live view, which is like, Think react, but all your server are all, all your server, all your state is on the server instead of on the client. So your react components, state, imagine that just all living on the server and this little tiny thread that like processes, right?
+So I need to write that code and test it over. I squared C so what I'm going to do is write all of that. And this life, life book, like, right? My sort of, uh, interface to that code and this light book. So I'm going to be able to like dynamically on the fly test that this thing does what I expect it to do.
+that's going to be amazing. Like I'm super excited.
+**Andrew:** David. Did you have anything else you wanted to mention?
 
-[00:41:22] So that's what live you gives you, And there's this project that they release recently called live book. Live book is like an observable notebook or like a Jupiter notebook. Have you heard that? Where you can like write this elixir code in this page and run it and it all runs on the server and automatically updates in the notebook.
 
-[00:41:43] All right. So I'm about to complete my tapestry here.
+#### Save After Delay [00:43:48]
 
-[00:41:46] So I ran across this.
+**David :** I had one other kind of dev set up tip, which is use, save after delay. So it's easily an option in your editor that saves the file after you've finished writing, usually like one second or so after. I've had a lot with people who don't have this setting and it wastes a lot of that time, like debugging a thing in, in like maybe you're working on a website and you're looking at the web page and you're like, why isn't this working?
 
-Andrew: [00:41:48] Yeah,
+And then you go back to the editor. It's like, Oh, I forgot to save that file. I've seen that a lot. So I think turn on save after the day and save yourself trouble.
+**Andrew:** That's a good one. I don't have that one turned on.
 
-Justin: [00:41:49] Yeah, well, I ran across this project called nerves live book. So what this allows you to do is have like a raspberry PI or a BeagleBone or something. This piece of hardware that's running this embedded firmware that you can serve this like live notebook to write some elixir, code that on the fly updates your firmware to do things like turn on an led, or play a sound, or like whatever you want right? To drive your firmware. So it's like, it's sort of like, like the Holy grail of like, hardware development. Because normally if you've doing an embedded project, you have to like flash your program onto this thing and like, you know, compile everything.
+**David :** I think it also prevents RSI issues with hitting command.
 
-[00:42:35] And it's like this really slow process, but now you can hit a button on a webpage and it will like give you some results and do things in your hardware. Blows my mind. And I'm incredibly excited to play around with it more. Thanks for bearing with me for that long tail
+**Andrew:** Yeah, I, uh, I turned off auto formatting and my editor like format on save, and I am constantly typing command shift P typing fo and then hitting enter to form my code. hopefully I don't get RSI from that.
 
-[00:42:49] I'm done now.
 
-Andrew: [00:42:51] And so you want to use this a lot of nerves, the live book thing to update the firmware on your raspberry pI for your
-
-Justin: [00:42:59] yeah. Yeah. So I'm designing a split keyboard. And one of the things that I do is like on the off hand, I'm going to have like a little microcontroller that's like controlling, like saying, Hey, this button was pressed. Um, and there's a, this like communication protocol in the embedded world called I squared C it's just like how micro controllers can communicate to each other.
-
-[00:43:21] So I need to write that code and test it over. I squared C so what I'm going to do is write all of that. And this life, life book, like, right? My sort of, uh, interface to that code and this light book. So I'm going to be able to like dynamically on the fly test that this thing does what I expect it to do.
-
-[00:43:41]that's going to be amazing. Like I'm super excited.
-
-Andrew: [00:43:45] David. Did you have anything else you wanted to mention?
-
-### Save After Delay [00:43:48]
-
-David : [00:43:48] I had one other kind of dev set up tip, which is use, save after delay. So it's easily an option in your editor that saves the file after you've finished writing, usually like one second or so after. I've had a lot with people who don't have this setting and it wastes a lot of that time, like debugging a thing in, in like maybe you're working on a website and you're looking at the web page and you're like, why isn't this working?
-
-[00:44:18] And then you go back to the editor. It's like, Oh, I forgot to save that file. I've seen that a lot. So I think turn on save after the day and save yourself trouble.
-
-Andrew: [00:44:28] That's a good one. I don't have that one turned on.
-
-David : [00:44:30] I think it also prevents RSI issues with hitting command.
-
-Andrew: [00:44:33] Yeah, I, uh, I turned off auto formatting and my editor like format on save, and I am constantly typing command shift P typing fo and then hitting enter to form my code. hopefully I don't get RSI from that.
-
-### uiw.tf [00:44:50]
+#### uiw.tf [00:44:50]
 
 My last dev tool tip, and I think the last dev tool tip of the day is a website I found while browsing Twitter. It's from one of the design systems engineers who works at Vercel they have a site called UI W dot TF. So UI, what the fuck and, It's a experimental laboratory of user interface, patterns and interactions.
+And basically it looks like all of the cool bleeding edge UI stuff that vercel's doing as like blog posts and just experiments on a website. it doesn't have much right now. It's still definitely in the starting stages, but it's a cool place to go to just view interesting UI patterns. One UI pattern that, uh, is the first feature is the command K command palette menu.
+It's so cool. That command palettes are kind of transferring from developer tools into just everything. Now, like I hope one day command K is a thing you can do or just any app and you'd have everything at your fingertips. It's it's such a nice, nice little feature.
+**David :** Hard degree.
 
-[00:45:15] And basically it looks like all of the cool bleeding edge UI stuff that vercel's doing as like blog posts and just experiments on a website. it doesn't have much right now. It's still definitely in the starting stages, but it's a cool place to go to just view interesting UI patterns. One UI pattern that, uh, is the first feature is the command K command palette menu.
 
-[00:45:36] It's so cool. That command palettes are kind of transferring from developer tools into just everything. Now, like I hope one day command K is a thing you can do or just any app and you'd have everything at your fingertips. It's it's such a nice, nice little feature.
+#### Conclusion [00:45:55]
 
-David : [00:45:53] Hard degree.
+**Justin:** David, thank you so much for being the first guest on our podcast. Enjoyed having you here.
 
-### Conclusion [00:45:55]
+**David :** thanks for having me. I've had a great time.
 
-Justin: [00:45:55] David, thank you so much for being the first guest on our podcast. Enjoyed having you here.
+**Justin:** Yeah. Yeah. Always fun. Always fun talking pack package and about tools in general. So thanks everyone for joining. Uh, and we'll see you again soon.
 
-David : [00:46:01] thanks for having me. I've had a great time.
-
-Justin: [00:46:03] Yeah. Yeah. Always fun. Always fun talking pack package and about tools in general. So thanks everyone for joining. Uh, and we'll see you again soon.
-
-<!-- Paste transcript -->

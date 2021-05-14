@@ -41,7 +41,7 @@ const EpisodeRow = (episode: ProcessedMdx) => {
   return (
     <Link passHref href={`episode/${episode.number}`}>
       <a
-        className={makeClass("grid grid-cols-[1fr 2fr] gap-4 pt-4", styles.row)}
+        className={makeClass("grid grid-cols-[1fr 2fr] gap-4 py-4", styles.row)}
         style={{
           borderColor:
             currentColorScheme === "dark" ? chrome.dark.gray04 : undefined,
@@ -193,5 +193,5 @@ export async function getStaticProps() {
     )
   );
 
-  return { props: { episodes: data } };
+  return { props: { episodes: data.reverse() } };
 }
