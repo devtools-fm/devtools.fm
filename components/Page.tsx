@@ -103,10 +103,6 @@ export const Page = ({ children }: PageProps) => {
   return (
     <AutoThemeProvider autoStyle>
       <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
-        <Head>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         <main className="flex flex-col flex-1">{children}</main>
 
         <Footer />
