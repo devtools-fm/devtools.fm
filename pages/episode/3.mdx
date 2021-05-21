@@ -1,0 +1,563 @@
+---
+title: David Stone and Adam Dierkens - Intuit Player
+youtube: https://www.youtube.com/watch?v=UXJIr5uUu_U
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/8564054
+---
+
+<!-- TAB: SHOW NOTES -->
+
+In this episode of devtools.fm we talk to two of the people behind how Intuit products deliver their products to multiple platforms.
+Explore the interesting world of the Player and all the tools it's spawned.
+
+<!-- LINKS -->
+
+- [Intuit](https://www.intuit.com/oa/products/?cid=ppc_G_e_US_.SBG_US_GGL_Brand_Top-Terms_Exact_Search_Desktop_lp-sbconnect_DE_LPTest_Updated_icom._intuit_txt&gclid=CjwKCAjwtJ2FBhAuEiwAIKu19mx9koenW9M7Wkn48pqoNQ3w7qIXR3Ys3RdzQ8JsataaF-ClJdhNAhoCRPcQAvD_BwE&gclsrc=aw.ds)
+- [style-dictionary](https://amzn.github.io/style-dictionary/#/)
+- [design-systems-cli](https://github.com/intuit/design-systems-cli)
+- [devtools-ds](https://github.com/intuit/devtools-ds)
+- [auto](https://intuit.github.io/auto/)
+- [jsonnet](https://jsonnet.org/)
+- [kotlin hooks](https://intuit.github.io/hooks/)
+
+## Tooltips
+
+### Andrew
+
+- [Rome](https://rome.tools/)
+- [walrus.ai](https://walrus.ai)
+
+### Justin
+
+- [betterer](https://github.com/phenomnomnominal/betterer)
+- [Muse App](https://museapp.com/)
+- [polarized](https://app.getpolarized.io)
+- [zx](https://github.com/google/zx)
+
+### David
+
+- [concepts.app](https://concepts.app)
+- [delta](https://github.com/dandavison/delta)
+
+### Adam
+
+- [reaflow](https://reaflow.dev/)
+- [Max Mix Project](https://maxmixproject.com/)
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:17] Introduction
+[00:01:00] What do they work on?
+[00:03:56] Semantic Building Blocks
+[00:10:27] Stumbling into Tooling
+[00:12:27] Constraints Breed Creativity
+[00:18:17] Delivering the same content to Multiple Platforms
+[00:28:30] Intuit's Open Source Design System Tooling
+[00:45:49] Tooltips
+[00:45:58] Rome
+[00:47:48] betterer
+[00:51:14] concepts.app
+[00:54:25] reaflow
+[00:56:09] walrus.ai
+[00:58:52] polarized
+[01:02:26] delta
+[01:04:07] Open Source Sound Mixer
+[01:07:31] Keyboard Knobs
+[01:09:00] zx
+[01:10:52] Conclusion
+
+<!-- TAB: TRANSCRIPT -->
+
+#### Introduction [00:00:17]
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my co-host. Justin. Today is a special interview and a blast from the past for me. We're going to be talking with two people who have been instrumental in how TurboTax delivers its front end experiences.
+How about you guys introduce yourselves?
+
+**David:** I'm David. I'm a software engineer at Intuit. I work on TurboTax, like Andrew said, uh, and some of mint and our new expert portal.
+
+**Adam:** Hey, I'm Adam, uh, also developer at TurboTax, mainly working on TurboTax and you know, anything in the front end, tooling, infrastructure, UI stuff, kind of touch everything at this point.
+
+#### What do they work on? [00:01:00]
+
+**Andrew:** What do you guys work on? what is it?
+
+**David:** So, um, you know, to understand that I actually want to go back to like, sort of the start of a TurboTax, which is, I mean, TurboTax is kind of neat, cause like it's, it's a really old product by comparison to a lot of software. Uh, when you think about the fact that TurboTax, like the first version was a Microsoft dos application, that's kind of crazy.
+Um, and you know, the fact that it runs on like iOS and Android and there's like still code now that is running, that has those like copyright lines that were really popular back in the day. And it's like copyright 1985 chips off and I'm like, huh that's before I was born. The thing that's crazy about it is like, we've still got code, that's running that's that old, but TurboTax is always evolving.
+And, what's really neat is that there's been like a couple of major evolutions over the course of the time that TurboTax has been around. I think the first one was when it obviously went to, windows and Mac and. It went from like being a very form centric experience to being more of like a windows 95 style wizard, where it's like next, next, next done.
+Doing your taxes as, as easy as installing a, video game. Um, and then they, they took that and they brought it to the web and then they took that and they brought it to mobile. But of course, across each one of these platforms, we really want like a best in class native experience.
+
+**David:** And so in order to manage tens of thousands of screens of tax logic, and asking users about like, were you married? Are you filing single? Were you serving in the military last year? Do you want to donate to the presidential campaign fund? All of those things are really not engineering like problems.
+We really want those things be handled by tax experts, right? Because they're the ones with like the best knowledge to ask those questions. And so what we've done over the course of the last couple of decades that TurboTax has existed is create this platform agnostic way of representing these screens.
+These what we call interview screens and the latest iteration of this is what we call the player. And the player is the core piece of technology that we have that handles all of our user experiences in TurboTax. So that's what we've been working on, especially over the last year and a half.
+We've made a real investment in taking what we built several years ago, like five or six years ago, and sort of reinventing it for how we want to do development today. Not only in TurboTax, but also taking it and applying it in other areas like mint and QuickBooks, that the company also has.
+
+**Adam:** Yeah. And then recently it's been a lot of, uh, the cross-platform work has really been kind of some of the cool stuff. So getting. The same content working from web to, you know, the iOS app and making it actually, you know, legitimately native and not just, you know, an embedded web view and getting, you know, a different look and feel depending on what platform you're on and who you're talking to and all that stuff.
+
+#### Semantic Building Blocks [00:03:56]
+
+**Justin:** Could you talk a little bit about like what the primitives look like? This is a, a problem over my career that I've seen a lot is like, We have some data and we need to display it on many different platforms. It's like a comment product problem. Tools like graph QL have evolved to sort of like meet that in a way.
+And of course, before that we have had many different sort of API interfaces to handle this, but I'm curious, like, what is, what is the sort of like fundamental structure of the player? Was it consume? Is this just like a data document of some sort that's like describes like what questions and, and like what the flow is, or like, what does that look like?
+
+**Adam:** You know, as you can imagine, there's a bunch of different moving parts. What we consider the player is kind of the, the end UI piece of it. And it's really this combination of the semantic JSON that we kind of described the questions we want to ask. so a good example is like, if I'm asking you to pick from a, B or C, you know, UI is that could be a dropdown, it could be a bunch of radio buttons.
+It could be some tiles that you pick from, might be different depending on how many questions there are. Is it the only question on the page or, you know, is it in a form? Are you a pro user versus, you know, someone first time filing all the different contexts goes into like how we can actually paint the pixels on the page to make it.
+So you pick one of those three options, but at the end of the day, like the tax people, you know, the tax law doesn't care how you picked it, it just wants, did you do a, B or C? So the player's kind of that last mile of the semantic how do we actually take you making a choice between those three and what's the best way to, paint the pixels on whatever platform you are, depending on the user and everything else around it.
+Any other contexts we can gather.
+
+**David:** Yeah, it would really defeat the purpose of like, you know, a tax expert had to be like, oh, I want to put a UI button here for iOS. But then on the web, I've got my react TurboTax button. And for them to know that would just be pointless. And like Adam said, there's like this semantic layer where it's like, take an action, present the user, a choice, ask them for some input, show them some texts, stuff like that.
+The semantic stuff is really hard to like wrap your head around, especially at first. I remember years ago, I was an engineer on one of the teams that was working on some of that, that first replatforming stuff that we were doing to get over onto the first version of the player.
+When one of the architects in charge came and told me like, "Hey, we're going to do this." I looked at him and I was like, "Okay, cool! Well, how would I represent this?" Cause I was supposed to take one screen and make all of the assets to do the new screen. And he was like, "Well, don't, don't think of it like a bunch of tiles. What is the semantic intent of those tiles?" And I was like, I immediately hate this discussion. I don't want to have this discussion at all. I just want to get my job done. And so now that I'm the architect in charge of some of this stuff? I, uh, I just view my current role as like punishment for how much crap I gave that architect.
+
+**Adam:** And it's funny cause that conversation never changes, right? Like even today we still have. Everyone, you know, coming and saying, Hey, I have this design, like how do I get it pixel perfect. And breaking up like this new experience into what are you actually trying to get, or what are you trying to accomplish?
+And then how do you build up all the Lego's to get to the point where the end result is that experience. But also we can render a vastly different experience on a different platform or to a different person. I think the question that, I don't know if it was David that started or someone else, but it was always like, what would, uh, you know, what would Google assistant, or I don't want to say the magic Alexa word cause she's going to get triggered.
+What would that look like? Like what would a voice version of this player look like? And that's kind of the, the semantic target you're going after.
+
+**David:** that was not me. How dare you!
+
+**Andrew:** I've recently had to explain what the player is to a lot of people. And then the moment I say, semantic content, like their eyes just like cross and they're like, "wait what what, what, happened?" I kinda want to drill into that more. How do you arrive at that semantic content? Was there a committee, is it just like random developers going off on their own?
+Like, how do you do it?
+
+**David:** Yes, yes. To both of those! At various points definitely a committee in the early days. You sort of take a look at a screen and this really, this process really hasn't changed that much even today, like you take a look at something that a PM or a designer, you know, sketch together and Figma or sketch, or, you know, I mean, Microsoft paint, right?
+I mean, we don't actually use paint to do all of our product prototypes, but you could.
+You take you look at that and you, you sort of look at each of the elements on the screen and you say like, okay, well, like we, we know how to represent some of these, but like, if we need a new thing, we need to sort of take a step back and think if the design choice comes in for tiles, we need these tiles and they can be multi selected or they can only be single selected or something like that.
+You have to sort of take a look at that and go, okay, divorce yourself from the fact that it's tiles Adam joked about the Alexa player. Um, sorry, I won't, I'll try not to trigger your voice assistant, but,
+
+**Adam:** I got headphones on, okay now, but only if I say it.
+
+**David:** The way that you arrive at the semantic description of these things, it's to abstract away from the actual concrete implementation of each one of them and say like, okay, if we're asking the user to pick one of these tiles, that's a choice.
+And so it's no different than the dropdown or the radio button or the set of check boxes that we had in a different manifestation of the choice. And we're going to represent it that way with like a slight modifier. So you put like a type on it, or you put some other metadata that allows you to sort of distinguish between which type of choice you want the user to make.
+And then you leave it up to the platform, right? You can imagine a tile selection screen being like four wide and two, two or three high, and you've got just a bunch of grid tiles laid out on grid, but that wouldn't work on say a smaller form factor with a phone.
+That's why you want the semantic representation is because that lets the platform implementation adhere to what the platform would expect. And so you're going to let the iOS engineer make the best choice for iOS and let the Android engineer make the best choice for Android or let the Alexa engineer make the best choice for Alexa.
+
+**Justin:** It makes a lot of sense. This just reminds me of a way of the general practice when you're first building out a design system at a company, I don't think it's as like deep semantically, as like far removed from the sort of UI.
+
+#### Stumbling into Tooling [00:10:27]
+
+**Adam:** It's actually funny cause we stumbled backwards into a design system. You mentioned that. So like, I don't know if you've seen any of the, kind of, any of the open-source tools that we put out around design systems. The player, you know, in of itself was kind of the first design system and Intuit or one of the main ones.
+And out of all those components we made to make, you know, the tiles and everything else. We started a design system. We ripped out all the components, made a design system and then like re added them to the player. So it's kind of funny that yeah, like it is, you know, a practice and components and API design and how you make it modular enough to kind of fit
+
+**Justin:** Part of that practice usually ends up being here, let's stick a bunch of things on the wall and then talk for a very long, extensive of time about what is this thing? What purpose does it serve?
+And then narrow that down. So, yes. Interesting parallel.
+
+**David:** Yeah. And it's interesting, especially as we go through one of the major pushes that we're making right now is actually, uh, you know, we have these design system components. We have had pockets of design tokens, either, you know, defined in like a TypeScript file or some swift file or an XC assets file.
+So we're making a push to extract all of those, even from those platforms specific representations into JSON using style dictionary. As we're doing that, the designers are even going one step down and being like, "okay, but is this primary brand color? And should we be using that in place of like tertiary ghost button color?"
+It's interesting when you think about it, because it's like, okay, these are really just hex values. Let's just pick a name and go with it, but
+
+**Adam:** just don't pick the wrong blue. That's the
+
+**David:** You don't want to wind up with this garbage key space of your design tokens, where like the token names are all, all over the place.
+Right. And you just have like, oh, we're going to have TurboTax teal. And you're like, okay. But, um, what if the product isn't teal anymore? And it's like, well, but it's always been teal. We have it. It doesn't have to be somebody who we shouldn't with shouldn't name.
+
+#### Constraints Breed Creativity [00:12:27]
+
+**Andrew:** Has there been any examples of where it's not gone, right? I know, having been on the player team, that we strived for semantic excellence inour JSON, but has that always been the case at intuit? Have there been new examples where it's not gone that way?
+
+**Adam:** this is kind of one of the things that, to me also comes up in design systems a lot where we talk about overrides or, or anything like that. Inherently, you know, semantic JSON, and we want it to be patternized and highly structured and everything, but any AB test is inherently an anti-pattern. Even in the UI world, if we're changing the color of blue, like that doesn't fit the rest of the world that we're in.
+You always need some sort of ability to relax the rules a bit or deal with the rules when they're not always going the right way. So I think that is our biggest struggle is like, how do we deal with tests and AB tests? How do we circle back and actually close the loop on a lot of these experiments when they might start out with, "I'm making this custom asset in this custom JSON structure for my one use case." And we know that's not sustainable, but maybe if it wins, then we can go and revisit the two other assets next to it.
+And how do we restructure things to make it, so it does fit the rest of the family now. I think it's an interesting problem space. Especially in the, you know, the design systems world as well, where I know we've had a lot of people at discussions around do we allow style overrides. From a design space, it's like, well, no, you should fit the system. But when we're talking about an AB test, well that again, that is not the system. Like we're trying something new.
+
+**David:** It's really hard when you're first starting out. Right? Because like you have nothing, it's the blank sheet of paper problem where you have to first define what the primitives are and figure it out. I think the semantic stuff works really well. If you've got a structure and sort of a pattern to your experiences, like I said, this was born out of TurboTax, right?
+TurboTax is a really unique product in that it has tens of thousands of screens defined by tax experts, not engineers. We don't have enough engineers that if you wanted to hand craft each one of those screens that you'd be able to, there's like, no way we wouldn't get TurboTax out in time every year.
+We had to come up with a way of patternizing these things and the semantic structure really fit there, but. For something where it's like a smaller product, trying to find product market fit, or you could imagine a product where there's a bunch of bespoke sections to it, where one is not like the other and they look totally different. Then you might really have a hard time getting to that semantic vocabulary that defines what your application looks like.
+It, it just so happens that like the semantic structure of that really fit the very highly patterned structure that TurboTax follows.
+
+**Adam:** I think like even within that space, there are sections, there are user experiences that you want to be bespoke. You need the handcrafted, whether it be for performance or because it's a super high touchpoint area. So patterns can get you 90% of the way.
+And, and sometimes you do just need to say, you know, this is a special snowflake and we need to address that.
+
+**Justin:** That's always the challenge with any of these systems that we build is the constraints that gives us the power to like move faster to simplify our implementations. But also if you're going against the constraints, it like imposes a lot of restrictions, both by design and as an unfortunate consequences of the system.
+That's always a hard trade-off to make
+
+**Andrew:** That's something I definitely like to stress when I talk about design systems. A lot of people think that a design system will make you more creative. It's really going to hamper your creativeness and a bunch of different ways.
+
+**Adam:** yeah, it changes the problem from what does this button look like to, how should I lay out this page? And both are questions that should be asked, but when you get to a point where you adopt a design system, you kind of accepted the, the loss of creativity of kind of the individual legos and now you're trying to build up to your castle or whatever you're doing.
+
+**Justin:** Yeah, it's more like building a mosaic as opposed to an individualized piece. I mean, I think, you know, this is more of a philosophical topic, I guess, but there's a lot of creativity that comes when you apply constraints. It's interesting. So I work at artsy right now and I get to this as part of my day job, just like test artworks and look at the interesting constraints that artists put on themselves sometimes.
+And sometimes it's just like, "Hey, I'll just use one color." And it's fascinating what people can do and envision and build with that. But it's a similar ish sort of thing. That we have in this world, but the opposite of not having constraints can also limit your creativity and in a really interesting way, because it becomes hard to have this consistent flowing experience.
+And I'm sure, as you all have seen, it would be very, very hard to, distribute this experience to many in this case devices, because then you're having to account for so many different things.
+
+**David:** I think what's great about design systems or about the player is that if you want to go play in the space where it's like, "what could a button look like?" You can, because there's a space for that, which is like, go iterate on the design system, go change the design tokens, go mess with the code that is the button itself. And then if you don't want to do that, you don't ever have to think about it. Right? You could be a feature developer or a feature designer and go work on, ignore the intricacies of the Lego, or you could spend the next day being like, "you know what, I really like, I don't want to work on that feature. I want to go work on like messing with the button or messing with the tile." And, and sort of changing that up. And so you can apply different constraints depending on the role that you're playing on any given day.
+
+#### Delivering the same content to Multiple Platforms [00:18:17]
+
+**Justin:** There's something that I'm particularly interested in here. There's this like notion of having this semantic document that's really describing either your view and or your content. And again, I had referenced the idea of graph QL, being an API surface area where people really try to embody this.
+They try to think about building their API, where it represents sort of the, not the business logic, but the actual data structures that you're trying to show. And then you build your UI across many devices or surface areas. There's this tool that I don't think has maintained anymore, but there's this tool that I found a long time ago called JSONette.
+And it was this really interesting and fun idea where it's just like this blob of JSOn that power to native app. And I don't know what y'all's implementation is, but it sounds like you have some like semantic JSON and you're like serving these to clients. So I'd like to know a little bit more about what does this look like for building a cross-platform compatibility?
+Like what does it look like on your native clients?
+
+**David:** The amount of engineers that have started since I have worked it into it and have sent me a link to JSONette. If I had a dollar for each one, I could have retired by now. It's real close. It looks a lot like that. I think there's a couple of differences to the structure, but that is the payload for describing a page looks a lot like that, at least as, uh, as, as when it gets into the player, it does. There can obviously be build steps that do things before that. Adam was actually just playing around with like a, a JSX like DSL the other day. Um, but the, yeah, it basically looks like that. It's a, it's a JSON payload that starts with view and, and you sort of described the layout and that's true, whether you're on the web or on, iOS and Android.
+
+**Adam:** Yeah, it's definitely, I think an interesting transition for engineers to make, especially I write react day in and day out, um, and when you're kind of swapping from that mind map of, "I just want to write a button here. I want to write this." It's a different thing to then go and say okay, I need to actually author like JSON and that's my payload and double checking that, you know, it renders correctly is one of the steps, but it's also is my data wired up correctly?
+And it has all the, the kind of business logic set up in a sense where it's not platform dependent? Your end result is this payload that then gets shipped to an app that, you know, can change the rendering on you without actually deploying a different piece of content. It's an interesting problem, especially when we can push up an update to the player that changes the UI drastically for any of the platforms.
+And it's cool because it's one space to do it, but it's also a little scary when you're the one team in charge of the 10,000 pages. And you have to make sure you're not going to break anyone.
+
+**Justin:** Got one more question, Andrew, and then I'll pass it back to you. But I have a, an opposite side of the question. So authoring JSON, uh, obviously is not the most, uh--
+
+**David:** It's amazing. I don't know what you're talking about!
+
+**Andrew:** What are you talking about, Justin?
+
+**Justin:** You sort of mentioned that you have these tax professionals who were building up these data structures that probably like ultimately get translated into screens.
+What does that authoring experience look like? How do you handle that?
+
+**David:** There's been a couple of attempts over the last several years since this thing was built. We do have some end user focused tooling where you can, uh, sort of, it's more of like a visual studio or even Figma, like experience. We just put stuff in and drag and drop it. Because it is ultimately a data payload you could even take something and just like generate it. Right. You could have a Wiziwig editor that sort of the reason for its existence is just to dump out a JS on payload. Even though, like you have that, you still have to wind up touching it, right? Like a developer supposed to go in and touch it.
+Because even with a visual editor, there'll be something that's not right. Or you have to go in and update that JSON, to do some bindings and stuff like that, add some more validations. And that's not a great experience, right? I think especially early on, we focused a lot on building capabilities for this stuff and just getting this right.
+And we didn't focus as much on the usability, the developer ergonomics of it. That's actually where a lot of our focus has been over the last year or so is in saying, "okay, this we know, I mean, I know from experience, I've, I've written a lot of this JSON on myself. We know that this is not fun to write."
+As an architect at the company, I don't want my engineers that are working on this day in and day out to be unhappy. Because an unhappy engineer is going to come yell at me the same that I yelled at the architect before me. I want to make it better because I hate doing it, and I don't want other people to hate doing it.
+So we've been working a lot on tools to make this stuff like developer focused tools to make this stuff better. Because ultimately, even if you do have an end-user tool, that's generating some JSON, someone has to go in and touch it. And that someone is going to be real upset every time they have to go do it, if we don't make it better than just writing code inside strings inside of an array inside a JSON file, which is as tedious and painful as it sounds.
+
+**Adam:** yeah, this is a space that I've like, especially been starting to dedicate a whole lot of time to. There's actually some, some really cool kind of scary projects that have come out of it. One David mentioned, we were talking about, writing our own JSX transpiler, and actually creating all the components on a page as what you would author as almost a react component.
+Rather than, you know, server side rendering that to HTML were server-side rendering that to the JSON payload for the player. Having that kind of be your authoring experience because we know a lot of people are super comfortable with that, especially at the company, like all of our front end is react.
+That gives us a build pipeline to generate the JSON in a way that we can actually validate and it be correct. I think one of the really difficult parts is because the actual JSON itself is so flexible it is ridiculously hard to validate. When we talk about like, you know, TurboTax has this set of components that it uses and its own kind of language to describe the UI, mint has its own set, quickBooks has its own set. Like every application defines their own semantics.
+So me as the library author, like I can't make the assumption to say like, "oh, you're running within this app. So here's what you have access to." I need the tools to be able to accept kind of this dynamic language configuration and then all of the validations for, you know, whether the payload or the JSX, everything needs to kind of learn from that.
+So one of the things that we struggled with early on and what we found was, you know, documentation gets out of date really quickly. We know that we can write a react component to render the tile or the button, but like that payload needs to match up with what users are writing and in content.
+For as many times, as you can document the props of a thing, like it's always wrong, the only right implementation is the runtime one. So I spent a whole lot of time actually writing , tooling on top of the TypeScript compiler that generates all of these validations at build time. One of which will actually scrape all the interfaces for everything, bundle it, ship it to a language server that I wrote that can then validate the Jason dynamically using the TypeScript compiler. So it's this kind of like full cycle of. We want one source of truth, but then we want all of the tools in the right place to be able to accept and dynamically change themselves based on what they need to do.
+
+**Andrew:** So like, just to dumb it down a little bit for users. What's the end user experience for a person in vs code?
+
+**David:** You get cool autocomplete in your JSON which is actually powered by like the types as opposed to struggling with, you know, you've, we've all had the experience where you are in basically you're in a language and then you have to drop into something smaller. I think about like the early days of graph QL, where like the template strings wouldn't have their own special formatting like that.
+So you'd get, um, just basically notepad dot exe for that section of your code and your got real nice surroundings. And then you're back in just, I am editing. Nothing, I'm editing a plain text document now. And so we avoid that by doing all of the stuff that Adam was talking about. And so you actually get like full auto complete for all the stuff that you expect.
+And so we guide the user through things, even though it's still is just JSON it's, it's like JSON on steroids. and then also like helps with, you know, bunch of like linting. So it's not just the language server which enables editing. There's also linting tools or code mod tools that you could envision coming out of this. If you have that built in AST and you know, all the types, then you can sort of expand from that one validation into a whole ton of other stuff that allows you to sort of modify the structure of that code, because it is code, right?
+I mean, like we're talking about JSON it's data and code, right. Which allows you to do a bunch of cool things.
+
+**Andrew:** Yeah. If you look at it expressions it's it's code, Adam can tell you, he made it a syntax highlight.
+
+**Adam:** I did. I wrote a few parsers for that.
+
+**Justin:** So tell me about this expression thing.
+
+**Adam:** I mean, you know, anytime there's data manipulation involved, you want to change data. You want to move things around and rearrange and do everything. Because we're, cross-platform because it's actually the same core TypeScript library that runs on every platform.
+We need an expression language to be able to kind of do all of that, but do it in a safe way. So we, we don't just call eval in JavaScript or anything. But do it in a way that we can execute it on, on native as well. So we have essentially a subset of JavaScript. It's like 99%, the same syntax, and a whole lexer parser in order to interpret that and execute it and evaluate it into our data model and all that stuff.
+So, in some cases it is legitimately writing, like, you know, code within a string that, gets shipped over, but, trying to execute and evaluate all that as safely as we can.
+
+#### Intuit's Open Source Design System Tooling [00:28:30]
+
+**Andrew:** I want to give a shout out to the dev tools that you guys built for it! From another engineer that used to be on the team, Tyler, we actually used that library to build our website. So that's one of the cool things about having a design system so going back to that constraints, breed, creativity, a lot of creativity came out of that.
+It was really fun to graft the idea of dev tools into just like a website for geeks about our podcasts.
+
+**Adam:** That was a really fun project. Tyler and I also ex Intuit employee literally had, you know, storybook up and running and we used the design system CLI another Intuit open source thing. And it's funny cause you know, you're, you're trying to replicate the dev tools UI.
+So you have Chrome or Firefox dev tools open and then storybook right next to that, trying to copy and paste like styles over and get themes right? It's a fun project.
+
+**David:** Yeah. And the really interesting thing about those dev tools is not only are they like faithful implementations of browser dev tools, but they're also super accessible and they meet all, they have all the same testing that we have for normal design system components. I don't know what, what a normal design system is or what makes dev tools different.
+It's just a design system for developer tools, but it, it needs all the same implementation and it also served as like a great How to, for using DS-CLI because like we open source the design system CLI stuff, but obviously we didn't open source our entire design system. So it was sort of like, here's a bunch of stuff that you could use to create a design system.
+Imagine how! And there's no like reference implementation. So dev tools sort of serves as the reference implementation for, Hey, this is how you would actually go use the other tools that we have to, go make a design system.
+
+**Adam:** Yeah, this is more than just the hello world. This is actually a legitimate, like we use this too, so,
+
+**Justin:** Maybe we can pause for a second and explain the two things that we've talked about here. So there's this dev tools design system, which Adam you you're mentioning is actually like a faithful representation, or reimplementation, of what you would see in Firefox or Chrome and the developer tools panel.
+If you're editing a site, Which is super cool. And then design systems CLI when y'all want to explain more like what that does and what its responsibilities are.
+
+**Adam:** Yeah!
+So, um, I'll start with the dev tools design system. So working on player we needed a way to kind of, similar to react dev tools or Redux or any of the other like Chrome extensions that you would use to introspect what's happening, we also have one for player. So, you know, if you're in TurboTax or you know our end to endenvironment, you can load up this Chrome extension and actually kind of see what's happening in the inner workings of data and debug things.
+And in doing that, we needed a bunch of react components to paint the page, and didn't really find anything out there that existed. So we made a design system, and tried to make it as close to the normal browser components. So there's a navbar. There's, any of the, object inspector stuff, which Tyler did an awesome job with and learned a whole bunch about JavaScript types that I had no idea existed.
+So we wanted, you know, like David was saying, it's an accessible. Dev tools design system. And we use it internally to make both Chrome extensions and, a bunch of other things. And that is built off of design system CLI, which is this whole suite of, tools for building a design system.
+So as we were building out some of the stuff within Intuit, we took kind of the, what we knew to be best practices. So for building, shipping, both the common.js ESM build, making everything tree shakable, making sure that we have testing, also wrote a test runner to run against using WebDriver IO and a bunch of other things.
+Kind of this whole suite of things, to be able to quickly scaffold test, deploy an entire design system, and that's called design system CLI.
+
+**Andrew:** Yeah, my baby, I worked on that quite!
+How many design systems we have to now at, Intuit? When we refer to design systems, built a design system, CLI I always liked to play air quotes. Around design system, because we fling that term around very loosely, what design system and CLI really produces is just a development environment for components, whether you actually made a design system.
+That's not up to you. When I left Intuit, I think we were sitting around like 45
+
+**Adam:** I think we cross 50. Um, don't have it up, but I think pretty sure we have for this point.
+
+**David:** I think we've got over 400 components now sitting in something approaching 50 or over 50 different libraries. It's different teams, creating components to sort of solve their unique customer problem. They're built on the same because they're all using this, this tooling, they're sort of interchangeable, you know that the quality of one is going to be relatively similar to the quality of the other.
+And then they wouldn't, like I said, one of the pushes that we're making is to sort of extract and then reinfuse all of the design tokens so that if a team in mint build something for iOS, the QuickBooks mobile iOS team could use that same component and know that it already supports their theme.
+So, yeah, Adam mentioned earlier that we sort of fell backwards into creating a design system from this semantic player, representation of things. We also fell backwards into creating all the tooling that we have for creating design systems, because it was like, "Hey, we've got a bunch of scripts to do..."
+Like all of design systems CLI started as scripts inside the consumer group's design system package. And then it was like, "oh, we should use some of these things in the QuickBooks design system or the mint design system package. Uh, let's just, uh, go ahead and extract these!" And then Andrew was like, "I'm going to go open source it."
+Okay. Sounds good. Let's go do it.
+
+**Adam:** That's usually the process. I mean, even, even auto, like the other big open-source project all started as literally, a Python script I wrote as an intern and that evolved into a slightly more complicated JavaScript file. And then I think that's when we started experimenting with TypeScript, is that right?
+
+**Andrew:** Yeah and then a wildly more complicated TypeScript
+
+**Adam:** Yeah, it was like, Hey, what if we try out TypeScript? And then eventually one day it's just like, Hey Andrew, "you want to open source this?" Okay. Um, and that's kind of the path that we started going down. I mean, yeah. Design system CLI was a bunch of JavaScript files in a build script in one of our repos.
+I'm just like, Hey, some other team needs this. what if we kind of package this? And we had a new open-source projects.
+
+**Andrew:** That's definitely one of the things that the player team is good about. The two people that we have here today are excellent at drawing boxes.
+I always make the joke that, architects draw boxes, but, David draws good boxes. And Adam really taught me like the, the boundaries between modules and how to make like reusable code. Definitely all stems from the player team. Go ahead, Justin.
+
+**Justin:** I'd like to ask a little bit about open source, so. I previously worked at a big media company and source was hard. Uh, you know, open source was something that , you needed a lot approval. There's legal concerns. It was not necessarily an easy thing to go through. At the same time though, we were consuming open source, like crazy, right?
+Everything is built on open source. Now I'm at a company who has had open source as a part of its ethos. And it's different. We do everything open source by default, but it has its own trade offs. So I'm curious, Intuit being a financial company has I'm sure a lot of security concerns and a lot of things that you have to take very seriously when considering open-sourcing something.
+So talk a little bit about your culture and how you think about open source and what your process is around those decisions?
+
+**David:** I've been at Intuit for a little over six years now. And I can say that when we started, uh, or when I started there, like the, the culture around producing open source software was a little different than it is today. We obviously would consume a lot of open source software Intuit's primarily a Java shop on the backend.
+So tons of Apache and spring and, you know all the great stuff that comes out of the Java open-source community. Um, and obviously on the front end, we are heavy consumers of react. And the, the process of open sourcing stuff was almost undefined because we just didn't. One of the earlier things was like there's karate, which is one of our tests, runners it's used by a ton of people.
+Uh, but that's like a backend sort of thing. There's we had opened source some stuff for iOS, but not a ton and not a repeatable process for it. That's really changed over the last couple of years. A few years ago, we got a new CTO. She came from Docker where they obviously are open source by default, kind of like artsy.
+Um, and it's become easier over time. We still have all the legal concerns. You go through a vetting process for any open source project. You take your GitHub repository and you start prepping it. You groom it for what you want to actually ship, and then you get it ready.
+You present it. You have to get sign-offs from your manager, from an architect from legal, you got to make sure that it fits with what we want to do. The image that we want to present externally. Cause obviously we don't want to be bad open-source citizens and just say like, here's the thing that we use and then we stop using it and now it just dies, but it's still sitting there under github.com/intuit.
+And you're just like, well Intuit sucks at source because, because ship things, but then don't maintain them. Uh, so yeah, it's it, we do go through a process it's heavier probably than it would be if you were, a smaller company that wasn't dealing with tax data or with, small business data.
+But, I think it's gotten remarkably better since the time that I've been here. So.
+
+**Adam:** I think it's still something that we're growing and learning as we keep going. The player team being one that, you know, has opened source a whole bunch of projects. It's interesting having a, you know, we have a new manager that came on, um, talking about how, like, you know, part of our normal life cycle is managing open-source stuff, um, managing, you know, GitHub issues and requests that come in and, support channels for projects that we wrote that we now, have to be good, good citizens about and help people out, you know, onboard too.
+Um, so there is some maintenance involved with open source. It's not just shipped the code once and , you're done. And I think that's something that, may surprise people when they first initially come on.
+
+**David:** And that, you know, it's the investment is. to maintain. And it's definitely something you've got to carve out of your quarterly plans or yearly plans. And you're saying like, "Hey, I'm going to devote X percent." Well, that's X percent that's coming out of your total overall development budget.
+Right? And so it can be hard, especially when you're looking for something where it's like, oh man, if we could just get one more thing in, oh, but there's this juicy, you know, five to 10% of time that we would, that we could cut over here. And it's like, no, no, no, we've gained more from that five to 10% of investment, then we will ever get from cutting that.
+Uh, so don't touch it. That's like one of the best return on investment that you can get, because I mean, you think about design systems CLI in and of itself. It's a set of scripts that utilize other things. I mean, we're sitting on top of an amazing software ecosystem. We've got storybook, we've got Babel, we've got Webpack, we've got all these different things that are sitting underneath there that. I mean, let alone, like the actual design system components react, jest we've got all these tools that we're using. We would never be able to build all of those ourselves. And so being able to consume those and then contribute back to that ecosystem, that pays dividends. Like I said, I think our CTO she's one of the things that she did when she got that job is she's like, look, this is how we were able to succeed at Docker.
+We did a ton of open source, we worked in public, we got more contributions. We contributed back. It was a thriving ecosystem and having that sort of air cover from the CTO level, lets me as an architect and a business unit say like, Hey, I know that we want to shave some time here and like cut that investment and go reallocate that time.
+But if I can point to the CTO and say, "Well, she said to." Then really no dev manager can tell me now you can tell me no. Right?
+
+**Adam:** Yeah. I would say I love that. Like, it's seeing that change and you know, I've been at Intuit for just about five years now. I think. it's been really cool to see that whole change. I mean, Andrew and I gave a talk at dev week, with, one of the main storybook guys and we would never have gotten there without, both auto being released and, contributing back to storybook and, and that relationship and building that.
+That's been awesome just to kind of watch unfolds and change a lot.
+
+**Andrew:** Yeah, it's really cool to see what a quality developer tool can do. I spent countless hours developing auto and never would have expected the type of adoption we saw Intuit, but like the amount of dev hours saved because of a release automation tool is just like staggering. Which when you add it all up,
+
+**David:** and not just even in JavaScript projects, like we use it for. IOS projects that are releasing CocoaPods. We Use it for Android projects that are releasing ARs. I mean, it's all over the place. I personally use it on a couple of backend projects that I maintain just small Java libraries that are just dumping jars into nexus.
+And it's kind of amazing that, it's like, oh, this was just a Python script or eventually a more complicated TypeScript project. And now it's, we're just using it for releases all over the place, even outside of the web ecosystem.
+
+**Andrew:** Built on giants. I like to brag that we use the same plugin system that Webpack uses.
+
+**Adam:** Yeah. And that, I mean, tappable in it of itself is I think one of my favorite projects out there, like almost any plugable or semi complicated app that I build their library. It's just a matter of time before we pull in tappable.
+
+**David:** liked it so much that we created a Kotlin version of it using, using some time from one of our hackathon weeks. One of our Android engineers and I sat down and we just rewrote tappable in Kotlin and used arrow meta, which is a compiler plugin framework for the Kotlin compiler, because we were like, Hey, we like this thing so much.
+And we want to use it in one of our backend services, but the backend service has written in Java. So. Let's just sneak some Kotlin in here and we'll use a cool Kotlin compiler plugin. And, uh, and so we, we love tappable so much that we rewrote it, for a different framework altogether.
+
+**Andrew:** Let's bring these two conversations we just had together. We had one about the player and we had one about open source. Where's the future of the player? Is it in open source?
+
+**Adam:** That's what we're aiming for! The argument I always make is, we we're supporting so many business units and so many different customers within Intuit that kind of the, the landscape and the problem area is, is wide enough that we have to be agnostic to almost everything about where we're running.
+And at that point we're basically an open source project. So why not, actually make it all open source? And, that's what we were building towards. And we talked about kind of the, I think one of the last miles that we have is, is some of the developer tooling around content authoring. that's one of the spaces where I want to come out with something, but I also know that the open-source community can outdo anything I put out in, you know, the first weekend.
+So I am super excited to see where it's taken and what cool things can come out of it. Um, and just everything that can be built on top of the player.
+
+**David:** yeah, people used to ask me about open-sourcing the player and, we would not have wanted to open source the original version. Um, it was not as robust as you'd like it to be and way more tied to TurboTax than it should have been. Adam's done just a killer amount of work, uh, you know, leading the team through sort of a large transformation around tappable that makes everything much more, pluggable much more, clean.
+And that's allowed us to sort of cut the TurboTax pieces out and move them into a TurboTax plugin for the player, which has enabled us to sort of have a very clean implementation of the core, and then the basic web iOS and Android players.
+And then, that is what we are planning on open-sourcing so we just gotta, like Adam said, get to that sort of last mile of making the rest of the tooling around it. Good. Cause, I know from personal experience that if you show someone something cool and then it's like, oh, neat, how do I use this?
+And you immediately open up a JSON file.
+Ohhhh, And, and so I don't want to do .
+
+**Adam:** Not as cool as I wanted it to
+
+**Andrew:** Yeah, It's definitely a mountain of work that you guys have overcome uh, you had a whole design system baked into this like completely different monster.
+
+#### Tooltips [00:45:49]
+
+I think that about wraps it up on the question side. So let's start to wrap it up and talk about our tool tips for the week.
+
+#### Rome [00:45:58]
+
+Okay. So the first tool I want to talk about is a new JavaScript tool for everything. Rome is... is like a complete ground up rebuilding of the JavaScript ecosystem. What does that mean? That means like literally every tool that you'd use for JavaScript, a formatter, a compiler, a linter a test runner.
+It's all going to be built into Rome. Why? well, the reason is all of those tools are built on separate tools that represent an AST for your code. And by definition, you have a bunch of disparate ASTs, can't do a lot to like optimize that or make the tools work really nicely together. So Rome is a ground up reimplementation of that, where there's just one AST and really cool things come out of that.
+You can get like super detailed error messages out of it. It's just like a much faster experience overall. Cause it's, it's one AST for everything and I'm pretty excited to see where it goes. Right now. It's only really a linter, but in the future, they plan to release all the other different tools that I listed out there.
+So that's one I'm excited about.
+
+**Justin:** Yeah, Rome got some, some VC funding recently, interesting to see where they go with that.
+
+**Andrew:** Yeah, definitely. It's a kind of unique, or I guess not unique. It, uh, These days more and more developer tools are getting funding and, uh, sustaining open source is hard and this is one route they're trying to go. Like, Even though Rome is eventually going to sell a product, all the code that they've released so far is open source and they have hundreds of contributors actively helping develop this, and they're just going to sell services on top of it.
+So I'm interested to see where it goes.
+
+**Justin:** Yeah, that's awesome.
+
+#### betterer [00:47:48]
+
+so my first tool tip is this tool called betterer it's created by a Spotify Spence, uh, his incredibly hard to pronounce phenomenon. Yeah. I'm not even gonna try, not even to try. Thing in my brain that I like to do.
+So It's a tool for helping guide incremental code changes or migrations over a large code base. And it does it in a pretty novel way. So if you've ever seen a jest snapshot, it's like this little common JS module, and it's got some texts that, that dumps out and template string, better does a similar sort of thing.
+It like runs, uh, a test over your code base and it collects some results. And it stores those in a snapshot and over time, it'll sort of like programmatically apply a strangler pattern to this like migration, right? So as you make it better, as you remove things, you commit more to your mutation, it'll like remove more things from that snapshot file.
+And then in CI, if new things are added, then it'll fail. Um, So it's this way to help you incrementally migrate a code base. So, yeah. Uh, he's built some really interesting plugins for this. There's a TypeScript plugin that you can pretty easily, uh, like flip on the strict flag and have a better test that like it helps you do strict type migrations, which is really interesting and really powerful There's a caveat of like you're running another TypeScript build process.
+So if, if you're slow already, this is not going to help you be faster. I actually have a PR, uh, that as, uh, my last hurrah artsy I'm, I'm helping do a big TypeScript migration to strict null type checking and and using betterer in a way. So I'll link that in the show notes, but it's a really interesting tool.
+If you have a migration wanting to incrementally a lint rule, or, you know, apply a regex to make sure that a certain pattern is removed from your code base, and you want to do that programmatically, it's a cool tool.
+
+**Adam:** it's actually like the amount of times I've needed this and the amount of times I've kind of written a, I'll be crappier version of this is kind of scary. Um, one big thing on, you know, we talked about the player, we did a really big push accessibility tests. So running, you know, ax scans on, you know, all of our repos and everything.
+and. Just like, you know, turning on a new lint rule you you, trigger the tens of thousands of errors and don't want to block the first person. we did exactly this. We just had a rule that said you can't make it worse. And every file you touched, you can't introduce any, anything new.
+but yeah, definitely. Cool.
+
+**Justin:** yeah, Craig has put a lot of work into this and there's some, there's some things that he's done that I like sort of advocated for that are really love. You can set a milestone date for a migration and it'll let you know that, Hey, you know, you're like, you're this far away from the milestone or the like, kind of kind of tell you about that.
+You can run it and watch mode. So you want to like go through and start fixing things, like if you're doing a bug bash, you can do that. It's, it's such a good tool. definitely
+it can be improved. Craig's put a lot of work into it. and there's a lot of issues popping up recently for like good areas of like performance, speed ups and stuff like that.
+So if you're interested in, especially if you want to contribute, like definitely dig in, it's an awesome tool.
+
+#### concepts.app [00:51:14]
+
+**David:** My first pick is concepts.App. It's an app on the iPad. I, like Andrew mentioned, I spend a lot of my time drawing boxes. The built-in notes app on the iPad is super convenient and great for taking notes. But it is very linear, right? And so sometimes if I'm just sort of thinking about ideas and thinking about an architecture, linear flow really, uh, is sort of not a good fit.
+And so of course there's all, there's always options like procreate and stuff like that, where, you know, it has more support for that sort of stuff. One of the things that I love about concepts though, is, um, I just started using it again after I had sort of dropped using it for awhile. Um, and one of the things that I really love is that it's got an infinite canvas and it's a vector based.
+So it's not like one of the things that I've found if I would, if I was doing pixel drawings would be that I'd spend a ton of time. Oh, I messed up and now I've got to go erase. Whereas, because like concepts is vector-based, I can just sort of Like move it or, uh, or reshape skew it some other way.
+And, uh, So I I've been really getting back into using concepts a lot. I love it. I think it's a great way to sort of, um, sketch out a map of like what you want be able to sort of change it, uh, over time or even change it as you're doing it. Because ultimately, I don't know about other people who draw boxes, but my first attempt is almost never correct.
+So, nobody told my boss. Do not tell my boss that my first attempt is never correct. I want want her to believe that it's always right the first time, so...
+
+**Andrew:** you heard it here. Folks. David only draws perfect boxes!
+
+**David:** Only perfect boxes!
+
+**Justin:** Heard of the meta muse app? So I'm really interested in the tools for thought space. meta muse is It's not the cheapest app, I will say, but it's really interesting because it takes this notion of like spatial apps. And you can have these spaces where you can sort of zoom into this other collection and you can have like a similar to what it seems here, a combination of vector drawing and images and, uh, denotations and everything.
+But you can like, sort of organize them differently. It's a really interesting and really compelling tool. People behind it they run this, uh, sort of user research design lab called, uh, oh God, I don't, I don't ink and sketch or something like that anyway. And they have a really great podcast too, where they just talk about this like notion of tools for thought.
+So if, if that is a thing that interests you.
+
+**David:** Yeah, I'll check this out. I spent a good bit of time earlier this year, thinking about notes and like, you know, looking at zettelkasten and Rome research and all the different, I, I went down that rabbit hole and I, I eventually just sort of like got paralyzed by indecision and I was like, I think I'm okay using bear.
+I think about all I can take!
+
+**Adam:** Need the windows app I need the sync for bear. That's what I'm missing.
+
+**David:** yeah, this looks, uh, this I mean, I'll see if I can, I can pull up, uh, the corporate credit card for this one, if it really is not that, uh, not that cheap, so cool. Good tip.
+
+#### reaflow [00:54:25]
+
+**Adam:** Um, so mine is actually one, a project that I stumbled across on GitHub, um, in a recent hackathon where, um, I needed to, you know, visualize this state machine, this state graph, and that was kind of ridiculously nested. And I found reaflow, um, Kinda stumbled upon that after starting with react flow, which is another design system in this space.
+It's a react design system that allows you to draw graphs. Um, and it does a really good job of helping with layout and, you know, being able to manipulate everything. So yeah, this is one that I used the other day. it's been awesome. I love it. yeah.
+
+**Andrew:** What did you use it to visualize? Some weird player thing?
+
+**Adam:** In the player, we have this concept of navigation, so you can have more than one view in uh, a single content payload. and more complicated ones have, you know, 10 or 20 different action nodes that you can go through and this whole decision tree of how you get from one to the other.
+And one of the things that I built during this hackathon was as part of that Chrome extension actually visualizing the whole state machine and similar to xstate or any of the other state graphs uh, kind of walking you through your state graph as you're going through it. So as you go through TurboTax, kind of walking through the different stages and which branch did you take and which ones are covered, or which ones are not covered. And this was kind of the basis of some other code coverage and testing stuff as well.
+
+**Andrew:** Definitely has some cool looking visualizations!
+
+**Adam:** Yeah. Th the, the nesting is what really led me to this one, um, because we have kind of these, these sub graphs within graphs and that's super common. this, I, I think did the best job of actually visualizing that and making it really easy to use.
+
+#### walrus.ai [00:56:09]
+
+**Andrew:** I'm going to talk about a testing tool. This is a little unlike most testing tools that I've encountered. So what walrus AI does is pretty interesting. You write just like these instructions for some AI and then the AI takes the instructions and somehow test your webpage. I have no clue how it works.
+It's utter magic. A test, literally. You just tell it, Hey, go register with an email, phone and password, verify the code, do some stuff. And it does it somehow. And then they take that and just build an AI model out of it somehow. And you now have automated tests with like no work. And then, uh, the cool thing about writing your tests in plain English is you don't really have to be a developer to write plain English. So you could potentially have QA people or QEs who don't know the primary language you might usually test in just writing these what looks to be yaml test cases.
+And for the most part, yaml was pretty, pretty simple.
+
+**David:** this reminds me a lot of like cucumber tests. Um, But without actually having to write all of the crappy code behind your cucumber tests. That was always my problem with cucumber is like, anytime that I would be like, oh, this is going to be great. I'm going to have people who aren't developers writing test cases, and then they would type out a sentence and I'd be like, oh, I have to go parse oddities of sentence wrote. Can you maybe constrain your vocabulary that you're using a little bit more and then like, "this is too difficult." And I'm like, okay, nevermind. Um, which just proves that as good as it. Yeah. I'm not even as good as an AI at that point. So like,
+
+**Justin:** I got my start in open source, maintaining a selenium library binding for a test framework called robot framework. It is a keyword driven test framework. You write your end to end test and what looks like an Excel spreadsheet kind of thing, where they're like keywords that do different things. It's really interesting.
+Fun Python, open-source thing. I kind of fell in the hole for a year that. the space is hard because like the things that they tell you, oh yeah. You know, It's cucumber tests, whatever, you just write your behavior driven stuff and it's fine. And it's like, never true. The thing that scares me about this is like, what happens when the AI just doesn't know what to do?
+I'm like, how do I tell it? Hey, actually, here's the thing that I meant for you to do like
+until
+
+**Andrew:** doesn't know how to report bugs. So there'll be less bugs.
+
+**Justin:** Yeah. Well maybe that's a, maybe that's a feature.
+
+#### polarized [00:58:52]
+
+All right. So we were talking about tools for thought. So I use obsidian for like all my day-to-day like note-taking, uh, which is fun. But one of the things that I've been really looking for recently is like, while I'm reading things, I want to be taking very active notes and to be keeping track of those, uh, because like, if you're not actively reading, it's hard to retain much. and if I sort of had my eye out for a tool for a while, this one seems really interesting. So, uh, so this tool polarized, uh, essentially, lets you, um, load up an ebook, a web page PDF document, and you're able to sort of make an inline highlight then add notes to that, um, and sort of track those things over time and you manage your, your library through that.
+A really interesting, mechanism to sort of. do active reading or incremental reading or whatever you want to call it. Um, unfortunately their web based thing is all Chrome based, so they have a Chrome extension. So if you're using Chrome as your daily driver, that's really great. I don't use Chrome at all.
+So, um, yeah, that's not great, but you can import EPUBs and that's, that's kind of cool. Um, so
+
+**Andrew:** It's interesting that they mentioned GPT-3. It's like, what, what exactly is AI doing here?
+Like
+
+**Justin:** Yeah. So, so, uh, If you've ever heard of anki uh, so anki is like a space repetition software, right? And you can create these flashcards to help you memorize certain things. Well, this software will actually create a flashcard for you. Out of a given piece of text and you can highlight it the piece of text And ask it to create, a flashcard.
+And it'll use a GPT-3 to create a summary of that. And that will be like the question, the flashcard. And then you can go through like a whole space repetition thing where like asks you the question. And then the answer is like, whatever you highlighted.
+
+**Adam:** what I high school and college. I just, you know, didn't take as many notes as I should have. but is something that I would find myself using a whole lot. That's cool.
+
+**David:** I didn't take notes and I certainly didn't make flash cards out of my notes. And I certainly didn't do as well in school as I should, like, as I should have, or would have had I did this, like GPT-3, like. There was like one tweet about it. it got just massive spread last year. And was like, "oh, that's interesting. But I don't like, I don't know how real this is." And now like six months later, nine months later, whatever it's been there's, it's everywhere. It's in everything. And I'm just like, "oh, maybe it was, maybe it was real. Maybe that was like a real thing that could actually work and it could be real cool."
+
+**Andrew:** I saw a tweet from a designer at Figma and he made a GPT-3 Figma plugin, where you described your UI and it puts that on the screen. That's pretty cool.
+
+**Adam:** so is that, is that next step for player GPT-3?
+
+**David:** Yeah definitely, forget JSON just write down what you want and it'll
+
+**Adam:** It's the tru semantics right?
+
+**David:** It down to JSON
+
+**Justin:** Can you just give me an input field where I can write, do my taxes and then it just like, does that'd be great.
+
+**David:** I think that's definitely high on the list of things to do. We can, uh, yeah, we can try to make that work!
+
+**Adam:** It's just a button that says done, right?
+
+**Justin:** Yeah send a check please!
+
+**Andrew:** YeahOkay
+
+#### delta [01:02:26]
+
+**David:** I guess I'm up next. I, uh, So when I'm not drawing boxes and I am writing code, um, I've been using a ton of different diff tools over the years and I had sort of settled on diff so fancy, like three or four years ago, or whenever that first came out and I just sort of left it alone. You know, it's like one of those things where you're just like, ah, this is great. It's good enough. I'm I, this is what I'm settled on. Um, I was working with another engineer the other day. We were pair programming and he did a get diff and I saw some output and I was like, what are you using?
+That is like, so much better than what I have. And, uh, he was using Delta and not only can Delta do everything that diff so fancy does, but it does a lot more. And it's actively updated and stuff like that. So I was like, "I'm, I'm just going to go install that." And you know, of course, switching, switching, diff tools means that I have to go find every spot where I added it to my git config or, you know, changed my pager or whatever.
+It's a delight. Every time that I do a get diff I'm like, oh yeah, that's right. This is like really pretty. And I like it because I, I like seeing pretty things in my terminal So I'm a big fan. I don't really have much else to say about it. Cause it's. It does what it says on the tin. It's a diff tool.
+It's amazing. Um, looks good. I like it.
+
+**Andrew:** Side by side diffs though. Ooh.
+
+**David:** Yeah. It's a good reminder to occasionally just audit your tool chain where like you might be using something and it's just been that way forever. And you don't realize that around that tool were a thousand other tools that sprung up and have evolved from there. And you're like, oh, maybe I should, maybe I should my diff tool.
+
+**Adam:** that's something about every day? Definitely Makes a difference.
+Cool.
+
+#### Open Source Sound Mixer [01:04:07]
+
+Um, So this one more of a hardware project, but still open source. one of the things that like I use a lot in my workflow is macros. I have a stream deck with vs code extensions and things that do everything. Um, and I also play a lot of games and do a lot of things. So sound mixing is something that's really hard to do, right.
+Especially when you know, you're in discord, you're talking to people. You're also playing a game or listen to a podcast or something. and this was a project I stumbled upon. That's an open source sound mixer. I 3d printed the case. I, you know, It's a little Arduino micro that runs in there.
+You can do things like mix sound between two apps or just output or change anything. All open source, all community driven, a fun weekend project where you can solder some stuff and play around with hardware.
+
+**David:** might have to make, have you make one of these for me? Because don't find soldering stuff very enjoyable. Um, but. This, this looks like that I, must have, like I need it.
+
+**Adam:** I I started, um, in the hardware space, I went to school and I was actually a I started soldering and doing hardware and then kind of stumbled into the programming space. So one of the things that like outside of work, I still love playing around with hardware and doing all those side projects.
+Um, this was definitely one of those things that bridged it.
+
+**Justin:** Fellow ECE member here.
+
+**Adam:** Hey nice!
+
+**Justin:** Yeah
+
+**David:** Now you both do web development!
+
+**Justin:** I'm taking some time off of work. Uh, well, going, to funemployed Yeah. Uh, And what are the things that I'm doing is building a keyboard from scratch, like
+from yeah, like design me the PCB and doing the whole whole thing. It's like, there's something very satisfying about doing a hardware project.
+
+**Adam:** Yeah. It's something that I, I, you know, I've had friends and I still have friends in, you know, doing that. Full-time I don't think I could see myself going full-time and designing, you know, chips, and PCBs or anything. Um, but I do just, I love the hands-on like tangible, let me build something and plug it in and write some code and have it talk
+to stuff and yeah,
+
+**Justin:** I'm actively considering trying to get into physical product development, post my hiatus from work. I don't want to just like design PCBs all day, but it's the mix of like hardware and software that I find
+
+**Adam:** yeah, yeah.
+
+**Justin:** and doing things like working with like CNCS and 3d printers and doing CAD work and like it's the mix of all of those things that makes it interesting.
+
+**Adam:** One of 'em. the, you know, our old the guy who wrote devtools DS with, um, actually did an internship at MakerBot writing some of the firmware there. And again, it's just a mix of like I'm gonna write a bunch of code and make a machine, do something in the physical world and hope it doesn't blow up sometimes.
+But yeah, just, I think it's a similar feeling to, you know, a lot of people talk about front end and be able to like, see what you code. Um, also just being able to like, you know, touch and play with what you, what you actually like solder and, and It's cool.
+
+**Justin:** Yeah, for sure.
+
+#### Keyboard Knobs [01:07:31]
+
+**Andrew:** On the subject of keyboards, I want to share a tweet that you shared. That's super cool. This undo redo knob on this keyboard blew my mind. Are you gonna put this on your keyboard, Justin?
+
+**Justin:** I do want to have some radial encoders on my keyboard. I hadn't considered the undo redo feature, uh, until Amelia, uh, posted it, but it does look pretty compelling.
+
+**Andrew:** What do you plan to
+
+**David:** Yeah. What else would you use that for?
+
+**Adam:** Volume mixing. Come on!
+
+**Justin:** There's, there's a lot of really interesting thing. Yeah. Volume controls is this one, you know, scrolling is a very like natural sort of action, but sky's sort of the limit in what you can do with that. Um, controlling, like view spaces, like changing windows and stuff like that as like another like interesting opportunity,
+
+**David:** you to use it like a touch ID where it's like a master lock and you have to like, turn it three whole turns to to left, then 21, and then turn it one, turn back to the right. And 22 and
+
+**Justin:** You joke, but that's amazing idea.
+
+**David:** oh my, don't do that
+
+**Justin:** I just got to unlock my computer. Like it's a high school locker.
+
+**Adam:** feel like that would be the ultimate VR video game thing is like, you got to safe and like, go turn this physical dial, like, okay.
+
+**Justin:** Yeah. I'm gonna, I'm gonna make a whole VR game. The whole purpose of this is trying to get in your high school locker.
+Like freshmen down on the floor. Got to bend down. Yeah, that's great.
+
+#### zx [01:09:00]
+
+All right. Last pick for the day. Last tool tip for the day, uh, is this script that has been shared around a lot now, but, uh, there was a open source project inside of Google that was shared.
+This is not an official Google project. It's just one of their unofficial open source it's called ZX. And It's this, uh, script execution environment. Reminds me a lot of shell.js. If you've ever used that, which like provides some, uh, shell like commands in JavaScript, but it gives you this execution environment where you can write these pretty terse statements. You're still in JavaScript but you're using, uh, like the special template strings to be able to write sort of native processes and it batches those together and like gives you good, uh, mechanisms to handle them. actually one of the most blowing things. And, and I don't know if this is like just an amazing thing or if this is like the worst idea ever, uh, it's JavaScript.
+So it's probably not terrible, but if you scroll down Andrew at the bottom of this, there is a way to remotely execute your ZX scripts just by like passing the little command. So it's like a URL to some like mjs file and it'll just execute your script. So If you have. If you don't get the heebie-jeebies from executing arbitrary code from some server on the internet, which if you use JavaScript at all, um, yeah.
+Anyway, it's neat. It's interesting. It's kind of fun.
+
+**Andrew:** Yeah that S means a whole lot!
+
+**David:** don't think it's any worse than like passing the result of curl or wget to sh and being like, I'm just going to install a bunch of stuff. Oh, wait. It failed. Nevermind. Pseudo bang, bang. And it's like oh everything cool.
+
+**Adam:** Yeah not
+
+**Justin:** Everything is awful.
+
+**David:** Yup
+
+**Justin:** We live on a house of cards.
+
+**David:** Software is all broken.
+
+#### Conclusion [01:10:52]
+
+**Andrew:** Okay.
+That was a great conversation. We went all over the place, learned about the player all the cool open source tools that Intuit produces. Thanks for coming on guys!
+
+**David:** for having us.
+
+**Adam:** Thanks for having us.
+
+**Andrew:** That's it for this week of devtools.fm, follow us on YouTube or wherever you consume your podcasts. Thanks for listening.
