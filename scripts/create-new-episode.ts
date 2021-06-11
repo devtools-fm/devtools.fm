@@ -1,5 +1,4 @@
 import path from "path";
-import endent from "endent";
 import { promises as fs } from "fs";
 
 const episodeDirectory = path.join(__dirname, "../pages/episode");
@@ -12,15 +11,9 @@ const createNewEpisode = async () => {
     "utf-8"
   );
 
-  const content = endent`
-    # Episode ${episodeNumber}
-
-    ${template}
-  `;
-
   await fs.writeFile(
     path.join(episodeDirectory, `${episodeNumber}.mdx`),
-    content
+    template
   );
 };
 
