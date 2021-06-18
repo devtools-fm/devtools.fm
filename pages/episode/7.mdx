@@ -1,0 +1,408 @@
+---
+title: Paul Shen - natto.dev
+youtube: https://www.youtube.com/watch?v=82vUgyjSPz0
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/8725926
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Tune in while we chat with [Paul Shen](https://twitter.com/_paulshen) the creator of [natto.dev](https://natto.dev)
+
+<!-- LINKS -->
+
+- https://drawbattle.io
+- https://stedolan.github.io/jq/
+- https://gource.io/
+- https://github.com/efokschaner/terraform-provider-factorio
+- https://dion.systems/blog_0001_hms2020.html
+- https://inliner.io
+- https://www.andy.works/words/serious-play
+
+## Tooltips
+
+### Andrew
+
+- [Digital Garden](https://maggieappleton.com)
+- https://www.hipstersmoothie.com/garden
+
+### Justin
+
+- [SqlDBM, visual tool for designing dbs](https://sqldbm.com/Home/)
+- [Buerli, React CAD in the browser](https://buerli.io/)
+- [Visual CSS Grid Layout](https://grid.layoutit.com/)
+
+### Paul
+
+- [John Palmer’s talk on spatial interfaces](https://www.youtube.com/watch?v=H4LosXgKX4g)
+- [David Cole’s thread on WarioWare DIY](https://twitter.com/irondavy/status/1385410390209699840)
+- [Factorio](https://www.factorio.com/)
+- [Twemex](https://twemex.app/)
+
+<!-- TAB: SECTIONS -->
+
+[00:00:44] Introductions
+[00:01:19] The inspiration behind natto.dev
+[00:03:16] Describing natto.dev
+[00:07:33] The future of programming
+[00:13:49] Visualizing code
+[00:16:30] Factorio as a visual metaphor for code
+[00:20:43] Organizing Code
+[00:23:22] Structural Editors
+[00:26:24] The art of naming and organizing things
+[00:33:21] Inspiration for the name Natto
+[00:35:53] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+
+**Paul**: One of the principles behind natto is incrementalism or more concretely embracing JavaScript. I love all sorts of programming languages, you know, Haskell, whatever rust. But the thing about JavaScript is that like, I know JavaScript, you probably know JavaScript.
+
+**Andrew**: Hello, welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin**: Hey everyone. Today, we've got Paul Shen joining us. Paul's the creator of natto.dev, which I'm really excited to talk about in today's episode. Before that though, Paul, you wanna introduce yourself?
+
+#### Introductions [00:00:44]
+
+**Paul**: Yeah. My name is Paul. I'm excited to be here and I'm a software engineer currently working on random projects. The one that I'm focused on right now is natto.dev, which is a canvas for JavaScript, which we'll talk about. And in general I'm, really excited about that realm of future of coding where the intersection of toolmaking, programming, and user experience collides.
+Yeah, I'm excited to dig into some topics here.
+
+**Justin**: Yeah, you're speaking my language. All right. Let's get right into it. I'd like to know a little bit about what inspired you to build, natto and where are you thinking about taking it?
+
+#### The inspiration behind natto.dev [00:01:19]
+
+**Paul**: Yeah. Yeah. So to start, I'll give a little context. One thing that I worked on last year was iterating through different ways to explore code bases. So if you go back a little, if you scroll around my Twitter, you'll see. I was doing these different iterations of ways to browse codebases.
+And the very first one was actually a spatial interface where you can open up panes of code. And when you jump to definition or show another pane with just the function or the semantic unit that you're looking at. And then I went through other iterations, so that's a little background.
+And then after that I was working on a game with one of my good friends Rajeev, and we built this game called draw battle. the short description is it's team Pictionary and we were experiencing growth. And I'm one of those people who like obssessively refreshes, like to see how many people are playing right now and how that worked was there's just this rest end point where you can see all the active games.
+And what I was doing was I was going to postman and just repetitively hitting, you know, send, get requests and then doing command F. To see how many games there were. And then I also wanted to see like oh, what are the current active game IDs. And it just felt like it just repetitive process and I could easily write a script for it, but there's just something nice about in postman, when it renders JSON it renders as a interactive, JSON blob.
+you can, expand but it just felt so primitive, doing command F to see how many games there were. And so one day I was like, oh, okay. I'm going to just hack on this small thing where you paste some JSON and then you can transform it. It's a lot like unix pipes is a big inspiration here, as well as using JQ.
+JQ is like this tool that you can use to query JSON. And so I thought. " Sure you can do this in the command line, but I'm already interested in spatial interfaces." And so I just whipped up something posted a video on Twitter and it seemed like it actually got shared around a little bit. And what started off as a couple hour project just kind of snowballed and I'm still working on it now.
+
+#### Describing natto.dev [00:03:16]
+
+**Justin**: That's awesome. I guess got a little ahead of ourselves. Maybe you want to describe a little bit what natto.dev is and the interface people would see, of course people should check it out for themselves, but
+
+**Paul**: Yeah. Yeah. So, natto.dev, the tagline is a canvas for JavaScript but another way I would describe it is what if the Chrome JavaScript console and spreadsheets and a Figma UI had a baby, you put those three things together.
+Yeah, so natto to describe the product, it's a canvas for JavaScript. So you basically create panes, you can either have panes of texts or these eval panes which are exactly that. It's just a UI for the JavaScript's eval function almost. But another way to think about it is you have these blocks of computation, that's kind of like the big brain way to see it.
+But the other thing is that these panes you can connect them together. And so you get that natural data flow model that where output one pane goes into another. So if you're familiar with visual programming, it takes a lot of ideas from those as well.
+
+**Andrew**: What are some cool things you've done with that?
+
+**Paul**: Yeah. like I said, I'm excited to use it as like a playground for exploring these future of coding ideas. One thing that I'm finding out is if you just take ideas from design tools, like we can use Figma as the exact example, sketch, et cetera. If you just build that UI for code, you get a lot of interesting things come out.
+So one of the things that's interesting, these design tools they make it really easy to duplicate objects inside Figma. If you have some objects selected, you can just automatically, you just option drag and you just duplicate it. In code if you want to duplicate a function or just mess around a little bit you could like create a new file, but then you have to let you know, import things, get it to run.
+One cool thing about natto is you can select some panes and do the same option drag interaction that you do in Figma. And there you have a clone where you can mess around with the code and see the live results. And I think it's like interactions like that, that I'm excited to explore more.
+
+**Andrew**: Yeah. So do you feel like the visual tools, like this lower, the barrier for coding? Instead of having to write text, you can just drag blocks. Do you think that's the future of code?
+
+**Paul**: Yeah. Yeah. There's a whole spectrum of text to visual programming, right? Like on one end you have notepad or your traditional coding, where you're just writing text. At the other end you have like fully structured visual editors. I think like scratch is an example where you're dragging blocks for if statements. Where natto falls right now is this hybrid model of embracing a visual spatial canvas, but you're still writing text.
+And so at the end of the day, you're still writing JavaScript. You're not dragging out blocks of variables or blocks of here I'm creating a function. Right. You just type the function. And so that's kind of this middle ground that I'm curious about exploring. I'm really excited about spatial interfaces.
+I think we'll see more and more tools adopt spatial interfaces. But I also have my concerns with them as well. I think there are issues around scale but at least for like the ephemeral playground use case. There's just a lot of nice properties of having this canvas.
+It maps really nicely as a metaphor to the real world where you have, a table of space that you can work with.
+
+**Andrew**: Yeah. So you don't see it as a tool for like production code or at least not yet. It's more of just like that playground. It's your desk.
+
+**Paul**: Yeah. Yeah. So like where is natto? What is the goal of natto or where is it going? I, as of right now, I'm still not sure. It's an exploration thing. But I wouldn't use it to write your next business. And I don't think that will be the goal or it's use case anytime soon.
+To start. I think you start with like smaller use cases, I think. You can use natto right now to write small scripts. These like one-off maybe internal tools. another exciting thing about it is that it makes it really easy to whip up like small UIs.
+If you just want to whip up a small form or a way to visualize data, you don't have to, create a new HTML page, create react app or bootstrap, a whole webpage. You already have the divs there for you and you can just fill them in
+
+#### The future of programming [00:07:33]
+
+**Justin**: Yeah, I had mentioned at the beginning, I think the idea of multimodal programming, where you have like traditional text programming, but you have some way to break down into a spatial interface or some sort of visual interface. Probably makes a lot of sense. It happens a good bit and game dev right now where you might have, your regular sort of entity files, and you're building classes around these.
+And then you can drop down to a, sort of a modal editor and describe relationships and maybe that's for your shaders or something but still the select multimodality is really interesting. The thing that I immediately thought of when I started playing around with natto is there's this service called boom it's B O O M M dot io.
+So boom is like this way to create a little snippet that's installable as a package. Think of it like Pastebin except for NPM packages, right? So you create a new one, you write some code in there, and you save it and then you can, you have a URL, you can NPM install. And this is sort of the immediate thing I was thinking about with, natto I was like, oh, if I could just install this canvas as a package, that'd be really cool.
+Because then you have that ability to say, okay, I'm going to like, take something and put it together visually, and then I'll just install it in my code base and use it from there. But yeah, whatever that future is, I'm sure it's going to be a mix of all of these things in some
+
+**Andrew**: I think it'd be, look at other industries. It's interesting how much visual programming is there for non-programmers. So I've been watching a lot of content on YouTube, like about the new unity or like people using blender. And it like blows my mind when I see these visual programming things come up.
+The unity demo I saw they were making a, like a phaser noise and it was like hundreds of elements on the screen just to make a sound. And it's just astounding to me that someone can understand that. And the same thing goes with blender where I'm not exactly sure what they're doing in blender, but they're like connecting these boxes to apply shaders and make shapes.
+It's just, it's so interesting. And the way that it could apply to just code is a little mind boggling for me.
+
+**Paul**: Yeah I think code has a lot of nice properties. I think there's this in the future of code, you'd think a lot about like text or semantic units, right? When you're writing code today, traditionally you're typing text and then the compiler will, parse your text and they'll know oh, here's a function, here's a variable.
+And it like intuitively it makes sense that maybe our tool should map closer to what the computer understands. And so maybe you drag out a block for a variable or that, that way, if you rename the variable, you don't have to do, a command, like a find project to replace that instance of that text.
+You can just rename what the system knows as a variable and do that correctly. one thing that I'm finding myself gravitating towards is that text is actually really nice in many ways. It's how we consume and interact with code. Even if, the system is like, here are these abstract entities of like functions and conditions.
+Like here's an if statement, here's a for-loop at the end of the day, it's still showing it to us as text. And we're as humans, we're so good at manipulating text, right? Ten year olds today can text at the speed of light on their phones. I think there's this universal nature to text this portability where it's going to be around longer
+there's this balance of accessibility Of these so-called structured editors and visual programming tools.
+So I don't know what the future of code looks like, but I have the sense of directionality. And one general theme that I follow is just shortening the distance between things specifically in time. So that's like making your feedback loops shorter as well as space. And so that's like putting things that are related closer together.
+And so with time, I think that's with like how can we shorten the time to get something from idea to implementation. as we keep shortening that distance that will unlock a lot new ideas and enable a lot more people to make things other distances that we can shorten or the one from dev to production.
+So I think that's a common theme of like, how can we code in production or how can we get closer to that? Another one is how can we shorten the time from writing some code and running it. So a lot of times, right now you like type a lot in your text editor it maybe hundreds of lines and then you save it and then you go somewhere else and then you run it.
+So how can we shorten that as well? And so you can see some of those ideas show up in natto. This idea of interactive programming where instead of Writing all your code in one place and then running it somewhere else. How can we interactively code with the system, right?
+Where you code incrementally. And state persists while you're coding. Let's say you want to hit an HTTP endpoint and do some transformation to it. So what you can do is you can make a fetch call and get the result back.
+And then starting from that point without having to rerun it you can play with that data, play with that response, and then do your transformation interactively. That way you actually don't have to, make the same HTTP call again. In more traditional programming.
+You might write a node .js script. And you hit an HTTP endpoint and you're not sure what it returns. So you make the fetch call, you save it and then you run it. And then you see what like comes back and then you go back to your text editor and then you rinse and repeat a couple of times.
+But what if we can get that kind of going back to this idea of showing the distance between things how can we like remove that tool switching there that you have to go from your text editor to your to your terminal? How can we move that closer? That's like a very idea behind natto. The other thing is shorten the distance in space, This is like the idea of co-location. I think we see this trend a lot in just development best practices, with react before there was, you write your HTML here, you write your JavaScript here.
+Kind of one of the main principles of react is co-locating your rendering logic with your business logic. Because it makes sense to put those together. Similarly you see this with like file organization as well. And so now, and in rust, for example, you have like your tests live really close to the actual code itself.
+
+#### Visualizing code [00:13:49]
+
+Why I'm excited about spatial interfaces for code is traditionally you might have multiple tabs open or multiple splits, but it still requires a lot of context switching, you still need to switch your tabs around a lot.
+Whereas with spatial interfaces, if you can control the different panes you're able to put together layout your windows in a way that makes sense to you with all the pieces that are relevant to you at this moment. And that way you can see everything on the screen at once.
+And I think that's a useful thing.
+
+**Andrew**: Yeah, this is something Justin's passionate about. He shared with me like this little code sample, where he wanted like a control flow thing that was super terse, so he could keep it all on the screen and see it. But text really isn't the best representation of that. Cause you have to like understand what the underlying constructs are actually doing, but through this visual interface, you really don't, it's just like it's inherent of what you're looking at.
+
+**Justin**: That's a big part of the challenge of code is because it's like, it's this multipurpose thing of one is you are in some way, like writing the specification for this application that you want to run on a computer. So you're telling it to do something. But the other thing you're doing is you're telling a story of what is happening.
+You're like trying to describe to other human beings who are also going to read this and modify this thing, what is going on. And sometimes those things are at odds a bit because a computer doesn't need readable code. It doesn't need to understand the relationships for things or have some like way of building a mental model.
+It just needs to know how to compile it. And it just executes it. But it's this, the reason why I'm really excited about things like natto and dark lang, I would add to that. And so many other really interesting tools in the space that think about it's okay what if it were slightly different?
+What if we had another way to do this, besides just text files
+
+**Paul**: Yeah. And And one thing that I'm excited about is the idea of visualizing code bases, One question I want to spend time exploring is what does a map of a code base look like, right? And to your point of storytelling, that this might not be necessary information for the computer to run your code.
+But today, if you're a new engineer to a code base, you're like, here's the GitHub URL, like have fun. You have a list of directories and files. And so how you start is maybe hopefully someone wrote a nice README or architecture.md or something. But really you just kinda just start clicking around and maybe open up in vs code.
+And so you get jumped to definition and some tools to help you. But this idea of if you think of a map yeah. What does a map of a code base look like?
+
+#### Factorio as a visual metaphor for code [00:16:30]
+
+One game that I've really enjoyed last year was Factorio. I don't know if you've played Factorio,
+
+**Andrew**: once or twice? I didn't want to get lost.
+
+**Paul**: Yeah, it was such a time suck for me. Um, kinda just start dreaming in Factorio?
+Yeah. Yeah. But a Factorio is this factory building game where, you know, you start off, you're just one character off by like mining coal manually or the resources, but then you progressively, build machines to automate things for you. And it just keeps getting, it just keeps escalating.
+In a lot of ways there's so many parallels between Factorio and engineering. because you start off, you know, um, doing things manually, but then you. When you automate things, it's like the equivalent of writing for-loops and functions.
+So you kind of create these abstractions. One thing that's interesting is over time, it's this physical world. And so you have different spaces in the world as well. Like you have, like this area over here is for, you know, creating my steel plates or something like that. Whereas over here I'm like building rockets.
+and there's also multiplayer where you can have multiple people running around the world at the same time. One thing that I think would be interesting is what if you had something like that for code bases where like, if you're at a company, you have a map of the code base in some visual representation and you have like little avatars of the different people that are working code base at any time. And then you can see like over here, like here's one feature, like here's like the backend or um, Like, here's some like new feature that this team is working on. And then you could see the little avatars and they're like respective worlds on the map. Um, and then you could see like okay, maybe these two features are touching the same other core utility file.
+Um, and it's it just be interesting to, I think it's a pretty rich and unexplored space.
+
+**Andrew**: that, that definitely is fun to think about. having just started at a new job, like the only way you really know a repo is either by, you said jumping around or just knowing the tools that it uses, but it'd be so much cooler to be like, well, that big pile of code over there. That's this portion of the app.
+And like, it has these like visual intricacies that tell you about that. That's a very interesting to think about
+
+**Justin**: Have y'all ever seen It's called gource It's like source with a G instead of an S it's a, visualization for git repos as they change over time.
+
+**Andrew**: Yeah. Yeah. I try, I did that on the last repo I worked onat Intuit and it broke after an hour
+
+**Justin**: it's really fun because it does that thing. It like builds up a network and you get to see the individual people making changes or whatever. Not incredibly useful because it just plays back the timeline, but it's still interesting.
+
+**Paul**: yeah.
+
+**Justin**: yeah. Factorio is a lot of fun. There are like, there are two things about that that I'm going to mention that I think are really good. Like I'm drawn to games that have end user programming that allow modding and Factorio has a really rich modding scene because they
+thought about modding as a first-class portion of the game. One of the mods that I really, really like is this factory mod where it gives you a building that you can put down and you can put things inside the building and the building has inputs and outputs. So it essentially gives you a function.
+So that's a lot of fun. I don't know. I just like that, it felt really good to have that in the game. The other thing that I'll mention is I was browsing around GitHub the other day. And someone had written a Terraform deployment script for Factorio to deploy, certain factory set ups.
+And I was like, all right, we've gone too far.
+
+**Andrew**: Isn't it just work at that point. Like, that's, that's why I had to stop playing It was like, well, I'm just going to my computer now for four hours at a time. And still not talking to my girlfriend. Like,
+
+**Paul**: Yeah. Lastly, it's interesting because it is work in a way, right. You're, you're kind of just automating things and you're just optimizing your, you know, your, factory, making things more efficient and it's, it is work, but at the same time, there's this like visceral one thing it's like, I think personally, I think it's beautiful, but like how can we make real work feel more like playing factorial or at least the good parts.
+
+**Justin**: Yeah.
+
+#### Organizing Code [00:20:43]
+
+**Andrew**: I use obsidian for notes. And at first I was like, I don't need a graph, but then I was like, Ooh, pretty graph. And that like, kind of like drives you to, write better notes so you can like see your knowledge on that graph more.
+
+**Paul**: Yeah, and that's definitely, it feels very trendy, right? These a graph and backlinks interconnected kind of things, but a lot of ways that is like, what code is in a code base like, one thing I'm curious about is, I think a lot about code organization and like how big should a text file be?
+I think textiles are kind of, the file system is kind of arbitrary in many ways. Um, what you really have are these like units of things, right? So you have these functions or classes and modules, basically these semantic units. and it'd be interesting if you have abstracted away the file system.
+Even if it's powered by the file system underneath, but if you had an editor where instead of opening text files, you're opening, just functions. This is one of my like core thesis that I was exploring. So instead of opening text files, you open up functions and then you can imagine there are different ways to browse these lists of functions, you could be like, Hey, give me all the react components in this code base. And it shows you a list of all the react components. Show me all the react components that are, used on this feature or that show up on this page. or have been like touched in in the last week, Basically a another way to interact with code and then code itself has a lot inherent semantic connections.
+this function calls this other function, right. That's like the most basic but useful connection. so you can see like, okay, when you're looking at a function and show me all the functions that call this function or all the functions that are being called by this function, lay them out to the side.
+
+**Andrew**: It sounds a lot like a tool that Justin shared with me a while back, actually, a programming language. Do you remember what it was Justin? It was like the longest doc ever . "You were like you need to smoke something before you read one. this one!"
+
+**Justin**: Yeah. so yeah, there's this programming language called unison. It's unisonweb. I mean, to me, it really makes me think of okay, this is, this feels like an incremental step to programming because it, encapsulates a lot of the ideas that we've talked about.
+So they store code more like in a, it's almost like an, a database sort of, they have a certain structure, but it's all abstracted out. So when you're interacting with it and you can like query for certain types to see what's there and you don't write files, you have a scratch file that you can write some unison code in.
+And when you run it and save it, it just is stored in your like unison store or whatever.
+
+#### Structural Editors [00:23:22]
+
+One of the things that I really want to do a whole dedicated episode on sometime is structural editors and structural programming where you don't have text.
+You have a special editor that's allowing you to essentially program what ultimately ends up being just the AST directly? I think that's to me when it comes to texts, that's like the future of like textual based programming.
+
+**Paul**: Yeah. And that's how I thought a year ago as well, actually. One thing I felt last year was a structured editor for CSS. Right. So I was thinking like, all right, let's start with like the most basic grammar, and see how it feels. There's some nice properties to it. And again, this is like one that I built.
+And so I'm not saying it's, not like the structure editor, to use the example, but, you get some nice properties, but then I, I think there's just something. Inherent to, when you're looking at texts, you want to manipulate it like text, right? Like you see this line here, you want to like move it down two lines.
+I think with structured editors, there's this, mental gymnastics that you have to do of like, all right, this is the text that I'm seeing on screen. what does a computer think it is? Like what operations can I do at this time? And maybe that's just kind of the state of structured editors today.
+I think a lot of them make it, so it looks like text, with like different key operations. I will say the best structure editor I've used is the darklang one. I think they've done an awesome job with like key operations
+
+**Justin**: Yeah. I actually met Paul a little while back. He's a former Recurser. And we talked a little bit about natto this when we were discussing, but That whole ecosystem is really interesting. So for folks on where dark is like, it's a, it's not even, it is a programming language, but it's like much more than that.
+It's a whole like programming execution, a computing environment, if you will, because you write your code in a structural editor. So it's not necessarily text based. It's like interpreting what you're writing and transforming it into something. So theoretically it's like syntax error free theoretically, and then you're doing it on a canvas, which feels a lot like natto.
+But it also has like integrated database functionality and integrated feature flagging and like all these other features that like just gives you a all in one programming environment, just super fascinating.
+
+**Paul**: Yeah. Uh, you have both, uh, dark Lang and unison are awesome and they both happen to have people named Paul behind them.
+
+**Justin**: There's something to this all the Paul's are building interesting stuff!
+
+**Paul**: Yeah natto takes a lot of inspiration from dark, for sure. And unison, they have this quote on their docks, which is like, instead of, you know, writing code, what really in the unison ecosystem, there's this, like, there's basically stars already out there and you're just picking stars out the sky.
+Yeah I'm not doing a great job explaining it, but there's something where you're just collecting things that are already out there into your system.
+
+#### The art of naming and organizing things [00:26:24]
+
+One awesome thing about unison is that one of their core principles is content address code. Basically names don't matter. and that's one, core idea behind natto as well, actually, which is, you don't have to name things or I'm trying to, like, I hate naming things! There's an art to naming things, but if there's a way that we can just step around it or make it less important. That's I think that's a direction of code. Yeah.
+
+**Justin**: Yeah, I definitely think it's kind of a smell that a lot of early decisions that we make about how we name a file or where a file lives on a file system becomes like an architectural decision. It becomes a decision that you make that. It's really, really hard to change. This is something that bugged me a lot when I was in the Java ecosystem, because it's like the sort of directory structure would often map the namespace scope.
+And it like had this like semantic meaning of where something add and how you import it and everything. And of course you like over time, build up tooling around these things. So your IDE will help you. But if you're in VIM and you're trying to do something, it can be really frustrating to like, oh, well, you know, this file has to be here, had this certain, long, super long path because of X, Y, and Z reasons, because of some decision that a developer made like 10 years ago and it's like, we're not gonna change it now.
+It's all that work. I was like, Ugh, why is it, why is it the
+
+**Paul**: Yeah. You always have your utils Uh, Yeah,
+
+**Andrew**: of all good open source a good utils file.
+
+**Paul**: exactly. Well, there's nice thing about, like, about utils files. There's actually something nice about having this dumping ground, right? Like, um, it's a place where you put things you're not sure where to put it. and so if the function sounding enough, utils is like the best place for it.
+You can just open up the file, go to the end of the file and just stick a new function there. That's the flow that I like to see programming trend towards. Where the location of code itself is not as important.
+
+**Justin**: There's a demo that I've found online of some early, early work that this group of folks are doing. I think out of Seattle it's called Dion, dion.systems as their website. Have you. Seeing this already. Yeah. So they have an example of a structural text editor, like demo thing that they did.
+And they're doing a lot of really interesting things, but they have two properties of their editor that I thought were really interesting. One is that this like positionality of your code didn't matter. So you could like reposition something and it was like, totally fine. The other thing is they had this ability to zoom out and as you zoomed out, you would get different levels of detail of the code, which is a, as like a really interesting conceptual model for that.
+And it was also all of your code for your entire application was in sort of one view and you could filter down by certain things. So you could write a filter for like, I want things that just have this return type or something. And it would like filter down to those functions or whatever.
+And reminds me of some of the things that you're thinking. I don't think they're actually working on the structural editor right now. They're trying to figure out a new file format for storing code,
+which is interesting, but, you
+
+**Paul**: Yeah. Uh, kind of related, one of the principles behind natto is incrementalism or more concretely embracing JavaScript. I love all sorts of programming languages, you know, Haskell, whatever rust. But the thing about JavaScript is that like, I know JavaScript you probably know JavaScript Um, your listener probably knows JavaScript and the browser knows JavaScript, right? And so for all, its good and bad JavaScript is probably gonna be around for a little while. One idea behind natto let's embrace JavaScript. I'm actually trying to do as little in the runtime, portion of natto as much as possible.
+It's it's really like in some ways they glorified , UI, spending more time.
+Yeah. exactly. It's basically the Chrome console with a different UI.
+
+**Andrew**: Yeah. On the topic of like, not wanting to organize your files, have you seen this there's this project that claims to be the prettier for file structure? Yeah. I don't know how, how it'd be useful like for people, but it does do that.
+
+**Paul**: Yeah.
+
+**Andrew**: I haven't heard of anyone using it
+
+**Justin**: I've heard of this before... I forget where.
+
+**Paul**: I wonder if anyone's using it for real, like,
+I, I do think it has the right idea.
+
+**Justin**: called destiny.
+
+**Paul**: Yeah.
+
+**Andrew**: Yeah, there it is.
+
+**Paul**: Yeah.
+
+**Justin**: That's really interesting. I was thinking I needed something like this for obsidian, because there's a parallel between what we've been talking about and like knowledge management systems or like note-taking systems. Hierarchy can be a bit debilitating when it comes to building something with code or notes.
+And I've fallen into the whole thing. anyway,
+
+**Andrew**: 3.5, a thousand stars and then 35 people using it. It's a good concept.
+
+**Justin**: That's, it's pretty interesting though.
+
+**Andrew**: Yeah in obsidian, I've definitely gone for the don't organize anything at all, which is like, just let the graph, explain your organization.
+
+**Paul**: Yeah. Like, uh, I just started using, obsidian, but like Justin, like you said, I think there are a lot of parallels between organizing your notes, which is this, you know, whole kind of thing in itself and the parallels of that and organizing code. Um, at the end of the day, you have just a lot of things that are connected and you want to wait to effectively browse them and edit.
+
+**Justin**: Yeah. It's non-trivial for sure. And they both, th there's so many parallels between both of them because you need different lenses to view things from. So if you have a knowledge management system or a note-taking system, it's like, depending on what you're doing, when you're coming to that, you need to see certain things or you need to be able to explore certain things or make certain connections.
+And it's pretty much the same with code.
+And we do have rich functionality in IDE these days, or code editors where you can like command, click and like. Follow a functions usage too. It's like definition and that's okay. Even some, you can like open the reference and like maybe make some edits in line most of those aren't the best. Paul bigger the author of dark actually showed me this like work in progress vs. Code plugin called inliner, which does that, it's just like you click a function and then it like just opens up the whole function definition like in line. And you can edit that, but you can nest them so you can keep opening function definitions to go to a thing.
+And I thought that was a really cool paradigm. But I think there's definitely things about these two spaces of tooling that we could probably probably connect a little closer together different problems, but they feel very similar.
+
+**Andrew**: Yeah, I have 1 last hard question. Before we move on to the tool tips. How did you come up with the name?
+
+**Paul**: Yeah.
+
+#### Inspiration for the name Natto [00:33:21]
+
+**Andrew**: I know what, what the snack is the food. How does that connect to the concept of natto.dev?
+
+**Paul**: yeah. Yeah. So I natto though for you, unfamiliar is a Japanese food. It's fermented soybeans and it's uh, it's stinky and quite, um, divisive. I didn't spend much time thinking about the name. And so right now it's, it's still really a, a playground space for me. Um, I, I think if it becomes something more real or if I feel it's gone to like a more. You know, place where I want to share more widely, I'll probably come up with a different name, honestly. Um, but the parallel, like why that name might make sense, if you like squint really hard is if you've eaten natto though, it's a, it's a very sticky food. And so the soybeans, as you're eating it, the soybeans they get like stuck to each other.
+And so you form these lines. so if you look at each soybean as a pane and, uh, you know, it's kind of like a node and wire interface, if you close your eyes.
+
+**Andrew**: That's an awesome visual metaphor. I think you should really run with it and like just have beans throughout the UI.
+
+**Paul**: Yeah.
+
+**Justin**: Yeah. that's good.
+
+**Andrew**: Cool. Is there anything you want to talk about before I move on to tool tips?
+
+**Paul**: There's a lot of good ideas out there and more recently I've been spending a lot of time, finding literature, browsing these communities. but one thing I think a lot about is how can we bring, you know, you have minority report where, you know, Tom cruise is like going all out and just moving panes around and like today we're typing in, textedit or know like we're past that now, you know, w we have vs code, but how do we get from.
+A to B or how do we bring some of those future of code ideas to people, To where people are. And that's why, like, I'm actually, I'm really happy about prettier. I think prettier is one of the most impactful tools, of recent history, just all the human errors that it saved. If you remember the world before prettier was you know, uh, can we move this on to the next line then?
+Like half of PR comments was this indentation is off.
+Other things I'm excited about are TypeScript. I think TypeScript has done a really good job of, of embracing JavaScript. Some people say that it's unsound from, you know, if you're really into type systems, but, I think it has a very pragmatic approach.
+
+**Andrew**: Gonna move on to the tool tips!
+
+#### Tooltips [00:35:53]
+
+Stuff we were just talking about um, been working on recently is my personal website and there's a thousand ways to build a personal website. And this time around I took the digital gardening approach. digital gardening is a sort of new concept that's built on obsidian and this like knowledge graph methodology. Where you have like a bunch of notes that are considered evergreen notes, which means like, instead of just writing one off notes that you throw away, you kind of tend to them over time, help them grow. And like, it's not just a blog post from a few years ago. It's like your current thinking and knowledge on the topic now.
+Maggie Appleton writes a lot about this. And, recently I got inspired and for hipster smoothie.com, there is now a digital garden where I share things about like how we produce our podcast, all the different tools that I have set up on my machine. So I basically take all the blog posts I had written and disseminated among medium and dev.to and put them here and then linked them also.
+And it's been, it's been fun to like take this approach because usually my blog is just like a list of posts, but on this, there's like a quick switcher. Like in vs code where you can like jump through the notes and it has backlinks between all of them. And it's, it's been a fun idea.
+
+**Paul**: Awesome.
+
+**Justin**: You've done great work on that.
+
+**Andrew**: I think I've made the core browsing experience of notes really nice. Like really all you need when you have this like network of notes is some tags that make it easy to jump around a thing that makes it easy to jump around.
+And then you really don't even need navigation. Like when you're building a dock site, you really need like a sidebar. But when the links define your content, you can kind of just let them do that. a good example is if you go to the dev tools, FM post, I list all the back links to this post.
+So you can go and learn about my podcast, editing organization or other things. And I've also included like nice little features like this, where you can hover over the links and get like an inline preview. Very much inspired by obsidian.
+
+**Paul**: Nice.
+
+**Andrew**: We'll see if I ever create the home page.
+
+**Justin**: You've done good work there. So in the spirit of visual editing, I found this the sort of relational database modeling tool. So it just gives you the ability to do just that, to like, lay out models and define your relationships. And it generates a SQL code and everything the free version of it. It does have a free version.
+It's limited in what you can do, but it is a good tool for just like getting thoughts out about data modeling. And of course it's not the only tool that does is there are many but this one was just, what's pretty nice. I was pairing with another recursors this week and we're pairing on building a notification management system, trying to like.
+Bucket certain notifications and a certain category or context. So you can turn off just work notifications and still get your personal notifications or whatever. Anyway. And we were doing some database modeling and this
+tool came in handy.
+
+**Andrew**: You like build your database into this or is it like uh, it just a visualization for it.
+
+**Justin**: No,
+No, not necessarily. It's just for, it's just for visualization and planning. So if you actually go to the top of the page, you can try modeling thing and it like just builds out. You can select a sample, just hit sample project there and you can see what it is. It's just, yeah.
+So you have this interface and it's a canvas and you can like right. Click and add a table that zoom in and zoom out and, it's it's nothing earth shattering. This has been done
+in many other tools...
+
+**Paul**: yeah. this, talk on spatial software by John Palmer, um, at config conference this year. Uh, I think, spatial interfaces are something that we're going to start seeing more of and, something that's relatively new. And I think in this talk, John does a good job of laying out some ideas of like when to use spatiality some best practices for it, some design considerations. And uh, he also talks about game feel taking inspiration from games. and what like what is game feel and how can we make our tools, get some of that playfulness, um, from games into the tools we use.
+
+**Andrew**: AR and VR become mainstays of the world. spatial computing is really going to pop off when you're talking about code organization earlier, what happens when we were in VR? You don't, are you going to be typing on a big screen in VR? That doesn't make any sense.
+There must be a better way to express that just some text.
+
+**Paul**: Yeah. And why be limited to, you know, two panes when you can go beyond the boundaries of your window.
+
+**Andrew**: interesting, Or brings to mind for me is did either of you ever use turntable.fm? Like that's, like you're in this digital space and like that made it seem so fun where you could have a room where someone's the DJ, but having it visualized added this fun to it that wasn't there before
+
+**Justin**: from what we were talking about, but fascinated with 3d modeling. Uh, I like to do a lot of 3d printing and, and, uh, design with a fusion um, there is this Swedish team has been working on So essentially it is, you can think of it like a proper CAD system in the cloud, like a headless CAD system.
+And they've built some react bindings to that CAD system. So you can essentially build models in react using like fundamental CAD functionality, so constraints and a lot of the other features that you think of and like a high-quality CAD modeling program. Um, it's incredibly fascinating, incredibly fascinating. I love to see this project evolve. I'm sure it's incredibly expensive to use that at your company.
+
+**Andrew**: Yeah.
+Oh, funny little tidbit. When we were talking about relative CI and I was like, they need a contact sales button that dude recently added a contact sales button because of our podcast.
+
+**Paul**: Oh, nice.
+
+**Andrew**: 3d blows my mind too. the guy, well, the guy and then the people who did three JS, I think they just released like this 3d model marketplace slash package distribution type thing.
+That looks pretty interesting and maybe similar, but I don't know,
+
+**Paul**: I, I wanted to share this awesome Twitter thread by David Cole, where he posts up like, I think 50 GIFs on where Wario Ware DIY and some of the design decisions in the game. it's this kind of meta game making thing where you make games inside WarioWare to and play them.
+Um, but in this thread, he just highlights tiny design details that make it really playful. there's often inspiration be taken from games. like how can we inject that creativity into the tools that we use? Um, there's there's one there's a thread in the game. If there's this, Guy shaking his butt, um, is a common thread in the thing. and just as this like small, joyful, Environment.
+
+**Justin**: Yeah, that's awesome. I think that that sort of notion of there's a lot. That we can learn from games programming is so very true and I've heard it reflected in a lot of different places. There's this podcast that I listened to by a team that works on an iPad app called, Metta, uh, some MetaMedia podcast and R mark McGranahan is one of the hosts on there.
+And he seems to talk a lot about this notion that oftentimes video games are like precursors for new design patterns that like make it into the industry. Like it appears in a game. And then like a few years later you like see it in like somewhere else. And then it sort of like propagates from there.
+There's this other article I can put in the show notes from the site andy.works that included this whole article just about this, like the inspiration of games and programming.
+
+**Andrew**: is what I'm saying. You got to really lean into the beans.
+
+**Paul**: Yeah,
+
+you have to eat the beans to power the code.
+
+**Justin**: This is a little tool called, layout-it
+It's grid.layoutit.com. Uh, and it's, it's a pretty simple tool. It's for designing CSS grid layouts specifically using layout areas. So in the left hand, there's this little column where you can define, like how many rows and columns do you have?
+You can add new ones and you can give it different measurements or whatever. And then you can actually select regions in this and give the regions name. And that's often used, you know, when you're doing grid template areas, you'll like name a region and you can just say in your component or whatever is go to area, blah. blah. Then it'll like just render in the area correctly. Um, so it's a cool, pretty simple tool. It just generates the CSS you need to, to like have that layout. I like CSS grid a lot in this tool's neat!
+
+**Andrew**: Yeah. The fact that you can do these areas is just so weird. like just lay out in the header. Well, it doesn't matter where you are in the
+
+**Paul**: Yeah.
+
+**Justin**: Yeah.
+
+**Andrew**: And our final one of the day...
+
+**Paul**: Yeah, tweemax is a Chrome extension or I guess browser extension that augments Twitter web usage. it's like the extension that you. Didn't know that you needed until you use it and what it does, is it hides the click baity portion of, Twitter and replaces it with contextual information. So if you're browsing, someone's profile, it'll show you like their top tweets and highlights which is really useful. as well as other things, like if you're looking at a tweet, you'll see like the quote tweets and kind of related tweets on the side.
+
+**Andrew**: Gonna install that. I think I use minimal twitter right now. I'm going to make it maximumal.
+
+**Paul**: Yeah,
+
+**Justin**: One thing I've actually been thinking about um, building is a Chrome extension to when I save a tweet to actually extract some contextual information. So it's like, okay, I saved this tweet and it's by this person, maybe it was retweeted by this person or whatever, and like collect that information. and then over time have associations like, oh, these are the tweets that I've liked from this one individual. And like, here's like a collection of just those things. because so many interesting people posting very interesting things. on Twitter, and it's kinda hard to.
+Just keep track of all of that stuff, you know? And you're like going to.
+come back to it and say, oh yeah, I found this really cool thing.
+Somebody is talking about X, Y, or Z.
+
+**Paul**: Yeah.
+
+**Justin**: So maybe this will help with that.
+
+**Andrew**: the Twitter API will not be your friend. If you want to build that.
+
+**Paul**: Yeah, one cool thing about this
+extension is that it makes all the requests from your browser as your browser. So it actually, I like, I don't think it uses the API. It, it kind of just, drives your browser behind the scenes. And at least that's how I think it works.
+
+**Andrew**: Well, cool. I think that about wraps it up for the week. Thanks for coming on. It was a lot of fun talking with you. This was definitely an out there topic compared to our other topics.
+
+**Justin**: So fun though. So fun.
+
+**Paul**: Yeah. Cool. Thanks.
+
+**Andrew**: And that's it for this week's episode of dev tools, FM, thanks for listening and make sure to follow us on YouTube and wherever you consume your podcasts.
