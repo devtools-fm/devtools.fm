@@ -1,0 +1,414 @@
+---
+title: Brenden Falk, Matt Schrage - Fig
+youtube: https://www.youtube.com/watch?v=N-HV5gPFnzE
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/8800239
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Join as on a chat with the founder's of fig.io. They're trying to bring fresh air to the terminal experience in new and interesting ways.
+
+<!-- LINKS -->
+
+- fig.io
+- Fig Hacker News Post: https://news.ycombinator.com/item?id=27277819
+- shell explainer: https://explainshell.com/
+
+## Tooltips
+
+### Andrew
+
+- Postico
+- https://homebridge.io
+- https://level.co
+
+### Justin
+
+- https://github.com/lirantal/nodejs-cli-apps-best-practices
+- https://github.com/thassiov/tuizer
+- https://github.com/ploopyco/mini-trackball
+
+### Brendan
+
+- CLI tools: trash, abbreviations
+- https://github.com/sindresorhus/trash
+- MDX: https://mdxjs.com/
+
+### Matt
+
+- CLI interface guidelines, by Ben Firshman and others: https://clig.dev/
+- Modern Text Based web browser. https://www.brow.sh/
+- Docopt - build CLI tool based off of synopsis. http://docopt.org/
+- Gooey - automatically turn python CLI tools into GUI apps. https://github.com/chriskiehl/Gooey
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Preview Clip
+[00:00:25] Introductions
+[00:00:41] What is Fig?
+[00:04:40] How does Fig Work?
+[00:08:59] Hacker News Reception
+[00:14:06] Betting on the Community
+[00:23:27] What's Fig's future?
+[00:33:52] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### Preview Clip [00:00:00]
+
+**Matt:** Building a development tool is a rare thing where you are the same person as your target audience. The problems that they have, or the problems that you have, and bringing people together to discuss this and like potentially be able to fix it together is powerful in a way that like most startups can't go to their customer and say, Hey let's make this better together.
+
+#### Introductions [00:00:25]
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+**Justin:** Hey everyone today, we've got Brendan and Matt joining us from fig. Fig is a pretty magical auto-complete experience for the terminal. Brendan, Matt, would you like to tell our listeners a little about yourself and how fit came to be?
+
+#### What is Fig? [00:00:41]
+
+**Matt:** All right. So a little bit of that background on us. Brendan and I met our freshman year of college. And we've just been hacking on side projects ever since, like when we were in school, we built an events app together. Like the classic startup that everyone in college different tries to put, out.
+Um, That was an early learning experience. We built a bunch of other stuff along the way. And so when we were thinking about what we wanted to do after college, We loved working in tech. We knew we liked building things together. And so we're like, Hey, let's try to start a startup. And so we were lucky that we got into YC through this kind of unusual early decision program.
+So we, we applied in October knew we were, the October of our senior year, knew we were going to get into YC, but then we had this six month period where we had the investment, but we were still in school. And like the YC program hadn't started yet. And so that was when we started like really drilling down and trying to figure out what we wanted to work on.
+And so we'd applied with one idea we'd pivoted before our interview. So we were kind of in this spiral where we were just going through a ton of things, building lots of stuff and just seeing what, what stuck. And in the process of doing that we honed in on this pain point for ourselves.
+We're like, okay, every time we're building something new, we're spinning up a Postgres database, deploying something on Heroku. There's all of this stuff we do in the command line that is essential to get a project off the ground. But is surprisingly hard, especially if you aren't doing it all the time.
+And so that was kind of the core idea behind fig early on. It's like, how can we take this sort of intimidating environment and make it really easy for anyone to get set up quickly and use like a power user.
+
+**Brendan:** Yeah, I think just adding onto that a little bit, one thing Matt said, so we got into YC in October, 2019, but we started YC in June, 2020. Like obviously we didn't know the pandemic was gonna happen, but we had this unbelievable six months where we're working on ideas. We had every aspect of YC except the sort of boot camp.
+So we had the money, we had the partner access, we had the community. And so what our problem was in the early stages, we had ideas we weren't particularly solving problems, and in building the ideas, we found that, oh my God the terminal is actually a big problem.
+Not just for us, we're talking to our friends and they would say, "oh yeah, like what the hell? This tool was built in the seventies. Why the hell is it exactly the same? And I have to use it at work and we're not getting trained on it at school." And that's really the Genesis of the idea, how to talk more about what happened during YC and how we got to auto-complete.
+Cause that's another few months of I wouldn't say pivoting, but we identified the space that we're excited about. But I think just because you identified the space doesn't mean you have found the exact thing that you want to work on.
+
+**Andrew:** where did that start? We've ended up at auto-complete and from what I've gathered through looking at your discord in that future plans to come and there's like this fig core that powers it all, but like where did it start?
+
+**Brendan:** The idea originally was tutorials in the terminal. The problem we had was we were trying to set up a Postgres server locally. We were trying to fork a production database. And we're going through the exact same medium article every couple of months, as we pivoted ideas. And sometimes like you would follow the same steps and things wouldn't work.
+And so the original idea was can we sort of overlay these tutorials in the terminal, literally the idea of context switching, I'm going to my browser, I'm copying code. I'm putting in the terminal, I'm running it and start working. I go back to my browser, like, can we just solve that problem? And then the way Matt actually built it was, maybe it was so much harder than it should have been, but he sort of built this API, which allowed you to build any UI in the terminal and what the API would do. Is it just a web view, but we could dock this web view to the terminal window. We could also read and write to the local shells so we could do the file system operations, that sort of stuff.
+And then finally we could paste code into the terminal. So we started off with the tutorials, but then we realized that, "oh, there are so many other problems that people have that we could solve." And so we started just doing YC, especially building apps essentially. We see this evolve into a visual app or extension ecosystem for the terminal.
+And the way we started was building this API, which enabled us to even build these apps.
+
+#### How does Fig Work? [00:04:40]
+
+**Justin:** Yeah, that'spretty fascinating when I first got started with fig, y'all still have the sort of runbook like ask sidebar thing. Yeah. And I was like, , how does this work? Matt, do you want to talk a little bit? I know you're doing a lot with the accessibility API, but I'm curious, how did you get to come to that conclusion?
+
+**Matt:** Yeah. I have an iOS background from when I was younger, I would just throw together some various little side projects there. So I knew the apple ecosystem, but what was really fun about going from iOS to Mac is how much more open stuff is like on the iPhone.
+Things are like really siloed. You, if you don't have access to something through an apple approved API, you can't do it. Whereas on the Mac if you're outside of the sandbox, if you're not distributing on the app store, like you really have access to the computer and that lets you do super cool stuff.
+It is in this really early stage when we were just trying to like add tutorials to the terminal. I was like, "how can we do this without needing to build the terminal from scratch? That's not the core problem we're trying to solve." So if we wanted to integrate with existing terminals, we had to do some kind of hacky stuff.
+And this is where I came across the accessibility API. And that's really powered a lot of the integrations. But what's interesting is the terminal environment is actually pretty open and extensible. So in order to create the seamless experience that we think we've done you actually have to integrate it a bunch of different levels.
+You're building integrations at the shell level. You're building integrations at the terminal level. You're building integrations at the operating system. And so the accessibility API along with a couple of other things is the integration with Mac iOS, but we've also had to go in and build a custom vs code extension and write a bunch of weird, like z shell line editing widgets to get the information that we want.
+And then the Mac app takes all of these inputs and synthesize it. And so that, like the web view has this kind of clean API for dealing with all of these terminal events.
+
+**Justin:** Yeah, that's awesome. I imagine that, that is an incredibly hard thing to do. Generally, because of like first just digging down into the accessibility API. We were talking about this previously, but it's like, okay, you have to know where the cursor is in the terminal. And that takes some very particular tunneling.
+But beyond that, it's like stitching all of these sources of disparate information. And that seems like a hard
+
+**Matt:** Yeah, we've always taken incremental approach to this. Like we started not just being like, okay, we are going to make this for iterm. And like, maybe it's not going to work anywhere else. And then once we had it working, like some really early prototype and item, we're like, okay, well just by tweaking this a little bit, we can also support the native terminal app.
+And then it was that iterative approach that slowly we expanded from just supporting one terminal to also vs code and hyper. And we have some plans for alacrity and kitty coming up. Once you find the core architecture, it's just figuring out like the new little hack that gets us on the next platform.
+
+**Brendan:** Or to to really emphasize how this works. It is exactly, as you said, Justin, you are using iterm. We don't own iterm and there is a cursor in iterm and we need to dock the fig out next to that cursor. So all the layers we have to go through at the operating system level, like what window is currently open on the screen, and then you go down to the terminal.
+What tab is open, how big is the width of the, like the menu bar at the very top? Are you in a specific pain they're using something like tmux or even the panes in iterm, or if you're in vs code, like is the terminal? Even the active more sort of little module at the bottom of the screen, right now.
+And then you have to go to the shell level. Okay. What shell are you using? Bash is very different to zsh shell is very different to fish. And then finally, there's the CLI integration. So if I type CD, how do we know you've typed CD? How do we get that text out? And what if I type in CD semi-colon git space?
+Like, how do we know that got is the thing we should be completing on? Not CD. Yeah, it's just been like integration after integration, after integration from the OS all the way down to every single CLI tool there is.
+
+**Andrew:** That sounds like a nightmare to test.
+
+**Brendan:** It is.
+
+**Matt:** Started figuring out some more scalable ways, because for awhile, it's like we just had a suite of tests to do for version releases. And we have a hack together, apple script that actually will mock keyboard events into like various different terminals. And so then we just take screenshots and make sure that stuff is semi working.
+But yeah, there's a ways to go in terms of making it more of us.
+
+#### Hacker News Reception [00:08:59]
+
+**Justin:** That's awesome. One of the things when I had first heard about that, and then when y'all launched on hacker news recently we saw a lot of feedback about it is just, developers are a very particular group of people, and there are certain things that they just get really just really paranoid about and privacy and security often are something that like.
+They're very paranoid about. So I feel like I did a pretty good job, like responding to a lot of the concerns raised in hacker news, but when someone asks you, it's like, Hey, well, how do you think about privacy? And how do you think about security giving that, being that you're building a tool that has access to someone shell, which has the permissions that they have, like, how do you approach that?
+
+**Brendan:** I'll condense down the big criticisms from the hacker news post. And like, hacker news is obviously its own hive mind. There are a lot of vocal people and then there are a lot of lurkers. So we take everything with a grain of salt, but yeah, the key criticisms, which I think, and Matt thinks as well, totally fair.
+It's people were saying, why the hell do you have a login for this? Like, why should I even put my email in? You're literally doing auto complete for them. Totally makes sense. Second thing was, why do you have any telemetry whatsoever? Like, why is this not up? Why is it opt out also, like has been discussed about so many things that's been a problem forever. Like totally agree with that. And then the final thing was like, what is your business model here? Like you're literally doing audit complete for the terminal. If you're not charging me for it. And you've said you will never, ever charge me. You're either selling my data or you've lied and you are going to charge me for it.
+So like all three of those criticisms totally valid, totally fad. And I like to address each of them. The first thing is yes. Why the hell do we have a log in for auto complete it, even taking a step back, we maybe did a bad job of pitching exactly what fig is. Like I said earlier, we want to evolve it into this ecosystem of visual apps and extensions and shortcuts that hook into the terminal. Auto complete is just the first app there.
+It's MacOS only. We want to go into all of the operating systems. We want to work with all the terminals. Maybe we'll build our own terminal. We have so many other apps planned. What we found during YC is we were trying to web them way too much. So we just decided there was a really hard time. Let's just put aside everything let's put aside the API, let's put aside all the other apps.
+Let's just focus on auto complete, and let's do the best possible job we can do at auto complete. And so when, hacker news looks at it and their like," I already have already complete with z shell or like git, how is this different? How are you gonna make money out of this?"
+Yeah, totally valid. Yes, we are not going to charge individuals for auto complete. Maybe we'll have some team functionality on top of that, but what we're really excited about in business model, All of the other team collaboration apps that we can actually build here. So that's the longer term business model.
+And we definitely did a bad job of conveying that in the post. The second thing is why do we have a login? And in early, early days of fig, we had zero telemetry, we had zero login, we had absolutely nothing. And we would give it out to a hundred people and we would get zero feedback. Like we don't even know that they downloaded it.
+We totally understand the terminal's a sensitive environment that is an absolute given. Do we want to see your AWS secret keys? Absolutely not. No, we know that sensitive, we know that there is so much secret stuff going on there, and also, do we even need to know what commands you're using?
+Like It's probably CD. It's probably git, it's probably LS. There is a list of 10 that everyone uses. Like none of that matters to us. What we want is. Really the reason why we ask for the email is not to tie everything you were doing in the terminal.
+If you download fig, you will get emails from me. You'll get an email, like two seconds after downloading it 32 hours after downloading it three days, two weeks, like another four weeks. And it's just for feedback. It is us saying, Hey, you've just downloaded fig. Like it is a super sharp, I'm saying this is an automated.
+Tell us what you think, what is your feedback? What works? What do you love? What do you hate? What doesn't work? If you uninstall it, give us some more information. That is it. And so many developers don't mind about this email and they don't mind about these units because this tool is adding so much value to their workflow.
+And we know that a lot of developers do mind about that. And so there's calculus we've made is if we want to build like the best possible sort of ecosystem for the terminal here. We just need to have people giving us feedback. And we found that having the email there is totally going to not a noise, probably the wrong word, but there are going to be people who just won't use fig because of it.
+We totally understand. And so our thesis is, there are tons of other people who don't care at all that email who want this tool because it's adds so much value to them. They're going to give us the feedback. So we're going to use that feedback to make it better and better and better.
+So when we do give it out to thousands, more people suddenly we don't get any more feedback anymore. We hit the end goal we want to hit, and then we can just get rid of the email and then we've opened it up to everyone else. So we see it as this iterative cycle and we totally understand privacy concerns. We totally understand telemetry concerns. And our thing is the best we can possibly do her is be super upfront and say, here's exactly what we're doing with your data here is exactly what we're doing with email. We know that telemetry and privacy in the terminal is a sensitive environment. We want to try and avoid any of this at all costs, but we are upfront about what we're doing and in the future, we're doing this so we can build the best possible product.
+And in the future, we're probably going to get rid of 90%, if not all of it. And Hey, if you want to opt out entirely, you also can do that after downloading.
+
+#### Betting on the Community [00:14:06]
+
+**Andrew:** One thing that I've noticed about fig is you guys have really started started to bet on the community. You have a very active discord and I assume your strategy going forward is you don't want to write a auto-complete spec for every CLI tool in the world. So what is your guys's approach to open source and community?
+
+**Matt:** Yeah so I think in general, any good developer tools should have a community behind it. Building a development tool is a rare thing where you are the same person as your target audience. The problems that they have, or the problems that you have, and bringing people together to discuss this and like potentially be able to fix it together is powerful in a way that like most startups can't go to their customer and say, Hey let's make this better together.
+And so yeah, to the point you were saying about CLI tools, the terminal ecosystem is enormous. There, there are so many different tools. There are so many different workflows and it would just be a point of hubris for Brendan and I to say, we know exactly how everything should work.
+And so what we have decided is let's make fig as extensible as possible so that it can cater to all of these different use cases so that people can customize it for themselves and for their teams and for the tools that they use every day. So when it comes to open source, like I think the main thing that we have been focusing on now is just building out our selection of auto-complete for every CLI tool that's out there.
+So like the first couple of ones, Brendan and I were writing and these were the tools we use. We did a pretty good git spec that there's always room to improve. We did CD, we did ls. We did a lot of, kind of the, the unix-y ones, but again, I'm a MacOS iOS person, right? Like my background is there I don't know, PHP, I don't know, like larval, artisan.
+And so this has been the coolest part to see the community coming together to really contribute super high quality completion specs for these tools that like, I don't know that the workload, so I wouldn't have been able to do myself. And I think that's the advantage of open source is you can get people to contribute stuff that is better than you ever could.
+
+**Justin:** I think there's a really strong sense of shared ownership when you have the ability to contribute to an ecosystem or contribute to the tool directly. This is something that I've always been fascinated with. Like, When I was younger, I liked to play games a lot, but the games that I was drawn to are the games where I could write mods.
+It's like, I want to modify this, but not only do I want to change it, I want to see what other people do with this space. Like today, one of the apps that I use the most is obsidian. And most of my time is spent using plugins for obsidian and building my own and watching other things that people have built.
+And so I think this opening something up to extensibility, especially in the terminal, which is a workspace that a lot of people spend a lot of time in. It's a smart move.
+
+**Matt:** One other point around community in general, the terminal has traditionally been pretty isolated. Like you do it on your local machine. Maybe you can look over somebody's shoulder to see their workflow, but most of the time you just stumble across these little hacks, like, I can search my history directly from the command line by pressing control R. It took me a long time to figure that out! Because there's not some little tool tip that pops up when I'm typing out history, you just have to come across that.
+And so it's this weird thing where the way people learn about the terminal is entirely through the community, but there is no place for this community to come together. I guess like stack overflow would be the closest, that's been really exciting to just learn from other people how they use the terminal, how they extend it, how they customize it.
+I learn new stuff every day. I learn new CLI tools. I knew learn new commands. I learn new hotkeys. Even if you're not as excited about fig auto complete, you should still join the community because people have all of these crazy tips about how to supercharge your terminal experience.
+
+**Andrew:** Yeah. Early in my career, the terminal was definitely a point of contention for me. It was like literally one time I accidentally deleted a project for school two hours before it was due. I "rm -rd"'d in the wrong place. And the terminal itself is just such a clunky UI for beginners. And I like that fig is lowering the barrier to entry, to being proficient on the terminal because really like most of those power users probably don't need to use fig but power users aren't the majority of people.
+
+**Brendan:** One thing that is so interesting with fig yeah. The terminal and the shell is just this black box. It's not even a blinking cursor or is it like a square cursor? And you are like, you type something and you have no idea what's going to happen when you hit enter. You are just like every character increases the permutations of what could happen.
+So you really have no idea. And with fig it's, it gives you the confidence to actually hit enter. We try and give you the whole world of what can come next in order completely. So it's like, all right, there are 50 different things I could possibly type next, which one?
+I type it. And if fig isn't showing suggestions. They're like, okay, you immediately go, something is wrong here. Something's wrong. But when fig's their like we really try and have a very, very high accuracy rate. So If we don't have like proper support for CLI tools, I would almost rather not have it there because when people see fig, I really want them to trust it and it to be like, all right, when I hit enter, this is just right.
+Think that confidence makes it so much easier to get started in the terminal. But even for the more productive engineers, the really hardcore people who use the terminal all the time. It can also just improve, increase your typing speed. You can have aliases to do things, but you're typing out some long file or folder apart.
+I don't want to tie the random things will the underscores I go just hit enter and it's done. So we do try and make it so it goes all the way from beginners that've never used the terminal, up to like hardcore, proficient terminal users who want to learn more about specific CLI tools or literally just want to type faster.
+
+**Matt:** Yeah, and we really do have people across the spectrum. This is not a tool just for beginners. I think like one of the interesting things about being a programmer is that you are always a beginner somewhere. So like maybe we probably know how to use CD and LS and some of these more standard Unix commands, but when I am spinning up, some Kubernetes cluster that is new to me.
+And it is really, really helpful to have the suggestions like around pods and namespaces, and just get the standard workflow first so that I'm not constantly bouncing back and forth between man pages and, the browser to find help texts and stuff like that.
+
+**Andrew:** Yeah. It's almost like a similar argument for TypeScript. Like, it does help your younger developers there's documentation at your fingertips, but it helps you be more confident along the way.
+
+**Matt:** This was actually a, in a different hacker news post. Somebody made the comparison between fig and TypeScript. And I think it's actually, I hadn't thought about it that way before, but what a completion spec does that. And a completion spec for those who don't know is the format we use to define auto-complete. Basically it is that it's adding a type definition to a CLI tool.
+You were defining the structure, you were defining the arguments, you were defining the commands. And that's what enables us to figure out what you've typed in, provide the accurate suggestion. So in a lot of ways, it's very similar.
+Like we are giving you the confidence we are providing the suggestions and yeah, it's like the similar transition between going from JavaScript to TypeScript, going from the command line without fig to the command line with fig.
+
+**Justin:** There's this project called shell explainer. Have you ever seen this? It's kind of what I think of it. It's like, you almost have like shell explainer, explaining things to you as you're typing, but just through the auto-complete spec. So yes, it's good stuff.
+
+**Matt:** Yeah it's a project that everyone should check out. It's super cool.
+
+**Andrew:** I've built a bunch of CLIs and validating user input is always a hard problem. Like for auto, an open source library I maintain, I use io-ts which is like super complicated. And I had to write my own adapter to extract errors out of it. Do you guys have plans to like make an open source package that helps you just use your auto-complete spec to create a CLI or at least a validation function for a CLI?
+
+**Matt:** I'll chime in here. One of another cool CLI tool that I stumbled across was doc ups which basically takes the synopsis of a command line tool and uses that to generate the parser. And so, yeah, like the short answer is yes, we are super interested in making it really easy to one, generate a completion spec for a CLI tool, but also integrate at the CLI level when you're doing all of this stuff.
+Cause, cause right now we're coming in on top and providing and building a completion spec, to mirror the CLI tool. But the more that these things are the same and use the same source of truth, the more accurate they'll be. And the more powerful things we can do with them, like enabling developers, not to need to do the validation because that happens at a different level.
+
+**Andrew:** Yeah. It would be really cool to have like flags that are dependent on each other. Cause that's like something you have a lot where you have to have one flag and then another flag. But if you have this like type definition going, you can validate that and not even run a command if if it doesn't meet that.
+
+**Brendan:** That's definitely one thing we're excited about with, okay. The completion spec is mapping to existing CLI tools, but why can a completion spec not be its own CLI tool? And you can even take that further it's okay. Why do you have to write a script in bash?
+Like why can you not write some Python script and have that script executed and then node in a different section of the CLI tool bash in different. Whatever language best fits the goal you are trying to achieve. Just use that as opposed to using, clap, if you have to, and then you have to write the entire city line rust or click and it's in Python or Oak cliff, and it's all in.
+Yeah, like we're actually in early, early stages of fig when we had the sidebar and we had everything, we also had a drag and drop CLI builder was which you have a sub command and you can just keep nesting them and then you can choose all the options you want, can add the descriptions and then you can choose what script do you want to execute?
+Obviously we've put it to the side, but all of this stuff is exactly what we want to get back to. And we think fig is just like such an easy interface to, to build this.
+
+#### What's Fig's future? [00:23:27]
+
+**Justin:** so one thing we've been dancing around here and I want to spend some time talking about it. Cause I think it's really fun to think about. So the things that you're having to do with fig right now, it's like digging to the accessibility API, find out where things are, like show this auto-complete. We're doing these things cause it's like...
+The terminal really hasn't changed very much. And there are like new implementations of the terminal. So I could see, like you could take hyper for example, which is an electron app and you could ostensibly probably build an auto-complete module that like works inside of hyper, just because it's like HTML.
+In the future to get like really, really rich, really, really interesting interactions. It almost seems like you, aren't going to have to think about like, okay, if we were to build our own terminal, like what sorts of things would that need. And I'm curious I know you're not thinking about this right now, but let's like, let's think pie in the sky.
+Like what does that future look like?
+
+**Matt:** I think sequencing is really, really important. And this is a lesson that we learned through YC it's like we came in with this really grand vision of building an app store, and then we realized that the sequencing was really important rather than trying to start off and build like a full featured app store where like we had all these API APIs and all this documentation and the distribution model, it's like that isn't the right place to start because you don't have users, you don't have developers, you don't have the kind of necessary things to get started.
+And so that was why we decided to hone in really deeply and narrowly on autocomplete, because it was like a small thing we could do just as the two of us with a couple of other people and prove out this API and kind of take that to the new. Okay, but that said, we are very excited about the potential of what a new terminal emulator could look like that maybe doesn't cue as closely to the model that people have in their heads.
+A really, really cool project here is current kit that was actually put out, maybe hang, I don't know, like around a decade ago at this point that was like thinking about what it could look like if you had visual output in the response to commands, rather than only using texts that had maybe the affordances for richer interactions directly in the terminal.
+And so I think that there's a lot of value in having things be backwards compatible. And I don't think that if you are ever building a terminal, you need to ensure that, the same units going to work the same, get workflows or are there. But I think being able to thought, like being able to have a feature set on top of that is is something that's super cool.
+I can totally imagine having the type of big apps that people are building as sidebar things or extensions right now that could just be integrated to the terminal or say you run a command and the output makes more sense as, a form or a text field rather than just like plain text that's rendered using like the BT 100 specs.
+I think that all of that is on the table and this is the kind of interesting stuff to think about as we are building out our API. It's like what the API right now is hacked on using our accessibility and our MacOS, app, but at some point this can just be natively integrated.
+And so it's a, it's an interesting challenge to figure out what we can support now. So that when we think about doing this more seriously, like we can make sure that any gaps that exist currently seamlessly make the transition to a native terminal.
+
+**Justin:** yeah. One thing that I think about a little bit is it's weird how different the terminal feels than , if you're playing around in a repl of being able to like really quickly get feedback and try things, I mean, you can, you can do that. And terminal, it just doesn't feel the same, you know?
+And I feel like there's like opportunity to bridge that a little bit.
+
+**Matt:** The coolest thing about a terminal is that it feels like you're speaking to a computer, like you are super close to the machine and that lets you move really, really quickly. And so I think that whatever we ultimately build in this direction, I don't think we'll ever want to get rid of that experience.
+Cause I think that's, to me a very, very cool part of, using the shell and the terminal.
+
+**Justin:** So, So talk to us a little bit about what's next. So you're working on auto-complete and you're pretty focused now on taking iterative steps. So what is your like next iteration? What is your next iterative step?
+
+**Brenden:** As we said, early YC, we were trying to do everything. It doesn't work. Let's focus on one thing. Let's do a really, really good job at it. So we still think there's a little more to go with auto complete, but we want to get with electrical Shane.
+We want to get the machine going. So it's when order complete specs that contributed, they emerged in we fix all the bugs that we need to fix, like the standard for what a complete caters to pretty much every CLI tool. So I think we'll ever get to a hundred percent, but we want to go from 95 to 99 to 99 and a half so getting that, I don't think that's going to take too long, but on the side, like I would say the next thing you want to do is open up the API APIs. Like you were talking about earlier, Justin, the extensibility of these tools is what makes them so much fun for developers. And it's it's really where this of, we want to, it's the only way to start this ecosystem.
+To open up the API APIs, which will let anyone build apps. That requires obviously the API has to be pretty standardized and we've got to make sure it's not going to change because the worst thing would be like, oh, we updated this, core part of the API and every, couple of weeks.
+So we don't, we also don't think that's going to take too long. We built the API before we actually even had an open and we deliberately close it off. So it's going to be opening it up. It's going to be making sure it works well in react and vue and like all of the major front-end languages, everything works as we expect, we conceivably can, build the same API cross platform as well.
+So just doing that, I think before we were trying to do like a full app store and we had a whole app store page, we tried to build the app store app and we don't need to do that. We can just, if people can build on top of it and we have the standards, like the app store can literally be a GitHub README that says, here are all the apps that people have built building. Once we get to a 50 apps, then we can do it, but there's no need to do anything beforehand. Making sure that stable and that works in unison. We're also looking at cross-platform. As I know you just spoke about is do we do our own terminal or do we continue to do these integrations with every terminal in each platform?
+So we're exploring both of those right now, looking at what is really possible and what would be the best experience for the user. And then the final thing on top of that is if we build this app extension ecosystem, like what are the next apps that we really want to look. As you saw very, very early on in phase history, Justin, runbooks we're excited about those.
+And for those who don't know, like we see this idea of on one side, you have a process or a workflow that you want to do in the terminal. So you need to deploy, you need to do your git commit workflow. Maybe you are trying to orchestrate all these microservices locally, just to test one little change you made to something.
+So you have a series of steps that you need to go through. And the two ways that installed. One it's in some way, a notion, maybe it's in confluent and you need to copy and paste code. You need to read the instructions very, very carefully, and it's a way from your development environment, but it's very descriptive.
+And if something goes wrong, you can update it in the future. So pros and cons the flip side, you have a bash script, a bash script is right there. It's in the same folder. It tells you exactly what you need to do, but if something goes wrong, not many people can confidently go in and fix it.
+It just it just gets left. And then how do you even get started? Like a bash script doesn't tell you, here are all the options and the flags and everything that you need to use. It's just like a file you do dot slash deploy. And you just, pray that someone has written some help texts and it's up to date.
+And so we think there's a nice middle ground here. Can we have the best of something that's really descriptive that walks through the entire process and it doesn't get out of date because it's so obvious that how to make a change. But on the flip side, it can be as fast and as close to your developer environment as a bash script, or just as any script and like combining those things and imagining what that looks like we're really excited about.
+Cause I think that can really change the way, not just. Your individuals do any process in the, in their specific like dev environment, share those across teams. And then you expand that out even further in the same way you know GiHub gists is, there are millions of these like random workflows online. In the terminal the workflows people do a pretty standard. Deploy to my Heroku. I need to push a file to an S3 bucket, like sharing those and making those accessible and then stitching them together. We think is like really cool and really compelling. And so like getting the infrastructure and the bare bones for that getting that set up, we'll take some time.
+It's going to be talking with users. And as I said at the start, like making sure fig is always extensible. I can always build on top of it and then shareable, make sure my team and the rest of the community can take advantage of the stuff that I have done.
+
+**Andrew:** Yeah, while you were talking there, I was, I had the idea that it would be super cool just to have a hover overlays in your bash scripts. That'd be such a cool use case for fig instead of a cat, you do fig a shell file and then you can like hover over it or something. That'd be awesome.
+
+**Brenden:** That would be cool. That would be very cool. Maybe you can build the app for us, Andrew.
+
+**Andrew:** Hey, I'm I, I built a lot of abandoned where and open source.
+
+**Justin:** I think something I'm really excited about for the runbooks in particular is that was my first exposure to fig. So you're still thinking about what that might look like. But there is definite this space between documentation and automation. It's like getting from one to the other is actually a pretty expensive process.
+And like, when you think it's not that's the trap, right? So that's when you throw a bash script on a server somewhere and just tell new hires to run that. And then it fails. And people are like, "ah, you know what happened?" And the other thing is someone running a batch script, isn't learning what's happening. So it's like a good educational opportunity, but I think the biggest thing, and I'm not sure if you're thinking about this yet is like one of the biggest reasons why things fail when you're trying to run a like a piece of documentation is because your environment isn't set up correctly, you're missing an environment, variable, you're missing a command that you need installed.
+And if you're not inside the context of a terminal, you can't know what people have installed, but I could see a world in where you're like defining this runbook, but you could say, Hey, this runbook depends on having this environment variable set and having this command installed. And that's not something that people have to think about actively.
+You could just check that in the background and then, if it was missing, then either do it for them or give them notification or whatever. Workflows like that, that become super powerful. And having that built into the terminal A-plus yeah, that'd be great.
+I'm excited.
+
+**Matt:** Yeah, this is all the stuff we were thinking about back when we were doing these tutorials, like when big was just the product for tutorials. And so it's super cool to hear you bring that back up because it's like now feeling like where we're starting to come full circle and build the vision we had really early on.
+
+**Justin:** Yeah. Yeah. Natural progression. I'm super excited about it.
+
+#### Tooltips [00:33:52]
+
+Andrew, shall we do tool tips?
+
+**Andrew:** Let's roll into our tool tips. My first tool tip of the week is post to co it's a Mac app for looking at a Postgres client. A big event happened in my professional career this week...
+I did backend code for the first time ever. And with that came some new tools. This is, I haven't used any other tools like it, but I'm sure they exist, but it just made it super easy to browse my database. And I was surprised at the speed I could develop my backend process. Usually I just have a running server and then try to use the terminal for it.
+But the terminal escapes me a lot of the time since I don't really use a database terminal like that very often. So this tool helped out a lot.
+
+**Matt:** A fun side note. I like, first of all, post I, you supposed to go and it's great. It's definitely a super like native way of getting access to this stuff. And it feels really good. One of the early apps that we built when we were still prototyping, what the direction that fig would go in was like a built-in PostGres client.
+So you could visualize the rows and the columns and everything in your database without leaving the terminal. I think the stuff like postico goes to show like how some interfaces just are better or can be improved when they have a UI, rather than just being. And Brendan built this.
+So if he wants to dive in a little bit more
+
+**Brenden:** Yeah, literally, it was like copying, I think, I don't remember if it was postico to go, but it was like, okay, well, I don't know the swift UI that we need to build this in swift, but I know HTML. And I have the ability to run whatever PSQL command I want in the terminal, get that output and render it in the table like it didn't take long at all to build like, not this full functionality, not the editing, but I like having, I could probably spend, a week and get something pretty good up and running, which was very cool.
+
+**Justin:** Yeah, there's a nice like overlap. So our last episode we were talking to the creator of natto and he has been thinking about representing programming in different ways. So there's like obviously textual based programming, which is like the kind of norm. And then there's maybe like other models, we're seeing the same sort of like parallel with thinking about the terminal.
+So we have this traditional, everything is textual. You know, you have text columns and everything that you were in or out, maybe there's this future of now we have this sort of multimodal, like terminal experience to make your interactions a lot richer. It's really cool.
+So on the topic of terminals and CLIs I ran across this node.js CLI apps, best practices document, which is really great! So it just goes through like a series of things that you should think about when you're building a CLI tool. It's targeted specifically at node here, but I think a lot of the ideas would transcend that.
+And a lot of them, or a relatively basic. It's, like respect POSIX, and do standard things like standard CLI commands do, but there are some of them that Are just really insightful. It's like, remember users preferences, automatically store configs. So when they come back, they don't have to reconfigure something or redo the same thing over and over again, make it easier on them.
+And just this like idea of building an empathetic CLI I think is a really great idea. So a lot of resources in here if it's something you're interested in, definitely check it out.
+
+**Brenden:** I just wanted to give a couple of the CLI tools that've c ome up within the community that had just super useful and one completely solves your problem that you spoke about earlier in the podcast, Andrew.
+Yeah. If you rm -rf something 99% of the time it's gone. If you don't touch your file system and you find the right stack overflow post, you can maybe bring it back, but yeah, chances are it's gone. And so trash is literally a CLI tool where it moves your file or folder into the trash, as opposed to just wiping it.
+And you can also do an alias. To trash. So if you do RM dash RF, the alias will pick it up, change it to trash, and it won't be deleted. And I think the flags still work as you expect. So like tiny little tool and just like guarantees you can't mess anything up or you can mess something up, but you can undo it if you need to.
+Yeah, just one little tool that is definitely helpful.
+
+**Justin:** how am I not surprised? This is from Sindre Sorhus the node module master himself.
+
+**Brenden:** Is it? Oh, cool.
+
+**Andrew:** Now he's the Mac toolbar app guy.
+
+**Brenden:** Yeah.
+
+**Matt:** Yeah, like open source libraries across every single platform that I develop on. Like you search for something you need and he's beat you to it. And it's great. All of his stuff is good.
+
+**Andrew:** Truly the unicorn.
+
+**Matt:** So this is a guide that one of our friends made Ben freshmen. And I think along with some other people as well just another really comprehensive guide just around like how to think about CLI tools. It talks through some of the history, it talks through the conventions and where they come from and was just like a super interesting thing to read when we were thinking about how to structure the fig CLI itself.
+If you're in the somewhat niche business of building CLI tools it's definitely worth looking into.
+
+**Andrew:** I think it's a great skill to learn, like making CLIs for yourself. Very useful. I do a lot of home automation stuff and a lot of the time you can just create a little CLI for yourself and then use that in like your Cron jobs or whatever.
+
+**Matt:** Yeah, actually, that's true. See, like I said, niche, it is not niche. I think that's the wrong word. I like what we discovered is there a couple of CLS have this kind of weird long tail where there's maybe 10 that everyone uses all the time, but then there's this crazy amount where you can use the CLI for virtually anything.
+You just need to find the tool. And everyone has that kind of sweet spot where they find the workflows that they do regularly. Yeah, there's actually a lot of tools out there.
+
+**Justin:** It's interesting. I think like a CLI tools, the first thing that I ever wrote and programming and it's a way to build an interface for a program that much easier. Because at the base level. you're like, just doing standard in and standard out. Most, everybody starts at a first hello world program, which is essentially more or less a CLI app.
+I definitely think it's great to have more guides out there on how, like how to do this really well and make it a first-class experience and not just like, "Hey you're slapping something really simple together here. Just do these things." I think the more people can learn how to do it in a very like consistent and mature way. The better our whole ecosystem is
+
+**Andrew:** uh, Continuing on with home automation. I've been adding a lot of new devices to my home recently, and I've been trying to just make everything work with Apple's home kit. So HomeBridge is a platform for adding any device to your home kit. It's a open source community where every single thing that you want to integrate with has a plugin that you install from npm.
+And just configure it for your needs. And it's honestly astounding how many different plugins and integrations there are. It's fun. I like that my door's unlocked themselves now, but it's just another thing you have to
+
+**Matt:** It raises the stakes for programming areas. If your door is unlocked, when you have a bug,
+
+**Andrew:** Yeah, it sucks when you take down your whole house because you turn the wrong computer off.
+
+**Brenden:** That's crazy. Yeah.
+
+**Justin:** This is a fun project. I actually just stumbled across this today when I was like trying to find more terminal related things. And I'm sure you'll get a kick out of this. So this is a node package for building texts, user interfaces out of a configuration file. It's like you give it a specification and it generates this thing for you.
+So it's actually calls it a text user interface, but it's, relatively simplistic. It just gives you a menu that is persistent in the bottom of your terminal. And then you have the output like appearing above and you can see like what things do and everything really cool. Really cool. Actually when I saw this, I thought of a fig and I thought of the auto-complete. It feels similar in a way.
+A fun little project to play with.
+
+**Matt:** Definitely looks somewhat reminiscent to the completion spec format that fig uses.
+
+**Justin:** Yeah. Yeah. That's what I was thinking as well,
+
+**Brenden:** Okay, you can go through mine. So I objectively think that. If we weren't doing fig, if I were on my own, I could choose whichever shell I wanted to. I would use fish. I think fish is like an unbelievable shell. All the defaults are just awesome. Straight out of the box. It's saying that most of our users use z shell.
+And so we use the tools that most of the users we work with use, so we can pick up bugs and like we can fix them quickly. But I wanted some of the functionality from fish in z shell. There are a ton of plugins that do it. There was one that I couldn't find that I found recently, and those are abbreviations.
+So an alias is I might alias, as I said earlier, RM to trash. So if I type in RM space dash RF and hit enter, it will still say RM in my terminal, but it bash will executed it as if I had typed trash.
+Abbreviations in fish actually changed the command that you type after you type them. So if I did this abbreviation dash alias for RM to trash.
+If I typed in RM space, as soon as they hit the space, it will actually change the RM to trash. And we'll make sure that is the command that's run, which is super cool. And so I use it for things. No, I LS. I actually use exa I think it's EXA. I think it's just a nicer way to show the output with all the colors and everything.
+It's just seems much better, but I didn't ever go into the habit of typing in exa. I would always type in LS. And also if I would go to another computer, I still want to type in LS. But I just like knowing that rather than using an alias, because sometimes if I even run LS using fig the outputs, really weird
+I like knowing that if I type LS in just in my interactive terminal, it will change to exa and we'll output it. And I know what exa is. It works really well. And I can, I actually haven't spent the time doing it, but we'd love to set all this stuff up with git and rather than just having to git shortcut
+I like seeing what I'm typing and knowing exactly what I'm doing. And I think this is the best of both worlds. If you have a shortcut that expands out and you know what you're doing, but as opposed to some random alias that you forgot about years ago when you made it. So really cool, simple to set up and yeah. Use it like all the time. Every time I talk to LS, which is cool.
+
+**Justin:** abbreviations are amazing. That's one of my favorite fish features.
+I have a whole abbreviation file. It's just like a text file that it like goes through and parses and like loads up those abbreviations. But it's like a great way to actually to use an alias, but actually learn a command because it'll like expands
+
+**Andrew:** Yeah, that was the first thing about fig that blew my mind when I typed my git aliases and it knew exactly what was happening.
+
+**Matt:** Yeah, that's definitely something that a lot of people asked for. It's like another one of those touches where if we spend a little bit of work upfront, the experience just feels super magical and integrated.
+
+**Andrew:** Now we got brow.sh.
+
+**Matt:** Brandon and I actually talked to the maintainer of browsers a while ago, basically for those who can't see the screen browse is a terminal browser. So it's a text-based browser, but unlike the kind of old school ones like links and gopher, I think what it does under the hood is it takes a screenshot of the web view on a remote server and then streams like the corresponding color codes, like the ansi color codes to your terminal.
+So you end up with this web browser in your terminal. That's like using, just ANSI escape codes, but actually outputs the website in like a pretty accurate representation.
+
+**Brenden:** Yeah. It's really impressive. And Tom, the maintainer is awesome as well. So we love so hacky how he got this working, telling us all of these crazy things he did like super cool!
+
+**Andrew:** Now I know exactly what the internet in the eighties would have looked like.
+
+**Justin:** it's really awesome.
+
+**Andrew:** My last one for the day, keeping with the home automation trend is the lock I got. Most of the connected locks, you're going to find actually replaced the whole lock or handle mechanism on your door. What I found really interesting about this one is this smart lock is inside your lock, where there was previously just nothing.
+Like I opened up my current lock and looked in there and there was a big hole with a bunch of space around it that looked perfect for some electronics. So it's, I think this is like really cool design where this will work with almost any lock and it was using an existing space and you can use any lock with it.
+So a very nice design.
+
+**Justin:** That's awesome. You get to keep your key, you get to keep the design of the lock that you picked. Yeah, that's good.
+All right. So my, my last pick of the day, my last tool tip of the day pick... is this projects it's the poopy mini track ball, a funny name, but it's an open source track ball that you can actually purchase a kit for. But it runs on QMK. QMK is open source keyboard firmware. It's pretty interesting that it runs on QMK but it's all open source.
+So you can technically build this thing yourself from scratch and change all the code and do whatever you want. I'm a track ball lover, and there's not a whole lot of great track balls out there. And I also like building things. So this is a really exciting project. I'm probably going to try to fork it and do some special stuff and build my own, but sure.
+
+**Andrew:** Yeah, I've heard of people building their own keyboards, but never building their own mouse. I think this is a first for me.
+
+**Justin:** Yeah. If you like look at, if you look at their PCB, it's really, really clever because they have this this like wave shape where like the PCB actually oscillates. So it's like flexible. So the board is flexible to take up less space. I dunno, really, really cool project. And like I said, if you just want to buy the whole kit, you can go on their thing, but everything's in Canadian dollars. So you do the translation in your head, but
+
+**Andrew:** If this is an adult Legos, I don't know it is!
+
+**Brenden:** MDX I think is awesome. I think when we're talking about all the runbook stuff, like most of these like processes and things that you are automating these days, bringing documentation to automation, we think like all you need is some form elements and the ability to build fully fledged react components into just simple markdown...
+it's just like, yeah, I shouldn't have to be typing in your head or H1 or H2 to build like just, I want to use the markdown format, but then if I want to do something more complicated, I don't want to have to convert that all over the HTML and then do all of the formatting. Like I just want to rely my down is fantastic.
+And then if I want to do more, I can, but I don't have to and so it's just so impressive. And I think with a lot of the fig apps that, the runbook stuff we want to build, MDX with a fig component library for things like running shell commands or like populating a dropdown of your files and folders in a specific directory, like just seemed like a no brainer, like super quick way of getting something set up and for anyone to build an app.
+Yeah. How do we make it as quick and easy to build an app as possible? I think MDX is that solution. Finally set up my own personal website and like writing some blog posts and things like that, and really want to get MDX in there because you can just do so much when you want to demonstrate something rather than typing it and having screenshots just so much easier to build a little react component.
+Let me use a play around with it. The best hacker news articles are always like, interactive and you can play around with things. And so I know that I'm doing this just so I can write a good hacker news article. It's just like it's interaction. I think. Make something 10 times better and MDX just makes it so much easier to build interaction into documents or into text.
+And I just think it's a no brainer.
+
+**Matt:** Also plugging the personal website. What's your domain name? Brendan.
+
+**Brenden:** brendanfalk.com! There is a picture of me and and my Twitter handle. Yeah, that's it. And then it says blog coming soon. So thank you next.js!
+
+**Andrew:** Yeah,
+
+**Justin:** Nice.
+
+**Andrew:** a developer rewriting, their personal website is like the seasons changing. It's going to happen around it once a year.
+
+**Brenden:** No, no, I'd never written it, but I never built it before I, yeah, it just, yeah. Knocked it up in an hour. Like, it is very minimal, but that's what I like.
+
+**Justin:** It's a rite of passage.
+passage.
+
+**Andrew:** Yeah.
+My tool tip for last week was sharing my new personal website, which is also built on next year. JS uses MDX and goes by like the digital garden philosophy. And I actually manage it all through my obsidian notebooks. I just write right in obsidian. And then that gets synced to my website.
+
+**Matt:** We touched on doc op earlier, but this is a really cool library. Or it's actually, the library written in a bunch of languages and really the core of it is the syntax for defining CLI tools has helped text. So you just write the help text. It ensures that the parser kind of corresponds to what you've typed out. And this just means that your documentation always stays up to date. And it's a cool way to whip up a CLI tool pretty quickly.
+
+**Justin:** I use doc op a lot back in the day. So when I first got an opensource, I was doing a lot of Python. And there was the first place. It was like the first see like like generation tool than a stomach upon. And I think my favorite thing about it is like you really focus a lot on the help text because that generates everything else.
+So yeah it's fun.
+
+**Matt:** And this was another thing in a similar vein of going from a CLI tool to a, another, a more visual representation. So similar to the TUI generator that you showed Justin. But this, I think takes a Python script and then converts it into a gooey the design sense of the gooey is maybe it leaves something to be imagined, but I think it's a cool concept of taking CLI interfaces and providing some more affordances for the user.
+
+**Andrew:** Yeah. Th I think the most successful version of a gooey for a CLI tool is probably the Vue CLI I know a lot of people really love it and it seems like a cool place to take programming. At one point, I tried to make a web based interface for auto the tool I manage, but it just didn't make to
+
+**Matt:** much sense.
+Right. I didn't realize that you had a web-based UI.
+
+**Justin:** Yeah. So Vue CLI, is really awesome. You should definitely check that out! It
+
+**Matt:** Yeah Well, I'll look into it later. This is super cool.
+
+**Andrew:** there you go. It's something like that.
+
+**Brenden:** Oh, wow. That's so cool.
+
+**Justin:** yeah. Yeah. That's great.
+
+**Brenden:** So it serves up with some local soda. It's a bit like a Jupiter notebook or
+
+**Justin:** things. Yeah.
+
+**Brenden:** or something like
+that. That's sick.
+
+**Justin:** Yeah, but it outlines all your commands. It gives you information about your bundle sizes. You can just click to run things, see how things are running. That's pretty good. It sorta reminds me that the gooey project that you just showed reminds me one of my old coworkers at artsy had actually written like this wrapper that you could put around on a CLI and then make it a slack command. So you could like just take a cli tool, like point this service at a CLI tool, and that would like automatically make it a slack command and it's run in a sandbox environment, thought that that was a clever idea.
+This like notion of building apps on top of CLIs I feel like there's a lot to play with there.
+
+**Matt:** Yeah, totally like thinking about CLIs sort of like APIs to build something.
+yeah, they are in a way,
+
+**Andrew:** Well, I think that about wraps it up for this week's episode of dev tools. FM. Thanks, Matt and Brendan for coming on. It was a lot of fun talking with you.
+
+**Brenden:** Thank you for having us!
+
+**Matt:** Thanks for having us.
+
+**Andrew:** That's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening,
