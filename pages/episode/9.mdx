@@ -1,0 +1,382 @@
+---
+title: Jason Laster - replay.io
+youtube: REPLACE_ME
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/8871304
+---
+
+<!-- TAB: SHOW NOTES -->
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:45] Jason's Journey
+[00:05:20] How Replay was Built
+[00:11:01] Where Replay is Going
+[00:18:41] Debugging the Whole Stack
+[00:28:39] Revolutionizing Debugging
+[00:39:08] Building a Business on Breakpoints
+[00:45:52] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Andrew:** Hello, welcome to the devtools.FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Our guest today is Jason Laster. Jason is the CEO and co-founder of replay, which is a magical debugging tool. Jason, would you like to give our listeners a little background on yourself before you dive in to talking about replay.
+
+#### Jason's Journey [00:00:45]
+
+**Jason:** Sure. I've been thinking about dev tools for past 10 years, I did Recurse center back in 2012 and fell in love with repls like pry, bPython. Gosh, the list is even longer than that. It's been a while. And I realized then that you can work on a repl in the language that you're working in. You don't have to become some like crazy C++ language hacker to understand your Ruby software better or understand your Python software better.
+You just had to drop down one level and look at some Ruby code to understand your Ruby app. And doing that I began to realize that I had all the tools I needed to understand my software and I was just hooked. So I went on from Recurse center to Etsy and started working on internal tools there in the browser. Two years in I realized you could actually work on the browser as well.
+Chrome is open source. Firefox is open source. Even safari, which we will say is closed source is kind of open because of webkit, open source as well. And if you want to, you can pop open browser dev tools and inspect them as well. They're all written in HTML, CSS and JavaScript. And as soon as I realized that you could work on browser dev tools, it was like, all right, this is what we're going to do.
+And Recurse center had given me the tools to work on open source. So I was comfortable jumping into communities, talking to them about what they were doing. And there was the Chrome dev tools community with a bunch of folks within chromium working on it but very few folks in the open playing with it. So in 2015, I was the only one to jump in and be like, let's work on dev tools.
+Let's hack on the debugger and it was all there. It was all possible. And it was really, really fun. So fast forward a year, I'm looking to join the Chrome dev tools team realized that most of the engineers are in Russia, St. Petersburg, not going to be easy, but the Firefox dev tools team classically open source all around the world, going to conferences, really inviting.
+And they had a role where I could jump in and work on the debugger as they were rewriting the entire front end in react. Like, okay, let's go. So I did that for five years. Thought that would be, that was the dream job thought that would be like that job for the rest of my life. And slowly began to learn about replay and what it could do.
+We'd been working on it internally at Mozilla for awhile on and off on and off. And that felt like the unlock. And here I am now.
+
+**Justin:** Nice. So the idea of replay, it was spawned as an internal project in Mozilla cool.
+
+**Jason:** So replay is in some way, just a classical time-travel debugger and time-travel debugging goes back since the beginning of computers. The basic idea is, "Hey, if we could record the computer, the core of your software execution, and then we'll play it back, slow it down. We could understand what happened."
+The only problem is it's really, really, really hard to record software. And the more layers of abstraction we add, the harder it is to do and more components, the harder it is to do. So time-travel debugging, at least for me at Recurse center, was the land of academia, demo projects, and functional languages is like, okay, there's something here, but I don't know if we could do it as in the browser.
+Now, Mozilla coming from Netscape has this like hacker mentality where it's one developer against the world, like trying to understand spider monkey, the JavaScript engine or the graphics engine. And it's almost an impossibly large task. So they had built a time-travel debugger. So there's RR coming out of Mozilla and around 2010, 2012, and that's been in production and used across the industry now.
+And that's sufficient for looking at a single C++ program. But how do you take RR and then go to the browser for web . , Mozilla would tries stop, try, stop. And eventually I'm going to go, okay, this is too difficult. It really took somebody like my co-founder Brian Hackett, who is just one of these few people in the world who can take the browser, put it in their brain and understand it, with enough focus to work on it for five years and eventually crack that code.
+
+#### How Replay was Built [00:05:20]
+
+**Justin:** I don't want to oversimplify the problem, but were there a few key concepts that really unlock the ability to build replay?
+
+**Jason:** Yeah. We're totally cheating. So there are a bunch of different levels to think of it. At the highest level, everyone starts by saying, "Okay, I want to record JavaScript." JavaScript is really flexible. I've got like proxies. I can monkey patch any class. Great. I'm going to capture mouse clicks, look at API calls, those kinds of things.
+So that is never going to work. You run into all these timing issues and the system's just too complex.
+So then you drop down a level and you say, "Okay, what if I'm the browser?" Well, the browser opens up all these APIs and I can capture the inputs, outputs, all of them basically like the Dom document dot whatever.
+Cool! So you start doing that and you realize, oh my God, this system is so complicated. Any one of these things could change and it's not going to work. Then you go down a level lower and you say, all right, what if I'm just the JavaScript engine? And I can look at all the execution within the engine, right? The compile step, where we have the byte code, every operation that's happening. Yeah... you can do some stuff there, but you're just one piece. You're like the heart in a larger system and there are a bunch of other organs out there and you need to know about them too. Graphics, network is the competing as well. So we go to the very bottom of the system, we say, "What is the input and output to the browser?"
+Because the browser is a collection of C++ programs making system calls. It does mkdir, read, write, pipe, socket open. There's a very defined list. And we capture the inputs to those and then we look at the output, save that to disk. We also capture things like C++ Atomics, mallocs, and a couple other indirections, like IPC stuff, interprocess communication. And that set system calls, Atomics, interprocess communication is the set of non-determinism, which we need. It's like the set of randomness we need to then plug back in and then reexecute the same result.
+
+**Andrew:** So you had to go pretty far diggin' to find the layer where it made sense to make replay.
+
+**Jason:** That's right. You start off like things should be fine. Oh God no! What about here? Oh God no! And then you're like the seventh layer and you're like, okay. A little bit of inline assembly can get you a long way.
+
+**Andrew:** Yeah, I, myself, I don't think I would know where to dig. So it's yeah, it takes a very special point of view to even know where to dig.
+
+**Jason:** Yeah. And I'm not that person, I'm the person who's like, yo, I got to rewrite the debarker and react. That is the unlock to update the UI. Brian, my co-founder is literally at that level of like inline assemblings and then, okay. There was a slight timing issue in how graphics is talking to networking.
+Cool. I can look at it and figure out what's going on and then do a small fence.
+
+**Justin:** Awesome.
+
+**Jason:** Another way to think about it, just to go in and completely other direction is a lot of code doesn't need to be recorded. You take a very simple function. You give it the input you run it and you get the same output every single time.
+And that's really important because a typical replay is going to be really tiny.
+Because there's not that much randomness in our code. React is going to rerender the same way every single time. We only need to capture the places where there's like a timer or some other like, oh, there's a clock here. Cool. We'll get that API call. Cool. Got that.
+
+**Justin:** So you have to do some sort of like analysis, like static analysis of the code in some way to pinpoint like, "Hey there, these are like potentially points of randomness?" Or is it's just all hooked into this lower level API. This is like when this is called in this way, then we know this is like a set time out kind of thing. And we can isolate that.
+
+**Jason:** Yeah. It's like a mathematical property. We don't have to understand that networking layer, as long as we can ensure that the networking layer is deterministic.
+
+**Justin:** Right.
+
+**Jason:** And if there's any non-determinism we're not capturing, just insert that one API call. You're like cool wrap this atomic or, oh shit. It's dropping down and making a legacy call.
+We don't know. Cool. We need to intercept that one too. Cause I got, we need like pipe or mkdir The crazy thing is we started with Firefox, but then we're like, can we do Chrome? And Chrome uses the same system calls that firefox does. So that layer porting the recorder to Chrome. Wasn't so bad.
+
+**Andrew:** Oh so replay can do Chrome now too?
+
+**Jason:** Yeah. It opens up a lot of possibilities around like programmatic recordings too. So you're recording CI, writing arbitrary scripts and recording those as well. We can record node. Node's in some ways like a subset of Chrome as well, just V8 with a little bit of a wrapper around it.
+
+**Andrew:** Oh, wow. So replays becoming less a time-travel debugger for the browser and more, just a time-travel debugger at this point?
+
+**Jason:** We think recording is just a primitive for any kind of run time. I would love to capture Ruby. I would love to capture Python. If you go to Python, you're beginning to top of the scientific community and that's fascinating.
+
+**Andrew:** Yeah.
+
+**Justin:** Yeah.
+
+**Andrew:** Mind blowing, like I think me and Justin are reeling.
+
+**Jason:** No.
+
+#### Where Replay is Going [00:11:01]
+
+**Justin:** I try to think of the implications here, what? Okay, So from a product perspective you're building a developer tool here and it makes sense to focus on browsers first and hit this like big target audience, but the experience of debugging, something like node or potentially Ruby in the future and potentially Python in the future are slightly different.
+Less maybe visual. Does that change how you think about approaching the product? Or is it just it's is it mostly just the same?
+
+**Jason:** That's a great question. So I think the visual piece is really interesting and maybe we should back up and talk about what it's like to use replay to debug a react app. And then we can transfer that to debugging like a Python script or a node script or something else. So I worked on the debugger long enough on Firefox so know that people don't use it. You'd go to people on your, ask them like, Hey, do you use break points? Or do you use print statements? Do you use the debugger or do you use the console? And everyone, regardless of experience will be like, oh, I kind of use print statements. I feel bad about it. I think the most experienced engineers would be like, I just, I that's what I do.
+And I'm too old to change. And then juniors are like, I know I should, because they're really good developers. I respect must use a debugger. I just haven't taken the time to understand it. So we started off with replay thinking if we just came to people and where like, "A, you're doing it wrong. And B we've got something better and more powerful."
+Like it wouldn't work.
+
+**Justin:** Okay.
+
+**Jason:** For all the human psychology reasons. And then also there are some fundamental limitations with break points. So what are they like? The first one is you pause and you're looking at one point in time. Okay. Well, I kind of need the chronology and then the second is cool. I can go forward, but I really want to go backwards. If the car crashed and you're paused. But like the car at the tree, that's not really the problem. The problem is like, why did we veer off the road? Which is in the past and the debugger doesn't help you with that.
+So what we wanted to do with replay was build a debugger that's really providing better print statements. And the problem with print statements is, well, first you have to have the code. Then you have to edit the code. So you have to know where to go. And then you have to rebuild a code refresh, like re-run, reproduce the problem. And then you have to look at the logs.
+And we've all had this experience that like, you have too few logs, you're like, I'm missing it. And then you add more and you're like, God, what am I doing? I'm like scrolling through this thing, a needle in the haystack kind of problems.
+
+**Justin:** Yep.
+
+**Jason:** And every time you run it, you could get different results. So you're thinking like, am I really doing science or is it definitely bad science?
+Cause like, the thing is changing out from under me. Maybe it's not the same, every. So with replay, we think of it a little bit, like record the thing once and maybe you don't even record it. Maybe somebody else on your team saw something, they send it to you and like, "Hey, can you take a look at this?" Or somebody like writes up a bug report and you're like, can you send me a replay so I can see what you saw? So you get this replay. And then you go to the line of code that you think is interesting. And then you add a print statement and you immediately see the logs. You don't have to like refresh and rerun. You just see them. And then you have the logs in a console. And you're wondering like, "Hey, which one is interesting?"
+And instead of having to guess, and play computer, you can just click on the log. And because we have the video, you get to see what the app looks like exactly that point in time. So that video is really good for confirming if we're checking the boxes.
+
+**Justin:** Yeah, it's so magic.
+
+**Andrew:** Yeah, I guess, given how you explained how it works now I think before you said that I would have thought, oh, it's somehow editing code to put in console log statements, but I have a feeling now that it's actually just doing some assembly, something? Like, since you don't actually know what the code is doing, you're doing something that's way removed from the code.
+
+**Jason:** Yeah. Yeah. Let's talk about that. So we've got this react app we've recorded it. We can watch the video. Maybe the video is like 30 seconds. I can click anywhere in the timeline and be at that point in time, but don't think of it as like I'm at like second, 10, we measure time with 32 zeros, of precision. Because computers operate like billions of operations a second and this thing is this thing's flying So if you add a print statement on line 52, you can see all the times it was hit, like double, oh, all the logs and consoles You click one you're paused at that point in time. Now you say, I want to go back from line 52 to 51. We you don't have complicated operations to like unwind, JavaScript, we just play the program back to that point in time.
+It's literally like there's a browser in the cloud and we say, "Hey, run and play to this point and then stop." That's what we know how to do. We don't do that really really well. And what's good about that is it's just like you did the same thing. Like you edited your code, you opened the debugger, you added a break point, you ran it, you paused and you're paused there.
+And because we actually have a browser that's paused there. You can like evaluate you. look at the call stack. You can see what the variables are. Everything is available. So break points. It's literally the debugger going in and we're like, how many times was that? hit Cool print statement is literally us bringing a browser to each one of those hits and evaluating that log at that point in time.
+Like there's no shortcut. We just do it.
+
+**Justin:** That's pretty magical. It's often the thing that happens in debugging, right? It's like you, you hit a break point and exactly what you said earlier is like, I don't actually want to know what happened right now. I want to know what happened And so often what you do is like, okay, now I'm going to set this other break point and I'm going to rerun. I'll like check at this point and they'll check at this point. and I'll just like, kind of keep rerunning my program over And over kind of isolate it down a little bit. So pretty magic that you can have like this.
+
+**Jason:** Even you saying that's stressing me out. Like, oh God. I remember I know what it's like to be at a debugger. And you're like, okay, this is the fourth run in the loop. I think something like pause, confirm, pick. That's not it. Resume. Pause. Is that right? Nope. Next next. Oh shit. I missed that. Okay.
+You're going to try it. Got it.
+
+**Justin:** If you already support Chrome, I assume it wouldn't be too much of a stretch to support, electron? A lot of people are building apps and electron these days, and it seems like that'd be an interesting place to benefit from this.
+
+**Jason:** Electron would be fascinating. So electron is a front end and a back end at the same time. You've got a browser and node together. And what I think is really interesting about electron is it's a way to prototype recording to processes like the front end, the back end at the same time. And if you imagine like visualizing the two, if the browser makes a request to the backend you want to log that, jump to the backend, see how the backend handles that request, look at that, and then come back. And so if you think about replay in the future, it's really about recording all the services you got your front end and then all the microservices on the backend, and then stitching that together and understand again,
+
+**Justin:** That'd be super powerful.
+
+#### Debugging the Whole Stack [00:18:41]
+
+**Andrew:** Yeah. So yeah, that's like the ultimate end state of replay is being able to debug a whole stack for you?
+
+**Jason:** No, that's not the end state!
+
+**Andrew:** Oh,
+
+**Jason:** So the nice thing about the microservice architecture is that a lot of these services are using different frameworks. So if you have a search engine, like algolia, that's a service. Translation over there, commerce over there with Stripe. If we can begin to understand these services or the semantics on top of it. For instance, like on the front end, we can already do react dev tools.
+Like we understand react semantics, but over time we could do the same thing for all libraries, all services. Then we have a much richer data set. So it's not just I want to add a print statement. It's I want to look at the Algolia searches and then what it's doing with the database, how it's indexing.
+And then it's a question of so what is our Corpus of replays, like for Algolia across. Your use case, but then all the others, if we can compile a dataset of a million replays of Algolia or a million replays of stripe or a million, of like, stripe and algolia are working together and that communication, and then we have something really fascinating.
+
+**Justin:** Yeah, that's really interesting leveraging the ecosystem networking effects there. Reminds me a lot. And I think we talked about this last time we talked about like dependency management tools, like renovate also have this thing where they can check how many, like when a version of a library is released, how many, like consumers that use renovate to update their things, how many of their CIS fail?
+And then they can give a confidence score over the whole ecosystem of oh, well maybe this is a bad release because like 70% of the, all the CI and the ecosystem fails it sounds like that sort of similar thing at like a debugging level could be something that replay taps into.
+
+**Jason:** I think you're absolutely right. I think you fast forward and the no code movement is bringing us to this place where we're really thinking about these services, working together as the communication between them. Like you already have this with libraries where you're writing less and less of the total stack and it's all about how well you're using them.
+And then what it's like to be a maintainer thinking about that change. And I am I confident this is going to work? If I had access to the million replays I can check to see does this function ever receive parameters that I don't expect?
+if it does okay, then I want to try those too before I'm sure this is going to work.
+
+**Justin:** Yeah. I hadn't thought about it from that perspective, but as a library author, that can be really powerful, especially for say someone doing something as complex as the react team that code base is certainly non-trivial! Figuring out when they can safely make changes on particular parts would be challenging. I know they do a lot of internal testing at facebook, but a tool like replay, especially with a large sort of corpus of data, it could be, can be interesting.
+
+**Jason:** So we do print statements right now, but that's the simplest thing for users. Because we're replaying the runtime. We have all the memory. Like we could look at the heap, we can look at the performance profile of how react is working. And let's say you want, I understand where react is slow. And you're the react team, you can now do analysis on this Corpus and see, "wow. When we're slow, this is the memory footprint."
+And then you go one step lower and let's say, you're the V8 team and you want to see how to make V8 faster for when react to slow. Now you can see, "wow, wow, the way we're doing garbage collection in this case with these proxies, because of these, I react to apps and the code that they're writing, we've got to improve that too."
+And you can do that all in an automated fashion in the same way that you query a database, you can just like query our recordings just as a set of data. Do dynamic analysis, do static analysis. Okay.
+
+**Justin:** Imagine the tricky part there would be you generally, depending on what data you expose is just like privacy concerns. Just making sure that you're not exposing like the value of an API parameter or something, you know, an API key that's getting
+
+**Jason:** We have the potential because we capture everything in the environment. Right? All the session data it's really, really important to be paranoid about privacy, but I think we could flip it.
+So let's say we know that this field is private. Like, okay, there's a access token here or your password field here. That's really important to be private, but how is it being used? So there's. this dynamic analysis technique called data tainting, where you say this value is bad. Now, who used that value? Did that get concatenated into a larger string? Okay. Now that string is bad. Where did that string get used Oh it got used in this function. Did that variable ever leave the system like there an API call? That'd be really bad. So right now a lot of the privacy approaches or security approaches are static analysis, but our languages are really flexible and static analysis only gets you so far. We can flip it and say, "Hey, we can give you the tools to understand if you're really respecting user privacy or if you're really thinking through security." And by the way, that same tool is useful. If you're trying to figure out, like, why did I have a null value here? Well, that null value came from this operation which came from that operation and is the same back tracing through the system. Did that make sense?
+
+**Andrew:** Oh, yeah, it definitely does. Like with CIs, most CIs you can't print secret values, but you can print them if you base 64 encode them and then you're still printing it because you only had to hop through one hoop!
+
+**Jason:** Yeah. So that should be tainted as well. And that will never leave the system for sure.
+Going back to this idea of like our Corpus of recordings, just to get to that like end state goal. So in the future we've got recordings for all the services. Great. I can like debug the system as a whole. I don't have to like pause here, pause there, log here, log there. We've got a Corpus of recordings, which is really good for that kind of service.
+So I can understand that service like in aggregate, but the really, really interesting end state is to hand that data to computer. So the way, like self-driving got good, the way GPT and open AI got good was you built a GaN, where the computer can play the game again and again and again, and try different strategies.
+So the origin story for open AI is they got their hands on a million recordings of DOTA 2. And the reason Dota to put a recorder in the game is like, if you lost the game, you would go back and play again against AI. And you're like, oh, what if I try this different strategy? Cool. That'd be better.
+That'd be worse. When open AI got that data, they said I'm going to train on that. And I'm going to play that game long enough until I realized this would be the best strategy. We have the ability to hand replays to computers and have them do the debugging for us in the future, because we can replay, you can play at a point in time and then try it.
+That's where things get really, really powerful
+
+**Justin:** That's when it transcends in the true magic.
+
+**Andrew:** Yeah, That's literally true magic.
+You won't have to debug your programs anymore. It just tells you, oh, like you should probably look at that line. That'd be crazy.
+
+**Jason:** Step one. The computer says, Hey, I noticed some anomalies. So like you run your test, the test passes. But your tests only has certain asserts. Like maybe you're not checking to see if that button is a different color. Or if that API calls me even though it'd be our call to be terrible, but you don't have to start that.
+Cause you can think of that. The computer can say, "Hey, I noticed that there was this anomaly here and all of a sudden, this seems weird. You might want to look at that." So it tells you something's different.
+Step two, it says, "hey, I think this anomaly is happening because of this new line of code." Like you change this line of code over here in this react component. And all of a sudden this API calls made to like delete user, not good.
+Step three, if you adjust that code, like you add an if statement or you adjust a condition of the if statement that no longer happens. If we can get to that point, then software's I quote unquote sell healing. Where we are building the system, maybe with the assistance of computers, but the maintenance of the system is also coming from competitors as well.
+
+**Andrew:** Yeah, as a super interesting idea, it's really coming at the problem from a completely different direction than I've seen before. Like the big news this week Justin's going to cover it later in the show is GitHub copilot which is the same, but for writing code instead of debugging code. If you're using both of those tools at the same time, you're just playing with the computer to make them to output a program.
+Crazy.
+
+**Jason:** Yeah, I see copilot and I think that's what we can do now, because we've spent so much time thinking about the static analysis piece when we can do the same thing on the department side with any fighting. We're just a couple of years from it.
+
+#### Revolutionizing Debugging [00:28:39]
+
+**Andrew:** Yeah, so that, that definitely answered, I think, answers one of my questions. I was going to ask of where does monetization come from in replay? Cause what you guys currently have out is like probably you could monetize it, but I think where the conversation just led is definitely more the monetization route you'll go.
+
+**Jason:** All right. I'll spell it out.
+So step one, you build something for teams, because as a developer, like I might not be looking for a better debugger right now because I use print statements. But what I would love is to get to replay so I don't have to reproduce something. So we solved the whole like reproduce problem.
+The whole works for me thing. And that by itself, as a collaboration tool, is like Figma. Figma's brilliance was like, you don't have to be a designer to be part of the designing process. And we're saying like, you don't have to be a developer to help out with a bug process. Everyone has context. Everyone wants to be a part of it.
+In fact, you can even fix more like low grade issues, like loading and scrolling because it's easier to capture, easy to discuss. And they're like, oh, there was a style sheet issue. Cool. We could fix that. So that by itself, Figma is a $10 billion business. Great. We could do collaboration on the debugging side that is valuable. At the same time, we can also use replay in the open source context. So every bug report to an open source project gets a replay. You do that. And the life of being open-source maintainers, just so much easier.
+Every one of the team has been an open-source maintainer. We know, as I forget about report from someone you don't know with a project that you don't have access to, and you're expected to help them, if we could use replay to help there and also help in discord, Twitters, slack, stack overflow, dev dot too.
+So anytime anybody has a question, they could ask it with replay and anybody in the community could help them. That would go a really, really long way to. Imagine being a student, writing your first react app or hello world something. You're not sure, but you could share with another person in the class and they can look in the replay and help you.
+That would be huge. That's not like a classical monetization strategy, but it's just our way of saying let's get replay into the world and reach as many people as possible. So collaborations like stage one, stage two. We're doing things in CI. We can record our tests and tests like playwright tests, and Cypress tasks could be recorded.
+You could begin doing things there that are really interesting, same with node on the backend. So I have more recordings coming in, more analysis coming down. That gets you into prod a bit. So you're a little bit like a data dog and honeycomb as well. Nobody wants issues and prod to take awhile and replay can help there too.
+If Datadog points out that, oh, shit like searches breaking, or having complaints on searches, breaking, you could find a replay for that sort of search service, click in and be in the replay and debug it. Don't use Datadog and logs to figure out what's going on. Just use them to detect the problem and then jump into the replay and debug it from there.
+That's fun because the APM space is bigger and prod is bigger. But then that last step is do what Tesla and Google have done and now GitHub with copilot and take that data and do real analysis and real search and real AI to automate our way to bugging entirely. You can't start there.
+You need the dataset and you really need the people telling you like, well, okay, so this is what the kind of bugs we care about are, and this will kind of fix, but eventually you're getting to that end state. And if you do that, I mean, that's huge.
+
+**Justin:** I mean, even, I don't know when I first saw the demo and if anybody hasn't seen a demo, you should go to replay.io and check out the demo. But eh, I can't tell you how many times in the past where it's like, oh, we come across a bug. It's like, oh wait, I think this is similar to a bug that we've already fixed and this other ticket, and you go back into the ticket and it's not really well documented.
+And he's like, "okay, what even pull request is this associated with what was happening?" But the value of being able to have a replay. So I have a link, I can see the conversation that happened. I can see what was actually going on. I can see the recording. All of that together is incredibly valuable.
+Just that, if you never get past that phase and you're just doing the collaborational debugging, that is an incredibly, incredibly valuable tool because it was like, I've said this before, but I don't think people appreciate how much of a developer's time is spent debugging.
+A lot, a lot of time.
+
+**Jason:** Yeah. You add up debugging and communicating and you have a really big slice. So if I go to you, I'm like, "Hey, how does the app bootstrap?" You'd be like, "What part are you thinking about?" And if I handed you that replay, I'm like, "Hey, is this function being used while bootstrapping? Or how's it being used?"
+You can go in and you can answer that. And then fast forward three months without that code is completely different. And you're like, is that the same problem? Just go back and look at that replay from three months ago and be like, "Oh yeah, that is doing the same thing." Or it's doing something different.
+
+**Justin:** Yeah. That's fascinating. This is magical. It's magical.
+So out of curiosity, how's your reception been so far? What have people have been saying about replay? Was there anything surprising that has come out of
+
+**Jason:** Gosh, I think what's so fun for me is we had been working on replay at Mozilla for three, five years in private. We didn't know if would ever be successful and talking about it made everyone else nervous. Are you promising things that we can't do? And over the past year, working on replay in public and having conversations like this is just a magical, because everyone comes in, they're like, how does this work?
+Like really? How does this work? What can I do with this? Can I inspected element at a certain point in time? I really want to see at like minute 30, how does this. Yeah, but how does that node picker work? Having those conversations has been the most special thing for me to share it.
+And I think the funniest thing is you talk to somebody who's not in tech and they're like, oh, you're recording. That's like a video fine. But then you talked to somebody who works on V8, or is like a tech lead for chromium or is building repl.it or code sandbox or Cyprus. Who's like really in the internals and seeing them freak out.
+You're like, what have you done? And can we use replay inside of replicant and inside of century or inside of Cyprus or inside of any number of tools? That to me is. Is the most surprising and exciting yeah, you can throw away our UI where you're at in print statements, interviewing a code and forget about that.
+That's all open source and think about how would VSCode use replay it. We have those API APIs, how would sentry or Cypress and use replay. We were talking to two folks on the lighthouse team yesterday about how you could use lighthouse to see an audit. And the biggest problem with audit is, and your app is the audit that's ran yesterday.
+It's going to be different than the audit that's ran today. Even if you run them at the one right after the other, it's going to be different because their system is a little bit different. Why? So hooking and replay and think about how replay can help in that context. That is so surprising. That's so interesting.
+I mean, on a personal level, We didn't know if developers would like it. We also didn't know if product managers would want to use it too because if you're a PM, you can take a screenshot and be like, "yo, this is bad." And we're asking them to do something a little bit different. And if you're a developer, we're asking you to use a completely new tool and a new workflow.
+So seeing that reception and seeing teams adopt replay, and like when one team at a company adopt replay, other teams are like, what's this replay you just shared with me. That's really interesting. Can we use that? So that's been really exciting.
+
+**Andrew:** It's like the next level of sharing. Like you start out with a screenshot and you're like, I need more than that. They're like, oh, well here's a video of it. And he's like, well, I need more than that. And here's everything you could do possibly want!
+
+**Jason:** That's exactly right.
+
+**Justin:** It's an incredibly exciting tool. I mean, there are a few like broad category tools that I think are incredibly important for an organization to have. a good issue tracker is important. It's important to like, know what you need to work on and to track the things that you need and a communication tool.
+Super important. And this is a whole sort of new category because there's a lot of things that people use like, oh, they'll send you a loom of this, like bug or you get a screenshot or they try to describe it in a slack but it misses all the context.
+And then, so that's the sort of as we're working on it, and then you have all the, like that, all those artifacts get lost, over time as you're moving on, because they're different than like where you're tracking , your issues and everything. But if I can think of a world where I can use linear and I can have replay hooked into linear, I'm like, I am I'm set. This is the only two things I want in my life.
+
+**Jason:** I wonder if you could make a loom to de script analogy with like print statements and a replay because you send somebody a loom and it's going to have just the video and just the audio. But if you record with descript, you can drop all the ums. You have all the contexts, you could literally see the transcript.
+You're like, oh, that's bad. That's bad. Edit that, tweak that because it's got more in there. And I think that's what we're doing here. We're like, you want the video, you want the Dom you want the JavaScript want to see the network and data because those requests are going to tell you a lot too. And then how do we present that to the users so they can make the most sense of what's going.
+Tell that story. Okay, this is what the app was ready to learn.
+
+#### Building a Business on Breakpoints [00:39:08]
+
+**Andrew:** So you've mentioned Mozilla a bunch. How did replay spin out of that? The code started there. You said it was developed there for years. Was it open source code that you then just repurposed into replay the company? Or how did that work?
+
+**Jason:** Yeah. So Mozilla is a special place. And what I'll say about mozilla is before COVID it was the largest remote culture. So very async it was probably still is one of the largest open source organizations. Almost everyone at Mozilla is working in the open. And there's this hacker mentality where you're encouraged to do big things and take risks.
+And you can look at rust, web assembly. There's so many projects that were killed many times before they became real and went into the world and replay was like that. So you look at the dev tools team. We had been trying to do replied web replay for a long, long time. In fact, our VP of product had my job five years before I was doing it.
+And he had tried to do every plan as well. So there was this culture of let's take big bets and try things, even if they're crazy and see what we can. The problem with replay is in the early days, it was really, really invasive. It was an, every part of the system. So like networking, JavaScript, graphics, every component owner was like, what the hell is this thing?
+Cause we landed it, it was in the code for two years. So you use Firefox 19 again, click record and do stuff. And every time we got closer, it was like a kid playing the guitar. Great. You want your kid to play the guitar and then talking about joining a band? No, stay in school. That was the kind of relationship.
+It was like, okay. We have something we're ready to go public. Oh God, I don't leave school. Don't join a band. This is scary. This is scary for everyone involved. So that was the relationship. We were really appreciative that we could work on these things. We were like looking up the ladder and we're like, wow, David like totally gets what we're doing.
+Of course he gets it like he had my job, but how do we bring that to the world? And what's so funny about starting a company in 2020, and this is true now. And you look around and there's so many devtools companies you can start and raise money on break points. I don't think that's ever been true before.
+And I have been told my entire career, you cannot build a business on break points and now you can. And that's huge. That's funny.
+
+**Andrew:** Yeah, it's been a huge year for funding of developer tools. On our last episode, we had the guy, the founders of fig on, and I bet 10 years ago, if you said a company would get funding for creating terminal autocomplete, like nobody would have believed you.
+
+**Jason:** Like auto-complete as a service probably could be spun out or you could build some really interesting things there and you see what Vercel has done. And that's huge. And I look at Figma and I'm like, yes, a design tool that's also just a rendering engine a really, really good one. That's huge. And Cyprus has raised $50 million and they're going to do fascinating things with that and just go through that list, which is actually probably a really good segue for replay.
+We started last summer. We built a team of eight, so we brought six people on really like the six best people. We could possibly have found so that the tech lead for the JIT on spider monkey. So an expert at understanding a critical piece of the runtime and working with Brian, my co-founder who does the craziest things in the runtime we brought on one of the farmer tech leads of Babel.
+I mean like you can replay the browser, but if you can't debug modifier code and the compile code that comes with it, like you don't have something and you need source maps and Logan's incredible. I can go down the list, just this incredible team. And we needed, we have the most incredible designer with 20 years of experience.
+And 10 years ago he was like," oh shit, Brett, Victor, this inventing on principle thing is fundamental. We need to do something here." So create a programmer designer, just really, really talented. And we needed everyone to get to the point where replay would just work. And it was designed in a way that it would resonate with product managers and engineers alike. We saw, we had a technology that was promising, like the thing wouldn't crash and people liked it. And it didn't matter if you were at Facebook where you're, nobody understands what facebook.com is doing.
+There was literally 300,000 function. In the page and over 200,000 of them are anonymous. It's that's not good if you're just getting started programming. You're like, what is this thing? So we were talking to everyone. It was clicking both at both extremes. And at that point we decided Hey, can we build a company around that?
+So we have this core team now, what would it take to build a company around those and really bring it to the world? And we're at the point now, where for me, the most important thing, and the thing I'm most excited about is recruiting.. We get to bring on our first product manager, the first engineering manager, the first devrel, because think about replay in the context of debugging today. There's such a great story to tell about how the workflow is going to change.
+And how we bring people into that during world. It's just everything. So dev rels can be huge and it doesn't matter if you are really interested in the systems programming or runtime platform engineering. And you're just getting started. We want to talk to you too, because this is the ideal environment to work on a runtime where you don't have the pressure of like shipping and upgrade to node, which like any regression would I be bad. We're building a debugging tool And we're having fun and you can hack on an entire runtime and understand that and make debugging easier all the way down for like dev tools, product, collaboration, accounts, library, you name it. So we're building out this really, really supportive team to get us to that next stage.
+
+**Justin:** You heard it here, folks, you're looking for something interesting. That's awesome. I gotta say , I'm super excited about this product generally. Replay is it's pretty magical. It's pretty magical. I think y'all hit a really good sweet spot. So I'm rooting for you. I want to use this, take my money.
+
+#### Tooltips [00:45:52]
+
+**Andrew:** Yeah, that about wraps it up for all of our main talking points. Now we'll go to tool tips,
+So my first tool tip of the week is something to manage all of the other tools that I have downloaded during our tool tip sessions. A problem you might have when adding a bunch of apps to your computer is that your menu bar gets clogged and you can't even tell what you're supposed to click on anymore.
+This app fixes that problem. It puts all of your toolbar apps into one overflow menu, and then you can control which ones are outside of that overflow menu. So it is helped clean up my toolbar immensely, and I have just what matters on the top now. So that's super nice.
+
+**Justin:** This app being bartender,
+
+**Andrew:** Oh, yeah. The app we're talking about is Mac bar tender, take control of your menu bar.
+
+**Justin:** That's a good tagline. They did all right.
+
+**Andrew:** Yeah, marketing a plus right there.
+
+**Justin:** I used the open source version or I did before I sold my Mac.
+
+**Andrew:** Oh shit.
+
+**Justin:** I'm unemployed. I don't have a Mac, so
+
+**Jason:** Okay.
+
+**Andrew:** But windows man, over there.
+
+**Justin:** yeah.
+
+**Jason:** Oh, no, replay's not going to work for you!
+
+**Justin:** I know. I know. I'll get a Mac eventually. It's fine. I'll get it back eventually.
+
+**Jason:** Hey, we're Hiring.
+
+**Justin:** oh yeah.
+So my share of the week is if you're at all connected to the tech world, you've heard of this already. We talked about it previously. So GitHub just released this service powered by open AI called copilot.
+A co-pilot is an intelligent auto complete.
+I seem to recall other companies coming out with similar sort of things. There was one a while back, maybe a few years ago that released on hacker news. I remember that blew up that a bunch of privacy concerns and I'm forgetting what the company was called now, but this isn't a unique space, but being that GitHub is doing it it's a pretty big deal.
+And we've heard and seen a lot of examples where co-pilot's autocomplete is actually really good, like scarily good. And it makes sense if you have a whole Corpus of open source to, to pull from. So yeah. If you're interested in having autocomplete powered by AI, check out a co-pilot.
+
+**Andrew:** Yeah here data is king and GitHub's probably in the best place on the internet to access that data.
+
+**Justin:** I think it's really fascinating what you can do with having all of this data. Just about code bases in general.
+So we'd mentioned renovate earlier, because it's like leverage and all these places being able to determine when things are released and if they're breaking or not.
+I also think about like code search tools, there's a lot of really interesting insights that they can pull out of a code bases.
+Anyway, it's a fascinating topic.
+
+**Jason:** And the team did such a great job on the interface as well. I get fits right into VScode. It feels so natural.
+I'd like to promote the Tovala oven, which is a small, smart oven it's electric and the world's going electric. So that's great. My wife and I got it. At the beginning of COVID when they were running a hundred dollars discount, I think they're still doing that. So you can get this oven $160, which like is a lot of money, but for an oven, okay.
+Seems fairly reasonable. And what they're doing is they're giving you four different types of heat. So you can broil, bake, steam is key, and then something, they just got to call it toast. And because everything is electric and it's wifi and smart, you can plug in a recipe and it's " oh, I'll make your pizza in 13 minutes. I'm going to start with some steam, go to bake and finish with broil. And it's gonna be perfect every time."
+And the best thing about it is they send you the recipes. So if you're like me and you've got five minutes and you don't want to eat this like junk food you use pick it out of the box, put it in the.
+And it cooks a really good meal and you're like, all right, cool. I've got Mac and cheese and some chicken and some corn bread and maybe a salmon and it's gotta be tasted.
+
+**Andrew:** That's actually super interesting. I follow this one YouTube channel that is all about just like talking about appliances. They recently taught me how to use my dishwasher more effectively. And it's yeah, there's a prewash bin that you have to put detergent in to make it prewash who would have guessed.
+But yeah, this is interesting. Like the microwave space hasn't been innovated on in a very long time. Like they used to come with lots of presets that would do similar things of making steam happen in a certain part to get like the perfect cook. But yeah, I don't think that's been innovated on lately.
+
+**Jason:** Yeah. I think the Tovala got me off of souv vide. I was trying to come up with the perfect whatever. And now with steam, it's like, okay, this is gonna be precise. It's going to be efficient. And efficiency is good. If you care about climate and reducing your footprint. And it's easy, if you don't think about it as
+
+**Andrew:** That's awesome. I might actually look at picking one of these up. Sounds awesome.
+
+**Jason:** Sweet.
+
+**Andrew:** My last tool tip of the week is something that everybody has liked already is called Docker. I've been doing a lot of home automation stuff and all my devices broke two weeks ago. Don't ask me how! It's a very, a trying time for me, but in spinning everything back up, I decided to learn Docker and actually spin up everything in Docker containers.
+And it has been like night and day difference of setup. All these services that I previously had to install. 10 things and run 10 different commands and just pull my hair out over why they're not working. Is it just super simple to spend them up in a Docker container? And at first it seems like all the options that are there kind of confusing, but once you get a hang of them it's super powerful.
+Like I understand why it took the industry by old now.
+
+**Jason:** kind of services? What kind of services are you running?
+
+**Andrew:** Oh, I actually, I have around 10 running right now. They're all for legal media. I swear. I have a downloader, a thing that helps me track TV shows the thing that helps me track movies. I, my whole, the whole home automation network is based off of home kit, but not all my devices support home kit.
+So there's an source project called home bridge where it has a bunch of plugins that make basically anything work with with that. And then once you get down that path, it's like, well, I want to make my automation system perfect. So like I even spun up Justin all recognized this tool n8n. I spun up a container for that.
+And I might eventually switch off of IFTT, which I'm using for notifications onto my own self hosted n8n thing. So lots of little different things. I've got a Plex server running in there somewhere.
+
+**Jason:** Love it.
+
+**Andrew:** Yeah. I started out on raspberry pies. Like I ha I had literally like a little like 3d printed, raspberry, PI rack with four of them in there.
+And they're all doing different things. And now it's just been replaced by like thousands of dollars worth of technology. It's crazy how fast
+
+**Justin:** run Docker on raspberry pies. If you did not know,
+
+**Andrew:** Yeah.
+I like, I liked my Synology.
+I tried doing a Plex on a pie and it turns out you need a good computer to have Plex do things well for more than one person. So now I run an Intel NUC for that.
+
+**Jason:** That's impressive.
+
+**Justin:** Oh, the NUC. Is really small? Like, it's relatively small? too, but it's like pretty high
+
+**Andrew:** Yeah. They have some bigger ones. I have the Hades canyon one. I think it's like a thousand dollar one. It literally just runs Plex and it's never had a hiccup for me.
+
+**Justin:** Gotcha. Yeah. I remember looking at it as long time. This is just a fun library that I found it's called git peek. It's by Jared sooner. I just stumbled across it and I thought it was really interesting. The idea is you have this command that like hooks in to git so it's just git peak and you can put a URL, a github URL, and it'll quickly open it up so you can see the code without having to think about like, "oh, let me clone everything down and pull it in."
+I just want to open it really quickly. It's relatively simple. One thing that I do like is if you don't provide an argument, it has this like dynamic search functionality where you can search, GitHub for things that you want. And then like quickly get a description and open it up and be able to mess around with it.
+It seems really nice. It's really good opens up in your editor and everything. The same user has also created a browser extension, a peek browser extension that integrates with GitHub. So you just do peak and it like opens it up and your editor. It's pretty cool.
+
+**Andrew:** Yeah. So GitHub1s is, if you notice, I just added one S at the end of this github.com URL. And if you open that, that actually opens the Monaco browser with that GitHub repository right in your browser is basically the same thing. You don't get your your own plugins, but they actually recently implemented search, which I like a lot, because you couldn't search before.
+
+**Jason:** hot.
+
+**Justin:** Yeah that's pretty awesome.
+
+**Jason:** Yeah. So this is where I'm going with this too. I'm thinking of repl.it and you say that I'm like, oh, GitHub codespaces and repl.it are going to change the games. What I started doing with repl.it recently is I'm looking at a report I'm like, Hmm, this seems interesting click. Now I've got a repl.it for it and I can just immediately start playing with it and being able to quickly get in there and just like fiddle around like, oh yeah, I get the, what what this is doing or like now this is not, for me, has been huge. The other which is just really basic is like web hooks. So if you're using Heroku or any service that has web hooks and you want to quickly play with things, just like start a repl.it and then point the web hook at that repl.it and then you can just run, edit, run, edit, run, and just keep going and seeing how it works. Otherwise you'd be like, well, how do I publish this thing? Do I need deploy to Vercel or something? It's going gonna take some time. Repl.it, you're just natively in the cloud and it's so, so easily get started.
+
+**Andrew:** Yeah. Definitely a big fan of repl.it. My girlfriend's sister, she is going to college for computer science right now, and all of her classes used repl.it. So what she's been doing over the past weekend is learning how to set up the languages she was using on her computer, because she's never had to.
+
+**Jason:** Wow.
+
+**Justin:** It gets me excited for the next generation of programmers, because. There's a lot of stories about wizened programmers who started it's like, oh yeah, I was eight and I like learned basic or whatever, but I don't really think like programming generally is always very approachable. Even people who like can acclimate to it, it has such a sort of high activation energy that you have to break through to get everything set up and running, but tools like repl.It where you can just focus, not on all the environment and all the other stuff, but just on the code, just on that one little thing, narrowing your focus down, I think is super powerful.
+
+**Jason:** And the collaboration that comes with us, like, Hey, I was just playing with this one thing.
+Do you know what I should be doing here? Okay. Yeah. Just like drop in, take a look.
+
+**Andrew:** Having actual comment threads, like discovering that feature was really interesting. Before that I was helping out my girlfriend's sister with just like writing comments in the repl.it and then we realized, oh, shit, you can actually do comments, like real comments.
+
+**Jason:** We still, I think we still have a running repl.it for a lot of our HTTP services and replay. it was the easiest thing to get started. Why not? If you want to edit it, you just go to repl.it and make some changes. The other day I was working on changing how we send emails with a colleague we're both in there, like Google docs. making changes. It's like, I think that looks good. Yeah. Yeah. Run and we're like, what is this? This is not GitHub. I'm not gonna make a commit and publish and review. Like we're just playing. And it feels natural. I think there's so many people who start there and they're like, you want me to use GitHub and git.
+No. Why would I do that?
+
+**Andrew:** I think that about wraps it up for the week. Thanks a lot for coming on Jason. This was a very interesting talk. I think we covered a huge expanse of topics.
+
+**Jason:** I loved it. Thank you so much for having me.
+
+**Justin:** Yeah. Thanks.
+
+**Andrew:** Well, that's it for this week's episode of devtools.fm, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
