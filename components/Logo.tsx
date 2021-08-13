@@ -25,7 +25,7 @@ export const Logo = () => {
       fill="none"
       width={320}
       xmlns="http://www.w3.org/2000/svg"
-      className="max-w-[320px]"
+      className="max-w-[320px] h-full"
     >
       <rect
         x="30"
@@ -35,7 +35,7 @@ export const Logo = () => {
         rx="230"
         fill={bgColor}
         stroke="url(#paint0_radial)"
-        stroke-width="60"
+        strokeWidth="60"
       />
       <rect
         x="85"
@@ -45,7 +45,7 @@ export const Logo = () => {
         rx="175"
         fill={bgColor}
         stroke="black"
-        stroke-width="50"
+        strokeWidth="50"
       />
       <circle
         cx="315.5"
@@ -108,19 +108,19 @@ export const Logo = () => {
           gradientTransform="translate(1446 60) rotate(90.0286) scale(1000 2771)"
         >
           <stop
-            stop-color={isFirefox ? firefox.light.gray03 : chrome.dark.gray02}
+            stopColor={isFirefox ? firefox.light.gray03 : chrome.dark.gray02}
           />
           <stop
             offset="0.0001"
-            stop-color={isFirefox ? firefox.light.gray02 : chrome.dark.gray02}
+            stopColor={isFirefox ? firefox.light.gray02 : chrome.dark.gray02}
           />
           <stop
             offset="0.492861"
-            stop-color={isFirefox ? firefox.light.gray03 : chrome.dark.gray02}
+            stopColor={isFirefox ? firefox.light.gray03 : chrome.dark.gray02}
           />
           <stop
             offset="0.692708"
-            stop-color={isFirefox ? firefox.dark.gray01 : chrome.light.gray05}
+            stopColor={isFirefox ? firefox.dark.gray01 : chrome.light.gray05}
           />
         </radialGradient>
         <linearGradient
@@ -132,7 +132,7 @@ export const Logo = () => {
           gradientUnits="userSpaceOnUse"
         >
           <stop
-            stop-color={
+            stopColor={
               isFirefox
                 ? isDark
                   ? firefox.dark.pink02
@@ -144,7 +144,7 @@ export const Logo = () => {
           />
           <stop
             offset="1"
-            stop-color={
+            stopColor={
               isFirefox
                 ? isDark
                   ? firefox.dark.purple01
