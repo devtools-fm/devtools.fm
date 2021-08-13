@@ -56,7 +56,7 @@ export const Footer = () => {
 
       <ul className="flex space-x-4 justify-center my-8">
         {PODCAST_LINKS.map((link) => (
-          <li>
+          <li key={link.href}>
             <FooterLink href={link.href} title={link.text}>
               <img
                 src={link.src}
