@@ -1,0 +1,478 @@
+---
+title: Shawn Wang - Temporal
+youtube: https://www.youtube.com/watch?v=yNOkWFGejUs
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/9170671
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Join us as we chat with Shawn Wang who's Head of Developer Experience at Temporal and a staunch advocate of learning in public.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:32] Shawn's Journey
+[00:03:04] What's a Temporal?
+[00:11:59] Head of Developer Experience
+[00:24:39] Finance to Programming
+[00:33:47] Learning in Public
+[00:38:33] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Shawn:** What if the code that you wrote could be statically analyzed to understand what infrastructure you need and the infrastructure would just spin itself up instead of you doing it. And then you would dynamically analyze it as it runs to optimize for performance or scale or whatever. I think that's where we're headed.
+
+**Andrew:** Hello. Welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+#### [00:00:32] Shawn's Journey
+
+**Justin:** Hey everyone, our guest today is Shawn Wang who's currently the head of developer experience at temporal. Shawn, it's great to have you on, would you like to tell our guests a little bit more about yourself?
+
+**Shawn:** Yeah. Hey guys, thanks for having me on. This is a, it's an honor, and it's been a while since I podcast it. So it's great to be back on the airwaves virtually. I'm originally from Singapore. I had my first career in finance and I changed over to tech in 2017 ish. But I was always coding as part of my job in finance.
+
+I just decided to become a full software engineer and that's where I met Justin, I think in the Vue meetup scene. I don't know. We're just kind of active in general.
+
+**Justin:** Yeah. Vue NYC at Spotify.
+
+**Shawn:** Vue NYC. That was a fun time.
+
+I think if the New York scene really helped me get my career going. I was a software engineer at two Sigma for awhile.
+
+And then I joined Netlify, was with them from series B to C. And then I joined Amazon during the pandemic. Lasted eight months and joined temporal because I thought it was so compelling that I gave up everything. It was a pretty sweet job at Amazon, but I think that ultimately I want to build for the little guy.
+
+And as much as I appreciated all the resources I had at Amazon I think the future is more exciting and it has more, things that I could do.
+
+**Andrew:** What were you working on at Amazon that you didn't quite want to work on once you saw Temporal?
+
+**Shawn:** They're just different things. So at Amazon, I was a developer advocate for AWS amplify, which is essentially what I was doing at Netlify. But more of that, right Netlify is essentially a CDN plus a build bot and amplify was that plus storage plus GraphQL plus pubsub like just it was a front end layer for the rest of the Amazon services.
+
+So that was all super interesting. But it was very serverless focused as well. And this is something I struggled with at Netlify essentially, if you talk about the JAMstack, if you talk about front end developers, you're essentially always talking about serverless all the time and that's because that's the new hotness.
+
+It's very great. It's very good for vendors and is also good. People starting and scaling from zero. The thing that I thought was always missing in the ecosystem that I did not have a good answer for was long running jobs long running surfaces. And that eventually led me down the path of going to Temporal which is essentially what Temporal has been doing for 15 years.
+
+Give or take, depending on how you start counting with the founders working on this problem.
+
+**Andrew:** Wow. Didn't know had been going for that long.
+
+#### [00:03:04] What's a Temporal?
+
+**Andrew:** I'm pretty inept when it comes to temporal. What exactly does temporal do for you?
+
+**Shawn:** Oh dear. Yeah, this is a fun question. Temporal is a microservices orchestration platform. It's open source written and then go. And essentially what it does is it helps you deal with between service boundaries standardize all the infrastructure and this policies of retries, timeouts, heartbeats. Anything like that. Enabling you to send in signals get queries, get data out and just be able to coordinate anything from a data pipeline where you're going.
+
+You're like collecting data from multiple sources to infrastructure provisioning, where you're sending out an API command and waiting for machines to spin up and down or anything like long running, like a background check where it's like machine to human to machine flows. The checker is one of our customers and literally one of the background checks can be, I'm sending a human to a courthouse and that can take forever.
+
+And this technology was born at Uber but the roots go back all the way to Amazon, where our CEO was tech lead for Amazon SQS and Amazon simple workflow. But if you imagine an Uber ride, if you track it Uber journey from beginning to end, like literally someone requesting a ride and then you have to match them.
+
+So you send them to the driver matching service and then they pick you up and then they drop you off. And then they send emails, the tips, the receipts, whatever is involved in that long running transaction. Each of these teams, each of these jobs could be done by a different service and you need some way to orchestrate all of them to coordinate what happens when someone cancels halfway or something happens halfway, and to do everything that could go wrong, that you need some way of organizing all that logic.
+
+Imagine if you spread this out among a team of, I don't know, 200 engineers and how would you have a way to coordinate all these things? This technology was born at Uber. It was open source. There's a framework called cadence. And then it got successful enough because it was picked up by the likes of Stripe and Netflix and Airbnb and Coinbase that, they said, why not go out and go have a go at it and run a managed service.
+
+So essentially that's what temporal is today.
+
+**Justin:** It's pretty cool. I was looking at Temporal and it reminds me a little bit of what serverless does for servers. Instead of focusing a lot on infrastructure, you focus on what is my application code for the response to this thing? Of course, it's somewhere it's like serving some things.
+
+But if I, I kind of like business rule engines and workflow engines, and they often tend to be very, very complex. And it's either like a dedicated service. Maybe you have something like sidekick or something that like just does background job processing or maybe you have an actual workflow engine, which can be more of like a code framework that you're wrapping around all this stuff that you're trying to coordinate. It can also be really gnarly. So looking at temporal, it looks like they did a pretty good job of just abstracting to the function level of, &quot;Hey, here's the thing that I sort of want to do.&quot; And not having to faff around with all the other things. Is that a correct sort of summation of that.
+
+**Shawn:** Yeah. It really depends. What makes Temporal very hard to pitch is that the pitch actually differs by what kind of engineer you are and what tools you're already familiar with. So you mentioned sidekq and that's a class for a class of engineers that will immediately click.
+
+Are we a sidekiq competitor? Maybe, maybe not, you could use us as a sidekiq competitor, but for example, could you use sidekiq to say execute this task and then for the next task, wait on another task being completed. And once the moment that other tasks completes, continue with this other, with this task, so that's a saga pattern or, depending on how you want to set it up, like a race condition pattern.
+
+And I don't think that's doable and sidekiq a sidekiq is meant for batch jobs. So it really depends on what you're asking for, but, in my mind, this is a generic run wait, a generic framework for handling asynchronous and or orchestration across services. I'll throw in a couple others as well.
+
+So what about observability? What about logging and tracking across all these different events? You want to build that in from the get go. And that's what Temporal does as well. It uses event sourcing so that even if Temporal itself goes down, you can just bring it back up again and it starts back, where it left off.
+
+And I think that's a very important part of this system because essentially you're just introducing a centralized dependency on every single part of your distributed system. And so you need to make sure that the centralized dependency is just extremely fault tolerant
+
+**Justin:** Yeah. Yeah, absolutely. What is the sort of model for like how Temporal is hosted? Is it just a hosted service where you subscribe to it? Is it like a self hosted service? What does that look like?
+
+**Shawn:** yeah, it's a, it's an open source framework. So you can host it yourself, especially if you are already running a go system it's essentially cluster of four go services, that's what it is internally. And then it also requires a persistence layer. So we support Cassandra and MySQL and Postgres and an optional analytics layer using elastic search.
+
+However you deploy clusters you can just deploy like manually or with some kind of infrastructure as code solution. We are not really opinionated on that. And that's what we have like very large users today, not paying us a single cent and just using it as an open source project.
+
+So essentially what Temporal the company's job is essentially to build the managed version of that and make it easy for people who don't want to manage those ops. But then also start to think about proprietary features that might be value added around the core open source. Right?
+
+**Andrew:** That's awesome that it's being built mostly out in public. Like I know one of the big problems with Bazel is a lot of it's public, but not a lot of the really cool things that companies use to do it is public. So the fact that temporal is a open source first company is awesome.
+
+**Shawn:** Yeah, I think it's important for adoption as well. Like people would just want to be able to look through all the source code. They wanna run it locally and their Docker container. And I think that's how this Descript actually uses us. Descript actually is a paying customer of ours.
+
+And it's one of our first case studies from a paying customer. But when they try to sell it, it was just an open source thing. And we have a Docker compose, we have a helm chart people try out and all sorts of different ways just to get comfortable with the technology. And they're pretty sold by the time we start sales conversations and that's pretty awesome.
+
+And I think that's the way that a lot of dev tools should be done. Not every dev tool. I think this is a point of contention, like how many. Value are you actually doing with open source in your service as compared to just giving a really good free trial? that's an open debate, but we're on the side of open source right now.
+
+**Justin:** Building an open source business is hard. I think we've seen, especially looking at what's, happened with the Elasticsearch and the troubles that Mongo DB had. It can be really hard to say here, I'm gonna open source my things. And then I'm going to try to build some sort of thing on top of this licensing becomes especially important and how you like put that out into the world.
+
+So I, I'm always very strongly in favor of open source and finding a good open source model. But it does seem like a challenge.
+
+**Shawn:** Yeah it's not free either. We have to dedicate engineers to triage issues and PRS from the committee. And if we don't do a good job, then people accuse us of being bad. Open-source maintainers. Yes, it's free work that people are putting in but usually they don't have any sense of the roadmap, but they don't have the same priorities. some of them are just have drive by PRs. There's a lot of maintenance weight associated with being open source. I think it's a hot topic. Whether or not you should be MIT open source or you should use one of the other emerging licenses. Like I was very interested in the SSPL or the AGPL.
+
+I think elastic went for AGPL and maybe Databricks or some of the others went for CSPO. And we are MIT licensed, meaning that Amazon could take it today and host it and we would have no say whatsoever. And I used to be a lot more worried than I am today.
+
+And that's because the more you build these businesses and the more you understand the complexities of the different components, the more you see that actually just hosting the raw service isn't enough. And that's why Mongo DB, even though Amazon is hosting, whatever document DB with Mongo DB capability or whatever they call it I'm all going to be is doing fine as a business.
+
+There's still a $12 billion company and that's a database company. So what's relevant about this being a database company is people want data to stay within Amazon, right? Data egress is charged, whereas data ingress is free for Amazon.
+
+That's a really interesting, competitive advantage that Amazon gives itself. But somehow, call companies are realizing that they can still fight it. If they have a good enough offering that Amazon doesn't offer. And at the end of the day, It's not existential for Amazon to host any of these open source software.
+
+And you'll always be behind in some way, in terms of the versioning or some kind of support, there's always ways in which the smaller company can compete with Amazon. At the same time. I think if Amazon hosts you or offers, you, it's also recognition that people want you enough that they, that you are now officially one of the 200 or 300 officially supported services. As Amazon. And I think that's a mark of pride. That's not too bad.
+
+#### [00:11:59] Head of Developer Experience
+
+**Andrew:** Being a front end developer every time I have to try to configure or use any AWS service, I've just feel lost. And I feel like these small, smaller companies really have the chance to get better DX. And I think that's what out of your current job is at temporal. If I'm not mistaken is DX. Could you explain what exactly that means?
+
+Does that mean you're still a dev advocate or are you actually like looking at using the service and how to make that feel better for a developer?
+
+**Shawn:** Yeah managing dev advocates, actually, That's part of, one of the reasons why I was attracted away from Amazon which is that temporal was willing to offer me an expanded, role. Which is a combination of products dev advocacy docs and SDK development. Whereas at AWS, I was just responsible for content. So it's a, it's an, it's a T it's a chance for me to step up. So yeah. Dev experience is. a very, I think a lot of people are trying to crowd in, on it and it depends where you are in the org chart.
+
+I have a fairly holistic view in the sense that for example. a Netlify I had the title of developer experience. engineer, but I was actually mostly just a developer advocate meaning that I was mainly producing content and not really contributing to the engineering effort or the product prioritization that change when Sarah Drasner came into manage us. She actually dedicated one quarter of our time to engineering. So literally, three months out of the year, you're a taken out of the devrel team and put into an engineering team and then helps dev advocates be more sympathetic to engineers. And just also, I think when you've built the feature that you're talking about, you just have a lot more authority on the, topic than if you're just like regurgitating docs. and I think that's a very positive effort.
+
+But Personally. For me, I take it more expensively in two ways, one is a developer exceptions, is what I call, it. I have a blog post called developer exception engineering because a lot of the times I think developer advocates talk about free tier the happy path, the like how to get started. And yeah, that's good for 10 minutes. But then like for the poor developer who like bought the spiel is now stuck with it for two years and is running, into all the bugs and the ugly stuff that it's not nice to say on camera.
+
+And developer relations or developer advocates, people typically wash their hands off of that. And they say, it's not their job. It's part of products, part of engineering. I'm sorry. I didn't know. The building was so high. I'm sorry. Yeah, we have this feature, it's not as great as other options, but I can't really say that stuff like that, that it's like the impolite stuff.
+
+I wish people were just more upfront about it. Because engineers can deal with that can deal with imperfections. But I think a lot of developer tools and developer engineers, the developer relations, people are very insecure. So they, they feel the need to be all things to all people. They feel the need to say our thing is great.
+
+Everyone else is also great, but our thing is greater. And does all the other stuff while also not having any competition. It's just a very duplicitous mindset, which I don't like. We should just talk like we would to our friends. And a lot of the times the companies who employ the, their operations, people are not comfortable with that either.
+
+It's a really interesting push and pull between that. I'm on the side of trying to be more honest and saying we do not do all these things. And in fact, actually that's yesterday, I pushed the FAQ tour through a landing page saying what we don't do. We don't do real time.
+
+We don't do a streaming. We don't do visual. And I think it's important to lay those out as much as possible.
+
+The second part of developer experience, which I really am appreciating more and more is community. So instead of you being the single source of truth on content, you produce all the events, you go and do all the talks.
+
+How can you enable users to talk to each other? How can you enable users to hire each other? How can you enable your fellow engineers your coworkers to talk on behalf of the company with your help instead of you doing it.
+
+And that's people I'm way more interested in real engineers, air quotes doing the talking than people who are paid shows.
+
+So I really like to explore those things. And I think that the developer experience industry is coming towards this point of view more and more.
+
+**Andrew:** I really resonate with the whole, like getting sold the whole thing, but not the drawbacks. I have a long running service called kikbak.tv, which is basically like a fancy RSS reader for music videos. And a few years back, I got sold the whole serverless thing and I was like, &quot;Oh, it's so good. It makes all these things better.&quot;
+
+And now I'm sitting here with some pretty high bills because I run lots and lots of serverless functions and I wasn't sold the drawbacks like local developments harder, or connecting to databases can be really hard. And it's something you have to think about, or you might have not really have to think about that with a traditional server.
+
+So I definitely liked the honesty.
+
+**Shawn:** Yeah. I, want to say like a lot of it's not the developer advocates fault. as well. Because if they are too honest they get the nasty DM from their boss. So yeah, it's a struggle to always be comfortable with what we're saying publicly as a representative of the company.
+
+I don't know. I think that it has to come from management and so having someone like me set that example, I think helps the rest of the company be more open about okay, here's where we are at. But despite all these flaws here are. the customers that really back us up.
+
+And here's why we think we solve the problem really well. It's also a lot about accountability and metrics, right? If you measure me entirely based on how many views I get, how many signups I get, then that is what I will produce for you. But I will not say anything about the long-term experience and the long-term relationship, which we should actually, if we screw that over in terms of trust people will never trust you again.
+
+The metrics produced the results. I forget what the quote is like what gets measured gets managed, I guess. So if, no, one's looking after the long-term relationship with a long-term developer experience, then nobody cares about it. And that's very negative long-term.
+
+**Justin:** Yeah, for sure. And I think it says a lot about the company and the product too, if you're very open and honest, because some products like have big drawbacks, major trade-offs and if you really get into those people are like, ah, I don't know if I want to really want to use this, even if it's like manageable.
+
+I think it, even above and beyond, it goes to show that, Hey, like this is, we have something that we're very confident in, that we think can really hit these key areas really well.
+
+**Shawn:** yeah. Andrew, I wanted to respond to something that you said about setting up services. You're more of a product developer. And you rely on platform engineers or infrastructure, whatever, you know, I don't know what your backend team is called to give you the things to work with right.
+
+To produce products. And that's fine. And a lot of the DevOps movement is about taking on of that responsibility yourself by having all these familiar tooling. One of the pitches that we have at tempura, which I want to try on you is we are reliability on rails. And so this is the idea that, for example, let's say you have a job to do that is passing data from service a to service B to service C. Usually you would have data like data, just service, a call service B.
+
+Service B calls service C.The problem with this is that if series B had some unreliable uptime, you then need to retry it. You need to persist at your retried. You need to set a timer for the next retry. And these are all unique pieces of infrastructure that you as the service A maintainer now has to maintain. Same for servers be to service C.
+
+So what if we could all centralize that into a centralized orchestrator service? And so service a calls, the orchestrator, the orchestrator calls B calls back the orchestrator, or should we call C again or should logs everything has the timers and the persistence and all the other paraphernalia that you need for all this reliability stuff, so that you, as a service A maintainer you don't have to provision those things.
+
+You would just call the centralized service that does that stuff. So that's what I think about this.
+
+I've been actually working in a blog close before this call talking about this, which is essentially self provisioning infrastructure. What if the code that you wrote could be statically analyzed to understand what infrastructure you need and the infrastructure would just spin itself up instead of you doing it. And then you would dynamically analyze it as it runs to optimize for performance or scale or whatever. I think that's where we're headed and I wanted to pitch Temporal as part of that.
+
+The problem is that there's a lot of manual footwork right now. So Temporal doesn't auto scale. It requires people watching charts and graphs to scale it manually. But that's what we're eventually heading towards the some kind of self provisioning infrastructure that where you as a application programmer, you just assume that your timers are there.
+
+You assume your cues are there or whatever. And you just code against that. The rest of it just takes you out care of itself.
+
+**Andrew:** I already think I might try to use temporal to do my website that I just talked about, it sounds pretty interesting and it's good to learn what my company is using so that I be proficient in it too.
+
+**Shawn:** Yeah, it's not suitable for, website hosting. This is more about anything long running. And actually one of my blog posts was, also about what is long running, right?
+
+The typical AWS Lambda timeout is three seconds. But even three seconds for an API request is actually pretty long you probably want to return it sooner and you can extend in AWS Lambda jobs to 15 minutes.
+
+If you want to. And my, my former employer, Netlify also expose that it's called background functions, but what is the point of chunking up your job into the arbitrary 15 minute cutoffs?
+
+It's just a weird abstraction that's neither here nor there. What you really want is something that can just more generically handle on long running jobs. And I think that's what a Temporal provides. And when you say long running does it have to ever end, what if you had an infinite workflow that just represented the total relationship over the lifetime of you and your customer?
+
+So that, that wouldn't get into entity or actor modeling and that's something that we can be used for as well. I don't know if Justin is experienced that before with the elixer stuff, right?
+
+**Justin:** Yeah. Yeah, yeah, yeah, for sure. And all of these are really hard problems generally. Just I mean, like you're just saying the retries, having the confidence that like something can call some other thing in some order. And like the rules around those things get really, really gnarly, really, really fast.
+
+**Shawn:** Yeah. I like the analogy of do you know the difference between. I think it's HTTP and TCP. Maybe it's TCP and IP, I'm actually not sure which layer, I'm talking about. But one layer takes care of retries, right? If you send data over the internet to someone else it actually takes you out like all the nodes in between it, if one of the packages failed to deliver, they actually take care of retransmission.
+
+But when you send the HTTP, like data, frame, you just send it as one big chunk of text. You don't actually care about breaking it up or retrying or anything like that. It's just understood that it's part of the protocol. So that's the analogy that kind of take to how you should orchestrate between services and systems as well.
+
+Like you should just care about getting all this data through and let some different plane of retrial, reliability layer handle the retries and transmission. between them.
+
+**Justin:** for sure. That's your, yeah, I think the TCP being the layer that like helps you retry and HTTP being your higher level where you're just like, I'm just sending this message. And I, am I'm relatively confident that it's either all going to get there or it's going to fail,
+
+**Shawn:** yeah. Yeah. Transactional guarantees is also pretty important to us. That's what people tend to get wrong the most when doing this themselves.
+
+We like to say that our competition is not Apache airflow. It's not AWS step functions. It's not a sidekick. It's people doing it themselves with their own Cron jobs, with their own database state machine, implicit schema thing in there. And then just wiring it up with duct tape essentially.
+
+So we have to convince people that they have this problem and then expose them to the class of solutions, of which we are one of them and then expose them to why we think we are a pretty good solution among the competitors.
+
+**Justin:** This is a random question, but I was looking at the site and I noticed you had like at least four examples on there right now go ,TypeScript, PHP, and Java.
+
+Do you have any any other thoughts on expanding the sort of SDK scope?
+
+**Shawn:** Yeah. So you can imagine it, there is demand from all these users who are, who code in other languages and we're just going to go by popularity order, so you can get the roadmap pretty much. The only reason we have a PHP SDK that's the one that kind of sticks out to people.
+
+The reason we have that is because Laravel, the primary framework, adopted us as one of the solutions for long running job. We prioritize that we have an agency to helps us with the maintenance of the PHP SDK. Apart from that go and Java where the house languages at Uber. TypeScript is the upcoming one, obviously, because JavaScript is the biggest ecosystem. Python is next.
+
+And then we have along this like.net, Ruby. And I think even people aren't interested in rust, Swift, and Haskell these have all been separate suggestions. I work with the SDK team in planning, all these things. It's not just about rolling out individual SDKs, but also understanding how we can maintain all of them together and then you can document them as well.
+
+It's a big task. I've never been in a job where I had to worry about these kinds of things but now that I am I have a lot more appreciation for, people who maintain docs and SDKs and keep them all in sync. And that's how I view my job as developer experience
+
+#### [00:24:39] Finance to Programming
+
+**Andrew:** so switching gears a little bit you have an unconventional start into the coding industry, or maybe I'm mistaken. But you started out in finance and now you're head of developer experience at a tech startup. So did you start out as like a CS grad and just moved into finance or were you like a finance guy that found a love for coding and then eventually just completely career paths.
+
+**Shawn:** Yeah.
+
+Pretty much the second one. So I geared since high school, I heard about hedge fund managers and I was like, these people sound awesome. And they sound like masters of the universe. I want to be one of them. And I pretty much geared my entire career around that. So I went to business school.
+
+I graduated with a business like yeah, I did not graduate with a finance degree. I graduated a risk management degree and that's a different story. I did investment banking and in sorry, I get sales and trading and investment bank. Then I switched over and finally he got to a hedge funds trading technology stocks.
+
+And then I discovered I didn't like it. I didn't like the people. I didn't like the work. And I wasn't great at it. Like this combination would just kill your career aspirations. I think a lot of the times you'll don't an industry like finance, where like you have, 15, 16 hour days.
+
+And it's super high stress. I was sleeping under the desk a couple of times, and you don't join an industry like that to be average. And I worked my butt off for two years and I came in like kind of mid middling in the analyst rankings in my firm. And I looked at myself and I looked at the top performers and I was like, I'm not them. Either that, or they're doing something illegal, whatever it is.
+
+I'm not them. I've tried my hardest and I don't think I'm, this is it. In the meantime, I was always coding as part of my job. And this is something that is maybe not so obvious to people who are traditional software engineers, but everyone from finance will relate to this.
+
+As the young kid on the desk, you're given all the it related tasks. This is just a common thing. Like all the older people will be like, &quot;Hey, I don't know if it's especially go figure it out.&quot; So that's how I got into VBA on Excel. And then once VBA stopped scaling, I went into Python to do number crunching.
+
+And once Python stopped scaling, I went into Haskell for option and derivatives modeling. And so I was coding all these production applications without Really knowing anything about it. I discovered my old VBA utility library that was 4,000 lines of non source controlled non-tested code that was running the interest rate pricing sheet of a giant bank.
+
+And, I mean, it's, it's fun, but and eventually I discovered that I was good at it.
+
+And not only that, I think there's something lasting about software that doesn't last in finance, like in finance, I'm only as good as my last trade, if I made some money or lost some money in my previous trade, it doesn't matter now the next trade has to be as good or better. Especially if I lost money, I have to do twice as good to make up for the money I did. I lost whereas in software, I think there's a cumulative advantage towards the thing that you build helping you in the next thing that you build. Obviously there's a bit rot in software, but it's definitely more durable than in finance.
+
+So I was very drawn to that. So I decided to try to make user interfaces. I was I will say the other thing about going from a number crunching on, I was doing a lot of stuff in Python and Haskell why I moved from that to front end, which seems like a lower value industry is because I realized I was the bottleneck for my work.
+
+I was what they call the spreadsheet monkey whenever I needed to rerun in analysis people would just tell me what they wanted and then I would have to code that in and then run the report and then, give it back to them. It's only when you build a user interface that you free up other people to just use your program as is.
+
+And and then you decouple of your output or your impacts from your time. And so I was very interested in user interfaces and I went into JavaScript. And guess what, out of all the languages I've ever learned, JavaScript's the hardest most. Mostly because of the stupid module system and all the incompatibilities between them.
+
+This is back in 2015 ish, 2016. And there's a lot of debate over which framework, which module library, like this one doesn't work with. the other thing, like, oh, what about meteor? There's all these other smaller ecosystems. And as an outsider coming in, it's super confusing. It's obvious to someone who's been around for a while. It's obvious to me now, but for me back then like I needed help. So I actually enrolled myself in a JavaScript bootcamp just to get help. And that was my starting.
+
+**Andrew:** That's awesome. A lot of the developers, I was inspired by early in my career have the same thing. One was working in a chemical plant. As a chemical engineer and he just found that coding his Excel spreadsheets was a lot more fun than actually doing his job. And then eventually became a UI developers.
+
+It's like very common career path.
+
+Did working in finance influence how you approach programming? Did that industry shape, how you've approached your career after it?
+
+**Shawn:** yeah, definitely. I view frameworks and languages as investments. And these are not only, you're not just investing your money, you're actually investing your time, which you have the least amount of. So you have to be really careful about it. You have to evaluate these things as you would a traditional investment that's highly illiquid that you can't just sell if you've changed your mind. So I definitely view it like that. And I view, frameworks, libraries, people, companies, whatever it is in a more generic would I invest in this thing mindset? I'm not saying I'm good at it.
+
+Cause if I was I'd probably be a VC, but I'm definitely thinking about it constantly because no matter what you don't have a choice. That's what you're doing even though, even if you don't think you're good at it and that's what you're doing with your life. I definitely view it in a tech strategy mindset of do I think that this technology is about to take off.
+
+What I phrase this as is essentially I'm specializing my career in helping developer tools, companies cross the chasm from early adopters to the, or the majority and the late majority and understanding of the preconditions and understanding of the strategies to take people across the chasm.
+
+I think it's for people who are not familiar with that book, that the assertion is that there's a huge gap and that's why it's called the chasm between early adopters and early majority. And there's a lot of work that needs to be done to fill in that gap. But also it's fairly predictable if you seen it a couple of times and that's what I've done.
+
+That's what I'm doing with the Svelte society. That's what I did with react and TypeScript before Svelte, but then also what I'm doing now with Temporal, and I think that if you can practice and hone, this skill. Predict to some extent the technologies that will happen next for I think you can do pretty well.
+
+**Justin:** I guess I had the pleasure of meeting you a little bit earlier in your journey. And since then you've done a lot of stuff in a relative short period of time. You do a lot of writing, you do a lot of speaking and you're obviously a big Twitter personality. How did you, how did that building that presence happen?
+
+Was this something that maybe the finance world built you up for, you had to sort of prepare for this? Or is this something that you discovered along the way? Yeah. How did that process happen?
+
+**Shawn:** I would say it's the opposite of what finance built me up for. A lot of actually my playbook is doing exactly the opposite of what I did in the finance world. Finance it's very zero sum. If your competitor knows something it's automatically less valuable. Whereas tech has positive sum.
+
+If I can .Share my code with my competitors as open source code, we can both benefit if this is, this becomes more of an open source accepted standard or protocol. It just trickles down a lot. Some of my best work, my best intellectual output I wrote as my trade analysis or my stock pitch for my boss and it's sitting somewhere in a mailbox. And he's told me like, this is some the best analysis I've ever read.
+
+It was great, but now no longer belongs to me. I don't have it anymore. I don't even remember. I just remember the vague shape of it, but it's lost forever. And so when I came to tech, I resolved to essentially never do that agian. To put everything in the open, to think in public and to share what I know and try to grow as part of that, and take advantage of the fundamentally open source and positive sum nature of the tech industry.
+
+And I think that just works really well if you just keep at it. I think a lot of people start and they're inspired when they hear my story and they start doing it and then you don't see initial success and to get discouraged. And there are two things I would say that one is obviously these things compound and take time.
+
+And two is you need to talk about things that interest other people, not just yourself. So there needs to be some sense of empathy. The most frequent way I encourage people to do that is to pick up what they put, what others put down. Essentially. That's just the term of the essay that I wrote about this topic.
+
+Like you're guaranteed feedback. If you give feedback it's a two-way relationship rather than just like you appear on the scene and you start broadcasting, these thoughts and people are supposed to know. They're not like no, no one inherently cares about what you have to say, but they have to, they care about what you think about what they've done.
+
+And that's a really good starting point. And if you start being a collaborator and a friend you start to become a peer of them. And eventually you may just diverge, like I've significantly diverged from my mentors in the react ecosystem. And we have mutual respect, but we no longer, like I no longer, treat every word that they say as gospel.
+
+Because I've developed enough of my own opinion that I don't need that anymore. That's a natural progression and I think I didn't come up with this strategy from scratch. I credit a lot of it to Kelsey Hightower from Google who gave me the idea of learning and public.
+
+And then I just ran with it. I wrote an essay one afternoon that got super viral. That became a book which I wrote last year. It was called &quot;The Coding Career Handbook.&quot; And that's just become this whole movement that is older than me and will last beyond me.
+
+That I've been very fortunate to be a part of.
+
+#### [00:33:47] Learning in Public
+
+**Andrew:** Yeah, the learn in public stuff is just a great way to live by you're very right in that it doesn't feel like it's. working at First, but it's just that cumulative over time effort, like just the power of Twitter and being able to like, put out your thoughts in trickle your thoughts out and get opinions back is just such a great starting place.
+
+**Shawn:** Yeah, I will say we'll say it pisses people off sometimes. Because if you do get any sort of voice any sort of in any writing is persuasive or authoritative and you're wrong which you will be, if you're pushing yourself at all, you will be wrong. People are like, you should put five paragraphs of disclaimer saying you're not an expert before you say your wrong opinions. And people get very pissed off because with great platform comes great responsibility and and you should have some idea of you should put it, you should do the work, essentially. You should do your homework before you spot off. Especially if people start listening to you.
+
+But I always reserve the right to be wrong. I always respect my reader enough to say you understand that all of this is like just one person's opinion. You understand that I don't know everything, let's have a mature discussion instead of saying I'm not the fricking encyclopedia or anything.
+
+I'm just like, this is what I think today. And I may, I reserve the right to change my mind. I used to have the right to be wrong. I reserve my right to completely disagree with you, even though you have 20 years of high level programming experience, all of which you will run into. And that's the way of the world.
+
+And I think a lot about power dynamics and I think a lot about politics as well, coming into tech. It starts to blend all together because ultimately you're dealing with a potentially unlimited number of developers and humans thinking about what will you do? I don't know.
+
+It's one of those things that is uncomfortable because I've been seriously misinterpreted by people I respect and that's that's never a good feeling. But you got to just like the only thing that you can count on is that you can build a reputation of sincere, authentic learning in public and people, as long as people can vouch for where you're coming from.
+
+Like you're not malicious. You're good. Intense. You may be wrong-headed but yet good intent. People can forgive a lot.
+
+**Justin:** Yeah, I think there's a lot of lessons to learn about just like development in general, because I mean, And tech in particular is, as all things are, I guess, a fundamental human endeavor. You can have the most polished tech skills possible and still struggle to build good products because it takes, it almost takes politics.
+
+It takes people to build products and it like, politics is a natural part of that. Not just politics, but like human interaction and communication and figuring out how to do all this stuff. Building a community or being a voice in a company community is different in a way than like building a product or being a leader at a team.
+
+But there's some fundamental crossover there. I Had a great mentor earlier in my career Trip Shoemac who taught me a lot about what it means to yield influence without authority and how to navigate an environment where. Politics are very real and have a lot in large consequences and, learning how to pick your battles and all that stuff.
+
+And, generally becomes a good life lesson and hopefully instills a little bit of humility and to learn that there's a lot of people with a lot of skin in the game and we just have to sort of learn how to navigate and live together. But yeah, I think that point though, of trying to be authentic, just being open, trying to be humble about what you're doing can really go a long way.
+
+**Shawn:** Yeah, I think it's it's one of those things where I think is anti-fragile. So for example, if if you try to always do maximum amounts of research and just be absolutely. A hundred percent correct. That's a very fragile position to be in because it just takes one mistake to, to wreck your reputation.
+
+Whereas, if you have a brand of just I can be wrong, but then the one promise I make to you is I'll learn from it and I'll try to improve every day. And That's an antifragile thing because your brand is imperfection. So, I do like that. And I work with developer advocates on my team right now. who don't have that point of view. They want everything to be correct. And they take three months to produce a five minute video that has 50 views. And yeah, I mean, I think there are all sorts and, I don't necessarily think that approach can appeal to some people but it's not my approach. I just want to articulate make it okay for people who are thinking about this and want a positive role model for how to pursue this to see that happening.
+
+I'm not saying the other path is not valid. This has really worked for me. I've and I've only done this for four years which is also partially what blows my mind, to the point where I got my last three jobs off of Twitter.
+
+I was pitched by my boss, like a formal slide deck on why I should quit Amazon to join Temporal. And I think that the learning public stuff, is, it's just like really ongoing Like I've, if I've only done this for four years, like what happens if I do it for 40 years and I think it's a really positive thing in, in tech that is so well received as well. So I definitely am very grateful that I know people like you that are supportive of this kinda stuff.
+
+#### [00:38:33] Tooltips
+
+**Justin:** Cool. Shall we go to tooltips?
+
+**Andrew:** My first tool tip of the day is Prisma. I haven't had the most opportunities to use it, but as I go more and more down my full stack engineer path, I see a tool like this becoming more and more useful. The thing that's not like readily apparent when you start working with like databases at a production scale is how the data's modeled, like the way I've always dealt with any type of database.
+
+I don't really have a model. There's some tables and those have the model in there somewhere. And what I really like about Prisma is it has these automatic data migrations where you just you define your API or even generate what your database is from your database. And then you get this nice model that you can play with.
+
+And then once you have that model, you can have types for it. And which I'm a huge proponent of TypeScript. And just being able to not have to write a strings of SQL is such a huge boon to productivity. So I hope I can use this more in the future.
+
+**Shawn:** They are friends. Johan is and Nick and I forget who else I know over there. I will take credit for pushing them towards the ORM branding. So they used to say that they were not an ORM because they were doing all these other things. And I was like, yeah, but people aren't there yet. You need to catch them with the idea that you're a super ORM and then people can go further into why you're actually not an ORM at all. There's always a little bit of we are at this in the short run, but then we were at this other thing in the long run.
+
+When it comes to dev tools, there's the near-term vision into longterm vision.
+
+But I think the near-term vision is really playing out for Prisma. Like, you used to see a lot of the metaframeworks that are coming out like Redwood JS and blitz JS, they all use Prisma as the ORM layer. and I think that's pretty positive.
+
+They've definitely done a good job there of solving the getting up and running a use case for those people. What I think is going to be a struggle to articulate in the long run is why this or ORM versus the native ORM of the database that you are going to use anyway. Basically, how often do you switch databases? Probably not very often. What if you just were really good at one database and you use the dedicated ORM for that database like Postgres SQL or whatever. Why do you need all the other stuff? So that's the real question.
+
+**Justin:** I will say that they've done a really good job in their tooling, especially in so they have a lot of really interesting autocomplete for their vs code tooling.
+
+So it'll build out things in the right way. Being able to pull it in. Observe your database and figure out like what table, what tables exist and what relationships and bring that back into your schema is pretty interesting. I've used this for a few projects and while you're right switching between databases, isn't the thing that you do a terribly lot, like being able to go back and forth between SQL Lite for just like local development and then Postgres for like production stuff.
+
+Can be interesting. Sometimes one caveat here. The one thing that you'll hit, which I have is that. Databases are different. Not all the data types are represented the same and Prisma can't do anything about that. So there, you will run into fundamental limitations where it's oh, sorry this data type doesn't exist in SQL Lite just that's not there. So you can't do this thing. I actually hit that like last week when I was working on a PR to an open-source project that use Prisma. So it was like, oh, well,
+
+I wanted to replicate that local database, but I can't because of that,
+
+**Shawn:** It's a lowest common denominator of the feature set of all the databases. That's interesting.
+
+**Justin:** Well, it's not necessarily, it's not a lowest common denominator. Generally you can use more broader feature sets, but like they'll only be available on certain databases. So it will eliminate your ability to switch over between other things. And the only example I have in my mind, Firmly is this issue where like some data types that are available, Postgres are definitely not available in SQL Lite.
+
+So it's there are certain things that you can create in your schema that closed the door to be able to switch.
+
+**Shawn:** I'll say what are the weird ones here is that it supports Mongo DB, whereas everything else is SQL. So what obstruction costs are, what costs are you paying? because you're trying to be generic, you're designing the Prisma SDL or whatever the DSL is to be generic across no SQL and SQL.
+
+That's interesting. There's gotta be some cost there. I don't know what it is, but it's an interesting choice.
+
+**Justin:** tool though!
+
+So this is a, a thing that I randomly stumbled upon this week. It's how do I even describe this? It's a sort of unified plugin system, as the README says. It's called unplugin in it's by Anthony Fu I think. He's done a lot of work in the Vue ecosystem in particular. But essentially what this thing allows you to do is create a plugin that is compatible across Vite, across roll up, across Vite Veet Veet roll up and Webpack all in one.
+
+So you sort of write this plugin one time and it can be consumed by multiple different build systems. So this sort of gets your maximum value for your plugins and the open source ecosystem. I thought it was a really, really clever bit of tool building. The abstractions leak a little bit. So there are things that you might have to handle on a platform level, but I mean broadly that's okay if you're like, Hey, I really want to hit maximum range with this plug an extension.
+
+It's a great start to a meta plugin framework, if you will,
+
+**Andrew:** That's interesting. So they have to make a unified language for plugins and then split that out into the separate ecosystems. That seems like a challenge.
+
+**Justin:** Yup. Yup.
+
+Fundamentally, most of these build tools are doing a similar thing under the hood. Most of them just have this transform function and they like take in code and they put out code.
+
+And there's like other sort of trappings on top of that. And of course it's leaky abstraction because you have to be aware of some sort of like what the platforms do, but if you're already going to be supporting multiple built systems, now you can just do it a little bit more easily in one repo.
+
+It's this is still early. I think it just created this like a few weeks ago.
+
+**Shawn:** so AKI flow is. Is not a developer tool so much as a knowledge worker tool. And as, particularly as I guess I take more meetings these days. And I take a lot of asynchronous tasks, I need a way to store them. So I need essentially the human equivalent of Temporal to never drop tasks.
+
+And so AKI flow is something I found recently because one of my followers suggested it and I've been trying it out.
+
+It's really good. Essentially like you wants your to-do list to always coexist alongside of your calendar. And you want to book time with yourself to execute. on your to-do lists or you'll never finish your to-do list. So you need a program that just inherently has that. So the popular name for this is also called time block planning. And you might find some of the people from the getting things done, methodology or the Cal Newport I think I forget what the, what his term for it is, but he also has a time block planner that he sells. I don't like it cause it's a book, it's a physical form. So this is the software version of time block planning. And it's paid software, but so far it's been really working out for me.
+
+**Justin:** So NASA has a lot of integrations. Do you have to use the integrations or can you use the tool
+
+**Shawn:** I use I use the Google calendar and slack and GitHub sorry, They don't have GitHub yet, but, they will. But yeah, so far that's it they are planning more, but I'm already pretty happy with? what they have. Like, literally, I just wanted my to-do list to co-exist with my calendars. I have two calendars, my personal and my professional, and I need to keep all of them. together because I have one human. I think that this has really just helped me organize and drop tasks less. Like literally for once I'm not just append only to my to-do list and then every now and then I declared to do this bankruptcy.
+
+You know how that feels. You literally are just forced to go through and prioritize and make time in your day to do them. So you're spending less time on hacker news and Twitter as well. Because you now don't have a random unscheduled time. you give every minute of your day a job to do. You may run over, and that's fine, but at least you've at least tried to make progress on the tasks that you've prioritized for yourself. So yeah, every other system I tried like Microsoft to do, like simple note-taking system. Hasn't worked for me, So I think like literally sticking it in the calendar so that no one else can book that time. This is your time with yourself to do that task that you probably see you would do. I think That's the only way to do it. Get stuff done!
+
+**Justin:** Yeah, it's pretty cool.
+
+**Andrew:** So that's why your calendar is booked wall to wall during the week. It makes sense now that's a smart way to get things done for sure.
+
+Mine's one we've talked about already in past episodes, but get esbuild wherever you can and your tool chain. It makes so many things better. Whether it's from integrating it into your Webpack builds to make things compile really quickly, or as Justin shared a few weeks ago, using IES build register to make any of your node scripts typeScript first is just so awesome.
+
+esbuild register has changed the way I write node scripts. Like I can actually write TypeScript now and not have any speed hits. Get esbuild in there. It's awesome to see what's happening with non JS JS tooling Yeah.
+
+**Shawn:** Yeah. my essay or my thesis around this, as I call it the third age of JavaScript, meaning we're going back and rewriting the tools over the past 10 years in other languages systems languages, especially have very hot, paths like, a build tool. They will be re rewritten in a systems language. Maybe not go maybe rust as well.
+
+So you see that next year has just adopted SWC as their core, not esbuild, whereas everyone else has been adopting esbuild. But it's an inevitable because the speed, demands are so great. And it turns out that people will learn these languages to contribute. The argument used to be that you have to build JavaScript build tools in JavaScript so that people could contribute.
+
+But guess what? People don't actually contribute that much to these core tools and the cost that you pay the cost to every user is paying far. outweighs the learning costs of. the individuals.
+
+**Justin:** Yeah, I broadly agree. I mean, it feels like we're definitely getting past the point of Hey, we'll just use this tool for every job and getting a better sense of what are the languages in the ecosystem are capable of doing?
+
+And we have a lot more good alternatives to building things like, if you've never tried go or you've never tried rust or something like that, you can get into these things. And it's a world different than in my opinion, getting into like C or getting into Java. I've done a bunch of production, C and Java, and they have their own sort of constraints and their own learning systems.
+
+And the. C ecosystem doesn't really have good. There's no package manager. Really. That's not a thing like dependency management, it's a whole thing. And getting into Java and you get into package management hell there. It's not easy by any means. You can do a lot with it.
+
+It's a huge ecosystem, but we have these sort of newer, fresher, more approachable languages that have a lot of power that are really fast. And I feel like Java script filled that gap for a while. And it was like fast enough that you could just build a lot of this complex tooling and node. But as we have these higher sort of constraints and we want more out of her systems that really gets us closer to that point.
+
+I'm all for it. I don't think it's going to be great.
+
+**Shawn:** I'll also mention that it's a side project of Figma is CTO, who was just frustrated with our existing tooling. And he was just like, screw it. I'm just gonna build my own. And it was meant to be a proof of concept, but he's apparently still working on it.
+
+I'll complete this by saying, I think it's a really great advertisement for working at Figma. Like the CTO cares and is technical enough still that he will go and build competing tooling because what exists out there is not good enough. And if this is what they released in the public imagine what they do internally. So that's a really good pitch.
+
+**Andrew:** Yeah, it would definitely be exciting to work at Figma that just the way they bet on WebAssembly before a lot of other people did is also another Testament to that.
+
+**Justin:** So I found this article online we'll include the link in the show notes, but it's essentially an introduction to. Client side, front end architecture. I have worked as a stint as a front end architect and that was just going back and collecting some more resources and I'm trying to put together materials right up.
+
+And I found this set of articles and I thought it was like incredibly well done. Good visualizations, nice explanations, really going deep into sort of concepts that you need to be familiar with if you're thinking about architecting, a large application. And it's not just like at a, small scale of &quot; Hey, what tools do I pick?
+
+But more thinking about large design patterns, how it fits into our modern tooling. Anyway, this is one article among many, but I feel like it's really well done. And I enjoyed it. So hopefully if you're interested in front end architecture web architecture stuff. Then will be interesting to you
+
+also prompts on the data visualizations. They're like, it's so hard to create good graphics. And I feel like he did a great job of this so
+
+**Andrew:** It's a very pretty website in general.
+
+**Shawn:** Yeah. And it's a consistent brand for him. This is Kumail for Apollo and he does it for his talks as well. I just think it's really nice. I actually want to ask him about how he does that because I need to up my visualization game.
+
+**Andrew:** Just do it all on excalidraw. That's what I do these days.
+
+**Shawn:** That's what I do too. But if everyone does it, then it's not special. You know what I mean? so it's not branded. Yeah. Okay.
+
+So my pick is super base. This is I will declare upfront that I'm an investor in super base. But I'm the very, very, very small investor like basically three to $5,000.
+
+But they are so far, you know, I've done some angel investing in the past year six companies so far, they are the, by far and away, like the best at shipping and creating some momentum And it's pretty obvious that they're going to be a winner. They are essentially an open source Firebase, which is the initial marketing, how he talks about how Everyone has the, like the initial view and then the longterm vision. Initial marketing is that an open source Firebase. and everyone's what's wrong with Firebase.
+
+That comes into this whole discussion of okay, Okay. Do you trust Google to keep things around. do you trust Google's proprietary No. SQL. based data store or do you trust Postgres, more? which has been open source in in production. for 40 years? So actually what super base is longterm vision is is just extending all the superpowers of postgres to regular front end developers. And Postgres has a crap ton of stuff from like search to like geospatial, record Keeping and all that. Authentication to security, like all this stuff like that is hard to use because you have to be a experienced SQL developer. They built a nice UI for it and they let you provision it as a platform.
+
+So they take care of all the other stuff.like offline storage, databases, and whatever else they provide. I think they're in the process of reducing workflows using a competitive solution to ours. So I'm trying to convince them to switch over to ours. But but out of the sort of new Roku which I call it like new Horoku, they're a bunch of startups.
+
+They're like the new Heroku competitors. So I call these like new Rokus. So there's Render, there's supabase there. They all have some different pitches on these things. Supabase is not a hosting platform. So you still have to, you still need a different hosting platform.
+
+But the, they provide all the other backend stuff for you. And they've just been shipping really well. You can look in their blog for their month to month updates and they are shipping. I know for a fact, cause I worked at amplify at AWS. They are out shipping people tha are 10 times their size and 10 times their funding.
+
+So there's, they got something going on. That's pretty special.
+
+**Justin:** Yeah, for sure. They've been a big thing on my radar for a while. It's been a long time since I've seen a really solid, I don't know if you want to call it platform as a service or backend as a surface. And problem tries to get tackled a lot, but there's been a few historical examples of services that like are done really well.
+
+And I think for a while, Firebase was pretty notable in this space, but I'm not sure that, I would highly recommend that for someone new and getting started, but I really think the potential for what super base could be is rather broad. And you can already do so much with it. It's just not a well-designed product.
+
+Yeah, it's really exciting to see.
+
+So random question. How did you get into investing in this? Did they have an, a public seed or something? Or how did that come out?
+
+**Shawn:** Friend of a friend. One part of being so well networked in tech is that you start actually having friends who are smarter than you, who start who starts stuff. And This one came in from Thor, from Stripe, who is a developer advocate there. And he was like, I I just met these guys supabase They're coming out of YC. They were like the number one or number two, most up-voted hacker news launch of that YC batch.
+
+And it was just like, they were obviously very smart. My main concern was just that I don't know, there's been a lot of companies that like, you're going up against Firebase and I was working at amplify at the time, going up these big companies, what do you have that they don't.
+
+And it turns out that they can just ship a lot more without a lot of legacy assumptions. So actually that's probably better.
+
+And yeah. How do you get the opportunity? Just so referrals. just say like you're open to investing. I haven't discord where we share deals. So if anyone's interested in deaf schools, angel investing you can come in on the dev tools, discord, literally just search it, you'll see it. And there's about four to 500 of us just talking about dev tools and sharing deals and stuff. I think I have two opportunities that probably will be happening soon. I definitely think that it's more interesting than investing in NFTs. So that's my bar for Whether or not you should throw your money on these things.
+
+**Andrew:** So I think that about wraps it up for all of our tool tips and questions.
+
+Thanks a lot for coming on Shawn. This was an awesome conversation, a bit different than the other ones we've had here on dev tools FM. So thanks.
+
+**Shawn:** thanks for having me. This is great. Appreciated The opportunity and Good luck. Congrats. on launching your podcast and keeping it going.
+
+**Andrew:** Yeah, it's a lot of work, but it's pretty fun. Okay. Well, that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
