@@ -1,0 +1,516 @@
+---
+title: Fred K. Scott - Snowpack, Astro
+youtube: https://www.youtube.com/watch?v=1i9Wm7dP1Aw
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/9251750
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Blast off into the future of webdev with Fred K. Scott, creator of snowpack, skypack, and Astro.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:10] Reimagining the Web
+[00:08:44] Island Architecture
+[00:15:49] Web Performance
+[00:23:24] Static Site Generators and Beyond
+[00:35:07] Micro Frontends and Components
+[00:43:43] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 14
+
+**Fred:** If every page that loads, this component gets one chunk one file one, one set of JavaScript. And you do that for every component on the page. You actually end up not having to reuse and resend JavaScript over and over again. Basically different pages use different components. You ship those components as the kind of core entry point.
+
+**Andrew:** hello, welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host Justin.
+
+**Justin:** Hey everyone, our guest today is Fred shot. Fred, you've been pretty influential in the web tooling space. You've worked on the Polymer team. Uh, You also created Snowpack and Skypack and now you're building Astro. I would really love to dig more into Astro and ask you more about that and the other tooling you've been working on, but before we do that, is there anything else you'd like to tell our audience about yourself?
+
+**Fred:** No, that's, I mean, that's, this whole journey started with Polymer, which I feel like doesn't get talked about enough that like web components, ESM early days and stuff. So yeah that sums it up.
+
+**Justin:** Maybe we can just start there.
+
+#### [00:01:10] Reimagining the Web
+
+**Justin:** It seems like a pretty long journey coming from Polymer to where we're at now. What do you feel about the progress that we've made in web components? Do you think there's still a future for that? Uh, Or do you think it's more sort of, uh, via frameworks and such.
+
+**Fred:** I do have, I have seen that. I love dogs. That's the one. Well, it sound like a robot unless I got something, those dogs long walks on the beach, et cetera. This all started with that web components kind of the early specs and also a part of that was at least on the Polymer team, looking at ESM, which is this way that a lot of us are writing JavaScript now that uses import and export. That was all fairly new at the time. And so I was lucky enough to be working essentially on Chrome because the Polymer team was a part of Google at the time. So on Chrome with the people who were working on these specs and got some firsthand experience with that right as it was coming out, getting finalized and some appreciation for something that the finer parts, which you now see, like really being explored by Deno. Like the idea that you can import a URL is pretty radical compared to like how, at least I was writing code at the time.
+
+So even those things that are now like finally, like we're starting to see out in the world where like really being actually talked about at the time in the spec process. So, yeah. I feel very fortunate that I was able to be there for that. And everything has come from that experience.
+
+Snowpack being an ESM built tool at a time where like Webpack was really your only bet, Rollup was as well. But it was really a bundler and Snowpack was really trying to take the stance that you don't need a bundler anymore. And Skypack being like that import by URL of the JavaScript community, which Deno now uses for a lot of stuff on NPM. So this was all about exploring that space where ESM, What was going to change with this new technology that we were all just starting to scratch the surface of.
+
+**Justin:** That's really awesome. So, building on all of that how did Astro come about what was your sort of inspiration for that? Because as I understand it, it being a static site generator, there are a lot of static site generators out there. What was your sort of inspiration for creating Astro?
+
+**Fred:** There's a way to tell the story where I actually get less, this all gets less ambitious and more like general like, oh, another static site builder. Who cares about that? But no, it's definitely the next step on that, which is you can tell, bringing this technology to more and more actual use cases.
+
+Like what are people trying to do today and imported by URL? Not many people were doing that loading your code, just in the browser, like you were using an old jQuery CDN but everyone's building websites. That's the core thing that we realized we could solve with something built on top of Snowpack, like Astro is.
+
+You're able to essentially build a type of static site that you couldn't build if you were building on top of a bundler where everything has to be JavaScript, everything's being processed with tooling and you have this baseline of complexity. Astro really tries to kind of be the anti, that anti whatever that is where we're really trying to be HTML first and have a modern take on what it means to build a website without living fully in the world of I'm building a JavaScript application, which most websites really shouldn't be in our eyes.
+
+**Andrew:** Yeah. So for our listeners who might not know what, like the whole tool chain is and how it's different from what they're currently using what is Snowpack and how does it differ from Webpack?
+
+**Fred:** Yeah. So snowpack is a build tool that doesn't use a bundler by default. So if you've heard of Vite it's really similar. They both came out around the same time and basically exist to solve the same problem, which is why are you bundling everything during development? When we have this new ESM this new, the code that you're writing actually can run in the browser that was really the inspiration for that entire thing.
+
+And there's all these great performance benefits you essentially get instant save instant reload. If you've ever hit save, and then seen your bundler or like seen something that inside your developer experience take like multiple seconds to refresh. Snowpack and Vite both exist to solve that problem.
+
+So that was the unbundled nature. And then Astro is building on top of that idea where if you build on top of the bundler everything's JavaScript like Next.js, Gatsby, everything built on top of Next.js like Blitz and Redwood and all of these JavaScript tool chains are building for JavaScript.
+
+So they're building for bundler. The code you write is JavaScript. It becomes more JavaScript, JavaScript, JavaScript, JavaScript all the way down the stack. And we saw this as being pretty again, like not how anyone else was really doing web development. If you look at the rails community or what Laravel and PHP and all these other non JavaScript communities, we're still in that world of the server, returning HTML and thinking of your website as multiple pages, not as a big application.
+
+So in a world where you're not bundling, bundling, bundling, everything, you can actually be free to look at HTML, not as this thing that gets generated by your JavaScript, but actually as the thing that your website is made of. Same for CSS. Instead of being this thing that JavaScript touches, it's actually a first-class citizen and in Snowpack and Astro is really leaning into that. idea
+
+**Justin:** Yeah. When I was getting more into front end, I'd started in the Angular world, but I quickly moved over to Vue around the time Vue two came out and it had introduced the sort of notion of a single file component. And it felt like I'm writing HTML, CSS, JavaScript you know. You still have the sort of JavaScript runtime ramifications of using Vue and/or other frameworks.
+
+And then uh, Svelte came out and that felt like this like sort of natural progression. To be fair, to Vue and Vue 3, it takes a lot of the ideas that Svelte does as well. But so it's felt like, okay, we're going to like, just give you the little bit of JavaScript. You need to make this thing happen.
+
+And then for things like SSR, they could do a lot of really interesting things. There's like, &quot;Hey, it's not a v-dom, it's just a big string. We'll just send you a string down.&quot; So it basically becomes relatively faster response. And then looking at Astro now it's what I see as like the natural progression of all of these things.
+
+It's like writing an Astro component, which has its own component interface, feels to me like doing Svelte or a Vue single file component. But there's no JavaScript by default. It's really interesting because it changes a lot of the decisions you make. Another thing that I wanted to ask about is the component API in Astro.
+
+So in Astro, you have to specifically tell when you like call a component, you have to say, &quot;Hey, I want you to hydrate at load or when you're visible or something.&quot; You have to be very explicit with its hydration behavior. Could you talk a little bit more about the inspiration behind that and where that idea came from?
+
+**Fred:** Yeah. I could even just give like, what is Astro technically what is it doing? Cause I think that's like the perfect way to frame it. Is Vue and then Svelte was even more HTML. Like we were definitely even more HTML focused than in the design of everything.
+
+And then like what you're outputting. The joke on the team is that if you've ever like did old school PHP, like not anything structured, like literally that PHP question mark tag, where you could inject server code into your HTML. We're doing something that feels a lot similar to that, where it's you're writing HTML, but you're able to start injecting really interesting build time and eventually server time generated content into it.
+
+So, HTML is the base, but actually having dynamic output. So yeah, Astro's whole idea is it should feel a lot like you're building an HTML site, but then when you want to reach for JavaScript, it's right there where you want it, like basically being brought to you. It's not something you have to go out and set up your own bundler or anything like that.
+
+So it feels a lot like a Next.JS but you're not paying that like default JavaScript performance costs that you might be in anything that is a single page app site builder that you might be familiar with. So the output is all by default, no JavaScript, totally HTML. The Astro syntax, the component API is super HTML.
+
+Like it's essentially a super set of HTML. You can write HTML and that's actually valid syntax in our eyes. But yeah, what you were getting at is that idea of the second you want something that's actually dynamic you basically just pull in that component. So pulling a react component or a Vue component, or a svelte component or Preact and we just launched Solid support.
+
+#### [00:08:44] Island Architecture
+
+**Fred:** And the idea is that because we're this HTML base layer that isn't living in any one of those frameworks and one of those ecosystems, you can actually just essentially place that component on the page and have it render almost as an island. We use this term island architecture to describe that.
+
+So it's this really nice baseline of HTML, but then you can still bring in whatever dynamic content you want and they all live on the pages injected islands. Our doc site is the first time we actually got to use this ourselves where there was this great everything we'd been doing was Preact.
+
+So if you had a language translation, dropdown, or a search, all these things were preact components. And then we wanted to use something from Algolia, which was only react. So instead of rewriting our entire site for react and porting or not being able to, we're able to essentially drop both of them in at the same time, they're different islands.
+
+They don't actually need to talk to each other. They can co-exist without having to refactor your entire site.
+
+**Andrew:** Yeah. I love the idea of being able to easily target the server client. Cause like typically when you're like in a next JS application, it's super easy to do server side stuff, but the second you're like, I want client only, it starts to get a little harder. So that, that API is just super cool. And I love how like terse it is.
+
+You just say, do this on the client onload or when it's in frame, it's just cool.
+
+**Fred:** Yeah. And you get this really like direct link into how code gets loaded. So like, I think everyone's favorite feature of it is this idea of only load this component when it's visible on the page. So it's not one big JavaScript application that's all being loaded at once because each island exists separately.
+
+You can essentially have your whole site only load as you scroll. So you know, some big, heavy content lower on the page. You don't really have to pay that cost unless someone actually gets there. We're going a traditional bundled app. The page is the JavaScript. It's all mixed together.
+
+It's really hard to pull apart. There's really no good API that exists in any one of those other frameworks. We're really one of the first to be doing this. Marko deserves a lot of credit where if anyone seen Marko, it's this kind of, it's been around forever and they've actually been exploring these ideas for a lot longer than we have.
+
+So we definitely are standing on their, shoulders in terms of making this possible, but trying to do it in a way that feels much more like a traditional static site builder, where you don't need to learn a whole new syntax. It's just HTML.
+
+**Justin:** Yeah, the eBay team has done really interesting thing with Marko. It's evolved a lot over the years though. It's changed a lot and especially as that team has changed.
+
+**Fred:** Yeah, Ryan who's on that team. I think he has like a favorite tweet, which I think Dan Abrams from react being like, Marko's like still better at this than React is, and they've been doing it for a decade, like seven years ago. They have an answer to what is today server components and react. So they deserve a ton of it.
+
+It's like the silent hero of web development. It's a really cool framework. That's a little tough to learn, but I clearly, once you do, there's some great benefits to it.
+
+**Andrew:** So the whole island architecture thing is pretty cool, but does that come with some like downsides too? If you're loading react and angular and all that, those are pretty heavy frameworks. How do you guys go about loading those? Do you like preload them as the page comes? How does it happen?
+
+**Fred:** That has always been our kind of question. I don't know if I really have the answer yet. I was like, how much do we want to lean into this as a quote unquote, good idea. There's the real world where it's like, we didn't want to have to rewrite our whole doc site and we sat and we found, okay, we'll pay the extra cost of having to React and Preact.
+
+If you take that to the extreme and have one component for every framework, you probably going to have a pretty bad time. It'll work but yeah, like you said, you're paying the cost of every framework when you do that. You gotta be thoughtful at least about how you do it, make sure there's a good reason to do multi framework if you do.
+
+We certainly see that as like the rare edge case to most users who have their framework. They like, they want to live fully and Svelte or fully in Vue or fully React. As long as you buy into the idea of having components live separately on the page it's really, there's not a lot of downsides to it.
+
+It's a lot of performance upsides without you having to think about it too much. The biggest limitation is the idea of any sort of library you might be using, which React is I think the only one that really suffers from this, where there's a whole ecosystem built up around essentially create react app, which is set of context for the entire website.
+
+And now anywhere can pull from this context. They do that by treating the entire application, your entire website as a part of one single route, one tree kind of all the way down. So the second you start pulling that apart. Well that they don't share that context anymore. Each island has its own context.
+
+We're still trying to figure out the right answer to that. It's definitely possible. It's just tricky because so much has built up around the idea of your entire website being in an application that we're seeing us being really the first ones, bringing that functionality to React, causes a rethinking for how you share state across components.
+
+**Justin:** That's a, that's an interesting, tricky problem.
+
+**Fred:** Yeah. Svelte on the other hand, like does, I think they do a great job of this sort built into Svelte is this idea of a store and that totally works. It's like actually an import that you pull in so it's not like a special framework thing. It's really leveraging JavaScript to be like, oh great. We all pull from the same store here it is in this file. We're sharing that state. So different frameworks kind of with all these questions, there's the subtlety of every framework having a different degree of how close is it to what can work in island architecture and how far away is it if it can't?
+
+**Justin:** I think it was a pretty profound sort of implication when you start using Astro. That at the call site, when you're importing a component, when you're like inserting it into an Astro page, you have to think about how it loads and what its dependencies are. And it forces you to continually have that thought.
+
+I have worked a lot on performance over the years and the challenge with React apps in particular is that it's really easy to pull in a new react component for a thing. There's a cost to every one you do. And it's easy to make decisions where it's sure, I could do this in CSS, but it's just like a few lines of JavaScript.
+
+It's like much easier to do this way. If you think about making something responsive or whatever else your behavior may be it just, it can be so easy just to like, reach for that little extra JavaScript. Whereas I feel like the thing that's really heartening about Astro, the thing that I'm really encouraged by is like making it more intentional and how you integrate your components.
+
+**Fred:** Probably the biggest kind of foot gun that exists today is the idea that components don't hydrate by default. So even I sometimes we'll put a component on the page, go look at it, try and click it and be like, oh no, what's a bug and Astro, what have I done? And it's no, no, you have to like intentionally opt into this giving JavaScript to the page.
+
+It's a really intentional design choice where that might sound like a bug, but it's actually the feature where the alternative where did I actually really need this, but by default it added JavaScript to the page. that could summarize it pretty much every other framework out there today. So we're really proud of that.
+
+It's one thing to think about that we're trying to solve with some sort of like UI during development to push you in the right direction. So you don't think it's a bug. That idea is I think pretty ingrained into the current JavaScript ecosystem, which is like things look great in a demo.
+
+They look great on that hello world. And then as your project goes, it gets heavier and heavier and heavier. And that's the, that's like the core. And that really was what carried us through Snowpack. That idea that your bundler gets slower and slower as you go because you're bundling the entire site just to start up the dev server for one page.
+
+That idea has, I think been pretty much the consistent theme in our work is how can we actually solve these things? Not just it'll look at in a hello world, but how can we actually help you build a site that will scale up to thousands of pages and not have a big impact on your performance for you as a developer and also your users.
+
+#### [00:15:49] Web Performance
+
+**Justin:** Yeah, there's a pretty common performance problem. There's this uncanny valley of you've, server-side rendered your react components or whatever, but it's not hydrated yet. So it's not actually interactive. You could do things to think about, Hey, what would I do in this case or JavaScripts non-available how do I, how would I handle this?
+
+So I think the remix framework by the react router folks, they do a pretty good job of like, their actions are just forms. So if like you don't have JavaScripts on the page, it'll submit a form or theoretically before you've rehydrated. But oftentimes it's those sorts of experiences that you're just like, I'm not gonna think about this.
+
+I'm not going to deal with it. We'll accept the cost of hey, this is a poor user experience because the overall complexity of doing something about it goes against you're fighting your framework of sorts. So it's interesting. And I'm hopeful that things like Astro promote more considerations and get back to the idea of bringing back the old idea of like progressive enhancement, which is not old really, but, you know,
+
+**Fred:** Nothing's ever no new ideas, all old ideas
+
+**Justin:** Yeah, really just thinking about that from a fresh perspective and hopefully doing so in a way that's still like easy to build new components and edit things. I think that's the thing that modern frameworks have given us is like a much better way to architect UI.
+
+Whereas previously, if you're going through templates in PHP or whatever, it just like that experience can be pretty disjointed and like hard to maintain and stuff.
+
+**Fred:** Bringing the modern experience without the cost is I think our biggest goal here where 11ty is a great idea. If you can build a really fast site with 11ty but a lot of that is because it makes it actually pretty difficult to get JavaScript onto your page. You essentially do have to go out and find your own bundler or essentially it has no opinions about how JavaScript should work and their claim is that's because they want you to build without JavaScript, but eventually you need some interactivity.
+
+You need something that you have to reach for. So that's, where we try to see if we can do both basically. Can we create a experience that feels like Next.js, but the end result is something that is incredibly static by default. A lot of that really inspiration for Astro came from we launched the snowpack docs site and we used 11ty to do it.
+
+And Alex Russell, who is this like performance grandpa online of just like shakes hand at fist, always talking about how performance could be better or isn't good enough. Fills that role on Twitter. Reached out when we lost that Hey, like the performance was great on this.
+
+What did you do? At first you were like, oh great, I'm so smart. But then you're like, well, we didn't do anything, like why is that? Like, how is this that great? We didn't actually do anything. It was because we used eleventy because we used something that was static by default, there was interactivity on the page, but we really had to go out of our way to add it and the default was just static HTML for everything. So a lot of that experience, I think, stuck in our head when we went to go build Astro of it's just an incentives. It's so easy to pull in that component. So easy to build that JavaScript, to add more JavaScript when you're living in that world.
+
+But the second you're pulled out of it, you start to reach for the tools that aren't as heavy. And if you have a tool that is HTML-like but still gives you that fall through to find the component when you need it. That's what we think is the peak experience here for doing a lot of development where you don't need a fully dynamic site.
+
+You don't need a dashboard or an issue tracker, you're just building an e-commerce site or some content that you want the user to see as quickly as possible. That's where this really shines.
+
+**Andrew:** So Astro and by extension, Snowpack look to the future for some, I guess, but the present with uh, ESM being the first priority. How does the whole stack deal with common JS? Because there's still a lot of common JS on NPM and I might want to pull that into my project. I know Vite uses esbuild to compile them on the fly, but how does Astro handle that?
+
+**Fred:** Yeah so Snowpack which is internally power and Astro was actually the first to take a stab at this. And Vite actually like that early, early version used Snowpack to do that. So there's this like weird kind of marrying of the two tools at a certain point where Vite was working on their dev server, but didn't have package installation, which is really where snowpack first came from.
+
+There's a project it's not esbuild, but it's called esinstall that we essentially pulled our package handling out of snowpack and into its own package. So you can still use that today. And its goal is essentially like, tell us what packages you're using ESM, CommonJs, we don't care we're going to create the ESM version of each of those packages for you to use.
+
+That's a big part of how snowpack first got started and what makes it tick is you as the developer are writing ESM. You're ready for this like future, but your packages aren't. Maybe they haven't been updated, maybe the author wanted it to run on node as well so it had to CommonJs.
+
+For any reason packages are still CommonJs. That's just kind of the world we live in. So Snowpack really was actually first created to solve that problem, more than anything else. Which is getting your packages, upgraded ESM and that's still core to what Snowpack does today. So yeah, Astro definitely gets to sit on the shoulders of that and do its thing without worrying about that problem.
+
+**Justin:** Does the usage of snowpack have implications on how you do bundle splitting. I know with Astro, you could probably potentially take an easier route where you're like, every island is its own bundle and we'll just keep it simple. But there's a potential where if you have multiple react components on a page that are like different islands are hydrated separately you probably don't want to like load React to many times, but if you're using ESM, maybe that makes it easy.
+
+What does that look like?
+
+**Fred:** You definitely want to share dependencies as much as possible. The island architecture implications, I think are the coolest thing here cause they're just so... Everything deserves a second look from how we've been doing web development . Again, plenty of people have been doing this, but at least in the kind of like JavaScript tooling world, where everything's been bundled by page and your whole website is essentially a JavaScript application.
+
+The page becomes the kind of natural place to do code splitting by. So page A and page B and page C all the way across your site will get bundled as these entry points. If they share code, that'll get split out, but then you're on the risk of well, these two pages need code, but then this other page also needs it. You then end up with this kind of like impossible question, which is, do we move it into a shared thing where every page will get it, even the pages that don't need it.
+
+So that's a cost of bytes over the wire that everyone has to pay or do we put it into both of those bundles? So now if you go to page A and page B, you're going to get like essentially duplicate codes. So now each of those pages gets heavier. It's just it's an impossible task of how do you split the code so that it ends up on the pages that need it and doesn't end up on the pages it doesn't in a world where you're trying to literally combine files together. It's impossible. What's interest about island architecture is the page becomes HTML. So you don't really have that same, this is the natural break point. You actually start to think more in terms of components.
+
+Yeah. We're lucky that we live in a world where HTTP2 and HTTP3 are these new networking protocols. Where it's kinda just invisibly powered and being transitioned over where Chrome will just be able to load different files much better in parallel now than it ever was able to. So we can start to break down this okay, your whole page needs to come across the wire in one file, and start to look more at a component by component.
+
+If every page that loads, this component gets one chunk one file one, one set of JavaScript. And you do that for every component on the page. You actually end up not having to reuse and resend JavaScript over and over again. Basically different pages use different components. You ship those components as the kind of core entry point.
+
+And you end up with less duplicate code as a result. Pages that need that component, they get the component. Pages that don't, they don't get it. And on and on across your site. It's a really, it's probably one of the most exciting things I think for the performance aspect of these sites and Astro.
+
+We can finally solve this problem that pretty much affects every project. No matter how you set it up, it's an impossible task. When you start to split by page, instead of by the components that you're using.
+
+#### [00:23:24] Static Site Generators and Beyond
+
+**Justin:** I'm already sold. I'm already sold, super excited for Astro. I sort of hold this opinion, that static site generators themselves they only can cover so much. So I definitely see, and I thought this early on that like Astro has a life beyond a static site generator and getting to that next step is important for its overall growth maturity that fill gaps in the ecosystem.
+
+So let's talk a little bit about server-side rendering or dynamic instead of like statically generated pages. There was teased a little bit in your last release that you're doing some changes that sorta would make server-side rendering a little bit easier. What's the sort of thoughts and future plans in that direction?
+
+**Fred:** Yeah, it really is like a live long enough to see yourself become the villain kind of thing where every static site generator eventually has to answer this problem, which is that I'm building an e-commerce site, I can't rebuild my site every time a product goes out of stock.
+
+Like the entire site, you can't do that. That's just not going to scale. It would work for five things maybe, but certainly not a large functioning store. How do you bring that performance of a static site? And that's like the JAMstack problem, essentially. Balancing static and fast with dynamic content.
+
+I can't think of a single static site builder that hasn't eventually tackled that. So I think it's definitely something that we're going into kind of when the time is right. When we feel like we have the stable core. But yeah, like you said we're open to, and we've been over time setting the stage a bit more and more for that to land.
+
+We kept trying to figure out what does it mean to create like a paginated list or load something from your WordPress CMS. And if you wanted to sit in front of that. Cassidy on the Netlify team built a Shopify demo with Astro and Chris Corey, or built a WordPress, essentially like a copycat, but using their own WordPress API for CSS tricks and comparing the two.
+
+And it was these great demos, but still suffered from that same problem. It's something we'll eventually need to solve. We keep adding features that set that stage. So that's essentially an invisible opt-in you can just say I need this page to be done. Yeah. But we still love the idea.
+
+And I think eleventy is doing a good job of this as well of keeping the static site builder roots and having the server be... If something has to run in the server, having that be an opt-in. Like, okay, I've reached the scale now where I need some sort of dynamic content and making that an intentional decision versus, the first hello world has to run some server.
+
+You already are starting from a position of, okay, well now some code has to run on every request. How do I scale that globally? How do I distribute that? Plenty of people are working on that, but it's just a lot better if you can go static.
+
+**Justin:** Yeah. Yeah, absolutely. This is such an interesting space and there's so many. Just amazing people working on this and so much inspiration. Of course the Next.js team is blaze the trail and put forth a lot of really interesting patterns for how something is interpreted as static or their incremental static regeneration is really fascinating. The idea that you can have something that's static, but behind the scenes will generate once. And I find that pattern really, really fascinating. Of course you have things like SvelteKit. So, in SvelteKit you have these options that you can specify.
+
+It's like, yeah, I want this thing pretty rendered. Pre-rendered true in your component and then it was like the opposite into it. A lot of frameworks have the sort of adapter modes, so you can have like different adapters. So it's like, you can tell us how you want your server side rendering to happen.
+
+So if you want to do it on CloudFlare, Netlify or whatever, you can adapt it to that interface. And I'm really excited just based on the decisions the Astro has made so far to see what that future looks like for y'all, because I think the decisions that you make there will be a really compelling for the whole ecosystem too.
+
+It seems like every static site generator that goes through this progression seems to just add a little bit more to the overall ecosystem. So it's fun to watch.
+
+**Fred:** Oh, and we're totally borrowing from SvelteKit and Next.js. The routing that we just added to essentially get ready for SSR looks a lot like Next.js' page routing. So if you've used Next.js, all of a sudden Astro feels really familiar. Our whole components syntax.
+
+So our original compiler even was based on the Svelte compiler. There's a lot to be borrowed from across the ecosystem and not trying to reinvent every wheel, just trying to take our favorite parts of it. I think every good project has done going back to what you said with Svelte being almost an iteration on top of Vue and us being an iteration on top of them.
+
+It's exciting to learn from such great engineers and great designers.
+
+**Andrew:** So Astro has some pretty cool static site features already built in. I was reading through the docs and you have stuff like RSS feed generation which I wish more websites would get on. I hate how many websites I consume. I'm like, oh, I want an RSS feed and it's just not there anymore. I hope that part of the web doesn't die.
+
+You also have site maps. Are there any other like static site focused features like that coming to Astro or anything cool on the roadmap?
+
+**Fred:** Oh, yeah, no, I, I love that part of what we've done where it's, essentially just if you're building like a blog or a documentation site or anything with content in it, there's just some things that you need that I think a lot of other projects aren't focused on. I can think of a couple of things.
+
+One is having components and Markdown. It's time we actually set out to launch with original version and we had to pull it out right at the last minute. So it's like constantly just been like a little bit in the distance. I love that idea because it's totally basically like focusing on markdown as this authorship.
+
+At the end of the day, a lot of us we're writing content on the web and having the idea of writing that content, but then intermixing dynamic things into your post using the exact same syntax that you'd be using for that component in an Astro file. So a lot like MDX, but again, not just stuck in the react ecosystem, actually the same Astro components that you could use across Vue and Svelte all also work in this system so that I'm really personally excited.
+
+Pagination is the other one, which is built into the framework. So there's that idea of, I have this list of a hundred things. How do I create 10 pages out of it? 10 items, each that's a single function call within our world. So we really wanted to make sure that pagination, RSS, these kind of common blog use cases were all handled so that you didn't have to go and find some other solution on the ecosystem and potentially not set it up or choose wrong, or just that whole project, trying to keep that pretty opinionated and built in.
+
+**Andrew:** Yeah, that's awesome. I've built a few static site generators in my day and always have to add those things. So I'm glad that you guys took the time.
+
+So with your version of MDX, you can import any type of component? You can import like an angular component and a react component and use them right in your MDX?
+
+**Fred:** Yeah. So we're pretty close to this, which is that currently markdown compiles to our Astro component syntax. So it looks like markdown, but we already have that infrastructure to say that, you know, once this gets compiled, now we can run it and components would work. Again, it goes back to that idea of betting on HTML as the base language means you don't need to worry about, okay, well this markdown down actually compiles to React.
+
+And so now I can only use React. A markdown file feels a lot like an island kind of architecture where that's, paragraph, paragraph, and now, tweet embedded tweet or paragraph, paragraph, YouTube video. Having those things and thinking in components in that way where you're mixing content and dynamic components actually just works really well with our model.
+
+So yeah, the pieces are all there. I think there's a couple of questions. Like, do we need a new file extension? MDX is great. I don't like wanna step on them, but I also see why they created their own file extension. Do we need something like that ourselves? How invisible can this be is the question I think the Nuxt team, which is a Next, like framework for Vue has a really good approach where they don't actually need a new file extension to use Vue components in your markdown.
+
+So it's like MDX for Vue I think that's where I want to take a lot of our inspiration from, but again, that's, only for the Vue ecosystem. So how can we design that in a world that works for everyone?
+
+**Justin:** Yeah, we had an episode with Evan a little while back and he was talking through like how Vue handles this sort of thing. And it does I'm assuming essentially pretty closely what Astro would do in this scenarios. It takes your markdown and it just compiles to HTML and that just sends that through the single file component for the Vue template render.
+
+And then you have your Vue components or whatever. So yeah that's cool. And of course with Astro it's gonna be all static, unless you're manually hydrating something. So you kind out of the box.
+
+**Fred:** Markdown the way they designed it, it's here's the content, but the second you see a little HTML element, like markdowns, like we don't, that's, that's HTML, that's not markdwon. We're not going to touch that. So, anyone who's doing this kind of takes advantage of that. Markdown is a specific thing and it's specifically not HTML or it allows pretty much any type of HTML.
+
+So, yeah, it, it sets itself up really nicely where you don't need a lot of complexity to start thinking in this way with markdown
+
+**Justin:** This is definitely on my radar because so Andrew and I both use Obsidian a lot for note taking uses markdown files and I published my notes based off of markdown. And eventually I would like to have it all powered by Astro, which is like I can write an Astro compatible markdown file inside of obsidian and have that sort of when I publish it, render out things. Because there's a lot to be said if you do web development for a living, be able to play with different components and interject them directly in your blog posts.
+
+It's like, Hey, here's this really cool Vue component and like the thing that it does without having to really think about the architecture. That's like super powerful.
+
+**Fred:** Yeah. I think one of the things where there's people like, look at what we're doing now, like, oh, this is like 11ty but different, or maybe it's like Next.js but like a little simpler. like There's all these takes on it. But I think my favorite is what if WordPress were more modern?
+
+What if there was a way to take your notes and Astro have a CMS, it doesn't have to be super advanced. It can be really simple and developer focused, but have that all just built in so that it's not like you have to go and set up, okay, what is the plugin for this content? Or, using your own editor like that should still be supported, but in a way that plugs directly into, okay, great.
+
+Now I'm pumping this into Astro and getting a website out as a result. That's our dream. So, Astro CMS as a command? I don't know if we're going to get there, but some answer there for, just making it easier to author content on the web is, we've seen that be probably the hardest thing to do in the modern web.
+
+And we really like, RSS and pagination, all these things built in are coming from that place of making it easier to create content and publish it.
+
+**Andrew:** Yeah, what Astro is doing almost reminds me it. It's like you're making any component into a web component, basically. Like the ease of use of just like, oh yeah, it's just the thing you use. And it's on the page now. Like being able to pull that from any framework is awesome. It's like the opposite of like Stencil where like you author and web components and it goes out to everything.
+
+This is that flipped on its head. You can take anything and just put it in your page. Super powerful.
+
+**Fred:** It's funny that you all started with the Polymer part of this, cause it's oh no, he's just doing Polymer again. Stop him. It's just more of the same. The web components is I think objectively a good idea that I feel like it's stuck in a lot of the weeds of what it does, support what it doesn't and how it works and how it doesn't work.
+
+But like the general idea of, yeah, like reusable components, like going back to the docs story where. Why can't I use the Algolia search bar in my Vue project? Like Algolia is losing users, like they're losing paying customers, their business. But in a world where you can move a lot of the server logic and what is currently like, Next.js being fully React.
+
+So routing, server, like all these, all this stuff is built in a react ecosystem in a react context. And that means that SvelteKit has to go and reimplement that nuxt tester, like everyone is taking their stance on what it means to build server logic in a framework context. And if what Astro can do is pull that out and say, no, there's this like blanket level of server logic, right?
+
+Routing pagination, RSS feed generation. If we can pull that down and then keep using those frameworks for what they're great at. Use React for your UI. Leave them in the UI layer, which is whatever, UI framework is, it's in the name. That's where we see the most exciting kind of where everything shakes out.
+
+If we can be that level, that common level, which is essentially the goal of web components to have that common level that everyone can share. And it's not to say that the two are competing with each other at all, they can live together. But it's just such a great ambition that we definitely share some of that.
+
+#### [00:35:07] Micro Frontends and Components
+
+**Justin:** It's funny. I had a thought the other day... I've watched the sort of like micro front ends movement evolve and the just mammoth level of complexity that it takes to achieve that vision. I held an architecture role in a previous life. And that, that sort of always concerned me. The ballooning sort of incidental complexity that you take on.
+
+But, and in a way I could see a world in which, something like FoodNetwork is powered by Astro and you have all these different things and it's like, sure you want to build this recipe box thing and you want to use your framework of choice, fine. Like you have the freedom to make that decision.
+
+And without us having to really think about like architecturally, do we have to abandon ship start using something else for our component framework of choice. And also just the idea that this can be expanded in the future. So, if React falls out of Vogue and there's some new better thing that comes along and it's like, yeah, sure.
+
+We can jump on that ship and incrementally migrate with little to no cost.
+
+**Fred:** If you were someone who has been excited about Solid, you've heard about this new framework, it's React. But what's all this cool stuff. Like we already great way to try it out because in any other project, you have to make a bet. This whole thing is going to be React. When I see JSX it's React.
+
+And then that's your project. And Astros, I think one of the only ways that you can use solid, bring it into React projects, try it out. This one component. If you don't like it, pull it back out. No big deal. You didn't just have to rearchitect, your entire project because you wanted to try a new framework.
+
+So at the very least, yeah. Like I think there's the question of what's good for big companies and what's good for small. Just me experimenting. It's certainly a great thing for experimentation. If there's no cost to me to bring in the new framework. If that framework doesn't actually break everything else that I've done.
+
+And even for big companies, I think there's this idea of there's a performance cost of having multiple frameworks Preact and react together. Okay. You're paying a cost there, but it's also on the complexity side. Well, what is the risk of someone bringing in a component in a new framework? Performance, but unlike every other thing where it's all getting bundled together so that one component, that angular component that you bring in might poison the rest of your site, right? It's all getting bundled. It's now poised out of the whole thing is a Angular and React. Don't know you've done this thing to the entire site. If you're the person in charge of architecture, that's a nightmare, but in a world where each is its own island, okay, well, that's living there.
+
+Maybe I don't like it. Maybe I need to stop this team from doing that, but it's not infecting other pages. It's not infecting the rest of your site in the same way. So, yeah, I think micro front ends is just one of those things where it's like, there's a lot of things that make me scared, but there's a lot of things where even whether you're an experimenter or a larger organization, Astro kind of has a, I think a better take on what that could look like at scale.
+
+**Justin:** Yeah, it's pretty cool.
+
+**Fred:** But again, I feel like there's so many people who are like, ah, micro frontend is bad and I'm like, it's a personal thing, but I'm like very scared to be like an Astro is great for micro friend ends. And then everyone who just has that, that scar is like, ah, no! And they run away.
+
+**Justin:** That was not my, that was not my point in that. If you're a listener out there and your company is doing micro frontends or you're really interested in pursuing it, I'm not trying to discourage you from doing that thing. It's just my own personal sort of take on that as generally. The biggest thing that's always bit me in making decisions in my career is like taking on complexity, especially taking on incidental complexity.
+
+And those sorts of things generally tend to worry me. That's why things like Astro are really exciting because you're essentially building out a baseline that is pretty stable. That over time I can rely on that baseline being solid. And I have the flexibility at a different layer to play around and try different things.
+
+Experiment, iterate on my approach and the baseline stays static and from an architectural perspective, it's very comforting
+
+**Fred:** I feel like we haven't talked about this, but the idea that when you think of every component on the page, as an island, the performance story for that each one actually loads separately. So if you imagine today, you have a really lightweight, like navigation component that's super important and a really heavy image carousel, if people are still building those. Something heavy, something really beefy. It takes a lot of bytes over the wire. It has to be initialized. In a traditional JavaScript application that gets them run. All of that is being bundled together and load it together.
+
+So that uncanny valley you talked about. That really lightweight header is going to take awhile. And that navigation might not be there when the user clicks on it. Not because it's so heavy, but because that other thing that it got bundled with this heavy. Versus something where each island is separately being loaded, hydrated, and essentially initialized, all of a sudden that header is going to load and get set up much faster than that heavier thing.
+
+Or again, if we do that visible trick, maybe that like heavy thing never even needs to load. Or, you can say the header is critical, load that first and load the thing. Okay. Maybe not when it's visible, but when the browser gets idle, you have this like total control. Not just over how things get loaded, but separating them so that essential stuff, loads, first, everything else follows up and doesn't impact that uncanny valley, which, which certainly shrinks in that model.
+
+**Andrew:** Since you're loading things at different times does Astro have a built-in like loading spinner or like how do you show to the user that, Hey, like this heavy part of the page might not have been loaded yet?
+
+**Fred:** Yeah, that's a great question. So we currently will server render it and then hydrate that. So you'll get whatever the component looks like in the server rendered world. I would love to have a built-in for a component that maybe doesn't handle that well, like here's a spinner and just throw it out.
+
+You can certainly build that yourself, but generally it relies on the component either hydrating, and in, on interactive, not interactive version of itself or rendering something that is, a placeholder and then once it loads in the browser, it fills itself in all of that is supported.
+
+It's just what the component will do by default
+
+**Andrew:** Cool.
+
+**Justin:** Yeah, you just added the client only hydration or whatever. So it doesn't serverside render at all and only renders on client having a optional spinner for that might be an interesting thing.
+
+**Fred:** That's the one right now where it's like, okay, you were intentionally telling Astro don't render anything on the server, so, yep. You got to work around that today.
+
+**Justin:** One of the things that I think is interesting and maybe this will be my last point before before we switch over to tool tips is so I really admire the next JS team about how they think about performance and try to build in good escape valves. As you build your site, it gives you a detailed breakdown. Okay, here's the bundles we're serving. Here's like how large they are. It tries to do the best it can to really bake in performance as a first-class part of its story. And I think there's a lot of really interesting things that Astro can leverage in the future, especially because you're introducing a component on the page, Astro knows like what assets are going to be used to sort of bundle that component.
+
+And there's like development time opportunity for saying, &quot;Hey, this thing is really heavy and it might affect performance.&quot; Or, something like that. It's like you can get that sort of feedback almost earlier at the call site, because, at the call site, like the relative cost of doing that thing, which I think is a really fascinating sort of opportunity that Astro has, that's like harder to leverage and other friends.
+
+**Fred:** Even going back to snowpack that was one of those things where Next.js, I think you're totally right. They probably do the best job with this with anyone. I think they have a lint command now that like go through your project and find okay, this isn't a bug, but do it this way and you'll see an improvement, a better performance. They're doing a good job of okay, using what we have, let's give you some hints. But there's baked into that of well it's complex. So we're going to have to like, make it easier for you. So analyzing your bundle.
+
+I've done that, but not regular, like I don't every week, like I pour a cup of coffee and open up my bundle analysis and go digging through it. So that was an early snowpack thing. Was this idea of, if you drop the bundler during development, you'll actually see all the files streaming down. You can see exactly what is so heavy that's causing this.
+
+If you imagine like a material UI or one of those packages, that's like a UI library that kind of just is like a kitchen sink, everything. Those are really easy to like accidentally load everything into your project. Or nightmare scenario every page is loading in a different version of it, which I've seen in bundle reports before.
+
+The bundler hides that and then tools like Next.js, or like you know a bundle or analyzer is going to give you a way to see that. But it's still like it's one level hidden versus being obvious. When you open up the dev tools. Astro is a lot like that for front end components. So instead of why is my page, five megabytes you can say, okay, why is this component five megabytes. It's oh God, what have I done?
+
+It's right there as you're loading the site and looking at it and your developer tools, instead of being one step removed through analysis, which is certainly good, but it's definitely just opens the door for you missing something and deploying without realizing it, some sort of regression.
+
+**Justin:** Cool.
+
+**Andrew:** Well, I think with that, let's move on to tool tips!
+
+#### [00:43:43] Tooltips
+
+**Andrew:** So my first tool tip is we're gonna take a roundabout route to getting to a tool tip.
+
+This is a video by the Veritassium YouTube channel about cosmic rays and how the universe is hostile towards computers. I've never had my mind blown so much by one of this dude's videos. But so apparently there's these cosmic rays hitting the planet at all times. Then when they hit the, our atmosphere, they turn into very, very tiny things that are tinier than cosmic rays.
+
+And apparently those tiny things can get into computer chips and flip bits causing like crazy bugs. So how it gets to be a tool tip is sometimes your bugs may literally be caused by cosmic rays. So just turn it off, off and on, but like some of the cool examples he gives in the video is one where there is a voting machine in the eighties, and this one woman got 4,096 extra votes.
+
+And they're like, how did this possibly happen? We have this machine we're going to test it for all these bugs and try to find out how this bit got flipped. And the only explanation they were able to come up with was a cosmic Ray particle came down and hit the thing that was storing the bit in the 4 96 place and gave that woman 4,096 extra votes.
+
+**Fred:** Oh my God.
+
+**Andrew:** Amazing another cool example is there was a Twitch Mario speed runner, and he, all of a sudden just warped up one level, like a hundred feet in Mario and someone put out a thousand dollars. Bounty was like, if you could recreate this bug give you a thousand bucks, nobody was able to recreate it for six years.
+
+And the only explanation they could come up with was that a bit flip, a random bit flip happened in Mario that caused his height value to go from a to B. One guy wrote a program that flipped the bit at the exact right time. And the two videos look exactly the same. So like, if ever you're like, Hey, a bit flipped in my program.
+
+And I have no clue why it might've actually been a cosmic Ray.
+
+**Fred:** Oh my God. That's wild.
+
+**Andrew:** Yeah. And apparently as you go up in the atmosphere the chance that these cosmic Ray particles will hit a bit and cause a bit flip error goes up substantially. And there was actually a flight where it was just flying along and then all of a sudden it starts accelerating downwards at a huge angle.
+
+And literally in the cabin there's holes in the ceiling where people came out of their seats because there was so much force and went through the plastic that was above them. And again, the only thing that they could come up with was there was a bit flipped where it was describing the altitude and the angle of attack and a bit flip happened.
+
+And they thought their altitude was the angle of attack. And the planes autopilot was like, we need to go do this and go into the ground. It's crazy. I just wanted to share that because that literally blew my mind yesterday.
+
+**Justin:** That's wild.
+
+**Fred:** When you first started on this, I thought you were going to sell a crystal of like, this is, this will protect you from bit flips from cosmic grants. It's in our merchant store. Now, get it. There's only 10 left. Your code will be safe.
+
+**Andrew:** I'm surprised there hasn't been a comic book written about that. Like cosmic rays. It's just a crazy idea that stars exploded millions of years ago. These tiny particles are just like making their way through the universe, eventually hit the planet and then cause mass chaos, the video ends with actually saying that those type of cosmic rays also do the same thing with DNA.
+
+They might hit a DNA pair and randomly flip it. And that's what you can attribute like random mutations to is a cosmic ray hit an embryos DNA and caused a new mutation that might even be how humans came to be.
+
+**Justin:** That's wild.
+
+**Andrew:** Yeah. Mind-blowing concepts.
+
+**Justin:** I've got some uh, random off the wall ones. And so there is this 3d ASCII game that I found that I'm not even sure how to pronounce it. ASCII ask kicker asked oh, that's cute. Anyway you should look in the show notes and find this repo and the video. It is literally a 3d rendering engine and ASCII characters.
+
+It's bonkers. They have water and reflections inventory systems. It's,
+
+it's
+
+**Fred:** I just noticed the reflection.
+
+**Justin:** no, it's, it's
+
+absolutely wild. no idea how they did this, but it blew my mind and on my to do list to dig into and try to figure out what the heck is going on. But yeah. Fun, fun, fun demo there.
+
+**Andrew:** Yeah, the reflections are awesome.
+
+**Justin:** Yeah. It's crazy. It's crazy. If you like, look at the faces, it's just like this little tiny, like single character face, but like everything else is
+
+**Fred:** This is definitely one of those projects where the code is either like beautiful or a total mess. Like it's about to fall apart at any second, but wow. That's incredible.
+
+**Justin:** It's crazy. It's crazy. I can't like, I wonder, I was thinking like, in these scenarios, how did they model the world? Is it actually rendering, meshes and like trying to attribute something. Because like certain aspects of the world are so low fidelity, like your characters.
+
+I'm assuming they have to be like sprites of some sort. But I wonder about trees and the bridge and the rock and all that stuff. Are they like three models that... it's wild. Anyway. it blew my mind.
+
+**Fred:** This is called Shiki. I believe that's how you pronounce it. And this is something we just integrated into Astro. So syntax highlighting has been top of mind for me this week. But this is a new type of syntax highlighter. That's really cool. It uses vs code pretty much directly.
+
+It's powered by the exact same thing that makes vs code themes, work and grammars work. And essentially lets you pull any vs code theme and any grammar syntax highlighting that works in vs. Code into your front end syntax highlighted project. So if you want some show, some code on your site this is the way to do it using and reusing like really solid tech. So you get every theme you might like, any sort of grammar, it's all there. We originally launched with prism, which is like an older school one, but this is really needed. It does all of its computation and it generates all your styles at build time.
+
+So there's actually no CSS rules to bring in no like theme files to juggle that your user then has to figure out it's all basically baked right into the call that generates this and puts it on your site. So it's super cool. It's a, the TypeScript team is using it really heavily. My second thing to show off is essentially the other version of this, which actually brings in TypeScript type checking into your code.
+
+So you can like hover over your code snippet and it'll give you like a TypeScript tool tip. And it definitely wins the award for best documentation site. You should open it. I guess I can combine these two into one thing. If I'm just going to talk about them both at the same time you have to see this.
+
+It is the most unique take on a documentation website I've ever seen.
+
+**Andrew:** What's funny is we actually had Orta on and he talked about this.
+
+**Fred:** Nice. Oh my God. I am in love with this documentation site. It's I'm actually not even sure what it's referencing, but I just know it's referencing something incredible.
+
+**Justin:** Well, we had an episode of the word and we cover this.
+
+**Andrew:** yeah. I think he was he was just inspired by like medieval texts. And he was like doing a lot of different explorations with design. He's really into making like compelling design for open source projects.
+
+**Fred:** Oh my God. Like just the header, the documentation concerning the npm modules of Shiki two slashes, like what a statement to make on your website. I love that.
+
+**Justin:** There was a design book that had the like solar coloration and style that he borrowed a lot of inspiration from that. And then, yeah, was wanting to go after a old English style, but yet, Orta was an old coworker of mine at Artsy.
+
+**Fred:** Oh, no way!
+
+**Justin:** Yeah, incredibly lovely person, but he's done a lot of open source designs.
+
+So prettier, relay, jest, two slash like the list goes on. He's done a lot of really cool stuff.
+
+**Fred:** Yeah. It's just like, I, you rarely find something that's like such cool technology and also just like such an incredible design.
+
+Both of these things are checked here and it was just so fun to, to find this project and start using it.
+
+**Andrew:** Yeah, Shiki is just like a cosmic leap forward in a code syntax highlighting compared to like prism and highlighter JS. You think you're going to get what your editor displays to you, and then you notice, Hey, that one color's off. And I wonder why, and then you just become sad because it's all powered by really bad regexes.
+
+But but vs code implementation is a lot better.
+
+**Fred:** Well, it's also because you don't need to send, you realize these themes are like hundreds of colors, super complex, but you could never make that work. If each color was a class you'd sent hundreds of different class names and it would just be a total mess. So, but the fact that it does it at build time means it can get the super granular styling that you just can't get with prism or highlighter JS.
+
+It's a totally different model and it really works nicely
+
+**Justin:** Yeah, definitely deserves the extra shout outs. It's an amazing project. Orta did great on the doc site. Love it.
+
+**Andrew:** My last tool tip for the day is render.com. It's elevator pitch is it's just a next generation Heroku, but you can also host a bunch of them. Different things on there. Well I started using it for is my serverless costs for my music video website shot up astronomically over the past few months and I didn't want to deal with it.
+
+So I combined all my serverless scripts into one and then just run it on a Cron job through render.com, which has been a lot better so far. And I liked how simple the interface is. And I might think about deploying my own static websites are on it or moving my database from Mongo to Postgres, to host on here as well.
+
+Cause I like having everything in one place.
+
+**Justin:** Yeah. Render is pretty solid.
+
+**Fred:** Heroku not making much progress in the last decade. There's such an opportunity for this.
+
+**Andrew:** Yeah. They're their biggest call-out is like we're way cheaper. So use us.
+
+**Justin:** Okay So, I don't know if I've talked about it on the podcast or not, but for a while, I've been trying to design my own mechanical keyboard. Mostly from scratch writing the former, trying to model the keyboard case, custom milling the caps. and I want to do , the case in the caps out of wood.
+
+So I'm always sort of on the lookout of like videos or articles of like how other people have done this. So this is an ADA fruit article about CNC milling key caps for keyboard. So if you're into mechanical keyboards and if you have access to a local Makerspace or you have your own CNC, this is a really, really interesting project to get into.
+
+The link will be in the show notes. It's just this exploration and using a desktop CNC to make key caps. If you don't want to do that, but you want wooden key caps, there's also a ton of them on Etsy. So go buy something. It's fine.
+
+**Andrew:** That's funny. This is like the default programmers, hobbies of woodworking and mechanical keyboards com combined into one.
+
+**Justin:** I'd been doing a lot of 3d printing and 3d printing so much easier than CNC. Cause like you just make the model and then you print it out and it's done and CNC, it's like, you make the model and then you have to go through this like cam phase.
+
+It's like, okay, how does this thing? How do I like extract material? What bit do I use? That is much more complicated than I thought it would ever
+
+**Fred:** be.
+
+So as someone who's never looked into building their own keyboard, how much work is it?
+
+**Justin:** It depends on how far down the rabbit hole you go. I'm doing it like not completely from scratch. Actually, you could probably do things completely from scratch. If you're using Q M K, which is a very popular open source firmware for keyboards. There's a lot of designs out there.
+
+So you can go find a plan, mix, and match. Questions are like, are you designing your own PCB? Tons of videos out there, it's a project, it's a whole project. But if you want like an approachable electronics project where you want to get really deep in the weeds, this is a really good one.
+
+Cause it's not so complex. There aren't so many pieces that it's like crazy hard to do. If you look at a lot of theirs, there are mechanical keyboard kits that are basically a few like ICS and just like resistors and diodes. And that's all it is. You can basically like through hole, solder everything and build this keyboard out.
+
+There's tons of kits out there that you can do that sort of thing. My. Project is a little bit more complicated because I want things. it's a fun project. If you've never really done electronics before and you would like to get into that, this is a really good one to dig into.
+
+**Fred:** yeah, it's something I've always thought about. Never. He never pulled the, pull the trigger on that. That's cool. That's good to hear. It's doable.
+
+**Justin:** It's a well explored space, so it's not something you'll get into and you're like, oh, nobody's doing this. I have no idea what I'm doing. That's the way you do find hundreds and hundreds of videos. There's a lot.
+
+**Andrew:** And meetups where you can go click other guys keys. It's a great time.
+
+**Justin:** Yeah,
+
+**Andrew:** Okay. I think that about wraps it up for the week. Thanks for coming on Fred. This was an awesome conversation and a glimpse into the future.
+
+**Fred:** Thanks for having me. It's a lot of fun.
+
+**Justin:** Yeah. Fred really appreciate it.
+
+**Andrew:** Well, that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
