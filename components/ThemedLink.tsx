@@ -4,7 +4,7 @@ import { coloredTextTheme } from "./ColoredText";
 
 export const ThemedLink = (props: React.ComponentProps<"a">) => {
   const { currentColorScheme, currentTheme } = useTheme({});
-  const color = coloredTextTheme[currentTheme][currentColorScheme].blue;
+  const color = coloredTextTheme[currentColorScheme].blue;
 
   return (
     <a
