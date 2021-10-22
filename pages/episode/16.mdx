@@ -1,0 +1,416 @@
+---
+title: Kilian Valkhof - Polypane, Electron, Superposition
+youtube: https://www.youtube.com/watch?v=TUOn3X-anRY
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/9413188
+tags: technology, tech, programming, code, electron, dx, developer experience, web, webdev
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Join as as we chat with Kilian Valkhof, an indie developer with a passion for building developer focused tooling. On this episode we discuss his product Polypane, a browser built for web developers. 
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:02:25] Polypane
+[00:14:32] Electron
+[00:21:46] Building Polypane
+[00:29:19] What's the Future of Web?
+[00:33:54] Superposition
+[00:42:14] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Kilian:** There's plenty of tools that can tell you all the things you did horribly wrong with your website and now you're a terrible developer. Polypane does that as well, but I also try to then, you know, tell you, instead of doing this, maybe should do this, or here's the remediation step.
+
+**Andrew:** Hello, welcome to the devtools.fm podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+Today's guest is Kilian Valkhof. He is a developer with a passion for creating developer centric software and has created a long list of tools that help developers make websites better.
+
+Kilian would you like to introduce yourself and how you got here? A little more?
+
+**Kilian:** I'm Killian, I'm a web developer from the Netherlands. Even though I really haven't been developing websites for the past few years because I I've sort of graduated it's as it were to developing desktop applications. But I still use HTML CSS and JavaScript to do so. So it's, it's not that much of a difference.
+
+I started a really long time ago. I made my first websites when I was 11. Then started my first what development agency at 16. Ran that for 14 years and then switch over to building desktop applications. So I I had always been building like tools and libraries and frameworks for myself to help me with my work.
+
+And I had developed this little browser of my own that really helps me make responsive websites much faster. And initially I, I didn't really get that yet. It was just like a nicer way to build websites until I checked my hours and I was like 60% foster compared to not using this dinky little tool that I built.
+
+So that's when I decided like, you know, there's something here. Let's, let's make the switch.
+
+**Andrew:** Oh, nice. So you you started out as like just a web dev agency and then out of trying to make yourself more your work more optimized during that you created polyplane and decided to create a company out of it.
+
+**Kilian:** Yeah. It's polypane without the &quot;L&quot;.
+
+**Andrew:** Oh, polypane. Sorry.
+
+**Kilian:** No problem.
+
+#### [00:02:25] Polypane
+
+**Andrew:** So polypane seems like a pretty ambitious project, we know why you built it now. You wanted to make your development faster, but for what I see it's it seems like it's an entire browser instead of just like an extension or a website to go to. Why did you choose building it as an entire browser?
+
+**Kilian:** I had been playing with electron when I started working on what would be completely pain back in 2015. So I've been at this for awhile. And back then the types of things I wanted to do with websites weren't really possible as, as a website because you, you can't just like randomly embedded other websites into your websites.
+
+Other websites tend to not like it when you do that. And then the same for browser extensions. You very quickly get into all sorts of weird cross-region restrictions and using electron I could work around all of those.
+
+**Andrew:** That makes a lot of sense. What was the first killer feature of polypane that drove you to build it? Was it just seeing your website at different screen sizes or is it a little bit more than that?
+
+**Kilian:** It really started as, you know, like a bunch of iframes side by side, because at that time I had just switched over the entire company to use sketch. And before that we were using Photoshop. And what sketch does is it has art boards, like nowadays all the design tools have art boards, but back then it was pretty novel.
+
+So when I was designing in sketch, I had this really cool overview of all the responsive sizes, because I would have like a mobile art boards a tablet art board, and then desktop art boards side by side. And I could very easily compare. And then I went back to Chrome and I could only see one of them at the time.
+
+And if I wanted to compare, I needed to resize back and forth. So that really started to annoy me. And that's usually when I decide to build something, so it really started with that. And then from there, I just basically kept piling on other stuff that I needed as a, as a developer.
+
+So one of the things that I implemented very quickly is that will parse your CSS and then finds all the media queries that you used. And then with one click, you could create panes based on the media queries you used. So you wouldn't just have like a mobile view, a tablet view and a desktop view, you have like 600 pixels and 620 pixels.
+
+And 85 pixels or whatever. The styles you actually built for. And that really helps to see if you're loading in like 20, 30 different panes. Like maybe you're overdoing it on the, on the media query side, but also it very quickly helps you figure out where are the gaps?
+
+Because very often there will be some sizes that you just don't pay a lot of attention to. They're like the in between sizes. And those becomes super apparent if you just get all your media queries and display them.
+
+**Andrew:** Yeah, that's super interesting. I thought it was just like, you kind of defined your screen sizes, but that it actually goes in and parses the CSS. That's that's super awesome. Because like, even though as a front end developer, you're supposed to write your media queries in one direction. That's often not the case with code bases. And that seems like a super useful tool.
+
+**Kilian:** Yeah. And that's exactly where, where the bugs happen, right? Where you have like a, a max width and the min with, and they just intersect in 10 pixels. And in that 10 pixels everything is broken. So, and you don't know that's because, you know, you check your, your different devices and they're all very safely in like your mobile size, your tablet size, and it's all these in between sizes that's that break. A lot of developers don't really get is that on desktop, very few of the browsers are full screen for like most users. So while we all have our 27 inch 4k, huge pretty monitor. You know, your site is going to be views Alma, dinky Chromebook with a screen the size of a stamp.
+
+And they're only going to use half the screen for the browser because they have something else they want to see as well. And that's the type of size you also need to optimize for.
+
+**Justin :** One of the technical questions I had is how do you keep all the like individual panes of it in sync, their state in sync. So I noticed two things from the demo. One as you're scrolling, they all sort of scroll. So that's one thing. And then there's also this, this really interesting CSS playground you sort of have where you can. You do as specific. And it also looks like the dev console, but you can write some specific CSS and it's applied to all the pains at the same time. What, how does that work?
+
+**Kilian:** So just a whole lot of custom code. So, whenever a website loads, I parse all the CSS to get the break points, but also to gets, for example, all the hover styles. And then I add a whole bunch of listeners you know, for clicks, for hovers, for keywords inputs, for scrolling. And from there, it's just making sure in a very smart way to propagate the different events into all the different panes. It's a lot of keeping track of stuff and then waiting for events to come in.
+
+**Justin :** Gotcha.
+
+**Andrew:** I noticed it has a ton of different features and a ton of different tools built into it. In your opinion, what are some of the cooler ones that aren't just like those base case of responsiveness?
+
+**Kilian:** I do think the hover syncing is really cool. So in polypane if you hover in any of the panes the hover effects happen in all the panes. So that really brings like the idea that you're not looking at multiple instances of your site, but you're looking at your site that just happens to be shown at multiple sizes.
+
+Because that that's the dream you want like the full overview. But then so like usually when I, when I explain the features of polypane, it takes me over an hour. It's very hard to pick a feature like off the top of my head, but for example I do I also parse all the metadata your site.
+
+And then also, if you have a web manifest, I download that if you have, oEmbed data, I download that. If there's a robot dot text, I parse that. So I give you all of this information? Like your theme color? Sure. Document view ports. Your, you know, your robots dot text data and then everything that I can come up with, that's usually a manual check I just writes codes for.
+
+So for example, if you have a robots dot text, I just check whether the page you're currently, at is blocked by the robots dot text not not for each of the user agents that you have specified you need. So polypane will just tell you if, you go to a slash WP dash admin for WordPress sites, and then it will tell you this page is blocked for Google bots because that's, what's in the default robots text.
+
+I just do that for everything. If you have things in your viewport declaration, like user scalable is no, or a minimum size or a maximum size, I show warnings for that because your bets off not putting that into a viewport because it breaks the web for some people. And then like, lastly, for that thing specifically, I take all the metadata and I reverse engineer it's how social media like Twitter and Facebook creates their open graph social
+
+So I've I've pixel perfect previews of all of those, but then also using the exact same data. That's those sites use because like Twitter has their Twitter tags and Facebook has their OpenGraph tags. So if you go to their documentation, they'll say you need to use OpenGraph tags.
+
+But if you don't, then Facebook will just use the Twitter tags because they're there. And, you know, Facebook wants to show the coolest looking preview. So it's just going to use the data that's there, but they don't have that written down anywhere. So I reverse engineered all of that for Twitter, Facebook, slack discourse, LinkedIn and telegram web, and then also the Google search preview.
+
+And I made sure that it displays exactly as it's displayed on those sites. So you can check your pages before your sites online. And also you no longer have to like post links to Twitter and then very quickly deleted which, you know, a lot of developers do. So this is, it's just a much nicer way to, to deal with this.
+
+And it's, it's something I spend a lot of time on getting it right. Just so you can be sure, like, if there is a specific word break in a brief view in polypane you're going to get that exact word break when you share it on Facebook or whatever.
+
+**Andrew:** It's really awesome. It's just to have like all of the different tools you might need to build a website built into one tool seems super powerful. Cause if you don't know about oEmbed or any of that stuff as a newer developer, it's not a thing that exists and you have to guess at your Google searches, whereas with polypane, it seems like it can drive you towards best practices for your website.
+
+**Kilian:** Yeah. So I, I, yeah, I really try to do that, like in the entire app as well. I, have a very strong focus on accessibility but what I always try to do is not just tell people that they did something wrong because there's plenty of tools that can tell you all the things you did horribly wrong with your website and now you're a terrible developer.
+
+Polypane does that as well, but I also try to then, you know, tell you, instead of doing this, maybe should do this, or here's the remediation step. For example in polypane I built this color contrast checker that just goes through your entire website. And then for each unique text and backgrounds pai r it will calculate the real backgrounds. If you have multiple backgrounds with transparency et cetera it Just flattens that. And then if there is text that doesn't have enough contrast, I just calculate the nearest color that does, and I give it to you.
+
+So you can go through your website finds all the instances of contrast issues, and rather than having to go back to your designer, making a screenshots and pointing arrows like this color needs updating, and this color needs updating and . Waiting a day or whatever or going back to a design system, if you have that and then figuring out, it's like, oh, actually, you know, this hex code that I have corresponded to blue for hundred but I need blue three hundred I can just keep it inside the app so that the feedback loop becomes as small as possible.
+
+**Andrew:** That's that's awesome. There's been countless times where I've been like editing CSS and the dev tools and it throws up a warning sign and then it just doesn't tell me anything. It's like, there's a problem here. I don't know how to fix it or what's actually wrong, but just try to figure that out.
+
+So it's cool that it holds your hand along the way.
+
+**Kilian:** Yeah. I think that's importance like just in general, because a lot of developers, they're racing towards a deadline very often. So the choice isn't between fix it now because polypane tells you how to fix it, or I'll do some research later and then fix it. It's between either I fix it now, or I don't ever look at it again because next week I'm on a different projects and then that has all the priority. If you make that feedback loop as small as possible, you also make it very easy to just fix it as you go.
+
+#### [00:14:32] Electron
+
+**Justin :** Let's talk about electron for a second. I know that electron can have a few challenges performance among many others often are talked about, but not necessarily in the context of what. You know, if you actually know how it works and how to optimize it, given that you're, you're creating a browser on top of electron is more like the natural case of like, why we're building this thing.
+
+So could you talk a little bit about your electron experience specifically, like if there are any challenges of this and I know that you're actually involved in electron communities. So if you have more thoughts on just using electron to build desktop apps. Love to hear about that!
+
+**Kilian:** So I actually, my, my desktop app career started with some apps that I built in QT and GTK which weren't great compared to web development like web development is you make a change. You refresh the page and you see if it works. That's not how most desktop software works.
+
+So I use python. Even then, you know, hot reloading or whatever didn't exist. So the refresh your page becomes close the app and restart it and pay the boots cost of python, which is not a lot, but it's definitely more than refreshing a page. Right. So I, I had that experience and then over time, these different tools came out that let you use web technologies.
+
+So before electron there was node webkit and then before node webkit there were other tools. So they were just a much better fit for the way I worked. And that's the case for most electron apps right now. There are a lot of people who have a lots of really good knowledge on how to make websites.
+
+And it turns out that if you know how to make websites and websites run on every platform, that then is a fantastic way to build applications for multiple platforms. So for example, on Mac like Mac users specifically are always very vocal about things being electron apps, but then they're really only vocal about things being electron apps that they know are electron apps, because if they don't know, usually you don't hear so much about that.
+
+The interesting thing there is, it's not that if the Mac app wasn't an electron app, it will be a very cool native app. If the Mac app wasn't an electron app it wouldn't exist. There wouldn't be a Mac app. There would just be a windows app because that's where the audience is. Whereas with electron you, you, you basically gets the Mac app for free.
+
+And I think that's a real power. And that's also why I think so many companies have started using electron because you can stretch your team much farther than having a Mac team and a windows team. And then, you know, some crazy developer that wants to build his own Linux version.
+
+No, you can just have the entire team focused on quality ship, the same app everywhere. And I think that's, that's super powerful and, and that's also what you see in the adoption of electronic.
+
+**Andrew:** Yeah, the company I work at Descript, we have an electron app and it definitely accelerates development. Like, I, I definitely hear that. When people complain about electron apps it's only because it's like a bad experience. Like, but it doesn't have to be. Vs code, I think is one of the more famous examples of an electron app that even though it's an electron app, it's super quick.
+
+**Kilian:** Yeah. So like th the trick is that on the web, we don't really have to think about memory usage for one, because Chrome just really hides it from us. And two your app, isn't long lived enough for most memory leaks to matter as a whole, like, you can have like tons of memory leaks in your app, but the users going to refresh it at some points and they'll be gone. Whereas with a desktop app, that's not the case. So it's, it's usually like the slow parts of an electron app is whatever the developers builds in as their own web app. It's not the electron parts. The electron parts is pretty small, pretty quick memory wise, it's like it's the reacts app or the anguler app that's, that's shipped in that electron app. That is causing your CPU spikes and your memory leaks and and what not.
+
+**Andrew:** Oh, that's interesting. I never thought that that was the issue that it's just like our websites were never meant to be this long running. So it kind of makes sense that there might be those, those memory problems.
+
+**Kilian:** Well, so the websites can be long running and you don't have to have memory problems, but because they're not really an issue it's much easier for us to not care. Like you can have like stray objects in global for whatever time. You don't really notice it. In a desktop app if it runs for hours and hours, then those start to add up.
+
+And then, then yeah, you have to do what's traditional desktop apps also do, which is be more mindful about your memory heap, your your memory usage, you know, clean up off to yourself, basically.
+
+**Andrew:** Yeah, definitely not something I'm used to doing as a, a lifetime front end developer. So you're part of I think the electron steering committee or some form of that. How did you get involved and what do you help them do?
+
+**Kilian:** So if you use Babel or postcss then there, there's this thing called browserslist. And that makes you say I want to compile this goat and it should support the latest two versions, or Chrome 93, or everything but IE, stuff like this.
+
+So electron is built on Chrome. So you, you could just fill in whatever Chrome version of electron you were using, and then you get all these optimizations, because you can very specifically target for I just needs to support this specific version of chrome.
+
+But I felt myself having to go back to the electron on docs all the time to figure out like what's the current Chrome version and then typing that over. So I wrote an NPM package. That's basically just a lookup table. And we integrated that into browserslist so now in browserslist you can, you can type, you know, I support Electrum 13 and then it'll translate that to the chromium version for you.
+
+Show off to writing that scripts. Someone from the electron team asked if I wanted to join and back then there wasn't a governance. It was just a group of people working on electron. And nowadays I'm parts of the docs and ecosystem working group. We keep track of the electron websites and the ecosystem around Electron.
+
+**Andrew:** After hearing that I might go and look at our Webpack configs to see if we're using the right browser list. Cause that sounds pretty useful. I found myself doing basically the same thing.
+
+#### [00:21:46] Building Polypane
+
+**Andrew:** A few more questions on Polypane. What was one of the harder things you had to build to make it work, the hardest feature to build for polypane?
+
+**Kilian:** What took me a long time, was making sure that that I could get all the the styles. So one of the other things I did for polypane is I built my own elements panel. Like dev tools has an elements panel, and you can select an element and then edit the styles.
+
+So polypane it uses chromium. So you can open the Chrome dev tools, but then they only work for one pain because a dev tools is always linked to like one they, they call it a web contents, like one webpage. And obviously that's not great. I wanted an elements panel, that changed everything on all the panes. So that to a very long time to first to get right, like to get all the styles for a pane or an elements.
+
+And then also intelligently get all the parent's styles, but then only the parents styles that's contained styles that are inherited. If you select an elements, you don't want the styling for the HTML tag to show up there as well, because it's a parent. But you do want that if the HTML tag is the one that sets, for example, the font because that's inherits to that elements. So I had to figure out so how that works and then also how to reapply styles into each pane individually.
+
+So if you made a change that it would update, then that updates quickly. I had to rewrite that a couple of times as well just to improve performance. For example around tailwind 2, there was a, a period of time where most sites being built with tailwind to we're shipping over 16 hundreds unique CSS classes that I will happily parse every time you loaded a page.
+
+And it turns out that's not the most performance thing to do. uh, Tailwind solved that by implementing their JIT solution because it was actually making dev tools itself slow as well. That pleased me because it meant I wasn't like a horrible coder.
+
+All the CSS parsing and dev tools is actually done in C. So if it was able to get that on its knees, then you know, it's not so bad that my solution was having issues as well. So I had to rewrite that, and now I'm actually working on the next step where I can also show you when edits or the psuedo elements and psuedo classes. So you now also, starting in the next version, edit all the hover styles, of an element and it can figure out like which hover elements apply to these elements.
+
+That was, it wasn't as hard as the initial feature. But it was only possible because I spent all that time making that initial feature. I sold it as it now is.
+
+**Andrew:** Yeah, that sounds incredibly hard. Cause like what if the page Conditionally renders different HTML for the mobile version instead of the desktop version. That seems like a pretty hard thing to tackle, trying to combine all of those elements into one elements panel.
+
+**Kilian:** Yeah. So that that's, that's one of the harder problems and essentially like, that's another part that I'm trying to do more in polypane now, which is that this is a tool for professional developers. So if you, as a developer, do a bad job, then polypane shouldn't compensate for that. And it, it sounds harsh, but regular browser do a lots of compensating for poor behavior. An example that you probably don't realize, but there are lots of misconfigured servers where like one of the combinations of HTTP HTTPS with www and without www, doesn't have the rights for words or doesn't have the right certificates.
+
+And browsers will just ignore that. They'll figure out like, which of these options is the one that actually works. And we'll just forward you to it. Which is ideal for end-users because like they don't care that a developer forgot to ad www dots to their SSL certificates. If the regular domain does have a valid as his health certificates rights, you just want to go to the websites.
+
+And you don't want the scary warning. But in polypane I don't do any of that because I, I do want the scary warning. This is an issue. Because if you don't have that, then the browser doesn't have to figure out which one of these, you know, he checks it in the background and then it, it gives the one that actually works. So that there's time lost, not a lot of time, but it is a quality issue.
+
+So I'm really trying to do more of that in polypane. And then as you mentioned, there are a lot of websites that will just swap out their entire navigation for a mobile version. Like, yeah. I'm not going to write codes to sink overstates between two different DOM trees, just because you have chosen to duplicate the navigation. Just often times for assistive technologies, that's navigation is actually duplicated because they're not properly hiding it and whatever.
+
+So yeah, that's, that's another topic like wrapped up in polypane in between all the tooling that you need. Like how can we guide people towards quality, essentially.
+
+**Justin :** You have the privledge of building a browser for developers though, right? Cause there are definitely different expectations. It's like this isn't the lowest common denominator where we just . Have to give a good, the end user, a good experience, regardless of everything else, we want to force you in the right direction in some ways.
+
+**Kilian:** Some friction is okay. Though that also doesn't work for, for everyone. It's like a middle ground I have to find. Cause a lot of people will actually not appreciate you telling them that they can improve their websites to to put it politically. But yeah, like th the end goal of polypane is to have you be the best web developer you can be.
+
+**Andrew:** Yeah, it's, it's cool. How many, things you can unlock when you change the end user from just a regular person to a developer and making the browser more of an integrated development environment, instead of just having like dev tools be something that's just tacked on.
+
+**Kilian:** Yeah. So th th that's how I, I very often explain it as well. Like what if the entire browser was dev tools? Like in a regular browser obviously dev tools is like this little box in the corner because 99% of the people using this browser will never look at that box. So you definitely don't want to make it easy for them to get into that box.
+
+But with polypane that's all there is. That's all you need to do. So every UI elements, every feature can be about making better websites, better web applications.
+
+**Justin :** This is kind of a trend of like more and more teams building browsers as dev tools. So we talked to Jason from the replay that IO team awhile back, and they're doing same thing. It's a browser dev tool that is a browser and it's like specifically meant for debugging. So these first class experiences can be really powerful.
+
+**Kilian:** Yeah. They're, they're doing very cool stuff as well.
+
+#### [00:29:19] What's the Future of Web?
+
+**Andrew:** So switching gears a little bit what do you think the future of web will look like? Do you think progressive web apps will kill electron apps? Do you think electron apps are here to stay? Will everything be WebAssembly in five years?
+
+**Kilian:** It definitely won't be WebAssembly. However cool that is. It's just too much of a, like a different way of programming. That's super useful for very specific types of apps. Like the stated goal of project Fugu or PWAs is to be like the electron killer or to, to make electron obsolete. I don't think that will happen like definitely anytime soon, but probably never.
+
+People are so used to there being apps, like, you know, sure. We do much more in the browser now, but if you really use zoom, then you have the zoom desktop app. If you really use Figma, you have to figma desktop app. There's just something to be said for much deeper operating system integrations.
+
+And that's, that's always going to be difficult for PWAs because they have much more of a security risk compared to apps.
+
+**Andrew:** Yeah. And with PWAs as you kind of seem to hit a wall a lot sooner than you do with an electron app, because like you're going to inevitably bump up against what's available and what's implemented on all the different platforms because support for PR progressive web apps is just very disparate among basically every place you can use one.
+
+**Kilian:** Yeah. And then also, like for some reason you're still dependent on some type of browser cache on your operating system. And that can get wiped for whatever reason. And then your PWA doesn't work. And that's not great, an end-user is going to experience that once and then never again, because they're not going to use the app they can't trust. And also like the other part is I think PWas have a very poor installation story. Like electron apps are just native apps so they install like any other app, like on the windows, you have polypane sets up dot exe, and you double-click it. And you, you, you get like the little wizard and progress bar fields, and then it's installed.
+
+And on Mac you have to drag the icon to your applications folder. It just fits in with what people already expect. And it's not like a button somewhere in the browser that they might not recognize that then maybe add something to the start menu. That can be solved. Of course, I think.
+
+But then like the, the best way to solve that is for example, well, windows is doing with web view 2 now, which is, you know, just be a much lighter, electron alternative that you can install. They have their challenges to figure like the install lability, the, like the, it being there guaranteed just like overall stability things.
+
+Just all the other stuff, like, you know, there's, there's web Bluetooth, there's web MIDI, there's web whatever. There's, there's plenty of ways to talk to the operating system. But yeah, if, if your user doesn't know how to get your app, and then once they get your app, they somehow have to re-download it because something happens on their computer that they don't fully understand. They're going to forget about the tool.
+
+**Justin :** I think there's probably something here to be said about standards and it's comparison to what we can do in user space. So you see the same thing with web components versus like frameworks, right? I mean web components sort of promise to be this solution to remove the need for frameworks, but an actuality, we see that it hasn't really played out.
+
+And I think the same is true of PWAs. It's like standards bodies generally can only move so fast and do so much. Or you have a divergence where the Chrome team will go off and implement something behind a flag, but nobody else like really supports it, which is not a great experience either. So it just, yeah.
+
+**Kilian:** Yeah. So to go back to an earlier question, actually, that might've been the hardest thing. I did in polypane, which is implements all the syncing features for web components because like web components are built to be fully encapsulated and not share any data with the rest of the page, which becomes a problem if you need to get to those events and those styles and that data.
+
+But I figured it out eventually. So, I can also show and edit web components in in the polypane elements panel now. That was really hard actually!
+
+#### [00:33:54] Superposition
+
+**Andrew:** I want to talk about one of the other tools that you've made. I don't think it's fully released yet. It's called superposition. It seems like a pretty cool way to start a design system if you've just like, never thought about it in the first place. Could you introduce our audience to a little bit and tell us how it works?
+
+**Kilian:** Yeah, sure. So superposition is a tool I wrote a few years ago right around the time where, you know, design systems and design tokens were becoming a thing. And what I was seeing was that the companies that had design systems were also to companies that already had so many developers and designers that they they didn't really need design systems to be more productive.
+
+Like they did it to be more consistent. So I was thinking about that. Like these AI systems would be ideal for small companies that don't have enough people and don't have a large team. But to get a design system of your own, like not just copy pasting bootstrap and adding different colors requires a big team of developers and designers.
+
+So there's a bit of a catch 22 there. I was doing all this stuff in polypane with parsing styles, et cetera. And I came to the realization that's for most companies, a website is actually an encoding of a design system. It's just a very, very poor encoding of a design system. But it, it has everything.
+
+It has the colors, it has the fonts it has the scales. And as the components may be even it's just not organized in, in a way that is usable beyond the websites. So what if I wrote like a sort of parser that just went through the website or in, in superpositions case through the page, figured out, like, what are the colors that are being used on this page?
+
+What are the forms? What are the font sizes, which transition curves are being used because all of those things are design tokens, like which borders or box shadows are being used. And then once I have gathered all of them, how can I export them into usable formats? So that's what super position does it.
+
+It just parses your page. Figures out like what's actually being used. So like going back to that bootstrap example, if you add bootstrap CSS, you got literally all the colors in the rainbow, but your site probably doesn't use all of those, even if they're in the CSS. So I needed to check whether the colors in the CSS are actually being used.
+
+So it's this sort of like verification step of is the thing that you're sending in terms of styles also being used. And then, you know,export it basically to wherever I can export it so CSS, , JavaScript,I wrote a Adobe XD, plugin and Figma plugin. So you can have Figma open and superposition, open, go to a URL and superposition, and then all the design tokens would just be there in Figma.
+
+So you could work on a new design and just use the call ourself the websites and use the false and the book shadow and whatever.
+
+**Justin :** This reminds me a little bit. There's another project called CSS stats, which has a different, a bit of a different focus. So it's like, it's more for giving you. And holistic information about the CSS on your page is like how many color declarations are there and whatever. So you can like minimize and reduce it. But I like the framing of this is like parsing it and sort of interpreting a underlying design system that exist.
+
+**Andrew:** Does not seem like a simple problem either. I use lots of margins and paddings all throughout my websites. Do you determine if it's like actually kind of a design token or you just go like, oh, there's some padding it's used that's design system.
+
+**Kilian:** Yeah. So. Oh, I, I, I do make a point of calling it design tokens and not a system because you can't interprets a system. I just list all the spacing, which is margins and paddings, but then usually you do see patterns. The curve for most websites looks the same. It's really a starting point.
+
+If you're a smaller company and you want a design system, you don't have a designer and a developer, which is like the minimum viable design systems team. Right. You don't have those two people to go off for months to map everything on the site and then come back you don't have that time. So let's kickstart that let's do the inventory.
+
+And then if you have that list of spacings and, you know, there's, they're 16 and there's 32 when you're like, yeah, that's nice. And then there's 35.7. You're like, yeah, that one goes and the rest can stay. But it's much quicker and much easier to go from that point instead of going from the CSS. Where it might not be 35.7 pixels, but it might be like two REMS, which sounds much nicer, but it might be a really broken pixel value.
+
+You don't know.
+
+**Andrew:** Does this tool help you with problems= it might see with your tokens, like say if the color contrast is off?
+
+**Kilian:** in superposition, it doesn't yet show I, I have a lot of plans for it, but I I'm only me. Most of my time is spent on, on polypane. I do have a lot of plans for superposition like eventually and then yeah, making that mapping of which colors work with which other colors makes more sense.
+
+I could automatically flag all the fonts or a text usage that doesn't have enough contrast or a text that are too small, which can be very difficult to find as well if you're just using the site. That's a real problem. And I'm, I'm actually working on another browser plugin, right now. That's what I do for fun. If I, if I get sick of coding polypane I started working on a browser extension.
+
+**Justin :** I haven't had enough browsers need more browsers.
+
+**Kilian:** yeah. So I, I, I took the color contrasts algorithm that I wrote for polypane and I created an extension that would just automatically fixed contrast issues for people. So no matter which site you visit, I just bump all the contrasts or add a background color.
+
+So then that's a solved problem not for the website's owner, but for the website visitor and at the end of the day, it's they that matter. And I'm now also working on like the, the next one in the lineup, which is one that just bumps all the fonts up to a minimum size. Like the, the idea being for the contrast, you could switch to like high contrast modes or write your own user style, but either that's very geeky or it's super hidden in settings somewhere.
+
+We can do that, but most people can't but most people would still like a readable website. So, you know, if we can just give them the big button to push, to fix the website, why not do that? I really browser should do that, but for some reason they don't.
+
+And then the same with fonts, like you could zoom in the entire website but that's usually not the experience you want. You want the sites as designed because that's mostly decent it's just there's this bunch of small texts around a form or whatever. You just want to bump up that text size so that you can read everything without squinting.
+
+Or whatever. And also without zooming in the entire page and then breaking the layout because the developer didn't test that, et cetera, et cetera. As you can see, like all these projects overlap, like there's stuff in superposition that I can then bring to polypane, there's stuffing polypane that I can bring to that browser extension. And then it just all works together. Coding wise to focus on different people.
+
+**Andrew:** That's an awesome way to approach it.
+
+And with that, I think we should start moving onto the tool tips!
+
+#### [00:42:14] Tooltips
+
+**Andrew:** My first tool tip, I just found out about it today is webpage test. It is a pretty advanced webpage test tool. It tests your website, it runs it multiple times and then gives you a whole bunch of different stats and like actionable feedback to fix them. So for example, I work on basically the viewer page for a video on Descript and I just popped it into here.
+
+And it told me that I was not compressing the subtitles for the video, which like, I would've never guessed by looking at the developer tools. This tool pointed out to me immediately. And. It's awesome to have that actionable feedback. And this really ties into what you build, because you're all about this actionable feedback built into the developer tools.
+
+**Kilian:** Yep. Yeah. They say this is really good. And they've they be working on it's pretty extensively as well. It's it's called some really fast and it, it has been adding a ton of features. So it will also do SSL labs tests now for the HTTP certificates. And that used to take like literal minutes. And now it's just a matter of seconds in you.
+
+They forced your entire SSL certificates to figure out it's like, if you use the right algorithms, and if you have the rights settings for the SSL certificates, it's really nice.
+
+**Justin :** Yeah, webpage test is, is great for, for performance tests. They've been around for quite a while now. Yeah, but they're they're god.
+
+**Andrew:** It's good to have as many battle-hardened tools around you, as you can.
+
+**Justin :** So I have to rust related tooltips this week. And given that I've been working in rust at oxide. So the first is one that I discovered on hacker news this week. It's called seed RS. We talked a little bit about web assembly. So seed-rs is an Elm like framework for building UI and rust. Yeah, that compiles everything to WebAssembly and there's a, there's a communication layer between web assembly and the Dom and yeah. If you want to build UI and rust, there you go.
+
+**Andrew:** That sounds. That sounds interesting. I don't know. I don't know if I'd want to go there, but like, do you do CSS in here too somehow? Or like,
+
+**Justin :** You can, you can specify and say, say,
+
+**Kilian:** very close to Elm?
+
+**Justin :** Not very close no, it uses a similar model.
+
+**Kilian:** Okay. Because like, I, I think it's a shame that Elm never really took off the way other frameworks have taken off. Because I think it's, it's a really neat idea. But on the other hand it was really difficult to get into as well. I've tried building a bunch of stuff with Elm and it's, it's really difficult to wrap your head around the way they want you to do like functional programming.
+
+Have you done any of that with seed yet?
+
+**Justin :** I have not, no, just something I just sort of discovered recently, like yesterday actually. So I haven't actually had a chance to play with much, but
+
+no comment
+
+there it is. It is just sort of an interesting thing. So, I mean, it's a framework that's specifically targeting WebAssembly as a, as a mechanism for deploying a, an app.
+
+So it's just, just an interesting idea. Yeah. I think with Elm they got a little too opinionated on, they got very opinionated and on how you must build a site. What you do with language and what you can't do with language. And, you know, to maybe went too far in the direction there of control.
+
+**Kilian:** Yeah. I, at some point they were happy to tell people that you shouldn't be doing this in Elm, or you shouldn't be writing this software. Like, eh, that's not how it works.
+
+**Andrew:** Yeah. It seems like these languages that are built like kind of on top of the web stack as like the way to do UI, have a rough time of catching on like a rescript seems like another one where it's like, yeah, we, we made everything better, but it's like such a paradigm shift that it's really hard for a lot of people to switch over.
+
+**Kilian:** Mm.
+
+Right. So, this is Ferdy. I think it's from Ferdinand's because it's a fork off Franz with a Zed. I used Franz for a very long time because it's a, it's an electron app that lets you basically add in all the different social media that you, so, you know, like you two, I guess, I mean like dozens of slack channels and they each have their own URL.
+
+So they become super annoying to manage, and I can just throw them all in this app, along with discord, along with, with tweet deck, with, you know, whatever else. And that's just really useful because it's also, it's in like the separate app. It's not a tab I can tab to, that's dangerous because you can get sucked into this app and then loose time.
+
+And I used Franz for a long time, but slack no longer supports the version of Chrome they run on and Ferdi is a more up-to-date fork of it that I switched to I think, a week ago. And it's, it's been working really well. I can recommend it to everyone.
+
+**Andrew:** That fact that it's free is also really nice, too. Surprise it is an open source also.
+
+Okay. Now now on to the more divisive topics of today. So, uh, what I'm sharing is a new NFT project. That's a little hard to wrap your mind around. It's called open pallete and it is. Color pallets on the blockchain for some reason. What that reason is, I don't know, but you can now own color palettes. One cool project that I've seen built on top of it.
+
+They list a few out here. Is this project called nue geo by Jad Limcaco? I'm not sure if I'm saying that. Right, but it is a bunch of geometric like art things that are all NFTs also and generated using open palette NFT color palettes. Whether this is useful or not I don't know. But it is interesting to see the evolution of NFTs and where it's kind of all going as we're in this huge boom right now.
+
+**Justin :** Daisy chained NFTs that's um interesting.
+
+**Kilian:** I've been thinking about this because like you, I, I don't really get it. Like I know what NFTs are, and I, I think I get why some people are very enthusiastic about them. But then when it comes to color palette, Like, why would you want to own a color palettes? Like maybe if it was your brand's colors, but then brand's colors change.
+
+So what's happens to the never changing pallets that is now locked into the blockchain. That's now forever outdates. It's because they're no longer the right brands colors, because the brand's colors changed and the blockchain doesn't. So I, I kind of got stuck there in my thinking of why, why would you use this?
+
+**Andrew:** Yeah, I'm not sure either. I just thought, I thought it was an interesting project. The sub projects of it seemed pretty interesting to me though, where it's like kind of a dynamic NFT where you could have like a color theme applied to like, say your, your weird little monkey avatar, but yeah.
+
+**Kilian:** Just to name something random. Yeah, yeah, yeah.
+
+**Andrew:** Yeah, it it's, it's random, but like a lot of the NFT projects I've seen have just been like. It literally people just creating a bunch of like character assets and then hitting randomize and creating 10,000 of them. And then just people buy 'em it's it's crazy.
+
+It's a, it's a wild world we live
+
+**Kilian:** w well, we w we can get into that because I do think that's pretty clever because it's, it's basically trading cards. Like if you get Pokemon cards or whatever, they'll have some attributes and then some cards are better than others, and then some cards are shiny or whatever.
+
+And these NFTs are the same. They're generates it, they're minted. And at that point, they're, they're given like attributes and then some attributes are rarer than other attributes. And then sure that, like, that makes sense to me in, in that I can see that it's the same as trading cards.
+
+But then of course, like, I read that earlier this week that one of the most popular crypto punks one, which is, you know, that's one of the, the lists of monkeys is one that doesn't have any attributes. So randomly it got no special attributes and that's what made it special which is again like a very humorous thing to me,
+
+**Andrew:** it's funny, you mentioned Pokemon because back in 2017, when the, the ICO boom was happening me and a friend were like let's make Pokemon on the blockchain. We called it crypto Mon. And it was like, it was before we really even knew about NFTs. That's probably what the implementation would have ended up being.
+
+But I do think that is an interesting use case. And if like we can repurpose, I don't want to build it anymore. Like, I don't think I have the brain for it. It's, it's a, it's a very different way about thinking about code. Like I wanted my, my crypto mine to be able to evolve and level up and stuff.
+
+But doing that on the blockchain is not all that simple. And then like, of course I'm making a Pokemon alternative. I want to have battles. It's like, well, how do you do battles? Do you do them on chain? Does each battle cost you $180 in gas fees? And then it's like, you get like, oh, maybe all the battles are off chain and we're just storing them on. And it just like this weird, weird rollercoaster of, of odd roadblocks. But if somebody else does that....
+
+**Justin :** your time, now's your chance
+
+**Andrew:** No, there's a, this is an open call to anybody who wants to take the idea, go and run with it and make all the NFTs that we've created already into a trading card game. That that'd be pretty fun. Feel free to steal my idea.
+
+**Justin :** Yeah. So I'm still, I'm still on the rust kick. This is a tool called tauri... I think I'm saying that, right. So tauri is a, you can think of it as electronic alternative. We, we mentioned web view 2 as a thing. So it tries to generally rely on the system's rendering engine and then it has a rust backend. So the interesting thing about tauri is the security model.
+
+It's got a pretty granular security model, like how you control how it communicates with the web process and what permissions the web process has is and everything like that. So if you're looking for something and really want to fine tune the security model, this could be an interesting option.
+
+**Kilian:** I feel obliged to say that electron also does have that very fine-grained security model. Maybe, maybe even more so, the dev behind tauri makes a point of it to fairly often points out how tauri does something that electron doesn't or whatever. And most of the times it's not entirely true or it's word it's in such a way that you know
+
+**Justin :** Yeah, that's a good context. I mean, I think that's, that's the other thing to just really call out is like a tool like electron that has so many people behind it. It has a lot of capabilities. You just have to in the time really understand what they are. So you throw the baby out with the bath water, it's like, I don't understand what's happening.
+
+**Kilian:** Yeah. So F for example, for electron, we have very extensive docs on how to get the security model right and also very strong defaults. So, now if you download electron now you won't be able to do all of the stuff that you used to be able to do like two or three years ago. That's, that's much safer. I do think there's something to be said for, you know, use what's on the platform because in a lot of cases that's going to be fine. But then you also get a lot of certainty if you know the exact version of Chrome that you're shipping. You know, instead of webview 2 which, web view 2 specifically as a very up-to-date version of chromium as well.
+
+Cause it's, it's basically whatever is running at that point in time on your, on your windows machine. But then if you switch over to Mac, you're using whatever version of webkit happens to be running on your Mac. So you still end up doing a whole lot of cross-platform cross browser testing that you need to do.
+
+So there's pros and
+
+Yeah,
+
+**Justin :** for sure!
+
+**Andrew:** Last dev tool tip of the day color-d!.
+
+**Kilian:** I have gone through quite a few color parsing creating packages in the past four or five years. And I recently started using this one essentially everywhere because it is much smaller and much faster than other color tools out there. So that the biggest one on NPM is called color which makes sense.
+
+And then the second biggest one is called tiny-color. But color-d is much smaller. It has plugins which are really nice to use. So I was able to get rid of a lot of my own code to work around weird exceptions or stuff that didn't quite work or stuff that was outdated. For example hexadecimal colors with transparency.
+
+Those have been a thing for a long time, but not all the tooling has caught up yet. But your browser will, will happily parse hexadecimal color with eight digits because the last two are for transparency. So I, I wants tools. I need tools that also do that. So I've been using this one and it's, it's very nice.
+
+So if, If you need to do anything with colors: parsing it, creating them, editing them. This has all the features you need in, not that much code. So yeah, really like it.
+
+**Andrew:** Interesting. Yeah, it looks like it caught on quite a bit this year.
+
+**Kilian:** Yup.
+
+**Andrew:** Awesome. Well that wraps it up for our tool tips.
+
+And that's it for this week's episode of devtools.fm. Thanks for coming on the podcast Kilian, it was a lot of fun talking to you.
+
+**Kilian:** Thanks for having me.
+
+**Andrew:** you. have a very unique view on what browsers and tools should be. So I think this was an awesome conversation.
+
+**Kilian:** My pleasure.
+
+**Justin :** Yeah. Great having you!
+
+**Andrew:** Be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
+
