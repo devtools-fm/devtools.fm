@@ -56,7 +56,7 @@ const QueryParamProvider = memo(QueryParamProviderComponent);
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryParamProvider>
-      <AutoThemeProvider autoStyle>
+      <AutoThemeProvider theme="firefox" autoStyle>
         <Component {...pageProps} />
       </AutoThemeProvider>
     </QueryParamProvider>

@@ -33,7 +33,7 @@ export default function Home() {
       {tags}
 
       <div className="mt-10 mb-12">
-        <h1 className="flex justify-center mb-10">
+        <h1 className="flex justify-center mb-6 md:mb-10">
           <Logo />
         </h1>
 

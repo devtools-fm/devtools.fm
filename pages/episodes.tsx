@@ -10,7 +10,7 @@ import path from "path";
 import { Navigation } from "@devtools-ds/navigation";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { chrome, firefox, useTheme } from "@devtools-ds/themes";
+import { firefox, useTheme } from "@devtools-ds/themes";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
@@ -22,22 +22,14 @@ import styles from "../styles/episodes.module.css";
 import { MetaTags } from "components/MetaTags";
 
 const DimmedText = (props: React.ComponentProps<"div">) => {
-  const { currentColorScheme, currentTheme } = useTheme({});
+  const { currentColorScheme } = useTheme({});
   const color =
-    currentColorScheme === "dark"
-      ? currentTheme === "chrome"
-        ? chrome.dark.gray03
-        : firefox.dark.gray01
-      : currentTheme === "chrome"
-      ? chrome.light.gray06
-      : firefox.light.gray05;
+    currentColorScheme === "dark" ? firefox.dark.gray01 : firefox.light.gray05;
 
   return <div {...props} style={{ ...props.style, color }} />;
 };
 
 const EpisodeRow = (episode: ProcessedMdx) => {
-  const { currentColorScheme, currentTheme } = useTheme({});
-
   return (
     <Link passHref href={`episode/${episode.number}`}>
       <a
@@ -45,10 +37,6 @@ const EpisodeRow = (episode: ProcessedMdx) => {
           "grid grid-cols-[1fr 2fr] gap-4 py-4 items-center",
           styles.row
         )}
-        style={{
-          borderColor:
-            currentColorScheme === "dark" ? chrome.dark.gray04 : undefined,
-        }}
       >
         <div className="w-full h-[fit-content]">
           <img
@@ -172,7 +160,7 @@ export default function Episodes({ episodes }: EpisodesProps) {
           <Navigation.Panels>
             <Navigation.Panel />
             <Navigation.Panel className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">
-              <div className="divide-y-2 divide-gray-300 dark:divide-gray-200">
+              <div className="divide-y-2 divide-gray-300 dark:divide-gray-600">
                 {episodes.map((episode) => (
                   <EpisodeRow key={episode.frontMatter.title} {...episode} />
                 ))}
