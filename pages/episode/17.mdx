@@ -1,0 +1,543 @@
+---
+title: Pedro Duarte - Modulz, Radix, Stitches
+youtube: https://www.youtube.com/watch?v=3zn3Lyys9Zk
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/9496039
+tags: technology, programming, coding, design, frontend, stitches, radix, modulz
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week's guest is Pedro Duarte, a developer experience engineer working at Modulz 
+helping maintain the open source libraries (Radix and Stitches) that power the product.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:00] What is Modulz
+[00:14:23] Developer Experience Engineer
+[00:17:38] Stitches
+[00:41:00] Radix
+[00:54:10] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Pedro:** The way that we came up with things that we did is that I would actually rewrite our entire design system multiple times with different APIs, because one thing is you're writing the API in notion and then you're just writing a few code blocks and it's like, oh yeah, this feels cool.
+
+But the other thing is you're actually spending like two or three days rewriting this design system CSS and get a firsthand feeling for it.
+
+**Andrew:** Hello, welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host Justin.
+
+**Justin:** Hey everyone, Joining us today is Pedro Duarte a DX engineer at Modulz. Pedro, is there anything you'd like to tell our listeners about yourself?
+
+**Pedro:** Hey everyone. Yeah, no, thanks for having me. I, if you don't know me, I'm just a front-end dev working Modulz, working on tooling for designers and front end devs.
+
+#### [00:01:00] What is Modulz
+
+**Justin:** That's awesome. So just to start us off Pedro, can you tell us a little bit about modulz and what you do there?
+
+**Pedro:** Modulz is a startup that's kind of focusing on, um, uh, bridging the gap between design and dev. As part of Modulz, we build a few different tools to improve and facilitate how people build UIs, how people design stuff. We improve how easy it is for people to do build accessible stuff via a library that we have called radix.
+
+We also have our own CSS in JS framework called stitches. It's our take on how to help you write more maintainable CSS. And then there's the design tool, which is modulz itself. They kind of takes all of these lower level tools and connects them together, allowing people to do things in a more visual way.
+
+So in a nutshell, that's kind of what modulz does and the mission is basically to just help people do things a little bit more easily with less barrier to entry
+
+**Andrew:** cool. So modulz itself kind of just composes stitches and Radix to make the UI. So you could, like, if you were using modulz, you could like potentially build your site out with Modulz, but then also use the underlying stuff to build like more custom things?
+
+**Pedro:** Yeah, pretty much! you know, If you think about the stitches API, I don't know how much of stitches you guys know, but if you, if you look at the way the API was designed it's quite nice to write by hand. If you're writing CSS in JS and you're typing it, it would be fine, but it's actually very interoperable with a tool on top of like with a GUI let's say you know, like it's quite declarative. And if you see modulz as, as a design tool, or if, even if you think about Figma or something that you can create components and varaints. Then you start seeing how it maps perfectly to this stitches API.
+
+We actually did a few different variations of modulz in which you would generate vanilla CSS and styled components and other, other things. But things get very, very tricky when you want to allow people to import their own styles and, and allow modulz to sort of parse the styles correctly.
+
+When you were kind of in a, just sort of like a global scope CSS, or just like , normal CSS, because people can write things in a million different ways. So that in stitches, we have this more strict API on how you can add styles and create variants and bind values to design system tokens and things this, so that allows modulz to be able to properly parse.
+
+And then if a designer makes a change to that component, he knows how to write to it correctly'. So the idea was that would create an API that was interoperable between designers, designing visually and developers coding by hand. You know what I mean? So that was kind of like a part of the brief. And so the styling of Modulz is powered by stitches.
+
+And then we have radix, which is a library of accessible components. And they also connects well with Modulz because we, you know, we, we built both. So, We know all of the parts that radix exposes each component and that props and how it works. So then we can kind of like connect that to the tool, allowing people to add styles to each part, a given state and things like that.
+
+So that's kind of like the broad idea. That's what we've built. And that's what we currently have.
+
+**Justin:** And maybe the, to recap on that and to paint a clear visual picture for our listeners. So Modulz is a design slash development tool where you're, it's, it's sort of a WYSIWYG that you're building UIs that ultimately is generating react code and the specific primitives it's using under the hood.
+
+So for generating, styles, you're, you're specifically targeting stitches because of both the ergonomics, I'm assuming the ergonomics that it allows, or it gives you like a natural regenerating and just, you know, it's, it's ultimate like approachable output.
+
+And then I assume that the same is like with Radix's primitives. It's like you have these fundamental building blocks already and because you know, the shape of their APIs, it's probably easier to, to generate code based off of those. Is that true?
+
+**Pedro:** Yeah, that's pretty much it, man like nailed it!
+
+**Justin:** I'm really interested in this space generally just, or I guess more broadly, anything that's adjacent to visual programming, And the space is it's pretty hard. It's pretty hard to, to get into and to be successful with and to get people to use. Um one of the biggest challenges with tools in this space, or I guess really the, the challenge of bringing together design tools and development tools into a single surface is to decide how you interact with them.
+
+So there's a few different models for this. You can have it where it's visual editing only, and the visual editing generates a code and all the code is like, you know, you don't touch this code, it's just generated. And that's the thing that you consume. Or it's code only, and that generates the visuals, but you can't really edit the visuals or like some combination of the two where it's actually sort of like, you know, by synchronous or multiplex where it's like, you can edit the code and updates the visuals, or you can do the visual editing and it updates the code.
+
+Is it wasn't clear to me as Modulz, just like you edit it visually and it generates a code, or can you actually edit the code to sort of update the visual editor to.
+
+**Pedro:** So currently the way it works, you start visually, you start from the visual tool, you choose your, the components that you want to configure, and that would write the code for you. We have even a one point that that would be with the package and push it to NPM so that was very tailored for design systems at that point.
+
+So as a designer, you're not building websites, you're not building pages. What you're doing is you're building the design system and by setting the design systems restrictions like there's the tokens and the scales and the variants of each component. It already gets you like most of the way towards consistency, right.
+
+And that's still not the end goal, which is to allow people to design everything visually. Right. So that's the area that we explore the most, because it's very, very, very hard to solve this problem. And it may still take a few years, but if we can get like 20% of the way there and do it well, and designers still feel like they have a significant impact on the real product, then that's already a good step forward.
+
+Like a lot of the times designers will feel frustrated because, um, the spaces that aren't quite right, the typography is not quite right. Maybe the, um, the hover is not quite right. So all of those things there would be able to control and, and ha have control in modulz. Then as a developer, what you would do is you'd consume that design system, which for you would be kind of closed up and you would then build the application logic around, um, the, you know, building layout and the application logic.
+
+But your job now would become a lot more of the same workflow as it would, if you were using something like Chakra UI let's say. Say you're using tailwind, chakra UI, even, even like a material UI or something, you know, you're not really writing CSS. You're like putting things in the right place.
+
+That would allow designers and developers to establish a common language around the variants. So for example, say you create like a low level text component, right? As the end, you're going to create an array of available sizes. So as a developer, you're not going to have to worry about line height and font size and font weight.
+
+You know, you're just going to know I've got tax component. These are my available sizes. And that terminology of the sizes is up to you guys. You can be one to 10, you can be X, XS to XXL you know, and so that's quite nice at that point because one thing that we were also doing is taking that design system that was created in Modulz and then automatically creating a Figma component library out of it.
+
+So then other people in the design team could continue designing the layouts, but using the components. So modulz would become the source of truth for the design system. And that is the first step towards allowing people to do the whole thing digitally. But like you said, it's a tough job.
+
+**Justin:** Yeah. I mean, one of the challenges or a, I guess, an additional challenge to this is that there are component design challenges that are more than visual, you know, specifically thinking about what props are available and how does people interact with this and decisions that you make there have implications on how the library is consumed.
+
+Is this a breaking change versus a non breaking change, stuff like that. How does Modulz go about handling that? Is, is that even something that they're exposed to at all? Um, or what does that look like?
+
+**Pedro:** So let's break that down. I'm going to start with there with your last point, which is about breaking changes. That is a good point because if that's how modulz will work, cause it's more just doing in a closed sort of beta away, right? So we're still at a point where we're finalizing stuff, but if that's how modulz will work, that is true.
+
+That it's the designer's responsibility to when they release new versions of the design system to label it as patch or a minor or, or a break and change and a breaking change. It can be many things. It can even be, they renamed the variant. That's a breaking change. Now if I understand your first question correctly, you're say like some components have more concerns than just visual.
+
+They have also like certain prompts and some behaviors. I'm going to pick an example of that. Like a tool tip, right? Like a tool tip might have uh, he has behavior because when you hover or when you focus, the tool tip should appear relative to, to the trigger. But the tooltip also accepts the label that you want to show.
+
+So there's a, there's a prop usually called contents. And also there's a lot of logic in the tool tip around positioning. So the tool tip needs to position. Say that you set your to tip to appear on top, but you're scrolled up to the page. So there's no space on top so that it should then appear below. That's the collision detection.
+
+So all of that stuff is what radix does. Like radix is this low level library of functional and accessible stuff. And that that's why like designers don't have to worry about building any of that logic. It's just delegating the logic and the accessibility to radix and trust that radix covers all of your needs.
+
+And then the rest is more like stylistic decisions, like the variance and the states, things like that. Yeah.
+
+**Justin:** So modulz is really just composing and tweaking visuals kind of to sort of build up to something bigger...
+
+**Pedro:** The first step. Yes. And then there's also another layer that we've also built in modulz that is a composition layer and that's more where people can start creating layouts with Modulz. So we have declarative layouts, like a stack or a grid, but these are just react components also that bind into your tokens.
+
+So then if you want to do like a page layout, we can drag some of this stuff. And then you're kind of like coding visually almost a little bit like web flow at that point. But yeah. Less low level. Cause we have flow is basically one-to-one with code and visual, like the UI maps one-to-one to what you'd write in code. Modulz is that layer of abstraction a little bit higher.
+
+We also build like a freeform canvas where it's more like Figma where people can just draw stuff and drag their components around. But the difference is what they're dragging around is that real component is just that you're not really in a layout, a stacking mode you're, you know, sort of like free form flow.
+
+And we build that with web-gl, for performance and stuff. So that's a way for designers to quickly mock up an idea without having to go through Flexbox and grid. Cause you know, it's understandable that as a designer, you, maybe you just want to like quickly mock a page up without having to worry about how doable it is in code.
+
+So then there also is that side of things.
+
+**Justin:** Well, yeah, it makes sense.
+
+**Pedro:** Nice.
+
+#### [00:14:23] Developer Experience Engineer
+
+**Andrew:** What does being a DX engineer mean to you? What role do you play in all that is modulz?
+
+**Pedro:** Yeah. It's a good question, man. Cause it's like a new thing for me as well. You know, like I started that modulz as a, as a developer. You know, working a little bit on the design tool, working on the design system and, and it's the first time that I kind of transitioned more to a sort of DX role or the dev REL
+
+And so currently what I do at modulz is for the design tool side of things. I, apart from working on some of the conventions there, we feel designers would enjoy using because of my experience, working with designers, I would do a blog articles for modulz. So I would write an article about how to do something in the tool.
+
+I'll write a bunch of articles about how to like from basic things, like you explain it to you to a user, how they can create a new project to what's the best way to publish a new design system. How to think about the changes. Um, and then, you know, I do videos and podcasts about the tool, you know, demos, I've done a few demos of Modulz, and then that's just the design tool itself, right.
+
+But then we've got the open source libraries and that's where he consumes most of my time because the tool itself is still closed. So there's not that much DX to, to work on.
+
+So with stitches I was mainly responsible for writing the stitches API. So I wrote the spec and the API, and I didn't actually build stitches from a implementation point of view.
+
+And then I wrote the docs for stitches and I kind of created playgrounds that people can play with, set up the discord community. And whenever people say stitches on Twitter, there will be a reply for me, you know, always trying to help people out answering GitHub stuff, creating the roadmaps and, and for radix the scene, I do the same thing for stitches and radix you know, in terms of a lot documentation.
+
+So in terms of DX, like, I definitely focus a lot on API. design And try to come up with APIs that we feel are intuitive, easy to use, easy to learn, and then, oh yeah, all the rest I just said, uh, this has been quite cool, man. You know, I've been, I've been kind of a hands-on developer for almost 15 years and it's quite nice to step back a little bit from the point that I'm not coding all day long, like some days.
+
+And I'm kind of like coding, but more like creating demos on because someone has a problem and they are approaching it in a slightly wrong way let's say. So I would recreate that. Then would say, how about you try and do it like this? You know? So it still requires a knowledge of coding, the knowledge of the libraries but not necessarily writing the implementations.
+
+So that's kind of like the role I've been doing for the last year and a half, trying to get like adoption and you know, get people's feedback, pass that onto to the team. BNR stuff like that. And it's been quite cool.
+
+**Andrew:** And it seems like you've been pretty successful at it too. I see stitches a lot on my Twitter feed.
+
+**Pedro:** Oh yeah. That's cool.
+
+#### [00:17:38] Stiches
+
+**Andrew:** Speaking of stitches, congratulations on the one point oh, that's a big milestone for any project. We kind of know why you built or you guys built stitches. It was because you're building this design tool modulz and you needed some API that you could control, but were there other reasons why you chose to build another CSS and JS framework?
+
+Did you see places where the other ones didn't work as well as what you thought you could build and you have.
+
+**Pedro:** Yes. There's one, there's one reason, which is like the core reason, which is performance. I don't know how familiar you guys are with Brent Jackson, but he created system components, styled-system, theme UI, and a bunch of other amazing tools. And I've, I've, I'm a fan of brand Jackson. I've always followed him, followed him for a long time and used a lot of his work.
+
+We actually built everything using styled system, even like system components, which was like the first one, then it was styled system, then it was theme-ui, you know, but the problem was the way star system was built it wasn't made to be used by a visual tool. And then he also relied on my emotion after that.
+
+So it was like two layers of like libraries. And stitches is everything in one. And, and stitches is basically built with performance in mind. So he spent like months just finding a way to make stitches the absolute fastest CSS-in-JS library while still requiring runtime because stitches is like almost no runtime in the sense that it doesn't support a proper interpolation at all.
+
+All of the styles that can be statically generated before it's even rendered. But because it's rendered in a visual tool, imagine like people are like changing variants and changing background color. You want that feedback almost as quickly as possible. Um, so performance was like the main thing.
+
+And then of course, once we started building stitches, then a lot of the stitches API was even somewhat inspired by styled system. So much so that we use the system UI. Um, A theme spec, you know, uh, but then there's also a lot of changes. There's this things work very differently from like a implementation point of view.
+
+Like all of our tokens are CSS variables. I think we're one of the first ones to do that. And I think they might do that now, actually. But then our variant APIs, like you create a variant per component rather than globally creating all the variants in, uh, in, in your configuration at the top. So we made some changes that we felt was more aligned with what we needed.
+
+Uh, but yeah, man, look, I still, like, I don't know where Brent Jackson is if you're listening to this like show up because he disappears from the map. I still really appreciate his work. And if, I don't think if it was for him, maybe he would never would have even built stitches the way it is. So, but yeah, we did try and a lot of stuff.
+
+**Justin:** Actually ran into Brent pre pandemic. His partner works on the hub design system and helped organize the design system coalition meet up in... In New York. But obviously it hasn't been going on since pandemic.
+
+**Pedro:** I never met in person. I met his, his partner once. I know her Twitter name broccolini. Right. Isn't it broccoli. Now I don't actually know her real name and they probably do, but I forgot, but I met her once at clarity conf few years ago.
+
+I don't know what's going on. I know he joined Gatsby and um, and I think he was working on Gatsby themes. So it was definitely, there was some inspiration by that. And then, um, we hired, Jonathan Neal. I don't know if you guys have heard of Jonathan Neal he's usually not like a super well-known, person in terms of like, you know, Dan Abramov, like everybody knows the name, but everybody uses some of these tools, man.
+
+You know, like it probably every project in the world, like there'll be like something that Jonathan worked on. Cause uh, you know, he was a big contributor of CSS modules and postcss a lot of CSS tools. It's great for us because he was contributing to stitches when he was, when we were working on it and then we'll start chatting and he was like, man, he wanted to work on it, we wanted him to work on it. It just clicked. And he was like the perfect person. Like I've never met anybody that knows CSS from like such a fundamental, perspective as he does even like how browsers parse and, you know, the CSS or wham. And so it's great. Like definitely learning a lot from him. And, um, and it's great to have him building stitches in all. We have so many ideas for the future as well of what stitches can do at the moment. It's just like the tip of the iceberg. So it's, it's going to be an exciting next year or two, I think in terms of the CSS space.
+
+**Andrew:** Yeah, performance is a thing that not many people might think about when you talk about CSS-in-JS. But at my old company at TurboTax, we were told to use the Intuit design system and they had chose styled components. And the thing that we rendered would possibly render thousands of elements on a page at once and nobody on the design system and ever rendered that many components.
+
+And when we tried to load it up, we like saw a perceivable performance impact, just trying to render the first page. For awhile there steered clear of CSS in JS solutions, but how did you make that? Like what makes it so quick in stitches? Is it just the use of CSS variables or is it a bunch of other stuff?
+
+**Pedro:** The CSS variables help a bit. It helps a lot more in terms of like, when you're, if you're toggling themes, you know, it's almost like you don't have any rerenders and stuff. So it helps a lot in that case, but people are not toggling themes. Right?
+
+Like, so, um, it helps, I guess, like what makes us so fast is the way the library, the internals of the library willl kind of pre-compiled some of the CSS he already knows it needs to be done. And then Jonathan is like so good at writing parsers. You know, he writes like crazy parsers in like less than one kilobytes, you know, and stuff, like this and there's a lot of layering of caching memorization, you know, like we only really inject the CSS that's needed for that one page.
+
+So even if your design system has like 200 components and you're rendering your homepage and you're just having to use like 10 of those components, you just get the styles for those 10. And because stitches support, service side rendering, if you're using something like Next.js on the first load, your CSS is already being generated on the server.
+
+It's already injected in the head. There's not even any request to get the CSS file through the network. So that initial render is just like done. If you're using, if you're abusing the runtime or stitches, like bypassing, like overrides from the outsides. Say that, you know, you have a page with a background of the coler and as your cursor is moving, you're changing the background color, right?
+
+Based on your cursor position. In that sense, you're almost like abusing a little bit of the, um, this runtime thing of, of stitches or style components, because you're basically saying that for each pixel on the screen, it needs to generate an entirely new CSS rule. If you are doing that, you probably will see some performance issues.
+
+You know, in which case we would also tell people to just add an inline style. But because stitches gives you access to a lot of it's tokens, you can still add inline styles while you're using your tokens.
+
+And that's the cool thing about stitches because even though they are escape hatches we still try to provide escape hatches in a way that you're still within your theme. We've done a lot of benchmarks. We've got a repo for benchmarks. They're the same one that emotion and styled components use. We use the exact same tests or they do just to keep, keep it fair, you know? And some of those tests like render like thousands of Dom elements.
+
+so, yeah, there's all that The library itself is also quite small. It's like under the things right now is around five or six kilobytes for everything, you know, mini gzipped and stuff. So around six kilobytes where the thing emotion and style components, gzipped styled-components special.
+
+I think it was 14 or 15. So it was, and if you use it, we styled system, then you got to add a few more on top. So, uh, but yeah man, like it's, it's funny, right? Because we do a CSS in library, but I'm not like a CSS in JS advocate. I'm not going to like sit here and say, man, CSS in JS is for everyone. I do think that CSS in has the lower barrier to entry.
+
+You don't have to set up webpack and have to set up anything with stitches you can get your theme out the box you know, and that's it. Like it just works, but you have to, as, as developers, you have to really assess what you're building. Who is your audience? What type of network are they, are they going to be on, like, I had a chat with some developers recently from gov dot UK, um, and you know, if you're gov.uk you probably don't want to use CSS in JS.
+
+You know, you probably don't want to ship an extra six kilobytes in your bundle. Uh, you probably don't even want to ship any JavaScript at all. You know, like you want that government website to be as accessible, as lightweight as possible. So, uh, that's why some of the plans we have for stitches is to have the exact same API working as CSS in JS, but also working on static extraction.
+
+If you want to completely remove everything from the bundle. The beauty about stitches in my opinion, is the API and how it allows people to, change how they approach component driven development. And that's the key for me, like CSS and JS is just one of the implementations of it.
+
+At the moment the only one.
+
+**Justin:** Yeah, that's pretty cool. It's awesome to hear your sort of thoughtful approach to it. And I think it speaks to something deeper just as the. Sort of, I guess, modulz principle of how y'all build technology. I was, I was noticing like, um, this is also, uh, shown through the both modulz site and the Radix documentation, which is something I'd like to talk about next, but just the focus on things like accessibility and performance, which are both pretty fundamental to experience on the web, but can often be left behind and, you know, the idea of just getting something out the door and it does take those really thoughtful decisions about your audience and, and your, the needs to sort of optimize for some of those things.
+
+Well maybe before we move on we have one more question about stitches. What what's the hardest part to make the developer experience feel really good for stitches? Like what was your, what was your biggest challenge there?
+
+**Pedro:** When the, the ha I think the hardest thing was coming up with the API we have today. Like, I've got a notion of document of like so many different APIs that we drafted. And now we went through as a, as a team, like, okay, so maybe you can work like these, you know, like some APIs were so insane, like, but it was cool to explore.
+
+Like we had, like, we had a very functional API. I don't know if you've ever used, like, if you've done a lot of functional programming, but you know, there's a library called Ram ramdaI think it's called, like, it was ramda up for CSS where everything was functional, every property, you know, and everything was chained together, every state and, and that's cool in a sense, there's also quite interoperable with a GUI um, by, you know, it's also like it's too much.
+
+If you're going to ask the CSS devs to write functional CSS, it's a little bit too optimistic and it's not even... that like when you're writing CSS on a day-to-day basis, then you realize actually that API is not that, not that good. So it was finding the balance of an API that was strict enough that we could successfully parse, you know, in write to it, but still felt intuitive enough that it was something that people are used to.
+
+People are kind of used to writing CSS in objects. I know style components of popularized, the idea of writing CSS, text in Java script using like a template strings. Um, but we, we felt like there was still enough people they're comfortable writing CSS as an object. And so we thought, okay, that's the first thing that we kind of know that, you know, it's not too much to ask.
+
+And we, we always think if we're gonna ask people to change the way they're doing something, what do we give them in return? There's always like an exchange, right? Like what, what is going to be their return on their investment? And our answer to this with stitches is if you use an object, you're going to get auto complete for all the properties and all the values in all of your tokens in all of the media queries.
+
+Right. And all of your variants, because we can, we can do that with, with, with TypeScript. But if you're just in a huge string, we can't do that for you. So it also, this string even kind of would require a few more layers of parsing, you know, because when you want to write to the CSS or wham, you know, it's almost like already an object.
+
+So it's like give up writing CSS as a string because you're in a JS ecosystem anyway, and you're going to type less, you know? So it was kind of finding that balance, you know, I was like, okay, how can we give people the best experience? And the way that we came up with things that we did is that I would actually rewrite our entire design system multiple times with different APIs, because one thing is you're writing the API in notion and then you're just writing a few code blocks and it's like, oh yeah, this feels cool.
+
+But the other thing is you're actually spending like two or three days rewriting this design system CSS and get a firsthand feeling for it. And I was almost primarily more specialized in CSS anyway. So, um, I feel like at that point I was almost going with my judgment, like my, what do I think? And, you know, that's kind of the hard part because I, I was quite like worried when we launched stitches because, uh, I knew I loved it.
+
+And I knew that it was the best way that I had ever written CSS. And I didn't know how much of it was because I was biased in the sense that I wrote that API so I've got an emotional connection with it. Or how much of it was because it truly was really, really fun to use. So we started like launching a, you know, doing some videos and stuff.
+
+And up until today, the number one, comment like positive comment that we get from stitches is that they love the API that love writing components with it, you know? So that makes me, that makes me very happy. And that, that was kind of like the hardest part. Like are people are gonna like, it is this the right balance between strictness and, and like intuition, you know, because we could have an API, that was way more strict in terms of typing, but you know, being too strict is good because you avoid any possible errors.
+
+You can never mistype a token and everything is always going to be perfect. But at the same time, what's the balance of that versus like someone enjoying writing in that, you know, so we didn't want to go too strict on the type script. Everything is quite loose, but we do offer a strict version. If people want to be extremely strict, you know, we, we, we expose all of your tokens via an object, then that way you're just referencing objects.
+
+So if you rename a token, you're going to get an error in a way that token was used. So, you know, we thought about people who want that strictness, but it's not forced on you. So yeah, I think that was the hardest part, man. And, um, yeah, I, and also before working on stitches and Radix, I haven't done that much open source.
+
+I've built a few libraries, a few JavaScript libraries and stuff. So didn't really have that much experience with like managing issues, replying to people, like what to prioritize because everybody wants everything. And at the beginning I was just like, fuck man, we got address everything. And my approach to it now is completely different, because most of the time that people raise a bug.
+
+Now, also, now that it's in V1 it's quite stable. It's not actually a bug is just like, you just have to switch sometimes the way of thinking, the way that you architecture your stuff, you know, this is not BEM anymore. Uh, and it's cool to kind of like learn to trust in the library a little bit more. And so yeah, it mix of those two things, man, I would say was, um, they were the hardest things.
+
+**Andrew:** That's awesome you actually built out like different APIs and like rewrote your design using that. Like, you can't really know how something feels until you, until you use it. And that level of dogfooding probably contributed to your API being so rock solid because you used it so much.
+
+**Pedro:** Yeah, definitely. We did make a lot of changes based on that based, not just on me, but based on many people that were using it, you know, like if you look back in the alpha version and beta and then stable, like the API was constantly changing, you know? And there were small changes. Sometimes it was like, you know, we would call instead of cold calling your theme theme, we'll just call it tokens.
+
+And like, I wish we call it tokens or should we? And we spent like two weeks thinking about whether we call it token as a theme, you know, like some things were very, just renaming keys in an object, but I actually think that makes a big, big difference in all, like, even though it was just a key, so yeah, I guess, um, I guess that helped, you know, I don't know how common that is in other libraries.
+
+Like, like I said, I don't have that much experience there, but. Uh, personally with radix as well. Like, uh, I use radix so much that and writing all the docs, sometimes just writing the docs, you go, hang on it's not quite making sense, because you're having to explain something. And then sometimes we'll change the API because of the docs you know?
+
+**Justin:** Yeah. Yeah. I mean, that's very intentional design, which I mean, you know, just is massive credit to you and the team. Not everybody goes through that process or the learning is like in much slower loops, but it's, it's sort of that. We all face these design decisions when we're building a new library or something, it's like, oh, you know, what should this thing be called?
+
+Or how should we structure this? Or like, what is the API shape? And, and oftentimes, you know, all of those take energy and sometimes you just like, want to punt on it. And you're like, you know what, let's solve this later. But I mean, it really does become like a pretty important and fundamental question. Uh, and it's, it's the culmination of all those decisions that make something great.
+
+I think it's like it's putting the energy consistently in to like trying to make the right decision and that each of these phases that, you know, proves out something quality. So,
+
+**Pedro:** Yeah, that's cool, man. I appreciate that. Like, you know, it's nice just to hear other people, uh, you know, uh, saying stuff like that and kind of like appreciating the effort and stuff, you know? Um, so yeah, and then sometimes you know like, you want to give people like flexibility, but it's also like a balance, especially with Radix because like, if you go on most websites on the web today, you will find misuse of certain components.
+
+You know, like you'll find something there. They, uh, they use the dialogue, but it should have been something else or they use like a menu button, but you should have been a select because it's inside a form. You know, like it happens all the time. You know, they put certain types of content in a tool tip that really shouldn't be in a tool tip you know like, as per the spec.
+
+And they do that because, you know, some people maybe they don't know, or maybe like libraries, they don't enforce certain APIs. And one of the cool things about radix of the API is around the usage. So sometimes people raise an issue, Hey, I'm trying to do this with this component. And they can't say well, but that's because that component was not made for this.
+
+And if you use it for this, even though visually, you may think it works. You give screen readers in a lot of times, the completely wrong instructions. So the importance of using the right component for the right context for the right action is super, super, super like underappreciated. And Radix has an API that closes some of that up on purpose it, make it so people are using the right components in the right place. It's like a pop-over versus a hover codes in all. Like, even though like some libraries, you can use the same component to implement both of those because they're extremely similar. Uh, we have to, and, and, you know, we have layers of abstraction within radix so we use a lot of the same abstractions in terms of positioning and collision and stuff like this, but we still offer two distinct components. So it's almost likeRadix I think now has 25 primitives and you'll probably have going to have like 60, 70 in, because. You just use the right one for the right thing, you know?
+
+Um, so yeah, man, this is another thing, like finding the API that guides the users into doing the right thing. And some of them make, might say, I'm trying to like, there's a collapsible primitive. Um, and we've had people saying, oh, I'm trying to build like this tree view, you know, in your file system, like, you know, you open up the folders and I'm trying to use the collapsible for this.
+
+And I was, it's not working or whatever. I was like, yeah, that's not the right thing. You know, like that's a tree view component, which we don't have. So you can't do it. Like, we're going to get to it eventually for us to cover all of the components on the web. It's going to take a long time, but we will get to it.
+
+And when we do, you can guarantee that it's going to work as, as it should work. So, um, so that's one of the interesting things about Radix day. I don't, I don't feel like I even talk about this enough because Radix is still in beta and some of those topics that are quite hard to talk about, you know, it's quite hard to go on online or I can talk, I can talk about it with you now because I can control my tone of voice and not come across, like, um, and seeing people don't know what they're doing, but if, if I go on Twitter and they start seeing stuff like that, it's quite hard, you know, so I'm waiting until we can get to V1 and we have more components and maybe we can, I can do some videos and hopefully have people, um, appreciating the fact that Radix is, is the way to kind of push people into, towards, you know, using the right thing.
+
+#### [00:41:00] Radix
+
+**Justin:** I mean, you've taken on two pretty hard API design challenges here. So thinking about like a CSS in JS API is, is one sort of fundamental thing. But I don't think a lot of people appreciate how hard it is to create a library of components that are very intentional with where they should be used, that that really focus on doing accessibility correctly.
+
+Um, so those sorts of things beside, what else do you think that Radix primitives provides? Like, what are the, what are the other like, sort of, sort of fundamental selling points if you were, if someone were to come to you and be like, Hey, you know, I'm thinking about using a chakra or maybe Adobe spectrum or something.
+
+It's like, why would I want to use Radix? What would you, what would you sort of tell them?
+
+**Pedro:** So the, the most probable reason that people would use Radix is because they want to get the functionality out of Radix there for them to build by hand would be too difficult. Uh the honest truth is not all of our users are going to Radix because they want to build accessible stuff. We're not quite there yet.
+
+Right. I'm hoping that we'll, we will get there. And the primary reason for Radix will be accessibility. But if you working for a client, if you're like in the 99% of the developers in the worlds that you work for a client, or you work for an agency, you're working under a deadline and their sprints, and then you get a design and that design has a custom select in it.
+
+So you have two options, right? You can just style the face of the select. And when they open is the needs of select underneath. If you care about accessibility, and if you want to fight your project managers and your designers, because you know, that be a big battle to win. So if you can do that, great, always use native, uh, to you're going to implement it.
+
+And it's going to be bad. You know, like the truth is. It is going to be bad because there's not really a developer in the world that can build with it properly in a week or two weeks, you know. It's just, it's just not possible. So we're wanting to introduce a third option. You can take Redix and we're going to give you all the bits that you need and you can style the parts however you want.
+
+And you're going to get, you're going to make your designer happy because it's going to look how they want it to look. You're going to make your project manager happy because it's done on time and, and you're gonna make yourself happy because you don't have to deal with all the mental complexities of a select, like it's insane.
+
+And so, you know, in my opinion, like as a developer, Who I have worked for a lot of companies in, I had this, this battles there's some I won and some I lost about using native select. I have implemented terrible selects in my life, but you know, many of them and I have tried to be build it properly.
+
+And I couldn't, and it was not, I was not skilled enough and didn't have enough time. I need at least three months to build it properly, cross-browser and stuff. So I think the main motivation is, know, apart from accessibility, um, it will be the fact that you can get a lot of really good complex logic for free out of the box.
+
+Like even like on a select or drop down menu, you get type ahead. So as you start typing, you will select the right thing. But it's not just that, like, that type of head is so, uh, it's so advanced that I need to do like a demo about it. You know, one day I'm going to do one. Even it has things like. You know if say, like you've got a menu with lots of countries, right?
+
+That's the typical thing, which by the way, is probably not the ideal use for a select, but anyway, um, and you keep pressing like B, if you keep pressing B most type of had logic, will try to find a word that begins with B and the second letter is B and the third letter is B. You know, but ours won't do that.
+
+If you keep pressing B and there's no word that contains B followed by B, then you're just going to loop over the Bs, the over the ones that start with B, you know, uh, if you press space is gonna trigger a click because space and enter, they trigger click. But if you press space in the context of searching for something, because you're searching for like United States of America, then it's not going to do it because it knows that that intent, there is a space because of the typeahead.
+
+So there's lots of like little details that we got to do. Um, now why would someone use Radix over... I'm going to say react-aria instead of react spectrum, because if I'm correct, react-aria is the low-level accessibility hooks, uh, that's just an API choice, right? React-aria is really well-built.
+
+Their team is amazing. They have really, really good accessibility people there. If you prefer a hooks API, you can use react-aria. If you prefer a component based API, you can use Radix. Um, and the comparison between Radix and Chakra UI, you said, right Chakra UI? That's quite different actually, because Chakra UI comes with a bunch of styles.
+
+It's almost like a design system. Plus the fact that it's accessible and stuff like this, uh, and Radix has completely unstyled. Like, there's no style. So it's almost like Chakra UI could use Radix underneath. And I'm hoping they will, uh, one day. But they're not really like, interchangeable. Let's say.
+
+**Andrew:** I was going to ask what was the toughest Radix components to implement. And even in my notes, I said, we all know it's the select, but yeah. And it's not something like if you were a junior developer or even a senior developer that had never built a select and you tried to approach, you're gonna be like, oh yeah, this is easy.
+
+But then you get into to the weeds and it's just like, it's weed after weed, after weed. And then it's like, okay, now what does it do on mobile? And it's like, oh, everything's out the window.
+
+**Pedro:** Exactly. Like the select is a beast and like w the team that we have right now is Benoît, Jenna, and Andy three full-time devs. And we had before we even had the Chance working with us Chance he's in San Diego. I don't know if you know him personally. You probably know him, right?
+
+**Andrew:** I've chatted with him.
+
+**Pedro:** Yeah.
+
+**Andrew:** We, we used reach UI a lot on our design system. And from looking at the Radix docs, I see a little bit of a Reach inspiration in there in a few of the components.
+
+**Pedro:** There is a bit of a Reach because they were the first one to do it like that with a component driven, like using the component pattern to give you like functionality. And I use Reach UI a lot in my previous jobs. So there was an inspiration there, the same way their stitches had some inspiration from theme UI or Styled system.
+
+So Chance worked at Modulz for awhile, actually, you know? And so the team was really good. Like the team building this was not was, they are very good. But the select dude, oh man. That's a beast. Like Benoît, I think everybody has touched the select a little bit, but I know that Benoît has been working on the select on and off for like two years.
+
+And he stops and goes because there's a lot of stuff that we learned the select,, and then we stop, we apply for other components. And now I was just chatting to him today. Actually he was showing me the latest demos. Because in terms of spec, we already know what it should do because we've done it so many times.
+
+Like we, we know what everything should happen. I even wrote, like a quite deep dive on the select. I wrote a blog post about it. It's on the Modulz blog. And that blog post highlights the complexity of the select component. And it still, it could have gone a lot deeper and I didn't because it would just get way too overwhelming otherwise, you know?
+
+And so the new select is almost done actually. Uh, but yeah, I think it's definitely the hardest component that we've built so far, but you know what, I don't know if it will be the hardest ever. I'm scared about... there's a few components there. I'm scared just thinking about the spec of it.
+
+**Andrew:** Oh, which ones are those?
+
+**Pedro:** Like a date picker. Like a
+
+**Andrew:** Oh yeah, yeah,
+
+**Pedro:** Oh man, a calendar component will be so hardcore with like time zone and, you know, different holidays, like, you know.
+
+Airbnb Yeah
+
+man range, you know, like public holiday, like people want do crazy stuff with calendar and that's going to be pretty tricky. Then, you know, I guess there's some components that we want to do that may be quite complex, like virtualized lists for... say like in Figma, when you open the select the user select to show all of the fonts that you have, but some designers may have like 3 or 4 thousand fonts you know?
+
+So when you pull them all in a select, it starts, you start to feel the lag. It is, you know, janky. know, You could say that maybe you should use a combo. So you only show maybe the top 50 fonts and then you have a combo box. People can search and the, uh, or you have implement some sort of virtualized list while still respecting the typeahead in it being able to filter items, they are not rendered.
+
+And you know, like that type of stuff starts getting a bit complex as well. Uh, but we'll see, you know, like, um, at the end of the, our job is to do all the complex stuff, so people don't have to do it.
+
+**Andrew:** So Radix also has a lot of useful, like lower level components. One of the ones I personally love is visually hidden because it just makes thinking about your screen reader experience a lot easier. Are there any other components like that in Radix that you constantly feel yourself reaching for? Because they're just so useful.
+
+**Pedro:** The visually hidden I use a lot. I use on my own website. In our design system, we pretty much use all of the Radix primitives. You know? But I don't know, there isn't one that I would say I use the most, to be honest.
+
+Yeah. We even have some low, low level stuff like popper, like, you know, there's a famous library called popper JS. Right. So we have our own version of Popper.js which is nowhere near as advanced and as customizable as popper on purpose though. know, If you want to build a tool tip or if you want to build something that we haven't built yet, that requires like, um, you know, layering, you can use the popper.
+
+And that's going to give you like collision detection and it's gonna, you know, move things if you needs to. And it's good to have the control over, like relatively putting that against a different element of the page. So, you like, we use these low levels to build the dropdown menu, the context menu, the hover card and the pop over.
+
+So there are some low-level stuff like this. We have a low level menu component, which is what we use for the context menu in the drop down menu. But maybe there'll be other types of menus, you know, like, uh, we even think that maybe the select users menu, so, you know, we can use the menu low-level because the menu is something that on its own, doesn't really make a lot of sense.
+
+Like say like you click on the hamburger menu of your site. That's not a menu. That's the navigation list, right? So the menu is very specific for like, when you want to have the type ahead, maybe you want to have nested menus. Uh, you want to have a little icon that can be on the left and maybe you can have some content and they can feel the right.
+
+So there's a few like low-level components like that. I don't even think we documented on the docs because the currently we call them like private, therefore private use, if you know what I mean.
+
+**Justin:** Anybody who's done front end long enough has felt this pain and appreciate the iteration. Generally my perspective is the more high quality, especially with the base primitives to things that are really, really hard to get fundamentally right. Cause I mean, if you get those wrong, you mess up the entire stack.
+
+Right? But the more solid implementations we have to reference the better, the whole ecosystem becomes. So glad to see you all tackling this. And uh, I'm just looking through the API and stuff at the looks really well done.
+
+**Pedro:** Yeah, that's cool, man. I appreciate it. Like I, you know, for me, like I'm here, like explaining this to you and stuff, but really like, like I said, the guys working on primitives in all the stitches team, the rest of the Modulz team, you know, we've not that many people probably like 10. And so it's too small as it's nice, you know? Really good, talented people working there.
+
+Sometimes we'll slack going back and forth for like six hours talking about APIs and all that. A lot of passion. And, and I think it shows, you know? Like when you have a team of people that care about stuff and they have the patience to talk about a prop for a couple of hours, then, you know, hopefully. The result will show.
+
+**Andrew:** Uh, with that, I think we'll move on to tool tips.
+
+#### [00:54:10] Tooltips
+
+**Andrew:** So my first tool tip really isn't a tool tip, but more of a shout-out to some of the work that Orta's doing on the TypeScript compiler team. He's recently been doing a lot of explorations around how to make the errors for TypeScript a lot more readable. And I am just like, I am so excited to see any of this land because the current errors, like just even comparing these examples, I look at the first one and my brain immediately goes, I don't want to read that.
+
+I don't want to understand anything that's there, but how he's managed to format it in the new version is just like, you instantly see what's going on. It's crazy. What the difference of a little bit of formatting can do to making the errors so much more readable.
+
+**Pedro:** Yeah. Oh man, this is amazing. I hadn't seen that.
+
+**Andrew:** I don't know if all of, all of it's landed, but I know one, one of the changes has, and I'm very excited update my version of TypeScript.
+
+**Pedro:** Yeah, no, for sure. Like, um, that's an area that could definitely do with a lot of improvement. I'm so happy to see that they work in this.
+
+**Justin:** Associated with that tweet. There's another chain of other people working on error handling. So there was an initial tweet by someone working on something in the C-sharp community. It's like, Hey, look, here's this really beautiful way to render errors. And then someone in the JavaScript community took it up and started iterating on it and then, Orta has been riffing off of that, uh, to sort of think deeper about TypeScript error design.
+
+But this is fundamentally a underserved user experience. Like errors are a very core part of a developer's experience and, and putting time and intention and love into errors is, is good. Um, I'm here for it.
+
+I want to see more of it.
+
+**Pedro:** Me too.
+
+**Andrew:** And definitely very pertinent to design systems to cause like formerly being a design system, engineer myself, like you'd put all this work into making like the TypeScript prop types, like really check things hard. And then you look at the error that you get from doing it wrong. And you're like, whoa, that doesn't even like remotely make sense to what, to what the right thing should be.
+
+It's like undefined on some random thing or doesn't equal, unknown and more work in this area will definitely pay dividends, I think.
+
+**Pedro:** Yeah, definitely. That's awesome.
+
+**Justin:** And the worst this is like multiple, like deeply nested type checks. It's like, oh, this doesn't match this, this doesn't match. This, this doesn't match. This, this doesn't match. This. It's like one property, like way deep in the object. You're like, why, why did you show me everything?
+
+**Andrew:** Yeah. Or when it doesn't match the overload and it's like, it didn't match four overloads and I'm like, I don't care.
+
+**Pedro:** Yeah, totally.
+
+**Justin:** Cool. So my first tool tip is this project called party town. And this is it's black magic. I'm I'm I'm utterly convinced is absolutely black magic. So what party town does is it isolates third party scripts to be run in a web worker. So if you know much about web workers, web workers don't have a lot of things like Dom access, right?
+
+They can't write anything to the Dom. Well, this adds a proxy interface that makes it possible where they can write to the DOM. But the problem with that is writing to the Dom is a synchronous ops operation and web workers fundamentally communicate they're an asynchronous means. So you have to make something asynchronous, synchronous.
+
+So they have figured out how to use, uh, like synchronous XHR calls to sort of make this magic happen. It's nuts. It's, it's absolutely nuts. It's absolutely black magic. Like whatever. I still can't wrap my head around how it fully works, but. Yeah, it's, it's really cool to see. So example of why you would want to use this.
+
+You've got a third-party analytics script that you want to run on your site, but JavaScript by default, everything runs on the main thread that analytics script is eating up your CPU, that you're also needing to use to render stuff, you know? So this like, lets you offload it to a different thread. It's isolated from your site, but it still has access to do the things it needs to, to like write things.
+
+The really, really interesting part of this is now you can give it selective control. It's like, Hey, you like analytic script. You can no longer do document.write. like I revoke those privileges. So like document dot ride is a no op for you now. So now you can like selectively give it access to certain Dom APIs.
+
+Um, it's incredibly fascinating. I'm really, really excited about this and to see where it goes.
+
+**Pedro:** Yeah. Wow. That's insane. Yeah.
+
+**Justin:** But every, like when I was reading through this, I think, I think Rich Harris tweeted this out and I saw it from him is like, everything that I know tells me that this is technically impossible, that you should not be able to force something that is fundamentally sort of asynchronous into a synchronous, uh, set up.
+
+So I it's, it's still baffles the mind.
+
+**Pedro:** Yeah. I don't know how to react because this is so like, you know, way above my head. I'm just like, this is insane.
+
+**Justin:** Yeah. I mean, I just think the fundamental premise though is super powerful. It's like, Hey, run your third-party scripts in a separate thread.
+
+that's
+
+that's that's pretty amazing.
+
+**Pedro:** Yeah.
+
+**Andrew:** first step, but like I offloading more and more off the main thread. I, it would be so nice. Like it's, it's easy to choke up that main thread
+
+if like, if I could get my react rendering in a web worker. Oof.
+
+**Justin:** So I used to work at a media company. And the biggest problem that we had is the analytics team had, you know, they use like Google tag manager or Adobe tag manager. So this thing where they just like dumping code into a text box and it just like injects it, you know, into the site and you really, your hands are tied.
+
+You really couldn't control performance very well. So hopefully that gives teams the ability to sort of control that a little bit more.
+
+**Pedro:** Nice, cool.
+
+My first tooltip is raycast which is like, um, it's kind of like an Alfred-like app, you know, everybody knows Alfred, like you've had a mac for 10 years and you search like first apps to install on a Mac it's always going to be Alfred. Right. Uh, but raycast is just like a fresh, modern take on Alfred's and it's so, so good.
+
+I've been using it for like six months and is just so beautiful to use. It's so flexible. It's just like, I don't know. He's just so powerful. Like he has like a bunch of stuff that with Alfred, you don't even get out of the box. I think you need to install some extra extensions, like a clipboard history. Like, I, I can't live without clipboard history, man.
+
+Like almost everything I do, even in my brain. I'm like, okay, know that this has saved in my history. I can go back to it. You know, I don't need to be constantly copying and pasting the same thing every other, every other time. It has like window management for mac or, you know, if you're in a position, a window to the top left and things like this, uh, it has a bunch of, uh, things you can do, like creating snippets and creating quick links.
+
+So for example, I've got a quick link. I created there opens up a code sandbox with a stitches template already, ready to go because they do so many called sandboxes with stitches to kind of, um, you know, show people, stuff that, that just like saves me like so much time every day. And, and it's made, it's made so well.
+
+H I think it's done by one person. I think Thomas, I don't know if he's alone doing this, but I believe he is. And I just can't believe how people can do that, man. It's just so well-built. If you're not using it recommend, you give it a go, it connects with a bunch of apps already, like you can connect with JIRA, GitHub, like, it's almost like its own mini browser, you know, like you can open up GitHub and then it takes the next stack navigation you can log in and then he can create an issue directly from it where you can list all your issues. Like you don't need to open the browser anymore for a lot of stuff, you know. So much so that he's also working on an API now that's currently closed.
+
+I can't talk much about it, but I can say he gave me permission to say that, uh, you know, there will be an API soon that people be able to do with extensions on top of it. And I already started building some extensions from Radix and all I can say is that it's absolutely amazing.
+
+**Andrew:** Interesting. I'll have to give it a whirl. Have you, uh, seen like more and like more of your work flows moving into, into this tool?
+
+**Pedro:** At the moment I use it a lot for, the basic stuff that you do in Alfred, like searching files and opening apps, of course, but the clipboard history now it's like became like my most used thing. Um, and also, um, I use the for window management and I use it for a bunch of quick links.
+
+And when I'm doing demos, like I do a lot of late demos recently. Usually I like, I have some snippets of code. They, they they're too long to write. So I don't want to spend people's time typing and making typos you know, all the time. So you can also create these snippets that you can paste based on a special shortcut that you create.
+
+So like I'll set them to like dollar sign one for the first snippet. And then when I'm VSCode I just type in dollar sign one. And that code appears, and then I'll have dollar dollar sign two for the next step and three and four. And so that's also changing the way I do live demos.
+
+And I feel like I haven't even spent enough time, like exploring what this tool can do, but I know that it's super powerful, ready, even for me. Like, it's definitely saving a lot of time.
+
+**Justin:** Awesome. Whenever I get my, my next Mac I'll I'll I'll check it out. I think I actually, I got, uh, I got access to raycast um, a little while ago. And my last job when I still had a Mac, but anyway,
+
+So my second tool tip for the day is this thing called, I guess it's Meili search. Hopefully I'm not butchering that.
+
+This tool is really fascinating. It was shared to me by one of my coworkers. Um, so it is an open source, uh, platform for search. So if you are familiar with Algolia very similar it would occupy a similar sort of space as elastic search, perhaps. Um it is a search engine, but it's very specifically tailored to things like documentation.
+
+So the whole thing is open-sourced they have really good documentation on how to self host. They have like a one-click install to, uh, uh, They have a one-click installed to somewhere that I forget. Uh, but digital ocean, I think. Um, but yeah, the documentation is great. They provide a bunch of open source components to give you an Algolia like experience or like a dedicated search page, like experience indexing.
+
+The indexing API is really nice. Um, it's, it's great.
+
+**Pedro:** Wow. I'm gonna definitely look into this cause we're, we haven't added search to any of our docs yet, and I've been meaning to add it in, of course, like in my mind, I'm like, I'm just going to use algolia, you know, but now I'm going to look into this as well.
+
+**Justin:** Yeah,
+
+Algolia is good for open source because they will, they will work with you. If you have an open source project they'll, they'll like provide free indexing for open source projects. But if you need any sort of like premium product documentation search, like Algolia is still good, but they can get pricing really quickly, uh, and for good, for good reason, their service is wonderful.
+
+And like, you know, if you can't afford it, just, just pay for it. But if you're looking for an open-source solution, because you want to self host, or maybe you have some other special needs, then it's, it's a pretty good solution.
+
+**Pedro:** That's awesome.
+
+**Andrew:** And it's written Rust. So got to hop on.
+
+**Justin:** Yeah. Yeah. The oxide, the company I work for currently is, is pretty much all rust all the time. So.
+
+**Pedro:** No, that's cool. Nice. My second one is my last tooltip. This is a website called arena, a r e dot n a. And I think it's not like a super new thing, you know, like, uh, but I started finally using it last week and I've known about it for a long time. And I was always a little bit like put off because I didn't quite get it.
+
+And I was like, man, this UI so bare. There's like, but don't know what's going on. You know? But now I change my mind and I take it back! This UI is so fucking good because it's just like, it's just so plain. It's just like no distraction. Arena, just to explain for people who are not seeing the screen, it's like a, um, a new wave pinterest, you know, the pinterest where you're going to find the underground stuff and the good stuff.
+
+And, uh, cause now Pinterest, you know, I feel like it became way too, um, mainstream, and it's quite hard to, if you, if you're trying to like redo your house and you want to go on pinterest, you're just going to see the same thing that everybody else is going to see. Maybe you want something to do to be more.
+
+Uh, underground, uh, for tattoos it's excellent for fashion stuff is excellent for design architecture, photography, and then it works in a similar fashion to Pinterest, but I think they were built more for like, uh, students. So, uh, the way it works is that you find a blog, you find an image and you added, they call it a block and you can add it to a collection.
+
+But then the collections could be collaborative. So you can add things to other people's collections. You can also see where that block exists in other people's collections. So you basically go inside this rabbit hole and it just gets deeper and deeper and deeper, and you start finding like some insane stuff, like really, really good source of inspiration.
+
+And so I've been using it a lot, uh, for, um, they also have an API, which is, which is excellent because I'm already thinking about creating a collection and creating like a Chrome plugin on for Twitter. They can click a button and I can save tweets directly to that collection because the good thing about arena is that you can also save URLs, doesn't have to be an image.
+
+So, um, so that was quite cool. So the fact they have an API for us, developers is always nice. Isn't it? And so, yeah, man, like I'm, I'm really enjoying that. I spent so many hours on it just browsing like vintage watches. I like random things like that. It's amazing!
+
+**Justin:** Yeah. Arena's actually 10 years old, a little bit over 10 years old. Yeah,
+
+**Pedro:** what?
+
+**Justin:** So some of the founders of arena used to work at artsy. The last company that I worked at Orta used to work.So known people who've, uh, who've worked at
+
+**Pedro:** that's amazing. And it's like open source and like the thing is, uh, they got a page there shows like how much money they're making. They're very transparent. And there's basically saying if they can get to 40,000 revenue a month, then the team can actually work on it full-time. And they're so close. I think last time I checked was last time I checked as if I'd been using it for ages.
+
+But like when I checked last week, uh, I think they were like 35 or 36 or something like this. So very, very soon, hopefully as you know, more people start using this product, they can actually work on it full time then that's great.
+
+**Justin:** Yeah, it's a really cool product. It, the design sort of minimalism reminds me of like early artsy design, uh, cause so artsy is a online art marketplace and it was, it was that same sort of like stripped down, pretty like, base design early on.
+
+I've got one last one, one last tool tip for the day. Um so my tool tip is a library, a testing library, um, it's called screen reader testing library by a user that's Epsilon or something. Uh, we'll have it in the show notes. But essentially this screen reading reader testing library, lets you essentially write end to end screenreader tests for your site.
+
+So if you want to say, Hey, you know, I expect NVDA, NVDA being the screen reader that it uses to test, I expect NVDA to read out this, you know, when I do these certain actions. You can write a test around that whole thing. So, you know, if you want to have a flow where he's like, I expect to be able to, uh, well, one example is like some sites implement like a skip to content button that shows up when you press tab for the first time.
+
+And if you like click on that or press enter, then it like takes you to the content body. Maybe you want to write a test for that. And then, and then say that, Hey, activating that. And then pressing tab one time should, should have this like main button in focus and announced or whatever you could obsensibly test that in this library, which is, which is pretty, pretty awesome.
+
+Accessibility testing broadly, especially like when we talk about like more extensive end to end testing is, is rather underserved. So it's nice to see that.
+
+**Pedro:** Yeah. I saw that as well. We already talking about internally, like this is probably something we'll be testing out very, very soon. It looks amazing.
+
+**Andrew:** It's definitely an underserved part of accessibility testing. Like there's all these tools that'll run like. Like axe, will run regressions on your site, but like there's, there's really nothing like this that'll say, oh, your screen reader experience has not changed and has not broken with your latest changes.
+
+**Pedro:** Yeah.
+
+**Justin:** The biggest thing to me is like, so, so things like axe, they can test like compliance issues, you know? Or do you have bad contrast? Is something like mislabeled or is something missing an attribute or something like that. But what they can't do is they can't express intent. And I mean, this is the thing about like... we talk a lot about accessibility with the components. It's like, oh, well, you know, if, if you, you aria have your label like done this way or have these aria attributes to have this announced. Not often enough do people actually go through what is the experience if I just like close my eyes and put on my headphones and just listen to like, what it, what the experience is of navigating this, you know, just using my keyboard.
+
+What does that, like? I think this is actually a way to express and test the intent of that experience more so than just like the compliance correctness or whatever.
+
+**Pedro:** That's a very good point, actually. It's true. Like, we try to do a lot of testing, manual, manual testing, because it's still very hard to automate, you know, accessibility stuff. And sometimes you just got to use your instincts, like you said, you just got to go, man. Like how, how is this working?
+
+You know, like listen to it. Like I remember there was a week that we just, me and Benoît, well, we were working together at the time, which we were just listening to a screen reader, man. I was going nuts. Like it's hard to do, man. Like if you try to just use the web like that, like there's people on YouTube, like they do videos of them using the products via screen readers.
+
+And, um, they still have a long way to go to make things easier. But hopefully tools like this. It's going to help because also, like, I do know a lot of people that want to build better, more accessible apps, but it's very difficult, you know, it's not that easy. It's a skill in itself is the same as your saying, Hey, your front-end dead.
+
+So either you're going to deal with this shader in web jail, like it's a different skill, you know? And so hopefully it will become more part of our general stack of skills and everybody can know enough about it. And with tools like this, I'm sure it will help. So that's great.
+
+**Andrew:** It's a hard problem though. Cause like as sighted users, we don't really interact with, uh, spoken interfaces. So like. We don't even really know what a good spoken interface sounds like. Like it's like, it's exactly like asking a non-sighted user to try to build out a really good, uh, visual UI. Like it's, they're two very different skills and two very different experiences.
+
+**Pedro:** 100%. Yeah It is.
+
+I think that about wraps it up for all the stuff we wanted to talk about. Thanks for coming on the podcast, Pedro, this was a super fun conversation about all things design systems.
+
+**Pedro:** Yeah. Cheers man. Thanks guys. Justin and Andrew for having me here and, uh, yeah, it was good to meet you as well. Cause I didn't know you guys before, so it's always good to meet new people.
+
+**Andrew:** Yeah.
+
+**Justin:** Yeah, likewise. Likewise.
+
+**Andrew:** Well that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening!
