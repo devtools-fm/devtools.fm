@@ -3,6 +3,7 @@ import {
   NewWindowIcon,
   InfoIcon,
   DataIcon,
+  ExportIcon,
 } from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
 import { useRouter } from "next/router";
@@ -57,6 +58,15 @@ export default function Home() {
                 onMouseDown={() => router.push("/episodes")}
               >
                 Episodes
+              </Navigation.Tab>
+              <Navigation.Tab
+                id="merch"
+                icon={<ExportIcon inline />}
+                onMouseDown={() =>
+                  window.open("https://www.bonfire.com/store/devtoolsfm/")
+                }
+              >
+                Merch
               </Navigation.Tab>
             </Navigation.TabList>
 
