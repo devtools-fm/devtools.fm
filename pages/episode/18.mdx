@@ -1,0 +1,450 @@
+---
+title: Dr. Chris Weichel - GitPod
+youtube: REPLACE_ME
+buzzsprout: REPLACE_ME
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week's guest is Dr. Chris Weichel, CTO of GitPod. GitPod is an all-in-one online development environment with a complete version of VSCode in the browser.
+We also spend some time talking about Chris' Human-Computer interaction research.
+
+<!-- LINKS -->
+
+- https://www.gitpod.io/
+- https://www.gitpod.io/blog/openvscode-server-launch
+- https://github.com/gitpod-io/openvscode-server/
+- https://open-vsx.org/
+- https://github.com/features/codespaces
+- https://csweichel.de/papers/2015-spata.pdf
+- https://csweichel.de/papers/2015-reform.pdf
+- http://scihi.org/mark-weiser-ubiquituous-computing/
+- https://simonhearne.com/2020/network-faster-than-cache/
+
+## Tooltips
+
+### Andrew
+
+- https://www.npmjs.com/package/webpack-bundle-analyzer
+- http://webpack.github.io/analyse/#
+
+### Justin
+
+- https://github.com/prisma-labs/konn
+- https://github.com/Owez/argi
+
+### Chris
+
+- Jumpcut
+- Harvester
+
+<!-- TAB: SECTIONS -->
+
+[00:00:41] Gitpod
+[00:16:10] Human Computer Interaction
+[00:26:10] Bringing HCI to Developer Experience
+[00:37:53] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 18
+
+[00:00:00] **Andrew:** Hello, welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin
+
+[00:00:07] **Justin:** Everyone today's guest is Dr. Chris Weichel, chief architect at Gitpod. Chris, would you like to tell our listeners a little bit more about yourself?
+
+[00:00:17] **Chris:** Yeah. Yeah, my name's Chris, I'm based in North Germany, just south of the Danish border. Been with GitPod pretty much since, yeah, pretty much since day one. When we were still sort of bootstrapping out of a consulting business. Been enjoying the ride. It's been wonderful so far and always happy a talk about Gitpod.
+
+[00:00:36] **Andrew:** I just saw that you got promoted to CTO. So congratulations on that.
+
+## Gitpod
+
+[00:00:41] **Justin:** Maybe we can talk about, gitpod a little bit at first. So can you just give us, the elevator pitch? What is gitpod and why might developers wanna use it?
+
+[00:00:49] **Chris:** Yeah. So gitpod takes the pain and effort away from getting to code. So it is sort of the logical next step now that we're making everything as code, you know, we made infrastructure as code. We have automation all around us except for development environments. So when you join a new project or you want to contribute to an open source project, you onboard on a company.
+
+What you're given is a probably outdated README file that you go through and you'll spend the next three days trying to find some strange version of a tool or just trying to get up and running. And what gitpod allows you to do is to spin up a new dev environment, pretty much for every task you want to work on, and it's already configured.
+
+It has yarn already downloaded the internet. Your unit tests have already run and you're just ready to go. So it's all about automating dev environments, taking the friction out of, you know, I want to work on this task. I want to review this PR and getting, getting to do it.
+
+[00:01:48] **Andrew:** That's interesting. So it's like fully set up, like you don't even have to run NPM install, like all the modules already right there.
+
+[00:01:54] **Chris:** That's it. So you can configure basically which tasks you would like to run, when, when a workspace starts and then those tasks will be executed on workspace start, you can even take a step before that and do what we call pre-builds which you can think of like a CI system. You configure the tasks you want running whenever change happens in your repository, gitpod will, will be notified, run those tasks store snapshot of the outcome and make that available to you when the workspace starts. So not only do you not have to manually type NPM, but that will have already been executed in the past. And you just, you know, reap the rewards of that.
+
+And you don't have to wait for that to happen or deal with potential networking issues because something is down. It's just there
+
+[00:02:38] **Andrew:** So it seems like that could even have the potential to replace like your CI altogether. Like it's, it kind of feels like you're doing it twice. If you're setting up both your workspace and your CI to do the same thing is, does Gitpod kind of help you do that too?
+
+[00:02:50] **Chris:** So there there's a lot of overlap, so we're, we're not aiming to replace the Ci but rather, and this is a sort of a core philosophy at Gitpod, we try and be orthogonal to stuff like we don't want to impose how you work, but we want you to be able to bring how you work to us. And so, you know, your Ci system will probably run off of a Docker image already.
+
+Pretty much everything's containerized anyway. So you might as well use the image that you use for your CI builds in your local dev environment. And that brings a host of benefits where you don't have version of mismatch anymore between what you use locally, quote unquote. And what, what your CI system runs. For example, and you only have to do that set up once. And also only one, you know, you only have to maintain it once. Like it's not just that the setup effort is reduced to one environment, but also, you keep this in, in your version control, you evolve it alongside. And so not everyone has to go jump through those hoops again.
+
+[00:03:46] **Justin:** So to paint a little bit of a more clear visual picture for our listeners. You, when you come into a Gitpod workspace, it is a VSCode, like set up in your browser that already has your entire execution environment set up. And as you said, like using the same potential docker image or whatever you're using to sort of like configure your environment.
+
+So you've got everything you need to just start working on something.
+
+[00:04:15] **Chris:** Absolutely. So, yeah, you go to something like GitHub to your repository that you want to start working on. Same works with Gitlab and Bitbucket. And you put, gitpod.io/hash in front of that URL in your browser hit return. And then that environment will come up. If there is no configuration in there, we'll, we'll take a good guess at, you know, what, what configuration might look like, and we'll give you a default image that supports a lot of things out there.
+
+And then from there on, you can configure this. We also, we're implementing an onboarding flow that makes us configuration bit even easier and sort of puts it in front and it gives you the support and help to go through that. And you basically can give us a Docker image that you would like to use.
+
+You can also give us a Docker file that we'll build for you and then you can configure the tasks that you want to run and they'll behave as I just mentioned, they can be pre-built, or run on, on startup
+
+[00:05:11] **Andrew:** So it's basically like VSCode in the cloud. Does this mean that all of your plugins that you're already using our work, like how much of your local dev environment can you bring to this cloud interface?
+
+[00:05:23] **Chris:** So
+
+the cool thing is it's not just like VSCode in the cloud. It is VSCode. It is actual proper VSCode. And we recently launched open VSCode server, which is, sort of an adaptation to make this like, to go to the last mile, to make VSCode run in the browser. And so the, the VSCode team has done a great job at enabling this over the past few years.
+
+It's just that there are a few bits missing, to, to go all the way. And this is what open VSCode server does. And what do you get within gitpod is essentially a version of open VSCode server. So you can expect that pretty much any open VSCode extension will work. I say that with a word of caution, you know, I never promised absolute. There is a caveat to this and that is that the license conditions, the terms and conditions of the Microsoft extension marketplace prohibit that someone downloads an extension or that someone connects to, that marketplace, unless it's one of Microsoft's products.
+
+And so even if you build an open source extension and, you know, it's all your code at the moment it's distributed through the VSCode marketplace or extension marketplace, no other product can connect to it. And to solve that conundrum a long while ago, actually we've launched the open VSX project, which is hosted by the eclipse foundation.
+
+And that provides sort of a true open platform for folks to bring their extension. And that's also what we connect to. So you might not find every single extension that you're used to because it's not quite as complete as what the Microsoft marketplace would be. But that's a good reason. And to nudge your favorite extension maintainers and be like, &quot;Hey, you know, you want to push it there.
+
+and put that on that platform.
+
+[00:07:12] **Justin:** Speaking of market pressures from Microsoft. So GitHub has a similar project called GitHub code spaces. I'm not sure. If y'all got sherlocked or if, if the two were sort of in development at the same time. But what's the overlap there? And how do you, how do you differentiate?
+
+[00:07:34] **Chris:** Yeah, so there's a good bit of overlap. And when they came out and we saw their messaging, we were super happy actually, because they, they validated so much of, we have been pioneering the years before. So gitpod's been around for... Like the gitpod project has been in development for three and a half years at this point, we haven't been public for all that time, but you know, it's been a long time coming. And so some of the concepts that, that you'll see in code spaces now, actually things coming out of gitpod like for example, pre-built is, is something that, that code spaces is also calling that. And so it's really awesome to get that amount of validation and at the same time, Microsoft clearly has much more reach than we do. They'll do a ton in, in educating the market and in telling the world that this is the next way, the next big thing for how we're going to write software. And they just make the cake so much bigger, right. They, they, they sort of really lift the tide and in terms of differentiation.
+
+So the first thing is, we're out Microsoft, and that is a big point, right? So there is a big
+
+market also for folks who cannot or don't want to use Microsoft products. Another big differentiator is you can, you can self host gitpod. You don't have to use SAAS, you can run this in your environment. And there are a lot of good reasons where why you'd want to do this.
+
+For example, if you have the regulated industry and you might not be able to use SAAS products per se, then this might be something you want to look at. And lastly, we run on containers. Versus VMs. And so, the, the pricing and the cloud density that we can hit, is, is much better. We're also a Kubernetes application.
+
+So, we have very close to home for a lot of folks out there who run on Kubernetes.
+
+There is, if I may add, there is a, a good comparison page that we put up that compares code spaces to gitpod and, and tell's the story. We also sent them a cake, you know, congrats, welcome to the party. We haven't heard back yet how well it tastes tasted though. So trying to get
+
+[00:09:42] **Justin:** Reminds . Me that reminds me a little bit of like a, the Firefox and internet Explorer is sending cakes back and forth for releases or whatever, back in the day. So you have a, you have a good, you have a good, healthy view of the competition. So it's, it's good to hear!
+
+[00:09:56] **Andrew:** Yeah. Personally if GitHub sherlocked me, I'd, I'd be a little nervous, but good that you guys are taking in stride.
+
+[00:10:05] **Chris:** Yeah. The, you know, the way I see it, there, there are only two ways you can take this because we, we cannot prevent that from happening. We don't want to prevent this from happening because it means, you know, that we're doing something right. If, if others, especially at the size and and also insight into this landscape, like Microsoft come along and build something that is very, very similar to what we have.
+
+That just means we're doing something very right. So that's an accident. Thanks. So this is one way to take it. The other would be to, I don't know, go in a corner and, and, and be in despair, but what's the point in that, right? w we're just at the beginning of really an unfolding landscape and this, amazing next thing that's coming.
+
+So it's, it's really exciting.
+
+[00:10:48] **Andrew:** And the way you guys are approaching it is pretty commendable too. Like you have so much of it source it's like, it's almost a little crazy at some point. The one you already mentioned open VSCode server, it seems like that's like the critical bit of technology that your competitors can basically take and create their own version of gitpod. Where is like the reasoning behind releasing some core bit of technology like that to open source?
+
+[00:11:17] **Chris:** Yeah, so we want, like there are a lot of good use cases for a VSCode in the browser that are not necessarily gitpod. So you could think of, I don't know if you're aware of, of Eclipse Thea, for example, which is also an online IDE that actually we, created as well. Like the, the folks that, that created Thea now working on to some extent on open VSCode server. Those products are very useful.
+
+If you want to build an IDE like specifically a sort of tailored or, or white label, the IDE in the cloud, and then these products are very helpful. Now, if you wanted to build gitpod, from own experience, I can tell you building something like that. It's not something you do in an
+
+afternoon, right?
+
+There's a lot that goes into making it reliable, making it quick, making it versatile. And also for example, what we're essentially offering is arbitrary code execution on a multi-tenant Kubernetes cluster. And if you hear this, you know, all your alarm bells should be ringing. Like why? So you can imagine securing something like this also takes, takes a good bit of work.
+
+So I'm, I'm not too concerned that that tomorrow someone's gonna come along, take open VSCode server, slap it on a cluster and, and have a product that's we'd be worried about.
+
+[00:12:37] **Justin:** I think that's, that's a bit of the, I dunno, it's a bit of an open-source fallacy that some people fall into sometimes. Oh, yeah. You know, you do open source thisthing and it's like, it's easy for someone just to replicate your entire business. If your business is that simple to replicate, you're going to have trouble, regardless of whether you open source it or not.
+
+you know, the, the big, I think the big risk ultimately comes from very large corporate entities. So, you know, like Already you know, competing with, with GitHub or Microsoft in this case, you know, you have that sort of, uphill battle already. But, yeah, I dunno. It seems like there's a lot of upsides to, to open-sourcing.
+
+So definitely commend that too.
+
+[00:13:18] **Chris:** Yeah, there are a lot of benefits that we're seeing it. We're seeing some awesome contributions coming in from the committee. We're seeing a much more increased feedback coming in and also it's really been sort of transformative to how we work internally, you know, before that there was always the question, what can I share?
+
+What can I not share? and you, you sort of had to be close by default because our code was, was closed. And when we changed that, we also changed to an almost open, not almost to an open by default model. Right. And that really changed how, how we would speak internally, how we would discuss things and would also improve culture a lot because now he could write things down on public issues, which before you couldn't do.
+
+So by and large, it's, it's really been been beneficial around
+
+[00:14:04] **Justin:** Yeah, artsy. The last organization I worked at had a engineering principle of open-source by default. So most of their systems were all open-sourced and it did provide a really interesting touch point to be able to say, &quot;Hey, look, here's a production example of a graph QL server, and the challenges you might run into with it or something like that.&quot;
+
+Whereas like other times you just get these like very tailored examples. That's hard to, you know, really dig into. Yeah, I liked that a lot.
+
+[00:14:34] **Andrew:** Just one more question on the open source stuff. So like I saw that like, literally there's like gitpod, the repository is open source and, it seems like your business model is, self hosting. Like you still charge for the self hosting. There has to be like some part that is an open source cause your, your source codes right there could run gitpod on my own hardware in totally sidestep your business model.
+
+[00:15:01] **Chris:** The gitpod that you would install as. And self hosted follows a dual licensing model. And also the code that we have in the repository has a dual licensing model. The large, the overarching amount of it is, is AGPL. And then there are some bits that have, the gitpod enterprise license attached to it.
+
+And so when you install of build that comes out of this repository, it will have some of this enterprise license code. And this will show up at runtime at some point, like you'll, you'll run into certain, things like limitation on users, for example, that, that you can have on, on your platform, or a certain features that, you know, that, that you might not be able to use to the full extent.
+
+And at that point, you'll see a friendly pop-up they go like, &quot;Hey, it's cool. You're trying this, please keep going. But also you might want to send us an email. Let's talk.&quot;
+
+[00:15:50] **Andrew:** Okay. Cool.
+
+[00:15:51] **Chris:** That said also like one thing that we're seeing is if you're a larger organization and you're looking to adopt something like gitpod, then chances are, you'll want someone on board who can help you do this. And so we're not a consulting company, but of course it, you know, if you have an interest in, in adopting gitpod, we'll try and help you do it.
+
+## Human Computer Interaction
+
+[00:16:10] **Justin:** We'll switch over a little bit and talk a little bit about you. So you have a PhD in HCI, human computer interaction. Is that true?
+
+[00:16:20] **Chris:** Yeah, that is correct. Yeah that, it almost feels like form of life. Now it's something so different to, to what's happening today, but yeah.
+
+[00:16:27] **Justin:** What sort of, what led you down that path?
+
+[00:16:30] **Chris:** It's a fun story actually. I, I did, did an internship in Palo Alto about 10 years ago. And my flatmates, he did, he did a PhD, in Germany as it happened and his supervisor came over at some point on a way to a conference, crashed our couch for two weeks. Four days, sorry, excuse me, two days.
+
+And I was like, Hey, so, you know, if you're back in Germany, you hit me up. Let's talk. And I did that. One thing led to another, and I found myself in a PhD program in the UK. I was just writing, writing my thesis, like my, my bachelor thesis, there actually, and they had an open position applied, they took me, and that's how that happened.
+
+[00:17:13] **Andrew:** For our listeners who might not know what human computer interaction is, what is that study?
+
+[00:17:20] **Chris:** Human computer interaction is the study about, well, as the name implies humans interacting with computers and sort of in the early days it was a lot of... Today. There still a large area that, that looks into, for example, input modalities like pointing the mouse is something that, that essentially came out of this.
+
+Text entry on all sorts of devices. Cross-device interaction is a big topic. Mixed reality is something that's seen a lot of uptake. And it sits right at the intersection between computer engineering. I want to say, design and psychology. So it sort of tries and bring those together.
+
+And they're always, in that sense, it's a bit of dev ops, like dev ops, you know, that those coming from dev going into ops and there are those coming from an ops going into dev. And it's kind of the same thing here as well, that those coming from, from any one of those areas, moving into the other end, sort of dabbling in the other.
+
+And so there's a lot of cross-pollination, it's a really interesting field. The largest conference in the areas called, annually happens annually. They also publish a YouTube video, usually on sort of what the project. And, there there's so much cool stuff that people build, and, and come up with.
+
+[00:18:35] **Justin:** Cool. I'm gonna have to check that out. I really, really like the space a lot. So just digging into some of the stuff that you've written about. So I I'm, I'm also into 3d printing and laser engraving fabrications, pretty fun. And you did two papers that were really, really interesting. So reform, which, if I understand correctly, it's like a way to say you have this digital model, you fabricated it via like 3d printing or something. And then you edit the model in some way. Alter the model. And then you're. Able to sort of map that back to the original 3d representation, which, which seems pretty cool. And then you have another one, I think it's Spata, which is, so far as I could tell a caliper that like syncs up with its digital rendition. So, if it's like, I can imagine, you know, you measure a cube in reality, and then that same measurement shows up in fusion 360 or whatever your software you're hooked up to. You want to talk a bit about those? Those are both really cool projects.
+
+[00:19:35] **Chris:** So, let's talk about Spata first because that's the more pragmatic one of the two. So what really happened is I found myself designing a lot of things exactly in a, at the time in Bener actually. So, you know, that was before the days of fusion really and what I found happened a lot is that I would take up calipers or even protractors to measure an angle, you know, pick up the, the thing I was measuring, measure it, put both down, remember the number, go to the tool, enter the number.
+
+And, you know, it'd have a lot of context, which is like this. And so the idea was, well, how, how can we make that easier? And as you said entirely correctly is essentially a pair of calipers that are sent to whatever design software you're using. And so, one thing that we did is we sort of added a bunch of flows that you would do regularly, for example, measuring a cube.
+
+And we try to minimize the context switches that you needed to do, you know, going back and forth between your keyboard and the calipers. The other thing that happens a lot when designing things, especially for novices, is that it's really hard to gauge size. You know, you see something on a screen, but you don't know how large is this going to be in the real world.
+
+And so one thing that those calipers, and it was also a set of protractors that could do the same for angles, did was it would sync in both directions. So not only could you enter something into the computer that way, but also you could measure something in your CAD model and the protractor would move to the distance that you just measured virtually.
+
+And so you'd get a sense of how large something would be. So that was Spata.
+
+Reform was really an interesting project. Like it, it started off like a benign idea and like so many things we don't fully understand the complexity of things you've got like, and it's going to be easy. I'm sure it took a year to build.
+
+So, what it does is it's a similar idea to Spata and that it's synchronizes things' between physical and virtual, except it does that with an entire model. So what we ended up building is essentially a five-axis CNC machine, completely underestimating the complexities of five-axis path planning.
+
+So in the end we basically used only three axis of it. And what it would do is it would 3d print using a special clay that is malleable when it's about 35 to 40 degrees and that you can cut into and it won't clog of your tools, when it's colder than that. It's stuff that's used in the automotive industry for exactly this application.
+
+So they have massive machines where they sort of extrude this stuff onto form work and then onto a skeleton, and then they'll use a CNC to refine it. And we did the same thing. We would print out a model, refine it using the CNC, and then he could take it out. You can, you know, you could try it out.
+
+For example, if you wanted to design a game controller or something, you could put your hands on it and see if it fits the ergonomics of your hand. You could also then, you know, shave away a bit, stick it back in the machine. And we'd have a 3d scanner that would essentially take a scan of this model store that.
+
+So you'd also get a history and that's a really cool thing. You also get physically undue physical undo. So, you know, you, you pull this out of the machine, you try it out, you accidentally, damage a button that you had on it. You put it back on the machine, you go and undo and it will restore that button.
+
+So that was the concept. That was the idea. And then sort of, we try to see, can we make this a reality? And the short answer is, yes, ish. Like it, it worked all right. It worked well enough to sort of describe the concept and illustrate the idea, but to make this something that you would actually want to use every day, we would have needed considerably more engineering efforts. But it was a very cool project. Learned a ton. That was really fun.
+
+[00:23:25] **Justin:** It's just showing the feasibility of that is it's pretty wild. I find that that's often, the hardest thing is moving from like sort of digital to physical back and forth is the thing that like, is, is fairly distracting. I mean, it's the hardest part of the process. That's like, you know, well one just trying to measure something cause like there's a lot of things that are hard to measure and get good angles on, you know, that's, that's the whole thing and then replicating it and digital space.
+
+So, all the work that I see in this, this space of like trying to bridge the two is pretty cool.
+
+[00:23:58] **Chris:** There was one other project that we had that I, that I like even a bit more, called mixed fab. It's essentially Microsoft research a long time ago. About yeah, nine years ago, they had a paper called hollow desk and you can think of it as a screen at a 45 degree angle, a half mirror underneath.
+
+So it will basically mirror that screen plane into sort of a volume below, combine that with, with a depth camera, the good old connect in the days. And, put some gesture recognition in that you would have a, you would have an interactive space that you would basically look through this half mirror into this volume.
+
+And if you combine that also with head tracking, you get a pretty good illusion. You know, we can actually interact with physical objects in this space. And so we built something like that, combined that with also sort of basic drawing recognitions on sort of the, the floor of that machine. And so what you could do is you could draw basic shapes.
+
+You could extrude them into 3d space and you could take physical objects, place them in there and let them interact with the ones that were virtual. Right. And you could, you could capture the shape of them and some not very high resolution, but you could do that. And then you could move them virtually around, make cutouts and so forth.
+
+And in the end you will 3d print the thing. And we ran a study with folks who had never done CAD design or anything like it. And they were able to design pen holders and things like that. Without any, without much prior training, like they had seen the machine 15 minutes later, they were able to, to build things that we had then 3d printed.
+
+That was really cool.
+
+[00:25:32] **Justin:** That's magic. That is magic waiting for the day where it feels more like physical manipulation of digital things. Like, yeah.
+
+[00:25:45] **Chris:** Yeah. Yeah. Having them blurred is really exciting.
+
+[00:25:48] **Andrew:** They've been making progress on like the viewers, like, I don't know if you guys have seen the looking glass, a little device. It's amazing what that thing can do. I've only ever seen pictures of it on the internet, but it looks, it looks wild.
+
+[00:26:02] **Chris:** Yeah. I'd love to see one. And for real like the videos and the other pictures, look, some look amazing.
+
+## Bringing HCI to Developer Experience
+
+[00:26:10] **Andrew:** So circling back to gitpod now, human computer interaction and like kind of making those feedback loops shorter seems to translate to, to gitpod where, you're trying to do the same thing, but for development workflows, how has your experience in human computer interaction influenced your work on gitpod?
+
+[00:26:32] **Chris:** So the, the theme is a, is a similar one. It's all about reducing barriers to entry. It's all about making it easier for folks to getting started and much like, you know, to do 3d printing, today even still, you need to learn CAD essentially. If you want to get into writing code, and even as a seasoned experienced programmer, you still need to develop a, you still need to, you know, go through all the faff of setting up your tools and sort of reducing that friction I think, you know, that's the common theme here in terms of, of methods and thinking, probably the one lesson that I took from that time is. Solve fo specifics first, do that two or three times, and then generalize don't generalize from the get-go, you know, don't try to S like you have that specific problem you wanna solve, don't solve the generalized version of it and treat what he actually wanted to solve.
+
+Just as a special case. Now, a softer, special thing, solve it again, see what the commonalities are, and then abstract over that. And I think this is the biggest lesson I learned from, from that time.
+
+[00:27:40] **Justin:** Good practical advice. There you go. Don't over abstract. Do it once. Do it a few times, then find your attraction
+
+[00:27:48] **Andrew:** Yeah, don't over, don't abstract too early. I've found that to, try to write everything twice. The wet methodology.
+
+[00:27:56] **Chris:** Yeah.
+
+[00:27:59] **Andrew:** Continuing on that topic of shortened feedback loops, another one of the features of gitpod is the ability to collaboratively edit side-by-side with your coworkers. This is a pretty powerful concept. Do you think this, this way of working will kind of change the way we code? Being able to do it this at the same time in the same space so easily.
+
+[00:28:22] **Chris:** So th there's definitely a lot of potential in that. It's interesting, like a year ago or two years ago, I would've said, yeah, this is definitely the thing. Frankly now, you know, with, with a pandemic and, and more and more folks going remote and also spanning more time zones. And that's something that we've also gone through internally.
+
+I would say that sort of the, the estrone crown is sharing features that Gitpod provides, are almost a tad more interesting. At least to me personally.
+
+So for one being able to solve someone's set up problem without having to be in the same time zone, you know, because I can make a commit to my repository and I essentially make their day because when they wake up, their problem is solved.
+
+That really does a lot also you can share snapshots of a workspace. So, you know, if you want to demonstrate something, you, you prepared that you create a snapshot of that. You sent them a link, they open it and they get to state on their own. Do they can experiment within. Those features are, to me, really, really exciting, you know, I, I conscious pack my laptop up and send it, send it somewhere else, but I can do that with my workspace.
+
+That's awesome. And so for the collaborative editing, there we're still in the beginning, sort of building this out. You know, the, we, haven't sort of, we haven't built out the, the deep integration on collaborative editing yet. This is something where we, where we have an internal discussions on how we want to do this.
+
+And there are a lot of interesting edge case questions also that you'll want to answer, you know, like share a terminal access and things like that. So, that's something that that we're building out more on. I think in, when you work with someone else, the, the async bit is really nice being able to attach a snapshot to, to an issue on GitHub, for example, and be like, all right, you want to try this out? You know, click here. This is the state, I think is, is the more powerful feature in my mind.
+
+[00:30:09] **Andrew:** It seems like it could have implications on things like mob programming. Like if you're doing like a large refactor and you're like, Hey, can you come and hop on and S change some imports with me for like an hour it's seems like that could be a cool way to work.
+
+[00:30:24] **Chris:** Sharing just becomes easier. Right? It's I mean, if it's almost a tautology here but it, it does change how, how you do things because, you know, giving, giving folks access also to intermediate states that you wouldn't necessarily want to commit back. Just helps a lot.
+
+[00:30:42] **Andrew:** The GitHub integration seems pretty cool. Like how you can just like open up a repo. Does that extend to a pull request? Like if I open up a pull request, do I automatically get a workspace that like a reviewer can come in and just click on and spin up instantly?
+
+[00:30:56] **Chris:** Absolutely. So when you were trying to be very context sensitive, so if you do this on a pull request, you know, you're going to have the correct branch checked out and you're going to see a pull request view also with sort of the comments that came in and he can fill in the comments from within the workspace also.
+
+So when he went to review stuff, if you open a GitHub workspace on a, on an issue, we'll already have a branch provided. So, you know, with the branch name that, that you then can push up. If you do that on a repository that you don't have, that he cannot push to, and you, you try will ask, Hey, do you want to create a fork?
+
+And then, produce a pull request for that. So we're trying to be really context sensitive. And that's not just on GitHub, right? So that also works on. That also works on Bitbucket.
+
+[00:31:43] **Justin:** So gitpod is a pretty interesting. Paradigm shift. And I feel like there's a lot of those rather compelling paradigm shifts happening, especially around the space. Of, of collaborative editing. But what do you think is sort of the, the next evolution of, of competing if you, if you zoom out from like where we're at now, and sort of think forward a little bit, like, how do you see things like continuing to evolve?.
+
+[00:32:14] **Chris:** I have to think about that for a second.
+
+[00:32:15] **Andrew:** Go for it. It's a meaty question.
+
+[00:32:17] **Chris:** I don't know if I'm a tall enough to, to speak for an entire industry. I don't think so. I, I can tell you where, where I would like to see it go. It's really two things that I'd like to see happen.
+
+One, evermore increasing cross-device interaction, which is something that, you know, apple is doing a pretty good job, frankly, at pushing that.
+
+And that's, you know, the only ecosystem it's, it's a natural thing to do. But I I'd like to see that across more, more systems and shameless plug in that sense, like gitpod does a step in that direction also because you know, you have your workspace running in the cloud and you can use that from your laptop.
+
+You can use it from your iPad. You can use the very same workspace from both devices at the same time. So, but I'd like to see that extended more. I'd like, Be able to like, you know, I have a F I have a photo on my phone and I want to send that to someone that's like, yeah, I can click through all the sharing things, but why can't I just, you know, help my phone there and swipe it across to something.
+
+And although the prototypes for, for techniques like this exist and have existed for, for many, many years in research, but none of them have seen the light of day on a commercial setting. So that's something that I'd really like to see. And the other is sort of what we just spoke about the, the entire sort of cross, or mixed reality interaction side of things.
+
+So, you know, the holo lenses, and so forth, really sort of enhancing the things that we do. There is a lot of potential for really helping in potentially subtle, but really meaningful ways. Like I, I enjoy woodworking in my spare time. There, you know, just, just being able to, to look at something and knowing how big something is without having to pull out, you know, look from, go and look for my measurement tape and measure that things like that, or having plans step by step directions, you name it or also a warning.
+
+Hey, you know, that machine is still running. It's just, you're not hearing it because you're having hearing aids on or like ear protection on all those kinds of things. There's a lot of very rich sort of interaction that we could do, that I think will be really exciting.
+
+[00:34:20] **Andrew:** Yeah, I've been a magic leap geek for awhile. Like, I, I cannot tell you how many times I went and checked the subreddit before it was actually released seeing like, well, what's the news, what's the news. It's, it's just such an exciting way for computers to go. Like, I, I can't wait till AR is just like the default and you can like look around and it's th the world comes alive with information.
+
+[00:34:46] **Chris:** Having computing more embedded, you know, like I'm all I'm ever so fascinated when, when folks nowadays pull out a smartphone and just interact with it as if it were the most natural thing in the world, when in reality, it's really not right. You have this flat pane of glass that gives you very little sensory feedback on what's happening.
+
+You have very little sort of affordances and signifiers to tell you how to navigate this world. And yet it's become sort of, you know, if the Internet's not working, it's like the electricity has gone out. And I'm really excited at seeing this become more and more reality, sort of Mike Wise, as you become vision, sort of, becoming more and more where, you know, computing just becomes permeates things and you're not necessarily aware that that's happening.
+
+Not in the creepy way that this could be used, but like in, in the positive enhancing way,
+
+[00:35:38] **Justin:** Yeah, definitely. Think of the big things sort of in the way, of that vision that we have to get across what it is like to, and it it's basic. Computing issue, right? Inputs and outputs. It's like, how do you, how do you make inputs and outputs less intrusive? And you know, AR the hope for AR is, is that where your, your outputs, your, what you see is, is like a little bit closer to you, whether it's in glasses or in future land and like contact lenses or something, you know, it's like, you're able to sort of, see this like, enhanced, rich reality. But I think input is actually a really rather hard problem. It's like, how do you, how do you communicate with the device? you know, voice only takes you so far, being like typing is a, is a thing that we've done for many years now but like, you know, it's a rather cumbersome, medium, so, you know, what's the, what's the next step there?
+
+[00:36:39] **Chris:** You don't want to be standing in public spaces gesturing like,
+
+[00:36:42] **Justin:** Yeah.
+
+[00:36:43] **Andrew:** Minority report.
+
+[00:36:44] **Chris:** Yeah, exactly. Oh my God. If you want to wind up an HCI researcher, you ask them about minority report, but a lot of things that are wrong with it now, I think in terms of like computing and tools, like, you know, this being a tools podcast, essentially, something that, that we need to get better at also, and this goes for, for dev tools like gitpod also is we need to make them proper tools.
+
+And what, what makes a really good tool is when you think of a pen, right? It's probably the oldest, one of the oldest tools we know. And what makes it really good is that you don't have to think about it. You think when you use it, you think about writing. You don't think about the pen in your hand. And with computing, I often feel that we still have some way to go on that, you know, the tools that we're using.
+
+It's still occupy often occupy a lot of our, our mental space and, you know, make themselves too known. And we have to blend them onto the background where you almost forget that, that, but you notice that not you notice them whether or not.
+
+[00:37:45] **Justin:** Yeah, absolutely. Absolutely hope for a better future.
+
+[00:37:52] **Chris:** Indeed.
+
+## Tooltips
+
+[00:37:53] **Andrew:** So my first Tooltip is really just one Tooltip.
+
+It's two tools that go really well together. And I've used them a lot in the past to help me debug what's in my bundles. And really, if you're even just learning what Webpack does, I think it's super valuable to have this and running so you can physically see what your bundles look like, and you get a much.
+
+Better understanding of what's actually going on. So this first a tool, which is a pretty widely known plugin, but it's Webpack bundle analyzer. And what it gives you is this nice tree view of all of your web pages, dependencies, and how they're actually chunked by Webpack. So it's super easy for you to go, oh, I see there's a whole bunch of react Dom in my bundle, or I'm accidentally including all of lodash instead of just that one function that I want to. Where this tool kind of falls short is why. Why did that thing make it into my bundle? Like you might see the, every lodash functions there, but, but where was that imported?
+
+Or if you have this huge application with all these dependencies and a complex model, where did that one, one file get included that blew up your bundle and that's where this second tool comes in. It's an oldie, but goodie, like it's, it's been around since, like it's been around for years in Webpack.
+
+It looks like it's an unmaintained repo, but it isn't. It's that like missing tool of Webpack bundle analyzer where you can see, oh, here's this file, here's every file it depends on, and everything that imported it, and you can easily walk back up to the tree till you get to a point where you're like, oh, it's that that's importing it.
+
+And maybe I should put a pure comment there. So if you're ever trying to debug your bundles or even just trying to learn Webpack, these two tools can really help you understand what's going on.
+
+Yeah. So, it shows you all the modules, it gives you this nice, little, little, graph viewer that I don't really use too much.
+
+but it's useful when you like click on one of these modules and you can see, oh, this one was, was imported this way and then just keep walking back up the tree and you can see all how all the files interconnect and it's, it's super helpful. For DeScript, the page that I work on, I got it down from like megabytes and megabytes of JavaScript down to just a few hundred kilobytes using these two tools and just iteratively going through, picking a dependency, then going a Webpack analyze and walking back up the tree.
+
+[00:40:24] **Justin:** The web thanks you.
+
+[00:40:25] **Andrew:** Yeah, it's, it's crazy how much extra JavaScript can be, can get included when you're not looking.
+
+[00:40:31] **Justin:** So, my, first tooltip of the day is this tool that was recently renamed. It's Konn. K O N N. It used to be called Kont, which is a, you know, a tricky, a tricky library name. So Konn is a setup tool for jest. So essentially what it does is it allows you to have shared setups between tests.
+
+So imagine that you are, using, oh, like playwright to open a browser and poke around on some stuff in several tests. So this allows you to create a provider, for playwright. Well they provide a provider... But anyway, it'll do the setup and automatically configure your like before each or before all statements. And you can use that pretty simply to sort of share, these, these setups between tests. So, you know, it'll handle setting things, up, tearing things down ensuring everything is, is like how you want it. So if you're you know, running fairly complex tests, and, you know, I imagine that something like auto could potentially benefit from this where you have to do a lot of setup of a lot of. Different libraries and stuff. So anyway, yeah, just a, just a nice little utility to make, sharing set up for justice a little bit easier. This is actually built by the Prisma team. So, cool.
+
+[00:42:08] **Andrew:** I might take a look at this. I have a task of adding automation to our, our pages and, it requires lots of setup and tear down. So might be something that I actually use.
+
+[00:42:21] **Justin:** Yeah, this is very similar to a library and the mocha ecosystem called fancy does a very, very similar sort of thing.
+
+[00:42:31] **Chris:** All right my first Tooltip is a little tool called Jumpcut and it's essentially a clipboard history for MacOS. That pretty much describes what it does, but it's, it's super useful because I have developed habits where, you know, I need to copy different bits from, from one page. And I'll just do several copy operations after each other.
+
+And then I'll go to the application I'm going to paste that in and I'll just do several paste applications in a row. They recently added a function, that I didn't know I need, which is to remove things from that history, which is super handy if you know, a copy of an API key, you don't want to keep that in your history.
+
+Handy little tool works, a treat. Really makes my life easier.
+
+[00:43:16] **Justin:** Nice.
+
+[00:43:17] **Andrew:** Does it make clipboard into like a stack?
+
+[00:43:22] **Chris:** Exactly. Yeah. And you can navigate that stack. Like a, so it's bound to command shift V and then you can use the arrow keys to navigate, or you can just, hit command shift V several times and it'll go back in history. And you, you get like a kind of tooltip, like a on-screen display of what it's going to paste, sorta helps navigating.
+
+And you also have, there are some, there's an icon up in the menu bar that gives you the history.
+
+[00:43:50] **Andrew:** Yeah, I've heard many, many, a person say that, clipboard history has changed the way they use a computer. I still need to get on onboard. So I might try this one out.
+
+Okay. My last Tooltip of the day is, so in messing around with my bundles a lot, I came upon an article and a few tweets about how some people have started to split out their bundle. And instead of having a vendor chunk for all of their dependencies, they will create a chunk for each one of their dependencies.
+
+And this may seem like way, way too much overhead at first, but the reason they do this is because then each one of your dependencies is independently cacheable. And how often you changing your dependencies? So in theory, this could save a lot of bites over the wire because most of your dependencies will just be in cache rather than actually needing to be requested.
+
+The first time I got introduced to this concept was through a Ryan Florence on Twitter. And he was talking about how they did this for Remix. Apparently they don't do it anymore, but they want to get back to that. It just seems like an interesting way to do things. I don't know how, how pragmatic this is in, in the real world.
+
+It requires that you have HTTP/2 on, and, one of my coworkers brought up that cache performance may not be as good as you think. Apparently your browser cache can actually be slower than the network sometimes. So utilizing this technique may not lead to the best results, but, I still think it's interesting.
+
+[00:45:25] **Justin:** And there's something to be said, especially a few of your assets are coming from a CDN then, you know, still, still a bit of a shorter hop than it would have to do. So.
+
+[00:45:35] **Andrew:** Yeah, the cache not performing as well as network though. That is just like a, a hard concept to wrap my mind around
+
+[00:45:43] **Justin:** Yeah. That's interesting. I haven't, I haven't heard about that before...
+
+[00:45:49] **Andrew:** Yeah. I'll post an article in the show notes, but it's it showed that as like, once you got over like 50 things that were cached, the performance of the cache retrieval, like greatly degraded.
+
+[00:46:01] **Justin:** That kind of thing is a little bit of a moving target because it's an implementation detail of the browser. That like performance envelope of cache access or whatever. So that'd be something that if you were making architectural decisions or programmatic decisions, based on that performance, you need to make sure that you're continually sort of measuring the state of the state there.
+
+[00:46:20] **Andrew:** Yeah, it's hard. There's like, it's, there's multiple browsers, multiple computers. You can read it on like a power of those computers. So it's, it's a, it's a hard problem to get around. And in the article, they mentioned that Firefox actually introduced a feature where you could race the network in the cache.
+
+And like, they thought that sure cash is always going to win, but like an alarming percentage of the time, the network won.
+
+[00:46:48] **Justin:** Wow, that's crazy.
+
+So, at my job at Oxide, I've been doing more and more Rust recently. Trying to learn more and more Rust. And broadly I have a love of all things CLI. So I've been starting to explore the Rust community to find more CLI libraries. And, there's this Rust library that I came across this week called, maybe ar-gee or arg-eye, depending on how you want to pronounce it, it's a-r-g-i. But it's an art parser for rust. It uses this like nice little CLI macro that gives you a very, good authoring experience. It's like, it's, it's very pleasant to write CLIs with this because it feels very much like it reminds me a little bit of docopt, which is a library for, for generating a CLI from documentation, essentially like help text.
+
+but it kinda, you know, feels, feels pretty terse. Feels nice. Anyway as I'm exploring Rust more, I'm seeing a lot of the magic of macros. Macros in Rust are just like incredibly magic. So, Yeah. I don't know, kind of a fun, fun library.
+
+[00:48:03] **Andrew:** This is a weird way to, to specify flags. Like you just like putting them right in there, like, like this doesn't look like code that should be able to run. Is that like kind of part of the magic of the macro?
+
+[00:48:16] **Justin:** Yeah. Yeah, exactly. Exactly. Yeah. I mean, So you're actually specifying, it in a way that would show up and help text almost as well as like, it feels very like docopt-ish. Yeah. Yeah. Macros are absolute magic.
+
+[00:48:28] **Chris:** How good is the tool support for this? Like, you know, do you need, do you need to go and read docs to figure out what the syntax for this is?
+
+[00:48:37] **Justin:** It's a good question. So The compiler will tell you if you get the syntax wrong, like the compiler's actually checking that. But as far as like auto-complete, hints and stuff, I don't think you're going to get any of that.
+
+[00:48:47] **Andrew:** And you just got to write your fig auto-completion spec and there you go. Okay. Last Tooltip of the day.
+
+[00:48:55] **Chris:** I've pulled a bait and switch,
+
+[00:48:58] **Andrew:** Oh, wow.
+
+[00:48:59] **Chris:** And replace this last second. And it's also called ACI, but that's something completely different. So my, my second Tooltip is something that I learned of about four hours. And I was pointed to this by colleague of mine. Hi, Alejandro. Thanks for the tip. This is awesome.
+
+It's a new project, coming out of rancher labs that uses a lot of the CNCF, projects that are out there like Longhorn and KubeVirt to, essentially make provisioning of VMs much easier. So at the end, if you have, if KVM nodes, that you can spin up VMs on and they've really tried to make a lot of the provisioning bits, bits, much easier.
+
+There is apparently good API around this. You get a lot of metrics out of the box, which is really cool. So they integrated Grafana, and for all of the VMs as they're being created, you're getting metrics out of the box. So that's very nice. I can't talk too much about it. I also still have to dig into this, but this looked, looked really, really interesting.
+
+I saw a demo today of this, you know, basically sitting on, on what was, I believe in Equinox node. And, yeah, that, that's something that we're looking into, for example, to maybe ease preview environments, where you needed to spin up a lot of clusters in isolation and things like that. So it looks like an interesting project.
+
+[00:50:24] **Andrew:** Yeah. When I saw the picture, I was excited. I was like, oh, he's sharing open source farming software. This is, this is way out of left field.
+
+[00:50:31] **Chris:** Oh, it would be awesome. No I'm sorry. It's a disappointing then, but, that would be awesome. Yeah.
+
+[00:50:37] **Andrew:** It looks interesting too. I can see how it fits, fits the problems you're trying to solve.
+
+[00:50:43] **Justin:** If you're wanting open-source farming stuff. Look up farm bot. It's like CNC farming. That's pretty fun.
+
+[00:50:52] **Andrew:** I think I recently saw, like open source farming software on hacker news. I've seen this one also. This one's pretty cool.
+
+[00:50:59] **Justin:** Yeah. I'm pretty sure that farm bot uses elixir nerves under the hood, which is one of my, one of my favorites. Anyway. Sorry.
+
+[00:51:08] **Andrew:** This farmbot seems like a great way to get, get into gardening for geeks. Set it and forget it.
+
+[00:51:13] **Chris:** You forgot to water the plants? Oh no, wait, I haven't.
+
+[00:51:17] **Andrew:** Yeah. I like a home automation garden. Automation is just a natural next step.
+
+[00:51:22] **Chris:** Absolutely.
+
+[00:51:24] **Andrew:** Well I think that's it for this week's episode of DevTools.fm. Thanks Chris for coming on. This was, cool chat that spanned a lot of different topics that we haven't talked about before. Learning about human computer interaction was a lot of fun.
+
+Thanks for coming on.
+
+[00:51:39] **Chris:** Yeah, thank you very much for having me. It was a blast.
+
+[00:51:41] **Andrew:** Be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
