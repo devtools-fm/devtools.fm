@@ -1,0 +1,465 @@
+---
+title: Michael Jackson - react-router, Remix, unpkg
+youtube: https://www.youtube.com/watch?v=xI-OggjrKLg
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/9655230
+tags: technology, web development, programming, coding, remix, front end, full stack. back end, open source
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Joining us this week is Michael Jackson, creator of unpkg, a CDN for all things NPM, as well as co-creator of react router, and co-founder of react training.
+He has now created, alongside his long time cohort Ryan Florence, Remix a a full stack react framework built on modern web standards.
+
+<!-- LINKS -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:32] What is Remix?
+[00:13:06] Building with the Modern Web
+[00:31:31] React Router
+[00:39:12] Remix Ergonmics
+[00:53:40] Business During the Pandemic
+[00:59:42] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Michael:** Right. So All we're trying to do with remix is we're trying to do say, &quot;Look, we're going to try and guide you in the right way. What we think is a good way to build the apps.&quot;
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew in this is my co-host Justin.
+
+**Justin:** Hey everyone today, we're joined by Michael Jackson, creator of unpkg, a CDN for all things NPM, as well as co-creator of react router, co-founder of react training, and you've also created remix a lot of this alongside your long time cohort Ryan Florence. Welcome, Michael. So great to have you here.
+
+Is there anything else you'd like to tell our audience about yourself?
+
+**Michael:** Yeah. No, thank you, Justin. And thank you, Andrew, for having me on the podcast. I'm super happy to be here. I think you pretty much nailed it. All the, all the, all the stuff that I built and been a busy, busy guy over the last couple of years, I guess
+
+**Justin:** Yeah, for sure. I just wanted to start off by saying, so I, I work at oxide computer company and the front end aspect of our product is, is rather small at the moment, but we're really big fans of the work that you, Ryan and others have, have put into remix, like the design patterns, just the philosophy, everything it's really inspirational.
+
+So maybe that's just a great place to start.
+
+#### [00:01:32] What is Remix?
+
+**Justin:** Would you like to take a moment to talk about what is remix from a high level, and then maybe some of the thought that went behind putting it together?
+
+**Michael:** Yeah. So first of all, thank you so much. We like that that's high praise and I really, I really, really appreciate that. We have put a ton of thought and effort into the APIs that we've, that we've settled on and hopefully we'll get into some of that and talk about. But, you know, our goal really is just to push the web forward, there's a, and I don't want this to come across as, too negative, but there is a lot of, there are just so many different opinions nowadays about how to build stuff for the web.
+
+And I feel like some of it is really good stuff. Some of it is really well informed and is good for users. And then some of it is not good for users. Some of it is bad advice, surprise, you know, to anybody who's, who's been around a while. I don't think that should come as a surprise that you can't believe everything you read on the internet, but yeah, there's so, remix is, I feel like our kind of our way to put a flag in the, in the ground, if you will and say, no, no, we have some opinions about how this stuff should be done.
+
+And we have some opinions about what is good for users. What is good for these are experience, how things should be built. Whereas in the past we've been kind of unopinionated, people have built... a so-so react router is our main open source project that we've worked on since 2014, which by the way, this afternoon, we pushed the button on releasing V6, which has been in development for about two years now.
+
+Um, crazy to think about that, but, um, but, but thank you. So, but react router is, is like a very unopinionated thing, uh, fairly unopinionated right. People have built amazing experiences with react-router people who have built really not amazing experiences with react router. And it's always kind of depressing to me when I see a not great experience built with react router.
+
+Cause I think maybe I didn't guide them well enough. Maybe I didn't give them enough tools to do it the right way. And so remix is kind of our our attempt to put down some opinions and help people to really build better, better sites.
+
+**Justin:** Yeah, that's awesome. I really have enjoyed just reading through the sort of like guiding principles of Remix. So, you know, like use the platform, very basic sort of thing, but like minimize your abstractions and try to try to do things as closely as like. If you didn't have this like honkin' huge framework.
+
+What would you do? You know, you know, it's a nice way to work because you can just always fall back on the platform, like using forms to do user inputs
+
+**Michael:** A hundred percent. Yeah. It's funny that that's like revolutionary or interesting, right. Because it seems so basic. Right. But nowadays if you look around at: how are people doing data mutations, right? How do you build a great , form on the internet today or a great experience for mutating, some data on the server, updating a record in your database?
+
+Especially when you think about, w what, what are all the different concerns that you might have? You might want to do something fancy, like providing some optimistic UI or, you know, a progress indicator, a loading indicator, obviously errors come into play, right? Where are you going to do that validation?
+
+Are you going to do it on the client side? Are you gonna do it on the service side? You gotta do both. Are you going to, um, update the URL? Are you going to model this as a, as a full page transition? So that this we'll, we'll, we'll take them to a new page, for example, like, like a login form, right.
+
+Or somebody logs in, and now they're taking a new page, or is it more just like. You know, like a little check box and a to-do list, and then they hit the checkbox and, and, and now that's done. Right. So there are so many different questions with just this one little thing that we want to do, which is data mutations, updating some data on the server.
+
+Our goal with remix has been okay. So,, w w this is the way with everything that we build in remixes, let's take a look at what the web gives us. What are the primitives that are available for us here? Well, the, the, the, the primary interface for users to interact with your page is, uh, it's a form, a link or a form, a link is for gets.
+
+And then this is the way that I think about them links or, or reads and forms are for writes. And links just take me to another page. A form is how I give you some data, and that's how I get it back. So our, so our whole mutations, our whole data mutation story is built around HTML forms instead of an eight or nine kilobyte JavaScript library that you dump on the page so that you can do, do fetches and things like that.
+
+**Andrew:** Yeah. So it seems like you're falling back on like classic web technology, like links and forms they've been around for a while. Does remix use like any bleeding edge tech or does it try to try to stay within something that's supported by most browsers?
+
+**Michael:** Well, so that's, that's a really interesting piece of it, right? Because we are historically we've, we've been the creators of react router, which is, I, I was kind of amazed at the, the other day. I told you, we just released v6 today and I was just amazed at the download numbers, like so many millions and millions of people around the world are using this client side routing library. Traditionally, for client side routing, which you would, you could say is like a fairly modern technique. Client side, web apps, I think we, we started building, uh, we built the first fully client side iteration of Twitter was back in 2012 when I was working at Twitter.
+
+So in the last decade or so these, these, these apps have moved into the client and then there's obviously now hybrid web apps nowadays, but, but anyway, the, uh, the client, the client vendor thing, right? The building an app clients, I guess, is what I would say is a fairly cutting-edge technique.
+
+Obviously it comes with trade-offs, but we've been there at the forefront. People who are, who are building those apps for a long time now. People have built some amazing cutting edge experiences. I remember, I still remember seeing the netflix.com app when the, the engineers who work there, they showed me netflix.com was built with react router.
+
+And it was one of the most beautiful things I'd ever seen on the web, right? Like very, very heavy in assets, very, very heavy in graphics. You click into different shows or different movies, and they kind of like animate in, and then they're, they're playing this beautiful movie and so, so people can build very, very, very cutting edge things with react order.
+
+And I, and I kind of use react router and remix sort of interchangeably because react router really is the heart of remix. Remix adds like so much more. Um, but, but they're, they're very, very closely related. Um, so yeah, we are definitely, to say that we use web standards. It's not saying that we are issuing these more modern ways of doing things.
+
+Not at all. Absolutely not at all. We just want you to do it the right way. You know, we, we don't want you to, uh, for example build up a big cache of data in memory, uh, which a lot of modern client-side data libraries will do. Uh, we don't want you to do that because what's going to happen when the user clicks the reload button or what's going to happen when they navigate to a different domain and then hit the back button.
+
+Well, they're not going to have that. Right. Uh, so even though you might've thought that that was a really cutting edge sort of modern way to do it, it's actually not that great for the user. Um, and instead of, caching in memory, we'll cache in the HTTP cache, uh, which it turns out is, is better for the user, because you're now using the browsers built in cache.
+
+They navigate to a different domain. They hit the back button. you can pull that data right back out of the cache instead of hitting your server again, think things like that. Right. So we're trying to make decisions that are good for users, um, but that are also, help you build amazing really, really fast, uh, cutting edge experiences.
+
+Just, it's like, don't, don't, don't get rid of everything in the past. You know, the, the, these, these web technologies are there for a reason and they're good. We didn't seem to use them in the right way, and I, I think for the last couple of years, especially like in the react community, the term &quot;use the platform&quot; kind of took on this sort of negative connotation almost because people in, in react and other component based frameworks were like, well, I can't build a nice select box or I can't build a really nice button.
+
+What, the platform is garbage. I need, I need to throw away the platform. And I want to just, I'm gonna just build everything in JavaScript, Uh, I'm even going to put my CSS and JavaScript. And I'm not saying that all of that was bad. I'm just saying that this there was this kind of backlash where, you know, a lot of dev advocates at companies like Google would say, &quot;Hey, why don't you use the platform instead?&quot;
+
+Because people who are on a, a really slow connection on a mobile device, uh, they're not having a great experience with all of this JavaScript that you're making them download. So why don't you use the platform instead? And so it was kind of what I believe is kind of a false, um, uh, conflict between the two, I think you can use the platform and you can also create amazing experiences, cutting edge experiences.
+
+I just think there's, you, you can do those, if you understand how to use the platform. Um, so yeah, we're not, we're not advocating. Going back to the olden days of, you know, we're, we're very much at the, at the cutting edge, uh, and people are building incredible cutting edge experiences with react router. I was just using, I'm not sure if either of you have used, um, uh, for remix, uh, one app that we really enjoy using is linear.
+
+It's like this issue tracker, and that thing is such an impressive app. It is, it is, it's a web app, but you forget that it's a web app because it is instantly responsive, no matter what you do. Um, it is instantly responsive and it's built with react-router, and I'm sure a bunch of their own, you know, special sauce.
+
+I could visualize another company building an issue tracker, that's not nearly as impressive by making a completely different set of choices. Right. So all we're trying to do with remix is we're trying to do say, &quot;Look, we're going to try and guide you in the right way. What we think is a good way, uh, to build the apps.&quot;
+
+There's a colleague of mine, who I talked to from time to time, Alex Russell, uh, on Twitter, who, he kind of gets some flack from people because he he's constantly pointing out these terrible user experiences that are being built, uh, by people using a lot of the existing tooling that's out there today.
+
+And he's like, you know, this, this is terrible. Like the web can't be like this, we need to be better than this. We need to do better than this. And sometimes he gets some pushback from people, but I, I really respect him for, for what he's trying to do, because what he's saying is like, Hey, we need to build better stuff than this.
+
+And that's why we adopted in our tagline for remix. Well, it wasn't because of him. That was just because I agree with him. But our tagline in remix is build better websites. We can do better than. Let's just not forget all of the great things that are on the web. Let's let's start there and let's move forward.
+
+#### [00:13:06] Building with the Modern Web
+
+**Justin:** Yeah, I think, I mean, one of the hard things about building on the web platform generally is that. Your set of decisions that you need to make is, is very, very large. I mean, this is, uh, it's, it's an incredibly robust platform that we can ship all kinds of experiences on, but there are many, many, many ways to do that and that, that continues to grow.
+
+And there's no perfect way to do any one thing. Right? So it's like finding out where you draw that line is important. And I mean, I think that's something that I also just admire about Remix. And then I've heard you all talk a little bit openly about, so for example, other frameworks have made other choices like, so Next.js, for example, does a lot under the hood to statically generate content as sort of at build time.
+
+And they have incremental static regeneration, which is also sort of like this, this build process or going through, whereas remix your philosophy is like, Hey, CDNs exists. We have caching policies. This is exactly what this thing is for use this infrastructure. It's a different set of choices for like different problems, but, but ultimately like the choices you make can become very meaningful.
+
+So it's like finding the right things to align yourself with. And I think the, the, the sort of conceptual notion of like, let's, let's invent as little as possible to be able to give you a solid experiences is important.
+
+**Michael:** The whole like static site generation movement, cause next isn't the only tool that, that kind of hopped on that wagon. It started, I think with Gatsby and then... there are a lot, there are a lot of other tools that'll, that'll do it as well. And, um, I just think it's a very, very limited subset of sites that you can build with it.
+
+First of all, uh , eventually, I mean, we even see Gatsby's adding functions now, next is their server side props thing. Um, it, it seems like if that's where you start, if you start just building static stuff, you eventually make your way back and say, okay, well, we, we actually do need a server site handler here at least one or two, you know, to handle a payment or handle a login or a session or something like that.
+
+Right. If you're building anything more than just a, uh, static dev blog or doc site, as soon as somebody needs to authenticate that whole model kind of goes out the window. And so what I think is, uh, is easier to do is conceptually, you can think about your, and of course I don't want to make it seem black and white.
+
+Like there are, there are all sorts of different kinds of apps, as you said, Justin, all sorts of different decisions that you have to make. So there's no silver bullet here, but conceptually, the way that I think about static sites are, you know, that your server is essentially this generator, right?
+
+So if I, if I, if I wanted a static site, um, I could stick a server behind a CDN and that server knows how to generate every single URL. And let's just say for sake of discussion, this server sets , it only generates every single page once. And the caching headers that it sends back are this page is immutable.
+
+That will never change. Right. So we'll never fall out of the cache just, just for sake of argument. Um, on every request, except for the very first request for the page, that site would have the exact same performance as a static site, right? It would, you would hit the URL. The server would generate the page.
+
+It would end up in the CDN cache and on every subsequent request you would hit the CDN cache.
+
+And, you know, what's interesting is about this is I actually built a site like this which is called unpkg. So unpkg is a site that was basically a, it was just this idea that I had back in 2015. I was like, oh, build a little, uh, reverse proxy in front of NPM.
+
+And then people can get files out of tarballs from NPM, uh, with a URL. So they can just plug the URL unpkg.com/react/whatever path to the file in the tarball. And then get back to that file. And, uh, and so on package actually works a lot like this because, you know, once you publish something to NPM, you can't unpublish it or change it.
+
+So all the responses that unpkg sends back are immutable, for files on the, on the registry. And, uh, and it's the kind of site where it would have been impossible to sort of pre-generated or statically build this entire site, because there's a, who knows how many billions of files now at this point in the publish to the registry.
+
+Um, and so the model works very well there, but so, so it's kind of a, but if I recognize that it's kind of an extreme case, right? Not everybody's building a site where they can guarantee that all the content is going to be immutable, but, but the, I think the principle still holds, right. Even if you are building, you know, a much, much smaller site that is like a, a, you know, a doc site or a dev blog, if you're like WordPress has been doing this for years, right?
+
+You have. What do they call it like WordPress super cache or something like that? The plugin that you just stick in front of your WordPress instance, in case you get a, in case you make it to the front page of hacker news or whatever. And then, and you rely on the cache. you lean on the cache, you rely on the cache to make your site fast.
+
+Uh, in, in, in the case that your server is slow or you're overwhelmed or whatever. And so it's, it's not, again, this, this could be a case of like, it's not something incredibly new that we're advocating here, but, um, but it's, it's something that if you are going to try and build an app like that today and react, uh, or build a website like that, you actually wouldn't have very many options.
+
+For doing that for building that kind of a site, you probably have to kind of build a lot of that stuff on your own because the existing options that are out there kind of kind of guide you towards this site of, this, this SSG model. Um, which, as I said again, I. I don't think it has a ton of applications outside very strictly content sites, doc sites and dev blogs.
+
+We're pretty comfortable with the approach that we're taking. We think it's , it's going to help people build a lot of great experiences as a, as they've been doing with react-router for years. Um, but then also, , if you do want some of your pages to be statically generated at build time, um, how hard is that going to be for us to do not very hard at all.
+
+Right. All it is is run a URL through the machine and put an HTML file in the public folder. And you're good. So like building the machine first, going from, going from a dynamics, uh, site generator, like a server to a static build, I think is easier than starting with a static build and trying to tack functions on later.
+
+Once you realize it's not. Does that make sense?
+
+**Justin:** Yeah, absolutely. Absolutely.
+
+**Andrew:** I've heard the core of remix referenced as that compiler. Can you explain that a little bit? What's it compiling? Is it kind of like Vite where it's more in browser? So what's happening there.
+
+**Michael:** Yeah, that's a great question. So, um, the way I kind of think about remix is it's a compiler for react router, compilers, it might seem funny to somebody that, to sort of think about it this way, because if you're new to web development, you might think, well,haven't we always just compiled our web apps?
+
+And the answer is no, we didn't, that's, that's actually pretty new. I remember when I, when I worked at Twitter, we used to have, we had a file. Uh, that we, we just sort of cargo culted into our app from some other team that was working at Twitter, it was called T w T T R dot JS.
+
+And it was like, that file was just sort of like making its way around. And if you needed something, some shared thing, you would just go and add it to that file and then you just commit it. And then like the next team would come along and they would be like, oh, we need a, we need a thing in there too.
+
+Like, we'll just add it to the file. And then, and that file just was huge. And I remember opening it up one time and thinking like, I remember, uh, cause we, it, it had existed in the days before ES five. And so it had like, it had like a lot of the array pro prototype methods, like reduce and filter and like basic stuff in there.
+
+Except they had it like five or six times, because the file was so long that like people didn't take the opportunity to like go back further in the moment. So w why, why am I saying this? Well, that was a decade ago, that was a decade ago at a high-tech company in downtown San Francisco. We were not building our apps.
+
+We were not using, modules, uh, and, and a compiler like Webpack and all that stuff. We were, we were literally just like writing JavaScript. Uh, we certainly didn't have TypeScript, uh, or, or, you know, uh, CSS in JS, or a lot of the stuff that people nowadays are, are using compilers for it.
+
+Um, and, and honestly, it wasn't even a popular thing back then to pull code off of NPM. Like if you were doing note, it was, but I remember the first time I saw installed jQuery off of NPM, I was like, Like jQuery off npm? Like, why don't I just go to the website and download jQuery? Why am I installing it from NPM?
+
+Nowadays if you're a JavaScript developer, it's like, why would you go to somebody's website and download a file? Why don't you just NPM install it, right? Like that is the way we get code. Right? So, so the whole model of consuming front-end code has dramatically changed over the last eight or nine years. And, um, and, and so, compiling for the web is now the thing and installing dependencies, and that's how you share code that is now also the way to do things.
+
+And so as a front end team, the front end development team, uh, your job, has, has ballooned in the last 10 years. You used to just write JavaScript and HTML and CSS, and like there's already enough there for you to know how to do right. When you're talking about semantically sound HTML, like building accessible app.
+
+And performant apps. There's a lot to discuss with those technologies, but now you, you also are moving further back in the stack. And so you now also have to understand compilers and build pipelines and even things like code splitting, how are you going to do that?
+
+And, and, dynamic importing and loading the bundles that sort of run time. And, um, th th there are just so, so many concerns as a front end developer, now that you have, that you didn't use to have. It used to be pop the script tags on the page and go. And so, uh, so yeah, so, so that's kind of how I tend to think about remix is, react router is one piece of it.
+
+You can take react-router or you can serve a render it, you can not server render it You can do code splitting with it. You get ignore code splitting. You can build a static site with it. You could build a fully dynamic site with it. It's not opinionated at all. You can build whatever kind of a site that you want with react-router remix comes along and says, Hey, you know, that, that cool router that we built, uh, we're actually going to build a framework for you to take full advantage of that router. So, uh, so we're going to give you TypeScript compiling right out of the box. Uh, we're going to give you things like a strategy for loading data right out of the box.
+
+And we're going to give you a strategy for a mutating data right out of the box. And by the way, how do you keep that data fresh on the page? As you do things as you, as you do mutate data, how do you keep other other routes, data fresh, um, how, how do you do things like, transitioning gradually or gracefully between.
+
+And so react router or sorry, remix is, uh, it, it really is this a compiler that, your, your input into remix is basically your routes on the file system. Um, and then your output is this, this code, split server rendered app that, uh, yeah. That we can run and we can run on node, we can run it in the browser. We can also run it in places like cloudflare workers. So that's something that I don't think we've we've even hit on yet. But, um, you, you mentioned, I think Justin, before, before we started, you said node was not an option for the app that you're working on. Um, and I totally totally get that.
+
+Nowadays we have multiple JavaScript runtimes, so the, you know, the cloudflare workers people. Uh, they just have these V8 isolates with this kind of custom runtime that's based on server work service workers. And they're saying, Hey, we'll run that at the edge for you. Right. So that is, that is not node.
+
+Um, and I'm not speaking specifically to your, your use case because a lot of other people are, have that same case, but yeah, they're, they're building, uh they're building something that is not node and they're saying, &quot;Hey, it's still JavaScript. You might maybe want to run your app here.&quot; And so one conscious decision that we made early on in the, in the design for remix was this thing is not going to be dependent on node.
+
+Uh, we've also got Dino or Deno. I'm not sure how to pronounce it. That's that's out there, right? That is also a not node. Definitely not node and node has been forked in the past. You know? So like, I, I just anticipate that the future is going to be a proliferation of, of runtimes for JavaScript that are not node. Node is going to be a big popular choice for a long, long time, but I think that we're going to see see more and more options for developers going forward. Uh, and so remix is not coupled to node. We actually run natively on CloudFlare workers and our server runtime is completely generic.
+
+We actually borrowed the idea for our server runtime from them that I said they, they based their whole thing on the service worker model, which of course includes, uh, the fetch API requests, response headers. We took that and we ran with it.
+
+And so our entire server runtime is generic and just runs on these requests and response objects, uh, that conform to that exact same API. So, you know, we've already talked about how we'd love standards. I love standards We're actually building on these web standards on the, on our server layer as well.
+
+Which allows it to be portable across any runtime that supports that standard, which is really cool.
+
+**Justin:** Was this, something that would generally run on what we would traditionally consider a serverless platform. So like AWS lambda are you specifically targeting like service worker, like APIs, like CloudFlare or even the browser service workers I guess?
+
+**Michael:** So we, we sometimes need a little bit of a translation layer depending on where we're running. Right. So we have these things called adapters. Um, so our, our server runtime is generic, right. We just, we just deal with request and response objects with the fetch API or the service worker API. Um, but yeah, but if we are running on node, then we need a little bit of help, right.
+
+Cause node doesn't have those things. So we can install node fetch, and now we can get those primitives running on node. We already get them running on CloudFlare workers, which is nice. They're already on Dino, which is nice as well. So, you know, whatever platform that we're on, if we're running on AWS Lambda, um, or, Google cloud functions, like what, wherever remix is running.
+
+Um, if they have support for the web fetch API. Great. If they don't, we'll polyfill it and remix will run there to.
+
+**Justin:** Do you do anything special around data reads? So specifically in like serverless frameworks, database connections can be a problem, uh, because you can just if you're opening a new database connection, every time you need to read and you're like deploy this to something like AWS Lambda or CloudFlare workers, then you could potentially swamp your database with connection requests.
+
+Do you have any thoughts about how you handle them?
+
+**Michael:** Yeah, 100%. So I'm glad you asked about that. So remix can either run in a persistent server environment, which in that case you would , you would boot your node app, uh, on your, your provider of choice. You would boot your node app and you would open your database connection and then just don't boot more instances than your database can handle and you should be all right, right.
+
+Or you use traditional like connection pooling or something like that. Um, which is, which would be fine. Remix also runs on, uh, serverless providers like CloudFlare workers or Lambda, in which case I think you probably want to steer clear usually of that model. I, you know, what's interesting is most of these serverless function these cloud function providers, what they usually end up doing is giving you a database as well. Right? So CloudFlare workers has their CloudFlare KV store and they've also got their durable objects. Um, AWS will give you I'm spacing on it right now.
+
+They've got Landa and then they've got the, uh,
+
+**Justin:** Dynamo DB?
+
+guess.
+
+**Michael:** I was going to say dynamo, but I thought there was, I thought there was another one that was called, but anyway, sorry, but yeah, they'll, they'll usually say, you know, we'll, we'll, we'll give you the run time and then we'll also give you a database, um, that, that works with that runtime, right.
+
+That scales with that runtime and according to the programming model. Um, but yeah, so you can, our goal is, um, really to be able to run remix at anywhere. And so we don't have too many opinions about like how you establish the database connection, how you pull it, how many instances there are, um, you, you handled out according to your own, uh, to your own, uh, you know, requirements.
+
+The thing that we do handle for you, which is pretty cool is we give you tools for both like, like for the client side of things, right? So for caching the data, for automatically keeping the data fresh on the page, as changes happen on your server, as, as forms are submitted and mutations happen, we're automatically able to know which data is invalidated by that change, and we can refresh it for you.
+
+#### [00:31:31] React Router
+
+**Michael:** One of the core ideas behind react router, has always been that it's a nested router and this is, this is an idea that I feel like, uh, is, is an idea that doesn't get nearly enough... uh, P people, once they get it, they really, really like it.
+
+But if they don't get it, they don't see why it's such a huge advantage, but one thing that we've seen with, with the nested route. So, so the idea of nested routing is basically that any, any website that you go to, and there's actually a really great explanation of this on react router.com.
+
+Right now, we just launched it today on our new site. But basically most web apps are, are kind of a set of boxes inside boxes. So you take a traditional web app, like the one that we're all familiar with, like, like GitHub, right? You go to github.com. You've got at least three, maybe four levels of routing, depending on what page you're looking at.
+
+Right. So if you've got the top, uh, sort of global nav, and then if you're at a repository, you've got the repository nav which is sort of just under that. And then maybe you're looking at a list of files, uh, a certain directory. So this is like the current directory nav that's underneath that, right? So you've got at least three nested boxes there that we would represent all with different routes in react router. If you go into your settings page, you have even another nav on the left and then your, as you click through that, your, your, your page is changing over on the right-hand side, if you've familiar with that UI.
+
+So that would be like four levels of nested routes on a single page. And one of the things that we do for you in remix, with regards to loading the data is we know how to load the data for an individual route. So let's say you are on that, you know, that file browser UI on GitHub and you click on, um, you click on a, uh, a directory and you want to go and see the files in that directory.
+
+We don't actually have to go and load all of the data for the sub nav for the repo nav and for the global nav, the only data you actually really need is just the data for that directory. Uh, and you know, we're able to do this. We're able to express this by associating a loader with each different route that's on the page. So for the loader, for the, for the file browser UI, you say, okay, I'll just take a look at the directory path, load, the data that I need there. But as you transition around on the client you sort of declare your data dependencies in one spot, and then as you navigate around will automatically go and fetch that data for you. And it'll show up in the right. Um, without invalidating any of the other data that you've already loaded for other things on the page. Right. And it's, and it's, by the way, it's not, it's also not cached in memory. Right. So if you it's cache, as we discussed earlier in HTTP cache. So if you go and hit the refresh button, um, you're, you're going to hit the browser's cache, assuming you've done cacheing correctly, and that page is going to pop right back up.
+
+So, so we do handle a lot of your data concerns prep for you. That
+
+Another thing that I wanted to talk about is just, um, just the power of, of finding the right models. You know, um, one thing that the graph QL community talks about a lot is the, the, the, the power and the expressiveness in the graph QL language helps to prevent like over fetching. Something that they talk about a lot, which is, you know, if you built a large app, like if you've ever built like a, like a, like a twitter client or a GitHub client or something, and you see the payloads that come back from these services, like there's, there's, there's pretty large objects, right? It seems kind of inevitable that your data model sort of just keeps growing the more features you add to your product.
+
+And so, over fetching data is actually a huge problem for a company like Facebook and for, a company like GitHub or Twitter. It would be a huge problem because anytime you want to go and fetch a feed or a user object, even just something as simple as that, you get all these properties back.
+
+And so graph QL solves that by saying, okay, we're going to give you this little object syntax, and you can say, okay, I just want these couple of properties. And now you now you've, you've solved the problem of over fetching right. Um, remix actually does, will solve that problem for you in a, in a more general way, uh, without inventing a new query language.
+
+So you've got, I, I mentioned these loader functions. So you associate a loader with each. And, you can go and run your, my SQL query or your Postgres query or whatever you want or your fetch you can go query whatever database you want, the file system. And then you can do your mapping and your filtering, and you're sorting your data and massaging whatever you want to do right there in your loader.
+
+Um, and just pair it down to exactly what you need for the view in that loader. There's no special query language, it's just JavaScript. You're just using JavaScript to, to map over these objects and return only the data that you need, but it's solving the exact same concern that, that graph QL solves.
+
+Right. And I realized that graph QL solves a bunch more stuff that we're not even talking about here, stitching together multiple data sources, things like that. Um, but it's, it's a, it's a concern, none the less for a lot of big companies. And it's, I think, uh finding the right abstraction for it, um, can be something as simple as just give me a function, tell me what, what's the URL? What are the parameters that I'm looking at out of the URL? What's the query string look like? Uh, what's the session. Okay. Using that information go and fetch the data, pair it down, and now I'm not over fetching anymore. So, we, we do have a lot of opinions about, about data, a lot of opinions about how to manage data and do it right.
+
+We try to stay out of the business of telling you exactly how to manage your database connections, because that can change depending on your environment, depending on what kind of app you're building.
+
+**Andrew:** Yeah. I think the nested router structure that remix provides is pretty interesting and compelling. Cause when I first started using next JS, the coolest thing to me was that my pages folder was just all my pages. And that was like super easy to grok. Whereas with remix, the having your, your nested router be your file system also made the react routing nested routing structure really clicked for me.
+
+It was like, oh, that's what it is. So I think that's like, that's one of the really cool features of remix to me. Uh, the, the docs mentioned how this maximizes network efficiency is that just because, uh, all these different parts of your nested routes can be cached individually?
+
+**Michael:** Yes. Absolutely. Yeah. Yeah. So that's really cool. Right. So you could say, you could say, for example, I'm going back to that GitHub UI, right? or Let's say like I was to build like an unpkgd browsing UI, like I could say, okay, this, this, this file system hardly ever changes.
+
+Right. So I'm going to cache this for a really, really long time. That's just a portion of the data needed for the page. Right. But it's got a super long cache time. This other piece of data up here, this session data, I'm not going to catch that at all, because that could change once they hit the log out button and it can change, between requests, if they, if it's session times out or whatever, I don't know.
+
+So that's, that's data that's sort of needed in the global nav. So I'm not going to cache that at all. So you can have essentially different cache policies for different pieces of data on the same page, uh, which, it really, it really helps you to kind of like fine tune it. If you will, you know, you, you don't have to say like, okay, all of the data for this page is cached like this.
+
+You can slice up the page and decide how to cache different pieces of it.
+
+#### [00:39:12] Remix Ergonmics
+
+**Andrew:** The way a remixed file is structured, like makes that, that so ergonomic. I love how you can just have you export a loader function, you export a meta. Some headers it's all right there in very easy to wrap your head around. You're not jumping around different places in your app trying to set cache headers.
+
+You're just, you're just in that file. And you say cache this for however long. I want this to be cached. It's that, that API, I love the DX.
+
+**Michael:** Thank you. That's a that's great feedback. Um, and I'm glad earlier, that you said earlier, you said when I saw the routes on the file system, that's kind of what made the nested routing sort of clicked for me. I think that's a great way to visualize it. But yeah, that was one of the, one of the tricks that we had to do actually to, to get all of that, because, w what you, what you're talking about here is you're talking about like, localization right.
+
+Of, of code of responsibilities, right? So I've got my component in the same file where I have my data loader, and I think that. When, when people use remix, a lot of times they'll say, oh, this feels very productive. This, I think that's what people are talking about when they say, oh, this feels like PHP or, or, it could be like a visual basic if, if that's how you got started programming.
+
+But there was this, there was this way that a lot of us got started programming that was highly productive because you would just make your database query and you would loop through the data and you would print your list in the HTML and you would flush and you would send to the client. And that was it.
+
+And it was highly, highly, highly productive. And you weren't building you, weren't worried about, optimizing and building e-commerce sites that were going to serve millions of users or whatever. Maybe you just building something simple, but it was productive because of that localization, because you had everything right there inside of the same file.
+
+And so what we've done is we've, we've kind of taken. A cue from that. And we put everything in the same file that you need for a route. So you can specify your meta tags in there. You can specify any specific custom HTTP headers that you want when they hit that route. And it's server rendered yeah.
+
+Obviously your data. And then, and then also your data mutations so if there's a form in your component, there's an action file right there in the exact same route that that form is going to hit.
+
+You can do styling. Styling is something we haven't even talked about. You can sort of associate styles with certain routes. The really nice thing.
+
+And the really interesting thing about that, um, that I think front end developers are really gonna love is traditionally, like what is the biggest problem with CSS? It's it's selectors, that's the problem, right? It's is clashing selectors, and that's the thing. You know, CSS in JS is trying to solve, and they're trying to solve it with CSS modules.
+
+And like, that's the, that's like the biggest pain is the selectors. One of the interesting things that we can do is when we apply, nested routes to that problem of what we can say is, um, so again, let's, let's go back to the you know, the, the, this, this idea of this nested UI, maybe it's a GitHub or something like that, where, you you're loading a different style sheet for each route.
+
+That's nested there. If you have a deeply nested route that leaves the page, we will take that routes style sheet off the page as well. And then another, and the new route shows up and its style sheet gets added to the page. So if those two routes, those two sibling routes, which are deeply nested have, you know, some sort of conflict, like a conflicting classnames. Traditionally you would take all of that CSS and you would bundle it up into a single file and then you'd have to worry about precedence and you would have to worry about clashing names and things like that.
+
+Uh, but it's, it's just a concern that you don't even have because we don't actually put those style sheets on the page at the same time. Um, and, and so it's, it's, it's like the, uh, you know, this, this problem of CSS having a global namespace, uh, is, is a lot less of a problem now. Um, and so lots of times what we find ourselves doing is we're like, okay, so it feels like the playing field has changed a little bit.
+
+Let's just write some CSS here. Let's just write some, someplain old CSS, uh, and kind of see how that scales and it's actually been working out really, really well for us. I think that's what people have been after for a while now with like component-based CSS and module CSS modules is.
+
+Oh, I just want the CSS to be scoped to this component and that's it. I don't want it to go anywhere else. And we've got that at the route level, um, without resorting to name mangling and stuff through your bundler. We just say once that route is off the page it's style sheet it's gone. So yeah, we, we really take that, that, that idea of localization and we kind of max it out and I think that's what people mean when they say, oh, you know, remix time, it feels like, kind of feels like PHP.
+
+I think w w that's that's code language for this feels like it's really productive, but I can't put my finger on it. And I think that, I think that's, it's that localization that you're talking about, Andrew is what people really like. It's what they feel productive.
+
+**Justin:** Out of curiosity. Do you handle anything around page transitions? Like, I mean, building something on the platform, especially if you're just building a, like a sort of traditional, mostly static site handling page transitions. If you're doing anything special with them is really hard. Is that something that you'll have opinions on?
+
+**Michael:** I'm so glad you asked. Yes, absolutely. So to your point, if you've ever tried to do a page transition, uh you'll like, and really make it nice. I'm talking about really nice, right? It's a lot of work, right? You're you're going to have to worry about how am I going to handle errors. First of all, what I'm going to, what am I going to show the user while we're doing this transition?
+
+Heaven forbid you've got like multiple requests going to multiple places at the same time, and that's just, that's just not going to happen on those sites. What should we show them in the meantime, let's say they just submitted a form. What should we show them? Should we show them that that record has already been created?
+
+Or not. Another thing that you're gonna have to worry about is, how do we cancel pending requests? Right. We just, we just made a request to the server, the users out of here, they're going somewhere else, they're transitioning elsewhere. Do we care about that? Or they they're clicking on this button really fast and they're submitting the form, like again and again and again, do we cancel previous requests because maybe the data in the form is new and like, like there's so many things to think about.
+
+Um, and so we've actually built a, we call it the transition manager, but it's basically this idea of, uh, we're going to help you handle that. So we've got this hook, uh, called use transition, which will basically tell you, that the status of the current transition, are you, you know, are you submitting or are you on your way back? Did the, when we submitted the form, did it do a redirect? Are we on our way somewhere else? We'll also tell you for example, the, the form data that you submitted in that transition and then it'll tell you, obviously, the response, the result that came back from the server, when you actually did a transition.
+
+So like a, like a mutation, um, and one of my favorite demos is to sort of model like a form being submitted or, or a, or a mutation happening, uh, without remix or even with, uh, uh, like a basic like fetch library. if you were just going to use window dot fetch, or if you were going to use like react query or something, there's a lot of sort of state that you have to think about when you are, uh, when you're doing that.
+
+Um, and, uh, and a lot of it just kind of melts away. When you're using remix because, uh, we've, we've sort of tried to abstract a lot of that away for you. So it's, it's, it's literally just a hook and then you have, you automatically have all the state that you need and you can think again, I think, I think one of the things that's really difficult about that is, when react came along, I think it was so revolutionary because people could think about the page and snapshots you can look at your component, render method, you look at the props, you look at the state, given this information, what do I need to render?
+
+And I'm not gonna worry about time here. I'm not going to worry about what it used to look like. What does it need to look like? Next time? All I have to think about is right now with this props and the state, here's the markup. And, uh, and I think what, what is difficult about transitions is now time is involved.
+
+It's now like, okay, what state are we in? And what are used transition hook does, is it gets us back to that point where we can just think in snapshots again. So I can just pull out the transition data and I can say, oh, I know what state I'm in, or I know what data was submitted, or I know what response came back from the server, or I know we're redirecting and we're going over here to a different place.
+
+And so, you can think again, snapshots and you don't have to worry about accumulating four or five pieces of state to manage that transition yourself.
+
+**Andrew:** Yeah, that's super cool. We just touched on some of the cooler DX features of remix. What I took away from the docs is one of the main tenants of remix seems to be abstracting away the server to where you don't even really know servers there. You're just exporting some functions.
+
+What other fun DX features are in remix that we haven't talked about yet?
+
+**Michael:** It's kind of funny that you say it that way, because we didn't, it's kind of funny that you said it was one of our core tenants because we didn't like intend to abstract the way the server, it just kind of happened. We were, we were just kind of like, I mean, I'm, I'm kind of glad that it happened, honestly, because remix really is a framework for front end developers.
+
+I'm a backend dev myself. I've, I've, I've of course I've done a lot of stuff in react, but my background is in like dev ops and I used to run, clusters of servers on AWS and all that kind of stuff. I've obviously done a ton of JavaScript in my career, but I feel I, I configured DNS and all that kind of stuff or DNS and, and, and, and manage servers a lot.
+
+Ryan kind of comes at things from the other angle, right. He's like very accessibility focused. So I think we're actually a good, good pair in that regard. But it wasn't, I, I, I really value, the ability for people to, to get in there and, and, and to work, on the server to do the things that they need to do, do the kinds of optimizations that they need to make, uh, on the server.
+
+And so I, wasn't trying to abstract it away or hide it from you, what I think we've come up with is a model that makes it really easy to model lots of different transactions in this sort of same kind of way. And it's really not a new model.
+
+It's just the request response cycle. But like we already talked about, that ability to access those requests and responses right there in your, with your component code, that, that localization kind of makes it, gives it that little bit of magic. I think we've hit on, honestly, most of the.
+
+The DX improvements that we're trying to make thus far with remix V1. We've got a lot more stuff that we, that we want to build in the future. One of the projects that we, that we are going to be integrating very soon is um, the reach UI project.
+
+So building accessible react apps, is a challenge. I think for a lot of teams accessibility is it's like, yeah, we'll get to it, but we, you know, we really have to ship right now. So, w it's it's kind of a V2 thing, it's kind of a back burner thing. We want to make it first class, like very, very easy to build really rich and accessible experiences in remix.
+
+And it's, it's, I hope that it shows in the work that we do. It's something that we focus on all the time. So if you go to remix.run or a ny of our sites like or even the new react router.com. Like you should see that there's, there's an emphasis there on, on accessibility. And so that's, something that you can expect from us is, is a lot of focus there.
+
+Another thing that you can expect from us is just better tools around, building the site. So w we recently announced that we're funded, that we're we went out and hired some folks who've been helping us. They've been great. They've been amazing.
+
+We're still looking for more amazing, amazing folks, who isn't, but we, we, we think we've got something special here that we're excited about building. Some of the stuff that we would like to build is, is basically just, you know, everything that goes along with, with building your site. Our, our original plan was like, okay, we're just going to sell.
+
+We're just going to sell remix the code. And then I realized like, that's just not going to work. Right. Like, it's a, it's too good. I don't want to, I don't want to put this thing behind a paywall. I want people to be able to, to fork this. I want them to be able to remix remix. I want them to be able to contribute patches and suggestions and PRS.
+
+I want them to be able to take the ideas that we have and not use remix and just make the web better. I don't want to like hoard this to myself. But that leaves us with, okay, so how are we going to what, like, what are we actually, how are we gonna actually make a business out of this? So the plan right now is, you know, we'll give you Remix, we'll give you react, router.
+
+Remix is gonna work great everywhere. It's not going to just work on, a specific type of server. It's going to work great everywhere. And we're going to build a community that we are going to build other services that we can offer real value to that community. Um, one thing that, I think could use a lot of improvement is something as simple as image hosting or something as simple as an authentication service, you know, I think with the kind of care and attention to detail that we've given to remix itself.
+
+I think if we apply that same care in detail to, these other offerings, I think we can provide some really, really cool, some really special stuff for the remix community. Again, remix is always going to work really, really well on whatever server you wanted to play it to. You don't want to buy anything from us.
+
+That's fine. You can go deploy it on AWS Lambda, have a nice day, but, uh, but our plan is to, to offer you that same kind of level of experience that you're used to with remix. With all the other services that you need to run your remix app, um, and, and capture at least a segment of the market that way and build a sustainable business on it.
+
+#### [00:53:40] Business During the Pandemic
+
+**Justin:** Awesome. That's awesome. Yeah. I'm pretty excited that y'all are going, open source. It's it's a big decision, it definitely changes your business model quite a bit. And speaking of business, just kind of, before we wrap up, I just curious about, you know, the pandemic changed a lot of things for, for all of us.
+
+But I, I know that pre pandemic, y'all were really heavily invested in and doing react training. And that was sort of the, the, the big sort of focus. And then now you're, you've been working a lot on remix and building that into a product and company. How has the pandemic sort of changed your, your perspective on.
+
+like How you approach the business and did it like seed this idea of, or at least give you the inspiration to, to spend more time investing in something like remix.
+
+**Michael:** Yeah, I'm glad you asked. So pre-pandemix Ryan and I, and we, we still do have this company it's called react training.com. But we spent the, the, the five years before the pandemic going around and training software teams all over the world. So we trained, I think the last company that I trained right before the pandemic hit last year was Google.
+
+I was up in San Francisco doing, a react training session with the Google amp team. We've trained many, many developers all over the world at a lot of the top tier tech firms and also just a lot of, just regular consulting firms. Lots and lots of different people using react router, using redux using all sorts of different stacks.
+
+And obviously when the pandemic hit, you couldn't get people, you couldn't get 20 people into a room anymore. And so, a lot of our trainings went online. But a lot of people were even effected even further financially and they just couldn't afford the training.
+
+They just couldn't do it anymore. We still do quite a bit of training, but not as nearly as much as we used to do. And so, Ryan and I kind of had a decision, you know, like the, the react router project was always, we've worked on that for a long time, but it was always sort of, uh, we have the, we had the react router project and then we had the training business.
+
+And I think a lot of people sort of looked at the two and were a little confused, especially if they didn't know us from like the early days. Like if you knew us from. You know, 2014 you knew like, okay, these guys built the router and then they went and they decided to offer these training workshops, but it's like, you knew the story.
+
+Right. But, uh, but if you didn't know that story, you might go to the react router docs and be like, why are these on a react training website? Like I don't, is this the company, like, is this just a company that has really good SEO that like put up, decided to document react router? Like who, who are these people?
+
+Like, why, how are these related, you know? Cause they don't, they don't really seem related. And so, uh, so there was a, there was a kind of a weird perception there and that we, and we heard that from, from a few folks. And what I think the pandemic did for us is it helped us to kind of bring things into focus a little bit.
+
+Right. So we can say, um, we're not now an open source company that offers training. we are now a software company. Whereas an open source software company. So, we're, we're doubling down on react router, which has always been our core competence and we've maintained it now for years, we're doubling down on that we're building react router plus plus or remix, which is going to help you build even more powerful experiences with react router.
+
+We're going to give you all of those opinions that we've built up over years of doing this ourselves. Working with all of the top tier tech firms all across the country and across the world even. And we're going to take all of that and we're going to, we're going to put it in a software package that we think is going to help you build better websites.
+
+The incentive for us, I think AR is really well aligned. Like we have a really, really strong incentive now to make react router amazing because it's going to power remix and we want remix to be amazing because that's going to power our business. Right. So it's all lined up really, really clear now.
+
+Um, which is what I mean when I say, bringing things into focus, whereas, it, it, it wasn't necessarily lined up before, right. We had this router, which was a popular open source project. And then we had a training business and the router was good publicity for the training business, which is the thing that put food on the table.
+
+But the router was more of like a marketing piece instead of being like a core piece of technology that we were building our business on. So, um, so I think it's, I think it's just helped to bring things into focus for us, which lots of times constraints do that. If you're fired or if you're going through, you know, a pandemic or a famine or, or whatever, kind of like super hard thing comes your way in your life.
+
+I think it's, it's a forcing function that kind of forces you to focus in on, okay, what do I, what do I really want to do? What do I really care about? Eliminate the cruft and, and just focus in on that and do that. So, so yeah, the, the, the pandemic, uh, kind of took a toll on our last business and that was super rough, not going to lie.
+
+That was super, super rough. We had a 90% of our revenues were just wiped out last March, 90% of the business that we have booked that month just gone out the window. So it was hard on our business, but, I think we, I think we made the best of it and I couldn't be more excited for where we're going now and what we're working on now.
+
+**Justin:** Yeah, definitely. sorry to hear about the impact of your business. I mean, it was, pandemic as normalized as sometimes it feels now is still just this like really, you know, crazy influential part of our times, you know, it just it's, it's been incredibly impactful, but super excited to see the new direction and, and all the work, great work coming out of remix and whatever you decide to build with it next.
+
+So it'll be, uh, it'll be exciting to follow.
+
+**Michael:** Cool.
+
+**Andrew:** I think we've covered most of our questions now. All we have left is a tool tips.
+
+#### [00:59:42] Tooltips
+
+**Andrew:** So I am going to share first. Mine is a 3d design tool. It has nothing to do with development, but this was my first foray into trying anything 3d modeling related and it was super easy to use. I enjoyed using it a lot. I used it to create the new devtools.fm logo on our website. And if you've ever used something like framer, you're going to feel or not framer a Figma, you're going to feel right at home in this tool because it's basically Figma for 3d.
+
+So learning the UI for me, took all but a few hours and then I was able to make really nice high fiddle. Blobby looking 3d images. So highly recommended for anybody who wants to dip a toe into 3d modeling.
+
+**Michael:** That looks awesome. Spine.design.
+
+**Justin:** Is it's super cool. They sort of have these exports where you can, you know, pretty easily embed it into the web. So if you want, you know, uh, a site that has 3d elements that are also, interactable like, you can hover over and you can click it or whatever, it'll like give you the tools to do that.
+
+It's really fun.
+
+**Michael:** I really want to make an interactive remix logo now like a blobby squishy... 'cause our, our logo is like this, like a it's like this thing that kind of glows. And, uh, I'm just like all the, all the, all the examples on this site are like these glowing sort of neon things. So I just really wanna play with it.
+
+Very cool.
+
+**Andrew:** Yeah, it was fun to learn. I was inspired by the developer, Josh Comeau. He does a lot of like 3d modeling for his, his tutorials. And I, I enjoy those visuals a lot.
+
+**Justin:** Given that I'm at oxide, I'm doing a lot of rust these days. And we talked a little bit about it briefly, but we have some constraints where. As, at least as of right now, we're not using node. We're trying to think about like, okay, if we still want to do server-side rendering, what are our options?
+
+Given that we're a rust shop, I started investigating options for integrating V8 into rust to be able to do some server-side rendering. And I, and I came across this project called ssr-rs a, which is server-side rendering in a rust like environment. Essentially all it is, is just a library to delegate things, to V8, to be able to server side render them.
+
+So if you want to have some integration with your rust backend code, and potentially do some server side rendering, it might be, it might be an option.
+
+**Michael:** How's it going with rust.
+
+**Justin:** I mean, so, so oxide is all rust all the time. They're, they're pretty deep in it. I'm still learning. You know, mostly I must've been doing TypeScript over the last few years and it's, it's a pretty high learning curve. I mean there's rust the language is pretty rich. The type system is, has taken a little bit of getting used to. Especially like the mental models that I have from TypeScript don't necessarily translate over very well.
+
+And then rust also has it uses the it's, macrosystem a lot to, to sort of like make code more portable and to do a lot of things. And, and the macro system is also a kind of a high learning curve thing. It's like, I was telling Andrew earlier, it's kind of like writing code mods that just run at compile time.
+
+So it's kind of an interesting, interesting mechanism of writing code, but, but yeah, I'm enjoying it so far. Just, just a lot to learn.
+
+**Michael:** Yeah. So, so, so many of the smart people that I know using rust, and I'm like, you know how, when you see that happen, you're like, dang it. I have, I just have to go learn this thing now. I bet I, I, whenever I see a bunch of smart people that I know gravitating towards something, I'm like, okay, I need to go check that out.
+
+**Justin:** Yeah, it's definitely interesting. It is not, I mean, I, the, the community is great and their focus a lot on making it approachable, even though it is, it's a hard, it's a hard language in a really hard domain. I mean, cause systems programming is non-trivial just broadly. And I think rust makes that story a lot better even though it's not necessarily simpler if you will.
+
+**Michael:** Yeah. Yeah. That makes sense.
+
+One one thing that I've been using a lot lately is fly.io. Fly.io is a really cool service that we've really been enjoying.
+
+I I first caught wind of this, maybe like a year or two ago. I can't remember who told me about it. But I probably saw it on Twitter. And I, I just was ideally like tweeting one day. Like, so unpkgd is this project that I mentioned earlier. It gets, it gets like an insane amount of traffic. And for the last couple of years has been stressing me out.
+
+Like, how am I going to host this thing? I've I've partnered with various companies over the years who have kind of sponsored me, but but I was, I was always like on the hook to find somebody like for the next year. And so I was just idly, like thinking one day, like, oh, it'd be so nice if I could use fly because the cool thing about fly is they have this cool, any cast network.
+
+So any requests that comes into the network, they're able to automatically route it to the closest data center and, and unpkg is used by people all over the world. So I knew. It would be a really good fit for them. And so I, I was just, I believe tweeting about it. Like, Hey, I really wish you would, but I, I just don't, I just don't think I can afford it, you know, cause it get so much traffic and and one of the founders reached out Kurt Mackey and he's like, he's like, Hey man, I got, you let's do this.
+
+So it was totally awesome because we got unpkg deployed on fly and unpkgd runs there now. And, and since then we've deployed a lot of remix stuff to fly remix dot brown and runs on fly the new reactor on our.com that we just launched it, it runs on fly. And it's just this super, super friendly model.
+
+Remix is, is, is for front end devs i, I told you I have a lot of dev ops experience, but I don't particularly enjoy like Kubernetes and Docker and all that stuff. Fly feels like to me, it feels like the perfect kind of trade-off between you know, getting really, really deep into the dev op stuff and, you know, and, and not having enough of it, you know, it feels like a, it feels like this nice trade-off you can allocate different server instances at lots of different data centers around the world.
+
+You don't have to worry about setting up the network. They're going to sort of take care of that one for you. You can even do things like allocate volumes and things. They have great docs, they have great guides on how to deploy anything you want. And we've been that we've been kind of pointing a lot of our remix users like, Hey, maybe I wanna check these guys up.
+
+When are we going to go and check out fly? So yeah, that's kinda my, my tool tip. If I have one is check it out. It's it's made and they're in there. They're, you know, their bandwidth and costs are like crazy cheap. Like it's just, it's, it's so crazy to me these days, how cheap it is to run servers.
+
+You know, I think that was a big argument against running your own server in the past. It was like, oh man, I'm going to have to pay Heroku, you know, 30 bucks a month. Like, that's, you know, that's a nice meal, but honestly you run these things for pennies now pennies! You know, and yeah, they're, they're definitely, they've got a really, really strong pricing structure.
+
+That's I think, going to work well for a lot of people. And just super great folks to.
+
+**Justin:** Yeah, that was going to say there's a really great company. I love their blog. It's like the technical articles they write are just top-notch recently they hired Chris McCord. Who's behind the, the Phoenix project and the leaker in the elixir ecosystem. Which I'm, I'm an elixir fan. Boy it's it's to me, one of the most exciting sort of like spaces right now and software.
+
+So I just consume lots of elixir media. So everything that comes out of there is real interesting and, and fly in particular are doing a lot of really interesting things in that space, particularly when it comes to elixer stuff. So, yeah, that's a good one.
+
+**Andrew:** Well, I think that about wraps it up for this week's episode of dev tools. FM. Thanks Michael for coming on, this was an awesome conversation. It was intensely interesting at various points for me. I love this episode.
+
+**Michael:** Hey, thank you guys so much for having me. It was a pleasure to be here, hopefully I can come back in six months and we can talk about, you know, a lot of the stuff that we've done since then.
+
+**Justin:** Yeah absolutely. That'd be such a pleasure.
+
+**Andrew:** Be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
+
