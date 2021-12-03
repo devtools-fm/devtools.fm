@@ -4,34 +4,33 @@
 
 - [ ] Upload footage to Descript
 - [ ] Transcribe
-- [ ] First Pass - Fix transcript
-- [ ] Second Pass - Audit fixed transcript
-- [ ] Make video cuts
-- [ ] Add intro and outro
+- [ ] Run automated video cuts
+- [ ] Fix transcript
+- [ ] Add Video Elements
+  - [ ] intro and outro
+  - [ ] tooltips
+  - [ ] Name cards
 - [ ] Add section markers
-
-### Bonus Content
-
-- [ ] Break sections that are 8+ minutes into clips for secondary YouTube account
-- [ ] Break out highlighted text for 60s social media videos
 
 ## Publishing
 
-- [ ] Upload video to YouTube
+- [ ] YouTube
+  - [ ] Upload video to YouTube
+  - [ ] Upload Transcript
   - [ ] Make YouTube cover image from figma component
-  - [ ] Download video and subtitles
-  - [ ] Post video to YouTube manually
-  - [ ] Add video description with link to devtools.fm/episode/NUMBER
+  - [ ] Add description with link to `https://devtools.fm/episode/NUMBER`
   - [ ] Add tags
   - [ ] Add sections
-- [ ] Publish to buzzsprout from descript
-  - [ ] Add show notes
-  - [ ] Add short description
+  - [ ] Add end frame
+- [ ] BuzzSprout
+  - [ ] Upload
+  - [ ] Add description with link to `https://devtools.fm/episode/NUMBER`
   - [ ] Add tags
+  - [ ] Upload Transcript
   - [ ] Add sections
-- [ ] Create devtools.fm post
-  - [ ] Add links
+- [ ] `devtools.fm` post
   - [ ] Add title
-  - [ ] Add show notes
-  - [ ] Add sections
   - [ ] Add transcript
+  - [ ] Add sections
+  - [ ] Add links to YouTube and BuzzSprout
+  - [ ] Add show notes
