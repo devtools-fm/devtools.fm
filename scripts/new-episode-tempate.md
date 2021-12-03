@@ -2,6 +2,7 @@
 title: REPLACE_ME
 youtube: REPLACE_ME
 buzzsprout: REPLACE_ME
+tags: 
 ---
 
 <!-- TAB: SHOW NOTES -->
