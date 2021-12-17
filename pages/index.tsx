@@ -59,7 +59,7 @@ export default function Home() {
               >
                 Episodes
               </Navigation.Tab>
-              <Navigation.Tab
+              {/* <Navigation.Tab
                 id="merch"
                 icon={<ExportIcon inline />}
                 onMouseDown={() =>
@@ -67,7 +67,7 @@ export default function Home() {
                 }
               >
                 Merch
-              </Navigation.Tab>
+              </Navigation.Tab> */}
             </Navigation.TabList>
 
             <Navigation.Right>
