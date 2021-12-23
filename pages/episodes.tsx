@@ -1,15 +1,9 @@
-import {
-  MoreInfoIcon,
-  NewWindowIcon,
-  InfoIcon,
-  DataIcon,
-} from "@devtools-ds/icon";
+import { MoreInfoIcon, NewWindowIcon } from "@devtools-ds/icon";
 import makeClass from "clsx";
 import { promises as fs } from "fs";
 import path from "path";
 import { Navigation } from "@devtools-ds/navigation";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { firefox, useTheme } from "@devtools-ds/themes";
 
 import { Logo } from "components/Logo";
@@ -20,6 +14,7 @@ import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { Fragment } from "react";
 import styles from "../styles/episodes.module.css";
 import { MetaTags } from "components/MetaTags";
+import { NavigationTopBar } from "components/NavigationTopBar";
 
 const DimmedText = (props: React.ComponentProps<"div">) => {
   const { currentColorScheme } = useTheme({});
@@ -99,7 +94,6 @@ interface EpisodesProps {
 }
 
 export default function Episodes({ episodes }: EpisodesProps) {
-  const router = useRouter();
   const tags = (
     <MetaTags
       title="devtools.fm - Episodes"
@@ -130,33 +124,7 @@ export default function Episodes({ episodes }: EpisodesProps) {
 
       <Browser>
         <Navigation index={1} onChange={() => {}}>
-          <Navigation.Controls className="overflow-x-auto">
-            <Navigation.TabList>
-              <Navigation.Tab
-                id="about"
-                icon={<InfoIcon inline />}
-                onMouseDown={() => router.push("/")}
-              >
-                About
-              </Navigation.Tab>
-              <Navigation.Tab id="episodes" icon={<DataIcon inline />}>
-                Episodes
-              </Navigation.Tab>
-            </Navigation.TabList>
-
-            <Navigation.Right>
-              <Navigation.Button
-                icon={<NewWindowIcon inline />}
-                aria-label="New Window"
-              />
-
-              <Navigation.Divider />
-              <Navigation.Button
-                icon={<MoreInfoIcon inline />}
-                aria-label="More settings"
-              />
-            </Navigation.Right>
-          </Navigation.Controls>
+          <NavigationTopBar />
           <Navigation.Panels>
             <Navigation.Panel />
             <Navigation.Panel className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">

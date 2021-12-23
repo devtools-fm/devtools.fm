@@ -1,12 +1,4 @@
-import {
-  MoreInfoIcon,
-  NewWindowIcon,
-  InfoIcon,
-  DataIcon,
-  ExportIcon,
-} from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
-import { useRouter } from "next/router";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
@@ -14,9 +6,9 @@ import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import { justin, Host, andrew } from "components/Host";
 import { MetaTags } from "components/MetaTags";
+import { NavigationTopBar } from "components/NavigationTopBar";
 
 export default function Home() {
-  const router = useRouter();
   const tags = (
     <MetaTags
       title="devtools.fm"
@@ -47,42 +39,8 @@ export default function Home() {
 
       <Browser>
         <Navigation index={0} onChange={() => {}}>
-          <Navigation.Controls className="overflow-x-auto">
-            <Navigation.TabList>
-              <Navigation.Tab id="about" icon={<InfoIcon inline />}>
-                About
-              </Navigation.Tab>
-              <Navigation.Tab
-                id="episodes"
-                icon={<DataIcon inline />}
-                onMouseDown={() => router.push("/episodes")}
-              >
-                Episodes
-              </Navigation.Tab>
-              {/* <Navigation.Tab
-                id="merch"
-                icon={<ExportIcon inline />}
-                onMouseDown={() =>
-                  window.open("https://www.bonfire.com/store/devtoolsfm/")
-                }
-              >
-                Merch
-              </Navigation.Tab> */}
-            </Navigation.TabList>
+          <NavigationTopBar />
 
-            <Navigation.Right>
-              <Navigation.Button
-                icon={<NewWindowIcon inline />}
-                aria-label="New Window"
-              />
-
-              <Navigation.Divider />
-              <Navigation.Button
-                icon={<MoreInfoIcon inline />}
-                aria-label="More settings"
-              />
-            </Navigation.Right>
-          </Navigation.Controls>
           <Navigation.Panels>
             <Navigation.Panel className="pt-4 md:pt-6 mx-3 mb-4 focus:outline-none dark:text-gray-200">
               <p
