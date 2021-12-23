@@ -270,6 +270,7 @@ export default function Episodes() {
                   <Link href="https://vercel.com">Vercel</Link>
                 </li>
               </Ul>
+              <P>For tracking website analytics we use <Link href="https://plausible.io/">Plausible</Link>.</P>
               <H3>Marketing</H3>
               <P>
                 Getting you podcast in front of people is one of the hardest
