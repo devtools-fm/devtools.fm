@@ -157,6 +157,18 @@ export default function Episodes() {
                 </li>
               </Ul>
               <H3>Justin's Gear</H3>
+              <Ul>
+                <li>
+                  <Link href="https://www.bluemic.com/en-us/products/yeti/">
+                    Blue Yeti USB Mic
+                  </Link>
+                </li>
+                <li>
+                  <Link href="https://www.bluemic.com/en-us/products/compass/">
+                    Yeti Compass Microphone Arm
+                  </Link>
+                </li>
+              </Ul>
               <H2>Software</H2>
               <H3>Design</H3>
               <P>
@@ -270,7 +282,10 @@ export default function Episodes() {
                   <Link href="https://vercel.com">Vercel</Link>
                 </li>
               </Ul>
-              <P>For tracking website analytics we use <Link href="https://plausible.io/">Plausible</Link>.</P>
+              <P>
+                For tracking website analytics we use{" "}
+                <Link href="https://plausible.io/">Plausible</Link>.
+              </P>
               <H3>Marketing</H3>
               <P>
                 Getting you podcast in front of people is one of the hardest
