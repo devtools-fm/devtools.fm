@@ -1,3 +1,5 @@
+import { promises as fs } from "fs";
+import path from "path";
 import { Navigation } from "@devtools-ds/navigation";
 
 import { Logo } from "components/Logo";
@@ -7,8 +9,14 @@ import { Browser } from "components/Browser";
 import { justin, Host, andrew } from "components/Host";
 import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
+import { ProcessedMdx, processMdx } from "utils/processMdx";
+import { EpisodeRow } from "components/EpisodeRow";
 
-export default function Home() {
+interface HomeProps {
+  latestEpisode: ProcessedMdx;
+}
+
+export default function Home({ latestEpisode }: HomeProps) {
   const tags = (
     <MetaTags
       title="devtools.fm"
@@ -56,6 +64,12 @@ export default function Home() {
                 taste-makers from all of the programming world.
               </p>
 
+              <div className="mb-6">
+                <h2 className="text-xl md:text-2xl">Latest Episode</h2>
+
+                <EpisodeRow {...latestEpisode} />
+              </div>
+
               <h2 className="text-xl md:text-2xl mb-4 md:mb-6">Hosts</h2>
 
               <div className="space-y-4 md:space-y-6 ">
@@ -68,4 +82,21 @@ export default function Home() {
       </Browser>
     </Page>
   );
+}
+
+export async function getStaticProps() {
+  const episodes = (await fs.readdir(path.join(process.cwd(), `pages/episode`)))
+    .filter((p) => p.endsWith(".mdx"))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const latestEpisodeNumber = episodes[episodes.length - 1];
+  const latestEpisode = await processMdx(
+    path.join(process.cwd(), "pages/episode", latestEpisodeNumber),
+    {}
+  );
+
+  return {
+    props: {
+      latestEpisode,
+    },
+  };
 }
