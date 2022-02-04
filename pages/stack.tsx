@@ -132,9 +132,12 @@ export default function Episodes() {
                   Pre-amp for microphone
                 </li>
                 <li>
-                  <Link href="https://www.bluemic.com/en-us/products/compass/">
-                    Yeti Compass Microphone Arm
+                  <Link href="https://www.bhphotovideo.com/c/product/1668624-REG/o_c_white_ulp_13_red_limited_edition_proboom_ultima.html/overview?ap=y&ap=y&smp=y&smp=y&lsft=BI%3A6879&gclid=CjwKCAiAtouOBhA6EiwA2nLKH8v1ksRPWxz8DV3uflYwV3HEsDqW930Nf2wOzWZL7tWptzQomu-ppRoC0hoQAvD_BwE">
+                    O.C. White ProBoom Ultima Gen2 Ultralow-Profile Adjustable Mic Boom
                   </Link>
+                  {" - "}
+                  While this is an expensive piece of equipment it is so much better than my last one.
+                  This mic arm has no trouble holding up heavy mics and very positionable.
                 </li>
                 <li>
                   <Link href="https://en-us.sennheiser.com/high-quality-headphones-around-ear-audio-surround-hd-650">
