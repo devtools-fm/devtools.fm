@@ -1,0 +1,493 @@
+---
+title: Zach Lloyd, Michelle Lim -- Warp.dev
+youtube: https://www.youtube.com/watch?v=4c0mHCB53Ss
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10098658
+tags: technology, programming, rust, terminal, cli, devtools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This episode we're joined by Zach Lloyd and Michelle Lim of Warp.dev.
+Warp is a modern, rust-based terminal that aims to make developers more efficient
+by reemerging and enhancing the terminal's UI.
+
+<!-- LINKS -->
+
+## Andrew
+
+- https://github.com/nadeesha/ts-prune
+- https://github.com/junegunn/fzf
+
+## Justin
+
+- https://github.com/bradtraversy/design-resources-for-developers
+- https://idratherbewriting.com/learnapidoc/ (Tom Johnson)
+
+## Zach
+
+- https://github.com/rust-lang/rustlings
+- https://vt100.net/
+- https://vt100.net/emu/dec_ansi_parser
+
+## Michelle
+
+- https://retool.com/
+- https://www.nutribullet.com
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introductions
+[00:01:33] Intro to Warp
+[00:06:33] Why build a new terminal now?
+[00:13:12] Making Warp a business
+[00:16:23] On choosing Rust as a language
+[00:21:38] Plans for open source
+[00:24:48] The biggest challenges of building a terminal
+[00:29:24] Shell integrations
+[00:37:24] The future of Warp
+[00:41:51] Fish shell support
+[00:42:47] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 24
+
+**Zach:** The way that we think about building warp as a company is really it's kind of like first and foremost, focusing on building things that make individual developers more productive. So starting with just like, we want to build a product that developers really love that when they use it, they feel like they're getting more done and it, like, they feel good about the product.
+
+**Andrew:** Hello, welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin
+
+**Justin:** Everyone. Today we're joined by Zach Lloyd and Michelle Lim to talk about warp an exciting new terminal. Zach, Michelle, would you like to take a moment to tell our listeners a little bit about yourselves?
+
+**Zach:** Sure. So I'm Zach, I'm the founder at Warp, been an engineer for about 20 years now. Used to run engineering on Google sheets and Google docs. And I was a CTO at another startup and I'm really passionate about building software that makes the lives of developers better and more
+
+**Michelle:** Yeah. And hi, my name is Michelle Lim. I have been an engineer at warp for the past one and a half years. I actually joined when it was just two people. Before that I graduated from Yale and had interned at Robinhood, Facebook and slack, and I'm really excited about helping beginners and also really experienced engineers get very productive in the terminal.
+
+#### [00:01:33] Intro to Warp
+
+**Justin:** Yeah, that's awesome. So let's dive right in. So tell our listeners a little bit. And like, what is warp and how is it different from other terminals that they might be familiar with?
+
+**Michelle:** Warp is a modern, fast rust-based terminal that makes developers more efficient at development. You can see our demo at warp.dev. There are two main features that our users really love. One is blocks and the second is our text editor. So blocks is a feature where we combine commands and the output into atomic units. And our users really like it because it allows them to see which output corresponds to which command. And they get to perform routine actions on them. Like copy output. Without having to endlessly scroll their terminal to find the appropriate output. And then the second feature that people like is the text editor. The input area is a text editor in warp. So you can use your modern keyboard shortcuts on the text editor to move the cursor between sub words and words. You can use your mouse to move the cursor. We can also have selections and multiple cursors. And one thing to point out about warp is that it also, it meets developers where they are. So it works with the shells that you already have, your aliases and your keyboard shortcuts.
+
+**Justin:** Okay. Cool. So the block functionality too, to sort of wrap a command up in a block, you need to know that you have run a command and that the command has completed which might not always be as trivial as, as people would think. Sometimes you're going to rely on like deeper shell integration. So what does this story around that with warp?
+
+How do you like yeah. How do you capture the scope of a block and approach all of that?
+
+**Zach:** It's a great question. Cause like the, the reason terminals don't typically support this it's like terminals are really just like kind of dumb character rendering devices that don't have any sense of what is going on in the shell. Like the shell is basically saying, Hey, here's some characters, draw them on the screen.
+
+In warp we have like a, a deeper integration with the shells that we support and the way that works, like for instance, in bash and ZSH is when we create the terminal session, we configure the shell to sort of pass back more metadata about what it's doing. So when a command starts executing, the shell sends us a little bit of extra information, like, Hey, I've started to execute.
+
+When the command finishes, we also get a sort of piece of information saying like, Hey, I'm done. Here's my current context. And then we take that in warp. We parse it out and we give the user a rendering that I think more closely matches their mental model, which is like, I did something. And here's the output that it produced.
+
+**Andrew:** Yeah, that the blocks feature seems really nice. Like I personally use power level 10 K as my terminal prompt. It has this thing called transient prompts, which tries to do like the same thing where you have like your, your big upfront, like, here's all my metadata about my current, current state of the world.
+
+And then as I do commands, I can see what's happened. But having them as like, kind of this encapsulated thing seems a lot more powerful than just like printing out the, the output in a slightly different way.
+
+**Zach:** Yeah. I mean, it's, what's cool. Is that it's it's you get a cooler display for sure. Like, it looks nice, but then you also get the ability to sort of navigate around your terminal on a command by command basis, which is super nice. And then finally, like, like Michelle was saying, you get a sort of UI primitive, that's an entity.
+
+That's like, if you know, what is the command its output, you can do really smart things with it. Like, you know, just copy paste what you want and you can share it. And like, eventually we can have like cooler renderings on it. It just opens up a lot of nice possibilities in the UI.
+
+**Andrew:** Is there like the ability since like you have all these blocks, could I be like, Hey pipe, two blocks ago to this new command and then use the output that way
+
+**Zach:** we, we would, we would like to do that, like building up a pipeline, a step at a time using data from something you did in the past, I think is totally sensible rather than trying. You know, make sure you have all your like vertical bars in the right place and you can't see any of the data as you go. We haven't built that yet, but it's like, it's definitely a possibility with our architecture.
+
+**Michelle:** Zach, you built a prototype of that at the hackathon, right?
+
+**Zach:** w we did. So this was, this was a hackathon project where we built like a warp CLI essentially, where if you were to run like the warp command from within warp, you could go like warp minus one pipe into JQ and basically use a prior output to do something you know, cool wherever you currently are.
+
+**Justin:** Really interesting giving a, an API into the terminal application that you're in via a CLI
+
+**Zach:** Yeah. It's like very meta,
+
+**Justin:** meta. Cool.
+
+#### [00:06:33] Why build a new terminal now?
+
+**Justin:** So terminals have been around for a long time, what like 50 something years. And you know, it's one of those things after existing for so long, everybody has a different opinion about like what terminals they use and what shells they use and all this stuff. And the, and even though the technology is like, in some ways, like rather simplistic, it also is like the abstractions that we built up on top of it are pretty advanced.
+
+So just, just thinking of all of that, what, what, what made you decide to, to build a new terminal? Tackle this problem space. Yeah. And like, why now? Why at this moment?
+
+**Zach:** So for me personally, so like I mentioned, I've been a developer for a really long time. I've always been a terminal user and never a terminal expert. I've always thought the terminal was like kind of a weird interface to be honest, like kind of annoying, but certain things that worked in other apps didn't work.
+
+They're just like clicking to put the mouse someplace, for instance. But I've also always worked with engineers who have been sort of power users and experts and seeing them do like almost magical things like when we're like firefighting, like extracting stuff from logs or like how they've scripted their setup and realized that if you could sort of, you know, configure the terminal and learn how to use it really well, it's a tool that could really provide like a big uplift in your productivity.
+
+And so for me personally, that like the thing that made me want to work on this was like, how do you unlock that power to a broader developer audience? How do you make every developer sort of like 10, 20, 30% more power. In this tool that is used pretty much every day by most developers. And the idea is if you could do that, you're really unlocking like on the net, like a very big you know, productivity gains to development at large.
+
+So that's like what got me super excited about it to begin with. Michelle, what, like what, what about you?
+
+**Michelle:** yeah. I, yeah, I joined a Warp just by looking at the mocks that our designers CQ and Zach had made together. And to me it was a no-brainer to create a humane interface for the terminal. I also get from two points of view, the first point of view was students learning coding for the first time.
+
+There's no reason why they shouldn't be able to move the cursor with their mouse and not being able to do that turns a lot of people off of coding in general. So it felt like, I could make a lot of impact working on a more humane terminal. But then secondly, like after four years of computer science education and three internships, I realized that I was still being slowed down by not knowing the terminal as well as I should.
+
+And I realized that even the tech leads on my team, weren't that sure. Either about how to be the most productive. So I felt like there were a lot of inefficiencies in engineering teams that can be unlocked if we just made features a lot more discoverable to them.
+
+**Justin:** Yeah, that's awesome. I think it's a very admirable goal generally. Is like something as, as engineers and programmers and people who've worked in computers for a long time that we tend to forget is we have the w the curse of knowledge, is that what it is, where you like, learn all of these, like, really, really hard things.
+
+And then you forget what it was like, not to know the really, really hard things. So once you went to the pain of learning how to navigate a terminal and set it up and do all the custom stuff, then you just forget how, like, un-intuitive, it is for beginners to come in and do that. So, it is a, I think it's a super admirable goal, especially just making it easier for new people.
+
+**Michelle:** Yeah, but Zach, I'm interested. Like why, why now?
+
+**Zach:** That's a, that's a great question. Yeah, whenever. I guess for, for me personally, I was like trying to figure out what I wanted to work on next. And was looking just generally in developer productivity space and looked at sort of code editors and cloud IDEs. And I just kept coming back to like the tool that felt most archaic, but was still important was the terminal.
+
+And I was trying to figure out like, why hasn't it really changed? And like, my, my, I guess two thoughts on this one is like, there is a huge amount of developer activity in trying to make the terminal better. So if you look at like, you know, some of the most starred GitHub projects of all time, like, like, like no exaggeration, like more stars in like react are things like, oh my ZSH where people are trying to make their terminal usable.
+
+They're trying to get completions. They're trying to make it look good and try and make it feel intuitive. And I was like, so there is a lot of developer interest in doing. this but most of it, you know, most of the projects were sort of working within the established bounds of like the terminal shell dichotomy and like not really trying to like re-imagine holistically what the product was.
+
+And I thought that if you were sort of like build a company around this and put more dedicated resources into rethinking, you know, kind of from first principles, how should this interface work for developers today that, you know, you might have an opportunity to build something that like, sort of rethought it in a more fundamental way.
+
+And that was, that was like super fun to me. I mean, it, it felt not too dissimilar from like the types of things I was doing on Google docs. So I felt like it was a good fit for me personally. And then, yeah, I felt like, you know, the big risk for us, and maybe we'll talk about this later is like, how do you build a business off of this?
+
+And I ended up thinking that the development world had evolved enough where you could maybe build a business, by selling features that were around like collaboration and security and auditing around what developers were doing with teams in company settings. Whereas, you know, you know, before I think everyone has just thought of the terminal is like a free tool.
+
+And so there hasn't been a huge sort of business incentive to start like a bigger product push around it.
+
+**Andrew:** Yeah. Rethinking it is, it is a great idea. Cause every time I like set somebody up for programming we open up the terminal and I just see like the, you can see someone get overwhelmed just instantly by looking at this white piece of text, blinking on a black background with no other UI controls. So I th I think there's a lot of cool things you guys are gonna be able to do with rethinking it from first principles to make it a really usable thing for a developer, rather than just what it is today.
+
+**Zach:** Yeah. Yeah. I'm really excited about that.
+
+#### [00:13:12] Making Warp a business
+
+**Justin:** The timing is for two. It is too. There's this, like, this is a really good market currently for dev tools in particular. There's a lot of excitement behind them just from an investment perspective. And I was kind of, I was going to ask you about building a business around a tool like this. So there's this, there's this paradox with developers where we all like, yeah. People should, you know, get paid for the work they do, like fund opensource. And then also at the same time, people's like, oh, you should need to pay for this. I was like, oh really? I can just use something opensource. You know, it's just like too many people, like fall in this paradox. So finding good value prop for dev tool is, is as central. And, and I was kind of curious about like any like sort of like core product functionality. And you thought it was like, yeah, this would be like a thing to build a business around.
+
+**Zach:** Yeah, so the, like the way that we think about building warp as a company is really it's kind of like first and foremost, focusing on building things that make individual developers more productive. So starting with just like, we want to build a product that developers really love that when they use it, they feel like they're getting more done and it, like, they feel good about the product.
+
+That's the starting principle. And then what we think is that there's an opportunity for something. Yeah, it's sort of like a, like a collaborative company, like Figma or notion where you start off satisfying like individual designers and for us it's developers. And then there are a set of features that we imagine would be useful for teams.
+
+And so you could think of that as like some features around collaboration. So for instance, like the ability to like share a terminal session with people in real time and have that be very seamless, you could think of it in terms of like asynchronous collaboration. So like how can I build up like a library of commands that everyone on my team has access to or make it really simple so that when a new engineer on boards, they are get there, they don't have to spend like a day or two, like futsing with their terminal set up to get things to work.
+
+And so those are the types of features that I think like if you have people who are on your platform, you can do things to add value in a company setting that, you know, hopefully you can convince some companies to pay for. I think trying to secure the terminal is really interesting. Security facing you know, security oriented, SAS products tend to have a lot of success.
+
+I think firefighting is a really interesting opportunity for us. Like, you know, you have an outage and you have a bunch of SREs and they're all on their individual terminals. And someone says, SSH someplace, how do you share what's going on seamlessly? How do you get a record of all the things that people did as they're trying to like put out this fire?
+
+And so those are the types of features that we would imagine charging businesses for. We do not imagine building any kind of business based off of like the data that's flowing through the terminal. I want to be super clear on that. Like that's like not at all what we want to do. It should be, you know, that, that a company or even an individual maybe feels like they get so much extra productivity that they want to pay for it.
+
+**Justin:** Yeah, that's awesome.
+
+#### [00:16:23] On choosing Rust as a language
+
+**Justin:** So I work at oxide. Oxide is a huge proponent of rust and it was like one of the first things that actually drew me to, to warp. So let's talk about that decision a little bit. Warp is a native app that's written in rust. Can you kind of describe the design decision behind that and was like, why rust?
+
+Why, why native?
+
+**Michelle:** That's an interesting story behind us. We started out with electron and TypeScript and we realized that electron was slow and it led to a really big binary size. I did an experiment where we drew 200 buttons with TypeScript and started scrolling, but it was impossible to scroll. So even though code completion was faster in TypeScript, we were very slowed down by performance.
+
+So we wanted to pick a native solution that will be quick and small. But we didn't want that garbage collected language. So we had to choose between C, C plus plus and rust. And the reason we picked rust was that it had a stronger developer ergonomics. There were a lot more guarantees over memory safety and threat safety, but it was just as low level as C plus plus.
+
+So it was straightforward to call directly into the C based API of the operating system. Plus we also like rust's developer community it's very strong. There are a lot of crates, a great documentation.
+
+**Zach:** Rust has been awesome. Yeah. One other thing I would share on the, on the, the choice was, so I used to when I was at Google working on Google sheets, we spent so much time trying to optimize the web platform to get something like a big dataset spreadsheet to work inside of the browser and the web environment
+
+and so when we did warp I, you know, I was, even though we played with electron it just became clear that the tax of trying to like optimize performance is so high. And the performance debt that you start with really like with a web tech was, was so much higher compared to rust that we were just like, let's, let's go with the solution that doesn't by default incur that performance penalty.
+
+And we've been super happy with Rust to say like a platform.
+
+**Justin:** That's also an it seems like one of the first challenges that you run into or the reason why. We'll back up a second, a reason why a lot of people pick something like electron is because rendering is a known story. It's like the same way you render things in the web, you written here in electrons.
+
+So it makes it easy to think about using something like rust. If you want to make a native app, you need to think either about like system level primitives, or you need to think about, you know, something else. So Michelle, I really loved the blog posts that she wrote about drawing things on the GPU and metal using rust
+
+and could you talk a little bit about the, the rendering architecture of the app? So that blog post is great and I'll include that in show notes, but I'm also curious about like text, because text seems like the really, really important thing to get right with terminal.
+
+**Michelle:** Yeah. Zach can probably elaborate on the texts, but I can give an overview about the, our rendering strategy. So high level, we built our own UI framework in rust and there's two components. So that's a, it handles input like key process mouse mouseclicks. The second component is the layout engine, which helps us create a scene of rectangles, glyphs, and images that we then pass over to the graphics backend.
+
+So our UI framework works cross-platform and it works for different types of graphic shaders. But because we have targeted the MacOs as our first target, we have decided to build our shade us in, in metal. And we've been calling into the MacOs API API, via objective C.
+
+**Zach:** And yeah, for, for texts, rendering w w the way that it works high level is so we, we sort of, specify all of the texts that we want rendered. And then what we do is we call out to, to Coretext, which is like the, the Mac system library. And that gives us basically info around, like, what are the size of the glyphs? What should like the layout be like, as far as what the lines are.
+
+And then we actually pull the sort of pixels for each glyph out of the Mac system library. We, we render it into a texture on the GPU, which is called like a character atlas is the way that you do this. This is there's various with doing text rendering, but basically you could think of it as like a cache of each glyph.
+
+And then when we go to tax, we do the text rendering. What we're doing is we're sampling from that character Atlas. It's actually surprisingly not a crazy amount of code. Now we don't do texts perfectly yet. And like things like you know, ligatures, which we sort of semi support and emojis, like we had to reimplement a bunch of stuff where if you just did it using the web platform, you would get it for free.
+
+But on the flip side, we get all this awesome like control over how we do it. And the terminal is primarily text rendering device. So it could be very useful to have that control.
+
+#### [00:21:38] Plans for open source
+
+**Andrew:** I heard open-source a little earlier. Is there any plans on open sourcing these parts of your app?
+
+**Zach:** There is, and probably is two separate things. So like, the, the UI framework we planned to open source as sort of its own repo and rust rust crate. And it's not super complete right now because it's like, we've been doing it for Mac, and we'd like to get a little bit more polished. We also plan on making like the general warp terminal client, that code available in some way.
+
+We want to make it to the individuals can sort of, you know, fork it and play with it and build on it. We're also trying to figure out how to balance, like most of our company's IP is in that terminal client. And so I don't think we want to do a license right now, or some other terminal company could just fork the whole client, but we understand this sort of desire of individual developers to be able to like inspect and play with the code. And I think it's also important for enterprises to be able to see like, you know, are there privacy issues are the security issues what's being sent to our servers and all of that. So we want to make the code available and we're working on like, what's the right license for that right now.
+
+**Justin:** It's a hard thing to figure out. There's definitely been a lot of companies that have taken the wrong licensing approach and then, you know, for, for a big company, it can be easy to sort of swallow up your project if you, you know, just like MIT it or whatever.
+
+**Zach:** Right?
+
+**Justin:** So understanding what you open source on how you open
+
+**Zach:** Yeah. It's, it's, it's very S it's very strategically important and we're trying to, yeah. It's, like I said, we're trying to balance those two things. It's like, we really want the code out there, but we also don't really want, like someone swallowing up all of our IP so that's, that's the, that's the game, but for something like the UI framework, I think that we'll have a very permissive license.
+
+Like I don't, there's nothing like terminal specific about it.
+
+**Justin:** Yeah. Yeah, for sure. On the, on the notes of just like rust libraries. Are y'all using any interesting crates that you come across, anything that's like been really cool to integrate or is it mostly just custom stuff?
+
+**Zach:** we have a lot of uh, creates. So we depend on, I, I don't, I don't know Michelle, any, any interesting ones that you would want to call it up?
+
+**Michelle:** well, we use so many, I'm looking at it now. I mean, when everyone use assertive.
+
+**Justin:** oh yeah, Serde is amazing.
+
+**Zach:** The Serde ones are super useful. The the people at Mozilla did a lot of good work on exposing some of the Mac systems API. So like cortex and font kit all came out of that work, I think with when they were building servo, they did all this awesome work. And so a lot of those crates have been super useful for us integrating with the Mac the Mac system, APIs. And then, yeah, I would, I I've called it alacritty also.
+
+So we use a bunch of alacritty code, which has been really helpful for bootstrapping. Like we, we use it in an interesting way. Like each one of our blocks is almost like a little mini terminal-ish type thing. So that was like a huge, a huge sort of like a jumping off point that, that, that for like the Pty and VTE parsing stuff,
+
+#### [00:24:48] The biggest challenges of building a terminal
+
+**Andrew:** So what have been some of the biggest challenges that you guys have faced while building a completely new terminal?
+
+**Zach:** There's this general challenge of how do you basically be backwards compatible so that people can use their own configurations in their own shells. And then also try to innovate where you somehow have to change some of the fundamental UI paradigms.
+
+So. Like for instance, you mentioned power level. Like we don't support power level and that's very annoying to people who like have gone through the trouble to configure power level. And so there there's this, there's this like sort of step backwards that we're trying to like fix for people as we innovate on, on the terminal.
+
+I think it's like, you know, we're trying to strike the right balance between innovating and you don't want to, like, if we just like completely threw everything out and we're like, we're writing a new shell, we're writing a new terminal. I think we would get no adoption because there's so much existing configuration and script.
+
+And like no one would be able to use it. If we on the total opposite extreme, we could just end up rebuilding like the Mac terminal app, or iterm, if we went for perfect compatibility, which wouldn't move the state of the art forward. And so to me, that's like a lot of our product challenge and even a bunch of our technical challenge, really like it's integrating with these existing systems. So that's one thing that I would call out.
+
+**Michelle:** Yeah. I agree about that point. One thing to note that, because we built our own text editor, we need to manually right, like configure keyboard shortcuts and writing actions to move the cursor. And then we also have our own way of sending sequences to the shell. And many times we do miss some of the keyboard shortcuts and bindings. I'll say like a second challenge. So it's more technical rather than product-wise is maintaining the terminal shell interface. So a lot of times we do face bugs where certain programs like VIM or NVIM or full screen apps don't quite work the way that it's supposed to. And those, those parts of the code base are not as well-documented.
+
+And so, oftentimes we have to really dig really deep into that code to figure out like, oh, we need to send this really specific sequence to VIM so that they know that we're a terminal. And those are really hard parts to, to debug. And sometimes we finally find the code that, that kind of likes to behind this top, this full screen apps, and we realize it's all hardcoded
+
+**Justin:** Reverse engineer. A lot of weird VT, 100 like escape, sequences and stuff.
+
+**Zach:** it's very, very old school legacy stuff. Yes.
+
+**Justin:** Yeah.
+
+**Andrew:** How do you guys go about testing stuff? Testing something like this seems like it might be hard, like doing end to end tests that actually verify that you haven't broken anything. What's your guys' strategy for that?
+
+**Zach:** So, so we, we, we do testing at two levels. We have unit tests, which are part of rust, which is, I think straightforward enough. We also wrote like an integration testing framework, which basically built a sort of headless version, like a version, a version of warp that doesn't require the GPU and sort of does, you can basically, from the user's perspective, fire events in observe the holistic state changes to the app and then assert that certain sort of model and view state changes have happened.
+
+And then you can run this against different shell configurations, which is pretty cool. So like we're running. On GitHub actions against like different versions of bash and ZSH, and then an engineer on the team right now is adding this really cool thing where, you know, we're adding this feature session restoration.
+
+So essentially like you can pick up working where you left off in warp, and we're actually going to use that as another way of starting our integration tests from a certain terminal state, which is really cool. So it's like, if you want it to start with like three tabs and four panes and different commands having been run, you can recreate that state very easily and then run assertions from there.
+
+So that's been, it's been I would say useful. It's been a little hard to build and make, not flaky to be honest, but it's been useful.
+
+**Andrew:** That's always the challenge with end toe end test. How can it not be flaky?
+
+**Zach:** exactly.
+
+**Justin:** Pretty cool though.
+
+#### [00:29:24] Shell integrations
+
+**Justin:** So we talked a little bit about shell integrations about some of the challenges with shell integrations. Back in episode eight, we interviewed the founders of fig. So they've been working on most recently. Shell completions has been their biggest focus and they've, they've kind of outsourced a lot of their efforts to the community, like open source their, their configuration.
+
+And, and I know that warp provides some level shell completion as well. So what is your strategy around shell completion or auto-completion, is that just like from whatever the shell has configured or is it custom? What does that look like?
+
+**Zach:** So we actually use fig. So fig's completion, repo has been w and by the way, Thank you to them, like in all of their contributors, it's, it's obviously is huge. So we don't use fig's UI because like, we feel like we could, you know, it just makes more sense to provide a fully native UI, given that we have the UI framework and we have control over the input editor.
+
+But thus far we've been using basically importing and translating the fig completions to a sort of rust rust crate that gets shipped with warp. That's what we've done so far, what we would like to do and are still figuring out the right way to do it is to either you know, open source the rust spec for people who want to like write them in rust.
+
+And then also, like one thing that we're sort of actively working on right now is like, what are the alternative ways that you can help people enter commands that are not completions? And what I mean by that is like, You know, a lot of times what I want to do something in the terminal. It's like, I'm thinking about like, I want to accomplish some workflow.
+
+Like I want to, like, I want to launch some server. I want to like undo my last git commit. And I think the best way to do that is actually not like through a completion API where you're like going, like get space dash dash, like, but more like, let me semantically figure out what I'm trying to accomplish.
+
+And then have that whole command come in as like one workflow that you can execute. And so we would like to sort of combine that with completions and then open source it in some way. Michelle, anything you'd add on that?
+
+**Michelle:** When I'm thinking about what I want to do in the terminal, it's often a lot higher level than piecing together command. I'm thinking about how do I undo my last commit? How do I bring changes from one branch to the other? How do I strike a specific field from a JSON?
+
+And I'm really excited by this feature because it means I don't have to switch out of my terminal to do stack overflow those questions. I can get it from my terminal itself and the community can contribute all these popular top commands so that it ends up becoming really strong and rich. And then another exciting thing is that you can define these workflows for your team.
+
+So I remember when I was at Robin hood, every time we SSHed into our production machine 10, very, very esoteric commands that we were to run on that machine. But imagine if all those 10 commands were just 10 workflows, I can just search and pick from and run. That would just save me so much time.
+
+**Andrew:** It seems like natural language processing and a little bit of GPT three here. It could be like amazing where you're like, here's what I want to do terminal! T tell me, tell me how to do that!
+
+**Zach:** An engineer on our team, Kevin has literally prototyped that. And we, we it's, it's super cool. We're going to launch that as a sort of experimental feature. I don't think we quite have like the right product experience yet with it. Cause I don't know that it's like natural language exactly what you want, but it's super promising for. Skipping skipping, Google and skipping stack overflow and finding exactly what you want to do.
+
+**Justin:** I think there's a lot to be said about just like saying, Hey, you run this a lot. Maybe you want to make a workflow out of this, or, you know, something, something like that. Another thing that I think is interesting with this space is because you on the UI you're really not constrained to this just like standard text input world.
+
+It's like, there's always more opportunities for like just different UI experiences that you could, you could pop up, like, you know, instead of just like flat text input it could be a menu or like some like special selection or something. And it's like, it's interesting. I don't know.
+
+Yeah. Just an interesting opportunity to explore the sort of developer UX space. This is like intuiting, what someone's trying to do and giving them a better interface to do it. One of the things that I've, I've kind of fantasized about for awhile is there's this there's some programming languages that have like typed holes.
+
+So it's like it's typed and you can like put some value in here, but it's like, you know, the holes typed and it feels like for for command line tools, there's a potential opportunity to do the same thing where it's like, you can put any of these like valid values in this thing, but you can't put anything else.
+
+So it's like, you can't actually mess it up. It tells you ahead of time, it's like, Hey, you're missing this thing up. But again, it's hard to do without a calling the actual terminal to do custom UI and be like being hooked into the shell to understand like what's available and.
+
+**Michelle:** Yeah, we were just revving about this as part of the workflow feature where say, I want to extract a field from, from a JSOn like how do I write down? What's the file name and how do I write down? What's the field I want to extract and because we own the UI and because we own the interface with the shell, we can help you to complete the file names that are available, like we'll list on all the JSONs you have, and you don't really have to type out the file name by yourself
+
+**Zach:** Yeah.
+
+**Michelle:** to fill out those commands.
+
+**Zach:** Yeah. I mean, I, my, my sense is like the UI should support what the developer is trying to get done. And so I think there's something wonderful about the text-based UI as a general thing. And that it's like infinitely configurable. It's like composable it's, you can like scrape through it and easily extract things.
+
+And we don't want to take away from like the power of that UI where it's appropriate, but then there's like problems with the text-based UI too. And that it's sometimes it's like too unconstrained and too abstruse. It doesn't help you like the space of possibility is too big. And so, like you said, Justin I totally agree.
+
+We have this cool opportunity to break out of like the character grid as the only terminal UI and build UI that you know, are most effective. For helping developers get done what they're trying to get done. And that's super exciting.
+
+**Andrew:** yeah. I could definitely imagine like a command outputs, a table, and then you display a much better table than just some pipes.
+
+**Zach:** A hundred percent that that's literally a thing that we're we're exploring is like, yeah. Y if, if it's structured data, like maybe you want to have a JSON object viewer, or maybe you want to view the actual markdown of a file. And all of those things I think could help developers, but aren't really possible in the traditional terminal architecture.
+
+**Michelle:** Yeah, I'm really excited about getting tables in the output because I just. cannot Tell him, how many times I had to docker ps or PS to find the process that I want to kill. And I just got it in like two pages worth of processes to, to scroll through. Imagine if I could just filter out the field from that table, or be able to not have to go to the mouse and then just use my arrows to move around that table.
+
+That would be a game changer for me personally.
+
+**Justin:** Yeah, just add sort sorting and filtering and all that stuff. And that must be mind blowing.
+
+#### [00:37:24] The future of Warp
+
+**Andrew:** Okay. Turning to the future a little bit. What are some like cool features that if you guys have been itching to build that you haven't quite got to yet? We've talked about a lot now, I guess, but one of the ones that really jumped out to me on the homepage was it mentioned that you could render the terminal in the browser.
+
+Like, is that something that you guys are working towards? Is the terminal in the browser or did I, I misread.
+
+**Zach:** The short answer is yes. Like I think the use case there's a couple of use cases. So one is. An individual working against a cloud instance. And so it's like, say you're, you're, you know, you're connecting to some machine it's in some cloud, you don't really need the native app then, and there's advantages to having it in the terminal and that you don't need to install any software.
+
+And so that sort of cloud shell use case, I think is one compelling reason to basically take our same rust code base, compile it to WebAssembly take our shader code and translate it to a web GL and try to run warp, you know, from Chrome. I think the second use case that's really interesting for for a web rendering is the collaboration use case where if I'm sort of working on a session and it could even be a local session that I'm able to sort of grab a link to it and send it to another engineer on my team.
+
+And without forcing them to like download and install a binary, they're able to just quickly pull up. And see what I'm doing. And maybe that could even work asynchronously where maybe they could even see like a transcript of what I've done and you can save a transcript of a session and it's just like a real rendering.
+
+And so that, to me, those are really cool web based use cases that we would like to cover.
+
+**Michelle:** Yeah, we could also see it being useful firefighting situations where there's a production outage and you can all be in the same terminal. And forming commends together and everyone knows what each person has already run. And then you can download a transcript of it for your mortem. And then personally, I would also use it for like the single player use case where I'm running a really long command or training, a big model on my, on my desktop.
+
+And then I need to leave my apartment to do some errands. I will love to be able to open the terminal on my phone or my iPad to be able to see what's going on. Even though I'm outside of my house.
+
+**Justin:** Yeah, that's pretty cool. That's pretty cool. If, if anything using VSCode's live, share feature over the last few years, it's definitely like shown the value, especially if collaborative, like terminals, because you have that kind of ability like you can collaborate in this one shell And it really is, is sort of a game changer, especially when it comes to pairing.
+
+It just it gives you like a, sort of a different level of collaboration when like both people are, you know, both people are using the keyboard. It's not just like one person driving and one person observing.
+
+**Michelle:** Yeah. Another feature that we are pretty excited about for the future is the idea of context chips, which is kind of like your prompt, but it being interactable. So imagine if I could click my PWD and j Just like choose between the directories that I could go to all like, click my Kubernetes context and choose within context, click my Docker container and choose within the containers, my good branch et cetera.
+
+And I think that's really powerful because I think that a lot of the commands that we run day to day kind of like maintanence commands, like, like you're just moving between things and they take up a lot of space on your terminal. How cool would it be to not have to remember those commands or to create output just to change branches.
+
+**Justin:** Yeah, changing node versions and rust toolkit version
+
+**Michelle:** Oh yeah.
+
+**Justin:** That'd be awesome. Yeah. I've been using ASDF for a little while to control my versions. Cause it like works across many different sort of things, but like for whatever reason, the, the sequence of like commands in ASDF never makes sense in my head. So I always get the commands wrong. Cause I'm like trying to change my node version and I always do it backwards and I'm like, wait, okay, well, how do I write this?
+
+And it takes me a little while to get back into it, to figure out like, okay, what is the command to change my node version?! Or rust or looks or whatever it is at the moment. So something like that would be awesome.
+
+#### [00:41:51] Fish shell support
+
+**Justin:** Before we move on to tips. I do have one last question that I am very personally invested in.
+
+What about fish? Y'all thinking about supporting fish.
+
+**Zach:** yes. Is the short answer. It's like two thirds built. The, I don't, I don't know the exact timeline, but w we will before I'm pretty comfortable saying it's Michelle, you can correct me if I'm wrong, but before we go to like public beta, we're in a private beta right now, before we go to public beta, we would like fish support, I would say fish support if you look at our GitHub issues, is, is it the number one? It might be the number one. And it's got a very like loud and, and vocal set of people who want it so that we're we're we're we're going to do it. We just haven't done it yet.
+
+**Justin:** I did notice that I did not say anything. I didn't want to put my voice in there,
+
+**Zach:** No, it's all good! It's.
+
+**Justin:** I have a very soft spot for fish.
+
+**Andrew:** Okay. And with that, let's move on to tooltips.
+
+#### [00:42:47] Tooltips
+
+**Andrew:** So my first tool tip is a tool called Ts prune. It's a tool that allows you to easily find unused code and a very large TypeScript project. Since you already have all this type information, it's like, it feels like there should be a tool to do this. And I was looking around this weekend to find a way to prune some TypeScript code for my project.
+
+And this looked like the most promising one. So, having given it an, a spin quite yet, but I'm excited to delete as much code as I can from the code base that I currently work on.
+
+**Justin:** I mainly have learning resources this week because I've been trying to do a little bit of studying. My, my first tool tip is this repository that's called design resources for developers. It's just, it's like one of those awesome collections. It's just a large collection of just UI libraries, fonts, like color guides component libraries for all the things you could think about things about basically anything that you can imagine if it's design systems or style guides or whatever, it's got like articles or resources or whatever to, to reference.
+
+So if you. Like me don't feel like you're design shops are very strong. It's a really interesting resource to just like save as an index for any plethora of your design needs. Yeah. It's by a Brad. Traversy. It's been a pretty great resource so far.
+
+**Andrew:** I'll suggest if you're trying to get into design, YouTube is a great place to start learning things like I was recently watching a, this one channel that I've found, and I didn't know that pictograms, like people pictograms that are on signs that convention originated in the 1964 Olympics.
+
+that's
+
+**Zach:** fascinating.
+
+**Andrew:** So, yeah. So yeah it was like the first time that they had used like a visual system to describe that, to get across languages.
+
+It actually started at the Tokyo Olympics because they were afraid that people wouldn't know where to go. So they made all these pictograms in a. Consistent design and an interesting fact about that too, is back then they didn't have digital programs. So you have to imagine they're making all of these icons and this icon system totally physical.
+
+So, that has a lot of, lot of constraints. And one of those, those constraints breeded the Germany pictograms, where like they said, all lines must either be 45 degree angles or a straight lines across. And that was really because of the physical limitations of design at that point. And then I think the Rio games were like the first, the first games where they had digital products to do designs.
+
+So they're able to like make brushstrokes and then outline them on the computer to make all the pictograms that way. So, interesting little fact, YouTube is a great place for a lot of learning.
+
+**Zach:** so my my first tool tip was, is rustlings, which is it's an awesome resource for doing, let's say a sort of small rust coding exercises. If you're. I also sort of read the rust O'Reilly book, which was a super great resource. But if you're, if you're like me, like sometimes it's just kind of better to actually get in and try to code things and see what breaks and rustlings is a super simple, but very effective way of like gradually increasing your rust knowledge to the point where it's like, when you start getting weird compiler errors about missing lifetimes, that you have some idea what is going on.
+
+So it's a very, a very, very cool project for getting started in rust.
+
+**Andrew:** or Justin could have used this recently. H how, how, how did you go about learning rust recently Justin?
+
+**Justin:** Trial by fire. I mean the rust book is great. But I just like was stumbling through a lot of rust projects. Cause like at oxide, every project, except the front end, is it rust? So it was like, oh, you want to make an API change rust?
+
+**Zach:** Th I, I would really recommend the O'Reilly book because I also read the, the rust book, you know, the online one, which is very good. But the O'Reilly one, if you're a person who likes to actually just like read a book on a programming language, I thought was even better.
+
+**Michelle:** Yeah, I like that diagrams to explain like where in the memory you are allocating, it was a lot more illustrative to me as a visual learner to
+
+know what exactly the code is doing to the memory.
+
+**Justin:** I'll definitely have to check it out. I mostly find that like, for me, like learning is best done by just like digging into it. And I already have some systems level like experience. So it's like, I'm not completely unknown. Although I will say the life cycle system in tust is still something that's like gets me sometimes.
+
+**Michelle:** Gotcha. My first tool is retool. It's a
+
+tool that allows you to build internal front ends very quickly. So we use this at work to manage our invite system. It maybe only took me 20 minutes to set up. I linked it to all Postgres DB and credit, couple tables that now people outside the engineering team can also use to adjust the number of invites that people have, et cetera.
+
+**Justin:** Really awesome. I tried to play with this previously a little bit at artsy because we had like an internal user database of just like all our employees. And I was like trying to mess with building something, but it's pretty neat.
+
+**Andrew:** Yeah, we use this at Descript, but I don't think any engineers touch it. So it's, it's cool that it's like this, like no, no code low code thing
+
+that then anybody can use,
+
+**Zach:** Yeah. It's, it's, it's very intuitive. And yeah, it's saved us from having to write some like admin app for our invites, which would have been kind of pure overhead as far as engineering time.
+
+**Justin:** Yeah, that is the thing is we often end up writing code for these like custom bespoke things. That don't mean nothing to our business.
+
+**Zach:** Right.
+
+**Andrew:** So keeping in theme with the episode, I wanted to share one of my favorite terminal tools that I use pretty much on the daily. It's called fzf it's a command line, fuzzy finder. What's a fuzzy finder. It's just a way to search your previous history. So, this is one of those features in terminals where if you're a new user you don't know anything about command R and then when somebody does it like they did for me the first time I was like, wait, wait, wait, what, what did you just do?
+
+One of the only problems though, is that its output is kind of ugly and fzf solves that in a bunch of different ways. So when I'm setting people up with their terminal, I usually set this up for them too. And like, try to say like, Hey, this, this is a real good command. You should probably use it.
+
+But in the context of warp, I could see something like this being even more powerful with a built in UI that has. That that's better for it. So maybe you could have like better filters or something. So cool tool.
+
+**Michelle:** If you run control R at, at warp, we do have a similar menu that pops up and you can fuzzy search shrinks in your, in your history. And now it's like no where as tall and long as the fzf UI. And w w we're trying to learn from them how to make a better UI.
+
+**Zach:** yeah, I was gonna say we literally just added some fuzzy finding it various spots in the warp app, heavily inspired by fzf which is very useful
+
+**Justin:** Continuing on my theme of documentation for this week. One of the things that we're doing at oxide is starting to think about. I'm starting to think about API documentation, as well as just like system onboarding docs. So I ran across this really great, what is a obstensively a course it's many, many articles.
+
+It's by Tom Johnson. He's got a pretty famous blog at I'd rather be writing.com. And this, this courses learn API docs or learn how to document APIs. And it goes through very extensively all the details of like writing down conditions for rest APIs and other things. One of the things that I like at the bottom of this page that I have linked I'll include in the show notes is a bunch of other external resources.
+
+I'd already seen some of these resources before. So like the docs for developers book is, is excellent. And there's some of these other resources in here. But this whole course has been sort of like a treasure trove of, of, of really great information.
+
+So if you're to learn how to write better docs are in the process of writing docs. I highly recommend this resource. It's a, it's a great way to up your docs game.
+
+**Zach:** Hmm, very cool. We could, we could use this internally. I'll share this with that with the warp team.
+
+**Justin:** We can all use better
+
+**Zach:** Yeah.
+
+so my next one is a bit of a historical sort of museum site, for lack of a better way of putting it where it's vt hundred.net, which is for people who are interested in terminals and how they work and their history. And if you want to like look up their old manuals, this is a kind of fun place to jump off and explore how they work. And then if you click on the second link into the backend, the Google doc this, this one is really cool for anyone who's actually working on implementing a terminal. So if you go down to this diagram here, this is basically a state machine for all of the like character control codes of how a terminal works.
+
+So when you, you know, see text sequences coming across the wire, basically your terminal parser is moving from state to state and then firing various handlers, which inform how the how the character grid is drawn. And this really cool diagram sort of sums up what all those state changes are. And so this is super useful for anyone who's interested in like the really nitty gritty internal workings of of terminals.
+
+Which might not be that many people, but I think it's interesting.
+
+**Andrew:** yeah, the, the history of all of is super interesting. Just like, even like the state of our keyboards today, like return enter, delete backspace, the history behind what those keys were for and how it changed and who changed it is, is a very weird saga to follow along with.
+
+**Zach:** Yes. Yes.
+
+**Andrew:** Okay. Last one of the day, probably the most important one.
+
+**Michelle:** Yeah, so I got a NutriBullet recently via warps secret Santa event. I think I got it from a Chuck, Chuck Pierce, and it has made it really easy for me to get my fiber and nutrition every day. I just toss in like blueberries and bananas and some milk. And I not only get a really good, like, nice tasting fruit juice in the morning, but I also get all my nutrients I need for the day.
+
+And it's relatively inexpensive. I think it's like 50 or $60 max and it can improve your health a lot.
+
+**Andrew:** Yeah, probably the most important developer tool, a healthy and well-balanced diet.
+
+**Zach:** I
+
+love that.
+
+**Andrew:** I think that about wraps it up for, for all the things we had planned to talk about. Thanks you guys for coming on. This was a, a great conversation. Love talking about terminals. It's something I use every day and I'm excited to see it get better and better with you guys.
+
+**Zach:** Thank you so much for for having us. This is really fun.
+
+**Michelle:** Yeah. Thank you for having us. Great
+
+**Justin:** Yeah, absolutely. The, the work y'all've done on warp has been excellent and I'm in the private beta and it's been a joy to use. So it's good work!
+
+**Zach:** Thank you.
+
+**Michelle:** Thank you.
+
+**Andrew:** Well, that's it for this week's episode of DevTools.fm, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
