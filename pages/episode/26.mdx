@@ -1,5 +1,5 @@
 ---
-title: Brian LeRoux - Serverless apps with architect (arc.codes)
+title: Brian LeRoux - Building functional web apps with architect (arc.codes)
 youtube: REPLACE_ME
 buzzsprout: REPLACE_ME
 tags: technology, programming, open source, serverless, aws, developer, development, coding, infrastructure
@@ -7,7 +7,7 @@ tags: technology, programming, open source, serverless, aws, developer, developm
 
 <!-- TAB: SHOW NOTES -->
 
-Join us this week as we talk to our guess Brian LeRoux about serverless applications. Brian
+Join us this week as we talk to our guest Brian LeRoux about functional web apps. Brian
 is the creator of [Architect](https://arc.codes), a framework for building serverless apps on
 aws. He's also the founder of Begin.com, a service build on top of Architect to easily ship
 serverless apps.
@@ -33,8 +33,467 @@ serverless apps.
 
 <!-- TAB: SECTIONS -->
 
-<!-- Paste sections -->
+[00:00:15] Introduction
+[00:01:00] Brian's Story
+[00:04:09] What is Architect?
+[00:09:36] Architect's Manifest File
+[00:12:29] Databases in a Serverless Environment
+[00:16:36] Incidental Complexity in Application Infrastructure
+[00:20:20] Logging and Tracing in a Serverless Environment
+[00:25:57] Is Serverless the Future?
+[00:29:56] WebSockets in a Serverless Environment
+[00:34:03] Learning more about Begin.com
+[00:41:30] Arc (Architect), the Engine that Powers Begin.com
+[00:43:39] TypeScript with Architect
+[00:46:29] What's the Future of the Web?
+[00:50:37] Tooltips
 
 <!-- TAB: TRANSCRIPT -->
 
-<!-- Paste transcript -->
+# Episode 26
+
+**Brian:** Lately we've been calling them functional web apps, because we want to be very specific when we say dynamic web application, we mean an app that's built with functions, cloud functions, no Kubernetes, no load balancing, no servers, no instances. This is all scaled to zero and on demand.
+
+## [00:00:15] Introduction
+
+**Andrew:** Hello. Welcome to the DevTools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host Justin.
+
+**Justin:** Hey everyone, our our guest today is Brian LeRoux, co-founder and CTO at begin. You can find that it began.com. He's also the creator of architect, which you can find at arc.codes and which is an infrastructure is code framework for building serverless apps on AWS. Brian, it's a pleasure to have you on.
+
+I'm really glad you could join us. Would you like to take a minute to tell our audience a little bit more about yourself, and then maybe after that kind of talk about how you get into building tools.
+
+## [00:01:00] Brian's Story
+
+**Brian:** Yeah, totally. Thanks for having me. I'm stoked to be here. Following along for a little while now, I'm seeing, seeing you guys rising up in the Twitters and uh, yeah, I'm stoked to stoked to be here. What to say? So, I self identify as a web developer, I've been writing web pages since the nineties, and I've sort of surfed along all these various waves of trends and, and yeah, inevitably along the way, I guess I, I accidentally built some dev tools.
+
+I think very typically in this industry, if you've got an itch, sometimes you need to scratch it. And, and now that open source is so wildly available and distributed so well. It's very easy to accidentally make something that other people like to use. And so I've, I've found myself sharing the same itches a few times as other folks, and I've gotten lucky along the way.
+
+Probably the first one that gained a lot of attention was phone gap, but that wasn't just me. That was a whole bunch of people. And really back then, all we were trying to do was build web apps. That was a real concern, I think in the 2008, 2009 timeframe that the web was going to get superseded by a new distribution channel, that more people would go mobile and more, therefore more people would use mobile apps.
+
+Luckily I think for the web apple and Google fumbled, the app stores completely, and the web is now probably mostly caught up in all the ways that matter. And and the mobile web is now the web. And so things like phone gap, maybe not as necessary then years later, I guess say along the way, building a mobile app, I, I started doing a lot of cloud dev and this would have been around 2008, nine as well.
+
+We started building stuff on AWS and that kind of led me to the serverless thing and what I'm doing today.
+
+**Justin:** Nice. Nice. I didn't realize it's, you're a part of the phonegap projects. I still remember discovering phone gap. Well it was like Cordova before that. Correct?
+
+**Brian:** Cordova actually came after. Yeah. This there's a weird story with that. So effectively a phone gap was a great idea in a perfect name. It was one of those names that came the category and people were using it like crazy. And back then, it was like, web two days we would take a Helvetica font. We would bold half the word.
+
+And so we bolded gap and it turns out that Helvetica bold gap is literally the gap's logo. And when we went to open source this business with the Apache software foundation they weren't interested in the potential of a lawsuit with an apparel company. So we, we named it after the street that, that our company was on, which was Cordova street in Vancouver.
+
+So yeah. Yeah, it's funny. Yeah, it's funny. And then later Adobe acquired the phone gap project and the team, and we went and worked there and they settled with the gap and we agreed. We wouldn't print any apparel or khakis. I'm not even kidding. That's actually was what happened. It was so bizarre.
+
+**Andrew:** that sounded like a joke.
+
+**Brian:** No, no. It seems like a joke though totally.
+
+## [00:04:09] What is Architect?
+
+**Andrew:** that's awesome. So, let's talk about some of the tools you've been building lately or, well, relatively lately let's start off with architect. What inspired you to create architect and how does it compare to like the other offerings? For example Amazon CDK.
+
+**Brian:** Yeah, totally. So architect was born out of a need to have infrastructure as code solution that was terse and, and quick to author. So we, we started building for AWS sort of the happy path is to go down the CloudFormation road, but early on with Lambda and API gateway and dynamo DB and all these other services, there actually wasn't very good cloud formation support.
+
+And so we had to augment it with our own stuff and we ended up building up our own infrastructure as code format. And actually, maybe I should take a couple steps back and talk about what the hell is infrastructure's code for. I get into why I built an infrastructure's code thing. So when you started with the cloud one of the first things you'll do is you'll go into a web console of some kind and you'll click around provision cloud resources or primitives.
+
+If you need a database, you'll click on RDS and you'll say, create me a database. If you need an S3 bucket, you'll navigate into the S3 console and you'll create a bucket. And that works really great and scale super well to a team. of one As soon as you have two developers and you need to reproduce the environments that you're creating, it falls apart.
+
+And typically what you'll see in sort of less mature cloud ecosystem providers is a checklist. So it'd be like, okay, go into the console, you click this thing, and then you add that thing. And then you click this thing. And checklists, as you probably can guess are pretty error prone. Humans will mess that up.
+
+And if you have a really, really complicated system with lots of resources, it's going to be almost impossible to reproduce in any reasonable amount of time. We want to be able to reproduce our code base at any given SHA ideally within a few seconds. And we need to do that in order to reproduce bugs in order to fix them.
+
+If you can't reproduce this stuff and you gotta follow a checklist, you're going to run into the, it only works on my machine problem. So infrastructure is code is a concept very similar to lock files. If you look at like package JSON we tell our node process, Hey, I need these things to work. And then it'll obstensively have those things and it'll work.
+
+So infrastructure is code, same idea. We have a manifest file and we say, I need these things to work. And then when I deploy those things will be there and that's really it. So CloudFormation is the granddaddy. If you look at AWS cloud formation, I think the top or stanza says what year it was made and it was 2011.
+
+So that's just how far ahead Amazon is from everybody else. They've been doing this stuff for over a decade. Problem of cloud formation is it's been around since 2011. It's been added on to an, a created more and more stuff over the years, and it's grown in complexity and really become quite verbose.
+
+Very hard to grok you can't just look at a cloud formation document and understand what that application is supposed to do. And that's a problem. So we created architect so that we could have a high level format for defining cloud resources that would reproduce identically every time by compiling down to CloudFormation.
+
+It's a declarative format. It's kind of like yaml and actually we do support yaml and JSON, if you don't like our format and and yeah, it's great. So, you know, if you need a database table, you can just say, give me a table and name it, this thing, if you need a route, you, you define that route and it will point it to the right Lambda function for you and wired up to API gateway and set up all the parameters for you and all the I am rolling and all that good stuff.
+
+And so, yeah, architect's really a high level format for regenerating deterministic cloud resources, but it's also a local development environment. So over the years, one of the things we learned about Amazon was that it's quite stable. This is actually sort of unique among cloud providers. They don't break you.
+
+They don't ship breaking changes. They just add new revisions on top. And so you can often to newer APIs if you want, but the old ones will work forever. And so, because of that stability, we found you can mock it quite safely and because you could mock it quite safely, it means you can run it locally, which is really nice.
+
+So sometimes people say, oh, you can't run the cloud locally. And they're right. You know, there's no way I'm going to get the same throughput on my three-year-old Mac air that I would, you know, deploy into the cloud. But I don't test availability locally. I test whether or not my route loaded my like my validations worked or if my leg payloads were correct.
+
+And so for, for that type of purpose for your quick smoke tests, it's very, very nice. And so. We've been working on this now since 2017, it's very stable. The services that we use in and support we've actually used in supported now, for most of that time, there is a few simple rules for us. It's gotta be serverless.
+
+It's got a scale to zero and it's gotta be deployed with CloudFormation in, if it fits those criteria, then it's part of the architect project happily. If not, you can jump out and modify the CloudFormation yourself. You need to. And then otherwise that's really what we do. That's pretty, long-winded
+
+## [00:09:36] Architect's Manifest File
+
+**Justin:** Yeah. Yeah, no, no, thanks. Thanks. That's really interesting. I'd like to talk a little bit more about architect. So, architect has a manifest file. Is that that's the same as the dot arc file that you see in a project.
+
+**Brian:** Yeah, exactly. And so you can think of that as your package lock except for cloud stuff. So database tables, queues, Lambda functions in general asynchronous events. Yeah.
+
+**Justin:** So I've got a little bit of experience with cloud formation and then a little bit more with Terraform, which is like a popular alternative that supposedly works across cloud providers. So looking at an arc file, looking at a lot of examples of arc files, they're, they're fairly terse. Like they're, they don't, they're not very verbose. They, they like, kind of describe exactly what they need to not much more sort of in your experience, how far does that get you? Or like when is the point that you have to start breaking out and thinking about like, okay, now I need to do some other like system primitives.
+
+**Brian:** yeah. I not sure. So it depends on the app. It's a. We've seen some pretty bananas stuff out there. My ideal would be that your arc file fits on one screen. And you can by just looking at this file, you understand probably what the app does, you know, what resources it requires, you know what the database tables are and what the scheme are, you know, what routes it has, you know what the parameters to those routes would be.
+
+And that's really nice. That's a property you don't get really with any other type of solution, you definitely can't read a CloudFormation document and get that kind of detail out of it. And yeah, so that's good. Begin dot coms, probably one of the biggest arc files I've worked on and it's pushing 300 lines and it's fine.
+
+We've run into CloudFormation limits before we've run into arc limits. The place where I guess it falls apart is when you want to start drawing outside the lines. We're really targeting building dynamic web applications. And lately we've been calling them functional web apps, because we want to be very specific.
+
+When we say dynamic web application, we mean an app that's built with functions, cloud functions, no Kubernetes, no load balancing, no servers, no instances. This is all scaled to zero and on demand. And sometimes you need those things, right? Like sometimes you need to draw outside the lines and kick up a Fargate cluster, do a long-lived workload.
+
+Or maybe you need to use AWS IOT to talk to bots that you've you to fly around or something. I don't know. So if you have those needs or maybe you want to use like, Kinesis is another one that comes up fairly often when people are processing large amounts of data we have this concept we call plugins.
+
+They kind of do what you probably would expect. You can intercept at the time of deploy and you can add your own CloudFormation to the story. It'll work and we have plugins that allow you to hook into the sandbox event. So you can even mock it out locally if you want. But yeah, for the most part, our bread and butter is database backed web apps, cloud apps.
+
+## [00:12:29] Databases in a Serverless Environment
+
+**Andrew:** So you just mentioned databases. Databases when it comes to server lists are kind of like when you're starting out, you tend to overlook that fact and then you're hit in the face with a connection pool limit.
+
+What are your thoughts on serverless databases and what's your go-to?
+
+**Brian:** Yeah. So this has been a real pain in the ass. So, over the years you know, everyone wants to run their favorite database and unfortunately all the popular databases use sockets to connect and you called it because Lambda's ephemeral nature every invocations, a new connection. And it's very easy to overwhelm the database.
+
+There's a lot of good news on the horizon, but it kind of feels like nuclear fusion. Like there's always been good news on the horizon. So I don't want to over-hype this, but Aurora V2 looks like it fixes it. Planet scale DB is very exciting. They have some answers for fixing this. Talking to Craig from crunchy data a little while ago, Craig and he's he enlightened me about PG bouncer for Postgres which takes care of the connection pooling.
+
+So I think there's gonna be good answers for traditional legacy single-tenant databases. And I did just throw in the word legacy there, and it was a little bit unkind. So let me be more specific. Single-tenant databases are probably not where the puck is going to end up and by single tenant. I mean, it only runs on one instance or server.
+
+The future is most likely serverless and it means that we're going to scale dynamically to meet load and capacity. We're only going to pay for what we use. We're going to be able to meet any kind of availability, guaranteed, no matter where we are in the world. And there's really only a couple options there right now.
+
+It's dynamo dB .Is the main one. That's my go-to. It has been for a lot of years. Folks complain about dynamo DB, because it's not familiar. It looks different on, in there. Right. You know, there's trade-offs and familiarity is going to be one of them. But dynamo is designed for this use case of speed and availability, and it doesn't have any of the issues that you see with other databases.
+
+So for me as a developer, I'm just trying to get home at five, right? Like I don't want to work on the weekend. I don't want to get paged because a shard went down or something. I just want to get my job done. I know it's going to continue to work when I'm not there. And that's what a managed service gets me.
+
+Maybe I'm, maybe I'm being lazy, but guilty as charged. I'm lazy. So, you know, once you learn dynamo and understand the access patterns and how it works, just like every other database you know, it's, it's very approachable and easy and better it's SLA with Amazon is guaranteed single digit millisecond latency, no matter how many rows you have and that's, I mean, that's fucking magic.
+
+We've never had that before. We've we've always had really crazy limits and quotas on our databases in the past. And that's gone. If you're willing to accept having to learn a new database approach. So dynamo is good for me, and I think there's going to be better answers for the SQL crowd in the coming year.
+
+But at the end, the moment it is painful. And it's a shame because even if you do get the connection thing fixed it's, the latency is terrible with these things. The reason they use sockets is because of latency is bad. So as soon as you start doing it over HTTP, you're looking at it like a second and a couple seconds.
+
+And like, maybe that's okay for a lot of use cases, but you know, that's a, that's a hundred X worse than what you get with the dynamo out of the box. And sometimes phone calls that say Dynamo's expensive. I like to point out that so are DBAs, and it really depends on what you want to spend your money on is if you want to spend your money on a DBA and sure that'll be expensive too.
+
+And a scaling scaling in a single tenant system to one of these dynamically available systems is really not fun. And I don't recommend it.
+
+It's a bit harsh, I guess.
+
+## [00:16:36] Incidental Complexity in Application Infrastructure
+
+**Justin:** That's fair. That's fair. Andrew and I both more front-end facing developers but have, you know, some level of full-stack experience, but I'm with you a lot of times, just as a developer, there's a lot of incidental complexity, you know, it's just like, you want to build an application with specific features and you've got product requirements and... there's a lot of technology out there to do that, but there's a lot of technology that as soon as you take that on, you have significant cognitive overhead not to accomplish your product features, but to actually manage and wrangle this technology to get it to do what you want it to do.
+
+My favorite example being Kubernetes is like an incredibly, incredibly popular tool right now. And it does a lot of things and like a good Kubernetes set up is like a really powerful experience to have, but every single person that I know this went through the experience of like setting up Kubernetes and provisioning everything.
+
+It's just been an extraordinarily painful experience. And then
+
+**Brian:** yeah.
+
+**Justin:** there's this interesting thing where the complexity bleeds out to like all the other people building product features. Eventually you have like a bunch of infrastructure people embedded on teams just to be able to like make changes and stuff.
+
+And it's like, you know, that often you think is there's gotta be a better way. There's gotta be a simpler way. And.
+
+**Brian:** Yeah. I mean, I totally agree. And I think it's, it's interesting. The Kubernetes thing is like a, it's intertia from the way we used to build things. And so we always did it that way and we always did it that way isn't always the right way anymore. People are reticent to go all in on the cloud because they're worried about lock-in, they're worried that, you know, Bezos is going to start jacking prices that it's never happened for what it's worth.
+
+If they had a full on monopoly, I wouldn't necessarily trust them, but they don't. And they've got really competent competitors with Azure and GCP and Alibaba. So I'm not worried about them jacking prices. The other complaint I hear is, well, what if they what if they break you? You know, what, if they change their API APIs, I've been a customer for over 10 years and they don't do that either.
+
+Sometimes I wish they did, and they won't even do it. So there's a, there's very little to the credence to the argument that you need to, you know, use a load balanced monolith to avoid lock-in with your cloud provider. But if that's all, you know, how to build, and that's probably how you want to build things.
+
+And you know, it is, if you go stateless and you start building functional web apps with cloud functions, then you're going to, you're going to have to learn some new stuff. And the thing for me is like, I, I don't care anymore. Like, like I, I had a lot of fun figuring out how to shard databases and do all that stuff.
+
+But like at this point, like I want to focus on the customer problem and I wanna focus on business value and I don't want to spend any time screwing around with infrastructure patches or trying to figure out like how many instances we need and catching like shit when I get it wrong, because now we went down, but if I get it right, and we're over-provisioned, and we're bleeding money for all this capacity we don't use.
+
+And it's just incredibly inefficient. Amazon's figured all this out. They will rent you their computer down to the millisecond so that you can just use it. And it's free for the first 6 million in vocations. So there's very little business sense in running a Kubernetes cluster, unless you need, you know, a long lived workload, or you have like an existing system that you, you know, you can't turn off because it's making money and those are valid reasons.
+
+But if you are greenfielding today, I think it's, I think it's a responsible frankly,
+
+Also a bit harsh, I guess it's just an opinion.
+
+## [00:20:20] Logging and Tracing in a Serverless Environment
+
+**Justin:** Well, let's talk about something that that would, that can crop up too, is like traditionally, one of the harder things about Lambda environments is like pretty, you would almost think fundamental things. It's like logging and debugging and like understanding what's happening and the order that things are happening in tracing all that stuff.
+
+Does anything that you've been working on kind of like help, like with that? Or do you have any advice for people out there, like struggling with those issues?
+
+**Brian:** Yeah, this is a big one. So, people will call this the sort of just you need distributed traces. And this, this problem actually goes away if you're building with really tight single responsibility functions. So, in our world in architect, we don't try and cram everything in one function. We, we split them up and every function should have one, one single responsibility and and we do this for a few reasons. One reason to do this is for cold start, less payload you have the faster that code's gonna start up cold, which is great. Another reason to do this is you've got maximum control of your dependencies inside of that function. So you can secure it down to least privilege.
+
+So that's pretty nice. But the final reason is when something goes wrong, you know where it happened. So if all my code is bundled into one Lambda or one container, and then I load balance that container who knows what went wrong. But if I have one function say post-contact for, well, we know, you know, if there's an error on post-contact form where it is just the mystery is over, there's no tracing to do.
+
+You can just go to that code and figure out what happened. This is, this is a departure from how we typically work. We'll typically try and bundle everything into one place, and then we play murder mystery with the infrastructure after. This is saying, instead of if I'm building an FWA style, I'm going to put every single capability in one tiny little function, and then I'll, I'll deploy those out.
+
+Every function Lambda has CloudWatch events set up. If you're diligent, you'll set up alarms for errors and you can set thresholds for those. And Bob's your uncle. So we get a slack notification. If we have a function cold starting over one second, just cause I want to keep our system sub-second and then we've got another slack notification if I get any phone, any errors at all.
+
+And so there's, there's, there's one other problem with this architecture though, if you build this way and everything works, it will scale up transparently. And we were actually getting DDOSed back in November and of, of last year, I think it was actually, and. I didn't notice cause it just worked the system scaled up.
+
+And so it wasn't a denial of service attack. It was a denial of wallet attack and they were going after our spend because there is a limit to that. Luckily we noticed in time and we were able to turn it off and they, they, they had hit us millions and millions of times, but because it's so cheap, it was like a $30 bill that, you know, where it was a, what is it?
+
+It's like a dollar for, I think a, a million in vocations or something like that. So, yeah. Yeah. So like we, we were able to Dodge that bullet. It was fine. But I don't find the tracing hard. A, the tools are a lot better now, too. They weren't very good at the very beginning. You needed to bring it a third-party.
+
+The other aspect of this can be transpiling or source maps can be problematic. They're only really just getting, okay now with es build in particular. But doing this in the past has been pretty, pretty uncool, but if you stuck to the, the happy path and you didn't transpile and you, you know, separate your concerns and you have single responsibility functions, and you said a couple of alarms you're going to have an okay time with this architecture.
+
+That's a lot of IF's I recognize a lot of developers aren't working that way yet, but I kind of feel like this is inevitable.
+
+**Andrew:** Yeah, the scaling of serverless is the first thing that was like the aha moment to me, I run a, a web app called kikbak.tv that like scrapes the internet for music videos. And in my old architecture, like doing that scraping action would take like minutes. But then when I switched to serverless, it was like, it doesn't take longer than the longest function, really.
+
+Like it all spins up in parallel. And then I hit the same thing as you where I was like, oh, well, that could cost a lot.
+
+**Brian:** Yeah, that's the only thing to watch out for it. I wish they would put some kind of governor on these things. And we started actually trying to build there's a blog post on begin.com, but this where we've got a, oh, we were calling it the kill switch, but that was, that was not a very nice term, but we're trying to figure out a way to set thresholds to stop the scale, which is hilarious.
+
+So it's like now we have the opposite problem. This thing can be embarrassingly parallel and it can run really hot. And sometimes that's scary and we don't want that. But what are one of the other funny questions we have? Or like, maybe I just want to be notified, like if, if my site is blowing up, but it's black Friday, that might be okay.
+
+But if it's blowing up and you know, I'm on vacation and there's no good reason for it, then yeah. Maybe I want to limit that traffic and throttle people, but I think that the state of this art is not quite understood yet because we never had this problem. We used to have the opposite problem where it was like, damn, can we keep this thing online now?
+
+It's like, how do we shut this thing off? It's a good problem to have though.
+
+**Justin:** Yeah, for sure. For sure.
+
+## [00:25:57] Is Serverless the Future?
+
+**Andrew:** We've answered this in a roundabout way now. I think I know your opinions on, on this question. But do you think serverless is the future, do you th like, for our listeners who might be a little more front end, like me, what, what is serverless and how is it different from traditional databases?
+
+**Brian:** yeah. So this is a really good question too, because what is serverless I think is an evolving thing when. Lambda was sort of really new around 2014, 2015. I'd say it didn't even really get fired until 20, late 2015 after API gateway came around, the concept then was really more about on-demand and excuse me, drank too much coffee.
+
+It's more about on-demand and more about scaling down to zero. And I'd say now serverless is this big spectrum of things and the, the underlying philosophy of serverless is I should outsource anything I'm not doing as a core competency to someone else who does it as a core competency. And so, as an example, I shouldn't run servers.
+
+I should outsource that to Amazon. Now, if you take that thinking to its logical conclusion, I shouldn't even run servers on Amazon. I should just rent, compute from Amazon by the milisecond and so that's the spectrum you know, by outsourcing and, and choosing to not do what's called undifferentiated heavy lifting we're able to focus on our business problems and create hopefully uniquely valuable code, because at the end of the day, if we're writing code, hopefully, you know, it's unique and it's valuable and onto itself. So to me, this is inevitable because this is industrialization. Over time, like all technologies industrialization, but over time, things get smaller, faster, cheaper.
+
+And so like, you know, computers used to be huge. Now they're getting kind of small. They used to be expensive. Now they're getting kind of cheap and over time it just makes sense that we would have big utilities running this for us, that we would outsource our stuff to.
+
+That said I kind of feel like the term is also grown too vague, so. If you search it on Google trends, you'll see the word serverless is it's like doing one of these it's like humping and the trajectory is down. And I've got a few theories about that. Cause I do believe that this concept is the future and in the way things are. But I think it's starting to fade into the background as just how things are.
+
+And so it's not really different as, as so much as it's a default. And the other problem is sometimes people put things on the serverless spectrum that really shouldn't be there. Like to me, running a Kubernetes cluster is absolutely undifferentiated heavy lifting that is not serverless truly, but people disagree, especially people at the cloud native foundation, right.
+
+Or behind K native and all that. And that's fine. They can do that. And this is why we've been talking about functional web apps as a thing more and more, because we want to be really specific that we're talking about offering cloud functions that are ephemeral. That you know, ideally are single responsibility and, and that go away after they'd been invoked, that statelessness is, is absolutely key and and a, in a property that we want.
+
+So I I've been saying FWAs are functional web apps a lot more lately, as I kind of feel the term serverless is just a given in a sense, and it also is a bit ambiguous, so it's not as useful as it used to be. I think now if you're starting out very unlikely, you're gonna want to kick up a cluster of anything.
+
+You know, you're just gonna want to talk to a database and get out of there as quick as possible. And I loved the Wordle story in the last couple of days, because like they showed, you don't even need a server to have a big exit. You can just add a plain HTML file with some web components. And that thing could be worth up to a million bucks.
+
+Like how wonderful is that? And that's because he focused on the problem. And I thought that was a beautiful example of it. In a way
+
+## [00:29:56] WebSockets in a Serverless Environment
+
+**Justin:** Yeah, for sure. There's when it gets to the point of, of talking about begin.com and what you're doing there, but before we get there, there's one other thing that I would like to talk about on this like serverless topic. If you're building just a, a sort of normal crud web app, it's like serverless makes complete sense, but you know, there are times where you need like real time, some sort of real time data, you need some sort of real-time information.
+
+And, and traditionally, this is where the serverless sort of approach can break down. But I was looking through some of the arc examples and you actually have a web socket example there, and I'm not familiar with like, if Lambdas can like natively handle WebSockets or whatever, that doesn't sound like a normal thing to me.
+
+But could you explain that a
+
+**Brian:** Ah, we got to do a better job of promoting this cause it is magical. So, yeah, I think it's as old as three four years now that API gateway has supported, promoting a connection to a web socket. And so we, we exposed this an architect and we have for years. It's pretty cool. So it's weird to me to try and explain this and it's, it's not going to be intuitive because when you think WebSocket you think stateful, you think long lived connections, and if you've ever built something, a web sockets, you probably had to set up web servers that kept those connections open and learned about how much memory that chews and figured out how to try and load balance socket connections.
+
+That's no fun. So you don't have to do any of that anymore. You can set up an API gateway with architect and literally one line of code that will give you three Lambda functions. One's called connect. One's called disconnect. One's called default. The connect land will get an unique connection ID for the person initiating the HTTP 1 0 1 connection requests.
+
+And even better, it can have cookies, which means you can have a full-on session with this thing. So what you do is you take that connection ID and your key it against a user identity, and you put it in dynamo, say, okay, this connection ID is this person. Usually you put a TTL on that row in dynamo, so that, you know, it'll last, only as long as the connection will, when they disconnect, you delete that row from dynamo.
+
+But even if they, you didn't get the disconnect event because you put a TTL on it, it'll disappear from dynamo either way. So now, you know, that connection ID equals this person. So now your default message handler Lambda function can take care of all the rest of the messaging. You can look a person up and dynamo, you can send them back a message.
+
+You can create a chat program. You could do whatever you can do with this. So it's entirely stateless, but it's a hundred percent real-time and we actually use this and begin.com itself. For our CI tool, we have like real-time feedback as you do your.. As your builds and yeah,
+
+so that's one way to go. Real-time with Lambda. There's actually Kinesis for web RTC as well. I've never played with this myself, but it is a serverless product from Amazon that allows you to do web RTC video streaming totally serverless as well. And they have crazy limits, like look up API gateway, socket limits. I think it's it's bananas.
+
+I think you can have like tens of thousands of connections in the free tier. And yeah, three Lambda functions to implement sockets, no servers involved.
+
+**Justin:** That's that's pretty magical. I didn't really realize that worked. So I'm assuming that the connection is stateful to the API gateway. That's like actually holding up in T or the connection. And as, as like events come through, then it's like just invoking the Lambdas as necessary.
+
+**Brian:** Yeah, they take care of all the buffering and control for you. You just have to deal with like the it's wild and it it's surprisingly performant. And as soon as we saw that the cookies were passing through, it was like we were cheering. We were all like, &quot;Yeah!&quot;. Means that you can build like pretty much anything that you could think of that's real-time with a Lambda function, we should do a better job of promoting that capability.
+
+I think those patterns are still very nascent and not a lot of other providers have. Actually I don't think any other providers have this capability.
+
+**Justin:** Yeah. that's, that's pretty awesome.
+
+## [00:34:03] Learning more about Begin.com
+
+**Justin:** So with that, maybe we can talk about your work at begin.com. Do you want to kind of explain what you're doing there and how it might differ from sort of, existing offers?
+
+**Brian:** Yeah. So begin, kind of came about as a bit of a knee jerk to the stuff that we were doing with AWS, we realized that there's just a ton of common things that you need to set up when you're setting up your Amazon. And we wanted to just hit the fast forward button on all of that stuff and give you one interface where you could be two clicks and deployed and not have to deal with all the nightmares of provisioning.
+
+Not have to give them your credit card, not have to worry about your account, getting blown out, just to try the thing and. We've really evolved quite a bit over the last couple of years since we launched it. Our, our thinking is, is growing more and more along the lines of like, what is the best place to build a functional web app?
+
+And what would that look like? And so our sort of underlying core philosophy is all about these small single responsibility Lambda functions. Our context is to build from logic up and that's probably how we're different. So I think a lot of folks today are thinking static or they're thinking Kubernetes basically, it's either JAMstack on one side where I pre-compute my whole app.
+
+And then I put all my dynamic functionality behind a spinner, which isn't great, or I have dynamic app, but now I've got a huge infrastructure overhead. And so in our belief, there's a third way and it's pretty nice. And that's just to focus on building small, independent, single responsibility functions that talk to a database.
+
+And get deployed with infrastructure as code. And yeah, it's our belief that begins the best place to do that. We're always trying to improve it though, and there's lots of work to do. But it's, it's been good and it's quite stable and it's growing well. And, and we're, we're pleased with the approach.
+
+If I'm being blunt with myself, I'd say I kind of am surprised more people don't build this way yet. There's no neat. Like the static thing has always made sense to me and is really great for that use case, but it's not really great for the dynamic web app use case. As soon as you start talking to databases, this really doesn't have a, a great outcome.
+
+And, and for the end user experience, it's quite janky and it's not really Webby at that point. So for me, I just want to, you know, write HTML and send it to the browser. Maybe progressively enhance it with just a little bit of JavaScript. And and I don't want to run a web server to do it. I still want those guarantees that I get with deploy and static.
+
+And so many ways. I think if the infrastructure as code is the best of both worlds. You get that static deployment experience where you have this sort of deterministic artifact, but the underlying primitive is actually dynamic and fast. You can put a Lambda function behind a CDN, just the same as a static file, you know, that'll work great.
+
+So there's no reason to not have that. And back when computers were slower, I understand. But nowadays we don't really have that problem.
+
+**Justin:** So how does, how does begin compare with something like Vercel? Maybe a, an another alternative sort of functional platform that's like sort of aiming to hit this, like easier than AWS niche.
+
+**Brian:** Yeah, I think they're approaching the problem similarly, for sure. I haven't gone super deep on their platform. I'm sort of in my AWS bubble and I'm happy with it. And so are begin customers. So that's probably another way that we're different. Your workload is portable to your Amazon account with us.
+
+So we don't try and own your code or lock you into our platform. We've seeded control to Amazon already. And we're assuming that you have to, and in a lot of cases, I think a lot of businesses are already on Amazon, so they want something like a begin, but they still need to talk to their own cloud resources that they've already got deployed.
+
+So that's probably the biggest ways that we're different. We're we're not focused on trying to hide a lot of this stuff with our own abstractions. We're really trying to remain as close to the metal as we can with this functional web paradigm. I'd say that the primary difference between us and Vercal is that we are dynamic focused and they're more static focused.
+
+And I think that both approaches are fine if you're building a dock site that doesn't change. Yeah. Like put that shit in S3. That's great. If you're building something that talks to a database, I think we're a very compelling option.
+
+**Justin:** Right. And, and I guess I'm assuming that given that you're explicitly running on AWS, and even in your marketing materials, you talk about like it'd being you know, specifically for AWS that you are explicitly exposing like platform primitives, like, you know, things that Lambda would expose directly instead of trying to hide those and like some generic platform.
+
+**Brian:** Yeah, exactly. And I just think that those abstractions would leak anyways. There is a hope in the future that someday we could look at this and make these workloads portable, but I don't think the other clouds have caught up yet. There's really no infrastructure as code answer. That's as comprehensive right now on other platforms, they, a lot of click ops going on in the console, which to me is not the future.
+
+As for on-demand functions, really, Cloudflare's kind of like the only other one that's got steam and, and their thing is like their own JavaScript from time. It's not posix. So it's pretty limited. And as weird as it is to say, I think this is very early. Like the industry is still quite nascent.
+
+Normally see a lot of established approaches and the players would be somewhat indiscernible from each other, but the Delta is between, you know, even just AWS and Azure are huge right now. So we're very happy with Amazon. Absolutely interested in what a multi-cloud thing would look like in the future.
+
+But we're not trying to do that right now. We're just trying to build these apps as fast as we can and as reliably as we can.
+
+**Justin:** Yeah. I guess the last question there before we move on you can, I'm assuming that you can like directly just access, like AWS resources. Like, can you like just access like S3 or dynamo DB or whatever, sort of like directly from again,
+
+**Brian:** So you can you are limited by your arc file. So that manifest file that you create at the very beginning at arc file that is your infrastructure as code. We'll derive what's called an IAM role from that. And so if you declare a database table foo then that arc file all the resources in it can access foo but nobody else can.
+
+And so, these things can't mess with each other unless you explicitly give them permission to. And you probably don't want to do that so better. It's better to have these things isolated down to least privilege and, and down to on a per application basis is occasional situations where you do want to punch through the wall though, and talk to like, say another database or something like that.
+
+And that's in our paid tier and that's that's what we call a plugin or a macro. We'll let you do that. Very rare though. And honestly, if you're talking to one database from two web apps that's a bad smell, something something's suspicious going on in that situation. You maybe want to reconsider that approach that, but, you know, yeah.
+
+We're all dads and we got to go home at five. So stuff happens
+
+## [00:41:30] Arc (Architect), the Engine that Powers Begin.com
+
+**Andrew:** So you mentioned arc there. Is arc what powers begin is began basically just kind of like a wrapper around arc with some like nice defaults in some hosting.
+
+**Brian:** Yeah, a hundred percent. It's it's a hosted architect thing and architect is a way of building functional web apps. It's it's built with itself and it's deployed by itself. So it's very referential situation. But it's also stable and some of those codes are actually quite old. And, and like I said, Amazon doesn't change.
+
+So like we we're, we're in a pretty happy place with it. I think we're, I think begin.com itself is something like 200 resources which is close or close to the old maximum that you could have with cloud formation that you can have a thousand now. But it deploys in 90 seconds, which is, I don't know, I've never had a system that scaled with this, these properties that deploys that fast and it can be recreated in that same time.
+
+So if I wanted to create a branch and just try something different out, I can spin it up in a different region or something like that. Just to try it. Yeah. 90 seconds later, I've got it from any SHA in the history of the repo, which is quite powerful and very useful.
+
+**Andrew:** Have you ever hit that limit? It sounds like you could feasibly hit that limit of cloud functions. What what's, what's the solution there when you do hit the limit?
+
+**Brian:** Beg AWS for limit increases. And luckily they do that. So the new limits a thousand, and I would say that if you've got a thousand functions in one app, then you should probably break that up flake. It's time to it's time to look at that. It might, might be too many. I know people that are like right on that cusp though, that do have quite big apps that it's just how it grew.
+
+And when you think about it, you know, like typical rails app has a lot of functions too. Just doesn't have a lot of separation between them. So this is maybe not so bad, actually, as long as it's all managed, it's one artifact in deploying deterministically. It doesn't matter that much, but that said, I think it gets pretty hairy after a couple of hundred.
+
+And you're probably gonna want to start looking at like, separating those concerns.
+
+## [00:43:39] TypeScript with Architect
+
+**Justin:** One last thing I want to ask on this topic before we move on or answer a few last questions. Can you use TypeScript with either architect or begin.
+
+**Brian:** Yeah. Yeah, we do. And I'm more of a doc strings kind of guy. I don't want a build step in my way, and I don't want to deal with transpiled code and debugging it. There is nothing worse than error line one column, 10,000. We've all seen it and don't want to go back there, especially on a Saturday night. And I think that's the moment when I was like, we will not do this anymore.
+
+Now all that said a ton of people use architect with, with TypeScript. It is officially supported. Version 10's coming out in the next couple of weeks. And we actually are coming with a plugin that will preset TypeScript with source maps enabled so that you get good debugging out of the box without any changes.
+
+And then you can override it with your own Ts config. It's all built on es build and we're, we're actually quite happy with it. My, it was sort of my last complaint too. Like I have no excuse now. Before I was like, no, we can't use that. We have to use doc strings because can't debug this thing and now we can.
+
+So I'm probably going to start losing that argument. It's it's fine. The other place so this is with node, but I'd be remiss not to mention denim. Is another great option for running with Lambda and that's TypeScript by default. And it's it's been a bit of a bumpy ride with Deno. It's still a little early, you know, like some stuff's changing a little bit, but it's so much fun and it's much nicer than node.
+
+It's got all of the browser affordances that I kind of wanted in my JavaScript run time all this time. And I I see the future there for sure.
+
+**Justin:** Yeah, the code base is a joy to ever get a chance to dig into the Deno's code base. It It's pretty good. And they've got like really good documentation on their actual architecture and the code they're doing. So if you ever wanted to get involved with the project, it's like, it's pretty easy.
+
+**Brian:** It's unbelievable to see Ry take a second crack at this and quite interesting to see like a, you know, a do over in the dev tools space. Also interesting to see the inertia of node. Because I think if this had been released, you know, in a, in a different time Dino or Deno or whatever the hell we call it would be like surging and it is it's growing, but it's not growing as fast as I would have expected.
+
+And I think that that's just due to the inertia of the existing node project and where things are and nodes not sleeping at the wheel either, you know, they just added fetch. So it's and es modules and they kind of work sort of, depending on the time of day. That's cruel it does work. It's just painful.
+
+It's all the packaged JSON stuff.
+
+**Justin:** We're getting there. We're getting there.
+
+**Brian:** Yeah.
+
+## [00:46:29] What's the Future of the Web?
+
+**Andrew:** This is the question we ask of a, a lot of our guests. And I think you'll, you in particular will have some opinions about this, but what do you think about the future of web? Where do you think it's going? Like what, what do you think is going to happen?
+
+**Brian:** Yeah. I mean, I'm a developer, so I'm naively optimistic that it's going to keep going and it's going to keep going well. I'm overjoyed that we have evergreen browsers everywhere now. So this used to, you know, this used to be a really, really hard job. You know, getting stuff to work plausibly across browsers was, was quite painful and now it's not bad.
+
+You know, we got modules, you got components. We got, you know, service workers, we've got background tasky stuff. So canvas is nice. Apparently it's good enough to render Google docs, which blows my mind. Sockets are great. So I'm, I'm only optimistic. I think a lot of the stuff that we've been doing in user land for the last decade is about to melt away.
+
+And we're going to be focusing more and more on lower level primitives, because why would you use jQuery if you've got query selector all? Right. And similarly, why would you use a third-party component model if there's one built-in, why would you use a third party module systems? There's one built in, if you want to build, you know, fast accessible experiences, you can do that by just sort of sticking to the defaults.
+
+I think the craft of sticking to the default is completely unexplored. And I think that we sort of lost ourselves in the modern tooling world for the last while, but there's, there's hints on the horizon. You know, you look at remix and what they're doing by focusing on the lower level primitives there's a lot of positive movement there to go back to the old form tag who knew.
+
+**Andrew:** Hm.
+
+**Brian:** There's Astro which is doing really great work with Fred I think you have both those on your show already. And yeah, I think they're kind of like pointing the way to what the future is going to look like. And, and to me, the future is pretty bright. You know, there was a moment when the web was looking like it was going to get superseded. And, and then, you know, I think there's been a few years of disillusionment around the tooling, cause it's kind of not super compatible.
+
+We have these islands, you know, like there's the Ember island and there's the react island and there's the angular island. And nothing can really traverse between these worlds without the most complicated build config you've ever seen. And the beauty and power of the JavaScript runtime is that it's ubiquitous apparently.
+
+And so if you know that we've got a browser, that's relatively the same everywhere, then having these islands shouldn't be necessary anymore, probably will melt away. Uh, That's my prediction. I think it's just classic industrialization stuff will be subsumed by the platform. And and what what's interesting then is to ask, well, where do we go next?
+
+And I'm like, what happens after, you know, what's postmodern, JavaScript look like or web native JavaScript maybe. And, and I think that this is where probably the most interesting work is going to happen over the next 10 years. And yeah, again, if I was going to look anywhere to see what's going to be happening, I'd look towards, you know, what Fred's doing by that. But um, Michael and Ryan and Kent are doing with remix
+
+Who knows though man, maybe there'll be like some Oculus thing next year in the web will get wiped off. And we'll all be walking around in our 3d metaverse selling each other NFTs, good app.
+
+**Justin:** I highly doubt it. I highly doubt it.
+
+**Andrew:** You don't want to be in second life all the time.
+
+**Brian:** I'm waiting for all of this stuff that was like gnarly to happen in the metaverse that happened in second life. Like, you don't have to Google too much, but there were a lot of like bad actors in second life and then pretty sure similar things are going to happen in the metaverse cause the stuff repeats and yeah.
+
+I don't know. Maybe they'll get moderation right. And there won't be giant flying penises this time. No,
+
+**Justin:** Yeah, yeah, we're talking about, okay, let's tooltips!.
+
+**Brian:** yeah. Let's move on.
+
+## [00:50:37] Tooltips
+
+**Andrew:** So my first tool tip of the week is something I found last night on my GitHub feed. This is from a. A tool author called, named Mark Dalgleish. I think that's how you say his name. He's behind the braid design system of vanilla extract. All these different design system. But one thing that while you're building a design system that you'll encounter quickly is if all your components like are basically encapsulated stylistically, you still want primitives to lay out your components, to put them in a line, to put them in a grid, to have some space in between them, some max widths.
+
+And you can do that writing just CSS. But as I found, like, that's, that becomes a lot of work. Like you gotta make a CSS file, you gotta define some classes, you gotta use the classes. So having layout primitives really helps solve that problem. So this is just vanilla JavaScript library that provides you with a bunch of D like very low level layout, primitives that you could design systems theme if you wanted to.
+
+But out of the box, they seem pretty nice. And I'm excited to give them a try because I have display flex aligned centered. Throughout my code base and being able to get rid of some of those and have just straightforward code to read. I would much appreciate. So if you're in look in need of a layout, primitive for react, I would definitely check, check out L Y T S layout P primitives for react.
+
+Uh that's that's the name? I'm not really sure what to call it, but yeah,
+
+**Brian:** Lits?
+
+**Andrew:** Let's get lit.
+
+**Justin:** So my, my tool tip today for today is it's actually an article that I found and it's called the taste skill gap. It's on the typogram blog. Typogram is a an actual company and they, they produce typography if I'm not mistaken. Anyway this is a really, really excellent article and it talks about the tension. Like we all inevitably build between like our tastes that we develop over time and consuming things and like kind of building up an understanding of what we like versus our skill to actually be able to produce those things. And it's something that I hit a lot especially with like front-end engineering, because it's like I have a strong design taste, but a very like low level like design skills.
+
+So it's like, I can see that something sucks, but I can't actually make it better, you know? So anyway, I really enjoyed this article. I highly recommend people will check it out. It was, it was it was pretty good. We'll leave it in the.
+
+**Andrew:** I experienced that too.
+
+**Brian:** Yeah, I'm still there, man. I'm sorry to say.
+
+**Andrew:** I can tell your design looks like shit though. That's a, that's definitely my skillset.
+
+I'm joking.
+
+**Brian:** Okay. So my tool tip is very near and dear to my heart. I bought an espresso machine and I love it. And as a, as a developer, probably my second most important tool after my text editor is my espresso. And I have to say that this thing is amazing. It's super affordable. It pours a shot that's just as good as what you can get from any barista.
+
+Just make sure that you've got good beans and a good grinder. And it's really fast. It can pour shot in like under a minute, which is wonderful too. And it's very easy to clean. So yeah, it's basically, it's been a godsend. I love it. I use this thing every day and I probably will till it's burned out and they come up with a new one.
+
+So I recommend it.
+
+**Andrew:** Do you make just shots or do you like make lattes or stuff like that, or just basic?
+
+**Brian:** I do a mean Americano. I found so one thing that maybe is not super great of us, it's a little bit of a smaller the porta filter is like smaller than a standard one. And so a double shot is like actually more like one point, I think, like four ounces. So I've gotten into making four shot espressos later for shot Americanos, which are like, they, you know, they pack a serious punch, but they're really good.
+
+And it maybe ruined me for normal Americanos. Cause now I'm like into the high testing, but that if I had like a minor complaint that might be at, if I'm making a fancy espresso drink, I maybe want three shots, four shots instead of just two. Yeah, it does it all you can do lattes you can do mocha is I did a lot of that at the beginning, but now I'm, I'm getting coffee nerdy about it and I'm like tasting the espresso and then I'm trying different grinds.
+
+I'm going deep on it. I'm absolutely loving it. It's a, it's a user-friendly machine. It's not like the, if you've ever used one of the like hardcore ones where you got to physically pull the shot and everything, this isn't like that it's quite automated actually.
+
+**Andrew:** Yeah. I make my coffee in the least automated way. And I do pour overs, like, I D I had like, before pour overs, I drink coffee, but then I've got a pour over and was like, oh my God, this tastes so much better. It takes like five minutes, but yeah.
+
+**Brian:** I think it's, you know, it's a ritual, right? It's worth it. And it's I love a good pour over too. I was all about the like beginning of the pandemic. I was going deep on arrow pressing. I
+
+**Andrew:** I thought you were going to say that.
+
+**Brian:** Yeah. Because it was efficient and it could bring it into my office and, but it just wasn't quite an espresso.
+
+So that's what kind of led me down this path.
+
+**Andrew:** I think it's hilarious that the guy that made those Frisbees that stay up a long time also made like one of the top ways to make coffee.
+
+**Brian:** It's a genius.
+
+**Andrew:** Yeah. Fun stuff.
+
+So thanks for coming on Brian this was a lot of fun. I'm a, I'm a front end dev typically, and it's it's nice to talk about non front end-y for once.
+
+**Brian:** Yeah. Thanks for having me. Appreciate it.
+
+**Justin:** Yeah. Likewise, I I've, I've been a fan of, of architect for awhile. I haven't actually really built anything with it, but you've changed my mind. I'm going to, I'm going to give it a go.
+
+**Brian:** Yeah. Hack come those WebSockets let me know how it goes!
+
+**Justin:** Yeah. Yeah. I'm, I'm incredibly excited about that. I was, I was talking to a friend of mine. Who's building a, a word game platform, allow Wordle or things similar. And, and we were talking about architecture for that. And I don't know, this has sort of inspired me to take a different approach to think about some of these things.
+
+So,
+
+**Brian:** cool. Nice. Right on. If you guys need anything, let me know. I'll be around on the internet always. So
+
+**Justin:** Absolutely.
+
+**Andrew:** Well, that's it for this week's episode of DevTools FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening!
