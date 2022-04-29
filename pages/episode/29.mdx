@@ -1,0 +1,515 @@
+---
+title: Juri Strumpflohner - NX, Nrwl
+youtube: https://www.youtube.com/watch?v=tJMHbMfz-W8
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10525607
+tags: technology, monorepo, nx, developer tools, developer experience, javascript, typescript, packages, task runner
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Join us this week with Juri Strumpflohner, the head of DX and Europe Engineering at [Nrwl](https://nrwl.io/).
+Nrwl maintains [NX](https://nx.dev) a next generation build system with first class monorepo support and powerful integrations.
+Join us as we dive deep into the feature set and learn all about how the make builds lightning fast.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:02:08] What is NX?
+[00:10:28] Generators
+[00:16:06] Plugins
+[00:22:45] Need for Speed
+[00:30:39] Look Ma, no package.json!
+[00:35:52] Apps vs Libs
+[00:40:54] Distributed Task Execution
+[00:47:38] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Juri:** Like from a bird's eye perspective, it's like not having separate repositories, right. Where like every team works in isolation, but rather having one single repository where multiple teams might work inside the same repository.
+
+**Andrew:** Hello, welcome to the devtools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host Justin.
+
+**Justin:** Hey everyone. Our guest today is Juri Strompflohner. Juri is the director of developer experience at Narwhal and is joining us today to talk about NX. Juri, would you like to tell our listeners a little bit more about yourself.
+
+**Juri:** Yeah. Hi. Uh, yeah, as you said, like, my name is. Uh, I'm calling in from Northern Italy. I've been with Narwhal already for like good two years. And, uh, most lately I'm taking over the role of director of developer experience. I can fully focus on like making NX and stuff better and then interact more of the community, which I'm really enjoying.
+
+**Justin:** That's awesome. What is the, what is the role of director of developer experience? Like what is, what is your day-to-day look like?
+
+**Juri:** I guess it's like, it probably depends a lot from company to company. We are around 30 people, but like still the whole devrel sector is pretty small. So it's me. Plus a lot of engineers have been traditionally at Narwhal also been doing that as the second part. Like talking at conference because they just enjoy it. We have a lot of Google developer experts on our team, so it's part of their kind of thing they do even outside of work.
+
+Right. So I guess like the whole thing is it's fully focusing on developer relations, making sure... feeding into development, the feedback from the community back into, to our development teams. But it's also like being very near to the actual engineering specifically for NX. So I also basically go through like check out new features, take part on like feature brainstorming sessions to make sure like that also from the developer experience, part of view, things are kind of in line with what I know from the community.
+
+Right. So it's all around that. Plus content production, also creating even integration in NX and stuff like that. So pretty interesting. So far.
+
+**Justin:** That's cool.
+
+#### [00:02:08] What is NX?
+
+**Justin:** Well, one more question before we start talking about NX. So Narwhal is, is kind of a, like part of it's like developing this open-source tooling, but part of it's also like a consultancy. So how does, how does the business work?
+
+**Juri:** Yeah, exactly. Like, basically NX is our if you want 20% project. So we mostly like do 80% of consulting and 20% work on open-source, which is NX, NX cloud. And also people can choose to do more like docs and content production that, that side of area. Uh, but yeah, right now, at least it's mostly focused on like those 20, 30% of our time.
+
+We're kind of trying to balance it out, like trying to slowly invert that even. Right? So focusing more and more on NX, but the whole like consulting business for us is also important specifically to kinda be there and real world scenarios. Right? Because like a lot of what NX is today is because like we work with clients, we see the issues that come up there, especially with larger scale repositories and stuff like that.
+
+And so then we kind of feed that back into NX and it's hugely valuable. So there will always be some consulting part from NX and Narwol in general, but yeah, right now that, that is a big chunk of where, like, we obviously get the money because NX is basically free. Right. So it's open source. You can just start using it.
+
+**Andrew:** That's super interesting.
+
+So like NX was literally born out of a customer need of managing these large monorepos company to company?
+
+**Juri:** Yeah, basically, um, our co-founders Jeff Cross and Victor Savkin. They have been at angular team inside Google. And so basically when they like quit their job there and like, thought about founding their own company and helping businesses outside of Google, uh, they obviously wanted to take some of the things that they learned inside Google, like for instance, how to handle like scale monorepos with them.
+
+Right. And kind of implement that in a way that is really approachable also for like everyone outside. Cause the Google is kind of known for their big, big monorepo, right? With a blaze, which their internal tool, which is known as Bazel outside. Uh, but it's really a complex set of tools that they use. They can afford it because they are huge. And so their goal was kind of to take that with them to kind of philosophy and try to give that into the open source world and kick it off from there. So yeah, it, it, it kind of started from there. It started very small initially actually as an extension to the angular CLI even. Because angular has already kind of a CLI, which is very minimal.
+
+So it started as an extension to that and then they quickly figured like, there's really like the need for, for something like stand-alone right. And so from there it really evolved and nowadays it's basically a standalone development tool that you can use.
+
+**Andrew:** I suspect that's kind of where the naming came from since angular uses like the N G so NX kinda goes in line with that whole naming scheme.
+
+**Juri:** It's going of not 10 times developer. Like we, we have to joke it's not like 10 times, so everybody's like N X developer, right. You get even more productive than using NX.
+
+**Justin:** So if we could take a step back and just talk about NX from a, just a broad term. So if people are. Loosely familiar with monorepos or maybe not even super familiar. Um, how would you go about explaining like what NX is and what problem it seeks to solve in their project?
+
+**Juri:** Yeah, I think there are like two things here, right? Like there's one thing is like, what is NX? Like what does it do and how can it help also in the case of monorepos. And then there's more of a generic approach of like, what is the monorepo, even. Right. And why might you need it? Right. So, um, at that point I might even plug like we have a page that we created, like monorepo.tools, which is kind of an approach where we try to explain it, like, from someone that is like, what is monorepos? It's like they got pretty like popular recently in the javascript ecosystem in general.
+
+Right. Although they have been around for quite awhile. We've tried to break it down. What are the tools that are available? And like why you might need it, but like from a bird's eye perspective, it's like not having separate repositories, right. Where like every team works in isolation, but rather having one single repository where multiple teams might work inside the same repository.
+
+Right. So that's kind of the monorepo approach and there are different like things where you might need that right there, that we could really probably talk the entire hour about that. But it's most of the times it is around like code sharing, right? Making, like allowing for easy refactorings across the code base and lowering the friction in general for the code sharing approach in general.
+
+Obviously, if you have multiple repositories, like you need to have like CI set up for every repository, you need to have a publishing process in place. And obviously like then deal with version conflicts as you share code. And specifically, as we have seen from our own experience within bigger and larger enterprises, what often have, seems like they don't even have a registry, a copy and paste code between like different repositories, which is like super bad.
+
+Right. But like, that's how it goes, because if you have to ship features quickly. And so sometimes like those workarounds are being made, so monorepos can help mitigate that. a bit And to your second question, like, what is NX and how can it help in those scenarios? NX has been designed from the ground up could you kind of support that, that, that scenario for monorepos even at the very large scale? Right. Uh, although specifically in the last years we made some quite huge improvements in the sense of that you can even use it in a very, very small environment. For instance we have even startups that just like start with one application, right?
+
+You start quickly prototyping it. And NX has a couple of features that allow you to go quickly. As soon as you create your application with those generators. So, and what, what happens then is like you start with a single app, just use some of the CLI features from NX, and then I just started like, you get like, well, we might create a second app there because it's handy.
+
+Like we want to deploy separately. And out of a sudden you have a two, three apps maybe, and a mobile app in there and you have a small monorepo bay. Right. So it doesn't always need to be huge. Right. Although we definitely have like clients that have like 200 plus project in the same in an NX monorepo, but so it can really scale, but like, we really cover kind of the the thing where you can quickly start with a small thing, uh, benefit from those co-chairing features at a small scale. And then as you need to scale up, because like your startup maybe grows, right. We can stay with you basically along that way. So that's more or less like, uh, where NX can help out.
+
+**Andrew:** For our listeners that might be familiar with a tool like Lerna, how does, NX differ from like those tools that they might've used before? What, what makes it special?
+
+**Juri:** Yeah, I think there are a couple of things. So Lerna is more at a higher level. So it allows you to have different packages. Within also the same monorepo and same workspace. And it basically helps you with processes like the installation of NPM packages. Like those kinds of more high-level management stuff, even though the publishing process, right?
+
+Where it just like would go in increment version numbers, create packages that are dependent on each other and stuff like that. And NX is like, that's the same thing, but it also goes a bit deeper. So it has like other structures in place that might help you, for instance, things like a dependency graph, right?
+
+Where you can see like which project within the same monorepo depends on which other project. From our perspective, a monorepo, like obviously it can be also where we just have a couple of projects in there that are not talking to each other at all. Right. So you just benefit basically, maybe from CI set up and what not.
+
+But usually what you have is you have some separate section in the monorepo but then you have a lot of the libraries and stuff that interact with each other. So there are dependencies between them. And so that's then when you need more support than just something that handles you to build across those libraries or NPM installs.
+
+Right? So you need something that like gives you an idea, like, what are my dependencies look like, even shield you from, I don't want to have dependence between those libs because like, they should never depend on each other. So stuff like that. And then obviously there's the whole part that Lerna doesn't have in this specific case.
+
+For instance, the part about generators and integration with various tools that we think are really good and like considered best practice, if you want to be productive in front end development. So just, I dunno, Cyprus jest linting setups, right? So configuring those, can be quite cumbersome. There are some people that like it, right.
+
+And it's definitely fun to play around sometimes like with the webpack config, or setting up the typescript config that it works well in a monorepo set up. But as we all know, most of the times, that's not really what you're paid for. Right. So you writers should ship features. And so that's where NX can jump in.
+
+We battled test basically those integrations and make sure they work well together in that specific setup. So,
+
+#### [00:10:28] Generators
+
+**Andrew:** So, uh, so NX comes with things that like just instantiate all these dev tools and like hook them up in a best practices, sort of way?
+
+**Juri:** Yeah, exactly. So that is mostly, basically that generating part of NX, right? So the NX is basically. con- constructed in a modular fashion. So there's a core part, which has things like the whole dependency graph analysis, which understands like how your workspace is shaped, which obviously is super helpful then for doing optimizations at the larger scale.
+
+Right? So improving build speeds, understanding what changed in a certain PR or whatever. Right. So to basically be faster. And then on top of those are plugins, which we can add, right? So there can be plugging for angular for, for React for Next.js stuff like that. And we support. Some core plugins, right?
+
+We are just that many people. So we cannot support really everything of it. And luckily there is a huge community that, that also provides plugins like from the community itself. So you can build your own. But so basically that's kind of the idea that there's the core. And then there are plugins of top. And all of those plugins then come with things like generators that you can use for instance, to like quickly generate an application set up.
+
+Right. And that application setup is already pre-configured to work well with TypeScript to work well with jest, with eslint, with prettier and those things even storybook. Right. Uh, and then you can continue even like, it's not just the initial setup, which I think is it's very cool. It's not just that you can get started quickly, but also as you develop you, it helps you, right?
+
+So we can generate components, routes, libraries, like as you go, you can even, uh, like benefit from those generators to move on quickly. And it's not always just like moving quickly, but also the consistency behind it, right? Like what we see, for instance, when we work with bigger organizations, it's like, they want to have the library set up in a certain way.
+
+They want to have something in it the README that always set, like it's structured in a certain way. Right. Uh, the components should look like there's libraries itself to build, set up, should have this structure. Right. And so what NX also allows you is also to customize those, right? So you can extend from those, create your own specific generators that match your organization's organizational structure.
+
+And so that helps with consistency, especially as you grow to monorepo right? Might not be in that important if you're small, but definitely if you grow.
+
+**Justin:** One of the things that I find challenging with generators sometimes is just discoverability. Like people don't necessarily always know when they come into a project that, Hey, yeah, this is how, like, if you're creating a new component, we would like to do it through this, you know, NX generate component, as opposed to, you know, copying and pasting the component that you saw somewhere and then like changing it to do what you want to do.
+
+So this is probably not necessarily an NX specific thing, but, but how do you go about like socializing the fact that, that, you know, these generators are here and that they can do all this stuff.
+
+**Juri:** Yeah. That's very good. Very good point. And that's something we have been working quite a lot to make sure that people discovered them more easily. For instance, just recently we have updated our docs actually just like a couple of days ago, where if you go to nx.dev, then you can do like slash packages slash and know whatever package you're using, like react, angular, uh, Next.js, whatever.
+
+Right. And that will basically give you a list where you also have already liked the generators that are there. You can then jump in and explore them in more detail. So that helps a lot with discoverability. Um, the other main thing, which I usually use and suggest people is to install for instance is NX console, Right.
+
+Like that is something we, we develop it now as part of like NX, it's an IDE integration with Visual Studio code. There are actually also some extensions developer community for WebStorm. There are actually two clients that do similar things. And so that's the best way to explore, right? Because like you just like install it in vs code, open it up.
+
+And that already has a generate, commanded, opens up like basically a drop down. And then you can search for that like components, right. As you can really explore, uh, what is possible to do there. And as you click in, it opens up a form and so it's much more visual way of exploring things. Right. And so for, for beginners, that's what I suggest, because like you just go and explore those forms you try them out, see what happens.
+
+And then once you're kind of more familiar with it because it behind the scenes, it just executes a command. Right. So can you even, like, there's even an icon you can copy and paste the command. So next time you're obviously much quicker, right? You just like paste the command console change, couple of things, and then you go, right.
+
+Uh, but for discoverability is, that's an awesome product.
+
+**Andrew:** That's a really interesting approach to it. Uh, I've seen the idea floated on Twitter a lot where it's like, oh, why don't you just make a GUI for your CLI? And like, uh, you can, it's a lot more inviting, but like a GUI for a CLI might not really make sense. And it's like, where do you deploy that? Do you run a local dev server?
+
+There's like all these weird questions you have to answer as a, as a vs code extension though. That makes a lot of sense. Like it's already a thing that's, that's configuring code based things, why not your CLI? So that's a cool idea.
+
+**Juri:** Yeah. We even had it at some point. Like, I remember still like the very first versions. I wasn't even at Narwhal, they have been as a standalone product. But as you say, like, it doesn't feel right, because like then what did you, like? You launch a product as a GUI and then you have to select a workspace, which feels kind of odd.
+
+Right. As in fact, like it didn't get a lot of adoption, like, but once, like we integrated it as an extension and you are already there. Right? So the extension sees that this is NX workspace and it's not even just like the generators, which we mentioned that it gives you, but it even helps you like jump around configuration files because I use all those fancy code features like code lands and stuff like that to actually augment a workspace for you.
+
+Right. And help you navigate it. Uh, so yeah, that's super useful.
+
+**Justin:** That's awesome.
+
+#### [00:16:06] Plugins
+
+**Andrew:** Uh, so you mentioned things about a builds, configuration react, angular. Does NX help you with those builds? Cause like I built a tool called design system CLI where it's like, it's almost like an NX for your design system and all the tools are like pre-configured and included. And we do like CJ, common JS and ESM builds and like bundles does NX take care of any of that.
+
+**Juri:** Yeah. Yeah, exactly. So basically with those plugins that you can install on top of NX, like let's say the react one or angular one, like they just come with the generators, but also is what we call executor's and executor's basically are kind of task executor's right. So they might be like for building, for linting for testing.
+
+And so they come with the plugin. Now you can obviously create your own. You can even just like. Fall back to an NPM script. If you have a pack of JSON in that project, that works as well. So you can even start very lightweight, but usually what people do is they leverage those builds and executor's because they kind of abstract the way a bit like the underlying configuration.
+
+Right? So let's say for instance, like the react, uh, executed as being used, I think that's coming from now a web package, like that uses webpack behind the scenes, at least right now. So we might change it at some point. Like if we see, like there is something more useful, right. We can even change the under the hood for you without you having to do anything.
+
+Right. And so that's, that's one of the benefits, right? And you just confir via a couple of options. And obviously there are possibilities to customize it further, right? Like there you can, who can like your partial Webpack config and like get the original config, mess around with it, and give it back into NX, then obviously there are people that need that customizability, but a lot of just go with the options that come with it.
+
+And so behind the scenes we've tried and obviously to set the build up in a best practice way to make sure like, output is like what you would expect. Right. And we can cover a lot of different use cases from there. And so it's the, the thing I mentioned was before it's like th th the thing about the upgrading part, right.
+
+So if we see like, like maybe in the future, like let's use esbuild, right. Rather than Webpack, that would totally be possible. Right? So NX comes with, uh, such a, the mechanism is called migrations. And so whenever you do jump from one version to the next, you just, you don't just go into the NX workspace, although you could and does the updated versions.
+
+Right. But rather there is a specific commanded, right? You run basically NX migrate latest, and that would be. Migrate you from version that you're currently on to the next one in terms of NX itself, but also like if you use then react plugin, for instance, also react plugin and to react to version that comes with it.
+
+Right. And so now we, for instance, we were able like, I think even half a year ago by now that a lot of our react folks from webpack 4 to webpack five, without them having to do quite a lot of things, right. Because it happens behind the scenes. So we update webpack configs. We even migrate the code itself. So configuration files and your source files.
+
+If there are things that need to change, like important stuff. So this is really powerful mechanism. And again, like, this comes a bit like from the enterprise environment that we feed back into NX, because like in enterprise, like they want to be up to date. Right. Because it's not just for like, leveraging the latest features of, let's say like latest react version or webpack version, but sometimes it's also about the security issues, right?
+
+So it might need to patches and stuff like that. So you should keep up. But at the same time, we all know it's kind of hard, right? Like to justify again, those things like migrating tools. Uh, so those are, those are super helpful in terms of migrations.
+
+**Justin:** So, I mean, it almost sounds like a database migration for the plugins. Are you having to write, like, so you release a new version and you actually have to write like, okay, you know, execute this code mod or like make this change or run this template or something like that.
+
+**Juri:** Yeah, exactly. Exactly. So the plugin is set up in a way that it allows you to easily specify those migrations, but obviously you have to write them. Right? So some of the times it's even just like moving along version. So really just updating package JSON versions. So if we see, for instance, I know that version of webpack works well with that version of react works well with that version of storybook, which happens to us, we'll be a plugin of NX, right?
+
+So we make sure that as you move along, those tools integrate as they should, right. Without breaking you. Um, but then you have the case, like in the case of a storybook, we had to, we also change how the stories are being written because the storybooks themselves changed it right. At some point. And so that's when you then dive deeper, you deal with AST manipulations and stuff like that.
+
+And you have to write those right now. NX provides you the infrastructure of identity. From what you were into, you have to go to which version you want to go and lists you all those migrations and executes those. But like you, you write the code, right? So there's an entry point for file that gives you some information about the context suggests you as a developer, as a plugin author, you know, okay.
+
+Like this is what I'm going to migrate to. And then there is a lot of utilities that already NX provides, like by its dev kid for like inserting stuff in certain positions, often NX experience, right. Dealing with NX workspace configuration files, like there's helpers for that. So it's not that you have to write it from scratch every time.
+
+Um, but yeah, depending on the type of migration, it might be more complex or, or more of a simple one. Uh, but yeah, you as an author usually write those. You don't have to but yeah you usually do.
+
+**Justin:** So if you're doing a complex migration and you have to do like an AST transform or something, um, do y'all have like tools that you recommend, is it like set up or is it just like, Hey, you know, use JS code shift or babel or something like, is that, does that, does the developer sort of bring that to NX or does NX provide sort of a framework for taking care of those more complex
+
+**Juri:** Yeah, no, no. The next basically provides you already with that framework. So the next comes with a dev kit, which is at null slash dev kit, and so that already comes with a lot of utilities you would want to have to do those migrations, right. To write those. What would you also, what we often happened to use is things like, uh, there's a package called Ts query, uh, which is really helpful for like querying that AST for types of files, like stuff like that.
+
+You just bring those in as you need them. Like, and we, uh, NX core team members I've used it for our plugins just because it's so conveniant um, but like the infrastructure itself of how does migrations get executed and how certain manipulations need to be done. Those are, those are already there. Right?
+
+You can leverage those and then build on top of those. In fact, for plugin authors, I often recommend just look at what the core NX plugins do and how they migrate the files. Right. Do they migrate from different versions because that's the best way to learn right now because a lot of the scenarios have already been covered, right?
+
+Like inserting like sort of webpack configs or changing those stuff, stuff like that is already there. So you just could re can really go and copy paste and adapt it for your own needs.
+
+#### [00:22:45] Need for Speed
+
+**Andrew:** So we've talked about, uh, like some of like the day-to-day features that you might use with NX, but one of the things, the marketing page really calls out is that it's super fast at doing a lot of things. So what makes NX so fast and what is it doing to make things fast?
+
+**Juri:** Yeah. That's obviously like, especially as you scale, you want to have that feature. Right. And that's also, that's also a lot of like one of the big pain points I've heard from folks using lerna in the past that you can start very easily, very quickly. But as you grow, it becomes really a pain because if then your PRS and CII runs like four hours, right.
+
+And that obviously is done work again, like productivity drain on the developer side, because like you're not able to merge in features. Right. So. That has been there from the very beginning of NX to to basically help with those speed improvements. And so there are different stages, which I usually call them.
+
+Like, there's like what NX already had for a very long time, those affected commands. So we've talked about a dependency graph, the next builds behind the scenes, right? So it kind of knows which product depends on which, and so whenever you, you execute, like add a feature and then create a PR and pushed it up, you can actually run an NX affected, let effect a colon test.
+
+And so it would like query the PR, see the commits based like on some, some base branch which is usually master or main, do a diff see what projects got touched. And then with the dependency graph, figure out like what needs to be retested for instance. Right. And so that already cuts off a whole chunk of your structure.
+
+If you have a bigger monorepo, because like if you just change a couple of files, right. A couple of projects, there's no need to run the test for everything. Right. And so that works for testing for linting, for building. And you can really even build, like, create your own targets. And those would also just automatically work those effected commands.
+
+They could just hook them in. So I usually define it as the first step. So you always should do that, right? Like that's basically the basis on where you start there. Most recently, what we introduced like last year, more or less is a local computation caching and local computation caching is basically just the concept of, okay.
+
+Like you ran that command with those flags, those environment variables and includes those source files. Let's compute a hash out of those, store it in a local cache in node modules, folder, wherever you specify. And so next time you come around and execute the same command. We won't execute. Right. So what might happen is like you have extra debt already, you run an NX effective command on CI right.
+
+Or even on a new Chrome machine that happens to include that are projects that you execute proves so well, that product would be pulled out to cash. Right? So now you have to affect a command kind of cutting off a whole lot of the branch. But like, even from those like five products, maybe that enter that branch of those effective products, just two of them would be rebuilt because the other half have already been cached.
+
+So there's an additional kind of improvement in speed improvement there. And the cool part about like the whole caching approach is that it's really completely transparent. So you, as a developer, like we print out at the end of the command that this has been pulled out of the cash, or we printed something like, well, out of those five products, two have been pulled it out of the cache, but you don't notice at all.
+
+Like if we wouldn't print it out, apart from the speed improvement, because it's basically instant, you wouldn't notice because if we restore basically the whole console log that usually gets print out, let's say by Jest, for instance, right. With all the colors and everything in the same order you would use.
+
+Plus the potential artifacts. Let's say in a build out, put, you have the dist files that get produced. Those will be just pulled out as well. Right. And so that's what I see. Like that's the second step. And in fact, by now, like we introduced that one and a half years ago and like, by now that's the default. So you don't even have to enable that.
+
+That's just like, you'd, haven't locally cahces to commands. Right. Because it just makes sense that we even, at some point we had like effected tests and then like we had a dash, dash only failed like, what would happen is like you ran effect the test and then like maybe five failed. Well, let me just rerun those.
+
+Right. So you do like dash dash only failed, but I, once we had the computation cash, why don't we just like, let's drop that flag. It's like the cache will just pull out everything as fast as you would run all of them again. Right. So that's a pretty, pretty cool, cool feature I feel. And then the next time is obviously then distribute it, right.
+
+Because the computation cache is just local. For your own workspace. And so then if you want really share it with your team members and specifically also with CI. CI is usually the pain point, right. Then you share it, right. And that's where like NX cloud comes in. And that's where you basically can explore that cache, that local computation cache, that folder is simply being synced with a cloud based storage and then sync to our developer machines, depending on which ones basically attached to that same storage.
+
+Uh, and so that is hugely beneficial specifically in CI, as I mentioned. Right.
+
+**Justin:** Interesting. So this is a kind of case where if like you built something locally, um, and it may be, you were the first person on your team to build. Something, and it hasn't changed for anybody else. Then they would like pull down the cache remotely of that thing that you built.
+
+**Juri:** Exactly.
+
+**Justin:** that's pretty magic
+
+**Juri:** yeah, exactly. So you wouldn't have to like, even your, your coworker, you wouldn't have to reexecute it. Right. So, and specifically, as I mentioned in CI, what happens like you, you might have a whole set of PRs right and usually it kind of PR train merge train that gets into two main or master.
+
+And so PR before you might execute the same commands of the same set of source files right. Grant, you didn't touch them. Right. But they as mentioned before, they might rendering you effect a tree, but like, you didn't really touch them. Right. There just happened to be dependencies, but then a few hours before you just exectuted the builds on those or tests on those, you will benefit.
+
+Right. And so those are like some of the main, like advantages of that. And then the next step, if you want, like in that, that set of that scale based, so basically affected, then you have to caching. And then on top of that is the whole distributed task execution. That's the kind of the top feature we have right now.
+
+Uh, because if that is another or a pain point and you often see in
+
+**Andrew:** does that same like graph extend to node modules. So say like you updated react, does it then run all effected packages that depend on react and then so on and so forth.
+
+**Juri:** Yeah. So, uh, the dependency graph also has the node modules in there and that that's yeah, that's useful, uh, specifically for the effective part. Uh, but also in some scenarios, like for even like, like for instance, preventing the inclusion of certain packages in certain libraries, let's say you have some libraries that you don't want have them import, uh, the react package for instance, because they should be purely, it should be just TypeScript based, whatever.
+
+Right. Cause you don't want like a developer accidentally pull that in. Now the dependency graph has that information. Right. And so we have, for instance a lint rule that prevents you to do that. Or an, our use case is like, um, which pretty interesting one it's like if you have, for instance, I don't know, a node based app in your NX workspace
+
+or even now with remix, right? You want to actually run it on a server side. Now, if you're in a monorepo, no matter how that is structured with NX, you have just one package JSON at the very root, right? So there's a single version policy across the entire monorepo, which is pretty important as well.
+
+And so what happens if you built a remix app or a node app, you can actually generate a package, JSON, based on what that project imports, so it can generate your dependents automatically. Right? So if you happen to pull in certain library, it will just also add that to your two abundances of package JSON, because then if you don't set it up in a Docker container, you would have those that are needed on the server side of that node product to run.
+
+so the whole dependency graph in general is like it's an easily has been used for exploring right. And doing those effective commands. But there's a whole lot of interesting features that you can then build on top of it once you have that knowledge, right? Because you can directly access it from your plugin, you can extend it.
+
+So it's pretty, pretty cool.
+
+**Justin:** Yeah, that's pretty awesome. Um, drawing those boundaries and application structure is, is, is pretty tough sometimes. So it's nice to have tools to assist with that.
+
+#### [00:30:39] Look Ma, no package.json!
+
+**Justin:** You mentioned, there's a single package dot JSON, uh, in the roots and that it's versions, uh, uniformly.
+
+So how does publishing actually work with NX? So if you have a single package dot, JSON means you have extensively, like in your package, JSON, you define like what the module name should be and all that stuff. So, so somehow for these sub projects, they have to, there's a dynamic package by JSON, this generator for them that like defines what dependencies that they have and then takes care of all the publishing everything.
+
+So can you just talk about how that process works a little bit?
+
+**Juri:** Yeah. Sure. So, uh, the, the single packages that are the root level is basicly for dependencies inside your workspace. inside your NX monorepo. And what it means is simply that if you use react in a monorepo, but you will have one version of react, right. Or if you use angular and so on like you have one single version and that is different. That to some other tools that like also lerna for instance, right. Where like every package has its package.json potentially can have even different versions. Right? So obviously if you have a single version you need to coordinate, right? Like if, if you want to upgrade, you upgrade all the things that are in a monorepo that might be more work initially sometimes.
+
+Right. But it is also kind of beneficial, especially with those migrations, because like usually the team or the person that migrates then also knows like what needs to be fixed. Because like, usually it's just dependent on while in react 18 or whatever, they changed this thing. And so if that error type comes up, like, I already know, like you need to fix this.
+
+Right. So in that migration process is much easier for the person that just to go through, right. Obviously needs more coordination. Right. But the goal is like to be better compatible even with libraries, because otherwise you might end up in weird situations where one app imports a library that is. Th they should be used, like with react 18 while another one uses a previous version.
+
+Right? So there might be some weird behaviors then at runtime when you deploy. But that is really just for the dependence on your workspace. Now the library is usually in an aside and NX where space they don't need to be published, right. So you can directly depend off them, right? Because there's a main package, like main Ts config base at the root of the whole workspace that links in those libraries.
+
+And so can we just import them? So what I means is that the library really just pulls in the source and bundles it into the, the application, sorry, ports into the source of the library and bundles it in and just applied with it. You can, however, which is our cure use case use publishable libraries. So you might have a couple of those where you want to have them on NPM or even within your organization.
+
+It's usually not a case that like huge organization has one NX monorepo. Couple of them. Right. And so some pieces you might even want to publish because you want to reuse them in outside other uh, like areas where they don't use NX, for instance. So just traditionally published on trend PM, internal registry and stuff like that.
+
+So in that case, you can just generate a publishable library and that would have a package. JSON. Now it wouldn't mean that that single library would have its own node modules folder, but that would have a package JSON, that maybe define a couple of scripts that are needed in there, right. Or the version that you want to publish then.
+
+Right. Like things like that and the whole generation of the dependencies, while that happens still, like, if you want, for instance, to have published react library. Right. So that would also take care in the build process of that library to also add basic dependencies that elaborate imports into that package and dynamically, if you want, like you could disable that behavior even, but usually you want to have that.
+
+Right. And so still in the end, what you end up with is in dist folder, you end up with a library with this package, JSON, with his version in there. Right. And so you can just do an npm publish as you're usually accustomed to. Now that's out, like an, usually just goes to the pub to the bundling step, sort of to build step.
+
+So we don't have something in there in NX that does the publishing itself. So like, I don't know. Update diversions based on semantic versioning, or doing change log generation, or I dunno, push up to NPM registries. What usually happens is like you create your custom scripts in an NX workspace that does that, right.
+
+Uh, which you can then again, hook into those NX targets and then use effected, published. For instance, all of those packages of change will be published. So that totally works. So you can hook in your own tool chain. Now we are currently exploring that area. So we want to add some support for publishing, but the thing we stayed out of it is because it's very, very custom, right?
+
+So our building is pretty like, you can pretty standardized that, like in terms of like what output you want to produce, how you want to build certain things in optimal way, while publishing is a bit more custom? Like, do you want to use conventional comments? Like, do you want me to increase like the version number?
+
+Like the things like we are currently exploring, like how far do we want to go and help developers and where do we want to like, stay away and say like, can we go until, I don't know, incremented the version number right. Is you want to have. Changelog generation based on conventional comments. Well, that something you add on top of it.
+
+Right? So th that's something we're currently, uh, right now exploring, um, because if we definitely would also kind of want to add that in, because then we really would close the circle. Right. So it would really can set up a new project, create a couple of published libraries especially for open source projects, have the patching process while in there and us to build in testing.
+
+Right. And so you can really have to while experience and be very quick at actually publishing packages on NPM.
+
+#### [00:35:52] Apps vs Libs
+
+**Andrew:** Yeah. The last time I looked at NX, uh, I came to the. The NX is really like catered towards more like a collection, a monorepo. That's a collection of apps rather than like a traditional lerna monorepo where it's just like, you have like 12 node packages that might be interdependent. You publish them and people consume them.
+
+For context. Uh, I actually do run a tool that does monorepo publishing called auto, uh, that kind of solves all these problems. Uh, and it, it is a very hard, it is a hard problem. Yeah. Yeah. If you want to, I feel, feel free to reach out. Uh, it is definitely not a simple problem. So yeah, the, the way that NX handles packaged J songs is very interesting.
+
+Like when I looked last, it was a lot of like manual configuration to like define the dependencies between things, but it seems like that's become a lot more automatic in the recent, recent days.
+
+**Juri:** Yeah. Yeah, absolutely. Absolutely. And also to your point, like in terms of like the apps and libs kind of structure, that is also something that you can now choose, like why initially you really had like, okay, you have apps and libraries. And it was very much like target towards like app publishing, right? So that use case now you can actually, when you set up an NX workspace, you can choose like the core or opensource preset even, and there you would really have like just a packages folder.
+
+With just a bunch of libraries in there. Right. So it would be Canada, the same setup, so you can really kind of choose. And that's also one thing that we wanted to have is kind of more of that flexibility of like, well, I don't need an app. Right. So I just need packages because like, I'm really in that open source scenario, right.
+
+Where I just want to have a bunch of like packages that happened to be in a small monorepo because like they just belong together. Right. And then happened to set up a work flow that, that allows me to publish them quickly.
+
+**Justin:** That's really cool. Yeah. Uh, something that we were dealing with at work is we have this app lib set up, right. And it's a traditional an app, but there's a few packages that we would like to publish independently, like our UIs or. Or component library. Uh, but we don't want to do the traditional, like mono repo set up because there's a lot of requirements that it instills on you about your, like the structure of your application, you know?
+
+Um, so it, it seems like maybe something like NXs is more suited to that use cases like, oh, well you're building an application, but you want to just then publish some, you know, packages from that. It's like, it'd be a little bit easier to, to
+
+**Juri:** yeah, exactly. Do you, skews would typically have. Um, like things like, I don't know, uh, the component design library for an organization. Right. So might the realization might have like the main monorepo where they develop their apps in, but then you have the component library that is being developed within that monorepo, but right.
+
+But the, the component library is still kind of independent drivers. These are small components reusable to high degree. So those packages are then usually the case where they also want to package them up, publish them to an internal repository. So just like order forks that are outside of the monorepo, but can just benefit from it.
+
+Then in the end it just becomes like a react package, angular package, whatever you happen to use. Right. So, yeah, that's totally a use case we often see, like it's not.
+
+**Andrew:** When we've been talking about monorepo repo, we've all kind of just been in, at least me and Justin have been thinking JavaScript, monorepos, but does NX support more than JavaScript? Can you have a polyglot monorepo?
+
+**Juri:** Yeah, totally. So we happen to be mostly on front end space. So because we like the whole team started from angular now in re in react Next.js as node and that kind of stuff. So it's very monorepo heavy, but for instance we have our internal monorepo repo, where we use like a Java back-ends node backhands within the same NX, mono repo.
+
+So NX self doesn't really care. A lot of the plugins that we provide happen to be JavaScript focused, but for is there are plugins from the community that for instance allowed to run.net projects, go projects and all kinds of things within the same NX monorepo repo. It doesn't really matter.
+
+NX what it does at its core is just figuring out dependence. And execute those dependencies based on what changed. Right? So that's what it does is basically a task runner. If you want, that comes with caching, it, that kind of thing. So you can benefit from that. Uh, but it's it right? That it really happens what plug and you happen to use.
+
+So if you have a plugin that supports go or whatever you happen to use or Vue JS. Right. You just plug it in and that's it. And you can go for it. Uh, we recently, like, we, we are currently trying to market that a bit more and create more content around it. But if we even allow nowadays to extend the dependency graph, so if you have for instance like go, which has like its own dependency structure within like different go libs right?
+
+So how you follow from one lib to the other, you can even like parse that on your own or create your own kind of dependency parts and plug that back into NX. And that way you have even like those dependency graphs integrated. So NX would even know how it your go structure looks like. So the functionalities are there.
+
+What we are currently trying to do is like kind of educate people, like teach them, produce material around it so that people see like the potential are in there, but NX itself, it has rewritten in, in, in TypeScript and JavaScript. But you can plug in like even a polyglot parser like if you want, so definitely.
+
+**Justin:** That's awesome.
+
+#### [00:40:54] Distributed Task Execution
+
+**Andrew:** So we just got a few more questions left. Uh, one thing I'd like to go back and touch on. Cause I think it's a pretty cool idea, but we didn't talk about it much was, uh, NXs distributed task execution. Can you detail like what you might use that for? And like what it's actually.
+
+**Juri:** Yeah. So, um, that basically ties into the caching and effective execution, which we'll talk before. And it's, it's solving the problem of when you have like multiple, like on CI for instance, what do you want to do is you want to parallelize as much as possible. Right. But then what happens like NX to able to like with the dependency graph, to, to see like which products you have now, if you have effected tests, for instance, would runs like 100 tests, right. Jest tests that are being executed. What might happen is that some of those take longer, some are shorter. Right? And so if you just balance and in parallel with them, like equally, like you will end up in a suboptimal situation where like all the others are kind of waiting in idle state, like those basically different processes.
+
+Right. And so you have to wait till all of them are completed and then you go ahead, right. The DG can solve you with that because like, did he kind of learns how long certain products have certain tasks take or took in the past? And so it allows you to balance it out automatically. So you don't have to kind of care about like parallellizing stuff.
+
+Right. And then charting like on CI the different processes, but DG kind of takes them in. It knows the structure. It knows the dependencies. It knows how previous rounds went because like they were went through that pipeline as well. And so it, it does basically a parallelization before. All right. So he understands, okay.
+
+It doesn't make sense to split up those tasks because they are pretty fast. So let me just group them into one kind of process. Like the grants, like even sequentially within the same thing, right. While the orders are being paralyzed out. And so what do you end up like, is it a balanced one where all of the runs basically take more or less the same time, right.
+
+So it's basically an optimal use of your CPU time on CI so that's kind of the idea and our main design goal, there was to, to be able to set up super easily, because what we see, for instance, like in companies like the parallelization on CI, you need to kind of have some knowledge, right? You need to kind of know, like, how do you do that in like GitHub, right.
+
+Or CircleCI or GitLab. And so you need to have nearly like a person dedicated. Take some time, things like that and kinda figure out how this works best. And with DT is really just like a couple flags setting on starting basically the tea server. And that would then kind of pull in and, and do the parallelization.
+
+And again, like they are similar to the cache restoration where I mentioned before we like restore the console logs in the same order output in same order with DT it's kind of same thing. So if you go down to like your CircleCI and you look at the logs there at the same thing, like if you execute them in one single.
+
+Right. So you can really see sequentially what happened. And there's something we really pay a lot of attention to, like in which ties a bit into the whole to developer experience part right off NX where obviously we could just like phase back the reside and say like, okay, this one happened to be in like that first process up there in that different kind of setup in a different containers.
+
+So go there and see the locks there. Right. But why, what we want to do is like reassemble everything in the same order as you kind of pipe them in such as like former developer, especially for debugging purposes, it's super easy spot and then figure out what happened. Right. Which obviously needs a lot of work.
+
+Right? There's that extra mile you have to do to go basically to make sure that the integration back in works.
+
+**Andrew:** That's super cool. So I like, even like, you don't even have to like set up sharding for like, jest, it's just like, oh, I got this
+
+**Juri:** Exactly. Exactly. And you can totally try it out. Like what we did, like for instance, uh, I think it was two months ago, like with NX cloud, if you're going to start, like, as it explain where that is kind of our paid addition on top of NX, right. Or commercial additional if you want. But then like, what we did is like two months ago, we really opened it up to show is basically free for everyone, because we said like, everyone has 500 hours of such safe time on NX cloud, which is basically more like a lot more than most like repositories use.
+
+Like, unless you are like a super large company, but then you obviously most probably afford to pay for it. Right. But like auditors are totally able to use it. And so with that, you have to distribute security caching as well as to the T already integrated. Right. So it's, it's like we want it to really make it a no-brainer just opt in.
+
+And then when you set up the NX workspace, just connect to, and it's cloud and the half the caching going, uh, even without you noticing a lot rights so you can, can straight ahead benefit from it.
+
+**Justin:** I'm assuming that this is something that would have to be integrated in a plugin to the right. So for example, It seems like you, like, it would still need some idea of how to split up the test, you know, like if you're using Jess, but I mean, if you're using a Jest plugin, then I'm assuming that, you know, that knows everything about Jest anyway, and you can provide this capability of like, doing whatever.
+
+So if you were writing a new plugin for like Vitest or something, you would like add this capability as well, to like, you know, pass the specific flags to make it split up or whatever. So really all you're thinking about as an NX consumer is like, here's the flags that I would pass to a plugin that's completely compatible with this feature, right.
+
+Something like.
+
+**Juri:** Yeah, no, not really like the actual, like the sharding, like the whole DT setup, for instance, that works out of the box. Because like, if you wrap it in, like, even like either you package up in and complete an executer, which that, uh, the, the full-blown version, you have a plugin that you develop and that gets certain parameters in.
+
+And like, you work with those and those are configuration based. So NX is able to even read them. Right. And even like dirty TNS cloud set up seem to be able to read it as well. We also have, however even if you execute node scripts, like you can like wrap them in a very simple executor, which we call run commands, which is really just like one line.
+
+You have a command call on. And that invokes that noe and then dot, dot, dot slash, and points like to your relative part of the file. Right. But since this is also. And you have an outfit for there specified NX knows, okay, this command, it needs to be executed, right? This is the output produces. So you can measure that, right.
+
+It can measure like how long it took, which then like use that as information for the next runs and for the splitting. And it knows where like the output is B, is there happening, right. So it can catch that and then move it into the cache folder. So it's not like you can really wrap, like even your own custom, no tooling and whatever you have even locally in your workspace, in those commands, it would just work out of the box.
+
+So it's not something where you need like as a plugin author expose certain things to NX, such that it knows how to actually optimize it. It happens like there's a black box, right? It has input parameters, flags, you extra data. That's output. That's it really, it looks from outside of it.
+
+**Justin:** Cool. Nice. That's awesome. That's really cool.
+
+#### [00:47:38] Tooltips
+
+**Andrew:** Cool. So with that, I think we'll move on to tool tips.
+
+My first tool tip is about a feature in Vite. Uh, for those who don't know Vite is a next generation ESM built tool for building websites, uh, that are really fast. Uh, I've been using it recently to build a storybook alternative because while I hold a special place in my heart for storybook, it is quite an old project and has a bit of baggage in the code from how we used to build things.
+
+And I think with all these great tools that we have today, you could build a better version of a storybook with a lot less overhead of all of those tools. And to accomplish a lot of the things that I've had to be doing. Uh, I have to code a lot of virtual modules. So you might ask yourself what's a virtual module.
+
+So, uh, instead of, uh, generating code for say, like all of the exports in a story, I can instead create a virtual module that, uh, to the, the build system to ES build, uh, it looks like a normal file. And I can say, Hey, here's my virtual module. It's called at Fu. And then, uh, this, uh, Vite plugin will return the content of that virtual file.
+
+So, uh, if you, if you were looking at the plugin, you're literally return a string with, uh, some exports and it just straight up JavaScript. So, uh, this, this pattern is a little hard to wrap your head around at first, but for. Every time, I've tried to build a documentation generator. This is the way that I do it.
+
+Is that a, a virtual module in the build tool. And it's a super powerful way to do things. So if you, if you've never heard of that concept, I'd encourage you to go to their docs, check out what you can do with it, and maybe try to play around with it yourself.
+
+**Justin:** this is a pretty important concept broadly. So. I first like ran into this concept way back when I was working a lot in the Vue ecosystem. So VueJS has a single file component. And out of that single file component, you know, it has this template, it's got the like actual JavaScript that it runs and it's got some styles and it actually breaks those down into virtual modules.
+
+And back in, you know, especially like Webpack three website, four days, it was not super trivial necessarily to do that. You had to get kind of creative with how you use your plugin. So it's nice that they expose this first-class API for this. That's good.
+
+**Andrew:** Yeah, that, yeah, that was the cool part about it. It was super simple to set up, like I just copy and pasted this little plug-in function and I was off to the races. Whereas web pack, you kind of have to figure out what hook you want to tap and what part of the pipeline is best in that? That's, that's a lot.
+
+**Justin:** Yep. So my first tip of the day is this project called Y J S uh, Y JS is a CRDT implementation. Um, essentially if you need to do real-time editing, real-time collaborative editing of something, this project can help you out. Um, so if you want to have like a shared text field or something like that, um, then yeah, definitely check it out.
+
+Uh, CRD Ts or nontrivial or operational transforms if you're, if you're taking a different approach. Uh, it's, it's a really hard space and it's really hard space to do well but, uh, this project gives a lot of good APIs and, uh, yes, that's pretty nice. So definitely recommend checking out if you need to do any real time editing stuff.
+
+**Juri:** Cool.
+
+**Andrew:** You've mentioned CRD T's much, much more than once on this podcast. Justin, are you building a real-time collaborative editing, a piece of software or are you just very interested in this space?
+
+**Justin:** I plead the fifth. Uh, I'll talk about it when I have something
+
+**Juri:** Yeah, we already kind of talked about it, like during the podcast, this NX console, like I wanted to plug it specifically because a lot of people don't know about it and I feel like it's super powerful, especially obviously if you use NX, a at any restaurant gives you like that discoverability aspect, where if you new you don't know, like you can visually explore what are the capabilities that you have there.
+
+Um, and so, yeah, definitely check it out. Like, and if you're a WebStorm user, as I mentioned, there are even some plugins there, like to community plugins, uh, that, that do basically most of the same right. Maintained by the community.
+
+**Justin:** That's really cool. It's such a, it's such a great concept. As Andrew was saying earlier, it's like a great way to have like a UI for a CLI is by doing it via a vs code extension. That's pretty smart.
+
+**Andrew:** Uh, this tool tip falls right in line with my last tool tip. Uh, so for my storybook alternative that I'm building, uh, one of the things I need to do is extract the stories from a file. So, uh, there's a couple of ways I could go about that. I could just be real stupid. I could just use Fs, read the file, try to use some regexes to parse, parse what exports are.
+
+But that's, that's not going to work in the end. Like that's, that's a bad solution. Uh, the next step you might go to like the most popular tool that would do this for you. What you really want is an AST that you can then go, okay, let's go through the AST, get all the exports, and then we're off to the races.
+
+Uh, the leading choice for that right now would probably be Babel but Babel. It's built on JavaScript and it's pretty slow. And I, my, uh, tools already built on Vite so like the whole point of it is as fast as possible. And if I throw some Babel in there, it's going, it's eventually going to bog down the rest of the build speed.
+
+And I want like sub-second start-ups. So, uh, I went to the bleeding edge and went for SWC. SWC is a rust based, uh, compiler for the web it's sorta like IES build, but the biggest difference between S build and SWC is, uh, SWC actually exposes the AST. So you can do things like extracting those exports or even doing transformations.
+
+And since it's built on rust, it's still really fast. So, uh, it goes really well with V in this whole thing that I'm trying to build. And currently for like my little test storybook, it starts up in 250 milliseconds. So it's, it is really fast. And, uh, I'm excited to, to finish building this on the weekend.
+
+**Justin:** nice.
+
+**Juri:** nice. Nice.
+
+**Justin:** I'm excited to see what you come with. That'd be fun.
+
+**Juri:** Yeah. It was a say like another approach. Like you see, like from the AST perspective, never, never approach that part. But we recently started using that in NX as well, like we have a new packages as like @nrwl/js which usually, like, we won't do, like, we call it JS, which might be a bit misleading, but they want it to have like the best JavaScript packaging experience, but Z force for TypeScript.
+
+Right. So creates both of them. And then we have like both options. Like, can you use SWC to compile your TypeScript and, or TSC obviously, which would be like the default good way to go. Right. And you can even switch back and forth. Right. And like there's the speed aspect is really awesome. Yeah, absolutely.
+
+Like super fast.
+
+**Andrew:** Yeah, I w I was looking at the AST and they do have type information in there, so that's, that's pretty interesting. I also use, use this to extract like JS doc comments from, from the AST, so cool things.
+
+**Juri:** Cool. I need to check that
+
+**Justin:** They're uh, they're working on a rust based API too. So, you
+
+know, if you ever want to do Russ based AST manipulation, then you
+
+**Andrew:** Yeah. They're probably going to break all my code, but, but, but that's fine. I know a person who recently learned a lot rust. He could probably help out.
+
+**Justin:** Uh, so, uh, my, my last tip of the day is this really, really interesting, uh, project that I stumbled across. It's very much in line with my last tootooltip.M, it's called web socket pie. Um, we'll, we'll include the link in the show notes. Uh, uh, so WebSocket pie. The idea behind this project is to be able to give you a real time sort of multi-user application, but without having to really think too much about the server or the server configuration, it's like you set up a standard server and then the clients sort of manage.
+
+All the connections and like, uh, whatever you do. So, so essentially so long as you have the correct room name and the right version, then you're, you'll automatically connect and you can send messages. There's like a predefined format. But if you were looking for a really, really easy way to make like a game lobby or a chat app or something like that, this would be a really interesting sort of mechanism for that.
+
+Now this is more of a hobbyist thing. If you're, if you're like communicating sensitive information or like security is a big thing, maybe, maybe, maybe not this, uh, because it does rely a lot on, uh, you know, clients, uh, doing the configuration is set up this, this, this is really just to get started really easy, but if you're making game or something, it'd be really interesting to check out.
+
+**Juri:** Yeah, my next big is, uh, obsidian. Like there's not really like program related or dev tooling, but I've been using this recently. Like I'm very interesting in the P in the space of like personal knowledge database and like how to keep notes and stuff, especially, especially now that I've transitioned more like as content production, like doing that much more actively.
+
+Uh, this is super helpful. And I feel like this I've tried different approaches, but this is the one that clicked most. Uh, in the sense of like how I build up my knowledge base and like how I can connect notes between them, like, to project much more from a graph perspective. Right. So usually what happens is like, w like the biggest fear is usually okay, like a store my notes somewhere.
+
+Right. How do I find it? Right. So what I usually do is like, create folder structures, but then like, they're super rigid, right? Like then you start using tags, but like, yeah. What tag did I use last time? Right. So in this case, what I usually, like, what I figured is like what, I usually remember as context.
+
+I might not remember the name of someone, but I know I was on their show. I was like, talk to them at that. Or they did that talk. Right. So I find a target from data. I find a link to the name of the person. Right. So in that kinda kind of thing, uh, it's really powerful. And I was even thinking about like, exploring it more in a sense of.
+
+Partially even exporting it to like your blog platform, right? Like to have something like a digital garden where you have like small nodes, you push them up. Like do not always just have like those big, large block posts. Right. But Gerard extract them and like have some small nodes connected to them there.
+
+So it's really, really cool space, also very, very big community behind it or large forum and chat room that they have. So it's pretty awesome.
+
+**Andrew:** Yeah, Justin, bring up hipster, smoothie.com.
+
+**Justin:** Yeah.
+
+**Andrew:** So, uh, yeah. Yes, Yuri. It is very easy to export your obsidian MD notebook to, to a statically built site. And that's what this is. Click D digital garden at the top.
+
+**Juri:** I need to check that out. Awesome.
+
+**Andrew:** Yeah. Yeah. You can check out the repo. They have their own solution that they sell, but it's, it's pretty trivial to set this thing up yourself. Uh, me and Justin are big, uh, obsidian people or at least we were, uh,
+
+Justin also created, yeah.
+
+**Justin:** I use their paid solutions. So this, my notes on my site is through their, their posted solution, which is pretty good. I haven't updated them in a while though.
+
+**Juri:** Nice.
+
+**Justin:** Uh, you had, uh, one last one on here. Do you want to, you want to share this Juri?
+
+**Juri:** It is something I stumbled up reasonably most recently, so I'm not super deep into whim. Like I started using it. As probably most developers like that goes on and off continuously, right? Like Jeremy to women, then I guess it doesn't work to back out again. But I get, did stick now for me, like these four last two years, mostly within visited your code, like those, like there's a vs code VIM plugin that you can add there.
+
+So to have more like VIN shortcuts, but still not the full VM environment. And so internally now, like this lunar of them or all of them came up, uh, and is pretty, cause I start exploring it a bit, but really just like since last week, uh, for those quick things where you have are in your terminal and you just want to kind of kick off, like open up a project quick, explore it as really powerful as based on neo vim.
+
+Uh, so it kind of sets you up already with a couple of plugins that are, uh, that get you started quickly, right? Like if you're not super deep into them, it's super nice to, to get stuff.
+
+**Justin:** This is actually come with, uh, a GUI is, or is it just using new event through the terminal? Just like pre.
+
+**Juri:** Yeah, it's kind of, pre-configured like you spin it out from, within your terminal and then you have a kind of a tree structure set up like a code syntax highlighting it, basically free install some of the plugins for you as you open up files. So it's pretty, pretty nice. Yeah. But there's pretty short.
+
+Like it started exploring last week. Probably pretty cool.
+
+**Justin:** Yeah. Yeah. That's awesome. Uh, well definitely having more opinionated VIM setups is, is a good thing because then there's just a long history there and it can be very, uh, very hard to get into and get all your configuration set up and everything. It's cool.
+
+**Andrew:** Okay. I think that about wraps it up for the episode. Uh, thanks for coming on Yuri uh, it was cool to talk to you about, to talk to you about NX. We talked about it in our first episode and it was cool to take this deeper dive and learn more about it.
+
+**Justin:** yeah, it feels like we come full circle a Yuri yeah. Thanks for being on. It was, it was great.
+
+**Juri:** Awesome. Yeah. Thanks for having me.
+
+**Andrew:** Well, that's it for this week's episode of devtools.fm, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
