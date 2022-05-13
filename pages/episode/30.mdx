@@ -1,0 +1,533 @@
+---
+title: Zack Jackson - Module Federation
+youtube: https://www.youtube.com/watch?v=XpeD4FtlMg4
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10610556
+tags: technology, open source, webpack, module federation, aegis, software streaming, front end, hexagonal architecture, programming, coding
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we dive into a fascinating new concept in web development: Module Federation.
+Join us with Zack Jackson, the creator of module federation, to discuss where it started, how it works, and all the cool uses cases it unlocks.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:02:15] What is Module Federation?
+[00:09:09] Integrating with Webpack
+[00:17:42] Use Cases
+[00:23:07] Performance
+[00:34:50] Software Streaming
+[00:40:50] Self Healing Software
+[00:44:06] Security
+[00:47:16] Medusa
+[00:50:49] Next.js Integration
+[00:56:36] Selling Open Source Software
+[01:07:38] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Zack:** I think of Federation purely as a distribution system, I still build my applications as if they were monolithic. So the way I use Federation and the way I really designed it was to create poly lithic systems. So it's micro at build time, but it's a monolith at runtime.
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin
+
+Today our guest is Zach Jackson, a principal engineer at Lulu lemon, maintainer of Webpack and co-creator of module Federation.
+
+Today. We're going to take a deep dive into what exactly module Federation is and how you can use it in your apps. Zach, would you like to tell our audience a little bit more about yourself and how you got into creating developer tooling?
+
+**Zack:** Started out more or less as just front end engineer, you know, doing the typical front end stuff. I mean, I started out, you know, originally I didn't have any coding background. It came out of high school. I was big into like network security and, you know, got into web development.
+
+Cause that's kind of the easiest avenue to write code. So I got in there and it was pretty much just WordPress and jQuery Googling how to set a background with CSS and fast forward a couple of years. Eventually, I feel like if you're working on front end features, this is a point in the career where you kind of hit the limit and you kind of it's either going to back-end or, I mean, it's usually transitioned into backend or something, and I really didn't want to go into the backend side cause I was frustrated with the problems we have in front end.
+
+So I dove deeper into the tooling side. And how do I pretty much just in a very self-centered way, how do I solve the problems that I don't like? And that turned out to be problems that everybody didn't like. And pretty much just went down that and found that, you know, often I can get a lot more done at an organization if I'm doing something lower down in the stack to resolve the higher level problems instead of work arounds or process.
+
+**Andrew:** That's awesome that I found the same thing. I started out as a front end, cause I like putting boxes on a screen and then eventually it devolved into, oh, I'm making tools for everybody else to make front end. So it's a very common theme.
+
+#### [00:02:15] What is Module Federation?
+
+**Andrew:** So with that, let's dive, dive in. So, what is module Federation and what problems were you trying to solve when you created this solution?
+
+**Zack:** Yeah. So, module Federation is, I mean, in a very simple way, module Federation is the ability to interleave Webpack, compiler graphs together during execution. So to kind of explain, you know, another way to put it would be, it allows me to do and dynamic import to a specific file that was built and deployed by a separate Webpack build.
+
+This is often confused with just loading a bundle on the page, but it's not that if I, if you do something like that today, it's, you know, loading a one megabyte bundle or another react application entirely. What I wanted was the ability to load the five kilobytes of code that I don't have already installed.
+
+I already have react to probably already have Redux or whatever else. The supply chain is, what I want is the one piece of feature code that's released independently, like mega nav. I want to be able to roll the mega nav out and just download the mega nav code, not download react or anything else at the same time.
+
+You know, we had similar patterns like externals in the past where you could say nobody compile react, and then we'll load react outside of the scope onto the page globally. And that's how you would get around it. And that's kind of what I did previously. But I got up to the point where I was managing about 150 micro front-ends, where there were 30 plus on a page at any given time.
+
+At that point manually managing the stuff isn't feasible. If I need to, you know, you have to know, well, which packages do I need to deduplicate what happens if I need to update a package like lodash 3 and lodash 4 In externals, I can't do that. If the external bundle goes missing, you have a central point of failure. The entire website goes down.
+
+So it was too, it didn't have enough flexibility. And it was too much of a risk issue to centrally depend on some external resource. So Federation came along and it was really to try and give us the best of both where I still bundle those dependencies with this piece of code. And I only will pull in additional dependencies if the system requesting it, doesn't already fulfill them.
+
+So then everything is still kind of self-healing, it can all kind of work, fill in what it needs, but it's leaning toward trying to. Recycle what's available follow semantic versions when possible, and, you know, recycle as much code as we can while still offering a very simple way to just literally go and import foreign code from somewhere else in your application without a big overhead, or, you know, having to learn a framework to do it.
+
+I should just be able to require code and require it from a team name. And it show up just as if it were an NPM package.
+
+**Justin:** So you were kind of saying previously that it's like, interleaving like Webpack bundles together. I'm assuming pretty intelligently. So is this like all the federated modules are already sort of built and processed by Webpack, but it's just like maybe some of them are dynamically and required versus being, you know, re cruel required.
+
+Right.
+
+**Zack:** yes. So that's so essentially under the hood, how, how Federation works is, you know, Webpack is just a small core with lots of plugins. So everything in Webpack is a plug-in on a plug-in on a plugin. Federation is the same thing. Federation is the kind of brand name that I came up with. So we could Google it and find stuff about it easier. Under the hood, we wrote container plug-in provide plugin, share plugin, contain a reference. So the idea is when I go and import a federated module and what we would call the host, the host is essentially the consumer. When the host imports a remote module, it has to resolve to something during build time.
+
+You know, I can't just import non-existent code or let's say, you know, module can't be found, blah, blah, blah. So, at build time, when you consume a federated module, Webpack will recognize, Hey, this is a, this matches an import specified in the plugin, and it will create a little factory that pretty much creates an interface that knows how to connect to the federated container.
+
+The code that gets imported or, or that module exports inside of my host is pretty. The low-level API, which would be window dot, remote dot initialize, passing, any shared dependencies followed by get, which would then pull the chunk and expose the require method of another Webpack build.
+
+And on the, on the provider side. So inside of a remote, it's pretty much the plugin works as, you know, you can pick configure the plugin and you add whatever files that you would want to expose. It creates a special entry point, which is the remote entry runtime, and you pop that on any page and you can automatically connect and pull fragments of another code base out of that build.
+
+So it could still be a single page app, like, you know, a fully independent front end, like let's say the checkout app, but maybe I want the add to bag feature in the product page. And those are owned by two different teams. They could still manage the add to bag functionality. And I could just pull, you know, in real time that cart functionality and load it somewhere else.
+
+Without having to redeploy my app continuously or anything like that. But whenever they deploy it automatically get the up-to-date code.
+
+**Andrew:** Yeah. So I th like to our listeners that may sound like super complicated, but what I think is really cool about module of Federation in practice is that you don't have to think about it, right? Like webpacks doing all the heavy lifting. You don't actually have to change much of your code for any of this to work right?
+
+**Zack:** Yeah. The, the big thing, like, you know, if I look at the previous frameworks or ways to do this, it was never a, it just works scenario. It was always, you know, you need some pretty heavy muscle on the team just to make some kind of distributed system work.. With Federation what I really wanted to do was just say, all you need to know how to do is require code.
+
+And much like installing a package, your federated modules or your, your Federation plugin just has a name. So let's say the teams checkout. So in the plugin, I'll label it as checkout. It will generate a static file. That's on the CDN. All I have to do is configure that and say, Hey Webpack, when I import check-out use this JavaScript file, which you, you know, I made, it's like five lines of code that we configure in the build.
+
+So it's dead simple to use. You just tell it here's where checkout must go to get the imports for it. And then whenever I import checkout, it'll forward my request into that container, go off and do it. So the only thing you really know how to do is require code beyond that there's no registering or anything like that.
+
+It's all baked in so that you don't have to learn anything or change any of your code base. Just keep importing code just as if it were on NPM and at runtime, it will go over the network and pull down what it needs.
+
+**Justin:** It's pretty magical. I, I'd sort of been seeing you talk about this on Twitter for a long time.
+
+#### [00:09:09] Integrating with Webpack
+
+**Justin:** And I think for a while, I didn't really have a, I didn't really understand that this was actually built into Webpack. Cause I had heard of like, not just Module Federation, but like conceptually the idea of like having micro front ends, which are like, you know, small, independent apps that are running on the same page that might be owned by different teams.
+
+For those of you who might not have worked in this area it can be kind of a a problem that crops up as you scale. I was like classic Conway's law. So I'd heard of solutions like this before, but it wasn't until like Andrew had recently started playing with it that I was like, where is this plugin at?
+
+And I like realized, oh, it's actually built into Webpack itself, which is really cool. So you were, you did a lot of work to get that merge into Webpack itself instead of building sort of your own custom tool. So what was that process like of getting this like pretty like easy to use, but relatively complex product feature into webpack.
+
+And, and why did you choose Webpack to do it?
+
+**Zack:** Yeah. So, it was, so I guess I started working on this concept of module Federation. You know, it, wasn't going by that name. It's gone by a couple names over, over the time, but I created the first GitHub issue about it in 2018. So that's essentially when I started really plucking away at it. Prior to that I had done at work with uh, some other people in open source and we created the first code splitting service side, render library for react.
+
+So we had like a good historical relationship with the Webpack foundation, like we had to create require resolve weak so that code split SSR would work. Again that required touching Webpack to do so, you know, we were very familiar with web pack and how to get things in and out. And we've, you know, I've worked with them prior and before Federation came out, it was already part of the Webpack foundation.
+
+So it made the pipeline to getting stuff in a little easier. Now prior to actually proposing it to Webpack, we I, I had built like a plugin. I think it was called Webpack external import. And the idea was in Webpack 4 to pretty much take the module graphs. So whenever Webpack creates a chunk, it's just an object with a bunch of IDs that you can push into the Webpack runtime. So the original concept was, let me push this chunk and then have all the chunks go into one Webpack container. So I could take them from any build and just load them in here and the IDs would be like a hash. So I could look up and check, like does react at this version exists, knowing that it's import ID would be some hash.
+
+And so that's kind of where it originally started. The, the main, the main reason I went with Webpack for it, or pushed it into Webpack versus a custom tool was mostly no bundler had the API to do it including Webpack. So I could kind of get it to work with Webpack 4 but it was quite a large hack to pull it off.
+
+And the reason I went with Webpack in general is Webpack has the most robust API layer available. So a lot of other bundlers don't have a built-in parser, or they don't have a dependency factory or a module factory. And if I'm going to import phantom code I need a factory to say, okay, well, you're going to actually be this little, you know, interface that's going to connect to the federated remote itself, no other bundler really has enough of a lifecycle for me to pull that off.
+
+Getting it into web pack itself. You know, it was mostly a very long git issue with lots of comments. It got very popular cause this problem was becoming bigger and bigger. I would say the, the micro front end hype is really what kind of got a lot of traction around it. But you know, we kind of designed it to be far beyond front-end or micro front ends as well, but the hype obviously helped get it in there.
+
+And then, you know, putting it into Webpack was necessary because Webpack five, wasn't able to do what we needed. So this whole process, we, you know, Webpack five was nearly ready to go and then this proposal came up and I think it probably set us back an extra six months on the release process and we had to change, you know, a vast majority of the Webpack core to incorporate asynchronous at runtime graph connections essentially. What this ended up leading into was Federation laid the groundwork for webpacks new build experiment, which is important HTTP. So the idea of I could put a URL and have Webpack at bundled time, download that URL and pack it in as if it were a node module.
+
+A lot of that stuff is built off of the groundwork we laid in Federation. The same thing with async externals. So you can go in the externals config. You can say, you can put a URL in there and do kind of what Federation does and say, here's the global, here's the URL, inject this into the page. And when I require say Google analytics, just give me window.ga and pipe it all through the web pack dependency loader. All of that pretty much came from module Federation, which does the same kind of thing of connecting the scripts to an interface.
+
+So really Webpack was the only place that could do it. And they're also reputable enough and well-funded enough where we could take on something as complex interleaving module graphs successfully to a point where enterprise businesses would, you know, would realistically say yes to it. My personal, you know, reasons for it as well, or I, you know, I use Webpack obviously, so I'm biased toward it, but these problems of scale don't really crop up in lower smaller applications.
+
+The problems I'm trying to solve are generally around the Microsoft level. Like when you have that level of scale, like office, which has 50,000 independent modules under one application and the mega nav or the, you know, the office outlook blue bar nav, I believe is about 20 teams that contribute into that.
+
+So when you get to where a mega nav is owned by 20 separate teams, problems of scale start crumble. So what I was really trying to do is build something that the Microsofts of the world could use successfully. And a lot of that would be the reliability and the dependability of the compiler system below it.
+
+So Webpack is reputable well-funded and used in all of these big places. When you need to handle a really complicated project, we generally lean back on Webpack to do it. So it seemed like the perfect place to put it.
+
+**Andrew:** It seems with like so many modules and so many different teams working together that there would be like some conflicts or like, like it would fall apart somehow. Like how does, how does it all fit together so well? Like are there local fallbacks for things? So like, if you don't have the federated module, does your app just not work.
+
+**Zack:** So the, the way I like to say this to everybody is module Federation is not a framework. And I think often we kind of get confused as like, oh, you know, it can do all this stuff. It's framework, just like Webpack. It's more than happy to let your application not work. It will simply link a to b. Just like what Webpack does, it'll link a to B whether it works or not, that's on you, the implementation details are on you.
+
+All I'm going to do is inject code. So obviously if the remote is not available, how would you create a local fallback other than say, you know, copying and pasting it into your code base, which defeats the purpose of having a feature over the wire. And now, obviously those are risks that we do need to handle at scale.
+
+So, you know, I come up with patterns like resilient components, where the mega nav must always be there in the event of a critical failure. I still need to be able to navigate the website for things like that it's more a convention and pattern of software design that we would follow. So if I want to make sure it's always there, I can either use the HTTP import to say at build time, download a copy of this and cache it, you know, in your dist folder. And only utilize it if the primary delivery system fails. So if for whatever reason Federation didn't work, I could say, try catch, use the copy that you pulled, or, you know, have it on NPM and have it over Federation where I can gracefully fail over to an older delivery mechanism that might not be always up to date, but it's better than I crashed the whole site.
+
+So kind of, you know, the boundaries on how you want to recover or how you want to retry. There's some mechanisms built into Webpack for it, like the remotes except an array. So if the first value of the remote, like URL one fails, it'll go and loop through the array of possibilities until it finds a successful one and use that.
+
+So you could go origin one origin, two, you know, origin three, or you could have on the try-catch on say a dynamic import. You know, if I wasn't able to get it, then, you know, import a fallback or import something from NPM that could serve as the skeleton.
+
+#### [00:17:42] Use Cases
+
+**Andrew:** So, like a lot of the initial hype around a module a Federation seemed to be in the micro front end territory. But what are like some of the, cause I don't think you really use it for that, that much. Like what, what's the coolest application in your mind that you've seen, seen come about through your work?
+
+**Zack:** I saw, I can't speak of the absolute coolest ones. Unfortunately, but the ones that I, I can speak about, I would say Rivian so the car company, you know, electric car company. The onboard systems are, are controlled by Federation. So the infotainment system, all the UIs, all of that is using Federation to speak to the microcontrollers and to power, the interfaces that you use.
+
+And so that lets them, and so there's some other, I can't say names, but there are a popular game console companies where the game console itself is powered by Webpack Federation. The reason they went for that was they no longer have to ship firmware updates to the consoles in order to update something like the Bluetooth adapter for the controller or anything else like that, because the whole thing is streamable or it's available at runtime.
+
+So they can obviously store it in the files like on disc, but the distribution system is over the wire. So at any point they could stream a new copy of say a piece of firmware through react native or through web assembly or anything else. And they could run it you know, on the game console without needing to restart the game console and do a typical, you know, old-school firmware update that you would have to do.
+
+So those are the two coolest implementations that I have seen out there as in cars and, and gaming consoles and embedded systems.
+
+**Andrew:** That's super cool. So like, in those, in those cases, like, does it necessarily even need to be JavaScript code? Like, are they pulling in like C code? Like, it just doesn't really matter&gt;
+
+**Zack:** Doesn't matter. So the, the, the, and this is another reason why I like WebEx so much is what I'm really after in Webpack is the Webpack runtime. Like I'm not at, oh, there's a lot of hype around, oh, well, ESM might make Federation, you know, not as whatever, but you know, in, in practice I've seen, yeah, it's a good effort, but it really doesn't stand up to the capability set.
+
+And for me, honestly, how code is loaded is really the least important thing that I care about, whether it uses ESM or Webpack, JSON P I mean, to me, that's just a, a runtime requirement in the Webpack runtime. What I want is that bootstrap mechanism, that's going to iterate over my dependency, set and load it and instantiate everything, and basically do kind of like, I want the ingress of the code.
+
+I don't care if it's Kubernetes or whatever, that's running it. I need an ingress into the execution itself. And that's how I think of Webpack is kind of like the Kubernetes of Docker, but for your runtime. So anyway, yeah, because of that yeah, it doesn't have to be JavaScript. It can be anything that Webpack understands.
+
+So JavaScript, CSS images C Java Python's a little tricky because of WebAssembly targets, but you know, we've got ones where hexagonal architecture all powered by Federation. And if we need an API for say commerce transactions, it'll pull down the dotnet commerce port, and you know, we'll go from a JavaScript flow into the dotnet flow, run the transaction process and then jump over into Java for something else.
+
+But all of these things are independently deployable and I'm essentially allowed to just stream any, any payload in that I need to execute regardless of the language, as long as it's compatible with how node would execute C or something. So WebAssembly is a good way to package it up. But yeah, pretty much any, any piece of code Webpack understands how to run or node understands how to run, can be delivered over the Federation delivery protocols.
+
+**Andrew:** That's super cool. The test I was doing, I work at a company called de script and it's an electron app and shipping a new version of the electron app can take up to like 30, 40 minutes. Cause of like, not just building the JavaScript code, but we have to like sign the code. We have to upload it to places.
+
+What's cool about the Federation architecture to me is like, we basically almost never have to do that again. We can just say like, pull, pull, pull the code from like our S3 bucket. If there's new stuff, use that, but we never have to actually ship a new version of the app.
+
+**Zack:** yeah, you don't need to ship the wrapper like the binary, like the exe file doesn't need to get shipped again, similar to what react native did really well with bundle dropping. They here's the bridge. And unless you update the bridge and ever need to update the internal code, but now I can do that for other C modules or other Java modules, not just the, the wrapper has to be the bridge and then everything in it is a web capable code.
+
+It's it kind of extends it. And, you know, that's mainly the problem that I saw with NPM or with micro front-ends in general, you know, it's, I call it the double deploy. So if I want to update the nav first have to push the nav to NPM. Then I have to turn around, go to every consumer app, push the NPM update to the consumer app and then deploy it.
+
+So, you know, doing something like updating the nav can be at least 30 minutes to get it into one app. Now times that by 10 applications you've spent a day, essentially just bumping and NPM pack. So, you know, it's just like the amount of developer time that you lose on things you don't really care about like distribution. It seems like we're getting to this outweigh to a point where distributing software is way more way, way too much time than it should be.
+
+#### [00:23:07] Performance
+
+**Justin:** On on. Related note. So this, this obviously gives a whole lot of control to how code is loaded in but you know, given that you've basically built this and, and you've got a lot of experience with it. What, are there any like performance challenges that you see? Like, the, my sort of immediate concern when I first started learning about this, or the immediate question I had in my mind is like, is moving more of the, sort of like question of like, which dependencies get loaded to runtime.
+
+Is that more impactful for, you know, page load and, and whatever else? Yeah. So how how's PR do you, do you have performance problems? Is that it.
+
+**Zack:** yeah, so yeah, we have rum, like everything we're in commerce. So obviously like, you know, seconds equal tens of millions to hundreds of millions. So. Whatever we do pretty much has to be without a doubt, better for performance, because performance is one of the biggest revenue opportunities that a commerce company would have.
+
+When we designed this whole thing, you know, the, the baseline that had to be was it's gotta be performant still. So how Federation was built, how we had to rewrite the Webpack core, it all had to be done in such a way where the runtime portions were not a major deoptimization. So roughly what we've seen so far is that a federated application has about the same performance as say, a single build graph would so slightly slower than say a bunch of dynamic imports, not in terms of code that you're dumping in, but we're talking about the startup time because we're instantiating one or two additional containers, and that would be similar to if you had a big single bundle where it had the loop over multiple chunks and module IDs. In practice, though, the run data says it's like a 20 millisecond delta. So realistically there's hardly any, any real change considering the benefits that you get from it, the performance overhead is negligible. And if we try to compare that to say ESM or something like that, generally it's got far worse performance because you have to preload every ESM module before the app can start.
+
+Whereas in Webpack, we can, we can load it down the code path so we can lazily only load it on demand as needed. We don't have to preload a huge set of waterfall items before we can kickstart the application. And so, yeah, so it's, I would say like everything it's a trade off, but it's one of the, it's one of the more efficient trade-offs that we've come across, how you use it would probably be where performance starts to deviate more.
+
+Micro front ends are real popular for being a free for all like, you know, react here, angular there, vue there. If you're, if you're using an inefficient architecture you're going to obviously suffer. Like loading two Vue-like layers is going to have a big impact on your load time. So how I generally try to keep everything quick is I think of Federation purely as a distribution system, I still build my applications as if they were monolithic.
+
+So the way I use Federation and the way I really designed it was to create poly lithic systems. So it's micro at build time, but it's a monolith at runtime. So the way I look at it is if I were to server side render this, can I lay out the entire application in a single render pass? If I can, then I've probably designed it as efficiently as possible.
+
+It's one hydration sweep and the whole app will stand up and it will operate, which means I'm not mounting other apps under refs or doing anything like that because I know that the most basic synchronous render being the server is is guaranteed the layout correctly, then everything else should be pretty efficient.
+
+So yeah, in general, I haven't seen any major performance issues beyond somebody shares a huge amount of things or shares a massive library like their icons. And so now they've made 5,000 icons available and by doing so that's going to obviously increase the manifest size, which will increase the size of the remote.
+
+So if you're concerned with performance, usually what I'll say is, you know, when you go to share something, see if you really want to share it, or if it's cheaper to just tree shake it and duplicate it. So, you know, if it's an icon, I'll never share an icon set. I'll just say, cool, let me download an extra 20 kilobytes here and there versus, you know, make thousands of icons potentially available to save a couple of kilobytes.
+
+But if it's something like react or moment, then obviously share it. It's huge. We only need one copy of it. It's a Singleton anyway, perfect. But I'm mostly not trying to recycle dependencies. I use that as the cherry on top. And what I'm going for is the ability to interconnect imports from other living applications and to distribute the, you know, basically break out a Conway's law when it comes to horizontal challenges.
+
+**Andrew:** Yeah. So, so given what you just said, that kind of means like tree shaking doesn't necessarily work. Like, when I was a few months ago, Michael Jackson from remix posted this like Webpack bundle where he's like, look, we split every dependency into its own chunk. Now all the chunks are cacheable and loadable in parallel and you get all these good things.
+
+I showed that to like a coworker and they were like, well, tree, tree shakings now out the window. So like, if you did that with lodash, you'd get all of lodash and couldn't like selectively pick from that. Is that true with module Federation too?
+
+**Zack:** Even that splitting example that you gave, it's not a hundred percent accurate. It is. So what I can do is in the chunking algorithm, I can say, based on this path, move this chunk to its own. File instead of to like a common chunk. Now I can cache every piece independently, but the lodash I'm importing is still only the modules that I referenced inside my bundle.
+
+So if I code split lodash out and I split it one by one, it's just going to be the exports I consumed. I'm not disabling it, split it. I'm just saying, you know, for lodash, whatever I'm consuming in here, hash it and make a file called lodash. That contains all the exports that I called on. But deep scope analysis is still applied.
+
+When we share something with Federation, the trick is, is we're pretty much saying here's a library and it's going to be used in unknown ways because somebody else in another code base could use some other export out a lodash that I might not necessarily have used. So the only option that we have is to mark it as, you know, make all of these things available because we don't know how it's used, so that can, that will opt you out of tree shaking.
+
+But it doesn't, it's not, it also depends in portion how the library is built. If it's like lodash, I can either import the index file and say, share the index file. Or in Federation, I can put a trailing slash on the end of the, on the end of the key. So like lodash forward slash, and then if I go import lodash slash get it'll just share the get file.
+
+And it'll pretty much traverse the imports and share the exact file that I'm trying to get, not share the index file, which would be super large. So depending on how the packages are formed, you can also find options where you can just share the pieces that I consumed. And it does still tree shape to some degree, because if I go in and share something, but I never import it, Webpack will drop it from the bundle because you never used it.
+
+So why would it bundle into dependency that isn't being utilized, but in general it will, it will increase the bundle size. So it's something you want to keep an eye on. From, from what I've been seeing though, in my usages of it, it's not really been a problem, as long as you use it, you know, within reason, like I said, that's why I say it's the cherry on top.
+
+Don't go and share your entire package JSON just because you can, you still want optimization and sometimes scoping one dependency specifically for an app is better than saying, well, load every possibility under the sun, because somebody might use a three kilobyte important, you know, it just doesn't make sense to do that.
+
+So, you know, you want to pick and choose. But even if you, if you do get in the cases where you want better optimization while we can't do it automatically for you, because it's too complicated you can go and do something like let's see, you can go into what we call them. We call them like re-exports.
+
+So if I have a library where I want to share it, but I only want to share, say a common portion of it. Like maybe I've got a pattern library, but the only things that are really need to share are, you know, some critical pieces of it. Not the whole thing. I can create a little file and just import what I want and pretty much tree shake it myself and export the bits out that I want.
+
+And then vend that and say, okay, call it this, referred to it in this package, JSON. But the import, isn't going to be the packages import. It's going to be this file over here. So it's aliased as the node module. And you're just, reexported the bits that you want out of it. So, I mean, nobody really does that a lot, but if you need some capability like that, there's options to do it.
+
+And you know, you could write a little script that could loop over and figure out what are the used exports, so on and so forth and kind of generate that. So, I mean, it's not as automated as I would like, but somebody could write a script in the ecosystem that could give you a very tree shaken, like feel for your sharing, you know, via, you know, some augmented capability.
+
+But yeah, it is something to watch out for.
+
+**Andrew:** Yeah, well, through my explorations, I'd found like what you said is true. Like sure. You can, you can share the dependencies, but like moving your thinking up a level to like apps in exports from apps really is a lot more powerful because you can kind of just like, be like Webpack figure out the rest for me.
+
+**Zack:** pretty much. And if we get to that point, like the way I always try to think about it is if we already use code splitting a lot, or we try to encourage it. So if I'm loading fatter dependency sets, it's not necessarily as bad. We got really into the habit of tree shaking, everything because the monolithic build is going to be huge.
+
+So we have to code split and otherwise we end up with like a four megabyte main bundle. So we'd split up our routes and so on and so forth. Now, if we take Federation and we apply it, you know, with some good, common sense, you can get into cases where, okay, well, I don't mind loading an extra 30 kilobytes because I only do that when they click on the modal.
+
+So then it doesn't really matter if the dependencies are super shared. I'm progressively loading what I need on demand. Whereas in a monolith build the Webpack generally tries to pack everything into like a commons bundle. So you can end up getting bleed between your splits where, oh, well, if it's dynamically important to these three things, then we're going to move moment to the main bundle.
+
+And now loading your website. Even if moment isn't used on that page, loading that page is suddenly larger. Cause you're bleeding dependencies from the rest of the monolith. With Federation it's very much on demand only when it's executed. Is it going to do that? So you get a lot more leeway in yeah, it could be larger as you navigate through the whole app, but it's not low. It's not slowing down. It's not noticeably slowing down any part of the flow. That's, that's kind of how I've seen it. A good example would be, let's say you have two micro front ends and you're going to navigate between them. That would cause a page refresh. That's what, five seconds to reload a page. If we're talking vendor code and you know, typical bloated market.
+
+Site. So what's, what's worse to the user experience loading an extra 50 kilobytes or refreshing the entire browser and reloading 90% of what I just had in the current app. So when it comes to something like that, I'd much rather just federate that team's page wrapped in their application shell, which might have an extra hundred kilobytes of dependencies, like their graph version or whatever.
+
+But I didn't refresh the page. I didn't hammer my infrastructure with more SSRS and they only loaded a marginable amount of extra code to load, you know, essentially a completely separate page running under a separate application.
+
+#### [00:34:50] Software Streaming
+
+**Andrew:** So you referred to it a little bit in this conversation so far, but another thing I see you tweeting about a lot is software streaming and you've referred to it as like a proprietary technology. So like, how is a software streaming different than module Federation? And like what further things does it unlock?
+
+**Zack:** yes. So software streaming is for the most part, it's a enhancement to the Webpack runtime. So how Federation works is based on the compute primitive of your in. So if you're in the browser or if you're on a worker, or if you're in node, it's going to let you access federated code by whatever transport means are available.
+
+So in the browser, if I want to get federated code, I just inject a script. If I'm on the server and I want federated code, I could still make it work, but it has to be on the file system. I'd have to be able to get it through require or through Fs readfile. That obviously starts to become a problem where we have this great decentralized front end.
+
+And then as soon as you get to the back end, all the files have to still be co-located in order for it to work it, you know, unless you're using a monorepo, it doesn't really, it doesn't work well. So software streaming is to pretty much bring to the browser, like functionality to the server. So that would let me retrieve payload over the network instead of having to only read it off of disk.
+
+So that would let me, and this opens up a whole can of worms. Very interesting things, because a lot of how software is designed today is mostly built around the lowest common denominator, which is node. So we're so NPM heavy because that's how we have to do things with node. We have to split up our code bases and release them and distribute them because of node.
+
+If it were the browser, just stick it in the CDN and do whatever you want in the front end. You're good to go, but we have to have all these kinds of laws and rules and shapes because we bind the applications and the CPU to a zip file that we have to upload during deployment. So that coupling of files to a CPU is really where a lot of the problems start to crop up with how we can scale the platform.
+
+Code streaming brings us basically how the browser works. I want to be able to inject a script and it just work and it get it from wherever it needs to get it. So that means that my servers don't necessarily even have to have any application code deployed to them. They could just be the Webpack runtime and the rest of the company could just upload things to S3.
+
+And based on the request, as it hits that Lambda, that Lambda could assume the role of any piece of software connected to our company at any point in time without needing anything special. So, you know, the same Lambda could be graph QL and SSR between different invocations because there's no artifact coupled to that CPU.
+
+Kind of what serverless was really supposed to be. Here's a CPU on the internet. Here's a piece of code. I need you to execute it and yield a result. So I've tried to scale that up with software streaming, where I can say, Hey, you can become anything you want by Webpack piping, the code that you need to execute on demand.
+
+And so it's essentially letting me require code over HTTPS kind of like Deno does, but Deno has some fallback, like some pitfalls where Deno does all it takes HTTPs imports when you hit start. So as soon as you start the process, it'll search the tree and front load everything into the process, as it boots, that becomes a problem where like, from a startup perspective, I don't want to cold start for longer because it's importing every possible thing that it could.
+
+I want this similar to on demand as it's being invoked. I want to pull in what I need. So Webpack lets me say, okay, well, if I'm not going to render this page, don't stream the code down for it. But if this condition is met and it's going to execute, then pull the chunk. And execute that chunk, but you know, kind of walk the code path as needed.
+
+Don't do any aggressive preloading. Just as you're executing, hang one promise here and there and pull an extra things as you need much like how it works in the browser, hold up the graph at the nearest async boundary and resolve two or three more files and then continue executing. So doing all of that on the server, you know, it's the same kind of principle that we're applying.
+
+It's really just, how do we transport code safely over the network? And the reason I'm kind of okay with network-based transfers is Deno already does it. Nobody complains. And in node 18, there's an experimental support for an HTTPS import loader. So whether we like it or not loading server code over the network is coming for us.
+
+So why not bring it out sooner and bring it out through a system that still lets me think about hot reload ability or what happens when updates get deployed out? How do I refresh the environment without restarting it? And without redeploying. How do I handle error correction? If this version didn't work, can I create communication, layers that say the surfers going to 500 hot, reload it and use the previous deploy of whatever failed, stream that back in and retry it during the request.
+
+And it's tempt to recover gives you a lot more flexibility because Webpack knows if something's going to work or not by try-catch worst case scenario versus say your infrastructure where if you did Canary releases, you would have to hope that it threw a 500 so your infrastructure could see that node is bad and reroute the traffic to a different node. Versus doing that at the component level with Webpack, where you can just tell Webpack this didn't work, don't use this version anymore.
+
+Retry this import with a different version on your CDN and execute it with that. So it gives us a whole lot more dynamic, programmatic control. Like if I want to upgrade or roll back, I don't need to touch my servers. I don't need to tear them down and restart them. They can stay always hot. And I could control it through like a command and control center and just have them hot reload on demand.
+
+So it gives us a lot more freedom there and it kind of makes it kind of completes the picture of Federation. As easy as it is in the browser. It should be on the server and it should work more or less in the same manner.
+
+**Andrew:** It's definitely a mind bending comp the concept. Took me a little while to wrap my head around it.
+
+#### [00:40:50] Self Healing Software
+
+**Andrew:** Like one of the tweets that you, you tweeted about that caught my interest was that like your infrastructure was down for a few days and you didn't even notice because of the self-healing aspect of this architecture.
+
+**Zack:** yes. So that's kind of where I was saying, Hey, if it's going to 500 or error that just tell Webpack something went wrong and have Webpack essentially renegotiate the supply chain. So if I have all my versions deployed to S3 and since, I mean, essentially what you deploy Lambda, all you're doing is taking an artifact out of an S3 bucket and moving it to a lambda or mapping it to a Lambda.
+
+So all my deploys are on S3 anyway, all I need to do is say, okay, well, if it didn't work, teach Webpack how to react. This load. So, you know, I mean, again, this is not, it just magically works, but this is something that could be framework or in my case, like I just wrote a couple of extra augments onto the Webpack runtime to handle it.
+
+So if it goes wrong, catch it with like a react error boundary or a try catch or something like that. Notify Webpack, it didn't work. Tell it to hot reload, which pretty much means restart Webpack. Don't restart the server or, you know, don't kill the Lambda or anything like that. Just reset the re the, the chunk cache, give it new instructions and then tell Webpack to rerun itself and stream different pieces of runtime in.
+
+And it was really great cause yeah, my, you know, my server was fully down. Like when I ran it locally it 500 on me, but I had it up for about a week in my prod environments. And the only thing that I really noticed over that week was it took about an extra 150 milliseconds to respond. And I'm like, that seems a little slower than usual, but it wasn't even slow enough for me to like bother going and pulling it down.
+
+I just. Maybe one of my, one of my calls was being aggressive and like not cacheing correctly or something like that, but yeah, it was completely offline and I didn't notice it ,for, you know, for a week. And I was deploying multiple times over that. So it was withstanding multiple deploys. And, you know, I never noticed that the system was, you know, completely offline. That can obviously be a gift and a curse as well, because, you know, you want that feedback of knowing something's down.
+
+You don't want to depend on self healing mode. So I've gotten mixed responses from the community, but my opinion on it is do I want to cause a revenue impacting failure or do I want to sound the alarm bells and have the system automatically mitigate itself? So as long as I have telemetry in place to say, Hey, you are in mitigation mode, the site is still bringing in money, but you know, it's essentially causing a Sev one level response internally without a Sev one level business impact.
+
+So just because it can fix itself, isn't a free-for-all. Not monitor how it's running, but you know, I'd much rather have a system that can recover versus system that can't
+
+**Justin:** Yeah, for sure. I mean, that's, that's pretty critical to just building a good product, just like it's gotta run. So, so on this topic, I find this really fascinating especially just, just thinking about the, the Lambda use case because like Lambda deployments can be kind of annoying in particular, but just, just thinking about module Federation or software streaming on the backend Something that I assumed that you would need to think about is, I mean, how to protect yourself against like men in the middle attacks and like other nefarious things that can happen.
+
+#### [00:44:06] Security
+
+**Justin:** And this is, you know, you were talking about like, well, you know, Deno's doing similar things and, and node is looking similar things. These problems still exist, right. If somebody like takes over your domain and you're pointing at that, and it's not cacheed, then you're executing like arbitrary code. Have you, have you like put any thought into like checksums are like validation, like bundled validation or anything like that?
+
+Is that like a part of this concept?
+
+**Zack:** is that's. That's going to be kinda the next step that I take on. Like, I mean, I have, so in order to get the plugin out, since it's, it does what it needs to do, there's features that I want to add, but somebody might want more security before I bake better security protocols in. So I created this concept of federated middleware, which pretty much allows you to do anything ahead of time. To validate what you're about to let the server go and evaluate so you can pass it the URL and maybe confirm the check sum. So on and so forth in general, how I'm planning to handle this though, would be a couple of ways. One could be just the certificates. So check the certificate is still valid. Another one could be signing the code.
+
+So during a deployment, just, you know, have something extra, go over this one folder and create a signature for it. And then like the more, like, probably be a bit of a performance hit, but if you're really paranoid about it, then what I would do is have rotating public private keys in some central store.
+
+And during build, I would encrypt the strings or the JavaScript that comes out. I would encrypt it, transfer encrypted code over the network and then tap into something like vault and pull, you know, checkouts, decryption, public key, or private key out of my vault and say, cool stream the encrypted payload over.
+
+And then. server and then, you know, cache, the decrypted result in memory. So I'm not decrypting it every time I invoke something, but I have the chunk loaded decrypted, but you know, pretty much you could put a gate like that in front of it to say, well, if it gets tampered with, it's simply not going to decrypt, unless somebody is infected your environment variables.
+
+At that point, if they already have all your environment variables, you're already heavily compromised. So that's always how I try to weigh these things up. It's like, okay, if the domain gets hijacked, yes, there are concerns there. But if the domain gets hijacked on my front end CDN, then everybody's stealing my credit card information anyway.
+
+So, you know, like if you're compromised, like in order to compromise Federation, you would have already had to be compromised way in a way worse manner. So I, I kind of see it as, you know, we carry the same risk. We would carry on the front end, which is just as high risk minus a couple environment variables, which sure.
+
+Those are important to obviously protect, but. yeah. Kubernetes has shared volumes. That's still over the network, just with something like Fusey to bind a file system to a socket. So we already have HTTP transfers. We've solved this problem many a time before. We speak to our, our APIs safely. So, you know, I feel this is all just the same kind of thing of, yeah.
+
+We just need to guarantee that what we're getting is what we're getting. And if it's through the TLS certificate or encrypting the text, as it comes in and out or signing it, it's all relatively trivial to add onto a promise to go check this as good before passing it to webpack
+
+#### [00:47:16] Medusa
+
+**Andrew:** So having all these versions and being able to like roll back and roll forward at will is pretty cool. But how do you do it? Exactly. I saw this plugin called Medusa. Is that how you currently manage all of this?
+
+**Zack:** So right now, how I, a Medusa has been deprioritized multiple times. But the general concept is yes, Medusa we'll do that at some point. I'll turn it into a SAAS where it'll have single sign on multitenant, you know, the works and pretty much the plugin will upload the Webpack graph to a graph database.
+
+And everybody who's using this plugin essentially contributes to their Webpack graphs to Medusa. And now Medusa can lay out, you know, your whole application architecture and say, Hey, here's who uses NAV. Here's the file. It's using it across there. Cause we can essentially now we have some central place where all the Webpack graphs can be queried together. So then I can build up who uses what and where. And I can also say, you know, use this version of the nav on this app and create lock files, and so on because we have a way to see where it's all used, how it's all used.
+
+How I manage them currently, as I kind of do the crawl walk, run process, since this is a lot of infrastructure to invent and get into, you know, a multi-billion dollar company. What we started off with was AB tests. Cool, no versioning needed evergreen, deploy the AB test, get it out of the way, my engineers awesome. Then analytics to easy spaces to do it in. Then we started looking at something like, say our store locator for a new footwear feature to find a store that sits in our mega nav.
+
+And it's about a hundred files because it's our store locator page as a modal with, you know, some other sugar on top. So rather than moving a hundred files to our mega nav, it just made sense to federate it. And so the way that we try to build stuff is basically we use the concept of component level ownership.
+
+The general idea is make it like a micro front end just inside of the single react tree. So instead of me mounting another app to a div, I'm going to wrap it in error boundary and I'm going to now suspense out on the server. It helps even more, but before that, we already had ways to do it, but essentially get your own data on the server and the browser, wrap yourself in an error boundary and be self-sustaining.
+
+So the data that you need from your consuming app is something really simple. Like here's the product ID, not here's all the product data. So if I build up more self-sustaining components that mimic micro front ends without the drawbacks of mounting multiple apps, like I can still access contexts where the Redux.
+
+But the, you know, more or less everything that it needs is built in. So it's either gonna work or not work. And if it breaks, there's nothing that the consuming team could have done to break it. It's only the providing team who can really fix it because all you did was slap, you know, header one word on the page, not get initial props or whatever else to wire it up, but it's completely self-contained.
+
+So that reduces the concerns around versioning and variants and stuff like that. At least for the first, like six to eight months, then at some point you're going to get to the point where you do need code freezes versions, stuff like that. That's where a Medusa can come in, or, you know, you could just have like a JSON file on your edge node where you just say, all right, you know, checkout's gonna use remote AB and C at this pinned version on S3 this other app's going to use so on and so forth.
+
+And, you know, basically like a package JSON for Federation, that's just available for Webpack to query in the server and the browser to know what resources should I load. So you can do it in a simple way, or you could do it in the more complex way where you have roles in the graph, QL and dependency tracing and all of that.
+
+But at the end of the day, it's, you know, go get some JSON and figure out what you are relished send into Webpack, and then Webpack uses whatever command I tell it at runtime,
+
+#### [00:50:49] Next.js Integration
+
+**Andrew:** Sweet. So, the last thing I wanted to cover was your work on the next JS SSR plugin. So, first I want to dive into like how that's different and then how that's different than just normal module Federation. And then after that, you've, you've decided to sell this software, which is kind of. Very different from how most people distribute.
+
+They're
+
+**Zack:** A big no-no for JavaScript.
+
+**Andrew:** big no-no for JavaScript. So I do want to dive in to see how that's been going. And if you see that as the future of your work with module Federation, so let's, let's start off with why, why is there a plugin for next JS?
+
+**Zack:** next does not support module Federation at all. So that's essentially why is next is, I mean, I know I don't want to bash Vercel, but it does. It feels very much like they're deliberately designed next to be as incompatible with Federation as possible. So, that really is irritating, but yeah, essentially next is not able to boot remotes correctly.
+
+The big issue that it has is not able to instantiate the sharing system. The main reason is next to synchronous and it's an entry point ruder. So each page is an entry point Federation. Isn't really, doesn't really like the entry point style. It's more dynamic import beyond, and it still wants that async import at the top of the file so that if I'm sharing react it knows don't start rendering react until react is actually loaded because it needs to figure out well, who should react come from? So that's kind of what stops next from working. So what the next plugin does, it's pretty much a wrapper around Federation and I essentially have a loader that I have in there. And what the loader does is it lets me connect to the low-level Webpack internal Federation interface.
+
+And I'll pretty much site load the things that you can't share through the module Federation share. Like I can't share next link because that would pull it out of the graph and move it to its own file. And next is synchronous. So it can't load the other chunk. It causes all sorts of weird things. So I kind of patch the share scope and say, here's all the next pieces.
+
+Here's the versions that are at here's react. Sideload that at the very top of the, of the application start-up so when you go to federate things, put on whatever the user is added. Sideload all these additional things into it. So it's kind of to get around the boot-up problem that next has where the internal stuff can't be shared, but it needs to be shared because it's a Singleton.
+
+So that's mostly what the, the, the, the client side plugin does at least is it reworks how the start-up process of module Federation takes place so that apps are able to run correctly. The SSR plugin that one's got a little bit more in it, obviously, because it needs the whole code streaming system to be made available.
+
+And the server builds for next have to be done slightly differently in order to generate a remote entry, and also to make sure that, you know, next depends heavily on externals and the server target. So I see. So when I have a remote, I need to make sure that, that remote bundles a copy of all those external modules, because if I pull it in somewhere.
+
+And say this app doesn't have class names, but on the server it would expect required class names to exist. I need to make sure that that require is actually a Webpack chunk that it can pull in through Federation and not just depend on everything being externals, because that obviously will kind of fall over.
+
+So those are some of the like key difference that had to be done. It was mostly adjusting the Webpack runtime and for anything software streaming that will have to be an augmented plugin. And then it's, you know, a bunch of sugar to wrap next JSS, configs, and pretty much remap it to, to function with federated built.
+
+**Justin:** Is this something you took on because y'all were using next at work and you needed module Federation. Gotcha. I was like, I I've sort of been reading your updates about this too. And it was like, well, it just seems like maybe these things aren't really naturally compatible and as like very commendable to go through and like add support for it.
+
+But like, you're definitely fighting an uphill battle here. So I was like
+
+**Zack:** Oh yeah. A hundred.
+
+**Justin:** backwards.
+
+**Zack:** So it's it's because we use it at work and I mean, yeah, for all the problems that next has caused me, I would say in general, it, you know, it solves more problems than it causes. Like I don't have to look after SSR anymore. I don't need to maintain all the SSR libraries, like react universal that I used to have to, I could just say cool next to all of this stuff.
+
+And I'm just going to work on the top 20%. So I'd much rather just write a Webpack plugin and then have to maintain a whole server side rendering system, just to use Federation. It's just, it's easier problem to solve. Again, the beauty of working in Webpack and in tooling is there aren't really any hard limits on what a framework can or cannot do if you control the compiler.
+
+Everything that the compiler interprets is basically pseudocode. I don't have to do what the file says, but I can. So if I control Webpack, it doesn't really matter what the framework does. I, I have a lower level primitive I can hook into. So like next wouldn't handle a federated import on the server. Easy way to handle that as well.
+
+Everything that next uses is the Webpack require function. So if I just change how the Webpack require function works, all Vercel is going to know, is it attempted to read the file system, but I can just change Webpack and say, well, Hey, the file system also includes, you know, cause it's Fs read file.
+
+So that's just a promise. So, you know, as long as I give it a string from a promise, that's good. Whether it's fetch or Fs read file, according to Vercel, according to next, according to Webpack, it got it string. It doesn't really matter where it got the string from. So that's kind of how you can augment these systems that are fundamentally not compatible.
+
+They all depend on Webpack. And if you control Webpack, it doesn't really matter what they do or do not do.
+
+**Andrew:** Yeah.
+
+#### [00:56:36] Selling Open Source Software
+
+**Andrew:** And so with that, let's, let's move on to the pricing structure. You, you sell this. Why, why, why did you choose to do that? And how has it been going? Have the Microsofts of the world bought in and started paying for your, for your plugins?
+
+**Zack:** It has been, it's obviously been a mixed bag, so the SSR one just came out. So I don't have any like, and a lot with a lot of these, it's kind of like, we're working with companies who want to partner with my engineering firm and they pretty much want retainer production support, you know, so it's a lot bigger process for something this large, but we've got probably about 60 companies engaged in, in our services at the moment.
+
+So, you know, it's gotten a strong response, the client side one that's been out for about a year or so. It's gotten, you know, it's got an enormous number of downloads and it's been received quite well. I would say the main reason that it's commercial is the cost to maintain it. It's complicated. And that's really, it, it takes a lot of time to do and sure I use it for work so I can kind of offload a lot.
+
+There's a lot of crossover, so I have time to work on it. But my building this thing for work versus building this thing to work for everybody is quite different paths in how you design the software. Cause I needed to work and pretty much for every other use case. And one of those use cases is Lulu lemon.
+
+So it's obviously a lot harder to build something like open source software because it's got to work for everybody. This thing has to do the same. And you know, there's also the avenue of yeah, I'm in the fortunate place where you know, for lack of a better word, this is a monopoly. So it's, it's very simple from my perspective.
+
+Do you want the capability? Here's the only way. Guaranteed the only way, otherwise you don't need to use it. So, you know, there's, there's no real option of choice out there. And mostly what I'm targeting for these things are the bigger companies where build versus buy buy makes a whole lot more sense.
+
+So the appetite's there and I've got the reputation of the developer, like I created Federation so in general, I'm more trustworthy than anybody else that comes out with aftermarket adoptions for it. I've just got, you know, the trust there and I've got the clout for it. And I actually know how to maintain the stuff stably.
+
+So that's mostly why I've done it. The supply and demand is there. And then there's other initiatives that I want to do. And I have to have some funding avenue to bring out other open-source software. If I want to build out this ecosystem, there has to be some monetizable aspect to it, to fund anything else that I want to do for free or give out for free.
+
+And next is a nice, easy bow where there is a very large market for it. Federation is a very big thing. And there's only one set of tools out there that can bridge it. So it just seems kind of natural that I would monetize that because it's an easy place to go and then say, work on maybe creating free models for something like federated typescript plugins, things like that.
+
+By monetizing those things that lets me do something like create an open federated remote type setup. Now all your TypeScript definitions can be federated and will work and all that auto-complete stuff happens, but I don't use TypeScript. So for me to just go off and develop that and get the resources and time to do that there, you know, somebody has got to be paid somewhere along the line.
+
+It's just the nature of the beast unfortunately.
+
+Well it's commendable and
+
+**Andrew:** I wish you luck!
+
+It's cool what you're doing out there.
+
+**Justin:** Yeah, I mean, and I think it's actually important. People charge for their work. Like, you know, we don't do enough of that. Or, and I think, I think there's this like internal dialogue that happens that we feel like we don't have the right to charge for the work that we do, which is like the definitely not the case.
+
+It's like, no matter how trivial you might think the work is or how complex you might think the work is or whatever, it's like your work, you know, at the end of the day, you can do with it, what you want. Releasing stuff, open sources is amazing. And a lot of things make sense to be opensource, especially if you want to build community around it.
+
+But like, if you're maintaining a niche thing and it's really hard and it takes you a lot of time and maybe it's not super fun but people find it valuable. Like that's a very key area. It's like charge money, you know,
+
+**Zack:** And I mean, this is, we've seen a lot of good open source developers, close up shop because of burnout and have no funding. And you know, this is a problem that I've had in the past. And it just got to the point where, cause I started, I mean the first next release cycle that I did, it was open source, but the demand ticked up and you know, you just get into this perpetual burnout state where it's either, did we lose, did we have big open source players bow out because they don't have funding or do we make a change?
+
+And you know, the general community is not very open to paying for software, but you know, it's just, it's not sustainable to get everything for free forever. And that's how it is because. It's just not, you know, it can't, they can't continue to go on like that forever. Not everything can be sponsored by corporates and some of these things just need to be, I mean, if I wrote this in Java boom, a hundred thousand dollars a year license, nobody will bat an eye.
+
+Look at AAM. I think AAM is what a $400,000 a year licensing term. So it's not like companies aren't ready to pay hundreds of thousands of dollars for software. It's just, it's more a developer culture thing where us as devs are used to going to NPM. And if this is, if this is, you know, not going to suffice or if it, if it's a paid thing, I can just search in NPM again and find something else.
+
+But you can't really go to NPM for something like a M or anything like that. So it's kind of like finding those bigger problem unlocks that really provide the value to make it worth, you know, being paid software. But yeah, I think in general, even if it's a small tool, we need to get more in the habit of thinking about build versus buy.
+
+And you could always have something like a, you know, a GPL, three license on it and say, Hey, it's free for personal use. But if you want to use it at a corporate, it's gotta be licensed or something like that. So you don't have to take away from the little guy, but you could still say, Hey, if a company is going to be making millions off of something that I'm maintaining, there should be some avenue for you to at least get the funding to handle the input of this piece of software.
+
+It's just where we need to go.
+
+**Justin:** Yeah. And just to add onto that, you know, there's, there's this like common thing in the freelance world, right? Whereas like the lower, your price point is broadly the more difficult your customers can be. And you know, I mean, no, I didn't mean nothing bad about this, but generally like in the open source community, you can get a lot of noise.
+
+There are a lot of people who like want to contribute to your project. They want to make it better. They love using it. And then there are people just like, you know, make an issue, why this no work, you know, like or whatever, and like no context, or like there can be a lot of noise. And I mean, Charging is a good filter.
+
+You know, cause then people are like, you know, expressly signaling to you that, yes, this does provide, you know, the value that you think it provides. And also the, the type of support you get is generally going to be higher quality and stuff like that. So it's like, it is an option, I think, figuring out better platforms for monitization and stuff.
+
+There's a lot of conversations to have around that, but like, you know, it's, it's
+
+**Zack:** yeah,
+
+it's it's definitely. Yeah. And there's, there's like, you know, the way that I started out with it, when I first released Federation is, you know, I created the examples repo with, you know, all the examples in it. And then in there you know, we wrote a book about it, which did really well. And then, you know, I went and added office hour, so, Hey, if you're stuck on something, you can go on here, find a spot on my calendar and book me for an hour and I'll come in and spill the beans and look at whatever you're having and help you resolve it.
+
+And that works out pretty well, especially on like the smaller projects where there's enough appetite for someone to pay you like 30, 40, a hundred bucks for an hour of your time. If you're the maintainer of it, that's a really easy avenue, especially if it's something that's relatively popular to get that direct support.
+
+And then the other avenue that like I've started to explore as well. Now what happens when you've got, you know, like a hundred billion, $200 billion company reach out and say, Hey, we want you for six months to come in and help us rearchitect, you know, this entire company onto a federated system. And those are also really great, but you can get into this challenge then of getting swamped where I don't know if you come out with something and you're going to monetize on it.
+
+The one of the first things you need to do is make sure you can handle the possible demand that can come in. Because if you're only able to service like one or two clients at a time, you're going to kind of undercut yourself and the demand is going to come in and there's not going to be any supply for it.
+
+It's going to fade out because you're stuck in like, you know, if you're working on something that large, maybe you can only do two or three. So being able to have like a firm or some way to augment that capacity is also really important in there, which is something that I've started to look at is like, Hey, you know, if somebody needs 40 developers who specialize this, can I respond within a week?
+
+And say, here you go. Here's 40 engineers who all know this and can all come in and, you know, do whatever you want. And I can more act as like oversight on the architecture and on the software design. Modifying the Webpack core, but you know, having that ability to say, well, yeah, I might be more expensive, but I have a team who is not as expensive as I am pull me in for the expensive parts.
+
+And then we can transfer it over to a set of engineers who are familiar with this who work with me and they can deliver on the cheaper pieces over that six months, rather than pulling in the author of it at an exorbitant amount who then is also bottlenecked by one or two clients. I'd much rather work with 20 or 30 clients and have PMs teams, a whole, you know, life cycle, sow, contracts, everything in place so that the ball can keep moving and pretty much just manage the capacity of it.
+
+So those are the kind of tricks that start to come up when you look at monetizing, it's like going on between consultancy and not, and you know, I'm not a consultant, but I do a lot of that work, but also have a full-time job. So, you know, coming from open source to commercial, to splitting them both, you need to have the right support tiers in place to be able to say.
+
+Pay it for my software. You can depend on it. And here are the guarantees that it's not just one guy in his basement maintaining it. I'm going to charge several thousand dollars a month for some production piece of code. What are these companies going to want to guarantee that there's an SLA, you know, anything that's licensed, you need SLAs that start to come into play.
+
+When you get to play with bigger companies, all of those things kind of have to be manageable in order to make it feasible and to make it attractive. You know, you've got to operate like an enterprise software vendor, even if it's for one little plugin, the amount of, you know, the procurement process is going to explode over that one little plugin.
+
+Even if it's $5 a month, just going through procurement can be a nightmare.
+
+**Andrew:** Some great insight. Thanks for that. And with that, let's move on to tool tips.
+
+#### [01:07:38] Tooltips
+
+**Andrew:** So the first thing I want to share is a free resource for javaScript developers, it's called patterns.dev. It's put out by the Chrome team, I think. And it just has a whole bunch of like JavaScript design patterns laid out in very simple plain articles, along with code samples and some visuals.
+
+So like you can go in here and if you're confused about what we were saying about a tree shaking, they have a whole article on tree shaking and you can dive deep on these performance type optimizations. So they have very, very detailed, nice articles here. I can imagine something like module Federation may be popping up on this website one day.
+
+**Justin:** That's pretty sweet.
+
+My first tip for today is a library that just recently released called lexical. It is a rich text editor. It was created by Facebook, but the, the specific engineer used to be on the react team. The, I think his name is Dom. He, he helped create Inferno the, the like faster react clone originally.
+
+Anyway. So he's been working on this for awhile. I, I heard it teased about like, I dunno, several months ago, so I was super excited. RTS are, are a pain. But this looks pretty cool. It's built to be semi generic, but yeah, it's got react plugins and everything too, so yeah.
+
+**Andrew:** Yeah. Th th this is a pretty exciting, cause it's from the same guy who also did draft JS and is like just a modern take on it. From, from what I've read. Draft JS had, has a lot of code built in that had to deal with like the issues that content editable had at the time. But it's been years since that was developed in this, doesn't have to do a lot of that.
+
+So it performs better. It's bundle size is a lot smaller and when they wrote it, they wrote it with accessibility in mind. So it has also a top-notch accessibility experience. So if you're looking for a text editor library to use, this would definitely be the one. And as a bonus, it's not just react specific.
+
+They built a core for lexical, and then there's just a react plugin on top of it that lets you use it in your act react app. So now we have Zack's module Federation examples.
+
+**Zack:** Yeah, so, I mean, you know, Too many tools outside of the space that I, that I've been looking at recently. So mostly this is, you know, if you're interested in Federation, I would say that this repo, you know, it kind of serves as the official source for everything module Federation. There's obviously the Webpack documentation, but you know, I think most of the traffic comes to this to start with.
+
+It's got great examples. General examples that we've got available as well as some good start points on content about what it is, where it came from. Some videos of presentations that we've done. So if anybody wants to get started with it, I usually say, go reference this read me. And then from there, you'll probably get off to a good jumpstart on you know, where to go to find anything that you're particularly looking for.
+
+**Andrew:** Yeah, I can, I can second that when I was doing my module Federation explorations, I ended up in this repo a lot, looking at the examples and all the examples here are very nice and very small and are showing you exactly what they're trying to show you rather than like having a whole app built around it.
+
+**Zack:** Yeah, the idea was mostly like, Hey, here's the ways you can do stuff. Here's enough variations to get a good picture. We have one or two in there that are like big comprehensive ones where it's like, you know, shared routes and services or, you know, bigger pieces. But for the most part, the idea is like, here's the bare minimum on how you could set something up.
+
+If you want to see example of sharing contexts, there's one, that's there. If you have view on react or, you know, something like that, there's, there's enough there to get by. And then of course, if anybody ever wants to add examples to this, so it's, you know, an open source project. So if you see a bug in one of them, feel free.
+
+Open a PR for it, or if you want to add your own flavor of something that you've done with Federation, then by all means cut a new example in there and go for it.
+
+**Andrew:** Yeah. And the, the book that's in the read me is also a very good book. If, if Webpack docs scare you off, cause they're, they're a little dense. This book is a very nice gradual into introduction to all the concepts we talked this episode.
+
+**Zack:** Yeah, the book is, the book is great. I don't know if anyone here is familiar with Jack Harrington, but Jack Harrington he's also helped me create Medusa, like the first couple of rounds of it. And he's got blue collar coder, which I'd also recommend doing a Google search for his YouTube channel. It's super informative on a whole bunch of topics.
+
+Federations have been covered a lot there and me and him coauthored that book. So it's got. My technical understanding, but his nice presentational writing and, you know, ability to kind of take you along the journey. So, yeah, it's, it's a really good way to get a good overarching understanding. Look into patterns like building resilient components that we have touched on.
+
+If you don't want the nav to go away, when the network's down, how could you go about building that? There's examples of repos in there. Um, We recently did update it and then most likely we're going to update it again to include software streams next JS, so on and so forth. Now that we, you know, now that we're happy with the, with the systems that are out there for it.
+
+And you know, we'll look at some kind of licensing option. Like if you get the book you can, and a lot of magically add you to the plug-in for like a six month period or something like that, so that you've got time to use it. And, you know, that'd be a huge discount off of it, but that's kind of what we're after.
+
+Like get people interested in it, see the value of it. And then if you like it, then, you know, go speak to a company or something like that. But yeah, like the book, the book has been really good for just getting that clear understanding a lot of, a lot of what you have to try and bear in mind with Federation is how you build software fundamentally is different and that's probably the largest part of the battle is making sure a developer can think, okay. How do I build at runtime stuff? How can I, how does my deploys structure change? Like, what am I not limited by, by this new capability? How do I use that capability responsibly? And how do I get my mind out of thinking about the install style of building software?
+
+And once you kind of overcome those couple hurdles, things start to make a lot more sense.
+
+**Andrew:** Awesome. Well, thanks. Thanks for coming on. This was an awesome conversation. Definitely answered a bunch of my questions about how it all works and how it all fits fits together. So thanks for coming on.
+
+**Zack:** Yeah, absolutely. Thanks for having me.
+
+**Justin:** Yeah, thanks Zach. It was super fascinating. Module federation's a very dense topic, but your work in this area is really appreciated because it unlocks a lot of really cool functionality. So.
+
+**Zack:** yeah, I'm hoping we can make it simpler. Like that's going to be the ma it's already real simple. Like if we look at it, it's super easy to get off the ground. But what I'd love to do is get to like a, I dunno, like maybe like the NX style or kind of have something like next JS, but for federation. Put things in this folder and it's magically going to work and you can control the versions and the rollback and it kind of connect to this service.
+
+And if it throws errors, it'll automatically fix itself, or, you know, I kind of want to get something like that out there. Where are we spoke a lot about how cool this stuff could be. What I'd really love to do is build out something and say, Hey, here's all the bells and whistles. It just works. Put your stuff in here.
+
+If it goes wrong, it'll repair itself. And you've got all the plugs and controls that you need to really scale an organization out.
+
+**Andrew:** Awesome. Well, that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcasts. Thanks for listening.
