@@ -1,0 +1,560 @@
+---
+title: Colin McDonnell - Zod, tRPC, EdgeDB
+youtube: https://www.youtube.com/watch?v=WVRLim8A8-I
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10690343
+tags: technology, typescript, javscript, detabase, edgedb, prisma, zod, trpc, type-safety, programming, coding
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Colin McDonnell, the head of devrel at EdgeDB a relational database with an object-oriented data model and a powerful query language.
+Colin is also the creator of useful TypeScript libraries such as Zod and tRPC.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:56] YC Nomad
+[00:09:49] Chasing E2E Type Safety
+[00:21:51] Implicity APIs
+[00:25:32] EdgeDB
+[00:31:46] Why not Prisma?
+[00:41:05] EdgeDB IDE Tools
+[00:43:53] Building Type Systems
+[00:59:12] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 31
+
+**Colin:** What we do is we actually, we generate this query builder by intro inspecting your schema, like from your live database, pull out like all of the object types in your schema and their properties and how they link to each other. And then you can just like start building queries.
+
+**Andrew:** Hello, welcome to the Devtools.fm podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone.. Today's guest is Colin McDonald. Colin is the head of developer relations at EdgeDB and the creator of Zod, which is a Typescript validation library. He also created TRPC and we talked to Alex Johansen back in episode 21 about that. So Colin, it's really amazing to have you here with us really excited for this conversation, especially as a huge fan of Zod in particular.
+
+#### [00:00:56] YC Nomad
+
+**Justin:** So it'll be awesome to talk to you. Is there anything you would like to tell our listeners about yourself?
+
+**Colin:** Yeah, well, first of all, it's great to be here. Thank you so much for having me. This show really exploded onto the scene and it's been great to see, like, you know, there's definitely a lot of latent demand for, you know, getting some insight into how OSS kind of happens and the people behind it. And so this is like definitely a scratch an itch for me.
+
+So thank you for doing this. Yeah, I let's see on the TRPC front, just to give Alex credit where it's due, you know, I made a, a proof of concept there. You know, very quickly you can still go back in the, get repo and kind of see what that looked like. And then he just took it and really turned it into what it is today.
+
+And he also was already working on kind of something with the same kind of design goals already on his own. So I think he recognized, you know, the value in having the TRPC NPM package name a little bit and also, you know, liked the kind of approach I was going with. And then, yeah, I, that was another great episode and definitely encourage uh, more tRPC usage because.
+
+One of the things I've been getting, but more, a little bothered about is how tricky it is still to like actually build end to end type safe applications without something like tRPC and how much kind of plumbing you have to do with, you know, API routes or whatever, to like, you know, you have to extract out like the return type of get service side props or whatever, and then pass it into your page component or whatever, you know, all of that kind of like it's a little bother, but you know, I think things, things need to got a little better there.
+
+tRPC's doing a good job of that. Sorry, big diversion. That didn't answer the question at all. Yeah, you, you kind of covered everything for me. Head developer relations at EdgeDB, which we'll talk a little bit about at the end, but then before that I was, you know, I've been an open sourcer, I guess for just over two years now.
+
+And just kind of fell into it starting off with, with Zod, which I'm sure we'll talk about here more.
+
+**Andrew:** So let's, let's go into your background a little more in the notes you sent me uh, you mentioned that you were part of the YC 19 class, and I noticed that that happened at the end of you being a digital nomad. So, like what was your yC idea? How did you get there and where is it now? Yeah.
+
+**Colin:** Yeah, for sure. So I was a bit of a contrarian coming out of college. I graduated in 2016 and kind of. Tried to force myself to, you know, take a more interesting path by not really getting a job for well, and up until recently. I would say on net, wouldn't recommend this path to people. You know, I, but you know, I kind of naturally fell into the, the indie hacker digital nomad set.
+
+You know, just because that's was increasingly more of like a, well, a bit of a well trodden path around 20 16, 20 17, I think that's around when indie hackers.com kind of got big. And you know, it's like a, that's a fun place to be. And I, you know, I think I appreciate the idea of, of people just trying to build kind of very niche software and make some money for themselves and not necessarily try to be like you know, some billionaire startup founder.
+
+I, I appreciate the, you know, there's a degree of pragmatism in that community that I, I like, but the things that I ended up working on were like, Pretty dumb I would say, I mean, objectively, you can look at my, like, you know, product hunt history. I made like a journaling app that would fine you if you didn't journal like every day and you know, called journal or else.com you know, very silly.
+
+It's not, it's also now defunct, so hopefully there's this doesn't you know, result in a surge and demand for this non-existent product. I had like a weirdly long period of time where I was trying to generate trivia apps for, for iOS which is, was a fun like technical project, cuz they don't make it super easy.
+
+There's like a, a project called fast lane that you know, Tries to provide some automation tooling for the iOS, like app build process. And I like would scrape like information from like Wikipedia info, boxes and stuff. So I dunno, it's kind of like, not, it's kind of like sketchy it's like kind of dumb the things that I worked on.
+
+And so eventually I tried to go go legit a little more and you know, by kind of total coincidence, I ended up going to a conference with my aunt who at the time was starting a, a medical practice a specific kind of medical practice called direct primary care, which was kind of, getting bigger at the time.
+
+I, I think, you know, awareness of it has kind of slowly ticked up over the past few years. As you know, it's increasingly clear how insanely unsustainable the insurance based healthcare system is. And it's basically doctors that are just like, you know, Kind of have a bit of a entrepreneurial libertarian bent and they kind of are just like taking this burn down approach where they are starting practices that don't accept any insurance. And instead have like a membership model. So kind of SAS, sass ish as well. In that, in that sense, or basically this membership fee that comes in is act is like their actual source of, of revenue really. And then every, all their other services they provide, they kind of provide them at cost as cheaply as possible.
+
+And, you know, the, they also try to negotiate cash rates from you know, on medications which can actually get really cheap. If you're not paying through insurance. And same for like x-rays and you know, more like scans like that. So all told, you know, I think it's an interesting model. It's currently kind of like kneecap because you can't actually, you know, this 75 or a hundred bucks a month, however much the membership.
+
+You know, it's affordable compared to how much your insurance plan costs, but it's really, it doesn't feel that way because that's all coming out of pocket. Whereas your insurance is usually paid for by your employer and you don't have to really bear the brunt of that. So it feels like you're, you know, you have to pay for two things instead of one.
+
+And so, its kind of like a fatal flaw at the moment. But you know, it's still growing like pretty consistently year on year. Anyway, the actual startup idea here is just building the, kind of all in one software platform for that specifically the kind of existing options don't serve their needs very well because they actually have to do like credit card style membership management, just like any SAS software would, which is not something that is baked into your, you know, big medical record softwares as you'd probably expect.
+
+And so I figured that would be enough of a, of an angle to kind of, start, you know, building a software that would be specifically appealing to this sub community, which at the time was like maybe 500 practices nationwide. You know, I definitely, I was drawn to this idea in this community because it was very small and I, no one else was really building, building anything for it at the time.
+
+So, you know, I liked how much of a it's kind of like a low risk, low reward kind of startup idea, of course, in the Y inter YC interview. I'm like, you know, I took this growth trend for the number of DBC practices, which at the time was like, you know, oh, there was like 200 and then 400 a year ago and then 600 now.
+
+And I was like, so naturally we're gonna be plotting this on an exponential curve. And in 10 years it'll be every practice in America, but in practice, it's grown almost on a perfect line, not exponential at all. But you know, no need for, for YC to know that in the interview,
+
+**Andrew:** and where did that end up? Did you did the start kind of fizzle out? Like what, what, I don't really know what happens with YC. If they invest in nothing happens. Do you just get to walk away? yeah.
+
+**Colin:** Yeah fizzle out is right. So yeah, I basically, you know, did YC winter 19, so like January to March and then got out of the bay area and went to San Diego to try to hack on it for a while. And basically by like September, so like nine months in, of working on this software, like as a solo dev, basically just like couldn't stand the site of it anymore, like burned out totally.
+
+And was just had zero motivation to keep working on it. The main thing that I did wrong here is not like cutting and running. At that stage I would say, cause I kind of like, I didn't like go get a job. I didn't like shut it down. Actually. I still haven't shut it down this business that's on the to-do list for 2021 or 2022, yikes, but yeah, I, I just you know, it was a big project.
+
+I was maybe like 40% done after nine months. And I was like, you know, kind of faced with this realization that it'll take, like, you know, a really long time to actually build this thing properly. And yeah, just kind of like, I made some bad technical decisions too, which we'll talk about with regards to the origins of Z that just kind of made this all very the app, the application was like, kind of got less and less stable over time as complexity increased.
+
+I think now actually the tooling exists to build, you know, to build this in like a really fantastically type safe, like nicely structured way. But at the time didn't so much and yeah, you know, kind of like, you know, in September kind of stopped working on it actively, but was still kind of puttering around trying to like get motivated and working on side projects and stuff to try to kind of weasel my way back into working on it more regularly.
+
+#### [00:09:49] Chasing E2E Type Safety
+
+**Colin:** One of which kind of indirectly was was Zod. So yeah, I mean, I'm alluding to this bad technical decision I made, which was, I tried to build this entire software on, on neo4j the graph database, which, you know, it's not really intended for being the back end of a kind of application like this.
+
+You go to their site and they're like, oh, graph databases. It's great for like analytics and like importing in these big lobby, unstructured databases, but being able to pull insights out them you know, cuz it's totally, schemeless essentially you've just got nodes and edges. You can like, you can attach some labels to, to the nodes and some labels to the edges and properties and things like that.
+
+But you know, at the end of the day, because my database was providing no type safety for me in the way that like a relational database would. I had to just be like, very careful about the data that I wrote into the database to make sure that it still conformed to anything resembling what I expected it to be and what my application code expected it to be.
+
+And so as you might expect, this led pretty directly to, to Zod, which is you know, I started playing with different schema libraries just to validate my kind of incoming payloads and make sure that they, you know, conform to, to these kind of server side models that I was enforcing before any database.
+
+Right. And, you know, kind of just had issues with the ergonomics of all the libraries I found, which at that time was like, you know, there was yup. There was joi which never really made the leap to type script. You know, and then io-ts is a big one. And you know, I, I smattering of others like super struck by the legendary Ian storm Taylor, which it was also always intended to be a little more minimal less full featured, but is still a very fast option for people who you know, are prioritizing performance over expressivity. Yeah. And so, you know, I, I started making Zod there there's really like maybe one and a half features that Zod included that like were really the only major points of discrimination between the other ones.
+
+When I first published it specifically, like it kind of had this io-ts style thing where you, you import the library as like a single variable. It is like Z. In io-ts you import it as T. And then IOTs was almost perfect except for how it kind of made it tricky to declare partial you know, objects with optional fields where you had to actually like split up the object type into.
+
+The required properties and the and the non-required ones, and then union that together. Whereas Zod made a decision that is actually increasingly controversial, which is, you know, you can just in your, your object schema you know, you can do Z dot object, you know, parenthesis braces, and then in there do like username, colon Z dot string dot optional.
+
+And it will, it'll treat that as a, as an optional property. And I mean that in a kind of specific type scripty way, which is it'll be as if you declare a type, you know, name, question, mark, colon string which means that when you're creating, you know, an object that conforms to this type, you can just leave.
+
+I think I switched from username to name or something, but you can just leave that field out entirely from the object. If you've got that question, mark, which.
+
+**Justin:** Why is that
+
+**Colin:** Unfortunately TypeScript 4.6 made this controversial because they introduced something called exact optional property types as a, as a flag that you can enable in Ts config, which is there's basically now like three different types of optionality, like three different senses in which a property can be optional in a tight script object.
+
+So you could have like, in your object type as a field, you can have like name, question, mark, colon string, in which case you can, I like either you can assign a string to name or you can leave it outta the object entirely. You can't assign it to just the value undefined in this under this new exact optional property types.
+
+And it doesn't, it doesn't allow that. So then you'd actually have to do name, question, mark colon string or under undefined, if you wanna be able to assign it, that value of undefined. And then the, the third option would be getting rid of the question mark, in which. You'd have to define you'd have to assign it to be either undefined.
+
+You can't just leave it outta the object. So it's kind of like this, this two by two grid now with optionality where there's like the question mark version of optionality, and then there's the, you know, or undefined version of optionality and you can do one or the other or both, and Z only has one conception of it.
+
+Which in this case is it treats it as you can. It, it's basically the version that has both the question mark and the, or undefined, so you can assign it to, you know, undefined or, or not at all. And yeah, people, you know, this is now a, that issue got opened, you know, the day type script, 4.6 landed of like, oh, this doesn't really align anymore with exact optional property types.
+
+And I'm like, yeah, that's, that's, you know, sucks to suck. I don't really have a fix this, you know, it's kind of like now built in structurally into Z. So I don't know.
+
+**Justin:** Yeah, it's a, It's a challenging part of like an evolving type system, right? It's like sometimes you make assumptions based on how a type operates and then it changes.
+
+**Colin:** for sure. For the most part, progress has been in the, in the direction of, of much greater convenience for me with like the recent stuff with better, like, you know, recursive, conditional types and things like that that have made, you know, I used to have to use these nasty hacks, that the type script team like explicitly condemn in order to make some of this stuff work.
+
+Maybe you shouldn't admit to this, but now it, now it's all you know, above board for the most.
+
+**Justin:** Nice. Nice. Uh, So one of the things that I think is like very true of, of development in general and. Interesting. It'd be an interesting question to relate back to your talking about your experience of your startup is that there's a lot of incidental complexity in building apps. And a lot of the times it's trying to pipe together and verify types between different layers and, and our software systems.
+
+So it's like. You have types in your database or not as you know, the Neo4J case. And then you have like types in your backend system types for your API types, for your front end system. And it's like, you know, in the worst case, all of these types are different or in the worst case, they're all like very, very loose.
+
+So it's where things like Zod. Can really help at least saying, Hey, you know, I'm gonna take in this like loose blob, but this is like how I expect it to be formatted or whatever. So I'm curious if. This problem was what really? I mean, so O obviously neo4j experience is like a, a big foundational inspiration for Zod, but is that also what sort of spurred your exploration into tRPC, you know, that early prototype and then, you know, is this something that you still think about maybe more holistically than even just
+
+**Colin:** Yeah. With, with certainty you know, I building on neo4j wasn't the only problem with how I was architecting, this massively complex medical software with like a hundred, you know, data types and stuff. You know, basically I started off learning type script when I started building this application, I was like, all right, I'm in this for the long haul and I'm gonna like do it the right way.
+
+And then I, you know, immediately proceeded to do most things in the wrong way. Specifically, like, I don't know how I kind of built my own semi typed ORM on top of neo4j that let me do things like nested fetching in a, you know, painless way, which, you know, isn't particularly painless in neo4j well, I dunno if that's fair to say, but it, it let me, you know, have like an ORM layer that would give me a typed, strongly type result.
+
+Except I say that with like major air quotes, because. None of the properties on an object were typed only the, the relationships between nodes were typed. I don't really know how I ended. Like I just didn't know enough about type script to, you know, implement this properly. I guess at the time. And so, yeah, basically none of the actual like properties on any API payload I had on my client side had any, any types on them, which was a big contributor to this kind of bad you know, this growing instability as complexity increased and over time it felt like everything I did would just like break everything at run time too, not even in, you know, at the type script layer.
+
+And I think the main appeal of type script, when you have like full end to end type safety, is that your code base feels very crystaline it feels like everything that goes wrong. It'll tell you immediately before you build it and encounter that issue at run time, and that feeling of like crystalline code bases is something that as a result of this very painful months, long experience that I had building this app, I, I just became allergic to anything that didn't feel like completely type safe. And you know, that kind of emerged after I stopped working on this and like started playing around with like, you know, playing around with how to actually build like a fully type safe, fully dry application has been, was kind of like a, you know, a multitier or multi-month effort.
+
+And Zod was kind of the first falling in that and rRPC followed swiftly. It actually was the original motivation came from a friend of mine who built a tiny project called obvious RPC which doesn't have any of the T RRP C kind of notion of, of like a router where you, you define your routers by chaining together calls to, to dot route.
+
+You actually just like is all kind of file system style, like routing style, where you've got like your functions that you're declaring on the server. And then you, you know, you are able to like import this big kind of like hierarchy of functions just as a type. And this was actually before import type was even a thing.
+
+So what you would do is like you'd import all the functions client side, you would do, like, with a, with a dynamic import. So you'd do like const, you know, client equals type of import parenthesis and then import, you know, everything from your from your kind of like hierarchy of server side functions.
+
+If that makes sense, definitely check out obvious RBC on GitHub. Because you know, it was definitely like an inspiration for this level of type safety. And then, you know, there were some other things as well, like things that I liked in the graph Q L ecosystem, where they would do kind of automatic normalization, like, in the, it's been a while, but Apollo does this Apollo client where, you know, as data comes back from your GraphQL API they basically they only saw one copy of each object in, you know, on your entire client.
+
+And so as like different payloads come back from different, you know, URLs it's able to like, look at the type name and look at the ID and then just kind of like automatically update the like single source of truth for that given object. So I implemented a project, you know, that did something similar to similar to that.
+
+And yeah, I mean, I think with the combination of like, Zod validate incoming inputs, tRPC to actually implement your you know, your API in a type safe way, and then some sort of database client that lets you, you know, fetch strongly typed you know, stuff from your database without necessarily needing to worry about you know, without having to like separately validate it you know, something that just like works and infers that type from your, from your query.
+
+You know, Prisma is the obvious one here that did this, right? Like really correctly for the first time though, the EdgeQL query builder that I'm working on now at EdgeDB is I think kind of the next iteration of that and in terms of like power and like, and type safety as well. You know, so the combination of those three things is like this trifecta.
+
+And I, you know, I think, I think even with tRPC growing in momentum, a lot, most people most people aren't like necessarily building something that is totally type safe and totally dry. But I, I think we're, we're moving in the right direction.
+
+#### [00:21:51] Implicity APIs
+
+**Justin:** Something that's interesting to me about this space is the idea of sort of like implicit APIs and you, and you can sort of see it come up in meta frameworks.
+
+So the one that jumps out to me most is the work that blitz JS did to make like, oh, in your client, just import your server code, your server module. And it automatically like builds an RPC client for you behind the scenes, you know, at build time that you never really see. The only caveat is like, you have to make sure that the things you're returning are serializable or whatever, you know, so there's, it's a little leaky, but you know, that idea of.
+
+It's just type, script code. You're using it everywhere. Like you normally use it and then it like magics an API for you is kind of nice, but you see lesser versions of this and like remix, which has like loader functions and actions that are in your front end code basically. But they're compiled out to server side modules or even next JS.
+
+So it's like get server props and all that stuff is a similar sort of concept of like their APIs, but they try not to feel like APIs, if you know what I'm saying, it like tries to reduce that like cognitive overhead of, of forming a type and then having to like parse the type and understand the, like what's coming back.
+
+If you have a, a system that's just a, you know, it's a one-to-one mapping between your front and a back end. It's like a unified system. You can have this sort of back end for the front end. That's unified. In a way That's nice. Obviously it's, it's hard to do that universally. And I'm glad for like tools like Zod and tRPC, which like meet you, you know, where you're at kind of, and, and help you, like, you know, build out what you need, especially, you know, in systems that are traditional APIs, like rest APIs or something, Zod is definitely a godsend.
+
+But I'm, I'm really interested to hear more about your work at EdgeDB and especially this like, query language that, that you're working on. It's like, and how that sort of plays into this overall story.
+
+**Colin:** Yeah, for sure. On the implicit APIs front, I do wanna give some credit to the blitz as well. Cuz they definitely were very early on this notion of, you know, the zero API kind of, system. I, you know, that kind of like paved the way in terms of like how to explain tRPC to people. And also like, because blitz was an early adopter of, of, Zod, like a very, very non-trivial fraction of the people who've discovered Zod found it through blitz. So I really can't like, you know, blitz really helped me in a lot of ways. And you know, I think it's kind of like pivoting a little bit these days. So I'm, you know, I'm curious to see kind of how, how all that shakes out in these, this new era of uh, framework wars that's uh, now upon us.
+
+**Justin:** Yeah, I always wanted them to Like, open source. Just that one little piece. It's like, give us this. I mean, it's out there. you can like pull it out, but it's very specific to blitz. So it's
+
+**Colin:** Yeah, and I, I, I mean, ultimately I don't, I don't really think that the rebundling kind of thesis behind blitz is likely to happen. like I think the kind of fact that you pull in like very specific modules from NPM for, you know, building out a specific stack is part of why the JavaScript ecosystem is just so many light years ahead in terms of just concepts conceptual yeah.
+
+Yeah. I mean, the concepts of, of how we think about web development compared to, You know, like the Python ecosystem or something that like, for the most part is still doing like HTML templating and stuff. Or, you know, I guess PHP is, is on that, but they're kind of defiantly still doing the, the HTML templating and, you know, props to them if that's working for 'em.
+
+But yeah, I don't the rebundling, I think it's almost impossible to not end up you know, becoming the villain a little bit and standing in the way of, of that kind of plugability.
+
+#### [00:25:32] EdgeDB
+
+**Colin:** Yeah. So as for edge DB, what you asked about. I've been working at GB for a little over a year now, and they really knew exactly how to, how to kind of win me over, which is, you know, they described, they found Zod just on the internet and, you know, identified it as like a, you know, very nontrivial type script project with, with lots of generics and conditional types and type inference.
+
+And they were at the time well, and still now, you know, looking to build like a, a type script query builder for their for edge Tobs query language, which is called edge QL. And I kind of looked at edge QL and immediately was like, wow, okay. This is like, This is like the way things have to go.
+
+Because it's kind of like, you know, it is a full fledged query language. But it basically fixes every like usability concern that I've had with SQL for, you know, as long as I've been like a developer. And it kind of like takes a lot of good ideas as well from GraphQL, which I think is fascinating where like, you know, you actually have these kind of GraphQL style, like shapes they're called in EdgeQL to specify like what fields, you know, you wanna select, you know, you've got select user or whatever, and then you just put in some curly braces and like pass in the list of, of properties you want to fetch.
+
+It's also not relational in the sense that you don't just have like, you know, a bunch of flat tables that maybe connect to each other with like foreign key constraints and stuff. It's very much like a. You know, you're writing your schema the way that you would write, like a type script interface where like, you know, it's object oriented, you've just got like your user type.
+
+And it maybe has a key like posts that like corresponds to a list of of blog posts or something. And so it's, it really does. It's like a database that conclusively solves the problem, the problems that ORMs are trying to solve. And it all does it in the database where you've got this like object oriented schema.
+
+And then you're able to like do things, you know, I mentioned this kind of GraphQL style selection set, and you're able to do things like select, you know, the name and the email of a user, and then also fetch the, the posts that it's linked to and then fetch properties of those posts. And then, you know, this is all just looks like, you know, nested shapes in your query.
+
+And so you can, you know, no more, no more joins or anything like that. It's all because you've got that underlying object oriented schema it just gets really easy to write nested queries and like finally move away from like some of the things that make writing any nontrivial sequel query, like pretty intimidating to somebody who comes up writing JavaScript or like comes up, you know, very much in this object oriented world.
+
+**Andrew:** So you, you work on the query language where, where was it when you like, started at edgeDB and like, what have you brought to the query language that wasn't there before?
+
+**Colin:** So the, the query language EdgeQL itself was already pretty mature by the time I got there. And my task was basically specifically writing, like the type script version of it. That lets you actually write your edge SQL queries, you know, instead of there is, there is a way to write queries to EdgeDB kind of in the, the old fashioned way.
+
+Like if you've used like a sequel database driver, you like will initiate or initialize a client, and then you write your queries just as, as strings kind of dropped into your, you know, co source code, which like feels a little weird. You've got these little islands of sequel, you know, they're like probably not syntax highlighted yada, yada.
+
+And then you still have to like manually provide a type signature if you're like using the type script client, for instance. And so. What we do is, you know, we actually, we generate this query builder by intro inspecting your schema, like from your live database, you know, pull out like all of the object types in your schema and their properties and how they link to each other.
+
+We also pull down like all of the, like built in functions that are built into EdgeDB. You know, it's got like a whole standard library of functions. It's got like a whole, you know, a whole type system of its own that we kind of try to represent in type script. And then we just generate you know, it's very similar to Zod in some sense where we generate this, like a bunch of code, you import it all as a, a single object called E conventionally.
+
+And then you can just like start building queries. So like, you know, you can do like e.select You know, which is just like a function. And then, you know, first argument to that function is like the object types. You wanna the object type you wanna fetch. So like E dot user, and then you actually, the second argument is like a closure of function that kind of like gives you you know, that this function returns an object that basically specifies like everything you wanna fetch as well as like, you know, your filters and ordered bys and limits and like all these different clauses on your select query.
+
+Which is something that I think is I'm proud of about it. Relative to something like Prisma you know, you really, we did this kind of aggressive approach where, you know, you've got this like second argument, which is just like a function that returns an object, this like parameters, object, and inside of that function, you specify like the fields you wanna select.
+
+You can also like do that nested, you know, fetch all the blog posts of a, of a given user or something. You can also include computed properties that you can, that you can define. So the reason why this second argument is a function that returns an object instead of a, just an object is, you know, you can take the argument of that function and it's basically gives you like a, a variable that you can use that is a reference to the current scope, like to the user object.
+
+So, you know, you would just call it something like you or something, and then you can reference like you.name or you.email you know, do like, you know, modifications to those with built in functions, like, you know, string conversion functions or this or that. Or if you wanna do something like.
+
+Just like count the number of blog posts that a given user has written, then you can do that with E dot count, you know, and then pass into that, like, you know, u.blog, post or something. And so like, you know, you're able to write like, I mean, you, it really just, you have access to this whole query language of EdgeQL and it's all represented in type script.
+
+And then at the end of the day the result of those queries are, are fully typed and there's, you know, the more you start look like using something like Prisma, the more you start hitting against the limits of it. In, you know, I like,
+
+#### [00:31:46] Why not Prisma?
+
+**Colin:** I remember being satisfied with Prisma. like, and I get that people who are completely but you know, there's over time.
+
+It, it get. You know, we're tending, we're trending towards a, a world where, you know, a lot of those things are kind of just not best practices anymore. The things that you have to do with Prisma, or like you'll have to maybe execute multiple queries, you know, in series, in order to fetch all the, all the data you want.
+
+For instance, you know, something like you know, fetching all the, like the number of blog posts written by a given user, I think is maybe just now supported with this underscore count API they provided as of pretty recently. But let's say you wanna like count the number of blog posts, subject to some filter.
+
+You know, like the number of published blog posts would be like an obvious one. You know, you can't, you can't get that in Prisma. And then, you know, I know this is job, the JavaScript ecosystem. So performance is, is rarely, you know, the main thing driving decision making. But like when you start looking, you know, if you turn on Prisma query log to actually see the sequel queries that it's emitting to your database, it is like, well, it's remarkably naive, I guess like every level of depth in your query, every, you know, in terms of like nested fetching that each of those get mapped to like another query that has to get executed in series.
+
+And the queries themselves are very verbose where it fetches like your top level thing, you know, fetches a list of users takes all of those IDs and then just like drops them all into this second level of query to fetch like all the blog posts associated with the users, with those IDs, and then does a third level to fetch like the comments on those blog posts or whatever.
+
+And you know, it's, if you, if you have like any amount of latency between your, your server, where these, this query's getting executed and your database you know, this, this has like a multiplicatively bad outcome for you where, you know, a pretty simple looking query will require like four to five round trips.
+
+Because you act to act all these individual queries that, that get executed also get run in a transaction. So you've got start transaction and transaction. And so, you know, most like non-trivial queries require like four to five round trips. And I was surprised when I learned this and I learned this relatively recently cuz we were working on a, a benchmark at EdgeDB to try to, you know, capture some of these perform like characteristics.
+
+And I really, I didn't realize that that's how prisma did things under the hood. So performance is certainly a consideration. I personally prioritized DX over performance. And which is why I, you know, am also proud to say that I think the DX is better in terms of like being able to express whatever query you, you want to express and not be limited to, you know, the kind of crud API that you know, Prisma or whatever, or kind of gives you outta the box.
+
+**Justin:** very interesting. How natural of a transition that this role is from like your past. I mean, you can, you can sort of see it like the experimentation with neo4j and the pain that you felt there. And then the creation of. And now what like edged is like, looking like it's that ultimate? It's like, Hey, I want this type safety, but I want it like in my database, you know, like more actually at the schema level.
+
+I think it's interesting because like, you know, I talked again earlier about like, it would be nice if we had more implicit interfaces between things, but I mean, those are always abstractions, right? Or generally those are abstractions and, and they don't map cleanly. And the, the problem that you're talking about with Prisma and query performance is like, so Prisma is hitting multiple potential, multiple databases.
+
+And like, you know, they are creating a generic schema that can target different types of databases with different types of optimizations and stuff. And I mean, a lot of times with an ORM, they are gonna take a, more of a naive approach because it's like sometimes writing an optimized query takes well, a query optimization can be quite hard.
+
+And B sometimes it just takes implicit knowledge that maybe you don't have at that time, or maybe it's really expensive to compute that or whatever else. So it's just like this leaky abstraction. So building it more into the database is interesting.
+
+**Colin:** for sure. Yeah. I mean, building an oRM, I have, I have lot of compassion for anyone who's whose job that is or who sets out to try to do it, cuz it's, you know, you are saddled with like a, this least common denominator problem where you need to work within not the restraints of one database, but the restraints of every possible database you target. So, you know, there like something about EdgeDb that I sh that I should mention is it runs as a layer on top of Postgres. So. You know, we try to abstract that from you. Like you can use EdgeDB and spin up an instance of it and it will create that Postgre instance under the hood, but, you know, yeah. EdgeQL gets converted to SQL by our, by our query compiler.
+
+The EdgeDB process itself is completely stateless. And your, your, you know, schema that you declare with, you know, the edge DB schema language gets reflected into like a fully normalized, like relational form under the hood. And you know, so we still kind of, we get to benefit from the performance of the Postgres query engine and like some of their like schema like just their, their very powerful schema.
+
+But. Edge D wouldn't work. If we tried to target something beyond Postgres, like there are there's features that we use and rely on heavily that are literally only available in Postgres. And we like, wouldn't be able to pull this off if we were building even on mysql or Mongo or any of that. And it's a huge, a huge benefit to our ability to iterate and build and just like create these features by not having to worry about that least common denominator problem.
+
+**Justin:** really interesting. I didn't, I didn't realize that it was built on Postgres.
+
+**Colin:** We should probably try to emphasize that a little more on the, on the homepage. It's there
+
+**Justin:** It is on the homepage. Yeah,
+
+**Colin:** Yeah.
+
+**Andrew:** Yeah. It's, it's nice as a user too, cuz like with Prisma, like having to understand that it can target these four different types of databases and like code your schemes to that. Like it's weird how often when I'm working on Prisma, I'll end up on one of their docs pages that has nothing to do with Prisma. It's just like here's how to use Postgres or here's how to use mysql. So like the one-to-one mapping is actually kind of nice from a user perspective too.
+
+**Colin:** yeah, just having one set of conventions for how to do everything and, you know, Prisma. I think I also don't envy them, you know, in that they've gotta delineate what functionality is available now on Mongo versus on the sequel based ones. And it's like whoof, that's a, that's a hard problem. And just from a, the standpoint of structuring documentation.
+
+**Justin:** mean, you run into the I've like hit those things where it was like, I was on Postgres. I was like, oh, you know, I'm just gonna switch this to be SQL light. And it's like, oh wait, this one feature that you're using, that's not supported. And the other sort of challenge is. So with Prisma, you're writing a schema file and, and major props to the Prisma team, cuz they've built on a lot of amazing tooling, especially around creation of schema, but you are writing another schema and then, you know, it can technically generate your database schema or whatever under the hood, what's a magic tooling, but like there are two separate schemas that you have going on there. And like it's a thing that you're very aware of or you should be very aware of
+
+**Colin:** yeah, without a doubt, you know, we took some cues from Prisma and continued to do so in terms of the DX that they're kind of pioneering. I mean, you know, the fact that there was an ORM that defined its own schema definition, language was pretty baller and, you know, important for what they're trying to do. We, you know, we have the same and with, with the major difference slash benefit, which is that inside of your schema for EdgeDB, you have access to the kind of full power of, of EdgeQL as well, like a full schema language. So things like putting in like computed fields inside your schema definition is possible.
+
+Prisma is also like they've had a tricky battle where they need to strike a balance between their object oriented abstraction and the, the relational abstraction. And they know that it necessarily has to be leaky or people are going to be falling back down to writing raw sql. And so, which is the original.
+
+The origin of this decision they made to kind of like you still are, are declaring your, your foreign keys a lot of times. So you've got your like author link or author field that points to like a user type. But then you also have to put in author ID and you have to say like, okay, the author, you know, relation should be using this author ID field because they want that to be explicit in the schema for the people who will need to fall back to you know, to actually writing Ross equal.
+
+And you know, the solution to that building a leak list, abstraction like a leak list, object oriented, abstraction over SQL has
+
+been the goal of EdgeDB since the outset and it's well, yeah, it's extraordinarily difficult. You know, the thing, you know, the things that that we do to generate SQL that you know, kind of returns like a nice nested object for you that it's kind of familiar to someone who's coming from an ORM library.
+
+You know, this, this is a lot of where. We're really milking Postgres for, for all it's worth. Cuz we have to do these crazy like sub queries and stuff. In order to like write nested queries that are performant and like give you back data from SQL in like that kind of structured JSON format instead of in the like flat, you know, list of rows thing that then needs to be de-normalized.
+
+Yeah, it's a lot,
+
+#### [00:41:05] EdgeDB IDE Tools
+
+**Andrew:** You guys have like similar developer tooling, where like with Prisma, you're writing your schema and it kind of is like automatically connecting things together. Does your schema language have a similar like IDE experience?
+
+**Colin:** we're definitely working on the IDE experience. It's tricky because of the power of it where the IDE would need to be able to like have the entire grammar of edge QL baked into it because our, our schema language is a super set of our query language where, you know, you can declare your object types and stuff, but because each of these can your object types can contain arbitrary edge QL queries within them potentially.
+
+It gets it, you know, things like auto format and get a little harder. We have syntax highlighting, but you know, for all the major IDEs but we're definitely working on like a proper implementation of like the language server protocol. That would actually, you know, let us get a little fancier with it.
+
+**Andrew:** Yeah, cuz like you, you, you work on a query builder, but as you said, you could write these queries in just like strings. So I'm assuming like right now you guys don't have like a template string thing that helps you with like automatic type completion in there. Like
+
+**Colin:** yeah. So. If you're writing your queries as strings, then you're, you're on your own. But if you're using the query builder then, then everything does get auto completed for you. Like when you're inside of like, you know, that kind of params object you're writing, you know, you can this actually relates to one of my tool tips that I'll, that I'll get to, but you know, when you're inside of that object you can, you know, start typing something and it'll, it'll auto complete, like every property, you know, for you on that object type, as well as all those different clauses I was talking about, you know, limit, offset order by whatever things like that.
+
+I'm not sure I completed this thought, but the fact that You know, IM Prisma, every level of depth, you kind, you need two, two levels of objects to declare it. Where, like, you know, you've got like E dot, you know, Prisma dot user dot, find many or whatever. And then you've pass in a pers object that contains like, there's like a select or an include, like key that you put in as well as like your limit and offsets things like that, you know?
+
+So you kind of need to put in select and then add another object in there to, you know, tell it which properties to, to select. I'm not sure exactly why they do this actually because, well, Hmm. In edge DB, you're not, you're not allowed to name a property like limit or offset or something because those are reserved keywords.
+
+And so we, we just kind of like flatten all that out and just have it all in one object. You know, you do have some thing, things that are kind of odd where you've got like first name, true to tell it to select, you know, the first name and then right underneath that you would have like, you know, filter and then like providing a, a filter expression.
+
+But because you can't name a property filter you know, we just, we just flatten all that out. And so it's, it's a really nice experience keeping, like having the levels of depth of your object of your pers object correspond to levels of depth in your query. Mm.
+
+**Justin:** This is really fascinating.
+
+#### [00:43:53] Building Type Systems
+
+**Andrew:** In the, in your notes that you sent to me, you said that you guys basically implemented an entirely different type system within type script. What exactly do you mean by
+
+**Colin:** Yeah. That's a. This was not not trivial you know, edge DB. It's got the kind of types that you'd expect in a, in a database. So, it's, it's a little more, there's more to it than type script. So you can provide like, you know, in 16 and 32 and 64, for instance as like different numerical types, then there's like, there's a date time type.
+
+There's actually like a um, duration type as well. Which are things that don't currently have you know, corresponding types in the type script system. I think there may be a duration type. That's a, a web standard now or maybe a proposal. Um, But we're not quite there yet. But yeah, you know, and then there's the actual types that you declare in your schema, right?
+
+So there's like user and blog post or whatever. Those are types that well, you know, the idea basically EdgeDB is kind of interesting in that it's has like a basis in, in set theory. Where every value, every like edge QL expression that you can write corresponds to a set of values and that set corresponds with like a, a type and a cardinality.
+
+And so instead of having like in type script, you could have like a, like a string or you could have like an array of strings in edge DB. It would be like, you've got a set of strings and there's a constraint on its cardinality. So, you know, maybe that constraint is that this set contains zero strings, which would correspond to like, you know, I guess an empty array type script or you can constrain it to only contain one string, which corresponds to the string type roughly.
+
+Or you could say like this contains like one or more or zero or more you know, elements in this set, which actually correspond to different, different types and types script as well. You know, if you have zero or more strings, that's just an array of strings. If you have one or more, you actually would represent that with a tuple in type script where you've got like, you know, Braces, you've got string as the first element.
+
+And then you have like a rest parameter, like dot, dot, dot string braces as the second element. And that is kind of in type script, how you represent like an array that has to have a single like a single element, at least. Not sure if that translated into a podcast form, cuz it's, it looks a little a little silly and most people don't use this, but yeah.
+
+You know, so basically every single, you know, it's like Zod in that you're using this like API to build up like a data structure that represents something complex. In Zod's case that's schema, in this case, it's like, you know, a query and every expression along the way, all the little pieces that you're composing together here are objects that can form to this like expression, like edge QL expression interface, which just consists of two things, which is, you know, that type like underscore underscore type and underscore underscore cardinality.
+
+And we track all those things. We write these like crazy generic functions that are able to accept inputs and return or return a value that has, you know, the appropriately modified type and cardinality and you know, lots of, lots of crazy generics and overloads, for sure. I think there's like eight or nine overloads just on the select function, just cuz there's a bunch of stuff you can select in EdgeQL.
+
+And yeah, I mean it's, it's certainly been like the fact that we're starting off, you know, having to build out this whole new, like generate this whole new type system and then write a bunch of logic that you know, was able to track all those things properly. And eventually at the end of the day, converted all to, you know, an equivalent type script type.
+
+It was, it was crazy and awesome, frankly. It was like the most challenging thing I've ever done. And really makes Zod look like a, like a toy, a little, you know, in terms of the implementation complexity. There's so much more to like crazy tricks that we used in, in building this. Were you know, if you have like a, an expression that corresponds to like an array of string or like a set of strings, like we were talking about actually scratch that an array of strings because there are also a concept of array and tuple types in EdgeDB that are like so you can have a, like a set of an array of strengths, for instance.
+
+So it's not like sets like, yeah, right. it's not like sets a you know, eliminate the need for something like twos or arrays necessarily. So, you know, if you have like, some set corresponding to an array of strengths, you can just like index it. Like you can just do like brace, like left brace, one close, you know, right brace. And that we use the proxy API to basically like you. Because you're calling this index, you're getting the, like trying to grab the first element of this array. I'm using air quotes because it's not actually an array. It's an object corresponding to a query that corresponds to an array. And so we use the proxy API to basically like capture that incoming like index event.
+
+And then we return like a wrapped version of the object of the expression that, you know, you, you call this index operator on. And like, you know, we take that, we wrap it in another object, which is like, you know, just is an index like operator expression. And so we just like, basically have references to like the wrapped expression that you called it, not called it on.
+
+And then the value of one, which is like the index in question. And then you take this gigantic object and basically like linearize it out into the corresponding edge QL query. So at the end of the day, this all gets turned into like a string, an EdgeQL query string and then you can just like execute that against your database.
+
+Yeah, it's a little nuts. I, you know, I'm not sure this, it is a full query language too, so there's things like parameters that you can that you can pass in, you know, in EdgeQL that's like a, like a dollar sign name or whatever. And so you can kind of take a query and wrap it and e dot params you know, specify what all the inputs are that you kind of, that this query expects.
+
+And then when you go to execute that query, there's like, you know, you have to, you pass in the data associated with these parameters and that's all strongly typed as well. Cause we, you know, we infer that type. And so it, it starts feeling like you're executing your queries, kind of like functions where like, you know, it's all totally dry.
+
+You're able to tell it what parameters are expected. And then it enforces that the data that you pass in actually. Corresponds with those types. So, you know, I don't, I dunno if people have used connects JS or something, which is probably the closest analog in terms of like a, a query builder for a query language that one's all sequel based.
+
+And it's pretty, they've, they've done their best in terms of type inference with connects. But it's pretty limited in what they can do just because they're limited by like the relational model by SQL itself. Specifically that, you know what I was saying earlier about how hard it is to actually write a sequel query that returns that kind of structured JSON style output that we're talking about, like most sequel queries, they're only intended to be like, you know, they you'll join tables and you end up with this like big flat list of, of data.
+
+And a lot of it is redundant and you have to like do a lot of work to turn it into something that looks familiar as an ORM user. And. It's not even possible in all, in all dialects of sequels. So yeah, I mean, there's really, you know, there's no way for connects to get around the fact that it's just hamstrung by what sequel actually is.
+
+Oh boy. Yeah.
+
+**Andrew:** Okay. So relating to all, all the stuff you just talked about what does it feel like to sit and top that type script throne Uh, But in all seriousness, how did you uh, get so good at writing this type of generic code? I talk with a lot of people who are like, I like type script, but like once I get into generics, my head just explodes.
+
+So like how, how did, how did you get started in that? And do you, do you have any resources that you could point people towards to, to help learn this type of type of coding?
+
+**Colin:** It, I'm definitely not on any kind of throne. I think if anything, I've fallen down a cliff and like hit every branch, like on the way down, that's kind of what it's felt like. Yeah, I mean, I, I REM like for the sake of like, you know, for anybody who feels that way , it was immensely intimidating to me. Like the idea of any generic in type script, like, you know, a, just a tiny bit over two years ago. Like when I start set out to build Zod, I didn't know anything like at all. I looked at the implementation, um, io-ts and like, you know, borrowed a lot of approaches that, that Julio was using in that library. But like, it really, I remember like specifically when I like sat down and I was like, all right, today's the day where I try to learn what a conditional type is, cuz I have no clue.
+
+And you know, it's like, that was the hardest part basically. You know, writing your first generic and then writing your first conditional type. These, those are two concepts that like, you know, you just have to sit with them for a while. And you have to just start writing code and like. Tweaking things and playing with them.
+
+And then eventually you develop intuition around it. None of the terms for anything in type script, like are useful for really understanding what it is like, you know, the, you know, I, I think now with the benefit of hindsight, I could write up like a lot more intuitive version of how to do some of this complex type script stuff and how to think about it, you know, from like, you know, writing a generic function and then constraining the input to that with the extends keyword and then taking that inferred type and transforming it at the output of the function with a conditional type and things like that.
+
+And like how to really think about it. It's also just not something that, you know, you, you may think you, you won't use it very much as an application developer, as opposed to like a person writing a library and you'd be right. for the most part, but having access to some of these tools, like. It unlocks things in terms of how you're able to implement like the elegance with which you're able to implement, even things like, you know, form validation or whatever.
+
+And you know, having, having some of that at your disposal, I, I would definitely recommend though. Yeah. In terms of having like a nice, comprehensive, starting point for how to get into the stuff, this type script advanced functionality I'm not aware of, of anything except for the hit every branch on the way down approach.
+
+So, which I don't know if I'd recommend or not.
+
+**Justin:** Lot of work on the type script handbook. So there's some good stuff in there, or there's, there's a lot of good stuff in there. It's just one of those things where I don't know, everybody learns a little bit differently, but there's a lot of the stuff I couldn't gro until I actually had to solve a problem with it. And, you know, there are some things that in hindsight, like uh, conditional, conditional types, you know, where it's, like at first I was like, oh yeah, this is, this looks, looks super simple. And then I started trying to use it and I'm like, what the, what is this ? And then like, and then I got a handle on it. I was like, ah, yeah. And come back around to like, yeah, it's not bad, but
+
+**Colin:** it's, it's, non-intuitive like, it's weird that they kind of use the extends keyword, both in generics and in conditionals. And I, you know, you can see the logic behind it. but like those two usages of the extend keywords are very different. And then there's just like, when you can use infer And when you can't and like what, how that inference actually works, which requires all this other back knowledge of like, you know, the level of specific, you know, specificity with which type script will infer a type like, you know, if you just do like const X equals, hello world, does that get inferred as a string or as the literal, like the string literal hello world.
+
+And like, you need to know that in order to know, like, to mentally simulate how typescript will behave like in all sorts of situations and that's, you know, it, it really is just a big bag of rules. And then when you get into building something like Zod, it's like a big bag of horrifying tricks that you have to use to implement, you know, to do things like, you know, you know, like there's scenarios where I want the output of the Zod inferred type to be clean looking and not be some like crazy, hairy mess of like different generic types.
+
+And so like, I have this like flatten utility, that's basically like a combination of, you know, it's like a mapped type coupled with like this kind of identity type. And you like, like, you just have to know that when you put these two things together, it takes some messy type script type and kind of reduces it down to its like most minimal representation.
+
+That's like what? Look the prettiest. And like somebody found this out like in 2017 and posted it to like the type script repo. Right. And if I didn't find that then. , I would have no way, no idea of how to do it. And there's, there's many examples of, of this kind of madness that are things you won't find in the handbook.
+
+But fortunately, most people will never have to worry about, you know, it's another ridiculous one removing like removing that question, mark from an object type is so obnoxious. You look at the Zod code base. If you, if you wanna see how, how it's done yeah. Kind of preposterously hard, honestly.
+
+**Andrew:** Yeah. I, I recently encountered that identity thing in a stack overflow issue. And I was like, wow, this blew my mind. It went from like hovering over the type. It's like, just gobbly go to like, oh, that that's the type I have. So yeah, definitely lots of those little tricks floating around out there. extends,
+
+**Colin:** oh, yes. Certain things are gonna get a little prettier in, in 4.7. This is not gonna make anyone feel better, but you can now write additional extends clauses that follow that infer clause in a conditional type. So you end up with things that, that really look like word soup, where it's like, you know, T extends infer, you extends string, you know?
+
+And so it's night it's, there's a lot of like places where it'll clean up the implementation of Zod, but yeah. Prepare for, you know, prepare for that chaos in a few months here or one month, I guess.
+
+**Justin:** mean, it, it, it is an insanely powerful type system though. And one, one of the things I gotta, like, I always sort of like think fondly about touch Groupon is like string typing. is, is a nontrivial, but B like, I don't know of any other type system that lets you do the same sort of thing where like will type the structure of a string. That's a, that was a hard thing to learn too, but like well worth it well worth it, especially I don't do you use that in zod is that a thing that you can take advantage of him out?
+
+**Colin:** No, actually, this is a longstanding open issue as well, which is to try to have like zod you know, runtime implementation of, of template literal types, where like you can actually, you know, in your template, literal type script types, you can say like,
+
+you know, hello, you know, brackets, string. And you like now that has to be like the literal, like string, hello, followed by, you know, some set of digits or whatever.
+
+And you can't. Yeah. So like in terms of representing that, you know, I, it would be some API where it's like, you know, Z dot literal, and then you pass in like an array of components that kind of get con contaminated and you'll be, be able to mix literal values and. And like Z dot number Z dot well, I guess just Z dot number.
+
+I, I haven't looked into like the full spectrum of what you can represent with template literals, but in general, for that kind of stuff, I usually say like, just, you know, use uh, Z dot custom, which lets you like provide any type signature you want and then just pass in a function that uses a reg X or whatever to, to validate that properly.
+
+That it's nice to have some fallbacks where, you know, every, every issue I don't need to necessarily address immediately. I can, you know, throw out the work around and then find myself some time when actually implementing it.
+
+**Andrew:** cool with that. Let's move on to tool tips.
+
+#### [00:59:12] Tooltips
+
+**Andrew:** So my first and only tool tip this week is about a new RFC to react, which is, has been making the rounds lots of uh, discussion on Twitter and in my company's internal slack. But what it is is they wanna add a new hook to the base layer of hooks and react called use event.
+
+This hook really solves a lot of the like dependency issues that I've found. Once you start using effects for things you have to be very diligent about making sure that your dependency arrays for those effects have everything under the sun. So like, if you're doing a thing, like say in their example, they connect to a socket in an effect.
+
+If that connection is taking in things like a username or like any bit of information that might change, it needs it in the dependency array. And then because it's in the dependency array, that effect is gonna rerun every single time that that any of that stuff changes what this use event hook allows you to do is you can now create these callbacks that have no dependencies.
+
+But we'll always have the up to date closure values of all the variables they're referencing. And then when you use those callbacks inside of effects, it doesn't actually need to be in the dependency array and runs how you think it would. We actually have this in our, our code base at descript today, we just call it like use event callback.
+
+And it basically does the same thing where it allows you to have a call callback that the reference to the callback never changes. So the, the effects in other callbacks that reference it in their dependencies array, don't actually update ever. So it's a, it's kind of a hard thing to wrap your head around if you haven't been in the react hook world reasoning about this stuff.
+
+But I think it's gonna really simplify code when it lands cuz cuz dependencies suck.
+
+**Colin:** Fascinating.
+
+**Andrew:** this stuff.
+
+**Colin:** So these, the use event returns a function that you can then pass in to like on click or whatever. Oh, fascinating.
+
+**Andrew:** Yeah.
+
+**Colin:** If you declare that on event that on click event handler like in line the, I guess that function gets like re declared every time there's a re render is the idea
+
+**Andrew:** yes, because with, yeah, with the functional components the render gets called each time it renders. So you'll have a new function every time that component re renders. And then if you're using hook stuff where like it's in a dependencies array, you now have a thing that's actually just changing every single time.
+
+And this solves that by making it basically creates a ref to the function that you can just use the ref and the ref doesn't trigger any of those updates.
+
+**Colin:** very cool.
+
+**Andrew:** Yeah. And if you don't want a reason about this stuff, go look at solid JS. It's it's
+
+**Colin:** very cool.
+
+**Justin:** It's like, this is, it continues to be somewhat of an issue that, that sort of grows a little bit over time is the, just the cognitive overhead of understanding. You know, when you need to cache references to things, when you don't need to it's like, i, I. I found that more and more, it it's, it's more of a pit of failure than it is a pit of success. You know, it's like, you're most likely your first intuition is most likely to do the wrong thing. And then you have to sort of work backwards from there to get to whatever the right solution is. And I don't know, react being the,
+
+**Colin:** whatever that ES link plug is plug in is that like auto adds all of your dependencies to use effect like a it's super great, but B it is a little troubling that something like that is necessary to write code that isn't wrong. , you know,
+
+**Justin:** Yeah.
+
+And then there's sometimes when, Like that's like rare cases where that's not actually what you want anyway. So it's just like,
+
+**Andrew:** Yeah. Like I, I loved hooks when they came out, but after hitting these issues over and over again, like I've never thought before, like, oh man, I don't like react and hitting these issues. You, you quickly get into, I don't like react. There is some hope on the horizon though. At the last react comp they had this react automatic memorization project, which looks just completely bonkers.
+
+Like, please let me write my code. Yeah, react. Forget. Let me forget that react exists. And then you optimize my react code for me, cuz I am tired of using use memo, use callback memo E everything. Like sometimes we have to memo children, which is just like,
+
+**Colin:** Ooh. Well, I look forward to seeing that land in a decade, you know,
+
+**Justin:** My only concern with this is that we're just like piling more and more stuff on top to hide the fact that like some of the internals here, or maybe not ideal. And, and, you know, again, this is for anyone listening, this is no shade on the react team, cuz like the stuff that they've built is, is amazing. Yeah. It's just you know, I don't know, building a. building something that like is
+
+**Andrew:** Yeah,
+
+**Justin:** interruptable is schedulable, you know, is like all of these, all of these really amazing properties and, and, and providing them in APIs that are like succinct and, you know, whatever else, non trivial. So,
+
+**Colin:** And just light years ahead of other things out there, like it's just a sign of maturity of react that these are starting to be problems, you know? But yeah,
+
+If, if I ever feel down about the current state of react, I just remember that there's no longer component should update. And I, I thank my lucky stars, you know,
+
+**Justin:** yeah, for sure. That's true.
+
+So my tool tip is this reactivity library. Speaking of solid JS is reactivity library. This is written by Yehuda Katz, who is the creator of Ember. I'm pretty sure. Anyway, so it's a generic, reactive state library, essentially. That's trying to give you, you know, excel spreadsheet, like stake management, you know, if you wanna have a cell that's reactive and does stuff if you've used svelte or if you've used view or solid, you know, this is a well known concept to you.
+
+The interesting thing about this library is it's portable across frameworks. So they've got a react library for it. And they've got bindings for other languages as well. Yeah, I don't know. It, it looks, it looks pretty interesting. I, I mentioned the Excel thing because some of their terminology does sort of feel you know, spreadsheet E and, and to me it like is, is fairly intuitive.
+
+I think some of the newer some of the newer reactive state management libraries take more of a like mathematical approach to naming. So they call things like atoms or, or, or, you know, like to, to mimic like an atomic sort of interaction or whatever can be a little bit more confusing. I think. So I, I at least like how they how they did the naming for here anyway, it's it's an interesting looking project and I like the name star beam just sounds futuristic.
+
+So.
+
+**Colin:** It really is. That's a, that's a good get on, on NPM. One of the questions we didn't get to on our checklist here was whether or not Zod is named after the, the general and Yes, it is named after the DC character. But the real reason is that I looked through, I wrote a script to bring up the list of all three letter NPM packages.
+
+And that was one of the only ones that was pronounceable. I'm yeah, I'm still sitting on, on Z a Zia, which was, was the other good one, which is like the state symbol of New Mexico. So if any new Mexican listener listeners out there have like a great idea for NPM library, then, you know, hit me up cuz you can have the I will say as well as state management is like a big blind spot for me where I kind of landed on one of the design decisions with my YC company that I was very happy with was choosing MobX early on.
+
+And now I feel like we're like eight generations beyond MobX I, and I truly have no idea. Like I even dug into zoo stand or star beam or some of the newer things at all, which I, I, I don't really. It's a blind spot for me, for sure. It's hard for me to even conceptualize something that I would like better than mob X, because it's just like, you just like write an object and call it, pass it into a function to make it reactive and then just start using it everywhere.
+
+Though you do have to like use a, a decorator around all of your react components to make them observers, which I guess is a bit of a drag.
+
+**Justin:** My perception of the general trend here is like mostly pushing state further back to the back end. You know, it's like doing less. So, you know, using things like rap
+
+Apollo or react query or SW or whatever else, these, these things that mostly do all the state for you and then your state needs are reduced pretty greatly on the front end.
+
+**Colin:** Yeah. React, you know, local react state and any, any fetching library, you know, gets you, gets you a long way. I. One, another thing I was trying to pull off that I, I think is still pretty tricky is this this bit I was talking about where you try to only have a single copy of every object from your database, like locally basically de normalization which is something Apollo client does.
+
+At some point, well, I guess I still do have a library called normy that you just like pass the idea is you pass all of your API, like all your fetch data through it. And it kind of, looks for any object containing a property called ID and just treats that as kind of a universal ID and then like maintains the, kind of like, a single copy of that object which is, you know, something, I, I also spun out around the time I spun out Zod. I think it's an underutilized pattern for for people who aren't using Apollo, which, which does it for you automatically.
+
+So my tool tip I have a couple of them, but I'll start by saying, I recently bought this saddle chair, this backless saddle chair. I think, I don't know if this is even like a standard term yet.
+
+Like a lot of the things on Amazon are just called ergonomic chair, which brings up something that looks kind of like this, but it's really been a game changer. I gotta say, as someone who like has tried every gaming chair under the sun, I feel like this just like, it's like really hard to sit in with bad posture.
+
+And and that that's been doing a lot of good for me. Like at the end of the day, I feel like I've been engaging my like back and core a little bit. And it's like a good kind of tired, you know, like, man, I'm glad that I like am actually using those instead of like being like in a prone position in my chair, basically like, you know, with my lower back constantly under tension yeah, they look like the most uncomfortable thing you've ever seen when you look at 'em on Amazon.
+
+So just prepare for that. But, uh, it's been a huge win.
+
+Something that's maybe a little more relevant is I just wanna shout out that type script 4.7. The first RC is coming out in a few days and uh, the final release should come out by the end of may. And it's finally bringing us uh, ES module support into type script which is it's honestly kind of, I mean, it's been a disaster.
+
+They first announced this for the type script 4.5. And like, even after they like put this out in the beta of 4.5, they then like rolled back on that and have now taken two more versions to actually get it out there. Yeah, it's pretty, it's pretty weird. I will say the thing that is exciting about it is this is finally it finally lets you use top level of weight in type script, which I feel like I've been talking about for like, a decade now.
+
+Not actually, but like a long time and you can finally just like write a.to S file. You know, you have to like put type module in your package, do JSON, or you have to title your, you know, you have to use the dot MTS extension for your file, which, you know, is probably gonna turn off everybody right.
+
+Outta the gate. But you do kind of get used to it and it, it really does finally make type script feel like a query language or like a scripting language where you can just like start, like the first line of your script can just like, be fetching something with like an, await, like, you know, fetch something remotely within a weight keyword without needing to like write a function and then call it you know, at the bottom of your file or whatever.
+
+So I'm excited for that. It's pretty weird. Like I mentioned, where, because ES modules require file extensions on imports you're AC uh, and coupled with the fact that type script, like for some reason, refuses to ever like rewrite the extensions of any import in your, in your type script files, you actually are importing like from, you know, food dot, JS, or.
+
+Even though, like the file that is actually getting imported is food Ts. And so I dunno if this is a tool tip or like, you know, me just kind of like, you know, it's gonna be, it's gonna be a weird roll out here. I don't know if people are gonna like it or not. But I'm kind of excited for, for this Alta to play out.
+
+**Andrew:** yeah. The, the extension thing is odd. Like I've written a few projects that are type script and ESM and adding JS in my type script files feels very weird. And if I start having to add MJS CJs, MTS, that's all, all the different extensions they added are wild, like dot D dot CTS. Like some, some junior programmers gonna find that and just be like, what the, what the hell is this?
+
+**Colin:** I know, I, I finally had to bite the bullet and finally understand CJs versus ESM and how all this works with the node resolution and stuff for for work actually for the query the query builder stuff at EdgeDB and gosh, it it's, it is fun. It's nice to know. Now it's a nightmare. It's a disaster. I love it.
+
+**Justin:** It's really unfortunate. This reminds me a lot of the Python, 2.7 to Python, three sort of transition. And how sort of painful that was. It's a little different, I guess, but like, this is gonna be pain for the ecosystem for many years to come, unfortunately.
+
+**Andrew:** been
+
+**Colin:** yeah,
+
+**Justin:** yeah, yeah,
+
+**Colin:** I literally last week finally, like dug deep into my bash profile and finally deleted like changed it. So that just Python on the command line uses Python three instead of Python 2.7. So yeah, that that's an ongoing battle for sure.
+
+**Andrew:** and the last tool tip of the day.
+
+**Colin:** Yeah, my third one is a nice quick one, which is I've been using Ts node to execute files for a long time. This kind of goes hand in hand with the eSM stuff in some sense you know, because you can like Deno now has a great experience where you can just write dot Ts files. Also in Deno, when you do imports, you're able to import with a dot Ts extension, which is kind of an interesting Testament to the fact that Deno is kind of more committed to being type script first than type script is. Where, like you don't need to like, do this weird import with a dot JS extension which is what you need to do if you're using plain TSC.
+
+But yeah, basically I've been using like NPX Ts node to execute type script files for a long time. And even if you have like a one line file that just like does console that log, hello world, it takes like three or four seconds for me. And I recently learned that you can just put dash capital T or dash dash transpo only to just disabled type checking.
+
+So it will still run even if your code has compilation errors, but it runs it like subsecond now which is just so much nicer. If you just wanna like write some type script file to, you know, some script to do anything literally just like shaves off three seconds of like, I don't even know what it's, what it's doing, like why it needs to spend three seconds doing type checking on a one line file that just logs something.
+
+So, uh, maybe that's room for improvement on the TypeScript compiler side, but for the moment Ts node dash capital T, let's doing it for.
+
+**Andrew:** tip rebuttal for you? the, use ES build this was actually something that Justin showed me and I use it everywhere and it's super simple. You can just use this ES build register and you just do node dash R and then you're off to the races.
+
+**Colin:** you know, I, was looking into different options here and I saw the ES build runner, which is actually should do roughly the same thing. And it's at least like a little more expected for me, which is like NPX ES build dash runner. And I almost used that instead. There was really no reason why I went with the dash tea thing, except that like, You know, at the end of the day, it's almost the same cuz ES build doesn't do type checking either.
+
+And they were, they were pretty similar for me in terms of like compilation times on this one line console file console, that log thing. But clearly I'm, I'm gonna be the, the last time sort of using Ts node and you're gonna be
+
+there like, wow, can you believe that's just embarrassing. Yeah.
+
+Everyone else is on ES build. so
+
+**Justin:** dash R flag passing to node is just to require something. So you can actually do this for like anything. If you need to ever need to require a global module, when you're running node, you can just node dash r and have it require something.
+
+**Colin:** do you need to have it locally installed or will it install it kind of for you NPX style
+
+**Justin:** You need to have it locally
+
+**Colin:** locally. Cool.
+
+**Justin:** Well,
+
+**Colin:** But yeah, the ES ES build runner, like you can just run it with NPX without having to install it globally. And I, I looked up like I Googled NPX ES build dash runner in quotes on Google. And there's only one person on the whole internet.
+
+Like it was literally one result on Google. I don't understand why this isn't like the go to you know, for just like recommendations on thees build runner docs, but they like really want you to install it globally. I don't understand
+
+**Justin:** I think that that thing you're saying is like, well, do the dash T flag to save a few seconds on running your script. Well, If you're running from Something from NPX, that's really, you're gonna have like more than three seconds for sure. to be able to execute
+
+**Colin:** the first time get outta here just once though. I don't know if that's actually coupled to where you are in the file system at the time. If you move to a different spot, does it re-download maybe yeah. Something to figure out before next episode of.
+
+**Andrew:** Okay. Well, I think that about wraps it up for this week's episode of dev tools. FM, thanks calling for coming on. This was a, a fun talk about some very complex type script topics. You are probably the, the biggest type script wizard that we've had. Come on here, cuz you each project that you do is just like crazy type script stuff.
+
+So, uh, thanks for coming on. Well,
+
+**Colin:** I certainly hope that it doesn't get more complex from here, cause I'm not sure my brain can take it, but thank you so much guys, this has been a blast!
+
+**Justin:** Thanks, Colin. That great.
+
+**Andrew:** That's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume podcasts, thanks for listening!
