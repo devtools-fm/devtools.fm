@@ -1,0 +1,437 @@
+---
+title: Daniel Stockman - Lerna
+youtube: https://www.youtube.com/watch?v=-J6RgvOEBHA
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10769139
+tags: technology, open source, programing, coding, burnout, lerna, monorepo
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Daniel Stockman the former maintainer of Lerna.
+In this episode we talk about he became the sole maintainer of the project, how he dealt with burnout, and that future of Lerna.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:03:11] Getting into Open Source
+[00:10:31] What is Lerna?
+[00:19:13] Managing Lerna
+[00:24:46] Dealing with Hard Times
+[00:32:45] Burnout
+[00:46:24] Passing the Torch
+[01:00:31] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Daniel:** How do you spot burnout coming? I don't think you can, and that's kind of the, uh, like, I wish you could. I really do. Um, I think, uh, empathy is important for others and for yourself because ultimately others can help, but you alone are the only one who can help you get out of the work through the burnout, like to not, not work through it survive it
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+**Justin:** everyone. Uh, our guest today is Daniel Stockman, uh, Daniel since like 2018ish you've been the primary maintainer of Lerna. Uh,
+
+I know you, you even started contributing to it a little bit before that. Uh,
+
+**Daniel:** yeah, 2016, I started contributing 2017 or so I became the maintainer.
+
+**Justin:** Gotcha. Gotcha. Gotcha. It's a long,
+
+a long legendary run , uh, which, uh, has, has recently come to a close as all good things do. Uh, and I'm, uh, excited to, to dig into this a little bit, but before we get into the story of Lerna and your contributions there, would you like to tell our guests anymore about yourself or our audience should I say.
+
+**Daniel:** Yeah. Um, well, I'm, it's funny. I, I, I just started a new job this week, so I've been doing this a lot this week. Uh I'm Daniel. Uh, I am the, uh, now former maintainer of lerna. Um, I was not the author. I'll mind you. Um, I, it's an unfortunate thing that I, I, no, it's not unfortunate. People say, yay, thanks for making lerna
+
+I'm like, yeah, I did, but I didn't, I, I, I came to it, uh, after I had gone to a V2 already, but, um, in many ways I did help make it. What is today? Um, I'm a front end dev by trade. Uh, Worked for a long time at Zillow. Um, I now work at convoy, uh, two great, uh, Seattle based, uh, startups. Well, they were startups when I joined.
+
+Zillow's a much bigger company now. Um, and yeah, I, uh, just, I really enjoy the front end. I, I like writing CLIs. I like no JS. Uh, I like karaoke. Um, and yeah, that's me. Oh. And also of course, podcast viewers can't see this in the background, but I also like to collect whiskey. I've got lots of bottles of single malt, scotch behind me all empty from several years of collecting, but yes.
+
+Um,
+
+**Andrew:** I, I can relate to you on most of those points except the karaoke one.
+
+**Daniel:** Ah, I, I, I, I was, I will submit that you just haven't found the right place yet.
+
+#### [00:03:11] Getting into Open Source
+
+**Andrew:** Very maybe, hopefully it's not just me. okay. Uh, so let's start off with talking about, uh, what experience did you have in open source before getting into lerna or was lerna your first, uh, real foray into it?
+
+Wow.
+
+**Daniel:** Um, yeah, I, I mean, so I've been doing, like I mentinodeed, no JS I've been involved in various communities in open source since probably around 2011 or so. Uh, first off it was like, uh, this, uh, front end framework called Y UI or the Yahoo user interface framework. Um, yeah, it's, OG. Um, they were, uh, really interesting because at the time corporations really didn't didn't know what to do with open source and Yahoo was one of the pioneers really, um, of, you know, integrating in into GitHub and, and, and all that.
+
+And it was really cool. I mean, I, I got to know a bunch of the, the contributors, um, which were all pretty much Yahoo employees, but, um, and yeah, so since then, it's been like, you know, on the front end we have increasingly been using NPM for everything. And pretty much NPM lives all in GitHub, um, for the source that is, and yeah, so like I wrote a few random things.
+
+Um, I mostly CLI based stuff, uh, a couple tools that I was using at Zillow at the time. And then, yeah, uh, I lerna was by far the biggest thing I've ever been involved in, um, directly on GitHub or in open source generally. So I guess I could say I, I had experience in open source before getting involved with lerna.
+
+Um, but it was a, a completely different nature. Like I, I was contributing like, you know, small patches to small projects or releasing my own small used by basically nobody projects. Um, and yeah, that's pretty much where I was. I at the start.
+
+**Justin:** So maybe we can dig into, uh, the start of the journey. Like, how did you, how did you stumble across lerna? How did you get involved? What was the sort of story there?
+
+**Daniel:** Yeah. Um, so a lot of things around Lerna really do connect to where I was working at the time, which is Zillow. Um, and so Zillow was big in, I mean, they're, they built a website, so obviously they're, they're big into the front end. Um, we had started using react in 2015, or at least I had started using react in 2015, um, and very quickly, um, we found that we wanted to basically build, like, we had many product teams at Zillow.
+
+We wanted to collaborate on one central big umbrella project. Um, and so we started exploring, well, how do we do that? And I was like, I think we should use NPM packages because they're pretty cool. And they're easy to like share and manage versions and, and this, that, and the other thing, um, and, uh, Around that same time, because it quickly became a question of, well, okay.
+
+Yeah. NPM packages, but then what do, how do we , you know, how do we do this? How do we organize this? And it was like a billion different repos with one pet. No, that's not gonna work. Um, so I started exploring, um, this new fangled thing called they called the Monte repos. Um, and I guess just clarify, when I say monorepo, I generally mean a collection of NPM packages, uh, all in one repository, which is contrasting with the traditional pattern of one package for repo.
+
+Um, there is a different concept of monorepo, which is like the way that, uh, say a Google or a Facebook, uh, might consider a monorepo being a monolithic repository. Like the only one they use with a, you know, huge tree of nightmarish proportions that you usually only ever work on one small sub slice and they have lots of dedicated tooling.
+
+Well, um, I'm talking about the more smaller in some cases, but, uh, smaller scope in any, in any case, uh, concept of a single repository for lots of NPM packages, um, generally as, and yeah, so, um, that's where I've kind of gotten to lerna and funnily enough, um, I found lerna, I mean, cuz they had, it had been, um, announced basically like the summer, so sorry I got into it the fall of 2016.
+
+I wanna say they had just released it that summer, uh, like live on stage. Like I think Sebastian did like a, you know, get commit push or whatever on stage, um, or npm publish, whatever. Uh, and, and so that, that was the extraction, the initial version. Um, I got to it when it was already V twoish. Um, and uh, funnily enough, I also got to it when it had suffered its first, uh, minor fork, um, by, uh, it was called ACEI, which is a really deep cut because, um, it's the name of a town in Greece that's like near Lerna, the Lernaen Hydra being the source of this, um, anyway, Greek, um, places, uh, anyway, uh, the fork eventually got merged back in. It was a misunderstanding things happen. Um, but I was involved at the, see me and as a, as a result of that merge, I became part of lerna.
+
+Um, and so it was pretty cool. I mean, I, I immediately was like, yeah, this is pretty cool. We, this could solve our problems really well at Zillow. Um, and just guy kept going, uh, it, because it was relatively early in the history, it was very, it was, it was still a single code base. It was, it, it wasn't the, the giant explosion of packages you see today.
+
+Um, so it was, you know, it was pretty tractable. I mean, I, I got my head around it. It was, you know, It was, it was a slightly different coding style, but, you know, Hey, that's something you get used to. That's how I got involved and how I became the sole maintainer is basically, well, uh, over time, uh, folks got busy or, you know, found other things to do or, you know, like it like happens in open source.
+
+And I be, and I be, I mean, I persisted because we were Zillow was really like, we, we, we, um, invested in it. It became the backbone of like, uh, one of the, one of the two biggest, like one of the two biggest pages on Zillow, uh, which is the home details page. Like the contrast, like the search, the map where you search your stuff, you find homes, you click on one of them.
+
+That's the home detail page. Um, It integrated like upwards of a dozen different product, you know, different, different slices of it, the mortgage team, the, the, the comparative homes, like a whole bunch of stuff. Um, the price history, and it was really cool. I was lucky enough to have Zillow, um, basically subsidize me, um, and help, you know, me maintain, devote pretty close to, I mean, I was, I, for a while in 2017, I was arguably full time on, on Lerna.
+
+Um, I would not have had enough bandwidth to do as much as I did that year, otherwise. Um, but you know, that's, uh, transient, that's a transient thing because at a certain point, uh, It's, you know, like feature complete, mostly done. So, I mean, uh, and you kind of, I different job responsibilities start to pull you away and, um, you know, that's, that's kind of what happened.
+
+#### [00:10:31] What is Lerna?
+
+**Justin:** Maybe before we go too much further, we should probably start with this. But for those who are listening, you did a great job of like explaining the type of mono repos that, that Lerna targets. But we haven't really talked about like, what Lerna is itself. We just sort of inferred. Uh, but if you had to describe Lerna to someone who was just like hearing about it for the first time, how would you describe it and its responsibilities?
+
+**Daniel:** oh, it's a command line tool for managing multiple NPM packages in a single repository, also known as a monorepo. Um, And that management extends from, uh, what we call bootstrapping, which is like installing for every all, any, all, all of those, um, packages. Uh, we have a script runner, uh, shell executor and, uh, the most important parts, versioning and publishing.
+
+Yeah, it's pretty, that's the elevator pitch basically.
+
+**Justin:** Oh, Yeah,
+
+**Andrew:** I see, I see a lot of people get confused about what the different tools do. Uh, Lerna was definitely an inspiration for the field, but like even in those threads where, uh, people were like, where's the maintainer? Everybody's like, oh, I'm just gonna switch to NX. It's like, well, that's not really the whole picture.
+
+**Daniel:** yeah. I mean, and, and, you know, over time, I, so as a relative newbie, uh, maintainer, I will admit to saying yes, more than I should have, um, in terms of like feature requests and stuff like that. Uh, and even some of the features that I added. I now regret, um, there are certain sub commands that should not be there.
+
+um, and there are some, there are luckily some sub commands that have been completely replaced by like builtin package manager functionality. That's really cool. That's but the one part, I think, and I think this is judging by the level of the number of tests that I wrote for up this particular area, the versioning and publishing parts are by far the most complicated and still the most.
+
+Um, well, they, they aren't covered by, uh, uh, modern package managers yet. Now I have like a while back, I was talking to the NPM folks and that they were soliciting feedback for, for their workspaces implementation. And I told them straight up, you should not devote any effort to versioning in your V1. Like you should stay far away.
+
+It's it's, it's a fraught minefield. Um, and, uh, that's, I, they, they, they generally followed my advice. I, I think they still have plans at some point, but it's not something that, because there's so many different variations and, and, and, and, and there's existing tools as well as, too, like change sets from Atlassian or rush stack. I mean, there, there there's like, there are many different approaches to it now. Um, and, and luckily lerna still works. I mean, lerna version of publish still works. Uh, you might get a few angry audit warnings, but it's a command line tool. Why like, if you're bundling lerna into production, that would expose it to, you know, supply chain.
+
+There you go. These attack vectors. I'm like you have other problems. um, . Yeah. So, uh, yeah, it's pretty much that, Yeah, like lerna create, please don't use that. If I just might say like, don't use, lerna create, it was a terrible idea of mine and, um, it was only useful really for internal Zillow stuff, but I never really said that before.
+
+Whoops um, please don't use it. um, there, because it it's it's it's it was an issue of, um, like separation of concerns. Like that was one of the problems with lerna create is that yes, it worked, but it was such a limited feature that is way outside of the scope of what, I mean, it, it's not managing packages in ma repo it's it's templating a package that that's a kind a separate, you know, responsibility.
+
+Uh, I should have left well enough alone and, and just used one of the many templating engines out there. I can think of like Yeoman They're out there and they do way better job than lerna ever will because that's not lerna's job.
+
+Um, and that's that's, that was the one I keep thinking about. Oh. And luckily, uh, lerna ad is completely removed, um, or superseded by, uh, modern package manager, uh, workspace. Like it, it, you should not really need to use, lerna add, unless it, I mean, if it floats or boat. Cool. But, uh, you should probably explore, um, the built in functionality of, uh, yarn, workspaces, NPM, workspaces pnpm workspaces. pnpm is super cool. I like pnpm a lot.
+
+When I was the maintainer, I didn't say no enough and it's very hard to say no respectfully. I mean, like, not like I'm, you know, Vicious about it, but, you know, like recognizing my limitations as an individual. Maintaining a very complicated project, every additional option is just like, it's not just, it, it's not a linear increase in complexity.
+
+It's like a geometric it's like, it, it it's. Yeah. And for a single maintainer, I could have done very much better at, you know, um, being circumspect about the options and things that I accepted. Um, but that's what you know, is what it is you learn, live and learn. I'm happy that it, you know, was around and, you know, able to facilitate so much growth.
+
+Um, certainly I'm also, I am really glad that, you know, tools like NX and turbo repo, and, uh, that the various, uh, package manager implementations have, have matured so much. My dream is that one day we won't need lerna anymore. Um, I mean it, luckily with the, you know, narwals announcement, uh, we will, we'll still have a vibrant lerna to use in the future.
+
+I've always held that hope that, that the package managers, um, would, you know, eventually take the majority of the lion share of it. And the remainder would probably be, you know, special purpose one off tools, really. I mean, if you really want lerna create, well, here's a here's a single use CLI for that, you know, that sort of thing.
+
+**Justin:** I think that's a, it's a part of code that we we miss sometimes, but it's actually an important, it's an important milestone. It's when the code you write is no longer necessary because the ecosystem around it has matured enough that you don't need it. That's actually a great place to be. And I think as an open source maintainer, that's the ideal outcome because, you know, like intra P totally.
+
+exists and maintaining things takes energy and you can't do it forever. Um,
+
+**Daniel:** Like just imagine, I mean, jquery, for example, several, the APIs of jquery became part of the web standard. And that was great. Cause so many, there's so much more energy available to maintain browsers because they're actual companies and things. Whereas the folks behind jquery as brilliant as they are just are people they're only individuals.
+
+That was the ideal case for, for jquery which coincidentally jquery is still by far the biggest NPM package, you know, deployed across websites, you know, worldwide. Um, which is funny when you think about it, it's like we get, we get fixated on like vue or react or angular.
+
+But they're the reality is they're not the majority . Um, so that's interesting.
+
+**Andrew:** I, I, I like that comparison, cuz like lerna really like set the stage. Like here we solved the base set of problems and it then ex exposed all these other problems. It was like, we got the idea in people's heads and then they just ran with it. Like when I was starting out using Lerna like years and years ago, uh, lerna bootstrap was like the, the hurdle of getting over.
+
+But like lerna bootstrap was really just saying like, this is the thing that needs to happen in your monorepo install and then yarn and all the other tools kind of like went, oh, let's fill the void and like make this a good experience. The same can be said of like lerna exec, going to like turbo repo and ultra runner and all those other things.
+
+The one place where really, I think lerna still is like the shining example, is that, is that publishing process? Uh, I don't know if you know, but I also manage a tool called auto and auto is like heavily built on Lerna for our monorepo publishing experience. So like, uh I literally had people messaging me like going, Hey, is, is, is auto gonna need to rewrite everything?
+
+I'm like, no, no, nah, nah. It's cool. It's cool. Somebody's gonna fork it.
+
+#### [00:19:13] Managing Lerna
+
+**Andrew:** but going back to what you said about, uh, like, like saying no, like that's a such, such a common problem. Like me, myself with auto, I experience that. Whereas like you're a newbie maintainer and you're like, oh yeah, every feature it's a cool feature.
+
+Let's let's have it. You wanna, you wanna contribute. Sure. But as time goes on you, you slowly realize like every time you say yes is more and more complexity, it's, it's more issues down the line. Like, just because they contributed the code. Doesn't mean they're gonna maintain that code. It now becomes your responsibility.
+
+**Daniel:** Yeah. Yeah, totally. And I mean, in another, in another way of thinking about it, um, and it kind of dovetails back to like my actual day job, which is feature development on websites. Um, it's a very rare open source project that has any concept of product management or product vision, or, you know, like a roadmap is, is cool, but it doesn't, you know, it, it, it's not really quite the same thing.
+
+Um, and I, I, I felt that very acutely over the years at Lerna, where we had a pretty strong idea of what it was, what it was like, but the elevator pitch was pretty compact. But within that, it lacked a lot of definition early. It, it lacked enough definition that I could point like, so when I was like, I kept saying yes to things, because.
+
+I didn't have a strong rubric to like kind of judge is this part of the, the mission is, is this serving the users that kind of, that kind of questioning that could have led me to saying no earlier on. And I guess I'm not saying that every project has to have something like that, but you know, at least some conception of like what the problem space is, what your dependencies or what your conceptual dependencies are not literal ones, but like, and the constraints like, um, because it's, it's very true that, you know, I mean, okay.
+
+In one sense, it's true that software can do anything if you spend enough time to build it. Right. But maybe it shouldn't um, you know, that's, that's the, the kind of angle I kind of come from now is that, is that, you know, uh, well written tools have a very specific use case. Like they are targeted ideally very, very narrowly.
+
+Like they, on a thing, like I am the best runner of scripts in a monorepo. I mean, it's a little broad than that, but any, anything beyond that you have to have, like, I guess the, the, the confidence or the strength or the self care to say no, because it's not gonna ultimately help. Right. Um, and if, if any, if anything, I say that was one of the biggest lessons I learned from maintaining lerna was that, uh, for all the reasons I've been discussing saying no is important, it's very hard, but it's also important.
+
+**Andrew:** We talked a about some of the bad stuff so far, but were there some things about the lerna project that kept you going, what was, what was the good stuff like? Did you see some cool projects? Like
+
+**Daniel:** Oh man. I, I still get a little tiny buzz when I see a lerna JSON in some open source project. I mean, not gonna lie, but. I mean, of course now it's kind of accompanied like, oh, you poor thing. Why are you still using this? But, but, but I don't want that's, that's not to be dismissive at all. I'm just saying there are better options except maybe for the publishing part, but, um, yeah, that's probably gonna change soon, which is the exciting thing.
+
+Um, I hope I, I, I have a pretty good guess that it's gonna improve for the better. Um, but yeah, so, um, and other parts, honestly, um, getting to work with so many different people across so many different companies, different, you know, slices of life, like a contributor comes to your project and, you know, you get to see a different side of somebody or somebody new, you know, it's like, wow, this is so cool.
+
+Like, and some of the contributors to lerna just blew me away. Like I was. A couple of them. I, I was on, I was gonna like, Hey, can you join the project right now? I, I, I don't even need to see the rest of your code just please, please. No, they, they were too busy, but, you know, , I, I was really grateful for those opportunities to, to meet such interesting, you know, helpful, brilliant folks.
+
+And, uh, I think also, um, meeting a bunch of people in the JavaScript community, um, was another big plus, uh, right around, um, the time of, uh, the licensing debacle, um, which in many ways you, you could probably mark as the beginning of the end of my, um, frequent contributions. Um, but it was also the beginning in many ways of a broader, like a broader, uh, interaction with the JavaScript community.
+
+Like the, the no JS, like, uh, Tooling committee. And even some of like the court, the technical, uh, steering committee folks. It was so cool for me to have the opportunity to, to just become a part of things bigger than me.
+
+Once I got things humming, like in that first year change that I was working on lerna, it was actually a pretty cool buzz to be able to release something. And they'd be like, Hey, look at that. I did a thing. And then people were like, yay. And that's, that's a cool cycle.
+
+#### [00:24:46] Dealing with Hard Times
+
+**Justin:** This is something that I wanted to ask about and I wanna, I wanna be very mindful of this question, uh, and you can definitely feel free, uh, to decline so most if, if maintainers are fortunate, they never go through a big source of drama. In their maintenance of a project, you know, they, hopefully it just is a thing that people install and forget about and maybe makes a bug sometimes.
+
+And maybe you'll get someone who's cranky every now and again, but sometimes things happen and are, you know, very contentious moments come up. Um, so I, I'm not, I don't really want us to talk about the, the sort of licensing issue that came up in detail. But I, I'm curious just to hear a little bit, just from your perspective about like, how you're, how you dealt with that.
+
+Not from like an actual, like how you responded, but like from a personal level, it's like, how did you, how did you get through that? And like, did you learn any lessons from that event that you can like share to people and.
+
+**Daniel:** Yeah. Um, yeah, I mean, I, and you know, it's with the benefit of hindsight, it's been a few years now, uh, I've been through therapy which I sounds like I'm joking. I'm actually not. Uh, and I don't really want to, I'm sorry about joking about that. Cuz it is pretty serious. Uh, therapy for me has been a very, and, and not just for this most recent thing, uh, over time, it's kind of like.
+
+I view it as a different form of exercise. You know, you, you work out, you build strength. This is just one way of doing it, but for your brain, um, and, uh, cuz anyway, I just hope that's clear because I think it's very important to, it sounds really wishy washy, but get in touch with yourself to understand what you need.
+
+Like, you can't know what you need until you know yourself, you can't know yourself and, and I'm saying it's easier for someone who's, you know, a professional can help you get there much quicker. Not say it's not impossible for individuals to find themselves on their own. It's just way quicker. When you, when you have someone to help you, um, who's, you know, trained and, and all those other good things.
+
+Um, so that being said, um, yeah, one of the things, I mean, like I said, that event was the trigger for kind of like. that was really, it was a trigger it was, uh, I'm not sure if I don't wanna say that everyone should spend a, to a day being the main character of Twitter, but cuz that would just be terrible and it would take a long time.
+
+But anyway, um, so, but in a similar vein, like, like when I was in like my early twenties, I worked in retail. And I worked several Christmases in a row and I always now feel from that experience, maybe everyone should work a retail Christmas just to get that experience, to get them a perspective on what it's like, you know?
+
+Uh, uh, and so I don't wish main character on Twitter, on anybody, but what it, the perspective it gave me, and this is speaking as a very privileged white heterosexual man. I did not experience a, I let's just say my experience was very different than many, uh, uh, other other, uh, uh, intersectional, uh, slices, uh, women, minorities.
+
+Um, they have a much worse. Now that being said, that sounds weird. That sounds bad. Um, I guess what I'm trying to say is that it's a similar reason that, uh, that a solo maintainer ship, uh didn't or is isn't sustainable, when you're the main character on Twitter, you have no recourse, you have no way of explaining yourself that will actually improve things now.
+
+Um, what does that mean? Uh, like how can you deal with, I mean, I think it means mostly in the future, when you see somebody going through that you'll have. A bit of empathy for them, regardless of the reason they did that. They're in that situation. Um, you'll have some empathy, no matter what. Now the total amount of empathy will probably vary based on the context of how they became the main character.
+
+Certainly don't I don't wanna say that you have to give everyone a like, get outta jail free card. Um, but I, I would kind of hope that, um, if there's anything you gain from my experience has in that real relative to others, main character, relatively minor experience is that a small bit of empathy goes a long way.
+
+Um, and yeah. Uh, but also if you're ever in the situation, um, take it from me. Maybe it'll help. Maybe it won't, but anything you try to explain while it's happening will be either ignored, misconstrued or you'll react poorly/ you'll react emotionally, which is like, I mean, duh you're, , you're having this, you know, emotional existential crisis because the entire internet has fall fallen on your head.
+
+And the only way you can react is emotionally. Um, I still think about it to this day. Honestly, I, I don't fixate it on it so much anymore, but I still think about it every now and again. Um, it, it really, it, it changes you and just like, I mean, to be honest, the maintaining a large project changes you main, you know, to adjusting, to, to dealing with 50 or a hundred different, you know, people's requests daily or whatever that, that changes you in, in ways that are very noticeable.
+
+The tactical reality of being a main character on Twitter is that you kind of have to just let it work itself out. There's really nothing you can do until your life settles down until your sensory, you know, sensory inputs are back to close to baseline because otherwise you're in this constant fight or flight mode and it's just, it does nothing good happens there.
+
+Um, and it's at that point, I mean, the work's not done after, after things die down, I would say, um, you still have, in my case, I still had responsibilities to the community. I still had. I mean, I, I ultimately, you know, did that. I, I, I reconsidered, I reverted, I issued an apology, um, and like a real apology saying like, I am sorry.
+
+And, and, and. These are the steps I'm taking to, you know, make better or make good. Um, because I think that's important and at the same, it's like, even then, I mean, even then, I'm pretty sure there's still people who think I'm terrible and there's nothing you can do about that. You kind of have to just, if you're in any way significant or like, if, if, if your profile has risen enough where people, you know, see you, or like, I don't know, I wouldn't say recognized in the street, but that, that kind of like, uh, oh gosh, she's the maintainer of lerna.
+
+I mean, like I'm like, yeah, yeah. You're gonna have to deal with that. It's this kind of human nature. Um,
+
+**Justin:** yeah.
+
+#### [00:32:45] Burnout
+
+**Daniel:** And burnout also, um, to tie back to burnout, um, also is. In some ways I read it somewhere on Twitter. The difference between your goals and what you're able to accomplish in whatever context you're in. Like, um, and many number of things can prevent you from doing that such as organizational imperatives or a bad boss, or just maybe being in the wrong job or the wrong whatever, and your body just kind of, you keep trying, I mean, everyone wants to do the best they can.
+
+I don't. I mean, if they're doing a job, um, but it's like you can't, and that just digs at you, like at a core level. Um, so. Yeah. And that really, that kind of, so as I had this initial drop from that, uh, licensing experience, um, you know, my, my job, my day job tend started to get more emphasis on like, you know, product development.
+
+There was, there was more pressure to do less, less work on lerna. Um, and initially it was that, that wasn't, that that pressure wasn't from a, like a negative place. It was, it was somebody recognizing that that work was very, um, emotionally damaging. It, it, it, it was, you know, I hesitate say emotionally vampiric you know, like it was, it was draining.
+
+Um, and they were help. They were trying to help me refocus on the stuff that I did have more control, you know, more potential to, to contribute to better. And I mean, and I, so I understand that motivation, unfortunately for me, um, that was only really, it wasn't addressing the deeper issues. It was just kind of, uh, you know, treat the symptoms type thing.
+
+Um, so my burnout did not improve in, in a sense it got worse because of that, because I felt more guilt, uh, for not being able to contribute as much as I wanted to. Um, and then that guilt, it just, it just compounds, right? I mean, it's, it it's like interest, it compounds and you get to a place where it's so much guilt.
+
+It actually not quite physically, but it feels certainly like a physical barrier to actually doing it to writing anything, to addressing any issues. Um, the one spur of activity I had, uh, just over a year ago in, in January 20, 20, 21, the only reason I had that was because the level of screeching from the audit warnings coincided with a short break between jobs, where I had some head space to like kind of fart around.
+
+And, um, I even said, I think I mentioned at the time I was, I was just farting around with stuff. It, you know, gave me a little solace while I was dealing with some other stuff. Um, but that wasn't like a recipe for actually surviving or, or for, for getting, you know, getting past the burnout. Um, cuz that's just, it was just again, mitigating the symptoms. It wasn't actually getting at the root causes.
+
+How do you spot burnout coming? I don't think you can, and that's kind of the, uh, like, I wish you could. I really do. Um, I think, uh, empathy is important for others and for yourself because ultimately others can help, but you alone are the only one who can help you get out of the work through the burnout, like to not, not work through it.
+
+Survive it , um, because more work rarely in my experience helps burn out, but, um, there is however, the potential of the right work helping if you find yourself burnt out. Um, and you, if, if you're, if you find yourself there, you have to, you have to acknowledge it. You have to just be like, yeah, that's where I am.
+
+Um, finding things that you value, like things, things that you do you want to do that also, I mean, has this fringe benefit of being con you know, beneficial to society are beneficial to yourself, or, you know, others that you love. That I think is one of the strongest ways to get to a place where you feel better.
+
+Um, because it, and, and, and, and maybe that is just, you know, taking some time out, uh, having. Yeah. The extreme privilege of having these breaks out, you know, between jobs. Um, it did help. And, and so then as long as you've gotten yourself out of the negative environment that caused, or the negative patterns that, that cause burnout in the first place, um, then you just have to be patient because to a certain degree, time is what heals burnout.
+
+Um, and it doesn't have a schedule. Um, you can't, you know, you can try to graph it, but it would look pretty weird. Um, if I, yeah, I, I would just, it just, it takes take time and you have to be patient with yourself. Um, and certainly the last couple years in society at large has not helped anything in terms of getting over burnout.
+
+but leaving that whole thing aside, um, it does, it takes time. And I think the, the, the general message is that you will get better eventually. Um, and that is probably the best hope I can offer is that we don't know, we don't know a lot of things about burnout, actually. I think get, uh, learning about others' experiences, um, listening to what they have to say really helps.
+
+Um, just, and, and exposing yourselves to O to other points of view, like points of view outside of your sphere, outside of, uh, however you identify, I think is also valuable because it gives you just a much more richer, richer tapestry of life. I mean, to, to kind of not to compare yourself to others, but to just kind of gain new insights into like, oh, that's what that is.
+
+Or. That sounds like that. And, and, and, uh, that kind of sympathy part, I don't know it words. Um, yeah. um, but yeah, primarily empathy, patience and time. Uh
+
+**Justin:** Uh, so I went through a bout of, of burnout, uh, what, 20, 20, 20, 21. Um, and a lot of what you said resonates. I do think that like, burnout can happen for a lot of different reasons. Um, my, the way that I've sort of framed it to myself, it's like where your, where your effort is misaligned with your emotion or you're emotion is misaligned with your effort, um, and a big event that causes some sort of trauma. So like this license thing is definitely a, a point of trauma, something that causes trauma. And then you're sort of forced to go back and spend time there. Like, especially if you're doing something where you're like working, you know, you're working around your source of trauma is, is a like key, like causation of burnout.
+
+You know, if, if it's, if it's something where you have to revisit that often and you don't have time to process it, then it can be, um, rough. I will totally second your, uh, your recommendation of, of finding a therapist is an excellent thing to do. Even, even if you're not burnout , you should probably find a therapist because it's like, you know, these things are, these things definitely. happen over time.
+
+And generally they happen in the most, like in the worst possible times, you know, in times of like high stress and you've got a lot of stuff going on your life and then suddenly you. Cope or function. Um, so, you know, while you have the mental energy to form yourself a better baseline, it's, it's best to go ahead and, and begin that journey.
+
+Um, and take it for me. If you're feeling really burned out and life is hard and you just don't want to do anything or think about anything. The search for a therapist sucks. it is not fun.
+
+**Daniel:** Oh, God. Yeah, no, it is. Yeah. I, I would say, um, when you're searching for a therapist, uh, I would use every tool available to you re you know, like if your friends offer to do stuff for you, you say yes, yes, please. And then lean on them as hard as you can. Um, because your, your, your close friends are doing it because they love you.
+
+And that's something that, you know, you might feel guilty about, but you shouldn't because, um, you need. The fact of the matter is in most cases, when you're in that situation, you need help. And, and not just in the traditional way of, you know, help and it's, it's like, yeah, parts there, there are messages in our society that try to tell us to convince us that we don't need help.
+
+Um, and they're very strong and it's just something like, from my own experience experience with several people, I've met several people, several friends, it's just like, it's, it's necessary. And like you're saying it, getting a therapist is just, it helps not just when you're in the, you know, the bad times, but normal times too, like having someone who can give you a structured insight into how your brain is working at any given time, super powerful, um, Helping you build those habits, building possible, like habits, you can actually change your habits.
+
+Did you know that , um, it takes effort. It's hard, but having someone help guide you, someone ha having someone help give you these little tips and tricks that like are, you know, based in actual medical science, super helpful. Uh, it turns out and , and so just like if you were to remodel your, your, your bathroom, for example, you would hire a contractor because, I mean, unless you're like Bob Vila or whatever, um, you probably don't have the skills to do the whole thing yourself.
+
+Um, and even if you did, you can't do it by yourself because there are things like toilets and bathtubs that are really heavy. Um, so anyway, what I'm getting at is, um, you shouldn't feel any more stigma about getting a, a therapist than, than you would hiring a contractor. I mean, like we did that all, we hire contractors all the time.
+
+We don't feel bad about it. We, we hire plumbers all the time. They're great. Plumbers are awesome. I love plumbers, plumbers. They, they do . They do important jobs. Um, and so do therapists therapists do important jobs too. And that is one of my other messages. We should hire more therapists to plum our depths.
+
+**Justin:** Yeah,
+
+**Daniel:** Ha.
+
+**Andrew:** An
+
+**Justin:** nice. One, one important lesson for my journey that I definitely would share that I try to share with everybody is just as important as it is to find a therapist that is a relationship that you are very vulnerable in. If that therapist is not right for you find a different therapist, uh, because just like a great therapist can help you tremendously.
+
+A bad therapist can harm you greatly. If we're gonna go to the contractor example, a great contractor can build you a beautiful bathroom and a bad contractor can leave you with problems that you have to work around for years. So,
+
+**Daniel:** I can leave you with a poop Geer
+
+**Justin:** yeah. yeah. for sure. Definitely. Uh, definitely take the time to find somebody who works for you.
+
+**Daniel:** right. I, we should, we should form a bingo card right. In the middle's poop geyser.
+
+**Justin:** I didn't remember.
+
+**Daniel:** but yeah, so no, that, and I that's totally true. I, and I think I, I kind of considered that part of the whole process, the, the really terrible, long, painful process of finding a therapist is part of that, you know, are they right for you type thing?
+
+It's like, you, you can probably find someone to talk to in that guise relatively easy, but is, is it the right person for you? Are, are, you know, it doesn't lead in the right direction. That that's the real trick. And that's the thing that takes time. Um, and yeah, so I would, yeah, totally agree. It's got you, have, you have to have the right therapist as well.
+
+Um, not just anyone , um, and our, yeah, it's, it's certainly not helped by our whole medical system, uh, being what it is, uh, definitely makes everything 10 times harder than it should be, but we somehow muddled through.
+
+#### [00:46:24] Passing the Torch
+
+**Andrew:** So we've, we've looked at the past, mainly in this episode, but let's look to the future a little bit. So for a while there, it looked like Lerna itself was going to just kind of kind of die. Nobody was gonna maintain it. Um, it seemed like you had an initial hesitance to like passing on stewardship of the project to somebody.
+
+But, uh, recently I think yesterday you announced that nrwl would be taking over the reins and helming the project. So why, why were you initially hesitant to, to hand over those reins? And what about nrwl changed that.
+
+**Daniel:** Yeah, well, I mean, I was initially hesitant for, I mean, any number of, uh, supply chain attacks over the past few years in the NPM ecosystem, um, you know, long suffering maintainers, very smart people get social engineered into handing over the credentials to a Bitcoin minor or whatever. Um, and I definitely, I, I didn't want that to happen to me.
+
+So I get really paranoid about that and on the other. And also, so I guess I can take a step back and say one of my failings as a, as a, as a maintainer of Lerna was that I did not cultivate. Uh, outside contributors enough, I didn't build a team. I was a solo maintainer for years. I should not have been in retrospect.
+
+I, but that's what happens. Like, you know, I, I, so if I would do it all over again, I would spend a lot more energy at making it not a one man shop, but being part of a team being, you know, a so that we can share the burden. Now, one of the reasons you do that I know now is that you don't have to worry so much about, you know, finding a, a survivor, so to speak or, you know, passing on, you know, to, to passing on the project to another, uh, steward. Happens less when you have a larger team.
+
+But, um, that being said, I mean, there's the old, uh, like XKCD comic of like the, the one programmer in, in, in Nebraska who own, you know, maintains this tiny little library that like entire internet is built on. um, it resonated a lot with me. , uh, not to say that I'm anywhere near like that level of like built on the, in the internet, on me, but like it, that style of like, well, what if I mess up?
+
+What if I pick the wrong person? What if I doom the project by doing that? And, but it it's like the cost of inaction is almost the same. It's like I would doom the project. I would, you know, make it, you know, uh, slowly die and it's quite a pickle to be in. I gotta say, um, not remotely on any comparison to many other forms and sources of trauma, but like in the context of open source maintainer, um, it is probably one, I would say one of the higher or bigger sources of stress for most solo or small group maintainers, is that succession plan, like what happens when you move on? What happens when you can't do it anymore? I mean like any number of reasons. Um, and, uh, I was really glad that nrwl reached out to me a couple weeks ago. Um, cuz I, I, I was already kind of tangentially familiar with nrwl
+
+um, they wrote the, uh, there's a website called monorepo.tools, which I think is just an excellent, excellent resource describing what monorepos are, how they work, what, you know, like even down to like the nitty gritty of the decision making process, like what kind of monorepo do you want? Um, and I mean, yeah, they talk about NX
+
+why wouldn't they NX is a great tool. Um, they even have comparisons between like a lot of different things, like, you know, um, that, that was really cool. Um, And so already I've got, I, I had a pretty high estimation of them as, you know, as open source contributors. Cause I, I mean, as you know, as, and, and I, I got to talk with, uh, Jeff Cross, uh, and just like, I got a really great insight into the company itself, which is like, you know, very, you know, devoted to open source.
+
+Like they, yes, they make money because they're a company that's the whole point. But alongside that, they are super great about, um, nurturing community in open source. They, um, they do a good job of, uh, of, uh, publishing roadmaps and, and soliciting feedback. And, and, and like all the things that I felt guilty about not doing there, they were doing it and, you know, making a sustainable business out of it, um, really resonated with me because I think that last part of the sentence, making a sustainable business out of it is really important. Um, because it's open source really, um, sustainability wise, uh, is very difficult. It's not impossible, but it is very difficult outside of a more like traditional corporate sponsorship model. Um, and corporate sponsorship doesn't mean literally like, you know, decals on your hood, like NASCAR, but like, I mean, for example, when I was working on Lerna almost full time, Zillow was the sponsor of Lerna.
+
+I mean, it was implicit at the time, but that's kind of the reality I've noticed most. And I, I will say Babel being one of the exceptions, Babel is like super popular and super successful, largely, I mean, due to community efforts, but I think a lot of it rests on Henry Zu solves. Um, Henry is just amazing.
+
+Example of a maintainer. If more people learned about him and try and emulated him, I think we be better off as, as a, a, as a culture. Um, but you know, not everyone can be babel , it's just not everyone can be, uh, uh, react Facebook or, you know, it, not everyone has Google or, or Amazon behind them. So, um, to find some, some, an entity, like nrwl the individuals that are made up, you know, Jeff and Yuri and, uh, many others that they haven't met yet.
+
+Um, that was such a strong signal to me that I felt really comfortable handing over the, the, you know, various, you know, ownerships and tokens and whatever. Um, just because I felt that, um, They had really good alignment with the goals of lerna like their, their corporate or, you know, their company goals were aligned with the goals of lerna.
+
+Um, and you know, it, like, they'll probably add a couple pointers to NX in various appropriate places in the docs. I think that's great because the more people are exposed to more different solutions. I think the better choices we can all make. Um, I, yeah, would certainly not. If you were comparing lerna, uh, to, for any number of reasons, like lerna bootstrap, it can't hold a hold.
+
+A candle took to yarn or, or, or NPMs works or, or PM P PM's workspaces. I mean like tho those are super great and fast and, and, and robust. And they're all like in, in, in the lock file natively now. And, uh, Yeah, nobody should be using, lerna bootstrap today. Um, just put it, put it out there. Uh, you really, unless you are stuck in 2017 land, um, for some weird reason, you shouldn't be using the lerna bootstrap, um, because things are so much better now.
+
+Um, and yeah, but that was really for it, for me, was that, uh, first of all, I mean, it was, it was, it was a company, it was a healthy company. They had a strong ethos of, you know, open source participation, open source, um, leadership. Uh, I felt that, and the missions really aligned. Um, so that kind of, that was my thought process there.
+
+Um, I could couldn't have really chosen a better partner really. I mean, I, I wanna just speak one moment to that. All the people who did reach out with offers of, of maintainer ship, I really appreciate them. And I don't wanna make it sound like, I think you were some weirdo who was gonna inject Bitcoin minor, but also it was, I hope you understand the amount of pressure I was putting myself under the, the, the fear that I had of being like another headline was so great that I think it really, it took a really ideal situation, like nrwl to, to kind of break through that, honestly.
+
+Um, and so everyone who did offer, I again really appreciate, and I, I, yeah, I think it speaks very highly of people's motivations that they were willing to, to, to, to, to, to volunteer. I, I really, yeah. Do appreciate that. And I think there are several other projects I'm sure that everyone uses every day that could benefit from more participation, um, and even lerna. I mean, if you want to, like, there's nothing, I'm pretty certain that nrwl gonna facilitate, uh, you know, community involvement, like on an ongoing basis. I mean, like getting involved in the issues, getting involved in discussions, um, contributing stuff, you know, contribute, interacting, or like, um, giving feedback on their, on their roadmap that they're gonna drop soon.
+
+I mean, like that would be super helpful to have just like more voices that they can integrate into that, that product, vision, I think will just benefit everyone long term. Um, cuz it's hard to do. It's hard to do. Uh, and, and just, you know, having, I think them also having, um, More people with a, they, they have a very complimentary like, uh, uh, skill set.
+
+Like they've got the, the architect side, they've got the tool builders, but they've also got the devrel folks and they've got the, the, you know, the, the, just all the tools that I never had. And I was, I was so glad that a company like nrwl exists and is able to both benefit the community and benefit themselves.
+
+I mean, that's, that's, you know, the win-win ideal, um, in my mind.
+
+**Andrew:** One last quick question, before we get onto tool tips, uh, do you plan on publishing more packages? Are you gonna make more tools or has this experience ma made you made you very hesitant to put new things out there?
+
+**Daniel:** I certainly don't expect to become the lead maintainer of a project, the size of lerna again, and mostly because I think if I ever get involved with a project anywhere approaching that size in the future, I'm going to have all these lessons that I learned previously to, you know, help kind of avert that the ending or at least the bad parts of the ending.
+
+Anyway, uh, it wouldn't just be me, so it would be a different experience entirely. Um, but, uh, in the larger sense, I, I expect to publish more things. Um, how broadly useful they'll be, eh, it's up for debate. Um, You know, like last, early last year I was all about like, oh yeah, I wanna write or extract a, a versioning and publishing only tool. And I got a little bit into it and just like this, the state of es modules really harshes my mellow right now. I was just, I, I also started an actual day job shortly after that. So I ran out of steam. But, um, I, and I mean, but even like in my day to day, uh, as a front end developer, I, I, I fully expect to keep contributing patches and stuff and, and even features to, to open source libraries.
+
+I mean, it's just kind of what I've come to expect is like being a good, like being a good citizen of open source means you, you contribute, you, you, you pitch in where you're, where you're able. Sometimes that's patches. Sometimes it's just tickets sometimes it's, you know, just testing, I mean, you know, running a, a beta or whatever, and, and saying, if it's, you know, thumbs up, thumbs down, whatever that, that really does help.
+
+Um, so I, I, I don't think I'll, I won't really ever completely extract myself from open source. I will be a bit more, uh, cognizant of the balance. Like I'm, , I'll be a little, I mean, also I'll be forced to be that, you know, as a, as a parent and, you know, there there's other parts of my life now that, uh, that definitely influence the choices that I make in that department.
+
+But as much as I'm able, I, I do plan on being, uh, you know, as much as contributing to open source as for the foreseeable future. I mean, as long as they'll have me, I guess, you know, , um, But, yeah, that's, that's pretty much my plan.
+
+**Andrew:** Awesome. Well with that, I think we should move on to tool tips.
+
+#### [01:00:31] Tooltips
+
+**Andrew:** So my first tool tip is from a developer named Eric Clemmons. He currently works at Stripe and has produced a lot of tiny little useful tools. One of them even, uh, inspiring auto to a certain degree. Uh, this one I was playing around with last night and it is a really cool way of opening up components in your editor.
+
+So all you have to do is add a component at the root level of your project. And then if your project is using, uh, the babel react, preset, it all works already. And then you can hold option over any component and, uh, just click on it and it'll open right in your editor. And then you can right click and see all of the components that led up to that component.
+
+So say you have, you have a design system you use a lot. Instead of opening the button, you probably wanna open the place that uses the button. So you write click instead, and then you can, uh, see all of the tree leading up to that. Uh, it's it's been, uh, it was a little hard to set up in our repo, but I'm already loving it a lot.
+
+It, it is way better than me opening up the dev tools, trying to either figure out by class names, what the component is. Or by using the react devtools like react devtools are great, but, uh, when you start having like context and high order components, that tree gets messy as hell. And it's hard to actually connect component to file.
+
+And this just makes that interaction instant. So, uh, it's pretty new. Uh, it only works with the vs code currently, but there's PRS for it to work on other editors. So if, if you're looking for something like this, I'd highly recommend to, to try it out. Now we have bat.
+
+**Daniel:** Oh yeah. Yeah. So this is bat. Um, I have, uh, oh, this, I guess habit you might say of using the shell a lot, uh, for front end dev it's suspiciously a lot. but, uh, I, I can't get over. It really it's super helpful. Now bat specifically is. It's like cat, but with wings, um, no, uh, anytime you wanna like look at a file locally and you just don't wanna bother opening up in your editor or whatever, you just wanna look at it.
+
+And that has got so many neat bells and whistles. Chiefly it's the syntax highlighting. It's the line numbers. And, um, just, just ways of making you wouldn't think cat, it needs much more, but it's just, it's just cool how it integrates. Um, it's, it's written in rust. Um, it's available through home brew. Um, I, I found it to be really handy.
+
+Um, the other one I was, uh, wanna talk about was, uh, FD, which is, uh, similarly a, um, it's, it's a, it's a rust, uh, built CLI tool that is a, um, replacement for, uh, find, um, and the cool thing is that, uh, like there's a little demo there, but fD has great defaults, FD integrates with like all the shell color and you might ever want, it has really useful and descriptive flags in a way that find for all of its usefulness.
+
+I have never found an incantation to find, to be particularly like readable or like, I can't do it intuitive. Yeah. Like I can't do it from memory. I have to look it up every single time with find. FD like gets out of the way. And you find yourself just like, even just typing FD and hitting enter, it'll give you a listing of whatever, you know, wherever you are like.
+
+And it's just, I don't know. I find as someone who spends a lot of time on the terminal tools like this really help, um, you know, like piping, especially, oh man. It's like, I, I can get a list of files that I exactly, that I want with, you know, ways that are just so much easier than mucking around with find .
+
+Um, and yeah, it's, it's just one of the tools I use pretty much daily. Um, uh, similarly, I, I didn't list anything, but like rip grip, if I, I would be remiss if I didn't it's often goes by RG, but, or yeah, rip grip is another rust based uh, replacement for grep, um, similar to like silver surfer and, um, uh, which is ag.
+
+And then there's, uh, uh, ack of course, ack is cool, but rip grip is like ack on steroids. Um, and it's super fast optimized for certain code and, um, in a similar way, similar vein to like FD versus is defined as rip grep is to well grep. Basically, it, it, it makes like the, the, the flags are a little more intuitive.
+
+The, the pattern support is better. Uh, the output is just much more useful. I use rip rep every, like. Hourly easily. I mean, I, it is just something I'm constantly getting or reaching for, for creating various pipes of like, look for all the files to have import react in them or whatever, you know, like various things like that.
+
+And it's it's. Yeah. And it it's super like it automatically filters out node modules and any number of other things like that. So it's, uh, super useful. Um, those are my tips.
+
+**Justin:** I really enjoyed the, the whole wave of like rust rewrites of like old tools. Uh, I mean, cuz so many of them are just like excellent. Excellent.
+
+**Andrew:** well, well, like hearkens back to what we were saying earlier in the conversation and make, make your, your tool tiny focused on one thing, doing it really well. The tool, the tools, these are replacing are tools that did one thing. Well, for 30, 40 years, like they, they did it really well. And like only now do we have like a language that makes it, we can make it really fast and all these bells and whistles that we now come to expect.
+
+But yeah.
+
+**Justin:** Yeah.
+
+I think our expectations have just shifted over time and because those tools worked so well for so long people didn't like want to introduce something new, but like what do we expect to see? What do we expect to have? You know, it's like things like, oh, you know, I want line numbers or I want syntax highlighting or you know, these things that we kind of take for granted in a lot of experiences are being added now, which
+
+**Andrew:** Even DX has come a long way. Like, uh, like we, we expect our, our interfaces to be a lot simpler and easier to understand. Whereas back in the day they were like, yeah, we were coding an assembly. So these flags are fine.
+
+**Daniel:** Yeah.
+
+**Justin:** I'm sure there's a lot of like common shortcuts and stuff that are just not socialized in the same way anymore. So they don't make as much sense in context now as they did once, you know, if you're really
+
+**Daniel:** Oh, for sure. For sure.
+
+**Justin:** Cool. So the first thing that I wanna share today is this really, really interesting project, uh, that I, I stumbled upon in Twitter.
+
+It's called Astro service worker. And essentially what this does is brings server side rendering SSR for Astro in a service worker. Um, I have thought about this approach a lot. It's like, can you get server side rendering, you know, just do that at the browser level. And like, what would that look like?
+
+And this project is a proof of concept of that. So yeah. Does server side rendering for Astro in the browser, uh, in a service worker? Um, maybe this is something that you could eventually like push off, you know, your first request is just, you know, a normal request and then like subsequent, like page renders or whatever, coming from the service worker, or maybe you do it all.
+
+I don't know. It's just an experiment. It's really, really interesting. Not sure what the actual performance characteristics of this really would be, but it's kind of a neat project. So if you just like to geek out about stuff like this, like I do something check out.
+
+**Andrew:** Looks cool.
+
+**Justin:** Talking about rust, like crazy rust, uh, projects. So I stumbled a across this project it's called space drive. It is a file Explorer that is cross platform written in rust. Uh, actually it uses this, uh, framework called tauri which is a electron alternative that uses rust. And then whatever the built in like web view is for the OS that you're on.
+
+But so space drive. This app is, is fascinating because they implement a virtual hard drive. So you can technically have this file Explorer show you files from like multiple computers or from like your computer and, and from, I don't know, a cloud service or whatever, and you can sort of browse all the files like they were on your local hard drive.
+
+This is really, really interesting to me, uh, for multiple reasons. I think a lot of our modern, file explorers are generally not great. If you think finder on OSX,
+
+**Daniel:** finder
+
+**Justin:** I've, I've used OSX for years and finder. I still like get so frustrated with it. And then, I mean, Explorer on windows. I it's, it's fine. And that's the best thing I can say.
+
+So. I'm super excited about this and it's a really cool usage of the tauri technology. Um, it's awesome. yeah. Cool project. A plus, and the design of the marketing site is also a plus. I I love everything about it. It's so good.
+
+**Daniel:** I like the index size, not a number
+
+**Andrew:** Oh
+
+**Justin:** Oh yes.
+
+**Andrew:** yeah. I looked at, I looked at this website and saw tailwind and I was not incorrect.
+
+**Daniel:** Nice.
+
+**Andrew:** Okay. That wraps it up for tool tips. Uh, thanks Daniel for coming on. This was, uh, a much different episode than what we usually have, but I think it's a, it was a good episode to have and a, an important topic to talk about.
+
+**Daniel:** Yeah. Thanks for having me.
+
+**Justin:** Yeah. Thanks so much.
+
+**Andrew:** Well, that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcast. Thanks for listening.
