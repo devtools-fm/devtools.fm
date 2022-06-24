@@ -1,0 +1,561 @@
+---
+title: Tyler Krupicka - Stripe TypeScript Migration
+youtube: https://www.youtube.com/watch?v=Wbo2CSh-2ys
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10847215
+tags: technology, programming, coding, typescript, javascript, stripe, codemod, jscodeshift
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Tyler Krupicka, an engineer on Stripe's devleper productivity team.
+He talks to use about their experience migrating millions of lines of Flow to TypeScript.
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:21] Working at Stripe
+[00:05:20] TypeScript Migration
+[00:14:46] Getting it Right
+[00:24:07] Building Codemods
+[00:30:07] Migration, Rollout!
+[00:43:29] Road Bumps
+[00:54:19] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 33
+
+**Tyler:** It's really hard to drive things to a hundred percent. And and so when we kind of came to all of those conclusions, we said, okay, it's, it's pretty clear that the ideal thing to do is a big bang migration. That doesn't mean it's going to be easy. It just means that we think it might actually be a little easier and it'll be a better experience for all of the engineers at Stripe, which is the priority of the whole thing.
+
+**Andrew:** Hello, welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Everyone. Uh, Today we're joined by Tyler Krupika. Tyler's on the developer experience team at Stripe, and we're excited to have him on to join us to talk about his role and his recent experience, helping migrate stripes code base from flow to type script. But before we get into that Tyler, would you like to tell our audience a little more about your.
+
+**Tyler:** Sure, thank you for having me. So I'm on the JavaScript infrastructure team at Stripe. Broadly we're kind of focused on improving developer productivity for any front end applications across the company. And like Justin mentioned, my focus more, most recently has been migrating us from flow to type script, which has been quite a long process.
+
+#### [00:01:21] Working at Stripe
+
+**Andrew:** So, what, what exactly does that team do other than like, the, the project we're gonna talk about mainly what are some other initiatives that this team has led?
+
+**Tyler:** Yeah, that's a great question. So, I'm inside of the developer productivity organization at Stripe. And so for a little bit of background, there's, there's probably over 10 teams in developer productivity at there. And like, some of them could be some of our, what we consider like core build code testing teams.
+
+So that's like our build infrastructure GitHub source control our developer environments. But there's also like language and developer specific teams. So, specifically my team is focused on JavaScript, but we also have teams that support, like the Ruby API, Java services, data science, things like that.
+
+And so as far as like my team goes, we're really focused on like build times or other things that could really slow down front end development. So the type, system's a big thing, but we've also done projects around dramatically speeding up the build times or improving the reliability of tests or things like that.
+
+**Andrew:** So is all the code in like one code base? Is that kind of why you have to have have these teams.
+
+**Tyler:** Yeah. So Stripe is very close to a, monorepo not quite a monorepo because some of our code has different like compliance requirements. There are some like separate repos. And so we have some of our front end code in one repo. The majority of it all, all is within one big monorepo just in different directories.
+
+So, when you have that going on and you have some like huge applications, all in that, monorepo, there's a lot of extra tooling you need in place to make that all work nicely and orchestrate everything. We use bazel pretty heavily for kind of breaking up this big mono build. I think actually recently the, one of the engineers who works on our bazel implementation put up a blog post on the Stripe engineering blog about how that is all set up, but that's definitely like one of the, the big focus is a lot of engineers that developer productivity help with.
+
+**Justin:** What do you use as a, a repository provider? Is it like a or a source control? Is it like perforce?Force?
+
+**Tyler:** We use GitHub. We have an enterprise GitHub instance and a team that manages that as well. Which, yeah, it is always, it seems like they always have a lot of work to do as well. Just making sure the GitHub experience works well when you have a, a huge code base with lots of pull requests open against it.
+
+**Justin:** Yeah. Monorepo is and git like really big mono repos and git, can be
+
+**Tyler:** Yeah. Just even the, the get command line can get pretty slow sometimes unless you have people actually focusing on optimizing it. Yeah, it seems like git is a lot better at like scaling to, to many different repos than it is for scaling to like a monorepo. But it's definitely doable. And a lot of people have their work cut out for them making that happen.
+
+**Andrew:** do you know how they optimize it at all? Cause like, if I was given that problem of optimize the git repo, I'd be like, well, I, I don't know, like remove the big files.
+
+**Tyler:** I think the main one that we have to work with is just like having a ton of branches open will cause problems. And like, you can imagine if you have, you know, hundreds, thousands of engineers working, they're creating a lot of branches, not all of 'em get closed cleanly. There's also like automated branches and things like that.
+
+So keeping those really under check is, is one thing that I know off the top of my head that helps a lot. And there are some like tricks that you can do on the command line as well. So like, For example we try to follow a naming convention for branches. So I always like prepend with my username.
+
+And there's also some like, get CLI flags that you can set so that you only fetch branches for your use, that like start with your username unless you like explicitly fetch them. And so that also like helps when you're pulling master. You're not sitting there just waiting for minutes and minutes. So it's coming down. You can prune a lot of that away that you're not working on.
+
+**Justin:** Pretty wild.
+
+**Andrew:** I'll I'll have to do that too. Cuz we do the same thing where like our it's our username slash like a linear ticket.
+
+#### [00:05:20] TypeScript Migration
+
+**Andrew:** So let's move on to, to the TypeScript migration now. Let's start off with why, why, why go from this huge flow code base to a TypeScript code base? That sounds like an immense amount of work and could lead to like an immense amount of problems. So why even do it in the first
+
+**Tyler:** Yeah, that's a, that's a great question. And so like a little bit of background on kind of the scale of flow that we had stripes started using flow, I think pretty early on in like its usage, which is around 2016. And I think that kind of came along with also leaning a lot more heavily into using react. Which I think is, is pretty commonly how people ended up using flow.
+
+And at the time that was like a, a really reasonable thing to do. And you know, Stripe is itself really big on type safety. Stripe also maintains Sorbet, which is the, the type checker for Ruby. And so like all of our Ruby has that as well. And so that's been in use for quite a while. We've grown all of the front end applications of lot.
+
+And so between all of that, there's probably about 5 million lines of flow typed code in the company. 3.5 million of that is just the Stripe dashboard, but you know, like Stripe elements or the Stripe JS SDK or all of like our hosted payments flows and things like that. Those could all be written in flow as well.
+
+And I think at the beginning you know, TypeScript and flow had a lot of parity. You know, there was a lot of things in the react ecosystem that had flow support early on, but over time that's definitely diverged. Where like, say you want third party type definitions for anything like everything has TypeScript support, barely anything has flow support.
+
+I think the TypeScript documentation has also really come a long way too. Just there, there are some utility types that I'm, I'm not sure are even documented still on the flow website. And so like, you know, TypeScript has obviously invested a lot into making it really good. It's come a long way.
+
+So that's helpful. I think also like the, the way things are going, almost all of the new tools that come out, try to support typescript syntax out of the box. And so when you're thinking about you know, starting to use next generation build tools and things like that, you wanna make sure your code's going to be compatible.
+
+And then I think one of the bigger things that, that also kind of nudged us to prioritize, it was around may of 2021, the flow team put out a post that basically said, like, we're gonna be focusing a little less on community engagement. And you know, they have a ton of developers at Facebook who are using flow.
+
+And so they're, they're really putting the roadmap to like making things great for all of those engineers. But what that means is like feature requests from the community or from other companies are gonna get deprioritized. And so TypeScript has been really good about having this like really public community driven like roadmap and like test cycle and everything.
+
+So that's been really helpful. And then the other, probably last thing is like the editor integrations as well. So, you know, TypeScript and vs code are just like vs. Code's written in type script. They're perfectly paired. There's a lot of new features that come out for it. And flow has definitely put effort into improving their editor integration over time, but there's still a ways behind.
+
+And so, you know, being able to auto import sort imports get all of the like JS Doc formatting and everything really nice in vs code. All of those features are really highly requested and really nice.
+
+**Justin:** I think it's a really interesting case study in open source to compare the life cycle of like flow and type script. So Facebook has this pretty common thing where they, they build open source projects for their internal use and they make it very explicit. Like this is for us. And we have high standards for what it means to open source something.
+
+We open source it, you can use it, you can get involved, but like we're building it for us. And react is very famous about this, right? They'll not release features that they've had internally for years until they're like stabilized or, or whatever. Whereas like Microsoft tends to productize even open source
+
+**Tyler:** For sure.
+
+**Justin:** projects. So it's like TypeScript from early on became this like formalized like product that they were working on. And they, they sort of treated it that way. And, and I think over the years you can see the, the sort of difference that that makes. One of my old colleagues from artsy, orta Therox, was on the TypeScript team for a while working on documentation.
+
+I mean, that's like mainly what he did is like, I want the, the onboarding experience to be better. And, you know, just the fact that they sort of prioritize that enough to sort of hire somebody just to focus on like, make this experience really good. I mean, says a lot about what, you know, what that team is doing.
+
+And then, you know, all these little things, like they're, they're every release log that they put out is just so good. , you know, it's so good. Like so much information. Yeah. So
+
+**Tyler:** you can, you can see the, the difference in like amount of hours that have been put, put into the TypeScript playground versus the flow playground. If you just go check those out, like the flow one is perfectly functional, but the TypeScript one is like way over the top. They've got like select different versions. Tons of examples, everything there's been a huge investment there.
+
+**Andrew:** Yeah. Big shout out to Orta cuz he, he like invented a whole technology stack to make that possible. So it's it's really cool!
+
+**Justin:** Yeah, yeah.
+
+**Tyler:** I have a question for both of you guys have either of you guys written flow before I'm I'm
+
+**Andrew:** no. That's.
+
+**Justin:** I actually have, I actually have when I was first starting to get in the type JavaScript, I think like most people. The theoretical architecture of flow was more interesting how it did type checking. It like sort of builds like this graph underneath the hood. And it seems like the more sort of quote unquote correct way to approach TypeScript or like typing.
+
+So initially I actually liked flow better than type script. And, and there were things that like in the early days were not necessarily well documented with TypeScript and it was kind of hard to figure out like how to,
+
+**Tyler:** Well, and there was a bit of a priority on angular too versus react. Mm-hmm
+
+**Justin:** yeah, yeah, absolutely. I think the thing that really started changing that was community support, like definitely typed basically that what really started like stealing flows, thunder, and then the type engine for TypeScript has just continued to get better and better and better and better.
+
+So it's like. despite the underlying way that they type check like TypeScript is, has become like a, a vastly superior user experience.
+
+**Tyler:** Yeah. And I think Andrew, like if you haven't used flow before, like one of the most interesting things, the first time you try it out, that's different from TypeScript is like, it has a lot more features built around inference. I feel like. So if you in type script, if you go and like define your first ever function the function parameters need to be explicit.
+
+So like you have parameter a it's a string, and you say that when you declare it with flow so you like go and declare a function. You don't have to give it that type parameter. And then when you call the function, Say you pass in a number, then it goes and plugs in. What if this was a number and runs the function and goes, oh, now you called like this string specific function on it.
+
+And it throws an error back there. Which is both really neat. And also I think a little bit harder to maintain over time. They've definitely moved a bit more away from that more recently in flow, like, trying to get you to put more explicit type annotations everywhere, but that whole architecture is really cool when you're first trying it out.
+
+But it, it definitely has a lot of limitations in itself.
+
+**Andrew:** so it's like generics without having to like explicitly make something generic.
+
+**Tyler:** Yeah. And like, if you pass in a string the first time you use it and that works fine, it won't give you a type error, but then the next time you try to pass in, you know, undefined or something, then it'll come back and go, oh no, this isn't going to work, but it's actually kind of like executing your function each time, which I think gets a bit expensive in the type system.
+
+**Andrew:** Yeah, I can imagine that. I, and I feel like that functionality probably also makes it so that flow can do the children type checking, cuz like the thing, the thing that I've always wanted in type script, that's the only thing I would want from flow is that you can type your react children and restrict that your're like your menu only has menu items as a child where you can kind of do that in type script.
+
+But what you get in the end is not what you want, even though it's kind of what you want.
+
+**Tyler:** yeah, that's definitely one of the main areas I've seen flow Excel at. There's a couple things too, like in the TypeScript types, there's always. A couple small, rough edges around maybe like functional component return types or something you can't just like return, react, react node and like strings and nulls and numbers inside your functional component.
+
+And since like react and flow are both like working together a bit more that stuff works a little more cleanly, but everything else with like the JavaScript standards and like syntax and types for the Dom and everything is really, really exhaustive in type script. So, definitely a lot of perks there too.
+
+Yeah,
+
+**Andrew:** Yeah. The last thing I'll say on it is always bet on Anders! you got 40 years of of language building experience that might come, come with some good knowledge, some domain knowledge there.
+
+**Tyler:** definitely.
+
+**Justin:** Yeah, yeah, for sure.
+
+#### [00:14:46] Getting it Right
+
+**Justin:** Getting back to going through this migration I've had to do some big typescript migrations as well. And they're always interesting, just large code based migrations period are interesting and have their own unique challenges. What was your approach to this and, and how do you, how did you verify that? Okay. We did this
+
+**Tyler:** Yeah, that's a great question. So I think the, the initial planning for the migration really took place like almost a year ago at this point. And at. And it was really like, just a discussion about if we were going to take this on, it seems like it it's not going to ever get completed. How do we like think through this in such a way that we can actually complete it?
+
+And so I think initially a partial migration was like a little bit more appealing. Like, can we take a big app, like the dashboard, break it down into sub components and then do a bunch of smaller migrations and just get like a cadence going of doing that. And that does sound like a, a good idea up front.
+
+And I think if say you were coming from an UN typed code base over the type script, I think that would work really well. Like you're not really losing anything by having some files be typed script. You'll just have types where you didn't before and like everything can only be better, but as soon as you start looking at a partial migration between type systems everything starts to look way more complicated.
+
+So especially like our code bases can be really interdependent. You don't always have like, really clean like boundaries between all of the different modules inside the code base. Some utility types might get shared around everywhere, things like that. And so if you're going to migrate part of the code base, how do you approach.
+
+Keeping type safety at the boundary. Like you basically have to either commit to just losing type safety for a little bit and hope you can get it back, or you have to do a bunch of extra work in order to like autogenerate types at the boundary to say, like this flow code can generate type script.
+
+This TypeScript code can generate flow. And that's like almost double the work, because at that point you have to build tooling to go the opposite way of the conversion as well. And I think one other thing that kind of stuck out thinking about that too, is beyond just like the technical aspect. If you're an engineer working in a partially migrated code base, like say you're, you're trying to do a feature that's in TypeScript in one part and in flow in the other part, like, how is your vs code gonna handle that?
+
+Like, you're gonna have to have both editor integrations going. It's gonna use so much memory. You might have to be regenerating types at the boundary as you're working. So. There's just a lot of questions about how do you make that like a good experience and what are the trade offs and what we kind of came to was there's going to be a real loss in developer velocity.
+
+If we're in like an inconsistent partial state, there's a decent chance we could stay in an incomplete state long term, like you guys have worked in some larger code bases. how often does a, a migration actually hit a hundred percent? It's yeah. Yeah. It's, it's probably like 5% of the time or something.
+
+It's, it's really hard to drive things to a hundred percent. And and so when we kind of came to all of those conclusions, we said, okay, it's, it's pretty clear that the ideal thing to do is a big bang migration. That doesn't mean it's going to be easy. It just means that we think it might actually be a little easier and it'll be a better experience for all of the engineers at Stripe, which is the priority of the whole thing.
+
+Like, people really want typescript, but do they want it enough to be in like a really inconsistent code base for six months or something like that? And so once we knew like big bang was more of a focus we could start planning around that and going like, okay, what, what can we do to like, automate this?
+
+What I, what has already been done? Can we look in open source and find blog posts about other companies who have done migrations and kind of see how they scale up to the complexity of our code base?
+
+One other thing we did consider at the time to try to make things easier was maybe upgrading flow even more or spending more time on it because as time has gone on flow has actually. Added a bunch of features that bring it a little bit closer to TypeScript behavior. One of the biggest differences that you'll notice is flow objects are inexact by default. So say you have a react component and you define props for it. Basically like when that component is used, all of those props are typed, but any extra props that you add are just typed as any, because the objects in exact, and you can expand it with any extra field on it.
+
+And so, people can say that they're exact, and they can add in like a little marker for flow to say, treat this as exact, but in practice, most people wouldn't remember to do that or would have other reasons not to do it. And. That is like an example of a feature where it's pretty clear over time.
+
+Like, especially if you're writing a lot of react components, you'd like your props to be strictly type checked. Like if somebody misspells the prop, you'd like it to like underline that instead of saying, oh, this is a new prop. I'll just give it a, an any and so like, flow has added a bunch of flags that like ratchet up the strictness.
+
+Like there's an exact by default mode. There's another mode called types first, which like any of the places where it's doing that fancy inference, it'll like force you to annotate. And that's also a big performance increase as well, because it just has less to do. And so we kind of looked at, at doing a bunch of those upgrades and were like, well, could we get our flow syntax a lot closer to type script?
+
+And would that make it easier? And what we kind of found was. There was some like marginal benefits. Like it was nice getting some performance bumps when we updated things. But in general, the amount of work required to go like over to exact types and everything was going to take months and months.
+
+And those were months that we could instead focus on just going to TypeScript and, and turning it on at the same time. So, there was a lot of decisions that went on around that, but it was pretty clear that we'd have to lean into automation and and that we could kind of leave our flow types as they were and just work with it.
+
+**Andrew:** what was the ultimate solution that you guys went with? Did you find an open source library that could do most of the work for you? Or did you make something.
+
+**Tyler:** So, probably I wanna say it was like August or September of last year. I started looking at the different open source implementations and just trying them out. And we knew that the first thing we needed to convert. Across the company was just the design system. The design, system's a sub dependency of pretty much everything.
+
+And it also was going to need to support both flow and TypeScript while we're doing the migration because there's new features coming out. And so that made everything a little bit more tricky, but we knew like if we wanted to convert any application, they all used the design system pretty much.
+
+And so I started trying out some of the, the ones that were available and the, the two main ones I was looking at were the Khan academy one, which comes up pretty quickly. If you just search for like flow to type script, I'm pretty sure the package name is flow two Ts. And that one Worked pretty well, I think it uses JS code shift or something.
+
+But for, especially for just like basic type conversions or utility types, they had a lot of that worked out. The other one I looked at was from air table. They had recently open sourced that I think when we were looking, they have a medium post about how they migrate their pretty large code base.
+
+I wanna say it was a million lines using it and their, I, I found that with their code mod the foundation of it was really clever. So instead of using like JS code shift outright, they pretty much wrote their own implementation for going and finding flow files, parsing them with babel applying a transform, writing the files.
+
+And I was a little confused initially about why you would go through that trouble. But it became clear pretty quick that it was necessary. Like for example, JS code shift, I don't think. It easily supports, like just renaming the file extension because it's focused on like transforming inside the file, not renaming the file.
+
+And so, like that was one thing right away that popped up where like, oh yeah. How do you do that? It's not really focused on that, but there was a bunch of other small things we could do. Like we could pre-scan the file and figure out if it's a declaration file and like skip over it. Or we could do some other like scanning on it.
+
+Is it a JSX file? Rename it to TSX. So there was some optimizations you could do there. And then the other cool thing that they did was in all of those cases where flow is inferring like a parameter type or something where it's required in type script. The air table engineers wrote a subprocess that basically runs flow in the background.
+
+And then it feeds flow this command called type at position. And it just gives it the position of the type you're looking for and has flow spit back the inferred type for you. So, for really simple. Yeah. So for really simple types, like this is a string or a number or something it can just give you that back from flow and we can put that in and we can run it through our normal conversions we did end up making a ton of enhancements to that implementation over time. But kind of the combination of being able to parse the files really nicely and query flow was like a very obvious, good foundation to start on. So that's where we based everything to begin with. And we started it by just testing against component after component in the design system and starting to, to work on it.
+
+#### [00:24:07] Building Codemods
+
+**Justin:** our listeners who might not be aware. Could you talk a little bit about JS code shift? Cuz we'd mentioned that and
+
+**Tyler:** yeah. So I can talk a little bit about just like. the code model architecture and like what, what goes on. So JS code shift is a really neat tool that basically allows you to go and parse a code file. And then what it'll give you back is what's called an AST, which is just this big kind of graph rep representation of the file.
+
+And you have some functions that you can use to traverse it. So like say you wanted to find every function declaration specifically and make some small modifications to that, or go look at every function parameter in the file. JS code shift gives you like an easy way to just kind of give it a source directory and a list of transforms to go run and it'll code do it.
+
+So what the air table code modern, what our code mod ends up doing is pretty similar to that where you like give it a directory. It goes and. Finds all of the dot JS files, and then it reads them to find out if their flow files. And for those of you that haven't used flow in flow, you have to put a comment at the top of every file that says at flow.
+
+You can also put an at no flow at the top as well to, to say not to check it, but that's what actually lets the type system know that that file should be type checked. And so we kind of go through, look for. and then we use babel and another package called recast where we have babel go and parse the whole code block and give us back all these nodes.
+
+Then we have a bunch of little transforms that are saying, like go to every variable declaration check. If that variable declaration has a type annotation, if it does put it through this like function that will go try to find the equivalent in TypeScript and convert it out. And every time we make a change to that big kind of AST graph of the file recast is tracking that.
+
+And so at the end of making all of our changes, we tell recast, go right back to the file with all of our changes. And it does that. So that's kind of the basic structure of how works. And I think inside of it, we have like eight or nine different. main types of transforms. So there, there might be like a file that's looking at all the classes and doing transforms for them and their methods or looking at all the imports and doing transforms for them.
+
+And that's kind of how the whole
+
+**Justin:** really cool. When I first started getting into code mods, which is just like, it is just automated code to modify it's program to modify your, your code. When I first started getting into them, I thought it was really I don't know it was, it was kind of scary. It's like, it seems really complicated from the outside, but there's this tool out there called AST Explorer, which is probably one of the best, if not the best tools for just like learning how code bots work, cuz it's just has, it's a like playground with like these panels and it's like your source code and then your code mod and then what it generates in the AST and just gives you this really great experience of like almost any type of code, whether you're writing TypeScript or JavaScript or flow or whatever.
+
+So if you're ever interested in learning how to write code mods or just wanna play with it, AST explorer.net is your friend.
+
+**Tyler:** definitely. We, we use that a lot on the the babel parser setting. mm-hmm.
+
+**Andrew:** for, for our listeners who might hear AST and seem scared, like it is a scary sounding topic at first, but like once, once you understand it, like it unlocks so much, like, recently I used AST Explorer to look at the AST for my react code and then use it to be able to know there was a relationship between two components.
+
+So we have an icon button in our design system and for an icon button, it has no. And you wanna enforce that it either has an aria label or a tool tip with the AST. I can just go look, find all the icon buttons and then check. Does it have this certain prop? Nope. Go up the tree. Is it in a tool tip? Nope.
+
+Okay. Error. So very useful. And it opens up a lot of like the ability to customize your tools a lot. Oh,
+
+**Tyler:** Yeah. And it's how things like ES Lin plugins and a lot of other like, even like, oh, what's it called? The there's the CSS build system. Like some of those plugins are post CSS. Like those also have like an AST for CSS as. And so yeah, you can, you can make, make a lot of really cool programs. And one other thing that's really nice about writing code mods is it's one of the few places where you can almost always do test driven development which is not always the case, especially when you're working with user interface code or like Java JavaScript code.
+
+But it is nice where you can go like, okay, I'll write this little program. Here's what I expect. It, it, to get transformed, to run it through my transformer, does it come out and you can write out all of your test cases really nicely. And that was one thing that we focused on a lot in our code mod. I think there wasn't a lot of like test coverage available for flow to TypeScript conversions, just across all the projects.
+
+And so with ours, like every change we made has like a, a test case for it. And we definitely would've broken things over time. If we hadn't put that whole suite in place,
+
+**Andrew:** Yeah, it it's so fun to go back to test driven development when you don't do it predominantly like another package that both me and Tyler worked on while we worked it Intuit was post CSS themed. And literally every time I wanted to add something to that package, I just go to the test file, write up what I wanted to work, and then hack away at the code until the test pass.
+
+It's such, such a good feeling.
+
+**Tyler:** yeah. Mm-hmm
+
+**Justin:** I mean, that feels like the, the purest form of programming, you know, it's like, you just have inputs and outputs and that's like it, you know,
+
+**Tyler:** yeah. I feel like I was always promised that in school, that that would be how I could do all my development and that's the right way to do things. And then in, in practice, a bunch of things can't actually be tested that easily , especially when you're writing like CLI applications or things like that.
+
+**Andrew:** Yeah.
+
+#### [00:30:07] Migration, Rollout!
+
+**Andrew:** So going back to the code mod was it perfect, like, were there certain situations where it had to bail out and go, ah, this is too complicated of code. I'm just gonna start putting anys or like to do comments in there. One, one code structure that I feel like might have been very hard to do, cuz I've dealt with them a lot.
+
+Is generics like converting one type system generics to another type system's generics seems like a, a very nontrivial problem. Even more nontrivial than converting 3.5 million lines of code.
+
+**Tyler:** Yeah. Yeah, so the code mod is uh, unsurprisingly not perfect and we we've definitely made a lot of improvements over time, but. I, I think it would be very hard to get to prove, get to perfect for the reasons you just said, like there, there are places where, especially like utility types too. So, you know, TypeScript has a lot of utility types, like omit pick whatever, and you can chain together to make some pretty complicated requirements flow has the same sort of things available.
+
+But the flow utility types can also do like even more inference with them as well, which makes them even harder to map over. So there's like one called object map. Or I'm pretty sure how it works is like you pass in an object and that object has keys and then the values are functions and it will actually give you a type back that that has the key.
+
+And then the type of what the function will return when you pass in the type from the value. And so it's like inferring the type of the function and returning that utility types. And there's just like no easy to wait to convert some of that. And so some of those things kind of remain the same or like we convert them the best that we can, but they're not gonna go over cleanly.
+
+The things we can do though, are identify like really common patterns in the code. Especially around like we're in a react code base. So anything around defining components, props for components or things for type typing the API or coming out of GraphQL or things like that. So focusing on it there kind of how we approached iterating on the code mod was we started with that design system.
+
+So we started with simpler components and just kind of worked our way up to more complicated components. Probably making one or two patches per component, almost at the beginning to support some different syntax. and then from there we moved on to an app that was probably a couple thousand lines of code.
+
+So not super complicated, but definitely had some new things in there. It's got react router. It's got Redux, things like that. And then from there we moved on to converting stripes CI infrastructure over to TypeScript just like all the user interface for it and doing that. It was about 50,000 lines of code and that definitely exercised a lot more different types and we were able to make fixes there.
+
+We, at that point, like there was a couple thousand type errors or something after converting that code base. And that was kind of when we started hitting the limit of like, okay, this isn't like manually fixable anymore. We're if we're scaling up to bigger and bigger code bases, like we're not gonna be able to spend a lot of time looking at every single one of these types.
+
+But we were able to focus in on the highest priority things that we were seeing repeatedly. And a couple things we did too, that helped out along the way for refining it. The code mod has a command line argument that will go and grab all of the TypeScript errors, sort them by error code, then like sort them by file and then put them into a spreadsheet for you.
+
+And so you can very easily kind of glance through that and go, wow, we have a huge block of like this specific thing is undefined or a huge block of parsing errors around classes what's going on here. And so using that, you can start to narrow in on like, these are the areas that code mod isn't converting very clean.
+
+and kind of triage the errors to give you an idea for the big code base. When we got to the strip dashboard, the first time we ran, it had almost a hundred thousand TypeScript errors. And so we got a, a monster spreadsheet out of that to start picking through and making patches for. But over time we were able to really drive that down.
+
+I think at the end, we ended up with like 38,000 ish. And now we're at about 30,000, which is still a lot but significantly reduced. And a lot of the errors you can't even just easily make a hand modification to the type or something. So for example, there's a huge block of errors that are like, this could be possibly undefined and maybe that's something flow wasn't checking previously and type scripts, a little stricter about.
+
+And the, the real code change is figuring out whether or not it actually is undefined in fixing the types or adding a guard or something like that, but we want to preserve those errors. But one thing we also found that was helpful for figuring out whether or not we were maintaining type safety was just going ahead and generating type coverage for the whole code base and seeing how we were doing.
+
+So flow has a built in type coverage tool. And so we could run that and see whatever percent we were at. I wanna say it was like 92% type coverage before. And that's just asserting that there's not like any types. Like cascading throughout the code base and everything has something bit stricter than that.
+
+With type script, there's a NPM package. I think it's just called TypeScript coverage that will give you the same kind of report out of type script. And so we could monitor that over time and say, are we damaging our type coverage at all? Or is it roughly equivalent? It wasn't a priority to have it be exactly the same.
+
+We were fine losing a little bit of coverage just to get migrated over. But what we found after doing a bunch of iterations on it was the type coverage was reporting slightly higher which was pretty surprising because we had more suppressions, more errors and those reduced coverage a bit. But we had so many new like type Def definitions available to us for all of these third party dependencies that were not very strictly typed, cuz we might have handwritten them before.
+
+And so having all of that available. Actually made the type coverage increased slightly over time, which is great.
+
+**Andrew:** So if you ha have 30,000 errors left, does that mean you're not actually type checking during build? Like you're just emitting files.
+
+**Tyler:** No, so we are type checking during, during build. And basically once we started seeing the, the number of errors that were there, we were going, oh, we need to have a system for automatically like triaging and suppressing these, if we can. And so, we added another command to our code mod that is just focused on fixing types after you have converted.
+
+And I, as far as I know, that's like a, a new thing. I didn't really see. Any other code mods focused on that. But one of the features we can do is just go through and add a suppression comment above every single error and do a Ts expect error so that as people fix type errors or improve them over time, it'll give them an error to remove the comment as well.
+
+And we also have a command to remove all of the unused Ts expect errors, which is actually something I'm kind of surprised they don't have in TypeScript just as a feature natively. But definitely after conversion where we have all of these suppressions, we wanna be able to go back, have people fix a few hundred of them and then just have them automatically deleted.
+
+So we put together some tooling to, to help us with all of that. So we added in suppressions and we can actually get to a, a TypeScript check that passes and runs on builds. One other kind of interesting thing TypeScript also has some suggestions. They've been getting better about like, Hey, you're using a value as a type.
+
+Did you mean to, to insert type of before this? And so for some of those kind of errors, it's like correct, 98% of the time or something like that. So, we could also, you know, take those errors and then attempt to just apply the fix automatically after with type scripts added context about all of the code, which is really neat.
+
+**Justin:** That's awesome. The, the suppression approach that you're talking about is actually really common for moving from non strict TypeScript to strict type script. So when I was at artsy, we did a big migration that started on the mobile app eigann and it was like this, the same sort of thing. It's like, turn on the flag and then automatically add Ts expect errors everywhere that the errors occurred with a message and then like having a script to make sure that like no more of those get introduced and like try to strangle them out over time.
+
+It's a good, it's a good approach. It
+
+**Tyler:** Yeah. And it's nice that they have the Ts expector comments, because if you threw and ignores, that'd be a huge kind of extra risk for type safety. When types get updated, those don't get cleared out. So you feel a little bit safer knowing that like when the error is getting fixed, those comments will also get removed and it'll get better over time.
+
+**Justin:** Yeah, it's my opinion that you should never use Ts ignore. Like it should never be used.
+
+**Andrew:** Since the code base is so big, like, do you guys build everything? Every poll request that seems like it might take a long time.
+
+**Tyler:** That's a great question. So when we first started to do the initial runs and we had all those errors, we were pretty quickly running into some performance problems with type script. It's a huge amount of files and just the sheer number of errors also increases I think the memory usage of type script.
+
+So I think it got better as we, we reduced that, but you know, having to go and increase your memory a bunch on your laptop so that node doesn't run out. Cause I think it's only four gigabytes by default. It was pretty scary to, to start out with, but we did a few things that, that really helped bring that back into the realm of reason where people can run it regularly and it works nicely in their editor.
+
+The. main thing that we did was looking into project references, which for people who haven't used them is how TypeScript tries to scale the larger code bases. You can basically point out different areas of the code base that are isolated. And you can say, this is a project on its own type, check it on its own cache, the types for it.
+
+And then don't recompute it unless files inside of it change. So it's just like a good way to kind of cache types across the code base and keep the memory usage lower. Unfortunately, you can only use project references when. You're not like cross importing in directories. And so, in a really large web application, it's really common to just cross import everywhere.
+
+You know, you write a react component in one directory, you use it in another one and, and so on and so on. And so it's really hard to set those strict boundaries and we pretty quickly realized that it wasn't going to be possible to set strict boundaries for pretty much all of our source main core source code in the dashboard.
+
+But what we could do is cache any of the slowest loading types that we could find, and we could cache. Things like our test files, which have like a one way dependency on all of our source files. And so the first thing we looked at was using the TypeScript profiler to figure out what files are taking the longest to type check.
+
+And unsurprisingly, the thing that popped up first was we have a huge file of generated types for GraphQL and our API which is probably pretty common in, in a lot of applications. And so if you've got everything in one file over there, those are all getting loaded into memory. Even if they're not changed and that can really slow things down.
+
+So we made that a project reference. It's not very many files, but like all of our generated API types and everything can stay as a project reference. Like I said, we split out our tests into a separate project reference Those ones get recomputed a little bit more frequently since people are editing their test files, but because at least they have the one way relationship where tests import source, but hopefully your source isn't importing tests.
+
+You, you can block that off and then cache that as well. And and so with the incremental mode turned on in type script, we're able to take each of those areas that was slow, generate a Ts build info file for them and make TypeScript a lot more performant and quicker to start up. Once you have it generated.
+
+**Justin:** pretty cool. Yeah. I I've looked into project references before and they're a little bit, they're a little bit complicated. You have to like check in some of your, what your DTS files like. I don't know. They're just like certain artifacts that have to be like present for it to like,
+
+**Tyler:** and for us, we don't end up checking in any of the cache DTS files. We just keep those locally on people's laptops for the time being. So that, that does make it, so that is a little bit less like churn where somebody might have get conflicts or something with that file. One like big opportunity for us going forward will be using those cache files more heavily in our CI system.
+
+Because locally you can run type script. It might take a few minutes to go and actually generate the Ts build info files the first time that it's run. But once you've done that and those cache files exist, then TypeScript is much quicker taking seconds or something to, to only check the files that you changed.
+
+And so. We can hopefully leverage a lot of that same stuff in the CI system. It's not crazy out of control at the moment, but like over time we can make that experience a lot better, which is nice. Yeah.
+
+#### [00:43:29] Road Bumps
+
+**Andrew:** The actual rollout of all of this go, were there any like significant road bumps along the way? Did people react with pitchforks and fire or do they, they welcome the change with all the new type script. Mm-hmm
+
+**Tyler:** luckily it's been a lot more of people openly welcoming the change kind of a a month before we did the migration, we, we had like gone through and reduced the number of type errors and we felt pretty confident that we were getting close to having a passing build. So we started communicating out to teams and saying your code base is going over to TypeScript in about a month we think. We'll keep you updated. And I think people were responding and just going what it's actually gonna happen. And like, you're moving all of it. What do we need to do? And it's like, no, we're, we're moving all of it. And so it was really cool to like have that enthusiasm kind of building as we're getting closer to it.
+
+People were stepping in to help out test the application, like as we were getting ready, check out our TypeScript branch, see how things are going. Actually getting up to like the, the point of the migration. We had to do a bunch of work to figure out how to make it less risky when we're changing all the extensions.
+
+We kind of found over time that you would think like we're changing. Tons of lines of code throughout this huge code base that the riskiest thing would be modifying all this code, but because we're switching type systems, if the code mod is working properly, we're not actually changing the runtime behavior of any of this code.
+
+We're just modifying the type annotations. But what we are doing is we're changing the extension of every single file. And so like your web pack entry points, all your other tools need to be able to look for that extension and resolve it. And so it was helpful to have like engineers jumping on board and testing their part of the product and, and letting us know if anything went weird with changing the extension.
+
+And after we had actually converted people came back and we were a little bit nervous initially, like, we knew the first couple days were going to be a little bit bumpy where. You might have to restart vs code. Or a lot of people might have turned off TypeScript on vs code because they had flow enabled.
+
+And so there was like a bit of education to go, oh, if you turned it off, you need to go. Reenable it. Here's where that feature is, is hidden. And get everyone back in a working state, if people had branches or pull requests that were put up in flow, those now had to be run through the code mod and rebased and things like that.
+
+And so, you know, there's a little bit of concern, like, will people be okay? We're asking them to do a bit of work and come Monday and Tuesday after the, the merge went through, the feedback was pretty much overwhelmingly positive. People were really supportive. They were really enthusiastic to get type script.
+
+And they were pretty patient with us as well as we, you know, got everything to stabilize and got everything working. There was a lot of people who on Monday came in and said, oh, this is the best day. I'm so happy. I'm on type script. I noticed my folder that I work in has a bunch of type suppressions in it.
+
+So I'm gonna spend today fixing all of those and I'm really excited about it. And it, it was great to see like that really can do attitude come out and have a lot of people help fix everything up immediately after cuz you know, there's only nine people on our team and there was only like four of us who were completely dedicated to TypeScript right after it.
+
+And so, you know, it's not enough people to fix up everything in a 3.5 million line code base.
+
+**Justin:** really awesome though. It's, that's the gratifying thing of working on tools, right? It's like you, you build stuff for, for people that you sit beside, you know, it's the internal customer. So just satisfying.
+
+**Tyler:** Yeah. And it's great. Like, you know, if something goes wrong, we can, like, they know how to reach out to us. We can chat with people and, you know, they're, they're really supportive, even if they know it's broken still happy we're fixing it. And it's great to hear people come back too and say like, you know, I'm going through and triaging some of these errors and typescripts already helped me find a couple bugs in our code.
+
+I think the, the favorite error, which you guys have probably seen is TypeScript has this helpful thing. That's saying you're checking if this function, but you're not calling the function. This will always evaluate to true. And it's really easy to miss that just while developing. And I think there's been like a couple people who have found those here and there, like, wow, it's great that it could identify it for us.
+
+**Justin:** Yeah, that's a great one. On the topic of all of this work the next obvious question from our end is like, are you planning on opensourcing any of the tools around this?
+
+This?
+
+**Tyler:** Yeah. So, the good news is pretty much everything that we worked on as far as the tools for it will be open sourced probably before this podcast even airs. Which would be great. So people can check it out. We're in the process of putting together a blog post that kind of outlines the, the general story of the project.
+
+Um, There's a lot of details too, about how we actually ran the migration over the one weekend in March. And so all of that will be available in the code. Mod will be up there. since we've done manage or the, the Stripe dashboard, that's what the code base is called. We've also done some other migrations as well.
+
+We've been working on converting some other internal sites. We've also converted like the Stripe payment elements and Stripe JS SDK things like that over to type script. And so as we've been doing that, we've also been moving all of those fixes into the open source version. So they'll all be available day one.
+
+Yeah. And so we've also written up a bunch of documentation about it should be, you know, if you wanna try it out on a flow code base, it should only take 10 or so minutes to get set up and clone it, build it and start running it.
+
+**Andrew:** So what's next. What's the next huge thing for, for your team to conquer? Now that you've, you've bested the, the TypeScript beast
+
+**Tyler:** that's a great question. I'd like to say, we've completely bested it. We're not quite there, but we're getting there. I think probably the, the, the next big opportunity, which some of my teammates have already made some great progress on is around sharing code inside of our, our big monorepo. So we have all this JavaScript code.
+
+And as you guys are probably more than aware, like if you're in a big code base, it's very easy to either have different directories where you can't easily share code across them. So you end up copy pasting things, or you might have parts of the code base where it's way too easy to share things. And you end up with the interdependent code that you can't like break apart.
+
+And so we've been working on a lot of tooling around making that whole process easier, how to package things ideally also, so that you don't have to do an NPM publish and a version bump every time you're changing some core dependency. I think, you know, moving to TypeScript also has driven home to us as well, that it's like really helpful to start putting more investment in keeping all of our tools, the same version and getting a regular rhythm around, like keeping that all up to date.
+
+With flow, all of our code bases were on relatively recent versions of flow, but they weren't necessarily the same. And for the type system, it is really helpful to have every project in your code base on the same version. Like if TypeScript does a, a new stricter check, you have to start turning off, skip lib check because like some other packages in your dependency chain might not pass the new strict version, things like that.
+
+And so we're trying to keep everyone in sync there. And I think there's a lot of opportunity to do that for other tools as well. Like if you're an engineer working on an application inside of this big. You're trying to put together the best product code that you can, and you'd rather not spend a day or two keeping your version of babej up to date with everyone else or keeping your version of lint or TypeScript up to date with everyone else.
+
+So the more that we can help manage that and make it less of a burden for teams, I think that'll be really helpful.
+
+**Andrew:** Then, then last question we got. Do you do you have any like new developer tools that you've seen on Twitter that you're just like excited for to come out or excited to use? Or there's a lot of cool new ones popping up
+
+**Tyler:** there's a lot of really neat. I mean, anything that's been popping up with of an emphasis on like performance and TypeScript support, you know, like the ES builds and SWCS or any other tools that kind of, you know, are really focused on making front end development really fast and functional with type script.
+
+It's always really exciting to see that. Just because I feel like we're in a pretty good spot with like the actual syntax of JavaScript, but like simplifying all of those tools and making them really fast is a, is a very immediate benefit. I think, anything too around like editor integrations or any other like lint rules or checks that can catch things like in the code editor I'm always really excited about.
+
+Yeah, it's, it's always really nice to just get those hints right. As you're typing versus having to wait for a CI build or things like that. But TypeScript definitely brings a lot of the errors and hints. Into your editor a lot quicker. So I think that's one of the big reasons people like it.
+
+**Justin:** Yeah, for sure. I love all the native tooling that comes out. I mean, I think that is like the, the future of, of JavaScript tooling is all native. I mean, because it's like, that's where you really eek out your performance. It was a long time where we optimized for like, Hey, we just all wanna write in the same language.
+
+You know, it's like, we, we all just wanna write our code and type script, just like our tools, our CLI, our web apps, our backend, you know, we all want it to be the same thing, but you know, there's the right tool for right place. And if you're processing, you know, hundreds of thousands of files or whatever, it's like, you know, that having a native tool to do that actually makes a huge difference.
+
+So super stoked about like Rome and bun and ES build and all these, these are, these are all
+
+**Tyler:** Yeah. And, and I don't think that I've spent enough time actually going and trying out all of those, but it's definitely exciting to see like every new tool come out. The first thing they're obviously focused on is how can I make this like really nice and performant for people? And yeah, I think that's a huge improvement, cuz like you said, I think performance like we focused a lot more on language features for quite a while and a little bit less on like the performance of all of the front end tooling and simplicity tool like too, I think for a long time front end development required understanding like a huge variety of different tools and that's slimed down a little bit, but it's also nice to see people taking new, fresh attempts to, to try to simplify some of that.
+
+**Andrew:** With that, let's move on to tool tips.
+
+#### [00:54:19] Tooltips
+
+**Andrew:** so the, the first thing I wanna share today is a react library called virtuoso. If you've ever had a very, very, very large list with lots of things in it in react, you might notice that your page performance tanks that's because react is rendering every single row. And even if it's not on screen, it's actually in memory still being rendered.
+
+So a common technique to solve that is called virtualization, where you only render rows in that thing that are visible on screen. And then maybe like a few offscreen in either direction that's called over scan to try to like, make it, make it not seem like things are just popping up as you scroll. The two big libraries to do this in like the past decade now, I guess has been first react virtualized and react window.
+
+Both of those libraries were written by Brian K. Vaughn, a former member of the react team, and they kind of come with similar limitations. The biggest limitation in my mind is you kind of have to like, say, here's a box. Here's my window. Things in here are virtualized. You have to give a height and width to that window, which is kind of, kind of a drag and just, it sucks in practice cuz like a lot of the time you have a responsive browser, you don't know what the size is gonna be.
+
+So you have to start adding mutation or intersection observers or whatever to handle that. This library has some pretty cool things that make it very easy. The one I want to call out in particular is I don't know if I'll be able to find an example here. But they have this prop called use window scrolling.
+
+So basically it allows you to window and virtualize your content, but not have an extra box where there's a separate scroll bar where you have to scroll. So where I've been using, this is in descripts project browser. We have this area where this like nice static content. That's like visually pleasing then below that's the project browser.
+
+If I'm using react window, I have to scroll down. And then there's this box where I can then scroll and things are virtualized with react virtuoso. I can use the scroll of another element and it all works. It does it by adding padding for all of the, the cells that aren't on the window instead of using absolute positioning, like react window does.
+
+So now when you scroll on the page, it's like, it just, it feels like one big, long page, even though a section, that page is being virtualized. So if you ever wanted to add virtualization to your app and we're limited by the windowing of react window. This is a great option and it has, it has an nice, easy, easy API, and I've had a good time with it.
+
+**Tyler:** Is this a new package or has it been around for a while?
+
+**Andrew:** I think it's fairly new like probably within the past year or two. And yeah, it, it, one of the other things that it does really well that react window doesn't really do at all is you can render tables with it. And with tables, you, you have to have a very strict structure of there's a table and it has a tee head and a tee body, and you can't have any divs or anything in between that.
+
+So to get that to work with react window is kind of hard because like it's adding things in there to make the windowing possible and you can kind of override them. But a lot of the time it's, it's kind of clunky. This has a built in table component, so you don't have to worry about that at all. And it, and it's, it's easy to.
+
+And results in valid markup, which is in the end of the day, the one of the most important things.
+
+**Tyler:** mm-hmm
+
+**Justin:** Yeah, super important.
+
+So, I saw this, this guy reposted on Twitter. So, I think who posted this Devin the Adobe spectrum guy. What is, what
+
+**Andrew:** Ha haven't learned how to say it yet. Go it, I think.
+
+**Justin:** yes. Yeah, yeah. Anyway, so Devin posted this and it's an article titled building data centric apps with a reactive relational database. And there it's, it's a pretty dense article, but one of the things like the, the core tenant of this thing is, is really bringing your database closer to your application.
+
+And there's a project that actually embodies this, that that I really admire. So there's this project called actual it's like a budgeting app.
+
+**Tyler:** One of the members of the Stripe design system
+
+**Justin:** yeah, exactly, exactly. Yeah. James Long Langster
+
+**Tyler:** team. yeah. Mm-hmm Jay long.
+
+**Justin:** long story. Yeah. Something like that. Me and names not getting along today. But anyway, so the, the principle is, you know, a lot of times we build applications and we have an API and we have like all these complex layers between like the product experience that we're building and the data that we're connecting to.
+
+And it's a complex series of things that we do to sort of build these things. And this, this article is sort of like talking about strategies to bring that closer, where maybe you run your database right at your UI label. So actual does this by running SQL light on index DB, like right in the browser.
+
+And it just synchronizes the SQLite versions by like basically doing tail locking. Anyway this article sort of talks about that setup and then architecture and just like, is, is thinking through like, what would this look like and what are the benefits and what are the system properties of it?
+
+I find myself a lot, especially recently thinking about. How overly complex, just building simple digital products has become and just having so little patience for it. It's like, I, I used to be such a huge proponent of GraphQL and like, and it has a lot of great properties, but like building APIs are really, really complicated.
+
+How you name things, how you set up a type generation, how do you do auto, like automatic generation persisted queries for GraphQL? I mean, even a REST API, all these stuff gets really expensive, so I'm starting to value more and more simplicity. And it's like miss the days where you could just like do a sequel query and get the data and render it on screen.
+
+Anyway, great article definitely recommend you check it out. It's got a ton of detail, just a fun thought experiment.
+
+**Andrew:** Luckily a lot of things are, are moving that direction. Like I would categorize remixes that we did an episode with the TPC guy and like, I, I started using that on a side project and it's, it's just a breeze to use. You don't even think about those things.
+
+**Justin:** Yeah. And in that episode we talked about like blitz JS and how it basically has like an invisible API where you're just importing server modules and it like generates an RPC interface for you. It's like, that kind of stuff is really interesting. I mean, these aren't zero cost abstractions, like they're abstractions and you pay for them in some way, but like, I don't know.
+
+I I'm all about reducing cognitive overhead and yeah. I'd like to see more of
+
+**Andrew:** Yeah. So if you're interested, you can read this very,
+
+**Tyler:** oh,
+
+**Justin:** It's quite extensive. It's really, really good. Do you recommend.
+
+**Tyler:** So this one is very relevant. It's a package called esent bankruptcy which great name better functionality. It, it basically does what we were describing with the TypeScript error suppressions, which is like, say you want to add a new eslint rule or say you just migrated 3 million lines of flow to type script, and you may have disabled a couple rules along the way to make it work.
+
+And you're turning back on the rules and there's some new eslint errors. You might as like, if it's just a few, you can go ahead and fix them. But as soon as you get into the hundreds, you don't want to be in there manually suppressing them or, or fixing them. So this tool basically lets you just run a CLI on your code base and say, find every instance of this eslint failure and just go ahead and suppress it. And all of the new ones in the future will become an error and we'll handle it then. But for right now, we're fine with the ones that we have. We just want more strict syntax. So it's a, it's a pretty good um, example for me of like a, a pretty simple tool that, you know, does what it says on the, the tin and is very straightforward but is very functional as well.
+
+**Justin:** feel like this would pair really well with something like betterer, the tool that like we've talked, I think this was a tool tip in the past, but better is a tool written by a former Spotify engineer, Craig Spence. And it basically helps you incrementally cut down on certain things. I don't know, ts ignore rules or, or, or eslint ignores.
+
+So it like tracks all of them throughout your code base. And you basically have a test that like will all like only pass as it gets smaller, whatever. And you can like set goals and, and whatever else, like hit migration targets. It's like, I, I think more of these tools in, in the ecosystem would be great because it's like, this is how big migrations get done.
+
+It's like, you need tools to help people do it without blocking their, their day to day. Anyway, I'm this huge fan of this project. And it goes like really well with things like that.
+
+**Andrew:** we've talked about it. Okay. So my next one, this is one I have not used at all, but I could see how it would be very useful is a tailwind CSS plugin for radix. So you might ask like, wait, why would I need that? Why you need that is cuz how radix works a lot of the time. Is, it will set states on things as data attributes.
+
+So for example, say you have a toggle group where there's three buttons and only one of them can be on when one of them is on, it will add data state equals on and all of these utilities help you capture tho those things. So if you look at the little code snippet right here, it adds things like radix state, open border two, which when that data attribute is present on the element, it will add a border.
+
+So this, this can really help you not, not write any of that CSS and just plug directly into tailwind, which is probably what you would wanna do anyway. So if you've ever needed something like that to marry the tailwind CSS and radix together, this would be a good option to go with.
+
+**Tyler:** not super fam familiar with radix. What is that?
+
+**Andrew:** Oh RA radix is, is definitely I, my favorite library I've come across in the past year. So, you, you know, what reach UI is, but for our audience who doesn't reach and radix are both have the same goal. And that goal is create react components that are fully accessible, but completely UNS styled. So you can use these components to craft your own design system, just like I have done, I've done it descript and you can use their primitives to build up your actual components.
+
+So instead of building a dropdown menu and having to read the wai aria spec and get all the keyboard interactions, right, you can just use their component add some classes to it, and then boom, you have a design system. So, RA radi is a great option in that they implement, they go a lot farther than reach. Reach has like a combo box and like a few other things Radix implements like 75% of the, the wai aria components.
+
+So it's, it's, it, it really covers most of what you need.
+
+**Tyler:** That's really neat.
+
+**Andrew:** And yeah. And all the packages that they use are very, very helpful to to build build your own design system. My, my favorite bit of DX that they have in there is there's this function called compose event handlers, where you can go my on click is compose event handlers.
+
+Then the first argument is your props. So you do props dot on click, and then you do the default behavior when you want, want an on click. And what the cool thing about that is is if the first prop callback handler calls E dot prevent default, it won't call the second one. So if you wanna override some something in that happens, you just go, oh, prevent default in the on click.
+
+So you can use that. Like Radix has a lot of stuff where it focus manages, but sometimes maybe you don't want the focus to go back from the menu to the trigger. And in that case, all you do is on unmount or whatever you say, prevent default. And it prevents the default behavior. So very cool library to, to both use and to look into, to, to build your own stuff.
+
+**Tyler:** that's great
+
+**Justin:** It's awesome. They do a lot of little clever things. It's like, like that, that they have another prop that's like as, as child or whatever, like as a way to override the type of component. I don't know.
+
+Really, really
+
+**Andrew:** that's their slot component. And I actually just use that today with react, virtuoso, react, virtuoso doesn't like they render your table row, like in a separate place then when you're like, actually like returning from the function for your table row. So instead, like I originally had a patch package patch in there where I like modified their code, but then I realized, wait, I could just make each table row a slot.
+
+And then the slot is gonna spread all of the props and the important stuff to the thing below it, which is the code that I control. And then I didn't have to have my patch anymore. So I just deleted it. It was great.
+
+**Justin:** love it when that happens. So yeah, my, my last tool tip for the day is this library called mute MES. Uh, Anyway, it it's. it's a really simple library. It does like one thing really, really well. It it's for reading multipart responses from an API. So if you are downloading a lot of information, potentially sometimes you have a lot, like you'll, you'll have a multipart HTP request that you do.
+
+It can be really, really annoying to, to handle these things simply but this API gives a like subscription, like API that makes it really, really nice and really, really simple way to, yeah. Just get data from your multi multipart API. I I've had to deal with this in past, and it's always annoying and this API it's just so simple.
+
+It's like, I love it.
+
+**Andrew:** What is a multipart API response? Like what, when would I get one of those?
+
+**Justin:** Well, maybe so concrete example you could be, well, I don't know, there there's like many different ways. Like if you're downloading like structured data and you've got like a lot of structured data you might get it like served to you in chunks. And it can be used for, for a lot of different things, but, but any, it it's usually always just an API response as large you're breaking down into parts.
+
+**Andrew:** I, I think I've used this for like file uploads, but I might be wrong.
+
+**Tyler:** Yeah. So this is both of my tool tips were related to the TypeScript migration in some way. This is a package called Ts morph. We use Ts morph inside of our code mod for the fixing command, but basically like if you. Want to write a code mod for some sort of JavaScripts syntax you're probably using babej.
+
+babej has like a pretty well defined tree for everything, and a lot of tools built around it. But if you want to do a code mod that also needs access to type scripts, type information Ts morph lets you do that. So it will parse TypeScript file and you can make modifications to it. But at the same time you have access to what TypeScript knows about the file.
+
+So you can more quickly go modify types or you could write tools that go try to auto fix TypeScript errors or things like that. And so it's, it's a really neat extra level on top of like normal code mods, but we were able to use that to write our scripts for automatically suppressing errors for removing suppressions. Um, But there was also some interesting things like TypeScript has an auto import feature and Ts morph exposes like pretty much all of typescripts API for you. So we could look at a file check. Does this file have any this variable is not defined anywhere or this type is not defined anywhere errors.
+
+And then we could go ask type script, like, Hey, is there an auto import available for that thing that's missing and just get that back and added in. So it's a really neat way to script on top of TypeScript and all of its type information.
+
+**Andrew:** That's one of the, like the most delightful parts of TypeScript to me is all those like little code transforms that like seem to just make their way in by interns on the TypeScript team. My favorite one that I, I think I use the most now is you can in vs code, right? Click, click source action, and then remove all the unused code, which, oh my God, it makes, it makes it like, if you wanna like, get a component outta one file into another, just copy the whole thing, delete everything you don't need.
+
+Right. Click to remove all the unused code and, and you're in a great starting state. And with that, I think we're, we're done with the episode. Thanks Tyler for coming on, this was a a, a very interesting and detailed dive into what a large scale TypeScript migration would be like. So thanks for coming on.
+
+**Tyler:** Thank you so much for having me.
+
+**Justin:** Tyler. That was great.
+
+**Andrew:** Well, that's it for this week's episode of dev tools, FM, be sure to follow us on YouTube and wherever you consume your podcast. Thanks for listening.
