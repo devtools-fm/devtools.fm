@@ -1,0 +1,591 @@
+---
+title: Jake Cooper - Railway
+youtube: https://www.youtube.com/watch?v=0YLNrvy_F70
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/10925378
+tags: technology, programing, coding, infrastructure, devops, heroku, railway, render
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we go down the stack all the way to the infrastructure!
+We're joined by Jake Cooper, CEO of Railway, a company innovating in automatic infrastructure deployment.
+Just push your code and railway figures out how to create an environment!
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:44] Road to Railway
+[00:10:42] Infrastructure Superpowers
+[00:20:33] Tackling Tough Problems
+[00:28:21] VC Funded Dev Tooling
+[00:34:39] Automating all the things
+[00:41:24] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 34
+
+**Jake:** So you go from essentially having just an application to an application with all its dependencies spun up. That can be reproduced pretty much anywhere. Without any sort of conflict that you, you define yourself. Right. And so that's kind of the magic moment. And that's where we're working towards, like right now.
+
+**Andrew:** Hello, welcome to the dev tools FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+**Justin:** Everyone. Our guest today is Jake Cooper. Jake is the founder of railway.app. Jake, really excited to have you on before we dig in and start talking about railway would you like to tell our listeners a little bit more about yourself?
+
+#### [00:00:44] Road to Railway
+
+**Jake:** Yeah, sure. My name's Jake I've been an engineer for almost 10 years now. Just like started writing out C plus plus hobby kind of hack scripts for random FPSs video games and then some sort of TF two backpack scrapers when I was like maybe 13 or 14. And so evolved rapidly over the time there went from visual basic you know, started writing jquery and then worked at Wolfram briefly while I was in college, worked remotely did a very, very brief stint in finance in New York.
+
+Moved there. I was out within five months realized it was not my vibe. And then I worked very like, like probably for about 18 months on the jump bikes and scooters at Uber had a friend who was like a part of the acquiring team over there and was like, we have this really crappy Ruby on rails app.
+
+And it needs to like go to like a nice, like distributed systems, like go microservice match. And I was like, cool. That sounds wonderful. Had done a nice chunk of that for a bunch of distributed systems projects in college and always found them like really, really interesting. So went out there with a team of people and kind of scaled that whole thing out, started building the provider integration platforms you started integrating with like scooter companies and bike companies and lime.
+
+And like, I flew to Paris to do all that stuff. And then Uber shelved the whole thing and sold it to lime and then canned a bunch of us. And so I asked to be fired because I was like, I'm done with this. And so I walked away from that. And then, yeah, so, so that took us to railway and then I just started fidling on a bunch of stuff.
+
+And just constantly needed some sort of piece of infrastructure that I thought would be easier. And is a little bit of a background railway is a platform that we've created just over a year ago now. That makes it really, really easy to use infrastructure. So we give you a canvas where you can just espouse into existence whatever you would like, right.
+
+When you say, I want Postgres, I wanna deploy this application and I want whatever, and we will go figure out how to make it live and running for you. So yeah, that's a bit about me and, and a bit about railway.
+
+**Justin:** So the idea for railway really came from this like previous experience of, of building apps and like not wanting to think so much about infrastructure, especially if you're distributed systems sort of apps.
+
+**Jake:** Yeah. Yeah, exactly. It came from, from this experience of not wanting to have to deal with it. And so, of course what we did was we like built our entire persona around it and probably we'll spend the next 10 years of our lives dealing with it. So, and I guess we kind of just like flipped the, the version there, but we realized it was like way too hard for everybody.
+
+Um, Even though people who were kind of like already doing it. Right. And when I was like, you know, after I left Uber, I was like, I just need like, need a Postgres instance. I just need something like, just, you know, and, and it was basically like this, this end point that I hit that would just like spin up a, a container and then give me a Postgres instance on a, on a port.
+
+And I would be away to my races and I could go and build my application.
+
+**Justin:** Yeah, this is, this is a really interesting topic for me. I've seen this throughout jobs that I've had in the industry where infrastructure generally becomes a role of like, or like everybody's responsibility. It's like you have like a, a, an infrastructure team or a platform team, and they own it.
+
+And it's like all small and neat. And then they're like, oh wait, we have too much work. Now we want everybody to be able to do this. And now everybody's like editing Kubernetes YAML and trying to figure out like how to stitch all this stuff together. And it gets pretty gnarly. So how is railway's or railway's approach different?
+
+You said, you know, you have a canvas and you can like, sort of make stuff, but like, what does it look like in your day to day?
+
+**Jake:** Yeah. So, so our day to day is like figuring out how people can interact with these interfaces as frequently as possible. Right? Like we don't want people to deal with QPM O we don't want you to deal with nGenx config. We don't want you to deal with any of this stuff. Right? Like, what we want you to do is be able to focus on your application layer and us to be able to infer via kind of just like magic detection, whatever your kind of dependencies are where this thing should kind of land, like what its kind of resources constraints should be.
+
+Right. And we should be able to have like a best guess approximation. Yeah, this thing, this thing is reasonably live, right? Like, instead of having this kinda like mound of YAML, where you have to define everything up front, we really try and take like that mound of YAML and make it posthaste. Right?
+
+Like, so the idea in like in modern DevOps is you have this, this wall of YAML that you have to get right off the first bat and you play basically like YAML battleship, where you slide this yam into the door and then it get slid back and says random esoteric error and you're like, shit. Right. And for us, we basically just wanted to like go and push that back and basically be like, all right, cool.
+
+Just change it whenever you kind of want we'll modify these configs for you. And then we'll, we'll kind of like redeploy this thing as needed, you know,
+
+**Justin:** So as a user of railway, are you using it mostly through the GUI of like railway because you do have this like visual canvas experience where you can like, see your sort of like services together in the canvas, or is it through also through configuration or is it a bit of both depending on what your needs are?
+
+**Jake:** Yeah, so, we have the canvas obviously. And then we also have the command line, which allows you to run all this stuff locally. Right? So it would take your entire project config and it would allow you to kinda like hook into either an instance at our exists inside of the cloud or fork, an instance and run everything you need locally.
+
+Right. So you could do railway shell or railway run, and then would drop you into kind of like an active instance inside of your application layer code that you might just have, you know, it's, it's in get, gets pulled down, it gets built, it gets automatically detected with the exact same config that you would have remotely.
+
+Right. And all of that config is, is like, it's not stored in a repository. It's not stored in anything like that. We just keep track of the infrastructures code for all of the underlying principles. And this is super neat because it basically means you. Kind of like solve the N plus one problem where you would have like a monorepo as well as like another dependency that you want to add.
+
+Right. And so if you, if this is kind of like your current org status or, or case where you're like, oh, cool. I wanna integrate this external dependency. You kind of have to like, take this dependency from its repository and like shoe on it, into your monorepo. And then you essentially like break this dependency kind of like link.
+
+And with railway, we can just like keep track of all of these pointers as just kind of like distributed pointers as to where they exist. When everybody are kind of authors onto this thing, we can hook into that kind of like deployment life cycle management engine.
+
+**Andrew:** So, how does, like, is there any comparable services to railway for our viewers that are listeners that might not be as infrastructure heavy? Is it kind of like Heroku or render? Yeah.
+
+**Jake:** Yeah. So it's, it is like we are heavily inspired by Heroku. Like that's one of the first tools that a lot of us use to like, just go and get something up and running. And so for like on, on the surface, it's very, very similar to Heroku, right? Like if you wanna get something up and running, whether it's a database, whether it's an application or anything like that, we will help you get it up and running.
+
+Right. And that is kind of generally our pitch for, for companies and, and teams who wanna move extremely quickly. Right. But the long tail of this problem is actually it's really on that kind of like dependency life, cycle management. Right. And so like, as we kind of grow, our aim is actually for us not to be competitive, the Roku it's actually to be competitive with Terraform.
+
+Right. And so you essentially can keep this Desired state that you currently have and then, or this, this current state that you currently have and then desired, desired state. And as you kind of like use the dashboard as this compiler you will essentially espouse into existence that config, and we will go and reconcile the state underneath for you.
+
+Right. So on the surface, it looks a lot like competing with Roku. But the ideal long term is the dependency management kind of Terraform layer, which like. I don't think fundamentally exists for, for kind of most things. And so it, it's kind of like a really interesting place to be because you're kind of pitching this thing that like, people know is like really interesting and like, and, and, and will help you kind of on your development journey.
+
+But your current best approximation is most of these tools like Render and Heroku, where it's like, okay, cool. We'll just figure out about production, right? Like that's, that's what we kind of get up and running your development environment. That's totally up to you. And then like, you know, we, you know, if you want a flask app, go find a flask app from like GitHub, right.
+
+We see railway as kind of this universal memo where you can just like yank things from it. And anytime anybody has deployed or build something, you should build to yank that as a dependency that you can start using. Right. And also keep track of that dependency. Right. So you don't need to like clone or fork or any, like pull down this stuff.
+
+And then you've kind of like lost this pointer in the world and you lose that dependency. Like we should be able to track that and we should be able to like, push all of those, like downstream changes. Right. And they should echo and kind of ripple out in the same way that you would have, like, you know, packages, you can have like packages as infrastructure.
+
+**Justin:** Interesting. So this gets into your, your sort of like, one of your catch rages is like infrastructure as Legos is like trying to get these prepackaged pieces and then compose them into something. Right. What, I mean, what might that like, can we get a little bit more of a concrete example of like, how you might use that maybe with a flask app or something it's like, how does it simplify building apps?
+
+**Jake:** Yeah, sure. And so. Let's say you have a an API server and like a database. Right. And so those are basically what we call atoms. Right. And so there's like the core, most like low level building block that you would want to build. Right. And so you would say, I wanna Postgres instance, and I wanna deploy this like flask app somewhere.
+
+Right. And then if some, like you had built something that somebody wanted to depend on, right? Like the evolution of this ends up being something like posthog. Right? So you, you add like Redis on top of it, you add this other thing, you start authoring it to the community. Right. And people start to depend on it.
+
+And they're like, how do I deploy this on prem? How do I go and manage this? Right. Like, Since railway understands how to deploy Postgres and how, how to deploy Redis and how to deploy docker files. You can essentially build up these like Legos that can now be composed together. Right. And if you say, cool, I want a version of posthog, then we can say, let's get you the latest version of posthog that ever ran.
+
+We'll go grab that as a dependency and as posthog authors new things and says, we're gonna move to Postgres 14, right. Or we're gonna like, okay, we're gonna swap Redis out with like mem cache D or like some other, or not, or like not meme cache D I just pushed et CD. And Meash D together long day. But anyway, the , they swap it out with another mem cache.
+
+You can actually keep track of these dependency over time. And if people will create the, like backfills required for any of these things, you can fork into a parallel environment, backfill, backfill, everything, and then go evolve this over time. Right. And in that sense, it keeps track of this dependency so that you don't necessarily need these kind of DevOps people in the loop that say they like, oh, there's like breaking changes here, or, oh, cool.
+
+Like, what are the kinda like ramifications on any of these like downstream dependencies. In the same way that you get those package dependencies, you can now get those infrastructure dependencies, right? So long as you have the, the input required and you push it through that application and it deploys successfully.
+
+You have that dependency.
+
+**Justin:** really cool. So was there ever, like, as you're building this, I mean, it sounds. It sounds like a, an incredibly complicated thing to achieve. Especially if you're talking about like, sort of figuring out easy infrastructure migrations, that's not an easy thing to do. That's not a trivial thing to do by any means.
+
+#### [00:10:42] Infrastructure Superpowers
+
+**Justin:** So are there like any features of railway that you'd say that you're most proud of? Or maybe something that's just given you like a real aha moment or given you your users, like a real, like, ah, this is like, this is it, you know,
+
+**Jake:** Yeah. So I would say that there's like a couple of things here and they tie into each other. Right. So the canvas is neat because like most people, when they think about like service dependencies or anything like that, they think of this kind of like brick of YAML and anything like that. And this allows you to kind of just like.
+
+espouse it into existence and say, okay, cool. This now exists here. Right. And so that's kind of a nice aha moment, cuz you can worry about the networking. You can worry about any of this other stuff later. Right. But the really cool thing that I'm super excited about that we didn't get to chat about kind of last time in our initial first chat was this thing called nix packs.
+
+And so we're essentially using nix to rebuild the Heroku build packs, which if you're not familiar with this when you're in the audience the Heroku build packs are kind of this like magic amalgam of bash scripts that say like, go get these dependencies if you have this, this thing here.
+
+Right. And so we are essentially rebuilding this and we're gonna move this out beta because it is, it's doing super well on the platform on next Monday. And it basically is this kind of like, rust engine that goes, and it analyzes application dependencies to bootstrap the dependencies required to create a container so that your application will run in it.
+
+Right. And so this is a really fun aha moment because the magic of Heroku was that you just kind of give it your code and it like runs. Right. And so we tried to figure out a way that we could actually build this in as a composable thing where we could start adding things like provider caching.
+
+Right. So if you look at a lot of really cool tools that kind of kind of came out recently, like you look at turbo repo you know, bazel is, is obviously an older tool with a lot more config, but like a lot of these things kind of define ways to like, do caching. Right. And if we can define this as general thing, like we're gonna give you a, a magic pocket drive in space that actually shows up, you put your node modules in it.
+
+And then when you go and rebuild this again, you have those node modules again. Right. And so now we can essentially define ways to go and grab those dependencies and say, if you are building a Jengo app you actually need these two dependencies. Right. But if you're building a Jengo app with Postgres, you actually need GCC.
+
+So we're gonna go fetch that as well. Right. And we can read that as your requirements dot JSON. And since it's all like. We've got like these libraries for just like building with, for us. Like, it's really easy for us to like go and add those logic and, and add those providers in and add any of those things.
+
+And essentially just map over these and grab all of this amalgam of dependencies. Right. Which allows us to automatically bootstrap the container, which allows us to kind of carry that magic forward and do a lot of really, really neat stuff with it. And then that actually extends on like platform levels where you say, okay, cool.
+
+You have a Jengo application, but this, this environment doesn't have Postgres. Right. Can I go and bootstrap a Postgres environment generate all the keys required based off like a, a kind of like generator encoded environment variable that says like either go fetch this environment variable, or this is how you would generate a Postgres kind of like database, go, go kind of like grab that memo and then pipe it in and then spin up that Postgres database.
+
+So you go from essentially having just an application to an application with all its dependencies spun up. That can be reproduced pretty much anywhere. Without any sort of conflict that you, you define yourself. Right. And so that's kind of the magic moment. And that's where we're working towards, like right now.
+
+And,
+
+**Andrew:** That's that seems like magic. Just like analyze the code, know what to do without any config, like fire infrastructure guy. Right.
+
+**Jake:** and it's obviously not that right. It's a long tail of like, go grab these dependencies. But you know, for people who come to the, the programming realm or people who are not familiar with DevOps or people like anybody, who's just like not kind of gone through what I call as like the DevOps trough of sorrow of learning cube, learning, Docker, learning, all of these other things so that you can deploy your kind of like node app.
+
+It's really awesome because like, basically they don't have to deal with that until they want to kind of eject and go and be like, okay, actually, how does this actually work under the hood? Right. Or how do I extend this so that it's, you know, We had somebody in the community where they were like, Hey, I imported the canvas package, but it needs like some WebGL stuff.
+
+And then they just like made a PR into here and was like, if I did, if I import this package, go grab the WebGL stuff. Right. And then it just worked. Right. And it's, you can create this kind of like whirlwind kind of network tailwind, where people are just adding these things and you can grab this like massive dependency graph.
+
+So it'll be super interesting and it's definitely a long tail thing, but yeah.
+
+**Justin:** Yeah, these platforms are really fascinating. Is, is there I mean, are you really, really relying a lot on like context specific understanding of dependencies? So for example, understanding a gem file or a package.json, or, you know, whatever other, you know, your requirements, Stu your, your requirements file on a path project.
+
+Like whatever you may be to be able to like pull in these dependencies yous. I heard you say nix pack, which nix sounding like the like Linux distro. That's like very modular and like, you know, sort of like breaks things down. I mean, is it using some sort of magic under the hood to figure out like what the dependencies are or is it like very programmatic?
+
+And like, we're gonna look at your project and sort of figure things out
+
+**Jake:** Yeah. It's, it's very programmatic of like looking at the project and basically being like, if you have, you know, Jango, then we need to go check at like your Jango apps, like setting dot pie to see like where the like what the engine is for your, for your thing. And if it's Postgres, then we can go and grab this.
+
+Right. But you can encode that logic since like, everything is just. You either need the package or you don't. Right. And so if you just end up with dupes you can just flatten and compress and you're still fetching those packages. Right. And since it's nix, everything is like cachable and reproducible. Right.
+
+So you're fetching these things. And so if the build cache is basically hot or somebody's fetched this before, it's really, really fast to end up rebuilding these things. Right. And once we throw in those provider cacheing things like people can write into their providers when they're going and, and doing like, you know, a yarn provider or an NPM provider or a PNPM provider.
+
+And they can reuse sections of this code because it's not like a bash script, like the old Heroku kind of build packs. It's like, okay, cool. Like, I actually wrote a function for like going fetching and, and grabbing everything and putting it into node modules. Right. Like, that's like one single call that you can just reuse across like N P PM, N PM yarn, anything like that.
+
+Right. So you can get this like really programmatic kind of like tailwind that you just like you get with code. Right. So it's super sweet.
+
+**Andrew:** Yeah, that's awesome. Like as a front end developer, anytime I've had to go anywhere near a Docker file or a bash script, I'm just like, oh God, like this, isn't what I do. I, I need something to help me. So having, having a tool that can do it automatically just seems like, like the obvious next step.
+
+**Jake:** Yeah, right. And it's, it's as obvious as it is difficult on a lot of these things, you know? So yeah, but I'm, I'm cautiously optimistic cuz I think that we're, we're really on a good base here. So.
+
+**Justin:** we were talking initially we had a, we had a call before we did the podcast, but one of the things that, that we had talked about, and one of the things that I think is very true is that as an industry, we've come to understand that like infrastructure needs to be more reliable, more pro programmatic reproducible reproducibility is like really important.
+
+And a lot of the tools that we have these days are complicated. I mean, like if anybody has ever dealt with Kubernetes, you're like, you know, it's, it's, it's a challenge. It's a lot to learn. It's nontrivial. Kubernetes is an amazing project and it does a lot of the. Things, but there's a lot of conversations that happens in teams.
+
+It's like, do we actually need Kubernetes? Do we need the things that this provides? And it's a real question that people have to hit because just the learning curve and the complexity. So I'm excited for tools like railway that are like giving teams alternatives to be able to do that. It's like, I want to be able to spin up an app quickly.
+
+I want to be reliable. I want things to work together really well. Like be able to add new infrastructure, have different types of environments and not have to worry about like, I dunno, a co config cuz.
+
+**Jake:** right. And like everybody says, like cube is very, very difficult than it is, and it's very unapproachable and people don't like it. But then when you get into like the whole kind of other realm of like chef and Ansible and public, then making sure that all these things are item potent and reproducible and kind of all of these things and, and you are running on like your production host infrastructure.
+
+Right. And so like any change that you, you are kind of doing there is like very like. It, it feels like we should have better tooling. Right. And cube is kind of that, that one next step. But unfortunately it's just still not as accessible because like, like you said, Andrew, like anytime you pull open a Docker config as somebody who mostly like writes react stuff, it's like, what, what the am I doing with this?
+
+Right. Like, it's, it's a lot have to understand the file system. You have to understand fetching dependencies. You have to understand, like, if you wanna make a, a Docker build that doesn't take like eight minutes to run, you have to understand like how to build like layers out of these things. Right. It's, it's frankly, a lot to ask for, for a lot of people.
+
+And I think we just need better tools on all of these things. So,
+
+**Andrew:** so does railway, like also make it easy to like, like you said, like fork things. So if I wanna have like, multiple different envs it's like just as just a click of a button and it handles the whole infrastructure for me. That
+
+**Jake:** yeah. Yeah. So we do that right. Outta the gate. Right. And so we can actually even allow you to define Fork config overrides. And I keep calling them this and, and our product designer is, is like, has a really good name for it that I just keep forgetting. But essentially it's, it's whenever you fork an environment you can.
+
+take Uh, envs like environment variables. And then basically say like, this is a staging environment, right? Like pipe in the staging environment, pipe in the staging Stripe key, like override these things. Right. And it makes it super trivial. So like, whenever you wanna fork any of these things, it goes, and it has a look at the fork overrides, anytime it kind of like crosses that window, it moves all of it, like will override those envs and then you just start using it.
+
+Right. If those envs don't necessarily exist, like there's a, it's like, Hey, I need a database URL. Right. We're spinning that up. Right. Because we already know that there's a Postgres instance. Right. So we do all of that. Right. And it's super nice cuz you get a full copy and clone of your infrastructure.
+
+You just like run your initial kind of like migrate scripts. And then you' kind of databases. If you have SQL databases, they're kind of up and running. And then you can just do whatever. And then the ideal here is like potentially over time, we can allow you to kind of, maybe cherry pick some data from production or something like that.
+
+But that's, that's a little while out. It's kinda like on the data migration stuff we talked about earlier, when you're going for those dependencies, it's very, very hairy. But Hey, wouldn't it be nice, you know?
+
+#### [00:20:33] Tackling Tough Problems
+
+**Justin:** Does I, I guess, semi related. So does railway handle autoscaling like based on traffic, on usage, is that a, is that something that you can configure?
+
+**Jake:** Yeah. So our ideal here is that you don't have to tweak as many kind of like knobs at all. Right. And this is obviously kind of a north star here. So there's gonna be knobs that you generally need to tweak. And we're in the process of exposing them. So we, we handle auto scaling up to a point.
+
+Right. And so we can vertically scale up these instances and we can start like locking these clusters and doing stuff like that. But there comes a point at which like, you know, there's only so much you can fit on, on kind of a specific box. Right. And so we have basically like lines that say like, Hey, listen, you're gonna, you're gonna run into something here.
+
+Right. There's this is kind of the, the end of the auto scaling. Right. And so that's kind of what we do, right. Is, is allow you to kind of spin up these things and give you kind of like a best fit auto scaling. And then ideally you'll get kind of alerts as you're kind of like approaching that and, and ideally saying like, Hey, listen, in four days, your database is gonna run outta memory.
+
+You know, you may wanna like, have a look at this, you know, and we're in the process of building a lot more kind of like intelligent alerting on top of that. Right. So that's kind of how the auto scaling works. And in the future will allow you to kind of like define how many replicas you want, how many whatevers, like, where you wanna run this thing kind of things like that.
+
+And then as you kind of add more config we can do more things. Right. But with just kind of the baseline amount of stuff where we can do a best fit as we do kind of currently.
+
+**Justin:** Yeah, that's awesome. Platform maturity here is, is, is kind of key, you know, just like shipping something early off and shipping something around the infrastructure is really hard generally. Because you're not using like Kubernetes or something under the hood. You've got a lot of like custom code here that you're like hooking up to to make all this flowing work.
+
+So, I mean, speaking of custom code I mean, we we've said it a few times. Infrastructure's really, really hard. And this is, this is such an interesting area of the industry to get into so given your experience now, what's the hardest technical problem that y'all had to solve at railway?
+
+**Jake:** Well, I can tell you about one that we were talking about today. And it's, it's what happens when you run outta IPV4s. And so essentially we, we model the entire network across everything and we allocate you know, an internal IPV4 for all of these things. Right? And, and once you get into like dependencies that spawn other dependencies and like those subnets, you need to, you need to allocate those things or you need to like create subnets for them.
+
+Right. So just even the network management and the topology there, like is really, really hard to lay out in a way that's like, okay, cool. Can you give somebody like true tenant isolation here and handle a lot of that stuff. A lot of the stuff we do is like, it's hard in terms of engineering, because like, you know, we're, we're handling a decent scale at a decent rate at a decent clip and you're doing a lot of that stuff, but a lot of it is like very foresightful in terms of like, Okay.
+
+We gotta read a bunch of papers because like, people don't do this, this stuff. Right. Like a lot of the stuff that we're doing is like, you know, you, you kind of even just run outta papers and you're like, you're like, oh shit. Like, we're really in the, like in the deep here. Right. And so like the technical problems end up being more kind of like, how can you take the tools that you currently have to, to kinda like best fit onto the experience that you really want and kinda like track a lot of the really cool stuff coming.
+
+Right? Like there's a lot of really cool stuff coming down the pipe from like the EVP F perspective that like we will be able to use. Right. And there's a lot of cool stuff coming down the pipe for like Kubernetes with like, you know, like the virtual Kubelet stuff that recently came out I P V four V six multiplexing stuff like that.
+
+Right. And so we're constantly on this edge of like trying to like walk this line and be like, okay, like, you know, if it's gonna take us this long to go and do this, like, Hey, can we, can we line it up with this timeline? Is that timeline gonna shift? And so there's a lot of really like hard problems in there, but a lot of it is like, really just like.
+
+Playing with the tools that you, you kind of have. Right. And you're like, I have this, this hand of cards, like, how do I play it this time? Right. How do I make sure that we get the like V zero out that'll work for all of these things? And how do we make sure that we plan that, like, when we do the view one, we're gonna be able to like backfill for all of this stuff.
+
+Right. And so it just becomes this like massive, like matrix that you're constantly trying to like navigate.
+
+**Andrew:** it sounds like you're truly on like the bleeding edge of this tech you're doing. You can tell you're doing something new when there's no more papers to read about it.
+
+**Jake:** Yeah.
+
+**Justin:** Yeah. You know, it's a hard problem when you have to start reaching for papers to begin with. It's like, oh wait, look, is there research to this? And then once you're like, run outta research, you're like, ah, well, huh,
+
+**Jake:** Yep.
+
+**Justin:** let's write our own papers.
+
+**Jake:** Yeah. And then you, you catch yourself emailing people on the Bo or the Tupperware paper, and you're like, Hey, I know you, you alluded to this random thing that like we think is really important that you did not cover at all. You know, do you have any thoughts here? And sometimes they respond and sometimes they don't respond, you know, so yep.
+
+**Justin:** Yeah, that's awesome. So, so let's, let's step back and, and think about future, future land. So you've been working on railway for a while and you get it to the point where you want it. It's just like, sort of met the vision that you have for it. What does it look like? What does it do?
+
+**Jake:** It is runs anywhere. Just in time dependency, just in time compute for software, it makes everything so much easier. Ideally you just wave a wand and you say, I want this and those dependencies are reconciled all the way down the tree. When new updates are pushed, all of those things and pointers actually go and push into a queue that you can go and manage yourself, or, you know, ideally even they're kind of automatically applied or even more, ideally there's a switch that says like, try and automatically apply these or, or let me know if I need to do anything.
+
+Basically software is a hundred times easier to build, right? You're not, you're not cons like. You are constantly in a state of flow because the application doesn't require you actually to page out, to go and grab some sort of documentation or figure out why the key is wrong for your, your YAML config, or figure out something here.
+
+Right. And just as a result of like, if we can build that engine, we think that we can make software developers like a hundred times more efficient. Right. And this is why like, you know, venture people are like, why would you work on this problem? And my answer is why would you work on any other problem?
+
+Right? Like if you could build this thing, this like weird engine thing that we are currently building and seems to go reasonably well so far you can go build all the stuff you want to build later faster. Right. And if you could build this magic thing, you can just do that. Right. And so that's, that's kind of what it looks like for us is that you don't need to deal with dependency.
+
+You don't need to deal with config. You don't need to just deal with how these things land. You don't need to deal with Docker files. You don't need to understand how like the Linux file system is structured to deploy your react app.
+
+**Andrew:** That, that that's awesome. So it, like, everybody agrees that it's a hard, hard problem. Do you like have any problems in it that you're kind of like, just putting off you're like, ah, we can, we can solve that one later. And, and it's like the, the barrier to this big vision.
+
+**Jake:** Yeah. It's well, so the, the IP problem that I sort of just like talked about, like, we calculate that that's gonna be a problem in six years. Right. And so it's, it's like one of those things where you're like, which problems can I put off? Which fires are currently UN putable how do we need to like, change these things so that we can like make sure that these things work.
+
+Right. And so I dunno if you know the GIF of. Like, I think it's from Wallace grommet of like the guy putting down the train tracks all the time or, or whatever, that's just us constantly. Right. Like, and so, you know, whether it's like, how do you scale the logger so that it's durable and like fault tolerant and like works across all of these instances.
+
+And the users can tail logs, like in real time. Right. Like our initial kind of like implementation where like, okay, well we'll use big query. It's like, well, big query actually is not like in real time, so we can't actually use that. Right. And so we had to like build this whole engine kind of around this thing.
+
+Right. And so a lot of these problems, like they always just tie back to like, what is the product experience that you want out of this stuff? Right. And I think that's why we're like uniquely positioned or like, people feel like the thing is kind of magic is because like we really approach it from like a product perspective.
+
+And it's like, how do we make sure that like, the product is there from, from the user experience. Right. And then work backwards to like build the infrastructure that kind of is required for that.
+
+#### [00:28:21] VC Funded Dev Tooling
+
+**Andrew:** So, as a first time founder, what I assume is a first time founder, was it hard to get railway off the ground? Did, did you immediately go for the venture capital route or did you try to bootstrap for a while? Like what, what was your strategy around this?
+
+**Jake:** So I like this one's tough because like I was basically like, you can't really bootstrap this. Amazon is gonna murder you with capital. And so it was basically one of those things where it was like, it's kind of really the only, the, you could only really do this by the venture road, if that makes sense.
+
+Right. And I only sort of came to this realization maybe six to nine months in, I was like, oh, we could raise an angel round. We could like do that. And we could like, you know, try and figure out a way to like, monetize this right. Outta the gate. But we ended up kind of just like leaning to the venture side.
+
+And like, I really do genuinely just believe that, like, you just, it wouldn't be a business that you could build bootstrapped because it does require like capital investment tech investment, like working with users, like building the DX, like messing something up and then realizing that you just had like, build a fundamental mistake that you know, how to backfill like a bunch of those things.
+
+Right. And, and that's the only way you can do it, especially if you didn't want to spend like, you know, Hundreds of years working on this problem. Right? Like you could do it over time, anything like that in theory in a vacuum. Right. But like, you know, I've only got like what, 25 to like 35 years of like good work engineering kind of deal. Right. And so that's kinda like the best fit for that.
+
+In terms of like getting it off, off the ground I didn't want to build this thing. And I, I tell this to people often and they're like, but you are building the thing. And I'm like, yes, it's funny how that happens. I went to everybody smart, who I knew at big companies, and I was like, you guys must be building an easy way to like spin up databases and kind of like do infrastructure and, and all of this stuff.
+
+Right. I won't like name any sort of like names or anything like that, but most of 'em were just like, no, we have like no interest in, in doing a lot of this stuff. Right. But what they did say was like, this sounds really cool. Could we write you like a small angel check or whatever? Right. And so I chatted with like a bunch of people and at the end of this, I had like. A bunch of nos for like, can you have a job offer, but like a bunch of angel checks. And I was like, okay, like, let's just see, see where it goes on a lot of this stuff. Right.
+
+And so I think I just like fundamentally was extremely lucky on a lot of these things. Right. I just, yeah, it's just, that's just kind of how it went down.
+
+I think we, we started
+
+**Andrew:** we
+
+**Jake:** probably at the best time you could ever start for a dev tools company Vercel was just like absolutely ripping on a lot of this stuff. GitHub had just been acquired basically. And so I think there was a lot of like luck and timing that kind of went into it, you know?
+
+And I, I still think there is to this day, right. Like I keep saying that like, we're probably building this too early, but it's also probably gonna take longer than we'd like, so we'll probably be on time. And that's, that's kind of the current state.
+
+**Justin:** Yeah, that definitely feels right. You know, it's interesting. I think a lot of, I think we take this for granted. There are like some companies that I know of, like, so, so Spotify has this thing called backstage, which is their like internal, like application development platform. And they've spent, you know, a lot of engineering resources on that. They have this semi-open source project for it, but it's like, you know, it it's work. Right. But even for them, it's like, here's our like happy path. This is the things that we really, really are good at deploying. And, and this is like what you get and sort of outside of this, you're on your own.
+
+And a lot of companies are like that. It's like, we're, we're really good at like deploying rails apps. We'll deploy your rails app. You wanna build something else, deploy it yourself. And then I think there's just this, this whole ecosystem of like startups that are like, all right, crap. Versace's not really working for us because we're, we, we need something that's more than serverless.
+
+And there's like render and Heroku. Like Heroku's not the, the golden tool it used to be. And render is great. And there's like other, these like other things, but. Yeah, there's just a lot of stuff out there and you're just like really wanting to build your app, build your product. So it's like, I, I do think it's like a really good time where there's like, not a clear, like this is, this is the tool to go to in this space.
+
+**Jake:** Yeah. I think like, if you look at any of the, like, stuff that gets shared by like, VCs about like what the market looks like, you have like 400 tools that exist all in the same space that are kind of just like they do, like, there's like monitoring analytics and like deployment plane and like all of this other stuff.
+
+Right. And I really like the like philosophy that like the tail scale people have and, and Avery talked about in their most recent blog post is like, most people don't need that level of config right. And if they do, you can go build it later. Right. And so what's kind of like the thinnest line that you can draw to like get to that, that scale that you're like, okay, cool.
+
+This, this will work for like, you know, this specific set of users, right. Like railway right now works really, really well for. Indie hackers to like series C series D startups and like probably for internal tools at like fortune 500 and like the, the Ubers and doordashes of the world, like that's, that's, that's a sweet spot.
+
+Right. And over time we'll like build out a lot of those things, but like, I think there's a lot of tool fatigue that kind of generally goes around and like, there's a lot of like wonderful tools for a lot of these things. And you can, you can also just add them to your application, but like, what if you had like a really, really good experience, kind of just add a box on this and you could go and put on whatever else you wanted.
+
+Right. And AWS, as it stands is not that. And Docker, as it stands, God bless the technical stuff in there. The user experience is not that. Yeah.
+
+**Andrew:** Yeah, just trying to read the Amazon's docs. Oh my God. it's it's I pull hair out every time.
+
+With with all the stuff you've built. You're relying a lot on, on a lot of open source stuff. Have you guys contributed to any open source libraries, like, or is it all secret sauce at this point?
+
+**Jake:** So the nix pack stuff is all open source. Right. And so anybody can go in and add a provider. Anybody can go in and add any sort of base level dependencies. Anybody can add anything to like the rust build manager that kind of exists there. We have a couple other things we originally like started to do our own build packs, but that's what kind of like plopped out the nix pack stuff.
+
+So we were hosting that for a while, was like an extension of like the Paquito build pack. We've open sourced this OG generator, which is kind of, like allows you to build like dynamic OGs. I think it's actually like forked, but added on top of like something of Vercel built. We have this thing called dev icons, which is basically like if you go to just dev icons slash Dev icons that really to app slash whatever the query is, it'll come up with like, whatever the icon is.
+
+So if you just like put, go or anything like that, you just get the icon. And so this is super useful for just like going and getting like, you know, nice PNGs and nice SVGs and like anything like that. And so over time I'd like to open source a lot more of this stuff. So yeah,
+
+**Andrew:** That's cool.
+
+#### [00:34:39] Automating all the things
+
+**Andrew:** So, uh, you, you, from what I've read on your blog and through this company have an intense interest in automation what parts of software development other than what you've been working on, or even in the wider world, do you think are ripe for innovation? That just haven't been automated yet?
+
+**Jake:** I don't know if it's haven't been automated yet. But there is something between Vercel and squarespace. There's something absolutely ginormous between Vercel and Squarespace that I don't think anybody has hit on yet. And I think it a lot looks a lot, like being able to define your own component kit and like go and like put it into a nice little kind of amalgam and start layering these things together.
+
+Right. And I think the eCommerce stuff that, that Shopify is doing in kind of this area is like probably one of the closest things that I've generally seen. But I think that that space is like, you know, I, there was kind of a whole like push towards that in like the, the early 2010s. And I think it's gonna like make a resurgence because like, I don't think that like, that there's.
+
+Enough coverage, if that makes sense. In terms of other automations I'm a big like home automation person. And so I have like smart blinds and like lights and other stuff. I have an eight sleep that I like absolutely adore. I think one of the, like really, really cool things that I don't think will come soon.
+
+But you're seeing like sort of inklings of it is like, biometric feedback loops. So if you look at things like aura, if you like, look at things like aids sleep, if you look at things like levels where you just like pin a like CGM or anything like that, I wanna be able to pull like all that data from my body, because I want to basically know like, if I have given it too much caffeine or not enough water or anything like that.
+
+Right. And so that. That's the automation, I think a lot about, right? Like this magic thing that can kind of just speak to your lizard brain and be like, Hey, listen, you need to work out now because like, that's gonna bring your levels in line. Right. And so for those things, like that's where I'm really, really excited about and I suspect they might take long enough that we can get railway off the ground and working super well.
+
+And maybe we could use it to like go build some of those things. But it might also be, you know, yeah. It might take us a little while.
+
+**Andrew:** yeah, yeah. Both those spaces are, are pretty cool right now. Like the, the website builder space. We've had lots of people on that that are hitting that niche right now. Builder IO is, is an interesting one to me cuz like they, they are in this kind of the same vein of like, let's just build a bunch of crazy tech and see, see if it works.
+
+We, we had Steve swell, their CEO on a few episodes ago. It was a good talk. Uh, Yeah. And then with the biometric stuff. Oh my God. Like if I can have a device that tells me my calories in calories out, oh my God.
+
+**Jake:** It would just, it would work. It would be great. And so, yeah, I'm excited about that. Tools for like security and like network automation where like, you know, I really like tail scale. I really like wire guard in general and I think it's like fantastic tools where you like, can't shoot yourself in the foot.
+
+Right. So those like, dependency and supply chain management things, I think like, one just like raised at absolute bajillion dollars. I think it's like chain guard or something we've got managing all of that stuff and supply chain attacks and, and kinda any of those things is super cool too.
+
+Because there's a lot of effort that goes into it. And there's also a lot of entropy in that space, right. Because like, you know, what, what does an exceptional security person look like? There's such a spread on that. Like, like I have met, like we have one of our investors, who's like one of the best security people.
+
+Like I've I've ever met hands down, I would say probably in the world. And the amount of expertise they have is just bananas. Right. It's just like. Understands like all of the low level, like Linux stuff, like far beyond, like is so far ahead on a lot of this stuff. And so if you can automate a lot of this and make it basically Bulletproof by default that's insane.
+
+Right. And it might not be like conventional kind of automation, but I think it's just automation in terms of like, otherwise you'd have to have a Damon that kind of does all of these things, you know, or some sort of person or whatever.
+
+**Andrew:** Yeah, definitely in the same, same vein of things I don't wanna do as a front end developer security and infrastructure that . Yeah.
+
+**Jake:** Yep. And they're yeah, they're both, they're both critical and yeah.
+
+**Justin:** yeah. That and like privacy concerns like, oh, there's so much. Yeah.
+
+I've been looking through the starter projects that railway has and like, Hey, what is this? I've never heard of this thing before.
+
+**Jake:** There's, there's some cool stuff there, especially when you like start giving the community the autonomy to just like start publishing shit, because they just add a real big button to it and it just gets like pulled in and you're like, what is this? And you're like, oh, this is really cool. Like who did this?
+
+Right. Yeah. So that's neat. Mm.
+
+**Andrew:** Yeah. That's one of the, the, I love that bit of DX from Heroku where it's just like, here's a button and you read me, click it and things go, like, that's such a great thing to copy. That's
+
+**Jake:** Yep. Yep. And yeah, we definitely can't take credit for it, but we we're really excited about like expanding on it. Right. And pulling in all of those things and having them in one place where you can just like have a marketplace that kind of just like manages all those dependencies for you and it's all open source.
+
+Right. And our ideal over time is actually we can monetize this for people. Right. And so when people pay us to go and run these things, we can kick back money and we already do for, you know, a few, a few repo stories where people have kind of like developed a little bit of a kind of like running water, tread kind of thing, you know, traffic, traffic's the word I'm looking for.
+
+It's a long day.
+
+**Andrew:** that's that's super cool. So like SAS without like having to care about it too much.
+
+**Jake:** exactly. Right. It's just like, you know, passive SAS, if that makes sense. Right. And then ideally if you can build these things and, and you can start monetizing them, like people could maybe like leave their jobs in, in a way that doesn't actually have to, you know, force them to like go the venture back route.
+
+Right. And I think venture like it's really awesome. And I think it gets like relatively bad rap, because I think like the ability to unlock those entrepreneurs to go like swing at those really, really hard problems is like, cannot be like understated, overstated as like how important it is to like go and do those things.
+
+I just like, I am beyond lucky that that people let us like go and do all of the shit that we do. That said if we can enable people to like go on bootstrap and like go and scale from like their weekend job, like getting a really nice, like deployment plane, sharing this with people going and monetizing this and spinning this up without actually having to like, go and take a lot of this risk go and learn a lot of the like financial instrumentation that comes with like, Figuring out.
+
+What, what kind of the terms on your term sheet are, especially as we go into like less favorable terms you're gonna have to figure out what liquidation preferences you're gonna have to figure out what ratchets are. You're gonna have to figure out what all these things are. Right. And then it comes with like the having to do like all of the stuff to run in business.
+
+Right? Like the reason we started this company is so that I can work on like really, really cool edge problems. And now we're at a point where I'm just recruiting people to go work on the really cool E problems that I wanted to work on. And I'm like, ah, you know, and, and not that there's anything wrong with that.
+
+It's really, really cool to just like, get people who are like awesome to like go and do that. But for the people who are technologists at heart and just like wanna like work, you know, like just like the amount of, of effort that they want to do. I grew up reading Tim Ferriss the four hour work week.
+
+And so I'm a big fan of, of a lot of that stuff. It's just like, you know, having both options there is really, really key.
+
+**Justin:** Let's move in tool tips.
+
+#### [00:41:24] Tooltips
+
+**Justin:** So I, I had sort of, put actual as a pick for a few reasons. One so actual is a budgeting app. It's by James Langster. Think I got that. Right. It's actually open source now he's stopped maintaining the pro the project. It was a, a sort of a solo dev thing. I've had my eye on this project for a while because a he's, he's written a lot of good technical content on it.
+
+He's got some blog posts up it's local first. He actually wrote this library called absurd SQL, which is this SQL light binding and web assembly that runs in the browser that like uses index DB as it's, you know, it's storage engine. So it's like this really really awesome project.
+
+There's a lot of interesting tech here. The, the user experience is pretty good and now it's open source. So if you are really interested in learning how to. Builds a local first app. This is a great, great model. And definitely how they recommend you check it out. The code is really, really interesting.
+
+But yeah, it, it, it just kind of cool and very fortuitous set it open sourced.
+
+**Jake:** Yeah,
+
+**Justin:** I know. Awesome opportunity to learn
+
+**Jake:** that's super sweet. I'm I'm like very bullish on the local for first stuff. Unfortunately, it's very hard to build there's a couple of things like shit, I think it's called replica cache or something like that.
+
+**Justin:** Yeah.
+
+**Jake:** yeah. Super,
+
+**Justin:** For sales partner with cache several times. Yeah.
+
+**Jake:** yeah, yeah, yeah. So I think it's, it's awesome, right.
+
+It's just really hard to pull off. Like I know that the, the linear guys spend a really long time building their engine out to go and pair a lot of their experience. And it shows obviously it's like world class offer, but it's still, you need the chops to write world class software. And I haven't seen a library that basically just gives the issue off the shelf for, for kind of like free.
+
+**Justin:** Yeah. So there's like replica cache and there's another company called live blocks. So there's more and more that are coming into this multiplayer space where if you like, don't wanna focus on this. I really like elixir live view as a, as a potential way to do that. It's just like, from a technology perspective, it's a really interesting model.
+
+Um, but yeah, so there's a lot of services out here to sort of start layering these things into your app. That's the thing that you wanna do, but if you wanna learn how CR RDTs work, you wanna try to go the real technical route and build it yourself. Look at actual source code. It's good.
+
+**Jake:** Yeah, cool. That's sweet. I didn't even realize there was like an open source implication that you could have a look at. So I have to go dig into that
+
+**Justin:** I'm going off the rails here a little bit. But there's a, also a really, really good paper by the the team behind the muse app. Well, it was their, their
+
+**Jake:** Yeah. It's it's the ink and switch people that their blog is just like poor over bullet. Like read it,
+
+**Justin:** It's it's golden. Yeah, they've got a really good like real time article, like post on like studying CR DTS and understanding how like multi-user text editing works and they also have a library, a CR D T library that's written in JavaScript or whatever. That's really good. And I don't remember what that is off the top of my head, but I'll put it on the, I'll put it in the show notes.
+
+**Jake:** Yeah. The, the, I think it's project can be, or something like that. It's, it's about like creating lenses for all of your data, so that it's constantly like portable and, and reconcilable is super, super neat. Yeah.
+
+**Andrew:** okay. My first tool tip is a framework I just found yesterday called plasmo. What plasmo is, is like it's next JS for browser extensions. If you've ever created a browser extension before.
+
+Yeah. Yeah. There's lots of different files and lots of different configs and lots of weird knowledge that you have to know how to make it like just right.
+
+The approach of next JS four browser extensions has me really excited cuz like next JS made it like very simple to spin up a react app and have it nice in, in tidy. Hopefully plasma can do the same with browser extension development because that is a slog.
+
+**Jake:** Yes, absolutely. . Hmm. I'm gonna star that right now. Yeah.
+
+Okay, cool. So this seems to be a way more polished version of something I tried to do really poorly a few years ago. And it was basically just like, why can't I use my. Design system in react native and on the web. And it turns out there's a lot of problems with it. So, I'm glad that they did it.
+
+Because I went down the rabbit hole for like a couple of weekends and then I just like, just quit. So the, the people at expo, as well as the people at Tomago shout it to, y'all doing really, really, really, really hard stuff. So it's, it's super, super neat to see on a lot of these things. I think we just like need better tools for like cross platform development in, in all of these kind of categories.
+
+**Justin:** I too tried to do this. And found it challenging .Mm. Yeah. Especially if
+
+you have types.
+
+**Andrew:** It's not something that you would expect. You're like, oh yeah, I can make a monorepo we got two react things. Like why, why can't I render one react in another react and yeah, not possible, but it, it is very interesting. I wonder how it works under the hood. Yeah. I.
+
+**Jake:** yeah. I have not had the time to kinda like dig into it. But it does seem like the level of sorcery and the level of kind of like. Product slash DX that you'd want out of this. So like pretty interesting. That's really nice.
+
+**Andrew:** you gotta do a lot to make it like nice for both platforms.
+
+**Jake:** Yes, absolutely.
+
+**Andrew:** Yes, that's really cool. I'm gonna yeah. Okay. So next one. We're gonna do, I don't know how to say it. S Q F M. I.
+
+**Justin:** Oh, yeah. well, you don't have to, to mention the brand. There is this, I think it's open source watch. It's an E ink ePaper watch whatever. It's pretty cheap actually. Uh, You can, they have like a case design, so you can 3d print your own case. I was a huge fan of the pebble when the pebble was around, I loved the pebble watch.
+
+It was an e-ink watch and it was super great. One of my favorite pieces of hardware. Unfortunately, they went out of business or they got acquired and basically shut down by Fitbit, I think. But this watch I've had my eye on for a little while. So it is all open source. You can write your own, watch faces for it.
+
+Uh it's it's relatively simplistic in that the watch face is like the whole watch, right? Like, so the software running for the watch face is like everything. But anyway, I'm, I'm really tempted to, to buy one. Uh it's it's, like I said, it's relatively cheap. I think it's, it's, I'm pretty sure it's under a hundred bucks.
+
+I don't remember the price off the top of my head,
+
+**Andrew:** yeah, this is his one geeky looking watch. it looks like a circuit for strap to your wrist.
+
+**Justin:** You can definitely do cases and stuff too. Like, you know, to customize it,
+
+**Jake:** I'd be worried, ID get
+
+shocked or something, you know? Is that just me like, like how, how ENS insulated is that? What looks like to be metal pieces? I don't know.
+
+**Andrew:** Yeah.
+
+**Jake:** 60 bucks.
+
+That's makes, yeah. Makes you question whether you're gonna get shocked or not, you know, it's 60 bucks. Nah, it's cool. I love, I love stuff like this.
+
+**Justin:** yeah. I mean, it's got Bluetooth, it's got wifi, it's got a vibration motor on it, all your buttons, like, you know, got an accelerometer. You can track your steps. I mean, it, it is kind of cool.
+
+**Andrew:** I don't know. Like the thing I want from my smart watch is not for it to tell me the time. And like, it seems like
+
+**Justin:** true. Yeah. Yeah.
+
+**Andrew:** that.
+
+**Justin:** Well, you have to write it. that's the trick. If it's something you feel like hacking, this is good for you. If it's not, you'll stick with your consumer grade, you'll
+
+**Andrew:** Yeah. Okay. So, my last tool tip of the week is lion web components. What lion is, is it's basically reach slash Radix, but for web components I wanted to build this out a while ago, but I don't use web components. So I didn't really make sense for, for me to do that. But like, I, I just love seeing projects like this that make it easier and easier to create accessible experiences.
+
+And that, that, that type of development can come to web components too is awesome. I haven't looked at the code too much, but they have a bunch of stuff that could get you started and yeah. That's, that's it?
+
+**Justin:** very nice. I like how the, this is it. The rock from lion king. Is that what
+
+that is
+
+**Andrew:** is what that is.
+
+**Jake:** you go. That's what it is. Mm. Cool. Alright, I'm gonna go with the GraphQL nexus NTC stuff, and this is kind of like more on the like building APIs that like don't suck to use. And so these are really, really awesome tools that allow you to essentially like, get types in all of your APIs. Right.
+
+And so the way that railway kind of works for our API stuff is we actually have these graphql clients that they hook in with Prisma graphql nexus. And I think there's another tool in there that allows you to basically you define like the permissions as like middleware.
+
+It's great. You get types end to end. Everything is generated. And then the resolvers can go in and call kind of like, those like GRPC microservices, if you want. Right. And it's really, really amazing. It's like denied by default on all of this stuff, but if you want to expose like model properties, it's super easy to like hook in any of these things.
+
+You just do like t.model.name of field, and it will just like pass the types straight to the front end, like allow you to access that property of the model. But by default it will only give you kind of like the, the UU I D or whatever you're kind of exposing there. Right. So I think this is just like phenomenal.
+
+These are tools that I really, really like from Just like a doing stuff faster, right? Like we've all like tried to debug like a rest end point and spent 30 minutes and then realizing that your shit just didn't serialize to JSON correctly. And then you like go and just like, take a walk around the park tools like this, make it so that you just don't have to do that.
+
+And that's always great in my books, you
+
+**Andrew:** yeah. And then the other one you shared TPC. That's that? That's a good one too. We had the, the guy who runs the project on a while back.
+
+**Justin:** we had the creator on two episodes ago, right.
+
+**Andrew:** Yeah. Oh yeah. And we had the creator on two, two episodes ago. it's
+
+**Justin:** yeah. Yeah.
+
+**Jake:** know? Yeah. Nice. It's sorry, go ahead. Yeah, it's it's super cool. I was like having to look at it, and I was like, maybe we could integrate it here, but like, I am not really doing much coding anymore, unfortunately. So I'm just gonna let the people do, do whatever they wanna do in there and not just like pop it and be like, oh, Hey, should we rebuild our API layer?
+
+You know,
+
+**Andrew:** you gotta create work as a CEO and that's a great way to do it.
+
+**Jake:** the work creates itself. So I'm just, you know, sitting there being like, mm, far more people to like go back full of work when I'm not creating work, you know,
+
+**Andrew:** Me and Justin are out of tool tips, but you got one more left
+
+and we've talked about
+
+**Jake:** I we talked about it a little bit. And they, I think they changed their, their slogan recently because of like a tweet or something. I feel like that occurred, but maybe it was a fever dream. Anyway, tail scale maybe I should get paid for this tail. Scale's like a really easy use VPN. And like, you wouldn't get excited about it except it's like really, really cool for underlying tech.
+
+And it's like, It is frustratingly simple. You literally just curl a bin around to a fucking box and you'd log in. I'm sorry. I don't know if I can swear on this, but you can leave it out. Yeah. You'd curl onto that box and then it just works. You just log in and then it, it does all the network stuff and it's it's bonkers.
+
+It's like, there's no other ways to describe it other than it's bonkers. It's like all secured by default. You can't possibly like mess these things up. And then you can go into fine ACLS later for, for access control. It's it is frustratingly simple. They've done it, just a phenomenal job in building this thing.
+
+So it's super cool. If you haven't checked, checked it out, go check it out. They've really generous free tier. And then you can go bring it to your company and that's how their business model works. And apparently it's going super well cause they just raised a boatload of money. Yeah.
+
+**Justin:** They're super good. I like that. There's an oxide call out on their site. I was like, oh, I feel included.
+
+**Andrew:** There is
+
+**Justin:** Andrew. I actually did have one tool tip it. It was the first one on there. Uh, space drive. Oh,
+
+**Andrew:** shared that on. We can re-share it if you want. But we did, we
+
+**Justin:** no, no, no.
+
+That's
+
+okay. That's
+
+**Andrew:** He shared it previously
+
+**Justin:** A previous episode. I'm actually bad about this, about
+
+**Jake:** Just like bringing the back. I think
+
+**Justin:** yeah,
+
+**Jake:** I haven't
+
+dived into it. It
+
+does it work. Like, I feel like it's super cool. I'm gonna have to try and like, get it working at some point, but it's like very, very neat. It's like that kinda like
+
+**Justin:** Yeah, you should definitely check it out. It's a fun project.
+
+**Jake:** All
+
+**Justin:** All right.
+
+**Jake:** cool.
+
+**Andrew:** That wraps it up for the episode. Thanks for coming on Jake. This, this conversation was way outta my wheelhouse, but it, it was fun to talk about it regardless.
+
+**Jake:** Yeah. And that's, that's the ideal is we can make all the out of the wheelhouse stuff really easy, and then you, you don't have to deal with it. And then you can be like, not, not my wheelhouse, not my problem, you know?
+
+**Andrew:** beautiful.
+
+**Justin:** Yeah. Yeah. Yeah. You don't have to understand it to be excited about it. So I'm excited.
+
+**Jake:** Well, thank you so much for having me. This is wonderful.
+
+Um,
+
+**Andrew:** Well, that's it for this week's episode of dove tools, FM, be sure to follow us on YouTube and wherever you consume your podcast. Thanks for listening.
