@@ -1,0 +1,624 @@
+---
+title: Jarred Sumner - Bun
+youtube: https://www.youtube.com/watch?v=1kP5YgeDj00
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/11164178
+tags: technology, bun, javsacript, zig, runtime, programming, coding, web, web development
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week our guest is Jarred Sumner, creator of bun a new JavaScript runtime focused on speed.
+Bun has already had an influence on the Javscript development, and is now released to the public.
+Join us as we dive deep on one of the most interesting new things happening in JavaScript.
+
+<!-- LINKS -->
+
+https://www.patreon.com/devtoolsfm
+
+[Twitter](https://twitter.com/jarredsumner)
+[GitHub](https://github.com/Jarred-Sumner)
+[Website](https://jarredsumner.com)
+[bun](https://github.com/oven-sh/bun)
+
+## Tooltips
+
+### Andrew
+
+- https://fork.dev
+- https://github.com/player-ui/player
+
+### Justin
+
+- https://blog.jgc.org/2022/07/guest-wifi-using-qr-code.html
+- https://github.com/secure-77/Perlite
+
+### Jarred
+
+- https://github.com/apvarun/awesome-bun
+
+<!-- TAB: SECTIONS -->
+
+[00:03:10] Bun's Origin
+[00:15:19] Building a Better platform
+[00:28:39] Bun Plugins
+[00:39:09] Bun's Future
+[00:44:34] Optimization and Benchmarking
+[00:56:19] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Jarred:** The existing tools today often lack the same kind of engineering effort that you would see in like tools from like, that are like built into Linux. And I think, so I think some of that has like, kind of been missing from, from JavaScript.
+
+**Andrew:** Hello. Welcome to the dev tools, FM podcast with a special message.
+
+**Justin:** A few episodes ago we talked about the podcast in a meta episode and sort of how it's grown as we're. Trying to scale it out we find ourselves at a position that, uh is gonna take a little bit of funds to to grow it, how we want. We wanna deliver more content on a more consistent cadence and our format is gonna need to change a little bit.
+
+**Andrew:** so We plan to have most of the episode still free. We still plan to provide a free podcast, but that podcast will be limited to probably around 45 minutes and will be a shortened, more condensed form of our interviews.
+
+The full episodes will now be hosted on Patreon, you'll be able to find an ad free full-length version of the episode, but we still, we really still intend for the free podcast to be a quality product that you still want to consume.
+
+**Justin:** Yeah. Yeah. Hopefully this will give the sort of, uh, best of all worlds. We're trying to, to navigate this carefully to figure out how can we make the podcast more sustainable and grow it, uh, while also having a quality experience, if you're just like wanting to go on a walk and listen to a podcast.
+
+Um, so there's a few other things that we're going to, uh, start doing. So, uh, if you subscribe to Patreon, you'll get, uh, access to our discord server. gonna try to have all of our speakers who have, uh, joined us in the past, uh, on there. And then of course, like other discord setups, the higher level roles comes with more perks. Like maybe you can get involved in helping us choose who to interview or be involved in planning the episode itself.
+
+Uh, so we're still kind of working on the details, but plenty there.
+
+**Andrew:** The Patreon is live right now. So if you're interested, the link will be in the show notes. We do have a plan that if we hit $1,000 a month, uh, we will be able to scale the podcast up to a weekly podcast. So that's our initial goal. Uh, so I hope you all join us. We're very excited for this next chapter in dev tools FM.
+
+**Justin:** Yeah. Uh, thank you to everyone who has listened and supported us. Uh, it's been a really, really fun journey and we're excited to grow it further.
+
+**Andrew:** ​hello welcome to the dev tools, FM podcast. This is a podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+**Justin:** Everyone. Our guest today is Jared Sumner. Jared is the creator of bun, a javascript runtime that also has a built in bundler transpiler task runner and dependency manager. Not sure if I forgot anything there, but it's very expansive incredibly ambitious project and the performance numbers coming outta Bun are incredibly exciting.
+
+#### [00:03:10] Bun's Origin
+
+**Justin:** Jared, really, really great to have you on super excited to talk about bun. But before we start talking about bun, Could you tell our audience a little bit more about yourself?
+
+**Jarred:** Yeah. A little about my background. I dropped out of high school when I was 16, joined a startup.
+
+Then did the teal fellowship just before the teal fellowship. I did the, the, the first open source project I did that had some traction was this crowdfunding platform called self-starter startups raised around 10 million with self-starter with the time there was like this in, this was in 2013, I think 2012 I think it was 2014, something somewhere in that range.
+
+The it was started to become a thing that hardware startups were, it was like a, a brief rebirth of hardware startups, and, and, but, and they were using Kickstarter, but then there were issues with Kickstarter that led to you kind of needed to host your own. And that's what we did for the company I worked at at the time lockitron.
+
+And then more recently I was at Stripe mostly working on the Stripe dashboard doing front end. I kind of had like an itch to build something from scratch. So then I, I spent about a year trying a bunch of stuff. And then I started, I spent an, and then that ended up being like a game like a multiplayer voxel world building game in the browser.
+
+It was this really, really big game. It got to like around a hundred thousand lines of code. And then it just got really slow to build, to like, do anything, just making small tweaks. It was really tedious.
+
+**Justin:** Did you write the game in?
+
+**Jarred:** it was a next JS app. And then just like that the UI shell was just like react, but then the actual game itself it was initially the first version was blanking out the name of the framework.
+
+It wasn't three JS. It was baby JS BA
+
+**Andrew:** Yeah.
+
+**Jarred:** Balon built tools and, and then I kind of gradually replaced it with three JS and then I kind of optimized it a little bit more. Cause I kept running into performance problems because I wanted the game world to be really big. And then I, so then I started writing a bunch of build tools for the game itself.
+
+At first I wrote, you can see this on my GitHub actually it's that I wrote this thing at build, which was like a, a kind of macro syntax for JavaScript where you could run like blocks of code at build time and it would use stream manipulation to generate more code. And this was used to optimize the, the voxel rendering for like the actual 3d model generated by voxel data.
+
+The build just got really slow. So then I tried to use, I tried to switch out the next JS app to be like an ES build thing to make it faster. And that was a little bit faster, but then I lost hot module reloading and I lost incremental reloads.
+
+And I was like, okay, well, what if I just like, try to make that work? So then I went down this rabbit hole of like building a, I had this like go CLI thing that was like a used a bunch of ES build plugins and like. and I was like, okay, what if I just like, make the service head running work too? Then I embedded like a VA isolate to make it work.
+
+And then it was like, okay, well now suddenly this is a JavaScript run time. But like it's using ES build and is build really wasn't designed for this. What if I just like not use ES build and write my own. And so then I like thought about what language do I use to do that? It shouldn't have a garbage collector.
+
+It needs to be really fast. It needs to be very productive for me to actually write the code because there's a lot of code to write. And it needs to be something that also works well with wasm, cause I, I want, I really wanted, wasm to work well at the time, a little bit less of a priority right now, but at the time it was very, I thought it'd be really cool.
+
+And, and I think it's something that'll revisit, but and I had tried some rust before. So I initially was like, okay, I'll try it in rust, but I just wasn't productive. It was really hard for me to like, get a lot done using rust. And it felt like I was really fighting this compiler a lot, really more specific the borrow checker.
+
+And so I think so, so like, okay, I'm gonna try Zig cause I'd read about Zig. I saw it on hacker news, the, the whole thing about comp time. And I thought that was like the coolest thing I've ever heard in a programming language. And I think that like, just that, like, you know, I'll explain comp time lets you execute code at compile time.
+
+And C plus plus has like ING, but it's not actually like C plus plus it's like this other thing. And then like, I think Rust has like macros instead of all of that, and, and C also has macros instead of that, you could just execute the code at compile time and the result gets inlined into the AST.
+
+And that's like really cool. And that's how you do like types. Like that's how you do like a generic types is it's just a function that runs it compile time and returns a new type. It's, it's like a very, very powerful primitive and it means that a lot of things get a lot simpler. So then I just tried it in Zig.
+
+The very, very first version was a direct line for line port a vs. Builds strength piler from go to Zig. This took about three weeks. I want to say before I had something that sort of worked sometimes and by worked, I mean like printed code that sometimes ran, and that was actually from scratch.
+
+Like I had never written any zig before. So like it's, it is both a, it's kind of also a Testament to like how simple of a language zig is that somebody who's mostly spent time doing front end can just jump in and build a really complicated thing. And it kind of works after just three weeks.
+
+**Justin:** you run into any big challenges just with like doing basic memory management. So for those of our listeners who not, might not be aware, I'm gonna make a really terrible analogous sort of description here. But like, I think of Zig is kind of like C whereas like rust is like more sort of like higher, higher level quote unquote and, and feels like more C plus plus E that's.
+
+That's a really bad analogy. But Zig definitely feels lower level to me in that you're really thinking about like, You know, your relationship and memory, memory management, and you have can set up a bunch of stuff. Actually tell it how to allocate memory, which I think is really interesting. Whereas rust is like tries to give you guarantees around the compiler to make memory safe programs.
+
+So I'm curious is like being that go is garbage collected, and you don't really have to think about it as much. Was that a, was that a big hurdle to sort of work through.
+
+**Jarred:** Well, the very initial version just leaked everything. And for a CLI tool, that's actually fine because you're not running this program long enough. So then you just make sure that you don't use that much memory, which is actually pretty easy with Zig because Zig is very low overhead. You like, there's no string type.
+
+It is a length in a pointer. They kind of make, it kind of makes allocating memory a little bit tedious, which, which has this kind of positive side effect where you try to just do a lot more stack allocation. So in bun right now, even today it will try to, it, it tries to just allocate a really big stack from the beginning.
+
+And then that helps a lot with making memory management simple. Just minimize the, the number of dynamic allocations. So basically the, the, what, what most one kind of, this is actually another thing Zig is unusual about versus C, which is very good that what does here and that is because there's no generic memory allocator, you can just swap in a custom one.
+
+So, so a lot of functions will accept a memory allocator as an argument. And so in the, in the trans piler, the trans piler has a custom memory, all allocator and the way this works and this, this turns out to be a really good thing for performance, as well as just making a lot of code simpler. It's effectively a bump allocator which means that it, you, you don't free anything or you free.
+
+Yeah, you don't free anything until, until the very end of a cycle. And then, and it just sets like an offset. It's like, basically you have a big array of like pre-allocated space and then you just store, what was the end of the array that you used? And then at the end of the, and then when you're done you just reset it to the beginning.
+
+And then in, in bun's case, it, it has just a bunch of blocks and then it says, what block am I in? And what and how much of that block did I use? So then that makes a lot of the memory management stuff. That's, that's used specifically the reasons for the AST. And after it's printed, it just resets it back to the beginning.
+
+And then on top of that the, the second thing with memory allocation is it uses lots of arenas. So, it's really kind of, it's, it's difficult if you, the easy, like the, the default way to do memory management is for this type of language is probably more like. You manually call free a bunch of times or in zig cases.
+
+So you call D net is that's the convention. But what, what, what I do most of the time is just have set points in the, the life cycle of the program where we know it's time to free everything or that we can free everything. And that makes stuff often a lot faster because the time it takes, the free stuff does add up.
+
+And it's also a lot less likely to be like, cause bugs because it's so simple. And you just, the only thing you have to be careful of is don't use a lot of memory cuz otherwise you're just gonna like run out. But zig is already just very good for that
+
+**Justin:** This is really interesting. So this is very much lower level than I think a lot of people would get building something like a tool like this. Generally you, a lot of people would approach it at like at a much higher level, thinking about just like getting the, the sort of runtime behaviors that they want there.
+
+And, and by choosing Zig, which is a lower level. Programming language and by thinking directly about memory allocation and stuff like this, you are forced into all these constraints that while most people wouldn't think about you absolutely do pay performance costs in these things, right? It's like, that's why, you know, garbage collects language like gives you the benefit of like, not having to think about this for the most part, but then, you know, you suffer performance penalties at, you know, various times.
+
+And, and that may be a trade off that people are okay with. But I think as we've seen more and more, especially in the like JavaScript tooling world, it's like performance matters a lot, especially if you're like building trans piling really large projects. So it's like this sort of thing is, is actually really appreciated, I guess, just like going through all this complexity has this experience changed your perspective of how you approach tooling or how you think about tooling?
+
+Just, you know, approaching it from a lower level perspective.
+
+**Jarred:** Yeah. I guess one thing I think a lot about now is what is the code actually doing? Like at every like, kind of like extremely pedantically, and a really tiny example is like, In, in a, in, in a JavaScript context was like, like the, the subtle difference between like object dot assign versus like, dot, dot, dot, like the spread operator, or like that's not really a great example.
+
+A better example is just like creating a new object, using a literal versus assigning each properly property individually. You'll find that if you, if you like micro benchmark this and actually have, you'll find that setting each property individually is quite a bit slower. Even if you, if it's like a new object you just created it's because the prototype is changing each time.
+
+And it's because there, there are all these hidden costs of like setting properties in of JavaScript objects, because properties can be overridden because the property name might be an index. Versus like an in integer which then is it. And then if it's an, if it's an array, this just kind of gets into like depends on what the engine is, but in like JavaScript core, for example there's an array indexing mode that, that has a, can have a performance impact if you're using objects, if you're using strings versus if you're using identifiers or sorry, if you're using an identifier versus if you're using integer and then there's various like watch points and things like that, that come into effect.
+
+If you set a getter, if you set a string property and identifier property on a on an array and there's all these like, and so like those sorts of like extremely minute details, like the difference between setting a bunch of properties on an object versus setting. Versus an objects literal there's things that I wouldn't have thought about before bun
+
+#### [00:15:19] Building a Better platform
+
+**Justin:** Yeah, for sure. I, I think that it's, it's something that a lot of people don't think about until it becomes a problem, you know, or I guess from the universe is you're building a tool like, like you're building like bun from, from the very beginning performance can matter a lot, but like taking a step back and just talking about bond more broadly I said in the beginning, bun is a very ambitious and expansive project.
+
+The scope is, is huge compared to what you normally take on. So we think about like,
+
+Tools like deno, which is a runtime and then sort of has like this idea of like, you know, I, I can run type script without, you know, running it through the type script compiler to strip out all this stuff. But by itself also manages dependencies you know, it does all the transpiration and it like has all these extra responsibilities.
+
+Why, what was the inspiration for like putting, packing all these features together? You talked about your game earlier and, and sort of how your, your path transitioned, but it seems like taking on more responsibilities just makes it harder to like focus on any one area. So I'm just curious about like how this has developed.
+
+**Jarred:** I've been just really frustrated with how slow everything is in JavaScript and like, it's, I, I, I still remember the first time that I wrote any objective C and I tried to log something to the, to using NS log that's like the function. And it was just so much faster than console dot log. And this just didn't make sense to me.
+
+I had expectations of what of like how long logging should take. And that just completely blew my mind that you could log stuff to standard out that fast. And I think just like the expectations for performance for JavaScript tooling is way too low. And I think that and, and I also think that just the JavaScript is just really important now.
+
+It, it probably wasn't, it really wasn't nearly as important 10 or 2010 or 15 years ago. But it kind of like as the internet became more important and like got serious JavaScript got pretty serious. But it seems like the tools don't they, they lack the same kind of the, the existing tools today.
+
+Often lack the same kind of engineering effort that we, that you would see in like tools from like, like the, the, the sort of like tools that are like built into Linux. And I think, so I think some of that has like, kind of been missing from, from JavaScript.
+
+**Andrew:** Yeah. Yeah. So it, your journey through bun has been like, okay, I just wanna build tool. And then you kind of. es build. And then you're like, oh no, that needs to be a run time. Oh no. Now, now this needs to be everything. So like kind of, where does it stop? Like what's, what's your end goal? Like what's the perfect bun future? Is every bit of JavaScript to ever run, run through bun.
+
+**Jarred:** maybe or maybe more precisely, it should just be really fast. It shouldn't be a problem, like build times for anything, shouldn't be a problem. And that's, that's also part of the inspiration for bun install is that it just took a really long time to install dependencies and it really shouldn't. And I think it's, it is a similar thing with bun run that like bun run that like NPM run just takes too long and, and, and the, the problem isn't actually as much NPM or in the yarns case, it's not really yarn.
+
+It's really node the, the, the kind of common denominator here is that node is too slow. And, and part of that is also not entirely nodes fault. It's also kind of V8. These things need a start up really fast. And I think that's one of the things that's unique about JavaScript core is that it both is very, very fast as a adjusted time compiler, but also the startup time is just really good on, on the JSU shell, like not bun but just a lower level shell on Linnux it's it starts in like 4.5 milliseconds.
+
+That sort of is a baseline. Maybe it's 3.5. It might be 3.5. That's kind of sets like, like I, if I remember correctly, it's like for notice something like 24 Ms. To, to do a hello world. And deno's a bit better than that, cuz they, they use heap snapshots or they're not heap. Snapshots is another, there's a different name for that.
+
+But it's, it's only like a two X difference.
+
+**Andrew:** Yeah. So I think it would be good to drill into the difference here, cuz it might be, it's kind of subtle for people who aren't like into JavaScript so much. You're not using V8, right? Like JavaScript core is like a different JavaScript run time. Is that how you would say it?
+
+**Jarred:** say, It's a
+
+**Andrew:** a different
+
+Yeah.
+
+**Jarred:** Yeah. So, Java, so most, so both V8 and D and sorry. Node and deno both use V8. V8 is the common way people run JavaScript outside of browsers right now. V8 is what use was used by chromium. And, and that's how chromium executes, JavaScript using V8. And you can think of chromium as also shipping its own run time sort of like node or, or deno or bun because like they have the web except instead of being a server, it has like web APIs.
+
+So then. Bun uses JavaScript core and JavaScript core is, is the engine used by safari. And it, so it has a similar sort of it also has like billions of devices that run it. It's just different. It has a different implementation and there's a lot of really interesting stuff about JavaScript core in particular.
+
+It's it has this really tight integration with web kit. WebKit is the open source version of safari similar to like chromium is the open source version of Chrome. And, and Safari's CA sorry, in web kit's case the code there's a lot of overlap between the code in web kit and the code in JavaScript core.
+
+So, and, and that's been something that's been really helpful for bun because bun for bun can just import web APIs from, from safari in a lot of cases, which makes it a lot more possible for like me to just add web APIs to bun. And I can, and, and I don't have to worry as much about. , you know, I don't, because Apple's engineers have already done a lot of the work and because it's open source, bun can just include it.
+
+**Andrew:** So that's why you can have things like fetch web socket and readable stream all built in cuz you're just kind of importing them from web kit.
+
+**Jarred:** so it readable stream. Yes. A lot of fetch like headers is, is from web kit. The, the response and request and fetch function or that's custom because there is, I probably could actually include the, it probably should move to be the web kit version for response and request. But and then the web socket, actual JavaScript bindings are directly from So it's sort of like the networking layer stuff is in bun, but the but the actual bindings. And and a lot of the business logic is just Java core, still the current version of a, to B and BTA a is literally copy pasted from, from safari. And there are a number of functions like that.
+
+Like URL, search prints is another one. That's exactly copy pasted URL. I was very happy that I could copy URL because there's a lot of nuances to parsing URLs correctly. And it's like, it's, it's so much code. There's like a ton of stuff about like, about like in the like handling similarly named I forgetting the name.
+
+It was the name for this, but it like similarly named URL or similarly words that look like letters that look like the same letter Unicode, normalization. I think that's what it's called. Yeah, there's just NF case one of those four letter, five letter NF, something acronyms. Yeah, there's a lot of stuff like that.
+
+That. It would just be really, really hard to, to have gotten as far as bun has without the, the being able to lean on we kit for those things.
+
+**Andrew:** Okay. That's good to, I thought, I thought you were implementing everything under the sun. So like at least you're not implementing those things, but you have implemented some like pretty crazy stuff though. In bun, like you have 90% coverage of N API, right?
+
+**Jarred:** guys, right? Something like that. Yeah.
+
+**Andrew:** Could,
+
+you explain for our, our listeners who might not know what N API is, what it is and like, why you would wanna do this?
+
+**Jarred:** I'm gonna caveat that it's still like buggy look at, but the, the actual functions are implemented. But so N API is the native API bindings for node JS that we run native code that, that is written using the node JS specific APIs.
+
+And so bun supports that supports about 90% of the functions. And for that in particular, that was actually, didn't actually take that long. I think it was like a week and a half of work to get most of it done. It's cuz it's mostly stuff that I had already written for different parts of bun because effectively it's like a JavaScript runtime API.
+
+And because bun is mostly still written in Zig I had to write a bunch of bindings for the C plus plus code to, to work with Zig. So in a lot of cases, it's kind of the same code just with like a different signature. And there were some nuances to like to, to make more of the functionality work and the way it expected.
+
+And also the, the memory allocation stuff is a little simpler with, with Java chip core than with V8 V8. You have this, I, you have this whole like handle scopes and the life like the lifetime is the making the Java, making the garbage collector aware of it has to, it has to be bound to a scope if I understand correctly in, in a JavaScript core, what what's really cool is it just scans the stack.
+
+The way in, in native languages, you have stacked memory and you have heap memory and there are different things.
+
+The stack memory is like a temporary thing that only lives for the duration of a function call essentially. And heat memory is, could live forever or it's like, whenever it's done, whenever it's gonna be freed and in JavaScript core it skins, it looks at all the variables you used inside the function.
+
+And, and then it detects. and it, and it looks at if any of them point to like JavaScript stuff and it'll automatically realize that it's being garbage collected or that it should be garbage collected. And that's really nice because that saves you a lot of code. So that's also part of why it didn't take very long to add it to bun
+
+the, probably the more complicated parts were just like figuring out what all the functions are, what all the corresponding functions are in JavaScript core JavaScript core is not really designed to be easy to be embedded. Like they don't have like the docs they have are for the C API, which is fairly limited in what you can do.
+
+The C API is mostly designed for iOS apps, embedding javascript core for like a very small thing, like a, like an in game, like something that has some code that for like, like if you have like ads or something so, so bun has to use a lot of the C plus plus private API in JavaScript court. And that really was, that was like a month of just like me reading a bunch of code and web kit.
+
+It's a huge code base.
+
+**Andrew:** I can't imagine.
+
+**Jarred:** yeah, it was just like going through and trying to, like, it would be like a lot of it was just like, well, how do I even first start a simple application by embedding it? And then even before that, it was like, how do I even embed it? How do I like build it? So that way it can actually be, be included in another application without pulling in all of it, because, because like bun doesn't need to have a whole web browser, it doesn't need like the URL bar, for example that doesn't make any sense.
+
+Fortunately in JavaScript core's case, they have like a JSC only port, which lets you take just the parts of. That are relevant to executing and running JavaScript, but even then you're still left with just the C API. So then you have to do a bunch of stuff to make, to use the C plus plus API. And also, I didn't really know C plus plus I still don't really feel like I know C Pluss.
+
+**Justin:** It's definitely a non-trivial language and it's grown so much. So I did C plus plus in college and I haven't looked at it a lot in many years, and now I go back and look at some of the news specs and I'm like, oh my God. It's like, there's a lot to it.
+
+**Jarred:** Yeah. I think the, the. The, there are some things I, I really like about it though. I like that you can have multiple functions with the same with different types in the signature, but like the name being the same. I, I don't, there's probably some specific name for that. I don't know it
+
+**Justin:** It's like function over loading
+
+**Jarred:** maybe it, it kind of seems, I feel like it's probably more complicated.
+
+Cause it's not exactly. It's not like, it's not like when you extend a, it's not like sub classing, it's like you could have the same function name and then but it just accepts different arguments. So then you have like, if you have a, you have like specialization, it's something like, it has the word specialization, I think in the name like I think that's a cool feature.
+
+But I still just like zig a lot more. The, the thing that's interesting with C plus plus is that you can just do a lot of stuff and you don't, and it's really hard to find out exactly what's happening. Like, because you can, the, the specific thing is like, because you could have code that runs on in the constructor and in the destructor that's like a huge source of hidden behavior that will just quietly make your code run slower because you forgot that, like, this function is being called and there's like four levels of nesting.
+
+And like, you're doing like an atomic lookup for every like you're like reference counting and then that's like an atomic inure or whatever it like, and this, none of that exists in zig because it doesn't have that, those kinds of abstractions which is a very good language design decision. It makes it, it makes something more complicated, but sort of for the, for, for this type of product where you're, you really want, it really needs to be fast at everything.
+
+It's important. So it that that's the right trade off.
+
+#### [00:28:39] Bun Plugins
+
+**Andrew:** Speaking about being fast about everything something that's very common with JavaScript build tooling is plugins and plug-ins today are mostly written in JavaScript for like babel and porting that to bun would mean there. Your plugins are. Slow. And now you have this new source of slowness.
+
+Do you plan on adding plugins to bun? Because like you have, like, you have like a CSS thing going on. You have a bundler, like you have a trans piler. It just seems natural that like maybe plugins would come at some point during that.
+
+**Jarred:** so I actually, this is just not documented yet, but this already exists. Um, It's and I think it's gonna like, be something that's really, that people are gonna really like, once it's a little bit further long, but it's, it does, it does work right now. But so basically the idea is I was talking earlier about comp time and zig and all of that and the same thing, but for JavaScript.
+
+So the idea is that sort of something like it's it's the, the implementation is a little bit like babel macros, except instead of having like a DSL that you have to learn in order to like, convert from like, a array to what, like the AST version of a array bun just does the automatic conversion.
+
+So you just, you, you just call a function at build time and bun will return the, the objects that you return or, or if it's a primitive, a primitive uh, becomes, gets in line into the AST and is replaced with the function call. So, it's like a really simple way to. move code from run time to build time
+
+**Andrew:** so are the plugins written in Zig?
+
+**Jarred:** JavaScript.
+
+**Andrew:** Oh, their written in JavaScript.
+
+**Jarred:** This is, this was actually a big reason why I chose embed a JavaScript run time in bun, cuz bun was not a bun. Didn't start as a runtime bun started as a bundler and transpiler. This was some, something that just would seem sad about the, the, with other native transpilers that suddenly everybody had to like Ru write all their plug-ins in rust or, and go and like there was this trade off in the ES build case.
+
+There's a trade off. If, if you look, if you benchmark the JavaScript plugins, they're not very fast. And the it's kind of this constraint of using this IPC protocol of, of not having low level control over how the JavaScript executes the, so I think in, in bun's case this is just not gonna be a problem, but the constraints are gonna be different.
+
+The, the way this works right now is it doesn't give full AST access to plugins. It gives AST access to the scope to like, if you call it function, then the, the, it, it calls the function with the AST node, which is the call expression. So then that includes like the, the, the function, it includes the, and includes any of the arguments.
+
+So it's very much like you're calling a function at build time, but you're getting the AST nodes instead of the arguments. And then those arguments can also be coerced to the native type in the, to the JavaScript type. So like, if you, if you're passing a string literal, then you can get the value as a regular string.
+
+Or if you're passing an object liberal, you can convert that into like an object, but if you're passing an identifier, then you're getting it as an identifier. And that, that identifier in this case is an AST note.
+
+**Justin:** Yeah, that's interesting. That sounds a lot like rust macros, or I guess maybe even comp time. I, I can see the inspiration there of those those underlying systems, cuz I mean, typical JavaScript tooling where you're like taking a blob of text and then converting it to an AST and then passing it to many, many, many, many functions that like transform it over and over again, like the whole thing is obviously slow and, and wasteful.
+
+But it gives you a lot of freedom and flexibility to do like very crazy things too. So, you know, the interesting trade off, I, I would love to see what that looks like. Cause it sounds really
+
+**Jarred:** Yeah, there's actually, there is an example in buns repo. There's a few examples there. Isn't there's I, I need to actually like write the real docs. There's like, there's just a really long README right now. And that's definitely not good enough. But the, the example is if you go to packages, there's bun macro relay, and that's like a relay plugin for that uses the same, this use that uses these macros in and in that case there's, so the macros actually have two different ways to use them.
+
+One is you can use, you can just return object literals and then you can also use custom JSX transform and the custom JSX transform just for macros that lets you have things which are not that lets you use include AST nodes, which are not representative through like object literals and arrays and things like that.
+
+So in the, the bun macro relay case, it needs to inject an import into the top of the file. So it does that by using the JSX tag with import within you pass it a path. And, and this works because bun when it, it has like a macro mode in the, in the JavaScript run time where when, which is turned on by the trans piler, just before it executes the macro and that enables this other trans piler, this other JSX transpiler.
+
+And then there's like a serialization format for like converting the AST schema into an AST nodes, into JavaScripts back.
+
+**Andrew:** That's a lot of hoops. Yeah.
+
+**Jarred:** yeah, it is a lot of hoops it's actually, but it's pretty efficient. It it's, the actual data format is basically a big array with a bunch of numbers strings. I think that like, once this becomes more used, the, the issue really, this is like, I think it needs to be tested a little bit more and like have some people try it.
+
+because it's mostly like ideas in my head and not enough, like building things with it. There's like a few examples in the, in the repo, in the repo there, like there's one, that's like fetch your CSV at build time and from, from like a URL and get just the results into the build. So then like you could do, like, in that specific example, it's like you you create, it's like you statically render a, a react component, but using remote data.
+
+And it's sort of like, sort of like, if you, if you've ever used like next JS, it's sort of, it would be sort of similar to, to like get static props, except instead of only being in the page, it could be literally anywhere in any file. And then, so, so, so, and the other neat thing about doing this stuff at build time at comp time really is like, it enables a lot of optimizations for the tr piler and for, for like dead code elimination that are just not possible in any other tool because it can detect it.
+
+It actually in aligns the result of what you call and it does this recursively. So if you get a big JSON object from like the GitHub API or something, and you only actually want the username, then it's gonna only include the username and the output. And that can be like a lot smaller than the entire JSON object in how you would do it normally.
+
+And it'd be pretty hard in a lot of cases for a tool to, to do that because the, the minifier or whatnot wouldn't know, it wouldn't know that like those are side effect free and that like you're only ever gonna be able to access this one thing, because there are various constraints, but because this operation happens at build time and because it's all like one cohesive thing, It's possible to make this really fast while also being making the code, like make it, make these macros run really fast while also making the, the code smaller.
+
+And they run fast because they don't get access to the whole AST. They only get access to the point that they're actually care about.
+
+**Justin:** Yeah, that's definitely the big thing. And I, and I think that's a lot of the problems that we've had. You know, a lot of tools, babel, post CSS, which I think post CSS might be trying to take a little bit of a different tack now. But like, if you just give the whole AST to a function that only cares about like two or three things, then you know, it like is inevitably slow, especially when you run it over an entire code base.
+
+**Jarred:** Yeah. And when you run it multiple times, because when you, you have to run in for every single plugin, that's a problem.
+
+**Justin:** Yep, totally. It makes any performance problem that you have at a baseline of just a single plugin, just explode because you're like multiplying that by N plugins. This is, this is really awesome. I, I think one of the most challenging things with like any meta programming or macro system or whatever is like the happy path is great because it's like you get to do complex things and it, you know, with simple, like end user code, Like when things break or still doesn't work, that's always where it's really hard.
+
+It's like understanding that this thing is broken because of some macro code and, and like trying to trace that sort of thing. It's like makes your, makes your implementation's a lot more com complicated and error handling and all that stuff can be hard. So, but it's really cool to see
+
+**Jarred:** Yeah, the, the error handling part is mostly it mostly reuses the existing error handling for the JavaScript run time parts. It just turns them into build errors. There's like a global like log essentially, which is a distinct log for, for, from like standard out that is structured as like a bunch of build errors or resolve errors.
+
+And because bun transpiles every file, even like node modules, even regular JavaScript files it, it has these, it, it always has this build log. And then depending on how the code is run, that build log will either become either that will return, will throw, build errors which it's, I think it's literally called build error in JavaScript that you like, if you do like a dynamic import to a file, then in that file fails to build like fail to transpile, then it throws a build error.
+
+Or if it's at the very start of the application, then it just logs it. And then if you, if you do like console dot error, On the build error it prints it the same way. Like the console functions are like detect that, oh, you're printing a build air. I'm gonna print this. Using the special build error format
+
+**Justin:** Nice. Nice. That's awesome. Yeah, it's, it's really cool how you detect the context and sort of take care of things in so many situations. Whereas in a lot of other, like if you're doing other tooling, it's like, you have to be very aware of your context and like do a lot of extra effort to, you know, map things and, and that can make consistency and tooling really hard.
+
+Cuz you can have like three different plugins trying to log in different ways or whatever. That's really awesome. I kinda wanna just like step back a little bit and talk about like so bun we've, we've discussed very ambitious project that like does a lot of stuff. There there's like two things that I'm wondering is obviously this is a ton of work and it seems like you might be building up to something.
+
+#### [00:39:09] Bun's Future
+
+**Justin:** So the first question is sort of like, what's your, what's your end goal here? What would you like to do with it? And then. My, my sort of follow up question is that is like, how do you, are you, do you have any plans on re making it sustainable? I, I, I know this is obviously a ton of work for you. And as, as we've talked about a lot on this podcast, open source stuff can be hard to monetize.
+
+And, but your time is very valuable. This is really, really hard work. So yeah, maybe like, so just starting, what is, what is sort of the goal where do, what are you wanting to do with bun?
+
+**Jarred:** I think basically I think bun there's there's this we're sort of entering a the past like five or so years JavaScript, just kind of the syntax and like the tooling has sort of started to stabilize a little bit more like in, in contrast from like the ES6 time around that time where like, there was a bunch of ton of new tools and new ways of doing things and there's like, you know, there's a couple newer things coming out, like the, the match.
+
+I'm, that's not exactly the right name for that, but the there's like two recent proposals that are like records and tuples and then the, the match one I'm forgetting
+
+the name. Yes. Those are probably change the index a lot and then maybe the optional types, but it seems like it's kind of somewhat stabilizing.
+
+So I think there's gonna be a consolidation of JavaScript tools. I think that's kind of inevitable and it'll just, everything's just gonna get like a lot simpler. If you have fewer and tools that do more. But I also think a prerequisite of that is it needs to be really fast. And, and consolidation should enable tools to be faster because you can share more of the data together.
+
+So like in bun's case, the toml parser and the JSON parser use the same AST. And, and that means that that's like more efficient from like a, a from for many reasons. But one is that if I optimize the, the J if I optimize the JSON printer, that also makes the toml part print faster cuz of the same code
+
+but I think so, so basically I think bun has an opportunity that there's this opportunity for like a, a, an all in one tool that does a lot of fills a lot of the roles of, of existing tools and, and it will just make everything a lot simpler. for Like day to day stuff. And I think bun is, has a good shot at being that tool.
+
+**Andrew:** I, I really only see two players in this space right now. It's. And Rome tools like you guys, like don't, you're not approaching the problem in the same way, but like, it's kind of the same angle of like unified JavaScript tooling set. That's also fast.
+
+**Jarred:** I, I don't really know about Rome that much.
+
+**Andrew:** Okay.
+
+**Jarred:** I don't really work on Rome.
+
+**Justin:** I would say, I would say it's almost different though, because you know, so Rome, their goal is to have this and for listeners who might not know, Rome is like this all in one tool set, written in rust that tries to reimplement, linters and pretty printers. And basically all the JavaScript tooling from a very similar setup.
+
+But I don't think a run time is in their wheelhouse. That's not something they're trying to do. And at the same time you have deno, which is a run time for JavaScript, also written in rust Ryan and, and career sort of focusing on. Doing improving on what the foundation that they had laid in node and, and trying to make better decisions technically and make that faster and everything.
+
+But the crazy thing for me is bun seems to be a combination of these two things is that you take Rome and you take deno, which are both huge projects. You lump them together.
+
+**Andrew:** And both with VC backing, like you're a one man shop. I guess the real question is, does, do you plan to like make bun more of a community driven project? Do you plan to get VC backing at some point? like
+
+like how you can't do this all by
+
+yourself
+
+**Jarred:** by yourself
+
+Yeah, no, it's impossible to do all that. I really want bun to do by myself. And I think I think I think that like bun is gonna be a company and I, and, and we will, we'll hire people and, and people will help. And it won't just be me to working on bun. And I think this is gonna happen pretty soon.
+
+it is been really, really cool seeing the reaction of bun. I spent a whole over a year, just kind of in this room, writing lots of code. And I think that it's just really gratifying to just see, like we got like a bun is, I think is at like 25,000 stars on a GitHub now. Which is just like, seems like kind of insane.
+
+. Especially when it's so early and when like so much stuff doesn't actually work super well yet. It feels it's very much like a like bun install is really. But there are all these things I need to fix with it. Like, like it, it there's like a few crashes that are not good. And then like, it's, it's just very early, but people still seem to be really excited.
+
+**Andrew:** Yeah. Usually the order is make it work, then make it fast. You, you seem to be kind of doing the opposite of make it really fast and then make it work.
+
+**Jarred:** Well is more like doing both at the same time. And I think it ha it like that. It has to be fast. Like the, the, the speed has to be prioritized from the beginning because it's so easy to build a slow thing. That, and so like the only way to make it real to make it fast is you have to focus on it from the very beginning.
+
+And you have to also just like benchmark a lot. I spend so much time just benchmarking stupid things.
+
+#### [00:44:34] Optimization and Benchmarking
+
+**Andrew:** What's what's the stupidest thing you think you've benchmarked?
+
+**Jarred:** This is like a, really a subtle, this one had actually had some impact though. So, so bun texting coder, like the, the texting coder class, it's, it's really fast. It's if you compare it with deno or node, compare it with node. It's like a, I think it's 10 times faster.
+
+But obvi I'm, I'm sure somebody will double check. Uh uh, if you compare it with deno, I think it depends on the type of string, but if, if it's a Latin one string and it is not a rope string, I can explain what that means in a second. Then it is usually from what I remember, it's, it's two times faster.
+
+And this was after some back and forth where. They saw that bun's texting coder was faster. So then they're like, we gotta speed up our text encoder. So, so, and, and the reason what part of what made bun's text encoder really fast is this micronization where I spent a bunch of time figuring out, okay.
+
+How do I like when you, when you to do a text and coding to do, to encode from, from Latin one to U T F a Latin one is encoding is the default incoding in most JavaScript engine. You have to the first, you basically need to find all the characters, all the, all the letters, which are greater than equal to 1, 2, 7 in ascii
+
+and then if they are, you do some stuff to convert them, but the slow part is how do you quickly find the character that is greater than equal to one 20? the really naive way, which is the easy way is you just do a for loop and you say, okay, does this character, is it greater than 1, 2, 1, 2 7? And if, so you do the encoding stuff.
+
+The, the slightly faster way is you use something called SIMD, and this is a tool that's not really available to Java script. It stands for single instruction, multiple data, and it's a way to tell computers. It's a CPU instruction. There's a bunch of CPU instructions. It's not one that you, where you, you can pass it.
+
+You can, instead of operating on one number at a time, you can operate on up to depends. It depends on the there's like various differences between like CPR architectures and when supportive features. But usually in, in bun's case, you can do you can, it'll read 16 numbers at a time, which are 16 characters in a string.
+
+And it looks at which if any of those 16 characters are greater than 1 27. So that's like the, the, that was like the first optimization for like, how do you basically it's like, how do you find the number bigger than 1 27 really fast? Then the second optimization after that was once you do find it, you also need to find the index of which of those numbers, which of those 16 numbers are less than, than 1 27.
+
+Cause you need to, or greater than 1 27, because, and which is the first one with the lowest one. Because it, it tells you depends on how you use it, but the easiest way to use it slash the, the, yeah. The easiest, the most straightforward way to use it is you just get, you just find which if any are, are if it has any non zero values.
+
+So then. but there is like a bug in, this is like a, I think it's like an LVM bug LVM is like the compiler used that is like, the Zig is a compiler, but Zig has a compiler, but it also uses it emits LVM IR, which is like, and then the, the link, which is like the, the language that then gets converted into like the assembly.
+
+And so there's like an L L V M IR bug that causes it to emit. If you, if you you're using this, this Simm and you're in this way, and there's like an efficient instruction to dedicated, to just counting what was the first number? That's not, what is the first bit set or count? It's count trailing zeros and there's count leading zeros.
+
+And these in JavaScript, the, the, the function is math, do C L Z 32, which is a very. It's just like a weird acronym if you, if without the context or like a meaningless acronym but basically it counts the leading zeros in the, in the, in the bits. But in the, in, in there's some LVM bug that was like, causes it to be, if you pass it for the, the SIM vector, it causes it to, to count to effectively do a for loop.
+
+And it does it like using, not using the non SIM scholar way. That's the name for the non SIM scour? I prob I'm probably mispronouncing that. It's not a word. It's a word I read, but it's never a word I really say aloud. There's a lot of words like that in programming.
+
+**Justin:** Very true.
+
+**Jarred:** So, so the one micro that micro optimization was basically just using, just getting the max checking if the max is greater than zero and then.
+
+Using what's it called? A different technique Simm within a register, SW SWO. I don't, I don't know how to say that. And then basically doing a similar sort of thing is what you would do with Simm, but without any of the SIM parts, just with like bit shift operations, there's a few different blog posts on this that are pretty good.
+
+Basically everything that like LA LA, I dunno how to say his name. LA Meer Le M I R E. Everything he writes is really good on performance. So yeah, that, that was an example of like a, this wasn't a stupid micro optimization, but it was like, it, it turns out that it's actually really complicated to correctly, to, to like as efficiently as possible, find a number that is greater than in an array.
+
+if you want to just like, be really obsessed with making it fast
+
+**Andrew:** Which you are
+
+**Jarred:** but there's also real performance ad, like gains from this. It's not just like micro benchmarks. It's part of wide bun is it's like three times faster than, than node at server side rendering it's because it's like, that actually turns out that's mostly a text encoder thing that you, it just has to spend a bunch of time converting the text from Latin one or from UTF 16 into UTF 8
+
+so if you can count which number is greater than 127 really fast, you could make react server side rendering much faster
+
+**Andrew:** but that, that, that conclusion probably took you hours upon hours to
+
+**Jarred:** hours well, in this particular case, it was, I I did the text encoder optimization stuff. Well, before I focused on react SSR. But the direct SSR part, it was, I profiled it a bunch using instruments. And then instruments was like, here are the functions that are taking a long time. So then I was like, okay, how do I make these, these numbers go down?
+
+**Andrew:** Yeah, it's, it's, it's interesting. You're working at a much different part of the stack than I like any front end people. So like the, the way you view these problems is, is very interesting. I, I have one last question before we move on to tool tips,
+
+I saw a tweet where you're talking about like, kind of like the future use cases of bun and like doing per client bundles on the edge.
+
+Like that kind of sounds like a bunch of word soup to me and probably to a bunch of our listeners. Can you explain like what that idea is and like, yeah, just, just explain that.
+
+**Jarred:** Well, it, it sort of what I was saying earlier about macros. You could take the same idea and basically today you, you generate, you have like, you have. Today, the way, build steps work. And for a lot of front end code bases, you have a, you push to production or sorry, you push to git and then you have some CI step that runs Webpac or whatever on the, on the asset.
+
+And then you serve the same asset to everyone, and then you have a CDN that cashes it. The direction I think would be really interesting for bun is what, if you build a unique JavaScript bundle for each user and you had like an API and sort of like hitting the, the, the loading, the importing, the JavaScript is sort of like hitting an API endpoint, or you have like some dynamically generated data.
+
+And in, in inside the, as inside the actual printed source code, and the result is that a lot of code could get a bunch. Could your code could get out, could get a lot simpler because a lot of the complexity of. Of writing job front end, JavaScript is how do I manage getting the data? How do I manage the state associated with the data?
+
+And even if it's just a pure static data, you still, you still have to have like a serialization library. You have still have to like you have to worry about like type safety in a lot of cases. And you have to worry about like, even if it's just static. But if you could actually just make it, so each when the user imports the code, or like when the code is loaded, if each one, if, if the, if it, if it already has the data inside, it gets a lot simpler.
+
+You don't, and you don't need to like a library, then you just, you just have a function that's called at build time. And that build time happens to just be the HTTP request. So then, so then what's missing is how do you actually pass that context into the back row? How do you pass that context into the function?
+
+And so then that's like a thing that it's like an API that the trans compiler needs to expose, but if you can get access to the request data, if you can read the URL and read the headers, that's enough to just like, make some database calls and then inline the data directly into the file. And then suddenly you have really good dead code elimination because you know exactly what parts of the code they're using.
+
+So you don't need a whole data fencing library. You don't need, you don't even necessarily need to, it, it might not even include the entire object that you're returning from the database. It might only include the exact fields that you're referencing. So it turns into both a more efficient, it turns into like less code that you have to write while also being less code that runs in the browser.
+
+So the, the thing loads. of course the trade off is now you have to run this code. You have to run, you have to share new JavaScript bundles or new, at least new, at least new individual components or something for each user. But, and the only way to make that actually work is it has to be really fast because otherwise that you're, it's gonna just make it way slower because, and, and, and so that's this sort of like the, this is like this type of thing that's really only possible because bun is a trans piler, a bundler and of runtime all in one.
+
+**Andrew:** Super cool.
+
+**Justin:** That's crazy. Fascinating. So Facebook had this project and I, I was trying to look for the name of it now, where they tried to take your code and do some like early Optim. Like they tried to execute it. Yeah, yeah, yeah. They tried to execute it just like run it and transform things. So it's like he had some static code that like took a static array and did a lot of operations on it or whatever.
+
+They would like run it through there. And it would like just spit out the result. And that's the final result was what you would, what you would send. But this is like so much crazier in that the actual complexity of this is probably much, much lower, cuz I mean, they had this tremendously complex problem and like, you know, doing early execution of programs and trying to figure out what they can serve, whatever.
+
+But the, the actual complexity of this is much lower. It just like the question is, can you get it fast enough to be able to, you know, serve what you needed to serve? That, that that's super, super fascinating. I, I I'd really love to talk more about that
+
+**Jarred:** I think the the long term there is you really need a hosting service to to make that work. that's also what I. So, so that's kind of the direction I'm thinking about with, with bun.
+
+**Andrew:** that's super cool.
+
+**Justin:** That's awesome.
+
+**Andrew:** With that. Let's move on to tool tips.
+
+**Justin:** What did you say the name of the tool was, is re what
+
+Facebook's tool prepack prepack yeah. Yeah.
+
+**Jarred:** yeah. It's a cool idea.
+
+**Justin:** They stopped working on that, right? Yeah. It's too bad. I mean, it makes sense. It's a fiendishly complex problem,
+
+**Andrew:** I think they
+
+**Jarred:** like
+
+**Andrew:** on it quickly.
+
+**Jarred:** yeah. I feel like it should just be very hard to define. like what it could do or to make it like consistently work.
+
+**Justin:** yeah,
+
+yeah, no, totally.
+
+**Jarred:** I hadn't seen this.
+
+#### [00:56:19] Tooltips
+
+**Andrew:** yeah. So my first tool tip of the week is my new git client. So. Over the past, like six or eight years, my main git client has been using gitup, which is a very visual way to visualize your, git repo. It it's like it's basically this, like this tree part of the client, but that's the entire get client. But unfortunately it's an open source tool.
+
+That's maintained by people that aren't paid and the performance has just to shit. And in the, my work repo, which is like 50,000 commits, it just like it chugs to a halt to do any operation. So I set out to find a new git client that I wanted, wanted to actually use. And I've been using this one for about three weeks now.
+
+And I gotta say, it's, it's very good. And what's, what's funny about it. It's like it's built by like a couple, a husband and a wife who just put it on GitHub. And then I found an issue where people were like, begging them to be like, Hey, take my money. I, I want this to keep going. So like, it does cost $50 now, but it's like the sublime model of costing money where it's like, I'm just gonna annoy you every N amount of times you do something.
+
+And if you're looking for a new git client, it's very fast and very easy to learn. So, check it out has a lot of cool features in it. The really cool feature though, is this, this rebase feature it brings up all the commits you're rebasing. And you can just like, say, if you want to drop 'em squash, 'em merge.
+
+'em reword. 'em. V V very nice.
+
+**Justin:** Nice. Nice.
+
+This is this is an actual tip. Did you know that you can. Have a QR code that is actually like a wifi access, so special format of a QR code. I didn't know, there's this blog. And I think I saw it on hacker news, probably. It's JG, c.org. We'll link the, the blog post and the share notes.
+
+But yeah, it's just that you can, I didn't, I didn't know that there is a special format of QR code that is just like wifi access. So like all, I guess, all the phones that support those, you can just like point it at the thing and set up wifi access.
+
+**Andrew:** Yeah, I think this works on both iPhones and Android phones. Something that Android phones do a little bit better though, is you can store this same thing on an NFC tag and on an Android phone that'll like automatically like log you into the wifi. It doesn't work with iOS, but hopefully someday
+
+**Justin:** They'll get it eventually.
+
+**Andrew:** yeah. You know, five, six years after, after it's a cool thing.
+
+**Justin:** Yeah. Yeah. Yeah.
+
+**Andrew:** now we got the awesome bun repo. What, what cool things have you found in here, Jared?
+
+**Jarred:** Like one thing that bun hasn't implemented yet is child process, but, and bun utilities, somebody implemented child process using napi using nodes native bindings.
+
+And I just think it's like really cool that like bun has been public for like less than a week.
+
+And people have already started writing all these libraries or not less than a week. It's been public for just over a week. , and there's actually more than this. There's not on the repo yet. And I think that I think it's like like, I think it's just, it's just really cool that like, honestly, I just think it's cool that people even want bun it's just very gratifying that like, I, you know, I've been working on this thing for a year and just people seem really excited,
+
+**Andrew:** Yeah, it's, it's definitely a cool thing. Like you've probably dedicated thousands of hours of your life to this at this point. And that like, it's just getting such wide, wide acceptance is, is pretty cool. For a while there were you like kind of, you had like a closed beta going or like a sponsors only type thing going
+
+**Jarred:** it wasn't, it's, I've actually never accepted any money for bun. I've just been living off savings The the, yeah, I had a, a private beta, but it was like, kind of like the, the way it worked was you would go to the website, you would click request access, and then it would take you to bun's discord and then you'd type, I want bun.
+
+And then the, the bot would send you an invite link to the GitHub repo. So at the time of launching publicly, there were, there was already like 4,000 people in the rebuild. And that was just cuz it's been, it was in this like private beta for a while. It was, I think it's really important that bun did a private beta, because it's just such so much scope.
+
+And honestly, like I should have just tested it more before shipping it publicly. It was kind of random. Excuse me. It, it was like a I just felt like if I waited any longer, people would think it's is vaporware and that it was just never gonna happen. So then I was like, okay, I'm just gonna choose a date.
+
+That's not tomorrow. And then I chose like July 5th, cuz it was the day after July 4th, which, and it wasn't tomorrow anyway. And I knew I needed at least a week to, to prepare stuff. And honestly it's still not really prepared, but it's, it's going well
+
+**Andrew:** You gotta put it out sometime. And congratulations on the O one. Like it's a, it's a big milestone and you can't wait
+
+for that one point. Oh
+
+**Justin:** for sure.
+
+**Jarred:** there were 84, 83 versions before that or at least the build ID was 83,
+
+but you can go back and buns repo and you'll see a lot of versions. You can see the, the first one with the macros too in there. And I, I actually did a there's a, and there's like when I would write the release notes, it was like a lot of screenshots of two of like.
+
+**Justin:** What's the old adage, just like you're supposed to release it before you're ready or release it before it's ready or whatever. Just like, make sure you get it out.
+
+**Jarred:** Yeah.
+
+**Andrew:** Yeah, we don't, we don't want bun to die on a hard drive. One question about the name though. What was it just cuz of bundling? Like where does bun come from?
+
+**Jarred:** So friend has a bunny named bun and, and, and I, and I was like, at first I was like, no, I'm not gonna date this after your bunny. And then I thought about it when I was like, oh, that's actually like a pretty good name. And so then originally it was like bun, like a bunny. And then my friend got this, like made this logo that was like, like a bao And then I was like, okay, I guess it's bread now.
+
+**Andrew:** Well, well
+
+**Justin:** Then you have the bun bun
+
+**Jarred:** Yeah,
+
+**Justin:** is, is amazing.
+
+**Andrew:** yeah,
+
+it was all worth
+
+**Jarred:** But it's also confusing is the problem. I like it, but it's confusing. But cuz I think when you repeat that, you have to say bun bun. People are like, wait, I run the same command twice or I say the name or like I type the name twice. Like it's, it's very hard to explain in, in documentation. And then people are like, what does that actually do? It just sounds like you're, those are just like meaningless words.
+
+But I think it quickly makes sense once you run it it also kind of needs more. It needs to be done a little bit differently. And like I have a lot of thoughts on like what the bundling form, like the bundling format itself. I wanna do like single file deploys. I think that's gonna be a nice thing.
+
+And I, and so that's gonna all that. Stuff's going to a bit
+
+**Andrew:** Well, I think you should add a command bun bun bun that prints out a bunny
+
+**Jarred:** I mean, that could be dude. That could be, that could be that's doable. That could be done it because they, it has to be a file after that. So then it would otherwise error. So that'd be like a fun Easter egg.
+
+**Andrew:** yeah. Okay. My last tool tip for this week is the player. This is actually on our third episode. We talked to some of my former coworkers from Intuit and it was about this project and it just got open sourced the other day. So what the player is, is a way to author like applications or pages from a backend that render natively on multiple platforms.
+
+So what that means basically is you can return this from a backend saying that you want two pieces of text on a page. And then that gets sent down to your app, which can be a web app, a swift app, or an Android app. And those, those apps choose to render that JSON natively why is why, why that's really cool.
+
+The, the biggest thing to me is that say, if you wanna like, create a new screen in your app, if you wanna deploy that through the normal iOS process, you have to go through a whole new app store release. You have to get it approved, could take a long time. If you're using something like this, all you have to do is return JSON that your application understands.
+
+And then voila, you have a new page in your app. So if you've ever wanted something like this many people probably haven't, but I'd give it a good look because me and my coworkers had been working on this for like four or five years. So it's, it's come a very long way and it's very, very battle tested.
+
+**Justin:** That's really awesome. Yeah. Don't like, I wasn't at Airbnb or somebody, somebody big was like doing that same sort of thing. It's like, views driven by data.
+
+**Andrew:** Yeah, there's a, there's a few like Ja Jason net was like the first big one, but I don't think that that exists anymore. Yeah, Airbnb has one. But yeah, it it's a good option.
+
+**Justin:** So my last tool tip of the day I've been working on my website and I had obsidian notes obsidian, which is this note taking app. I had obsidian notes embedded into my site and I was paying for their subscription thing. And I disabled that because I wanted to do some custom stuff with rendering, et cetera, et cetera rendering obsidian notes.
+
+There's a lot of stuff that goes into it. And I found this library it's called per light. I'm not sure exactly how to pronounce that. P E R L I T E. Anyway, so it sort of does what it says on the 10. It renders obsidian notes. And so it's a library or you give it your obsidian markdown and give it the metadata.
+
+You can, there's an extra plugin that you can use to like collect all the metadata for what all your files are linked together. And yeah, it just renders everything out on the web. So if you wanna post your own obsidian notes in a custom way, this is a great way to do that without taking on the complexity of reimplementing the front end of obsidian, which I assure you is non trivial.
+
+**Andrew:** Especially when you start getting to the graph rendering.
+
+**Justin:** Oh yeah, for sure.
+
+**Andrew:** Okay. That's, that's it for our, our tool tips for this week. Thanks. Coming on for coming on, Jared, this was a, a much lower level conversation that I think Justin and I were anticipating happening, but it was, it was super interesting.
+
+**Jarred:** Is is that cool?
+
+**Justin:** welcome. And, and very, very interesting. Yeah. Yeah,
+
+**Jarred:** Yeah, I, had fun!
+
+**Justin:** Yeah. Thanks so much for coming on. And, and just, I mean, I, I can't, I can't even express how impressed I am at the project and, and the pure amount of work that you've put into it. And also just appreciative because, so you made that comment earlier about how you focused really heavily on a micro optimization to text and coding.
+
+And then the deno folks was like, oh crap. You know, we gotta like, make our stuff faster at that's the sort of things that, you know, the rising tide list, all boats. So the effort that you're doing here benefits the entire ecosystem, whether people are using bun or not. And from everyone in the ecosystem, I just say, you know, thanks for all your hard work.
+
+We greatly appreciate it. Yeah. And, and good luck on the future.
+
+**Jarred:** Thanks.
+
+**Andrew:** this is the end of our last free only episode. So truly thank you to everybody who has listened and joined us on this journey so far.
+
+We hope you can be along with us in the next chapter, too. Make sure to follow us on YouTube and where you subscribe to your podcast and to go on Patreon and potentially be a subscriber.
+
+If you wanna support the podcast even more, we could always use more reviews on podcasting platforms. Uh, it helps the podcast a lot. So if you don't wanna subscribe to Patreon, or even if you do, please go review us on all of those platforms. Thank you.
