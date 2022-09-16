@@ -1,0 +1,319 @@
+---
+title: Paul Butler - Drifting in Space, JamSocket
+youtube: https://www.youtube.com/watch?v=WHyHIhmBPOk
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/11329441
+tags: technology, programming, coding, jamsocket, docker, kubernetes, rust, spwaner
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Paul Butler, the founder of Drifting in Space.
+At his company they're exploring new ways to build web apps through Session Lived Application.
+They're building an open source tool to enabled this architecture called Spawner.
+On top of that they're building JamSocket, a tool that makes it easy to build these types of apps.
+
+[Join our patreon for the full episode](https://www.patreon.com/devtoolsfm).
+
+[Twitter](https://twitter.com/paulgb)
+[GitHub](https://github.com/paulgb)
+[Company](https://driftingin.space)
+
+[JamSocket](https://jamsocket.com)
+[spawner](https://github.com/drifting-in-space/spawner)
+[aper](https://aper.dev)
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+[Join our patreon!](https://www.patreon.com/devtoolsfm)
+
+#### Andrew
+
+- [Raycast](http://raycast.com/)
+
+#### Justin
+
+- [react-zorm](https://github.com/esamattis/react-zorm)
+- [pipedream](https://github.com/PipedreamHQ/pipedream)
+
+#### Paul
+
+- [NATS](https://nats.io/)
+- [Trunk](https://trunkrs.dev/)
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:51] Paul's Background
+[00:04:15] Session Backed Backends
+[00:12:35] Building a Dev Tooling Business
+[00:14:40] Using JamSocket
+[00:21:25] Web Assembly
+[00:23:31] Aper
+[00:26:26] Rust
+[00:32:29] Future of Web Development
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 39 - Free
+
+**Paul:** I think, uh, the way I think of it as kind of a Lambda gives you a an anonymous backend at the time interval of a request response. Uh, we give you an anonymous backend at the time interval of an entire user session.
+
+**Andrew:** Hello, welcome to the devtools FM podcast. This is podcast about developer tools and the people who make them I'm Andrew. And this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, our guest today is Paul Butler. Uh, I had the great pleasure of, uh, attending recur center with Paul in 2021. Uh, and Paul has recently helped co-found a company called drifting in space. Uh, and we'll talk about that in a little bit, but before we dig in, uh, Paul, would you like to tell our audience a little more about your yourself?
+
+## [00:00:51] Paul's Background
+
+**Paul:** Sure. So, uh, I'm I come from a pretty technical background of, uh, studied math and undergrad, and then went to a bunch of data science roles at startups and, and found my way to New York through, uh, a job at Google. Uh, then about, about seven years ago, I left tech and went into finance for close to five years.
+
+So I was a quant at a quantitative hedge fund. Um, and then a little over a year ago left that role, uh, wanted to kind of find something new to do, uh, went to recurse, which is where I, I met Justin originally. And, uh, and yeah, then around the beginning of the year started this company drifting in space.
+
+**Justin:** That's pretty awesome. Maybe before we talk about drifting in space a little bit, we can talk about recurse center because may, uh, I've had people. Me questions about it. It's like a lot of people seem to know it and a lot of people don't. Uh, so generally recurse center is this programming retreat, which is usually based out of Brooklyn and in New York.
+
+Uh, but right now I think it's still remote. I don't think they're doing in person stuff yet. Um, I'm not sure.
+
+**Paul:** I think
+
+**Justin:** Uh, but it's like an unstructured learning environment, uh, where you can sort of like pursue your own, uh, personal enrichment and work on projects with sort of other like-minded folks. Paul was your, what was your experience?
+
+How'd you how'd you like it?
+
+**Paul:** Yeah. Um, I think so for Meris was, uh, it was something I, I heard a number of people say during the batch was like, recur was great as an excuse, not to do anything else. Like, it was kind of like an excuse to leave your job and just code heads down and, you know, talk to people and be, be around like-minded people.
+
+Um, so for me, a lot of ways it was kind of just. It gave me this excuse to leave my job, just do this for a while. And, um, I think it's, it's kind of, a lot of the value of recurse is in that permission to. , you know, explore personal projects and that kind of thing for, uh, six weeks or 12 weeks. So, uh, I got a lot of value out of, uh, uh, you know, that aspect alone.
+
+And then of course, just meeting folks like yourself and, uh, doing a lot of pair programming and just exploring different areas that I was, uh, interested in and, and had kind of neglected throughout my career. For me, that was things like web assembly and web GPU that really excited me as technologies that I never really had a chance to really dive deep into.
+
+**Justin:** Yeah, it was, it was a good excuse to like spend time on things that you normally can't justify spending time on. It's like, uh, I don't know. You, you. Always curious about some other technologies from on the framework, but you never touch it in your day to day work. And like, you really have a really hard time justifying, you know, value of putting time into it.
+
+Uh, so it was, it was good for that. Uh, it's also interesting how hard an unstructured environment like that can be, uh, just like, you know, there is nobody, there's no assignment to complete by any date. There's nobody like, you know, asking you to do a thing it's just like just you and whatever you want to do to spend your time.
+
+So it's, it's kind of interesting.
+
+**Paul:** Yeah, I, I found it a little unnerving at first and then I really got into the groove of it. So I ended up pretty much continuing that lifestyle, uh, for much of last year, uh, until kind of getting towards the end of the year and, and having this idea for what became drifting and space and pursuing that.
+
+## [00:04:15] Session Backed Backends
+
+**Justin:** Cool. Well, maybe we can transition into that. Uh, so tell us a little bit about drifting in space to the company and, and why you, you created it and, and maybe, uh, How did you call it drifting in space? Like.
+
+**Paul:** Yeah. So the, the name drifting in space goes back to before I knew what it was. So I, I, I just kinda liked that name and, uh, I think similar to the kind of recurse theme of, of, you know, drifting through, uh, a lot, you know, areas you're interested in, I kind of found that with, uh, what I was doing was kind of just exploring.
+
+And, um, so it came outta that. I liked it, so I kept it. Um, and the product itself is jam socket. So we kind of have a, a proper name for that, or like a, a generic tech name. Um, but we wanted to keep the originality of the, the drifting and space name. Um, and so the, the thing that we're kind of trying to solve is this idea that more and more software is moving into the browser and when you move an application into the browser, you, you end up with this fairly low ceiling in terms of compute and memory use, um, in terms of what you can actually do with that. So if you wanna to port an application, a desktop application that uses tens of gigabytes data, uh, which is something that I encountered in finance.
+
+So we were dealing with large data sets. We'd have, uh, reasons to kind of build tools around those data sets but you just can't ship that to Chrome, you know, web assembly itself uh, can't actually allocate currently more than four gigabytes. It's just a structural limitation of being 32 bit. So there's all these reasons, you know, network reasons, compute reasons, memory, reasons that you just don't wanna do that all in the browser and you need sort of a second place to do it.
+
+Um, the natural second place is of course the server, but a traditional stateless server architecture Also kind of doesn't really give you a good place to do that. So, uh, with drifting in space, what we're trying to do is look at this architecture that we've kind of found in the wild that other people, uh, are already using, which is basically we call it session lived backends.
+
+Basically each client side application has a long lived process for as long as you have that tab open. And then when that tabs closed, we shut down the server. Yeah, the back end. Uh, and our goal is just to make that as easy as possible so that developers are focusing on the application and not the infrastructure.
+
+**Justin:** Cool. So, so it's really, it's really like a, a stateful based application. And this almost reminds me a little bit, I mean, I know it's not analog analogous, but I think of like, uh, elixer's live view that whole, the whole aspect of that is interesting because the, the client state is actually like all really stored on the server sort of a unifying factor.
+
+And of course that has a different perspective, but like what kind of, uh, what kind of apps would people want to build with this?
+
+**Paul:** Yeah. I think that the inspiration of the erlang elixir beam OTP stack is really interesting, cuz like. That stack kind of bakes these ideas right into it at, at the core. Um, what we're trying to do is provide that type of functionality to people who maybe for whatever reason don't wanna go out and reimplement their application in erlang or elixir.
+
+Um, so what we we've kind of done is looked at how things like visual studio code, uh, when you're running it in a client server architecture, how that actually works in the back end, which. They're spinning up a container or a, a process and your client side is connecting to it and, and has this long lived connection.
+
+Uh, similarly things like Jupiter, uh, Jupyter notebooks or Jupiter lab uses a similar architecture. Uh, and we've seen a number of like private companies or like proprietary code bases that companies are building that, uh, actually follow a similar architectural pattern. So. uh, we think it's a good pattern and our, our kind of bet is that there's gonna be more and more applications that are shaped that way.
+
+**Justin:** Nice. Nice.
+
+**Andrew:** So. I think you've created a bunch of different pieces of tech to power this, uh, one of those being spawner. So what is spawner and how does it make this session lived application backend easy?
+
+**Paul:** Yeah. So spawner is our open source implementation of this pattern, um, that I just described. So the, the pattern is basically the easiest way to think about it is you hit an API that API returns a unique host name that it's just generated on the fly. Uh, and then from the client side, you can connect to that host and, you know, we're, we're actually agnostic to how you communicate with that host, it just has to be a browser technology like fetch, uh, event source, web sockets. We're soon supporting web RTC as well. Um, so we just treat it as a, like an HTTP pipe and then whatever interface to that pipe you use is up to you. Um, and the main thing that we do is spin back end up and monitor those connections when there's no more connections, we close that back down. So the idea is when the user closes the tab, we can recycle the resources that were dedicated to it.
+
+Help
+
+**Justin:** me contextualize this a little more. So, so you talked about. You know, maybe like the vs code example or you know how some people might use this. So they might actually like spin up a container or something in the background. Um, what are like, what specifically are you spinning up? Is this just another like process?
+
+Like the, the application is like forking off a child process or just creating a child process. That's like executing some code or something. Like what, like concretely is the, the, the sort of session. Uh, app or whatever?
+
+**Paul:** Y. Yeah. Great question. So concretely today it is a Docker container. Um, down the road, we're very interested in the compute actually being like a web assembly module or JavaScript module or, um, firecracker, uh, instance or, or whatever. Um, so we we've architected things in a way that's agnostic to that, but concretely, yeah, it's a, it's a Docker container today,
+
+**Justin:** You know, it's interesting. This reminds me a lot of the Lambda model. Uh, just like it's a little bit different, right? This is a long lived thing where a Lambda ideally is a pretty short lived connection and it's kind of a one shot, but this is like a it's is like a intermediate, like longer lived Lambda.
+
+If you will, if like you need to do like multiple things with it and keep that session open.
+
+**Paul:** Yeah, that's a great way of putting it. I think, uh, the way I think of it as kind of a Lambda gives you a an anonymous backend at the time, interval of a request response. Uh, we give you an anonymous backend at the time interval of an entire user session.
+
+**Andrew:** There any caps on that user session is like, is it five minutes or could it be like five years?
+
+**Paul:** Uh, there's no technical cap on it. We, we still kind of have to figure out what we do when it comes to spin down. Um, cuz we don't wanna keep something you don't, we don't wanna keep a server
+
+running for five years just because somebody has a browser tab open for five years. So in practice we encourage an application architecture that is resilient to, um, to shut down.
+
+So. You know, implement things in such a way that there's an auto save loop, for example, so that if a backend receives a sig term, it can, it can shut down gracefully. Um, but strictly speaking, we don't have like a hard cap on the, on the length of that.
+
+**Justin:** Here's a, uh, AWS service. What is it? Fargate, which is, is somewhat similar to this. Maybe.
+
+**Paul:** Yeah. Fargate is. It's still with, so with something like Fargate, you're still not getting a guarantee that you're talking to a backend that's unique to
+
+**Justin:** Mm, right?
+
+**Paul:** up a backend as load dictates, but they're not sort of giving a set of users, a dedicated backend. Um, and so like one other example of, of why it's useful to have it, this dedicated backend is because ultimately you just, the, the handle that you get to this backend is just a host name that you connect to from the client. If you want, you can give that same handle to multiple users, and then you, it makes it much easier to implement things like message passing between two clients that are, uh, have relevant state that they're sharing or things like a figma style uh, realtime collaboration becomes a lot easier to build in a scalable.
+
+## [00:12:35] Building a Dev Tooling Business
+
+**Justin:** Right, right, right. That's pretty cool. Um, I imagine building a business around this. Technology is, is kind of interesting. So, so we, we've seen this a lot in different forms and we're talking to, uh, you know, founders, who're creating a tooling company where it's like, really, you have, you have the technology, you have this unique solution and you're trying to like turn it around and, and, you know, capture a market with it.
+
+So I know you are still pretty early in this, but, but sort of, how are you thinking about building a business around it and sort of, what does that look like?
+
+**Paul:** Um, so what we're thinking is that a lot of the teams we talk to who are either interested in using tech like this, or have gone down the path of building tech, like this tend to be application teams who often don't wanna be building this infrastructure. They kind of reluctantly end up in this world of Kubernetes and, uh, stapling things together that shouldn't be stapled together.
+
+And it, it kind of, um, I think there's this real pain point. And I think one of the nice things about providing this as infrastructure as a business is that people are used to paying for compute, um, and people are used to paying for computer adjacent services. So, uh, I, I don't think we kind of are asking, um, you know, asking people to open up their wallet for something that they're not used to, which is often the case with a lot of dev tools.
+
+So I think we're fortunate that way. Um, one thing that's that we are exploring as well is kind of this hosted control plane model, where, uh, we've actually architected everything in such a way that we can run these, this compute on a users'. Uh, backends if they want. So it could be bare metal, it could be their EC2 server, their GCP server, um, basically anything that runs Docker.
+
+So in that case, it would be more of a, uh, fee, you know, a monthly fee for that hosted control plane, a little bit more of a SAS model, because the value add that we would provide, there is more, uh, things like the observability observability layer and, um, accounting layer and, and some of the stuff that sits on top it.
+
+## [00:14:40] Using JamSocket
+
+**Andrew:** so what is working with jam socket? like like can, uh, since it's built on spawner, could I deploy this on my own? Or is jam socket doing a lot for me that I wouldn't wanna do.
+
+**Paul:** So the things that jams socket's doing for you are things like running a container registry. Um, we have a, an API and a cLI client that go with the jam socket side of things. Um, so the spawner side is, is pretty di uh, DIY and it's intentionally done in that way, cuz it's flexible to do things that are kind of beyond the scope of what we're trying to do with jam socket.
+
+Uh, an example of that, if you wanted to build a deploy preview server, um, that's not something we intend to do with jam socket, but spawner actually provides a nice base for that because it's, it allows you to just spin up these anonymous hosts that are serving a container you provide. Um, so on the jam socket side, the idea is basically you push a container to us, uh, that container looks for an environment variable called port, uh, similar to Heroku Google cloud, um, that kind of interface serves an HTTP server on that port. And then we just proxy that, uh, based on the host name that we generate on the fly. So you get a rest endpoint, you hit that rest endpoint, it sends back a host name and that's pretty much all there is to it. Um, everything else is kind of under the water. We're, we're managing the session lifecycle. We do provide some APIs for observing session lifecycle, getting events and that sort of thing, uh, as well as introspecting logs and, uh, some of the dev tooling as well.
+
+**Justin:** Does this include things just like authentication and everything as a built in aspect of.
+
+**Paul:** Uh, we, so we authenticate users to our platform, but we don't provide authentication for the end user application. Um, our approach in general to everything really is we, we kind of try to stay outta the developer's way. Um, so we we're not trying to impose, uh, any storage solution, any authentication solution, any secret sharing solution.
+
+The idea is that you can lean on other, uh, either tools that you already use, uh, cloud vendors. If you're hosting on a cloud vendor, um, you can kind of bring that existing tool set, and we're just giving you this session, live layer.
+
+**Justin:** That's pretty cool. That's pretty cool.
+
+**Andrew:** Do you have any clients yet? Like, uh, is anybody building cool stuff on jam socket?
+
+**Paul:** Yeah. So, uh, we're sort of at the stage where we are kind of. A little bit past our own MVP. So we're like minimum viable products. We're still fairly early on. Um, we do have people building on it and we're, we're reaching. I mean, we're getting more and more comfortable with going into production on it. Um, there's a company called rayon it's rayon.design.
+
+That's building kind of a Figma style, multiplayer CAD application on it. Um, and there's a few people using it for launching Jupyter notebooks and things like that. Um, one of the nice things about the architecture being so UN opinionated is that things like, um, visual studio code and Jupiter notebooks are pretty easy to deploy on it. Even using containers that other people have built that are not specifically designed for, um, for jam socket. So, uh, we see a lot of, I think those that's kind of the lower, lower hanging fruit use case for us right now,
+
+**Andrew:** the company I work at right now, descript kind of has like Ha do this, like remote, uh, like sessioned backed application, but I don't think so is heavily. And I think an approach like this could really, really help us because we eventually wanna move from having an electron app that heavily relies on the system to a fully like Figma, like web experience.
+
+And these sessions lived backend seemed like a, a, a quite a nice solution.
+
+**Paul:** Yeah, actually the electron kind of as a starting point is a really nice one for us because electron itself is built internally in kind of this client server, uh, sort of way, right where you have internally, there's a node process and, uh, uh, front end process. So, uh, one thing.That you could do is kind of basically split out.
+
+So the node part runs on the back end and all the message passing just happens, uh, over the network instead of over a local stream. So, um, yeah, I think that that type of thing is a really good fit for us.
+
+**Justin:** Just, just sort of think that talking about it broadly. So you mentioned earlier that like, so spawner is using basically Docker containers right now. And, and that there's potential options for, for other things in the futures. I mean, you know, again, like thinking back to Lambdas or like, um, or, you know, even like CloudFlare functions or something.
+
+I, I, I think back to just like V8 isolates as being a, a really interesting target for this sort of thing. Um, having like semi long lived V8 executions, um, My sort of question is, is like spawner, like specifically tied to the notion of Docker containers, or is it like something that you would like to refactor in the future to be more flexible or is like, you know, from the architecture perspective, is it like sort of married to that notion at moment.
+
+**Paul:** No. So we so actually started as a. Started building it on Kubernetes. And so we first prototyped it on Kubernetes. And then one of the reasons we moved away from that was because the idea of containers is so embedded in the Kubernetes ecosystem. Um, even though parts of Kubernetes like the scheduler and, and that sort of thing are not necessarily, um, super container aware, just the fact that everything about Kubernetes and, and the ecosystem around it is so Kubernetes.
+
+Uh, so container based that we decided that. We're not sure that that containers of the future I'm I actually started even before the Kubernetes approach, attempting something like this with, uh, web assembly and built something that worked. So I kind of proved out the concept with web assembly moved over to Kubernetes because, um, well, I mean, I mentioned the, the four gig limit and there's just web assembly is still early.
+
+I love it. I think it's like it's here to stay, but it's just early to be building these compute intensive applications on. Um, so yeah, I'm really bullish on, on something like web assembly. Uh, isolates are also really interesting to me. I think, um, that's something that we would like to support, um, down the road as well.
+
+**Justin:** Sure they have a lot of their own constraints. So I don't think they're really intended to be as long lived as I'm sure. You know, this is open for it's cool though.
+
+**Paul:** Yeah. And another nice thing about the containers is just that people had already built things in containerized ways. We didn't have to invent interfaces with the operating system or anything like that.
+
+And it just, as you, as you move away from, uh, from the cutting edge or, or I guess as you move towards the cutting edge, you kind of end up, um, having to invent more and we're not opposed to inventing, but we're just sort of one step at a time.
+
+## [00:21:25] Web Assembly
+
+**Andrew:** So you talked a little bit about web assembly for our, our listeners who might not be all that familiar with it. Uh, why is it such an interesting technology to you?
+
+**Paul:** So what I like about, well, I guess going back to the problem, like one of the main problems we have with containers is cold start time. Um, so containers are often in, in the real world when they're used, they're used in systems where um, things can be scaled up and down over time. And if it takes 10 seconds or a minute to start a container, nobody really cares.
+
+Everything just has to be eventually consistent with what we're doing with containers. There's actually every time we start a container, there's a user waiting to interact with it. So that cold start time of getting to the first interaction for a user is vital to us. Um, so with, with web assembly, the nice thing, uh, just sort of a technical description, web assembly is, uh, byte code language that can run in the browser and you can compile various languages, uh, to it.
+
+So it's kind of like a, I mean, as the name implies like an assembly language for the web, um, The one of the nice things about it is because it was designed to run in the browser. It's both fast to start up, cuz that was one of the real design requirements of it. Um, and it's also naturally very sandboxed where you, you don't have to worry about, um, it touching things that it shouldn't touch. You, you kind of explicitly have to give it access to any resource, whether that's network, memory, uh, even the system time you have to pass in and not necessarily explicitly like there's, um, interfaces wasi is the big one to, to kind of pass in system resources, but the idea is you have complete control. So, uh, it's very lightweight and it's, it's just a, I think a really well designed, um, kind of, they took a lot of the stuff that people have learned over the last 20 years with VMs and, uh, kind of turned it into something that is what you would build if you were starting from scratch, like were.
+
+**Justin:** Cool. That's awesome.
+
+Yeah.
+
+## [00:23:31] Aper
+
+**Justin:** So, uh, I've just been looking at some of the stuff that y'all done, and I noticed that you also have this other library, uh, rust library called APER, uh, and the sort of headline is like, gi t for your data structures. Uh, could you explain a little bit like what that is and why you build it?
+
+And if it plays into this, you know, other product jams stack that you've been talking about.
+
+**Paul:** So where aper comes in is if you wanna synchronize to rust data structures, uh, or a rust data structure between two or more machines. Um, and the approach that APER takes is it basically flattens the data structure.
+
+Into something that can be treated as a, an append only data structure by transforming it into a state machine. So for example, if you wanted to have a list, uh, instead of representing it just as a, a straight list, you can represent it as a series of actions, like add to this list, removed from this list, uh, reorder elements in this list, things like that.
+
+The nice thing about that is you can actually apply that type of... that same thing to an, an arbitrarily complex data structure. Uh, so as long as you, it basically reduces the problem of synchronizing the, any data structure into the problem of synchronizing an append only list, which is a fairly solved problem in computer science.
+
+One of the use cases for that is you can go back and forwards in time in a data structure. You can always, uh, kind. Pop things off the end of that list and look at what the state would've been, uh, by recomputing from the beginning, if you need to. Um, but also you can just send those transitions between multiple nodes in a network.
+
+And then each of those nodes has a copy of the same data structure in memory
+
+**Andrew:** before we move on, uh, does APER, uh, relate back to spawner at all?
+
+**Paul:** Sort of, yeah. So, uh, aper was actually the first piece of this that I started working on. And it originated from during COVID. I started writing a game for my family to play over zoom calls. And so we would all go into the game and, um, we would each see our own screen and it was kind of a boggle, like word game I was doing.
+
+Uh, doing word games for my family before wordle was a thing. Um, and the, I wanted to make it available to other people and I realized that scaling a web socket based server was really hard. Um, So aper was actually extracted from that code base originally. Um, and then that observation that doing a web socket server was really hard is kind of what set me on the path to, uh, to building spawner and jam
+
+socket.
+
+**Andrew:** that that that's an awesome story. That just building a game for your family spawned, uh, both of these things and potentially even the company you work at now.
+
+**Justin:** It's funny how frequently that happens. Uh, and so we had interviewed, buh, Jared who's creating bun and it was a similar sort of story. It's like he was making a game and he is like, oh, these tools are so slow. I'm gonna fix that and created bun.
+
+**Paul:** Yeah. Games are great. Cuz they're so self contain.
+
+## [00:26:26] Rust
+
+**Andrew:** yeah. Uh, so why rust? Uh, I, I'm thinking that a lot of these things that we've just talked about are created in rust. So why, why do you think it's the programming language of the future?
+
+**Paul:** Yeah. So, uh, rust is, I started programming rust in about 2018 at, in my free time, just cuz I, um, I'd done a little bit of functional programming in the past and IN some of these languages that. really Are thoughtful about types, things like Haskel and, uh, O camel. And I kind of always liked exercising that part of my brain and always felt in my day job, I was doing a lot of Python and felt that there was something missing there in the expressiveness that I had with types.
+
+So, um, when an opportunity arose to do some rust, I, I started doing it, um, and ended up doing it for a number of kind of free time projects. Uh, got to the point in. Uh, 2021, where I realized that if I was gonna be an a rust expert, I had to just commit to doing it full time. I couldn't really go back and forth between rust and Python.
+
+Um, and so that was one of the reasons that I left my job. Uh, and all I really knew was that I was really interested in the web and I was really interested in rust. Um, so what I like about rust is, um, I think it's a natural evolution of other system programming languages. Like I think it's, uh, I think it's, it's kind of like what you would create right now, if you're just trying to create an ergonomic programming language in a lot of ways.
+
+And then it has all this like memory safety stuff that you kinda have to deal with as well. But it, it kind of teaches you computer science almost as you do it. Like, even though there's a learning curve with it, I always feel like I've learned something, not just about rust, but about computation when I get past a one of those hurdles. hurdles
+
+**Andrew:** Uh, have you played around with any of like the, the rust crates for web development? Uh, Justin shared a few here on the podcast.
+
+**Paul:** I've played around with, uh, yew as one of the Y E w uh, I quite like that, it, it feels like a natural, uh, thing to go to from having done some react. Um, so the, actually the game that I mentioned, the, um, word game was built with you in rust. Um, that's probably the main one. And then I've written a few of my own to deal with, um, things like WebGL.
+
+**Justin:** Nice. Nice. So, uh, I mean, a lot of the work that y'all doing, uh, was so, uh, apes, spanner or aper and spawner are all open source. Um, and it seems like spawner is like a big part of this, you know, jam socket product that you're building. So, uh, as you're building this business, uh, how is open source positioned in your mind and like, why are you doing stuff open source now?
+
+And, and what is your sort of plans for open source stuff in the future?
+
+**Paul:** Yeah. Uh, we tend to, to kind of think of things as open source by default, unless we have a good reason not to. Um, so we've really at this point kind of kept the proprietary platform to be closed source and pretty much everything else is either open source or we have plans to open source at once we cleaned it up a bit.
+
+So, um, I think that just kind of comes from our background. So we're very open source, heavy people. We're obviously building on top of a lot of open source and we wanna contribute that back. Um, but also kind of more strategically. I do think that there's an opportunity to kind of build the, the Kubernetes of this ecosystem.
+
+And I think there's a lot of dividends you get just by, um, kind of not letting that fall to a big cloud company. Um, so I think like the, the natural, if we didn't do this, this would be something that, that Amazon or Google would own. And I think we kind of have this unique point in time where we can. Uh, we can get something out there and get adoption before they do so. Um, that's, that's kind of the, the strategy with open source.
+
+**Andrew:** Yeah. And then since, since you're making it, it's not like the, the actual secret sauce is still hidden, cuz like, uh, with like bazel, like sure. There's a lot of it that that's open source, but like it really isn't open source. So it's cool that you you're doing it.
+
+**Paul:** Yeah. And we've been trying to. Do everything in the open as much as possible. It's there's that kind of can be at odds with iterating quickly. So at this stage, there's still things that we've kind of done in the proprietary code base and we're, we're kind of moving out as we have time to, uh, To sort of solidify them and, and document them.
+
+But our goal going forward is to be, uh, the way I kind of think of it in my head is, is kind of like the proprietary platforms like GitHub and the open source piece is like git. Um, not that those both come from the same company, but, um, that we kind of have that separation where it's, it's a freestanding tool.
+
+It's not like, um, you know, in contrast to something like paloy where the tool is so integrated with the platform that you can't really untie them. Uh, we want it to always be sort of a freestanding open source project that you could use and never talk to us and, you know, we've, we are okay with that.
+
+Like, that's kind of that we're happy that you're ultimately using something that. Gives us distribution and, and gets our name out there too.
+
+**Justin:** Yeah, that's cool. This is like, this is sort of a category defining. I'm thinking, you know, it reminds me very much of like, if you think sort of like the early days of Vercel and that sort of early integration with like, we'll make Lambda easier or temporal is another good example of this is like, well, we're gonna make orchestrated workflows sort of easier.
+
+This, this seems to be another one of those category defining things. There's like, you have a session service and we're gonna make it really easy for you. Um, that's pretty exciting, man. That's, it's a, it's a cool thing.
+
+**Paul:** Yeah, that's my hope. I mean, those are both. Companies that I hold in high esteem. Um, so it would be great company to be part of
+
+## [00:32:29] Future of Web Development
+
+**Andrew:** So this is a question that we asked, uh, of most of our guests, uh, in some shape or form, uh, what do you think the future of the web looks like and how we will build it in the future? Because it seems like, as Justin said, we have all these different technologies that are kind of just burgeoning.
+
+How do you think it'll shake up?
+
+**Paul:** So I think what we're already sort of starting to see is this bifurcation of web development
+
+**Andrew:** Wanna hear Paul's answer. Well, the rest of this interview, as well as a bunch of bonus content is only available to our Patreon subscribers.
+
+For just $5 a month, you get access to full length ad free episodes. You'll be able to vote on future guests and you can come join us in our discord community. There will be hosting exclusive Q and a with Paul to answer all your burning questions.
+
+Wanna be even more involved. Join one of our higher tiers and become part of episode planning and help shape the episodes as they come out. We hope you join us, be sure to like, and follow the podcast.
+
+Thanks for listening.
