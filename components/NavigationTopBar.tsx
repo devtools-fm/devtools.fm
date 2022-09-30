@@ -4,6 +4,7 @@ import {
   InfoIcon,
   DataIcon,
   ClipboardIcon,
+  ExportIcon,
 } from "@devtools-ds/icon";
 import { useRouter } from "next/router";
 import { Navigation } from "@devtools-ds/navigation";
@@ -35,15 +36,13 @@ export const NavigationTopBar = () => {
         >
           Stack
         </Navigation.Tab>
-        {/* <Navigation.Tab
+        <Navigation.Tab
           id="merch"
           icon={<ExportIcon inline />}
-          onMouseDown={() =>
-            window.open("https://www.bonfire.com/store/devtoolsfm/")
-          }
+          onMouseDown={() => window.open("https://shop.devtools.fm/")}
         >
           Merch
-        </Navigation.Tab> */}
+        </Navigation.Tab>
       </Navigation.TabList>
 
       <Navigation.Right>
