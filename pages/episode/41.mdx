@@ -1,0 +1,343 @@
+---
+title: David Khourshid - x-state, stately.ai
+youtube: https://www.youtube.com/watch?v=bO2_VQWy6Pg
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/11498452
+tags: technology, software, javascript, react, state machines, x-state, stately.ai, david khourshid
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to David Khourshid, the founder of stately.ai, a company that is building a state machine visualizer and debugger.
+David is also the creator of x-state, a JavaScript library for state machines.
+We talk about the history of x-state, how it works, and how it change your code.
+We also talk about the future of state machines and how they can be used in the real world.
+
+[Join our patreon for the full episode](https://www.patreon.com/devtoolsfm).
+
+[Twitter](https://twitter.com/DavidKPiano)  
+[GitHub](https://github.com/davidkpiano)  
+[Stately](https://stately.ai)  
+[xstate](https://xstate.js.org)
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+[Join our patreon!](https://www.patreon.com/devtoolsfm)
+
+#### Andrew
+
+- https://preactjs.com/blog/introducing-signals/
+- https://lightningcss.dev
+
+#### Justin
+
+- [Tweet on environment variable typing with Zod](https://twitter.com/mohsen____/status/1566837054444650499)
+- [Dune, a hobby rust based JS runtime](https://github.com/aalykiot/dune)
+
+#### David
+
+- https://replay.io
+- https://zagjs.com/
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:46] What is x-state?
+[00:09:31] Adopting x-state
+[00:17:27] Applying State Charts
+[00:25:53] What is stately.ai?
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 41 - Free
+
+**David:** one of our biggest goals and visions is to make. Application logic collaborative, because frankly, right now it's not, It's a silo between, um, design project management and developers. And, uh, there's very loss of communication between each of those three silos.
+
+**Andrew:** Hey, before we get started, we like to direct you towards our merch store. You get some cool dev tools FM merch, or even this TypeScript hoodie. Show how close to the metal you are with this one. If you remember of our Patreon, you get a 20% discount code. Now let's get onto the episode with David, but remember the full episode is only available to our Patreon members. Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my cohost Justin.
+
+**Justin:** Hey everyone, uh, I'm really excited today to welcome David Khourshid uh, the founder of Stately and the creator of x-state. Uh, David, thank you so much for joining. Uh, I've wanted to talk about x-state on the podcast for a while, so this is gonna be a really fun episode. Um, before we dig into that though, uh, would you like to tell our listeners a little more about yourself?
+
+**David:** Yeah, sure. And thank you so much for having me. I'm really excited to be on here. So my name is David. I was most recently working at Microsoft. I've been a developer for about 12 or so years. I've lost track at this point. And, um, I was also, I I, I studied piano at university, so that's the last part of my David k piano, uh, username that you'll see pretty much everywhere online.
+
+So that's, Probably my main hobby. But um, yeah, I live in Florida and now I'm working full time at Stately.
+
+## [00:01:46] What is x-state?
+
+**Justin:** That's awesome. That's awesome. Uh, so maybe let's, uh, let's dig right in. So you, you created, uh, this library called x-state. Uh, people have probably heard about it. Uh, uh, and it's around building, or it's a, it's a library for building finite state machines and state charts. Um, could you explain those terms a little bit for our listeners who might not be familiar with them?
+
+**David:** Sure. Yeah. And they could sound like really intimidating terms, but it's actually a lot easier, you know, than you might think. Um, so in virtually every application there's like a lot of things that could happen, such as you could click a button or you could submit a form or get a response from some API call.
+
+And so these things are called events. Events are things that you know, happen in time. Uh, but these events don't always have the same behavior. For example, when you submit a form, uh, and the form's invalid or it's already being submitted, that should behave differently than submitting a valid form. So these behaviors that, you know, we might refer to as loading or pending, or submitted, or invalid, these are called finite states.
+
+And so an event can cause one of these finite states to transition to another. So for example, if I have a valid form and I click the submit button, which is an event, now it's in the submitting states, So a finite state, state machine. It represents all of these things, events, finite states and transitions.
+
+And it represents it in a concise visual diagram. And, um, state charts, which, uh, x-state also allows you to create, they actually take state machines to the next level. So you could express actions nested state's, parallel state's, history and final states and a lot more. And so state charts, I want everyone to know that they're technically still state machines, but they also allow you to represent logic visually That scales for pretty much any level of complexity, uh, which is a limitation of state machines.
+
+Um, you know, state charts pretty much solve the scaling problem.
+
+**Andrew:** So this is, uh, compared to probably how most people approach their state and their applications, this is a much more like formalized way of doing it. So how did you, uh, like arrive at Oh, state machines are kind of the solution to how I should build my app rather than like a bunch of used states or, or something similar.
+
+**David:** Yeah, so I actually, I didn't take any, you know, well, I, I took a couple of computer science courses in college, but it's not something that I studied heavily. And a lot of people, they would tell me like, Oh yeah, I learned about state machines at university because they forced us to learn it, et cetera.
+
+That wasn't the case for me. Uh, it was actually, I, I was a junior developer, um, my first, I guess you could call it my first big boy developer job. Uh, we were working at a startup where we were writing all of these complicated workflows and multi-step forms using PHP J query, and like in obscene amounts of conditional logic.
+
+And on top of that, the requirements kept changing. So, um, you know, we, we just had this really, really complicated logic and we weren't sure what was correct, what was not. We were basically just feeding code to our QA team, and, uh, they were telling us, Hey, this doesn't match the specification. And it was very difficult, especially for me as a junior developer, to understand everything that was going on and to map the requirements to the code.
+
+So I started just looking up visual ways of representing this logic, and eventually I ran into state machines and state charts, and that was the aha moment for me. Like not only the fact that it was visual, like literally all I'm doing is following boxes and arrows, but also that almost everything that you know, we do in application logic can be represented in terms of these three things, events, states, and transitions.
+
+**Justin:** I think it's, it's really interesting in that, uh, sort of the, the scenario you described as like, something we'll all be familiar with is like, we have a lot of imperative logic, a lot of like conditionals and we're trying to manage, uh, state alongside the events that mutate the state and, you know, all the other, the logic that goes into that.
+
+Uh, so, so it's interesting that we. We have a tendency, especially if, if people are like developing React applications in particular to think about like, oh, here's my like little unit of state here and here's all the other things that impact it. And they're like very divorced from each other. But this takes more of a sort of centralized approach to like describing the whole system.
+
+It's cool.
+
+**David:** right.
+
+**Justin:** So, uh, what sort of, what sort of problems do you think really lend themselves well to state machines and state charts?
+
+**David:** So I would say in general, when you're dealing with event based code, that's a very good, you know, first step to, um, realizing that this app could make use of a state machine, which, like you were talking about, centralizes, um, you know, these states, events and transitions. And I mean also there's a realization that virtually all apps have some sort of event based code, whether.
+
+Explicitly coding these events or not? Like, um, even if we're putting logic directly in an event handler, like we're still handling an event, it's just where that logic lives in the component versus in some centralized place. Um, as far as finite's states go, I would say for example, multi-step forms or when your application has different behaviors over time, like modes.
+
+Uh, drawing apps are a very good example of this. Um, you know, if you are drawing something versus if you're panning the screen, then moving your mouse, it's going to be doing something different then if you were like in drawing mode where it would actually draw onto the screen. Um, But yeah, so workflow based code as well, you know, where you have a sequence of events, or sorry, a sequence of steps that need to happen.
+
+And especially if those sequence of steps aren't linear. So you might have one step that might do one thing or might do another thing, depending on some logic, some condition being met. Um, or you might even have a step that needs to go back to another step and doing this in code, you might think like, Oh, I'm gonna be fancy and use a linked list.
+
+And then eventually a, a dag a directed, acyclic graph. And then eventually you realize, no, I actually need a state machine that allows me to just represent all of this logic in one simple graph. Um, but yeah, so I would say applications where it's, um, you know, you have a lot of events, a lot of transitions, and a lot of states happening.
+
+And these are typically applications that are more trivial than just your basic crud applications, even though those could use state machines as well. Um, all these types of apps can make good use of state machine.
+
+**Andrew:** Does defining your logic in a state machine make things like testing easier?
+
+**David:** Oh yeah, absolutely. So, um, and that, you know, going back to the aha moment for me, the fact that your state machine is just states events and transitions, you're basically narrowing everything that you could do in your applications down to just sending events somewhere. So you could say, okay, let's say the user clicks this button and you know, it's fetching data and that data has to come back.
+
+And then we have to assert that, you know, the logic that is performed afterwards is correct. Um, the clicking of the button is an event. Receiving that data is an event. So if you wanted to unit test that, you're just sending events and you're, you're asserting that the final state is, um, is what is .
+
+expected.
+
+## [00:09:31] Adopting x-state
+
+**Justin:** Cool. What is, uh, so when, and so it sounds like there's a lot of benefits, uh, so, you know, being able to be, to describe your system and the interactions, uh, and, and specifically the things that change state and how things transition. And also being able to isolate all of this, uh, in a very testable manner.
+
+So what are the, what are the rough spots and challenges that people run into when they're trying to convert a code base to use, uh, state charts or state machines?
+
+**David:** I would say the biggest one is the learning curve. And I say the learning curve because you know, like I was talking about, there's really only three main things you need to get started and that's, you know, your finite states, events and transitions. However, thinking in terms of state machines can, you know, commonly be sort of a a roadblock to a lot of developers who are, uh, more used to thinking in, I guess, different ways by manipulating boolean variables or thinking in terms of imperative logic. So, um, especially when it comes to state charts, there is that terminology barrier as well. You do have to learn a lot of terms, like what is a parallel state and nested state's history final states and, um, what is raising in events versus sending an event and, um, all of these little things.
+
+And it's very easy to get overwhelmed when you're taking everything in at once. But I would recommend, you know, just starting simple start with states and events. Um, I, I would also say like one of the rough spots people run into is, Just knowing how to best model state machines, and this is fair, it's more of an arts than a science because really you're, you're trying to be creative as a developer.
+
+You're trying to say like, All right, here's how I could best model my logic in an orderly way rather than it just being a free for all. And often we think that, you know, just modeling our logic and, you know, using boolean variables and just shoving states and logic, wherever we feel is most convenient, might be easiest.
+
+But I would argue that in the long term, this becomes more difficult to maintain where your code reaches this state of don't touch anything. It's working. I think, and I don't know why it's working, but we're just going to leave it alone. If you remove this, then everything will break. Um, so state machines really force you to explicitly model that in a way that's a lot more maintainable, and that explicit modeling can be more difficult than just.
+
+You know, coding the way that you normally code. Um, so in short, the learning curve and I guess the modeling aspect of it as well, but modeling actually does become easier over time. Just like anything, you know, art related. I, I like making the art analogy because as a pianist it's like piano is non easy instrument, but you know, the more you practice the better you get at it.
+
+And so same with css, same with modeling state machines and state charts.
+
+**Justin:** Yeah, I mean, so in some ways it is just like writing scalable code. I, I found the one issue or the one like hurdle that I ran into and I was like, first exploring state charts is like the tension between having a monolithic state chart where you like, you have a big sort of complex system and you like model all the states in the cons complex system versus like breaking it down into smaller systems that you, you know, then use independently is a sort of interesting thing to. Work through.
+
+**David:** Right. And, and that's where you get more in, you know, into the actor model where it helps with that. But again, that's a balancing act. Like you don't want to basically turn your applications into a microservice architecture just because, you know, you're like, Oh, I can make this simpler. So, um, and that's the thing that I wish more developers realize too, is that a lot of coding, it's not that there's no one single right way to do it.
+
+There's not, like when you reach 500 lines of code, you need to separate it into like another microservice or something like that. It's definitely more of an arts than a science
+
+**Andrew:** Yeah, my, my hurdle when approaching x-state has always been like, I, I don't really see the usefulness when it's small. And then I'm like, Okay, I don't need to learn it. But then I get to where it's like big, like for work, I coded a tree view component and tri, like an accessible tree view is an insane amount of code.
+
+Like it's one react component, but it's like, like 2000 lines of code. And at that point I'm at the same, that place we were describing where it's like, it's so big and it works, so just don't touch it. But it has all these nuances in it that are very hard to like just gro from like a high level view.
+
+**David:** Yeah. And I've, I've heard that so many times where at first people will tell me like, Hey, my app is so simple that I really don't need a state machine. And I'm like, Okay, that's fine. And then later they will say, Hey, I, I actually really wish I used the state machine, but right now it's at the point where it feels like it's too late.
+
+So, um, and again, I, I think that's part of the fear that, uh, people think, Oh, there's so many terms to learn and it's going to be a huge learning curve, but there's steps that we could do where, you know, we could just. Start modeling in terms of events, and that doesn't require you to split everything out into states and transitions.
+
+It's just send an event instead of directly manipulating state. And that actually makes it a lot easier to eventually migrate to state machines when you feel the need for them in your applications.
+
+**Justin:** I feel like another big challenge, or that can be a challenge when you're, when you're approaching, uh, sort of like implementing state machines or state charts in your application, is just like how exactly they're expressed. You know, depending on the complexity of it, there's a bunch of different ways to express, express these things.
+
+And, and you have this, you know, what, what is almost this graph that's like multidirectional with nodes, like pointing at nodes and, you know, it's like a, it a sort of a complex representation and describing that in code can be really hard. So the first time I ever played with, with x-state, which this isn't unique to x-state, but is like, I had a bunch of like nested objects and it became hard to like say, to look at the, the code that was happening there.
+
+What's going on? You know, I could run it through a visualizer and generate the chart and it's like, ah, this makes sense. And then, then, but like looking at nested objects is like, you know, a hard sort of thing to, to grok sometimes. But again, not unique to x-state in that. And also of x-state in particular.
+
+And then a lot of, like, this space has been making some tremendous strides and like better tooling and like different ways of approaching this, and I'm super excited about that.
+
+**David:** Oh yeah, exactly. And trust me, I'm not a big fan of the objects syntax either like the big nested objects syntax. But as far as being able to express nested directed graphs in code, Honestly like that. Like what else are you gonna do Um, that, that's one of the, you know, best ways to do it even though it doesn't, you know, seem the most visually appealing.
+
+And you actually give a clue into like, sort of more the end game where it's that visual representation. Like for the longest time I have the x-state visualizer, um, in, in various iterations. And now we're going the other way with the, uh, the visual editor, uh, which allows you to just create these visually, which are, you know, a lot nicer to look at than huge nested JSON objects.
+
+And also having it as a JSON object ju does allow us to do, uh, things like bidirectional editing, um, and static analysis, and also visualization as well, because you could copy and paste that structure and actually you could even convert it to different formats in the future or even easily consume that in different languages because it is pretty much json at that point.
+
+## [00:17:27] Applying State Charts
+
+**Andrew:** So, uh, we've been talking, I feel like mostly in the context of front ends, but, uh, do state machines, like scale across the stack is like, is the best place for them in front ends or can I use them anywhere?
+
+**David:** Oh, I would say, um, you know, front end and backend. When, um, when I first created x-state I was mainly a front end developer. So, uh, of course most of my interest was using them in the front end, especially for complex components, multi-step forms, uh, routing logic and things like that. However, the, the more I've seen x-state getting used, uh, you know, throughout the web world, um, I've seen it used in so many different places, including the backend.
+
+Uh, people are using it for workflows, you know, for, for chatbots. I've even seen uses for home automation web three projects, uh, things like that. And more recently I've realized that honestly, a lot of the logic that we do on the front end is basically the same logic that has been written thousands and thousands of times before, um, by many other developers.
+
+Like, really nothing. It's like nothing new under the sun. We're all basically writing the same thing. However, when you get to backend logic, that's where the story changes a lot. Where every company's, you know, collection of workflows that they have in the back end, whether they're explicit or not, um, they're all different.
+
+And they're different for good reasons because these companies have their own specific business logic, their own specific needs, um, and they don't necessarily want to share these workflows, uh, out in the public for other people to copy because it is essentially what makes their business unique. And, um, that's when I realized that workflows in the backend, One of the biggest places where like state machines and state charts are extremely useful because state machines and state charts allow you to express, uh, workflows in even greater complexity than you know, most workflow engines out there today.
+
+**Justin:** Yeah, that's pretty cool. And, and you know, I think something we've talked a lot about on the podcast and something I'm very interested in is, is the notion of visual programming or just visualizing programs. And, and, and part of that is how do you represent, you know, logical cohesion? How do you talk about the, the states that a system can be in?
+
+And like, I mean, it, it, I think it goes without saying that like state charts are the sort of defacto formalized way of, of doing that. And, and, you know, From an in industry perspective, I don't know we, that we have something that has a spec in a similar way to really describe the shape of these things.
+
+Like, I mean like, uh, state charts, cuz I mean, x-state itself is actually based on a standard right?
+
+**David:** It is. So x-state is based on the W3 state chart XML or SC XML specification. It was created in, in about 2015, and I think it's main use was in, uh, voice systems like IVR systems where it's like press 1 to get this next menu of options. But it's been used in, uh, you know, many other things. And the purpose of SC XML is, as the name implies, to tie itself closely to state charts, uh, which were created by Herrell in 19, David Herrell in 1989.
+
+And, um, also formalized in the UML spec, but they're not exactly the same. Um, so yeah, and I think like the, the notion of using a specification for defining these state charts is really useful. And that's been one of the main, um, the main influences on x-state as an api.
+
+**Andrew:** Yeah, I, I find it amusing in your docs how you're like, Oh, this is based on a 30 plus year old, uh, specification. It's not your like shiny new state, state machine thing.
+
+**David:** Exactly. I, I, I love to see how. like This is old, like in, in an era where we're just, um, you know, creating new tools and frameworks and things where it's like, Hey, this is brand new. I have no idea how much it'll scale or if it's battle tested or not. We're just going to experiments with it because it seems buzzy and fresh and new. I really like to lean on the fact that the technology we're using is extremely old. It's based on state charts from 1989 and even state machines from like way earlier, state machines predates computers. So, um, yeah, and, and I think that that's actually been refreshing for a lot of people because, um, I guess that's shiny new object syndrome really gets to you so, So having something that has indeed been battle tested and used in many different industries like automotive, embedded electronics, aeronautics, um, just, uh, game development that's, that's huge for, you know, state machines.
+
+Um, there's, there's definitely evidence that state machines and state charts are very useful for many different use cases. And so that's why I'm honestly most excited to just bring it to, to WebDev.
+
+**Andrew:** Yeah, it's an interesting example of old is new, like another one I can think of is design systems. Like design systems have been around for forever, but we're just now starting to use them in code and it's like, Oh wait, that's a real good idea.
+
+**David:** Mm-hmm. Exactly.
+
+**Justin:** So when, you know, when you first started working on x-state or sort of before that point, given that this, this, the specs and the ideas are, are not new, was there stuff that existed in the ecosystem that, like did, uh, state charge and state machines, Uh, and, and sort of what was the, what was the sort of impetus for creating x-state?
+
+**David:** Yeah, there were a few things. I mean, the main impetus was basically me scratching a niche and wanting to. Um, use this in my front end projects. There were a few existing libraries. Some of them were actually pretty popular at the time, uh, but they focused just on the state machine aspect so they didn't go deeper into state charts.
+
+And I remember, like after reading Herrel's paper and reading through the SC XML spec, I really wanted something that captured all of the features, both in his original paper and SC xml and, um, also something that was easy to use in my front end projects. And so I couldn't really find anything like that.
+
+So, uh, that's why I toyed around with, I actually toyed around with peg js, which was a way for you to make your. Uh, languages. Um, and so I created like a very simple DSL for state machines. I released, you know, basically the first version of x-state and for the first year got all of seven stars. It did not make any sort of a splash ever.
+
+Um, and then eventually I presented it at a conference where, um, it, it was react rally, I think, in 2017. And I think in that talk it gave that aha moment that I felt to a lot more people where it's like, Hey, this might be a better way to represent my logic and also I could visualize it too.
+
+**Andrew:** It's funny that you started out as a dsl cuz , uh, other people have now created DSLs for x-state, like Lucy from um, Matthew cp.
+
+**David:** Mm-hmm. Yeah. Yeah. Lucy is a really interesting, uh, experiment. He also. Created Robots and Robot is another state machine library. And I honestly love the fact that, you know, uh, there are these, you know, smaller state machine libraries that are, uh, influenced by x-state, but they want to change around the api.
+
+Um, like I, I just really appreciate that state machines are gaining more prominence slowly but surely, um, you know, in the web dev space. But yeah, Lucy is definitely an interesting dsl. There's another one called State ml, um, that's another interesting DSL to look at. I think it's still under active developments, but, um, yeah, right now we, uh, we know that there is a friction point when you do introduce like a custom DSL to, uh, the web community.
+
+They don't want another compilebbbbnb step or another build tool. They just want to copy and paste something directly into their JavaScript apps and use it directly.
+
+## [00:25:53] What is stately.ai?
+
+**Justin:** I, I think that's, that's incredibly valid. I think the, the interesting thing for DSL is like when you're expanding outside of the JavaScript ecosystem and you're starting to talk about, you know, Hey, here, let's, uh, have a common language that, you know, back end or front end, or like whoever, wherever. that's where DSLs and, importantly, uh, which I want to get into, visualizations are incredibly important. Uh, so maybe let's, uh, switch gears and start talking about stately. So you're the founder of Stately, uh, which is sort of a company behind x-state. Uh, you wanna talk a little bit about like, uh, what this, the goal of, you know, forming a company around this is and sort of what your vision for.
+
+**David:** Yeah, sure. So, um, x-state was mainly a mornings, nights and weekends project, but, um, eventually the community grew, you know, large enough that I realized that this is too important to just be a side project. So that's why I decided to just go through all of the steps of, you know, forming a company out of stately.
+
+And I realized that, you know, there's a lot of bigger goals that I want to accomplish with stately. And so a summary of stately is that it's a visual software platform for application logic and workflows. So in a very, very short elevator pitch, you could basically think of it like Figma for logic, both in terms of visually designing your logic, being able to collaborate with teams on your logic, and also, um, just providing you tools for making your logic, uh, correct.
+
+So, um, yeah, that's, that's my biggest goal with Stately.
+
+**Andrew:** Interesting. So like what, what does it help you to make it correct?
+
+**David:** So, um, have you ever, or actually, let me pose the question in a different way. What tools do you use when you're, you know, just talking through architecture or flows? Like what, what kind of diagramming tools do you use?
+
+**Justin:** Like skeletal or or something like that, right? Yeah.
+
+**David:** Exactly. Yeah. There, there are so many great tools in that space. You named Exel Draw. I love TL Draw as well. Uh, miro um, even Figma Fig Jam, uh, whimsical is a great one too. Just all of these tools that allow you to easily, um, just draw out flow charts or just these architectural diagrams. But here's the problem.
+
+Once you draw these things out, they're merely an artifacts. They're just like a jpeg or png or you know, svg, and you could copy and paste 'em into documentation, but there is no guarantee that that diagram actually represents what the code is actually doing. And so when you change the code, the diagram could go out of date.
+
+If you change the diagram again, the code, like it, it might not match with the diagram. So, um, you think of stately as a diagramming tool or a set of tools for, um, creating these executable diagrams that actually stay in sync with your code. And so that way the whole correctness point is sort of twofold.
+
+First of all, it allows you to express your logic using state machines and state charts, which allow you to, um, you know, to statically analyze, uh, your entire logic. Because if you know all of the state's events and transitions like we talked about of your application, then you could, it, it becomes possible to just, um, to list out all of the possible paths and ways that a user can use the app.
+
+And so there's no more guesswork, you know, all of the features that can be done, you know, all of the events that could be sent and using the actor model, you even know all of the services that your app can connect to. And it is a visually complete diagram, uh, which means like, there's not gonna be any hidden or unexpected logic.
+
+It's all laid out there in front of you. And so you could analyze that st uh, simulate that, um, et cetera. And so the second parts of that is, Actually at a higher level where you could take it to the rest of your team who are non-technical, such as designers, project managers, and other stakeholders. And believe it or not, these are the people who are actually most helpful in taking a look at these flow charts that you created and validating that behavior.
+
+Saying like, Hey, this is not supposed to happen. This arrow should actually go there. Uh, why is this feature here? Et cetera. Like, they could act or they could even ask questions, uh, clarifying questions to make the, the models even better. So I guess it's, uh, two ways of just ensuring correctness in your application logic
+
+**Andrew:** Yeah. Really it, it takes away the hurdle of, Oh, I don't wanna learn the x-state api. Cuz it's like, it, it just generates x-state. Right?
+
+**David:** For now. Yeah.
+
+**Andrew:** Oh, for now. Do, do you plan on it generating other things?
+
+**David:** Yeah. Yeah. So. You know, when we're talking about application logic, um, obviously x-state is not, you know, the only way that you could represent, uh, you know, your state management logic. And especially when you're dealing with other languages, um, you know, x-state might not be available for that language. Um, and so you could think of stately and the stately tools that we're building as eventually becoming this, uh, directed graph builder.
+
+So anything that you could represent in a directed graph, which surprise there's a lot of things that could be represented as directed graphs, uh, you should be able to, um, express in and to create in the stately studio, uh, we call it. So, um, I'm, I'm actually recalling one of my favorite tweets I read was someone who said, Hey, I, my QE team absolutely loves, um, or I think it was a QE team, but loves using uh, the stately editor to basically draw out flows and model application logic and be able to have a very clear visual picture of, um, you know, of what the application logic is. And, uh, someone in the comments, you know, just tweeted back like, Oh, awesome, do you use x-state in your app? And he said, No. And that actually got me really excited because, you know, it shows the usefulness of these tools beyond x-state.
+
+So even for, um, creating CICD workflows or, you know, just workflows in general, um, because this is more poised to be a directed graph editor, um, x-state becomes just one of many possible outputs of
+
+**Justin:** That's cool, but is the, the end goal is still code generation ultimately to make this like a real integrated graph or is it that just like a side goal?
+
+**David:** The ideal goal is actually bidirectional code generation, which you know, we have accomplished to an extent. So, you know, you could edit your code and that updates the diagram. You could edit the diagram directly and that updates the code. So yes!
+
+**Justin:** awesome.
+
+**Andrew:** How, how, how does that exactly work? Like when I open stately, do I pull, what do I pull in? Or like the opposite. How does the, that bidirectional part like ha has me, has me a little confused.
+
+**David:** Yeah. So this is actually something that you could play around with right now. There's a VS code extension. Um, For stately x-state. And so the way it works, I mean, I can't tell you exactly how it works because there's people smarter than me working on it, . But, um, the, the way it works is that if you have, you know, state machines, and right now of course this is only working for x-state, but if you have an x-state state machine in your application, you're going to notice an open in editor little leaflet button thing on top of there.
+
+So you click that the editor opens to the right. And so what's happening is just a series of AST transformations and, um, just internal mapping that allow you to take that JavaScript or type script, code map it to a diagram representation that the editor can understand. And while you're editing the, uh, the diagram graph, it's sending commands back to VS code saying, Hey, this is the relevant part of the code that needs to change to stay in sync with the, uh, with the diagram that we created.
+
+**Justin:** So is there operations where you go into the editor and you update the, the graph itself without having VS code open and then it like, does it commit to your repo or something? Or is it like just, is it tied to, to vs code as a.
+
+**David:** That's coming in the future. Yeah, we're working on a GitHub integration, so, uh, within the next few months, hopefully we'll have something out for that. But that's, that's essentially what we want to do. And so that will enable people to say, Hey, this logic is wrong, or We have to fix it. Or maybe add a new feature which could just, you know, be adding states events and or transitions.
+
+And so you should be able to do that visually. Press save, have it sync to your GitHub repo, and have it be just as if a developer committed code.
+
+**Justin:** That's really awesome.
+
+Um, so, uh, often when we're talking about companies in relation to open source, uh, and you. Especially JavaScript libraries is like talking about monetization and how you make a company sustainable is an interesting question. It seems like you're, uh, your path forward with stately is probably a lot more clear when you have like a collaboration element, right?
+
+Cuz there's like, things like Figma and other tools in this like collaborative space have, have really, you know, set forth a clear model. But when you're thinking about making stately a sustainable business is like, what, what does your mind go to and, and how do you think about that?
+
+**David:** Our, just like you said, our mind goes exactly towards collaboration and that's because one of our biggest goals and visions is to make. Application logic collaborative, because frankly, right now it's not, It's a silo between, um, design project management and developers. And, uh, there's very loss of communication between each of those three silos.
+
+So, um, basically we want to enable collaboration for the most important part of your business, which is that business logic and, um, And that's where we see there being like that, you know, monetization model. Because we want to build collaborative tooling and advanced features that teams would actually pay for and that teams would find value for.
+
+Uh, from. So this includes things like, um, well being able to define teams in the stately studio, uh, having advanced visibility settings, um, versioning your machines, advanced analytics, the GitHub integration that we talked about. Uh, more export options and embedding options. And the list goes on and on. We want, uh, all of our tools to be useful for individual developers, especially if you're working in open source.
+
+So we do want to have that, uh, free and open model for these individual developers. Uh, but we want, you know, teams to pay for our tools.
+
+**Andrew:** Uh, so, so one thing you said, uh, a few minutes ago kind of peaked my interest that like on the front end at least, we write these state machines that are. Basically the same state machines over and over again. Uh, since you kind of have like a cloud platform going, is there like the opportunity to like let people publish their state machines and then like fork them kinda?
+
+Because like going back to my preview example, like there's a spec for the tree view, like it, that should have kind of like a standard state machine that I can just like implement my thing on top of. Do you guys have any plans for that?
+
+**David:** Yes, we do. And it's actually something that we're actively working on, and we pretty much have a version of that already. So if you go to stately.ai/registry, then you're going to see an, an entire collection of machines that you could just, uh, take a look at fork export as JSON, which, which you could include directly in a create machine call to x-state and use that logic directly.
+
+Um, but yeah, that is one of our big visions is the ability to, um, have these common machines and have these represents just, uh, common bits of application logic from something as simple as, you know, components such as a toggle component to something more advanced like, um, authentication and authorization. and so, you know, we, we want people to be able to fork these machines, uh, tweak them to, you know, how they want it, and then use it in their apps however they'd like.
+
+Um, one of the biggest problems I see with the way that we currently do things today is that if we want like some specific, you know, bit of logic that we know exists because, you know, many apps have this same logic, uh, but we're like, we don't have the time to write it ourselves, or it's too complicated for us to write ourselves.
+
+You really only have a few options. You have to look for a package that's for your specific framework, and you have to make sure that that package is, uh, well supported, well documented, and has all of the knobs that you could turn so that you get your exact logic. And if you need anything changed you are beholden to, uh, whoever is the maintainer of that project.
+
+You know, you could make a pr, you could file an issue and you could hope for the best. And eventually, you know, you'll have your use case, uh, satisfied by their changes. And I don't think that this is the best way to do things. I really think that, um, that application logic should be composable, like Lego bricks.
+
+Um, and just like Lego bricks, if you need to twi, uh, to tweak any of the logic you should be able to do so just by breaking things apart, putting things together, and of course with the analytical tools that I talked about, ensuring that the logic is still correct either by simulating,bab generating tests, uh, even generating documentation for these things.
+
+So yeah, that's one of our very big ideas is the ability to share and, uh, remix this logic.
+
+**Andrew:** That's, that's super cool that it even goes to like the extent of like testing and documentation too. Like that's a, that's a, that's an awesome goal.
+
+**David:** Thanks.
+
+**Justin:** That'd be great. I, I'm excited about it. I mean, this is one, this is one area that you know, Every programmer ever will, will go through this hurdle of like having to build large, conditional like flows that like are reacting to events and like putting your system, your system in different states and it's like, this is just sort of a, the nature of the business.
+
+So, you know, it's, it's nice to see tool direct tooling builder on this.
+
+**Andrew:** ~~Yeah, Go for it.~~
+
+**David:** ~~sorry, I, I was gonna say, um, ~~these are tools that we wish existed, like, uh, US and the entire team that we wish existed when we were first developers, you know, for the last 10 years or so. And, um, that's why we're super excited to build.
+
+**Andrew:** Yeah. Uh, uh, an interesting example that comes to mind is TL draw. Like you have Steve, Steve Ruiz out there, like literally going through every single design tool ever going, like, how does, how does this line behave when I do X, Y, and Z? And he's basically just making a big state machine for, uh, a canvas based editor.
+
+And like, that's, that's the, the very big valuable part of TL draw. Like here at Descript, we, we wanted to use TL draw for like our canvas renderer, but like our canvas is actually rendering a video. So it has like the concept of time too. So like, we really can't use, like TL draw itself. We can only take inspiration from it.
+
+But if TL draw's logic was in a state machine that we could just like fork and remix, that would be. Like chef's kiss, like so easy.
+
+**David:** Mm-hmm. , and yeah, like you said, it is basically a series of, uh, state machines. Uh, I think Steve is, you know, using his own. Um, his own libraries to, uh, create those state machines. But, um, yeah, it is really interesting. And TL draw, that's like one of the most, I guess, poster child examples of an application that would make really good use of state machines and this event driven logic that can get complex really easily.
+
+**Justin:** And it does use state machines. Yeah. Yeah. He's got his, he's got his own, his own special sauce under the hood
+
+**David:** he does.
+
+**Andrew:** Yeah. The problem with developers, we, we like to make our own shiny thing.
+
+**David:** Yeah.
+
+**Justin:** Also a non-trivial, non-trivial thing. I'm sure David knows all about it. Digging into x-state is, is even the, even though the specification is well, well defined, there's just a lot of, there's a lot of aspects to it. We were talking about the learning curve earlier. Uh, implementing something correctly is, is, is non trivial.
+
+**David:** right.
+
+**Andrew:** Well, that's it for this week's free portion of the episode. If you want to listen to the full conversation with David, head over to our Patreon and become a member for just $5 a month, you can help support the show and help us get to our goal of delivering content weekly. Thanks for listening!
