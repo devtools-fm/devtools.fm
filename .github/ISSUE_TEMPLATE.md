@@ -34,3 +34,8 @@
   - [ ] Add sections
   - [ ] Add links to YouTube and BuzzSprout
   - [ ] Add show notes
+- [ ] Patreon
+  - [ ] Export text transcript
+  - [ ] Upload video
+  - [ ] Upload audio
+  - [ ] Announce
