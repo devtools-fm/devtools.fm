@@ -39,3 +39,4 @@
   - [ ] Upload video
   - [ ] Upload audio
   - [ ] Announce
+- [ ] Create next ep twitter header
