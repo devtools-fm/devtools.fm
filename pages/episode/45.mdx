@@ -1,0 +1,334 @@
+---
+title: Rúnar Bjarnason - Unison
+youtube: https://www.youtube.com/watch?v=zHTp9-LJSQA
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/11882512
+tags: programming, programming languages, developer tools, Unison Computing, Unison, functional programming, immutable data structures, content addressing, dependencies, global address space, hash, distributed systems
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week's guest is Rúnar Bjarnason, co-founder of Unison Computing.
+Unison is a programming language and developer platform for making distributed systems.
+It's purely functional and code is content addressed.
+We discuss the motivation behind Unison, how it works, and how it might change the way we write software.
+
+- [Rúnar Twitter](https://twitter.com/runarorama?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor)
+- [Unisons Twitter](https://twitter.com/unisonweb)
+- [Unison Language](https://www.unison-lang.org)
+- [Unison Code](https://github.com/unisonweb/unison)
+- [Unison Share](https://share.unison-lang.org)
+- [Unison Cloud](https://www.unison.cloud)
+
+[Join our patreon for the full episode](https://www.patreon.com/devtoolsfm).
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+[Join our patreon!](https://www.patreon.com/devtoolsfm)
+
+#### Andrew
+
+- https://github.com/BuilderIO/figma-html
+- https://github.com/charmbracelet/vhs
+
+#### Justin
+
+- https://github.com/Doist/typist
+- https://metaphor.systems/
+
+#### Rúnar
+
+- Copilot: https://github.com/features/copilot
+- Exercism: https://exercism.org/
+- OB-4 https://teenage.engineering/products/ob-4
+
+<!-- TAB: SECTIONS -->
+
+[00:01:45] What is Unison
+[00:09:19] Unison Code Base Manager
+[00:15:40] Why build it?
+[00:29:55] Content Addressability
+
+<!-- TAB: TRANSCRIPT -->
+
+**Runar:** Unison is to take a, a fresh look, uh, at, you know, at, at at programming and see whether is there anything that we do change about, you know, about like how programming languages work or how how programming works so that we can, um.
+
+**Runar:** You know, do more of that stuff and and make it delightful.
+
+**Andrew:** Remember the full episode is only available to our Patreon members.
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host,
+
+**Justin:** Hey everyone. uh, we're really excited today to have, uh, roar. uh, one of the co-founders of Unison Computing. Uh, so, Unison is Programming language, uh, which will be our topic today. I'm incredibly excited to talk about it. We've mentioned it several times on the podcast in the past, uh, but before we dig into that, Renard, you wanna, uh, say hello to our audience and tell 'em a little about yourself?
+
+**Runar:** Hi there. Yeah, glad to be here. Uh, Yeah, I'm Roar. Uh, I am one of the co-founders of Unison Computing, uh, which is making, uh, Unison, which is a Programme language and uh, developer platform, uh, mainly for, well, in, in future, mainly for making distributed systems. Uh, but it's, uh, it's a very unusual language with lots of...
+
+**Runar:** Uh, cool cool features. We call it a friendly programming language from the future Cuz like number one It's like it's not fully in the present cuz it's like, you know, it's not where we want it to be But also, you know, we think that this is where programming is going in the future.
+
+#### [00:01:45] What is Unison
+
+**Justin:** Yeah. Uh, unison seems like one of those languages where anytime there's a conversation about the future of programming It is it is the language that seems to come up uh, And there's so many features that make it different Uh, Do you wanna try to give like a 50,000 foot view for our listeners of like what are the things that makes unison? the programming language special
+
+**Runar:** Yeah, so, you know, so it's purely functional and so that's kind of unusual. Uh, and. You know, There there are lots of things that are that are unusual but are also unusual in other languages like Haskell or Small Talk or whatever.
+
+**Runar:** Um,
+
+**Runar:** But the thing that makes Unison completely different, from I think from any language, uh, is two things. Number one, uh, code is, uh, it's not text, it is uh, an immutable data structure. So your code base you know, lives, it's it's literally a database that that lives either like on your disc or like in the cloud or something. Uh, And then the other thing, part of this is that um, code is content addressed. That is, uh, we don't reference, so so under the hood, Unison doesn't reference dependencies of like functions and types. By their names or like, you know, like name spacing or whatever Uh, it uses a hash of the implementation.
+
+**Runar:** So it really has like, e every, every piece of code has an unambiguous global address in this sort of infinite address space.
+
+**Justin:** Cool, cool. So is is the hash like based on the actual shape of the thing? So it's like if two people wrote two functions that are actually the same in shape, would they share the same hash? Theoretically.
+
+**Runar:** Yes, so the is Is computed by first removing all the names and replacing them with like placeholders? uh, and you know remove local variable names and, and stuff like that and then we just hash the, the syntax tree and so, you know if you wrote a function that, that Like does the same thing as someone else's function that might have a different hash cuz your implementation might be slightly different But uh, if it's literally the same implementation like modulo, the names uh, or like Indentation or something then it's yeah, it's gonna be it's gonna have the same hash
+
+**Runar:** And Like just the other day I was writing a function I was like, oh I better add this function to the to you know, The base library cause it's like super useful and then you know, I go to add it to unison and It's like, oh, yeah I'll, I'm, I'll gladly add this function for you, but it also has this other name. I'm like, oh, okay. Somebody already wrote
+
+**Andrew:** And that's kind of an effect of like the more functional style of programming, right? Because it's like you're making these like very generic reusable things and like that, that happen stance might just happen because you're doing like very small units of programming.
+
+**Runar:** Yeah, that's true. This kind of situation where you have the same hash or something is much more likely to come up in very abstract code, you know, where you're, you know, like iterating over a list that doesn't care about the type or is polymorphic in the type, uh, and, and generally things that are purely functional and don't have side effects. But even stuff that has side effects, you still have hashes.
+
+**Justin:** I like about this content addressable system is that it means that Rena are like free. You can rename anything and there's ultimately like almost no consequence to doing that. Um,
+
+**Runar:** that's right. So the names are really just metadata on Uh, on the code base. And so, the code is basically a big hash table. You know, it's a map from hashes to, uh, to the code. And then we can attach all kinds of other stuff onto the, you know, to the entry. Things like, what are the names for this thing?
+
+**Runar:** And you can have as many names as you want for, you know, for a function. Like I like to, you know, like the optional type where it's like it could be present or not. Like in my code base, I like to call it maybe. Uh, but other people like to call it option. And so I just have a little library that just has names, which are my preferences. And, uh, like I neat renamed, uh, somebody renamed fold right. It used to be called fold R. And I was like, no, no, no, that's too, too sort of obscure. Let's call it fold right. And so we renamed it in the base library. And nobody's code breaks. Everything just works still cuz everyone's referencing referencing everything by hash.
+
+**Justin:** How Does that manifest, I mean, are there communication issues that crop up from the fact that like things can have different names and it doesn't necessarily matter. I mean, I know you have type signatures for everything, which is like, sort of a source of truth, but
+
+**Runar:** Yeah, it can happen that, you know, something gets moved and then, you know, you go and you reach for the library and you're like, Oh, where is this function that was here? Like in the last version and then, you know, it's been, it's been renamed. But um, you know, unison keeps the history of of everything. So you could go back in in history and, and see where things were, uh, changed and stuff like that. And, And so you can get like a historical name for something and go and go back. So it's browsing the history currently is kind of junky, but we're hoping like in the future that we can make that experience really nice.
+
+**Justin:** This makes me think of something else that's somewhat related is that, So if you play with Unison, I guess you can check stuff in to get if you want, but like the code is is stored in a database as you'd said. Uh, so it seems like versioning would happen very different.
+
+**Justin:** You were just talking about histories. So what does, what does versioning your code look like within Unison?
+
+**Runar:** Yeah, So the Unison code-based manager is a tool that, that we're developing. And that is the thing that actually takes care of, uh, you know, history and branching and, and versioning and things like that. And so since our code is not text, we actually can't use Git. Uh, we, you know, we've used Git in the past for just like storing code bases on GitHub, but it's just a big binary blob and GitHub can't see inside of it.
+
+**Runar:** but the Unison code base manager, uh, you know, it has this sort of tree structure in it. And so, you know, the, the tree are, contains name spaces and there's sort of, uh, punning on on name spaces where name spaces can also be branches and, and and so you can like fork a name space into another name space and then like do some work there. And then, you know, when you're done with your working and merge it back into your na main name space.
+
+**Runar:** Uh, So it's, it's pretty flexible in that regard, but like every name space keeps the entire history of that name space and the name space has a hash. And so it has a history of all the hashes of the name space and, and yeah, collaboration happens where, you know, you pull someone else's name, space and then you can merge them
+
+**Runar:** and
+
+#### [00:09:19] Unison Code Base Manager (UCM)
+
+**Andrew:** So you, so you mentioned, uh, this unison code-based manager. I think this is a pretty different concept from like most other languages where most other languages it's just like, you maybe have like a compiler that you run and then you have an executable with unison. It seems like you do most of your work through that code-based manager.
+
+**Andrew:** So could you kind of explain what it is and like the different things you use it for?
+
+**Runar:** Yeah, Uh, so in most languages, you know, you have a big mutable bag of text files and then you proceed to mutate your text files and you submit it to like the compiler if it's a compiled language. Uh, you know, obviously if you're working in an interpreted language or or something then, you know, this doesn't apply, Uh, instead of doing that in unison what you generally just end up working in like one buffer. So you work in like a single text file. Uh, you know, I just have like a couple of text files that I, that I work in and I keep submitting those to the, to the co manager. And so the way it works is that it, it will just like watch whatever directory you started it in.
+
+**Runar:** And then you work on like any file with an extension dot u. Uh, if you save such a file, uh, the unison code manager, UCM, will wake up and, you know, parse and check that file and grab any, any definitions that you've put in there. And, uh, if it, you know, if it doesn't have those already in the code base, then it'll say, you know, you can add these or whatever.
+
+**Runar:** And so there are commands in UCM to like add and edit and remove definitions, both for types and for. Uh, for functions. And so the workflow is really like, you know, you make little changes in like a single buffer and then you submit that. It's very much like, you know, if you're working in git and you would be like making a commit constantly, like every little change that you make. But the upshot of this is that your code base is always like in, in a working state, like, uh, you, well, no, that's not okay. It is true. but like you, you can't break it, but you can put it in a state where things might be ambiguous. Like for instance, something might be referencing a different hash than you want to.
+
+**Runar:** Like you changed the definition of some name, but that change maybe hasn't propagated everywhere. Uh, and, but the code base manager, uh, tries to walk you through that, you know, there's a command called to do, and it'll tell you like, Oh, you have a name conflict, you know, here's how to resolve it. So it's a different workflow from, uh, from most
+
+**Justin:** Yeah, it, it's cool. Just the design of Unison gives all these really, really interesting properties. It's like, you, a lot of the the challenges with like source control. You know using GI or whatever you're like sidestepping those because the language is so fundamentally different, you know content addressable store this data Um, But it comes with its own trade offs like so you're you're essentially You have to build an experience that is, you know, not not get like, but like some kind of thing where you're like continually contributing, you're having versioning and, and doing all this stuff started behind the scenes.
+
+**Justin:** And then thinking about like, there are unique things where people who might be really used to You know, browsing files on a file system might find it a little bit harder to say all right, how do I browse around UCM to see like what code exists and, and all that. So it's Like what are you doing for the, the story of just like perusing your code base and kind of understanding what's written and and all that.
+
+**Runar:** Yeah, well, there's, you know, you can browse around using UCM, uh, but it's a lot like, you know, using the command line to browse a file system. Uh, but there's also a UI, so if you type UI in the, in UCM, then it'll bring up a user interface in your browser that you can use to browser code base and see what code is there and read documentation and things like that.
+
+**Runar:** Uh, and that has the same interface as Unison share. And so Unison share is sort of like our, you know, sort of hub where you can push code and, uh, you know, collaborate and like share your code with others.
+
+**Andrew:** Yeah, so let's, let's drill down into that more. So like I was browsing, uh, some of the share pages and it's really interesting that like you can, it's like full fledged documentation. It has like running examples. You can like drill down and see like the actual code of things. Everything's hyperlinked.
+
+**Andrew:** Like it's ave a very interesting experience. So like is, uh, for a person who doesn't know anything is documentation built into the language and does like Unison encourage you to document things?
+
+**Runar:** Yeah, well, actually, we don't encourage you to document things. We probably should try to do that somehow. But uh, yes, documentation is written in Unison. So uh, Unison has a documentation syntax where you know, you you just write a documentation expression, you open it with two curly braces, and it's sort of like a markdown like syntax, but it's just syntactic sugar for a Unison expression that calls some functions. And, uh, what you build is a, a value of this type, dock and Unison share and, and like the local UI also, uh, just, you know, they have renderers for this type. And so you can just go in and, you know, you, uh, if you look at a dock, it'll render it in like, you know, pretty HTML and any code that you put in there, like you can put like code examples and stuff.
+
+**Runar:** Uh, you you know, you put like triple, uh, back ticks or whatever. And you can put a code example. And, uh, you know, that code that you put in there will be, you know, it'll be real, like live code. And so, you know, everything is referenced by hash. And so all of those, all of the definition or the dependencies of that code will get hyperlinked to like the hash that you're referencing.
+
+**Runar:** And then you can click on that and see what the definition of that is.
+
+#### [00:15:40] Why build it?
+
+**Justin:** what, just like, I always blows me away anytime I revisit Unison It's just like how ambitious the project is, how much stuff that y'all have done across the the entire language and the the shared service. I mean I I know there's probably still a ton of work to go to do but like this is a a tremendous paradigm shift and and I don't know I'm I'm like grinning like an idiot cuz it's like the most cool thing. Um, I just wanna stop and ask like a meta question is like why why did y'all build this? What what inspired you to take this path? Um, yeah.
+
+**Runar:** Now, it's, uh, so, so most of us, that's so, you know, the founders are the, the, you know, we who work at Unison Computing, we, uh, Yeah. Many of us have been programming since like the eighties or nineties. and, uh, programming is just like, I dunno, when you're first starting out, and you're like writing little programs or whatever.
+
+**Runar:** It's like delightful and amazing and, and it's this exhilarating experience. And then you go out into the real world with your skills and you wanna like build real systems. And it turns out that like building systems is terrible and tedious. And the tools you have for this are like, uh, you know, like how do you, you know, deploy a a service like in a managed cloud infrastructure or whatever.
+
+**Runar:** It's Like is this kind of stuff that you need to, that you need to do. And, and like how you do it is like some bullshit. It's, it's not like, you're not using the, the programming language to like talk about how your like processes are communicating. Um, You know, like I was working like at a large corporation, uh, on the west coast and I was like writing, you know, uh, protocols that use like JSON and, and, and Pars, like stuff that go has to go between microservices.
+
+**Runar:** And I was just like, what am I doing? This is such a waste of my time. And like everybody's time. And it's like, I dunno, 80 or 90% of everybody's time was just like done. Uh, it was spent like writing this sort of boiler plate nonsense that is like not in the, in the programming language. And so the, the, the goal or, you know, what we're wanted to do with Unison is to take a, a fresh look, uh, at, you know, at, at at programming and see whether is there anything that we do change about, you know, about like how programming languages work or how how programming works so that we can, um.
+
+**Runar:** You know, do more of that stuff and and make it delightful. And, And uh, and so like, what I, what I want to do is to be able to like, write a program that describes like, my whole system. And then to run that program is to deploy it. And, And you know, that's what we're trying to do with uh, Unison Cloud.
+
+**Justin:** Yeah, so speaking of unison cloud, uh, one of the features of unison, or I guess two features of unison, you have this sort of like first class notion of distributed computing. So it's like, Uh, you have uh, an example on your site that looks kind of like a spark job where you just like do a a big map produce over a bunch of different processes of a a big set of data.
+
+**Justin:** Uh, and then you have some distributed storage, storage solution. Uh, I didn't, I didn't dig into that too much or maybe you can tell us a little bit about that. Uh, but one of the questions that I had sort of related to this is like, um, re you're just rethinking a lot of like, fundamental fundamentals about how do you approach building your programing language.
+
+**Justin:** And that's like a lot of work. And then you're also digging into the very hairy world of like, distributed systems and and all that stuff. So, really would love to hear more about distributed systems, but also is like, why is that problem in particular the thing, like something that you're adding on to this is, I guess it goes back to what you were saying earlier about you just wanna build
+
+**Justin:** systems.
+
+**Runar:** Yeah, it, it is, you know, sort of the nature of the beast that like when you go out into, you know, like the real world and do, do programming, you're generally not the writing, uh, code that just like talks about what one machine is doing. I mean, you know, in the era of like shrink wrap software and granted Programmers are still, like, delightfully still there, like they write, you know, little programs that they sell. Um, but, you know, most of us are, like, out there building, uh, systems that are, like, lots of different services that need to talk to each other. Um, so they're distributed systems. And, like, even, I wanna say, like, even, you know, client server programming, like, browser backend programming is also distributed programming.
+
+**Runar:** And so we're always, we're always building the systems where, you know, things need to talk to, talk to one another. And, like, at that boundary where you, like, leave one machine and have to talk to a program that's running on a different machine, uh, there's, like, this impedance mismatch there. There's, like, all of this work that you have to do just to sort of make that happen.
+
+**Runar:** And, like, traditionally what people do is, like, you know, you can do RPC.
+
+**Runar:** uh, Where, you know, you re-deploy the code and, then, you know, you reference the code that you want to call on the other machine somehow, but you have to agree on like what that code is going to be beforehand. Uh, there's message passing, but then, you know, you have to design some protocol. You know, you have to like, I don't know, write JSON pars or, you know, proto puffs or finagle or whatever. You have to do all this, uh, all this stuff. And, and it's, it's kind of brittle as well because like versioning of these things and like backwards compatibility, all of that stuff has to, has to um, be taken into account. And like if you're working in, you know, a typed programming language, none of that stuff is managed by the, the language or the type system. Um, and then the the third thing is like message buses or whatever. But again, like the message format has to be agreed upon. Uh, you know, you have to. Program in a, in a sort of different way in order to like, you know, you're putting messages onto, onto the bus.
+
+**Runar:** You're not just like calling functions. But, you know, with Unison to make another computer do something, you tell it, here's a hash of the code that I want to run. And, you know, you go do it. And then if it doesn't have that hash, I can send you the code that, that, uh, you know, rep that, that hash represents. And then if it has some dependencies, I can send you those as well. But ultimately I'll get to a place where like we agree on what the code is and then you go run it.
+
+**Andrew:** Yeah, it's it's such an interesting way that you guys have chosen to solve it. Like we've had uh, another guest on, he runs a project called T RRP C, which is like this elaborate thing to Basically the same thing to happen where it's like, Oh, we have type checking across everything, uh, with through this simple interface, but there's still all that like complexity burden underneath with Unison, it's like beautiful that it's literally like, Oh, I was running this locally, but now I want it remote and you just say remote and like, uh, because of the content addressability and the way the whole system works, it's just like super simple, just a function call.
+
+**Runar:** Yeah. So Yeah, that's, that's right, The, the, so the uh, capability of doing you know, remote stuff or distributed uh, stuff is always just like a function call away, it's it's literally just a unison library that you that you call and, you know, it constructs some, uh, you know, I mean, under her, under the hood he uses some, you know, continuation, uh, eliminate continuations and stuff, but then there's some interpreter for that, which then goes and runs it on a real distributor system.
+
+**Runar:** Or, doesn't, like it could run it locally on your laptop and it's the same code.
+
+**Justin:** So if someone was familiar with like the er lang or elixir ecosystem and like otp it's like How does this compare with something like that Or, or are you I guess I shouldn't say before I ask that sort of question Have you have you messed around with otp or? Read about it or anything?
+
+**Runar:** I have not. uh, I, I'm only sort of vaguely familiar with with er Lang, uh, But, you know, er Lang does have a lot of these kind of capabilities where, you know, you can... Uh, like hot swap code and you can like tell another node what code you wanted to write, uh, wanted to run and things like that. Uh, so that's, that's very cool, but Unison is, uh,
+
+**Runar:** you know, it's typed and that's, that's one thing so then, you know, you, you know, you, you don't have to like, you know, contact like a, a node somewhere and like send it a message to say like, oh, here's the, the code that I want you to run.
+
+**Runar:** But it's, it's just, it's literally just like you, you, you, know, put the code that you want to run in parentheses and call it send it to a function. Um, and, and that's all type checked so that, you know, you, you know, you can't, uh, call some code that, that like doesn't, doesn't type check.
+
+**Justin:** Yeah, one of the things that's happening in the elixir ecosystem anyway, and I'm trying to keep up with that is they're talking about, like, Bringing types to elixir and one of the things that they are saying is basically like, um, We're basically never gonna type, uh, event messages, you know, cuz it's like Elixir, er Lange based around these processes that that communicate to each other.
+
+**Justin:** Like, basically we're not really gonna type this boundary. Um, and, you know, it's just like something you get for free out of the box. So un. Free relatives speaking, but I mean that's it. That's it's huge. That's insanely
+
+**Runar:** Yeah. I mean, I wanna say that like, I I think Erling is is a beautiful language, and I I, I really enjoy it. Uh, but, you know, I've only used it uh, very little, but um, it's, uh, it, it's awesome. Like, like Making these little uh, distributed systems in in erlang can be delightful.
+
+**Justin:** So maybe just like for some more basic understanding, uh, when you're building a unison program. Like What is the artifact that is actually running? I mean, do you compile it down to an executable and then let's say you had, you know, a distributed system that you're trying to build, uh, what, what is the artifacts that you're deploying to these other systems? Like in the beginning, is it like you put a Unison interpreter on there and you configure Unison it's like, Hey, you know, here's hey, you can connect to this other machine or whatever.
+
+**Justin:** And just connects or, yeah, like how
+
+**Runar:** Yeah, well, it sort of depends, uh, so, you know, if you're just like running, running code like on your laptop or whatever, uh, the, the, the artifact that is executing is, is, uh, unison sort of byte code. And so we have, we compile to this sort of intermediate forum, and then that runs on our, our runtime.
+
+**Runar:** Um, we, you can also, uh, sort of compile to like standalone byte code so you don't have to have UCM running or, or whatever. So it's sort of like the Java model where, you know, you have like some bite code in, in a file and then you can tell, uh, you know, you can start up the virtual machine and, and have it run that bike code. Um, but also like in the works and it's, it's just like coming very soon. Uh, like I saw the PR, uh, today. Uh, the, uh, the pull request. So we're, we have, we're have a native backend for this. So then it will compile to, you know, native code on whatever machine you're on. Uh, and it does that through uh, shed scheme. So Unison will generate chess scheme, and then the chess scheme compiler will compile it down to, to, um, native code.
+
+**Runar:** And we have a just in time compiler also in the works, so it'll, you know, compile it just in time. But, you wanna like, deploy to, you know, a distributed system or, like, to the cloud or whatever, like, yes, you can, you can have, you know, Unison nodes that you've, like, deployed to your, to your internal cloud or whatever with Kubernetes or Docker or whatever else, you know, using the same methods that you do today. Uh, and then, you know, you can just rely on the fact that every, uh, one of those uh, nodes is running Unison and you could send it stuff. But, like, that's gonna be a lot of work. And so, what we're working on is Unison Cloud, which will be our... Uh, managed infrastructure, basically, where you, you know, we'll, we'll just give you a library and then you make a function call to that library and that will deploy your code to our cloud.
+
+**Justin:** Keeping with this pattern of like everything's just unison code, which is, which is
+
+**Runar:** unison all the way down.
+
+**Justin:** I love that.
+
+**Runar:** No, it's actually Haskell under the hood at the
+
+**Andrew:** yeah, so unison isn't written in unison yet.
+
+**Runar:** No, unison is mostly written in Haskell. I mean, a lot of stuff is written in unison, but, you know, U c M is written in Haskell.
+
+#### [00:29:55] Content Addressability
+
+**Andrew:** Um, so, uh, before we move on to like the cloud stuff, cuz uh, that, that's, I've saw some super interesting demos around that. I wanna, uh, drill down into some of the other benefits you get from the content addressability. Uh, there's, uh, this one doc in your documentation called the big idea that like runs through all of the like really cool use cases.
+
+**Andrew:** And we were just talking about builds and type checking a little bit and, uh, it meant those docs mentioned that, uh, uh, the nature of content addressability, uh, unlocks some pretty cool things for builds and type checking. So could you go into those.
+
+**Runar:** Yeah. well, one of the coolest things that it unlocks about builds is that there aren't any. So you, you know, your managed code base, it's like always in a working state. And so you sort of gradually and incrementally updated and it's always built. So there's no build process as such. And so, you know, you add a, you add some definition, it gets compiled and you know, then you might have like an integration test.
+
+**Runar:** You run that. And then once that's, once that's done, like it, the the code works, there's no, you know, going to get all the text files again and like parsing and compiling and making sure that everything, that everything works. Because like, why, why do programming languages generally have builds? Uh, the reason why is that you, the code, the the end product, needs to be able to know where to address other code,
+
+**Runar:** right? So then, you know, you gotta run the build so you can like compile down to the, the syntax trees and like the, the final form. And then you got to make sure that like the addresses of like where the code lives is plugged into the right places so that, you know, when something makes a function call, it goes to the, to the right place.
+
+**Runar:** But since Unison, you know, is always addressed by hash, then all the code, like every function has a unique and deterministic. unambiguous global address so there's no like linking or build step
+
+**Justin:** Yeah, I think one of the more the basic things here is that Most, I mean, compilers don't know what code you've changed, generally, uh, or they might know, they might have like some plugins like, oh, a file has changed, I need to recompile a file or something like that, but like generally, you might have some caching system binds the scenes, but it has to like process this entire file to like know all this stuff that's happened, whereas like you're saying, hey, I'm Add this one method or change this one method or rename or whatever and it's just like that one thing that's all sort of like linked together so it's really interesting.
+
+**Runar:** Yeah, but like not to take away from like lots of people have done very cool work about uh, you know regarding um, incremental compilation and you know lots of ides you know like the main ides that have very sophisticated. Uh, compilers where they're, they're incrementally compiling so they can detect the stuff that you've changed.
+
+**Runar:** Um, so, you know, I don't wanna take away from that, but, you know, at the end of the day, most shops will have like a continuous integration step where you like, you, you run the build and you make sure everything works, uh, and you run all the tests. And that's another thing about, so with, you know, purely functional programming, if you've run a test and, you know, it, it passed, you never have to run that test on that code again.
+
+**Runar:** Like it's a complete waste of time to like run all the tests again. So what UCM does it's that it caches the test results and it will only run a test, uh, again if the code that it, that it depends on actually changed. That is, if the hash of the test changed.
+
+**Andrew:** Uh, that's, That's a super cool concept that like basically builds, type checking, tests for your functions. They all ever only have to happen once. Like the amount of like time and compute that must save is probably immense. and probably another one of the effect effects of that is. As your code base grows larger, you don't feel a larger code base.
+
+**Andrew:** Like if I have a, a type script, code base, that's like 40,000 lines, I'm gonna feel those 40,000 lines while I'm working, but in unison all the work's done as you go along. So like, as you said, like your, your code base is constantly in this like perfect form and that form is like, Oh, type checking, building testing is all done. You know, it's an afterthought. You don't have to do it again.
+
+**Runar:** Right, yeah, it's very incremental and anyway, end up working in like little... Sort of fiefdoms of your, like if you have a big library or something, like you end up working like one name space and it feels very sort of isolated from like the rest of the big project.
+
+**Justin:** Have y'all played around with, uh, just like visualization tools? It seems like given that Unison is the code is in a data format, it's like, I don't know, showing of a particular, like, I don't know, function or whatever, seems like it'd be a really, like, almost trivial thing to do. Um, I'm just curious as like,
+
+**Runar:** Yeah, that would be cool.
+
+**Justin:** how, how accessible is this sort of underlying data structure for how the code is actually stored? I mean, can you just like...
+
+**Runar:** It's SQLite, so you can,
+
+**Justin:** nice.
+
+**Runar:** I'd say it very
+
+**Runar:** if you can write SQL, it's like, it's super accessible. So yeah, I mean, you could go into, you know, write a little tool that like does a query of the database and like does it draws a dependency graph or something. Unison at the moment, uh, UCM has, like, commands for asking the dependencies of something.
+
+**Runar:** It'll give you, like, all, like, a list of the shallow dependencies of a thing or the dependence of a thing. Um, and I think it also has, it'll give you translator dependencies. I don't remember if it can do that, but
+
+**Justin:** Is there like a meta
+
+**Runar:** it has
+
+**Justin:** api,
+
+**Runar:** That's an excellent question. Oh, man, I really want that. Uh, no, we don't have that at the moment, but, uh, no, that's sort of in the works.
+
+**Runar:** So we, so Unison has the system of abilities, which is like our, our effect system. And so, you know, one of the abilities is IO, one of them is, like, non-determinism and, like, exceptions is one ability, things like that. And so one of the abilities that, that I really want, uh, is, like, a code-based ability. So you should be able to say, like, what is, uh, Uh, like, what, what is, what are the hashes for this name?
+
+**Runar:** Or like, what definitions are in this name space? And, we'll, take all the definitions in this this name space, and move them over here. Or so, they sort of manipulating the code base programmatically. So it's not like meta programming as such, Like, like you're not generating code, but you're talking about the, you know, the code base programmatically.
+
+**Justin:** Something we've talked about on the podcast before and I've spent a lot of time doing is writing code mods So it's like usually build time scripts that are like part your code and try to like transform the ast in some way So it's like I don't know having that in unison seems like it'd be also really interesting and and Powerful
+
+**Runar:** Oh yeah, and like, yeah, on, on top of that it would be really great to have a representation of the Unison code in Unison so that you can actually, like, manipulate uh, the a t
+
+**Justin:** Yeah
+
+**Runar:** with Unison itself.
+
+**Justin:** So wild my mind's so blown Uh, you, You mentioned abilities earlier and uh, I sort of wanted to re-highlight that Uh, I think uh, Algebraic uh, data types or or algebraic effects. I should say are something that a lot of purely functional languages try to pursue, um, in my experience, like in my limited experience, some of them were pretty awkward, but I thought Unison's was pretty interesting.
+
+**Justin:** And, And you mentioned earlier too that like exceptions are represented as uh, an ability. And I think this is a really cool point and and something that like is hard to highlight because when When you're writing like code and type script or Java or whatever, exceptions are this like extra vector out of a, of a method It like has some other behavior that does something else and it's like this other state to think about and like
+
+**Runar:** And it's like always You can always...
+
+**Justin:** Yeah. so you all you you never really know if that could happen or not happen and it's like but if you have it An ability, it's like, in the type definition, that's in a tremendously powerful mechanism. So that's pretty interesting.
+
+**Runar:** Yeah, And, and really like abilities are like they're all kind of like exceptions so, you know, for for instance, uh, like the IO ability, you know, what it's really sort of doing is like it's throwing an exception. To like the run time. and then the run time says like, oh, what is this? And like, okay, you want to print line.
+
+**Runar:** Great. Let me go do that. And then it transfers control back to your program. So it's sort of like, you know, it's the limited continuations. So it's like throwing an exception and then giving, you know, part of the exception. is like here is where I was in the program. You know, it's like a pointer back to the program and then you the runtime calls the continuation and on the program goes.
+
+**Justin:** So, what is, What does asynchronous code look like? I mean, I, I'm assuming asynchronous stuff is is largely tied to ability. So it's like if you're making a network request, you're gonna have an ability to go do that. Um, but I is that is abilities how you do asynchronous code?
+
+**Runar:** Yeah, yeah, so asynchronous, sort of multi-threading, multi-threaded code is tied to the IO ability and so there's a function called io dot fork and uh, you know, you give it some code, you know, you give it a, an unevaluated uh, thunk, which means that you just like put, it's a function that takes no arguments basically.
+
+**Runar:** So you give it one of those functions that takes no arguments and you just pass it to fork and it'll spawn a new green thread. And, uh, and run it. And, you know, we have, uh, we have mutable variables that you can use to communicate between, uh, you know, sort of synchron synchronization points between threats. Uh, we have trans transactional memory, uh, so that you can use, uh, you know, atomic operations on both mutable variables and mutable cues and mutable arrays, things like that. To communicate between threads.
+
+**Andrew:** Uh, , so going, uh, down the line of, uh, other things that are unlocked by this content addressability. Another interesting thing to me is how like dependencies work, uh, so, and normally when you're creating something like I'm I'm primarily a JavaScript developer, my, my dependencies have to like be perfect, like they, they like conflicts are a thing I think about constantly pulling in extra ones, like can actively make my experience worse.
+
+**Andrew:** But in a Unison code base, pulling in extra one seems to be like that's the Default that's like kind of what you want. You can like represent your code base at like any point in time because it's very easy to pull in the dependencies from any point in time and have that code. So how does uh, this content addressability make dependency conflicts much less of a problem?
+
+**Runar:** Well, the way it it does it is that dependencies are represented at uh, a fine grained level. So it's it's at the level of the individual hashes. So your, you know, your code uh, just depends on, on some hashes, like the hashes that it actually uses. And, uh, you know, as long as those hashes are present in your code base, uh, which, you know, like your code wouldn't compile if it, if it didn't, but, um,
+
+**Runar:** then you, you know, you can call uh, those those hashes and, you know, it's it's never the case that you're like, Oh, I have a, a version of like version one of a library and then a version two of a library that like transitive dependencies uh, that are transitive dependency to some other libraries, like, Oh, I, I depend on, on library A and library B and they both depend on library C, but they depend on different versions of library C.
+
+**Runar:** So this becomes a problem in, in a lot of, uh, You know dependency management systems, but in unison this is there's no problem at all because they have d those Functions that you're using from those libraries that your your dependencies are using from those libraries. They may just have different hashes And so they can just live Happily together in your in your code base.
+
+**Runar:** They'll just have different names Um, and then You know if like a type changed between one version of a library and another then you, You'll never be able to like pass one off as the other you'll never be able to call You know a function that expects one version with you know, the other version you'll just get uh, an ordinary type error if that happens
+
+**Andrew:** Like this also kind of means that like, it's far easier to deploy like backends that have like multiple versions and are like there forever Cuz like I could in in a world where I'm like calling unison code on the front end my front end app could I'll be calling V1 and there's no problems and then V2 comes around and then there's still no problems because it's just all there all the time.
+
+**Runar:** Yeah, and e even like, you know, if your front end and back end are both unison and you're using like the unison internode protocol to, to, for them to talk to each other, then the front end can literally just tell the backend like, this is the code I want to call. Like, oh, it says, like, here's the hash, like, I wanna call this function.
+
+**Runar:** And as a backend doesn't have it, he like, well, give me the code. And then, give it the code and then hashes it, it's like, okay, this matches, great, I'll run it.
+
+**Justin:** Can you write your front end in unison? Is that a, is that a thing?
+
+**Runar:** Uh, I mean, yeah, I mean, you can write, uh, you know, console applications in unison. Uh, like there's no GUI library as of yet for like writing, a, like a GUI front end. Uh, we, you know, we don't compile the JavaScript as of yet. And so we, we can't, uh, do that, uh, right now. But, you know, we can look into whether there's a she scheme compiler to JavaScript.
+
+**Runar:** And if that's the case, then, you know, we're running in the browser, uh, as soon as that merges. And so you can imagine a future where like you're writing your web front end and like your back end in the same language. And like even in the same file. And then, you know, they could just, they can just talk to each other, uh, with a function call, you know, as if they were running on the same
+
+**Andrew:** That's that's the dream it gets rid of so many different tools and so much configuration it it would just be amazing for for that to happen.
+
+**Runar:** Yeah, There are too many tools too much configuration.
+
+**Andrew:** Well, that's it for this week's episode.
+
+**Andrew:** Remember the full episode is only available to our Patreon members.
+
+**Andrew:** Thanks for listening.
