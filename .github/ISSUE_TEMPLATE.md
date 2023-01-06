@@ -12,6 +12,18 @@
   - [ ] Name cards
 - [ ] Add section markers
 
+## Exports
+
+- [ ] Full
+  - [ ] Video
+  - [ ] Audio
+  - [ ] Text
+- [ ] Free
+  - [ ] Video
+  - [ ] Audio
+  - [ ] Vtt
+  - [ ] Srt
+
 ## Publishing
 
 - [ ] YouTube
