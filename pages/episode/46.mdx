@@ -1,0 +1,348 @@
+---
+title: Juan Campa - Membrane.io
+youtube: https://www.youtube.com/watch?v=HpD68rJ4opY
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/11989746
+tags: technology, software, api, automation, internal tooling, membrane.io, developer tools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Juan Campa is the creator of membrane.io, a still in development platform for simplifying API automation and internal tooling.
+We talk about Membrane's inspiration, persistent state, graph powers, and it's unique combination of UX and DX.
+
+- [Tweet](https://twitter.com/juancampa/status/1591617650870091776) that informed us of the project
+- [membrane.io](https://www.membrane.io/)
+- https://twitter.com/juancampa
+- [membrane demo](https://www.youtube.com/watch?v=nwf-yVVJJxI&ab_channel=JuanC)
+
+[Join our patreon for the full episode](https://www.patreon.com/devtoolsfm).
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+[Join our patreon!](https://www.patreon.com/devtoolsfm)
+
+#### Andrew
+
+- https://slashbase.com/#features
+- https://turbo.build/pack
+
+#### Justin
+
+- https://www.val.town/
+- http://worrydream.com/refs/
+
+#### Juan
+
+- [Loop2Learn](https://www.loop2learn.com/): This app accelerates my drums learning by 10X. When practicing a song, you can loop a specific clip (from say, Youtube) and slow it down as much as you need.
+- [Tailscale](https://tailscale.com/): I recently discovered this, and it's fantastic for "hybrid" development: running one service locally while the rest still runs in Kubernetes.
+
+<!-- TAB: SECTIONS -->
+
+[00:00:56] Juan's Background
+[00:04:51] Membrane's Inspiration
+[00:12:43] Persistant State
+[00:23:13] Graph Powered
+[00:33:32] UX + DX
+
+<!-- TAB: TRANSCRIPT -->
+
+**Juan:** So I decided to like start building what is sometimes called orthogonal persistence, which is this concept a durable program. So every membrane program is actually just one SQLite database. Like each program is a different file, and everything about the program is in, in this database.
+
+**Andrew:** Remember the full episode is only available to our Patreon members.
+
+**Andrew:** Hello, welcome to the Dev Tools I Found podcast. This is podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Everyone. Uh, our guest today is Juan Campa. Uh, Juan is the creator of membrane.io, uh, still in development platform for simplifying API automation and internal tooling. Uh, I'm really excited to talk about membrane, uh, but before we
+
+#### [00:00:56] Juan's Background
+
+**Justin:** dig into that, Juan, uh, would you like to tell our listeners or more about yourself?
+
+**Juan:** Hey guys. Yeah. Um, yeah, so I'm Juan. Um, I am originally from Venezuela. Uh, I, uh, I have a background in game development. Um, I spend about 10 years, a little bit more than 10 years working in game development, um, and worked on everything from. console games to mobile games, um, and even web games. Um, and yeah, then at some point I decided that I wanted to build membrane, and then I left, uh, my job in San Francisco to start working on it a hundred percent.
+
+**Juan:** That was like a few years ago. Um, build something that I thought was okay-ish. And then realized that it was just not good enough. And we can talk about this a a little later, but, um, then I, uh, saw a tweet by Guillermo Rauch. He is the CEO of Vercel, and he was looking for someone to work on their, uh, their terminal called hyper.
+
+**Juan:** And so I was like, Hmm, maybe I can just like, you know, start working with Vercel for a little bit. So I just like replied to the tweet and started hacking him in hyper. And then, you know, he liked that and, and he hired me, um, to work, uh, for Vercel. So I, so I spent, uh, two years there as the, the lead in the CDN team. And, um, and then at some point I, I wanted to go back to working on membrane. . So I left Vercel, uh, when, actually back to my previous job for a little bit, uh, in game development because I, because you know, Vercel was very intense at that time. It was, it was a very small company back then. We were like 20 something people and, um, and so, and I was a part of the like, infra team.
+
+**Juan:** So, you know, PagerDuty calls . It's like constant. So I was like, okay, maybe I can go back. , um, my previous job at Zynga, and that is a super chill job. Uh, but I get to work in the stuff that I already know, stuff that I built. So I went back there, worked for a little bit. And then, um, and then I guess my, my last, last thing I did, um, was join Mighty, uh, also via Twitter, by the way.
+
+**Juan:** I, I love Twitter. Like I always find jobs there. Um, yeah. So Hale posted something about hiring what they call a builder in residence, uh, program where you can work on your startup, but also work three days for them helping out in, in their product. So I, uh, you know, I, I, I got accepted for that program and work three days a week.
+
+**Juan:** on Mighty. And then the rest of the week I was, uh, working on building membrane. Um, and that, you know, that, I don't know if you guys heard, but that just finished a couple of weeks, weeks ago. Um, you know, they decided it, it wasn't working out. So, um, so yeah, now I'm, uh, a membrane and a hundred percent and yeah, hope, hoping that I can, uh, show it to the world and. onboard some users in the coming week or.
+
+**Justin:** Yeah,
+
+**Andrew:** Nice.
+
+**Justin:** it's super exciting. It's pretty cool that you went from game development into, uh, sort of more, I guess, traditional, like sassy worlds. Uh, so maybe you can talk a little bit about membrane, the product. So I, I read, uh, so you have, uh, some medium posts about it. Like back in the day it was originally for game developers, right?
+
+#### [00:04:51] Membrane's Inspiration
+
+**Justin:** There's like that, or games or something. It's like there, there's some writing around that originally. So, Uh, yeah. What is membrane and like, what are you hoping to accomplish for it?
+
+**Juan:** Yeah, that part, um, it's a, it's, uh, a little bit about where the inspiration came from. Um, I, I think I came up with the idea of membrane and then looking back, it's like, oh, okay, yeah. This is why I, like, I have this intuition that membrane would be cool. Um, it's because in in game development, you, you're, you're dealing with this engine, with this, you know, universe.
+
+**Juan:** And this universe is completely programmable, right? Everything is programmable, even. the People, right? The NPCs in the game is there. You can make them do whatever you want. You can control the weather, the walls, the cars, the doors of the cars, what like, you know, what speed things are running. So, so I had just like intuition of like, things should be more easily programmable.
+
+**Juan:** Everything should be just like an object in the game and you should be able to control, or at least, you know, read the, the values that the object represent. So I kind of wanted that for the real. world Um, and of course that's only now beginning to be possible because everything has an API and you know, the world is more connected and even physical things have have APIs.
+
+**Juan:** Um, so, so that's kind of where the, the idea came from. And, uh, so, so basically what it is, is A, it's a place to b to write program. to build personal automation. So it's like a, it's like a JavaScript engine that's optimized for personal automation programs, um, or more generally what I call small applications.
+
+**Juan:** So real, something that's really small. Uh, we do have excellent tools as an industry to build scalable things. Uh, but we have not the best tools to build, to build things that. For a small, for one user, like I wanna build a little program that's for one user, what is the best tool for that? Um, and I'm hoping that membrane is that.
+
+**Juan:** yeah, I, I, I mean I can't elaborate on, on all the features and stuff. Um, but, uh, yeah, basically, um, first of all, I wanted to. to make it really easy for someone to just automate something. Right? And in order to do that, I wanted to skip the whole learning process. Like you don't have to learn a new platform and how it works, because that already, it's like you already need, if you're trying to automate something that's relatively simple, uh, the overhead of automating that thing has to. small enough that you actually gain productivity by automating it, right? Otherwise you're wasting more time.
+
+**Justin:** Right, right. Yeah.
+
+**Juan:** Um,
+
+**Juan:** so ,yeah. Yeah. I think we've all like done that. Um, and so how do I do that, right? And then so the first thing is build it right into the tools that we already use today. Um, the tool, the most used ide.
+
+**Juan:** Uh, visual student code and the most used language is JavaScript. Um, so I wanted to leverage that. So, okay, everyone already knows this. Um, let's just build it on top of that so that you can, you can just use what you know, um, and, and, you know, also leverage all the learning resources that are out there already, um, available and.
+
+**Juan:** Um, so that, you know, that's one of the things it, the entire thing is built inside a visual studio code. Um, you just install this extension. You create, you press a button to create a program, and it just gives you a empty java script actually type script. So it's, it's a little better. Gives an empty type script file that.
+
+**Juan:** doesn't do anything, and it can actually, cannot do anything because it doesn't have access to anything. Um, so that's, that's the, the other feature that's key to membrane is this whole concept of a graph. That is the main thing that programs used to manipulate the world and understand and read APIs and, and, you know, control things out there.
+
+**Juan:** Um, this. Okay? So you get this blank program that doesn't do anything, and then you go into your graph, you grab whatever inputs or outputs that you want, and you just grab them, drag and drop them into your program. And now that program has access to those things. And those things can be, uh, you know, very low level, quote unquote, uh, like at an HTTP request.
+
+**Juan:** That, that that program wants to perform. Or it can be like higher level, like, uh, an object in an api. Like for example, hey, I want to, I want to write a program with this GitHub issue, like a specific issue of a specific repo. So I find that issue in the graph and then drag and drop it into the program, and that program has access to that issue and only that.
+
+**Juan:** Um, and then you, you know, you can write any sort of code that you want with, that. You want to observe the issue for new comments, for example. That's something you can easily write in like three lines of code in membrane. Um, so yeah, that, that's sort of like the, the core, uh, features of it. Um, there's, there's, uh, there's a lot more like.
+
+**Juan:** The fact that, uh, programs are durable. So you, when you're writing code in membrane, if you want to store any state, um, let's say that you write a, a program to, to do, run a poll in Slack, um, in your company, and you wanna store the responses of that poll, uh, normally you have to store that somewhere, right?
+
+**Juan:** Your program is running and it's gonna die eventually. So you have to put in a file, or you have to put in a database or somewhere. Um, with membrane, the entire state of the program is persistent constantly. It's like constantly persisted and efficiently persisted as well. So you just put the results of the poll in a variable and it's there.
+
+**Juan:** And this program. Can, you know, we'll always have access to that poll even if someone decides to respond like three months from now. Um, that program is ready to, it's, it, it always, it will always hold the value of the, the whatever values you, you, you want to put in there. Um,
+
+**Justin:** That was definitely one of the things that I wanted to talk about. That seems pretty magical. I mean, because it's like, if we think about. You know, a lot of, like, if you're starting with a programming project or an automation tool or something, like data persistence is a pretty key thing. It's like, maybe you can reach for SQL light, uh, if you know how to interface with SQL Light or like get an om and set up all that stuff and it like, becomes this whole thing.
+
+#### [00:12:43] Persistant State
+
+**Justin:** Um, but just persisting the program or just like saving something to a variable and that variable's always available. It's pretty magical. So like, how does that, how does that work? How do you go about building something like that?
+
+**Juan:** Yeah. Uh, the first, the first version of membrane, or I don't know if I would call it the first, but one of the versions, um, had, didn't have this. , and that's the first thing I noticed. Like, oh, most of my code is actually storing stuff and then getting that stuff out depending on what the state of the program was.
+
+**Juan:** It's like, it just gets very complicated, especially if you're dealing with, with people, like if you're, if I'm sending myself a text message and I'm, and the program is expecting a response from me, I might be sleeping. I, you know, I might respond the next day or maybe never. And so I have to store. and if there's a timeout, like it's gonna kill the program.
+
+**Juan:** And then, you know, I have to like rehydrate that state somehow. And that, that was taking a lot of that incidental complexity that we've, we've talked about. Um, it's just, um, it's, it's, it wasn't good. So I decided to like throw that version out and start building what is sometimes called orthogonal persistence, which is this concept.
+
+**Juan:** You know, a durable program. Um, and the way it works is, so you mentioned SQLite or SQLite, and that is actually what's behind a membrane program. So every membrane program is actually just one SQLite database. Like each program is a different file, and everything about the program is in, in this database.
+
+**Juan:** every message that it receives, it first goes in the database, and then it's processed, like it has to go first in the database, and then every message that this program wants to set out to the world, even if it's like an HTP request or anything, it goes in the database first, and then someone else is looking at the database like, Hmm, there's a, there's a new message in the, in the outbox of this program.
+
+**Juan:** Let me send that out. And then the response, Put back in the database. So, um, it's like event sourcing at the granularity of a single process. Um, and, um, so yeah, and, and there's one table in that database that's called Pages, and that is the memory pages of the, of the Javas. process. So I use quick JS to run all your code and it, I like quick js because the, the memory footprint is very slow and it's also, it's a, it's an excellent JavaScript engine.
+
+**Juan:** And what I do is that there's a, there's this, uh, concept in the Linux kernel called Soft dirty pages. And it's like a, it's a, it's a bit that every chunk of memory has that you can. . And then if someone writes into that page of memory, the Linux kernel will flip that bit and say, Hey, this page was written to, so I can run a program and only serialize the pages that actually change.
+
+**Juan:** So it's very efficient in that way. Um, and then what I do is literally write that page, compress it, and put it in the, uh, in the cide data.
+
+**Justin:** That's, that's
+
+**Juan:** that's it.
+
+**Justin:** So you're, you're literally just hy hydrating the context of like the JavaScript execution engine and then like,
+
+**Juan:** Yeah.
+
+**Justin:** that's, that's cool. That's cool.
+
+**Juan:** It can be made even more efficient. And I'm using also, uh, web assembly,
+
+**Justin:** Hmm.
+
+**Juan:** uh, because of the memory model. It's so easy to reason about, you know, they have the linear memory model, so I literally just have one array of. That needs to be, um, needs to be serialized. So I start with a blank program and I already know the serialized version of that, so I don't have to serialize that blank program.
+
+**Juan:** And then as I put code in it, as the program runs and handles messages and stuff, it starts changing the memory. And then, so I only change, I only saved the diff of the, all of those, um, pages in the web assembly. , uh, linear memory. Um, and, and I'm saving more data than it should. So there's even like more optimizations that I can do, but you know, it's something for the future.
+
+**Justin:** Yeah, this is interesting because, uh, given that you're doing the sort of like you're specifically targeting small applications, you're targeting like single user or few user use cases, and there's a lot of things that you can get away with to like reduce the overall implementation complexity of this thing even further.
+
+**Justin:** It's like, you know, if you. I am sure if you had like thousands of users, you wouldn't necessarily want to be like serializing, a des serializing memory like this. But like in the case where it's like not that many users, it's like not a, not a huge deal. Uh, and you know, likewise for using SQL Light, which is like great because it's like you reduce the overall like servers that you need to maintain this application or whatever.
+
+**Justin:** So that's pretty
+
+**Juan:** Yeah. Yeah. Uh, that's a really good point. If I, at one point I listed the, the core goals of membrane and performance was at the bottom. It's like, Just make it really good to use, make, like, make it really observable that you can see. One of the things that, that another feature is that you can see everything that happened that has ever happened, and if it, it's not in the logs, it didn't happen because, you know, that's the only way that things can happen.
+
+**Juan:** Remember it is if it's written in the log first. So, uh, that of course is slow because hard. Well, SSDs are slowish. Um, but, but it just gives you the best developer experience possible. Um, in, in terms of observability. I, I call it perfect observability because there's nothing that escapes you, like you can't, you know, there's another feature that, because everything is in the logs, you can actually go back in time and be like, what happened here?
+
+**Juan:** Let me go back to this point in time and, uh, rerun the code and see, and, and you can step through like the level of granularity that we're, that things are storing. The database is not, of course, every, not every line of code that is executed, but is every message. So I can go back to when that message was received and then run the code that was, that was available back then.
+
+**Juan:** And, uh, just like re, you know, it's completely deterministic. In that
+
+**Andrew:** Yeah, that I was gonna like ask you that exact question, like, could you go back in time since you're like storing the full execution of the program at all the different steps. So that's, that's super cool.
+
+**Juan:** yeah, yeah. The, there is a, there is a complication with that where the heap, you know, I can in theory store all the versions of the heap that has ever existed. Uh, but currently I'm not doing. For, you know, for, to make it a little faster. Um, so yeah, that's something you cannot do today, but it's something that is, it's completely possible.
+
+**Juan:** And the version, I think the first version that I'm gonna have, uh, of like that type of like time travel is gonna be with, uh, a snapshot that is taking every like hour or something like that so that you cannot jump to a specific point in time, but you can go. And then replay from there or something like that.
+
+**Juan:** And yeah, that, that will give you a, um, something that is close enough, I think.
+
+**Justin:** Yeah, that makes sense. That's pretty cool. This, this makes me think of what the, the folks at Replay are doing a little bit. They're, they're doing some other magic, but I, I kind of get that same thought.
+
+**Andrew:** It also makes me think of the episode we just
+
+**Juan:** I haven't seen it, but,
+
+**Andrew:** Uh, we just recorded an
+
+**Juan:** oh.
+
+**Andrew:** with, uh, the founder of, uh, unison Lang, and one of the core principles behind Unison Lang is there's no. All your, your program is a database with content hashes, so it's, it's interesting that you're both using a SQLite database to make a program, but doing wildly different things.
+
+**Juan:** Oh yeah, I, I have seen unison that, that, um, that looks really, really interesting. Uh, it's something I'll have to dig a little deeper.
+
+**Justin:** It's
+
+**Juan:** Um, yeah. Something cool you can do with a database too is move the program. So a program is completely serialized and let's say that it's running on membrane infrastructure, but you wanna have lower latency, for example.
+
+**Juan:** So you run a local membrane instance in your home server or your laptop, whatever, and then you just move the program from one server to the other without skipping a beat and. Now you have like quick, quick reaction because you know it's right there in your network.
+
+**Justin:** That's really cool. That's really cool. So self-hosting membrane is gonna be a thing.
+
+**Juan:** I think so, yeah. Uh, right now, Dakota is not open source, but I, I think I, I wanna make it open source. Um, it's, it's probably the, the only way to go these days. And, um, and also, you know, I, I'm sure there's gonna be users with like privacy concerns and stuff like that. Then they, you know, I don't want to be like, oh no, you, you have to give me all your data.
+
+**Juan:** Um, no, you should be able to run some stuff at home and some stuff on membrane. And it's like a federated system where not all the programs are running in the same server. You can run them whatever you want. Um, and then, yeah, there's a lot of work to be done around this like crypto. It works to make sure that it's secure, but, um, that's, that's on the roadmap.
+
+#### [00:23:13] Graph Powered
+
+**Justin:** Yeah. That's really awesome. So, earlier you talked a little bit about a graph. So it's like you got data in this graph and you sort of like pull data off the graph and, and drop it into your program to be able to like do something. Uh, what is, what is that graph? Like, what backs that and how does data get into the graph?
+
+**Justin:** So it's like if you wanted to add new GitHub API stuff, A graph. Like what, how, how does that,
+
+**Juan:** Yeah, that's a good question. Um, you as a user have a graph. Uh, it starts out empty. And when you create a program, you're basically mounting that program's graph on your graph. So it's like your, your graph is basically the combination of all the graphs of all your programs. Um, and some programs are what I call drivers, which are the programs that talk to.
+
+**Juan:** And they, they basically bring that API into your graph. So, um, say the GitHub program or the GitHub driver, um, it has a schema. So the graph is, is type safe. So the schema defines, basically, it, it mirrors the GitHub API as a membrane schema and as, as other programs or you, the user query that graph of the GitHub program.
+
+**Juan:** That program is behind the scenes querying the GitHub api. Um, so, so it's, yeah, it's like a, you can say, you can think of it as a, as an adapter, uh, for external APIs, but then you can make your own programs that adds stuff to your graph and, uh, and you can, and, and that stuff can combine nodes from other programs or it can combine stuff from external sources.
+
+**Juan:** Um, and yeah, it's all, it's all uniform in the sense that everything is a note, which, if you can think of it as an object or a scaler, which is, you know, a string number of adjacent types. Um, so you can query this graph with graph QL and, um, and yeah, that's kind of like the, the main way of reading stuff, uh, in.
+
+**Andrew:** So is the only way you get stuff into that graph currently, the Chrome extension.
+
+**Juan:** Um, no. So you have, so currently you have to install a program. So for example, that demo that you guys saw, where I go to GitHub and click on the Chrome extension and it shows me all of these things, like it recognizes everything in GitHub and it connects. to the graph of those things. Um, that works because in my membrane account, I have installed the GitHub driver.
+
+**Juan:** So, so it's like, okay, okay. When I click that button, what it does is it, it asks membrane, Hey, do any of the programs that are running under, under Juan's account, uh, recognize anything on this? It actually, it doesn't send the page. It actually a, gets all the regular expressions and like this rec, let's call them recognizers, the things that recognize stuff on the page, and then it runs them and it's like, Hey, um, GitHub driver, look, I found this piece of text in the, in this website that you seem to recognize.
+
+**Juan:** So tell me what this is. And then the GitHub driver is like, oh, that looks like a. So it sends back a reference to the node in the graph for that repo so that you can explore that and then grab it, and then give it to a program and then use it.
+
+**Andrew:** Okay, so, so that, that's like how credentials work is like you go on membrane, you set up the adapter, you set up your credentials, and then you have, and then the Chrome extension is just showing you like what's happening currently on the page.
+
+**Juan:** Yeah. Yeah. Well, that's the current version. .
+
+**Juan:** So what I want eventually is I can, you don't have to have installed the gate driver because I'm not sending anything anywhere. I'm just literally the, the extension is, is running locally, like for 90% of the time at, except at the very end. So what I can do is say, Hey, you don't have running.
+
+**Juan:** GitHub driver, but there is a GitHub driver out there and it defines these recognizers and, um, so let me run these. It's, it is not going to send anything anywhere. Just like run it on the page and offer you the option to now install that driver with a click from the Chrome extension. Like, oh, okay, this is available right now.
+
+**Juan:** Um, so, so that way you don't have to. have installed stuff before you wanna use membrane. You're like, okay, I want to write, I don't wanna automate something with GitHub. Like, you don't have to previously have thought that you are gonna do that at some point and have installed the driver instead, you just like, oh, I want to automate this thing on Twitter.
+
+**Juan:** Let me click the button. Oh, all these things are available for me to use in my automation. Uh, let me grab some of those things. Oh, I need to install the Twitter driver. Click the button. Um, and that's it. That's like, that's like the ideal.
+
+**Andrew:** So in that idealized world, is it also handling like setting up API tokens and all of that? Cause that could be like the hardest part of interacting with an api, especially like the Twitter one.
+
+**Juan:** Yeah. That's, that's a really good question. Uh, and that's something that I haven't completely figured out yet. Um, currently you have to bring your own. So as opposed to like things like Zapier or I don't know, Zapier, um, where you, where they have their API keys and you just authenticate via OAuth too.
+
+**Juan:** Um, currently in the current version of Membrane, uh, you have to go and get an API key from the a, from the service and then install it and then do AATH with your own. Um, so it's a little more complicated than it should be. Uh, some APIs offer a personal access token, which is the ideal way of interfacing with stuff.
+
+**Juan:** So, for example, you know, GitHub has a personal API token that you can generate and then you just copy and paste that and that's it. Uh, but some APIs do require. Which means you need a, a client id, a client's secret, and then to do the whole flow. Um, but, but is it, I mean, it's not that bad. I have it for the Google Docs driver and the Google Calendar driver.
+
+**Juan:** Um, and yeah, it requires you to go and get an API key and all that. But, um, but the driver itself implements the auth, so you know it. Once you've gotten those two values, Click and log in.
+
+**Justin:** So it sounds like the drivers are definitely like where most of the low level code for interacting with a lot of. APIs and stuff is stored. So those, you can expect those to be a little bit more complicated. But when you're actually getting into your, your sort of dedicated apps where you're just doing your automation, those are like pretty terse and like, you know, kind of doing the only the things that you need to do.
+
+**Juan:** Yeah, that's, that's exactly right. Yeah. Drivers have to have a certain, like patterns in the way they expose. Uh, so you, so if you wanna write a driver, you do have to read a little bit of how, like, how to design, uh, a driver correctly. Um, because you know, something that the, the graph abstracts away is, is pagination, for example.
+
+**Juan:** So pagination, uh, which is something like, to me it is like crazy that we. I have to, for each individual api, you have to figure out how pagination works. , they use like a, like an offset, or some of them use some sort of like, like opaque token. Uh, and some of them send the pagination in a header, all like, it's just all over the place.
+
+**Juan:** Um, with membrane, you have this object that's a one page and a page has a reference to the next. So all you do is like, follow this linked list. And this reference encodes the pagination logic that, that of that specific api. But from the point of view of view, the user is just a link from one uh, node graph to another note graph in sa.
+
+**Justin:** Cool. Yeah, that makes sense.
+
+**Juan:** Yeah.
+
+**Justin:** That's awesome. Yeah. pagination is deceptive. Like it's, it can be hard,
+
+**Juan:** Yeah, yeah. It can be. Um, yeah, I, that's definitely something that shouldn't be , like it should be simpler. Um, and, well, I, I mean there are some trade, uh, trade-offs between. , um, modes of pagination where, you know, some pa, some pagination systems like, Hey, give me the page after this element, which ensures that you're not gonna be seeing the same element again.
+
+**Juan:** Uh, and some pagination systems are like, Hey, give me the elements after this offset. It's like there's a trade up between the two. um, but in membrane is just, just abstracted way. It's just, hey, from one node to the next and to the next and to the next, and so,
+
+#### [00:33:32] UX + DX
+
+**Justin:** So you have a, a, a demo that I thought was really cool where you sort of show. , uh, like you visualize timers and the time they're taking. So, uh, so membrane has like, cron like functionality. Uh, can you talk a little bit more about, uh, that functionality and sort of the visualization visualizations that you built?
+
+**Juan:** Yeah. The, the sqlite database I mentioned before has a table called timers, and that table you can, from, from the code, you can create timers in that table. Um, and you know, each program, you know, that that's just a row in a database. And then the execution engine, uh, looks at the database of all programs and all the timers, and it just fires them, you know, when they need to fire sending, writing something in the database.
+
+**Juan:** Hey, you know, this happened, this, this timer just fired. Um, but then from the client side, you can get those timers that, that the program has set and then look at their specs and say, okay, this timer is supposed to fire at this specific time in the future. Um, so, so that, that's what the, the client is showing you, is this, like this bar of how long is how long until we hit that point in the.
+
+**Juan:** Or if the timer is, uh, like a repetitive timer, uh, like a chron job type of thing, uh, then it can show you all of the times in the future that it's going to execute it because, you know, it's like, it's, uh, it's predictable I guess. Um, so if you're, you're from Visual Studio Code, you can just hover on each timer that the program has.
+
+**Juan:** And then see how long it's gonna take until it fires. And then you can also see what code is gonna run when that timer fires. Uh, like you can, you can compare this to something that people use today, which is like set interval, set time out, or even crunch jobs. Like the experience is hidden if you, if you use a crunch job, it's like, okay, I trust that that's gonna run.
+
+**Juan:** Um, and then if it. You, I, it's gonna run some script or something. Uh, with membrane, you, you can jump directly into the coat that's gonna run. And, uh, and you can see it visually like, oh yeah, this, this bar is about to hit zero. Let me just, uh, you know, keep an eye on this because it's about to run. Um, . Yeah.
+
+**Juan:** And, and you can also, um, run the thing, run the action manually. Like if you're te, if you set a crime job and then you're like, okay, I just changed something, let me make sure that it actually works. Uh, you can just like, oh, click on the action and then invoke, and that's gonna run the code for you to try it out, test it, whatever.
+
+**Juan:** Cool.
+
+**Justin:** what happens if it fails? The like, so you have cron scheduled and then like cron fails, like do you do anything special in that case?
+
+**Juan:** Not really. Uh, I mean, other than showing you the error, um, I don't really do anything special. Um,
+
+**Justin:** I mean, showing
+
+**Juan:** course you can always,
+
+**Justin:** sufficient. You know, that's, that's something that always happens is like you set up cron somewhere and it's like just off chugging, and then like at some point in the future it just starts breaking for inexplicable reasons. And that takes you forever to figure out like, oh, this service or this thing, this task isn't working anymore.
+
+**Juan:** right? Yeah. The key to me is, uh, observability. Like, if you know everything that is happening, then you can take action, and action can be as simple as, because, you know, everything is referenceable. Even the code that is gonna run when the timer expires, I can, oh, okay. This, this timer. Let me click on the action that was gonna run in that this action can have parameters, like it's a, it's a whole like, function call.
+
+**Juan:** You can think of it, uh, assembled, ready to be evoked. Um, and then so you can click on it and maybe the parameters were wrong, so you can just edit the parameters and then evoke, and it's like, okay, I, I caught up with. Chron that just failed by manually running it, but that only took two clicks and, you know, just one modification.
+
+**Juan:** Um, or, or you can just like, change the code quickly and then invoke it again. You, you can do that as well.
+
+**Justin:** That's pretty cool. That's pretty cool.
+
+**Andrew:** So you said that like the, the roots of membrane kind of come from games and, uh, so I read a, an article where you basically show that in games you can like click on an object and see all of its properties. I assume in that, in those cases, like they haven't really set that up. That's just like how it works.
+
+**Andrew:** Like you can just see into 'em. Am I wrong with that?
+
+**Juan:** Yeah. Um, that's, yeah. Game engines are extremely advanced pieces of software and the, the cool thing about game engines, They are designed to be general enough that you can build any game with them, or at least most of them are right? So they have these, all these, um, systems to, to read, to read data, and to model your objects, um, and, uh, you know, trigger stuff when something happens.
+
+**Juan:** And handling, like all. tools so that the, what's called the gameplay programmer, who's the person, like actually building the game logic, uh, have this like exclusivity to create, you know, whatever designers want them to create, right? So it's all like very nicely done to, to give developers a really good experience so that, um, so that they can just build things, you know, as crazy as they.
+
+**Andrew:** Yeah. So with Membrane today, that's, that's why there are those like adapters is cuz there's like, there's not this like structured layer in web development where like if you just do some things, it becomes available. Like my, my, my dream for something like membrane would be if it could go that distance where it's like I don't have to have an adapter, like my use case a lot of the times, uh, in my early career, I would hack on an internal API from some service that I use.
+
+**Andrew:** Would that possibly be possible maybe in the future of membrane? Cuz like going back to the Twitter example, Twitter's public API is quite limited. If you want to build a Twitter clone, you're gonna actually have to start looking at the network tab and figuring out like how their internal API works. So is something like that on the, on the horizon.
+
+**Juan:** Yes, yes, definitely is. Um, there are two, I have two thoughts on that. One is the, the Open API specs. Uh, it's something that I could leverage in the future to automatically generate drivers, at least, at least an initial version of drivers. Um, but then there's also the private APIs, which you are totally allowed to use them.
+
+**Juan:** Um, you know, because it's, it's not membrane giving you access to those private APIs. It is you dealing with those APIs, right? So, . So there are these, there, there are ways to generate like the hard files in, in the browser you can download and there are actually people working on ma in on interpreting those hard files and turning those into API specs.
+
+**Juan:** Um, I think there's a startup called, there's these two startups. Um, ADA is one of them. And uh, up. Which, uh, I, I, I've talked to those guys a few times and they're like interpreting the, the traffic to generate an API spec. And from that API spec you can generate the driver
+
+**Andrew:** Yeah. Yeah. Well, fr from this whole conversation, it feels like membranes, a lot like wire shark, but with like a lot more structure put on top of it to where you, like you d you, you can see what's happening, but you can actually use it too. Like that, that, that's my dream tool. Like my next question would be like, C, could we ever see membrane on a mobile device?
+
+**Andrew:** Like how, how might that work?
+
+**Juan:** Yeah. Um, yeah, I thought about that as well. So, so one thing I, I didn't mention is that, you know, exploring the graph is not the ideal interface or anything, right? Like, hey, if I, if I wanna send an email, I would rather use gmail.com than going into the graph and finding, you know, the right node to invoke the correct action to send an email.
+
+**Juan:** Right? Um, but, but that is not necessarily the end game. the each node in the graph. So you can basically, you can build UIs on top of the graph that are custom for you, or at least you know, someone created and you can just grab it and use it for yourself. So, you know, what is a ui? Uh, UI is just something that behind the scenes is stuck into an api and. And, but if you can, if you can build a UI that behind the scenes is talking to the membrane graph, uh, that can be, then you can swap them out. You can, you can be like, oh, there's, you know, there, there's this UI designer who is awesome and he created this, like this whole set of UIs for email and GitHub and all these things.
+
+**Juan:** And they, and because they don't want to deal with specifics, I have APIs. They just deal with the membrane graph and build UIs on top of that. Um, so, so if that's the case, then you can even run on your phone and, you know, just access things there. Um, and then you can always like flip. This is what I imagine.
+
+**Juan:** It's like you're, you're interacting with your membrane graph via this GUI and then you can always like, click a button and then it just like flips and then you see the API version of whatever you're doing. Uh, so you can flip ba back and forth.
+
+**Justin:** Yeah, that's, that's, that's really interesting. There's so many, like my, my, there's so many things bouncing around my head. Uh, going back to the, like API conversations about like generating APIs and, and horror files and everything. So, uh, this reminds me a little bit of, uh, GraphQL mesh from the Guild, which is like a tool to like take any, like, have an open API spec or like, sort of any of these things and turn them into a GraphQL graph, which it sounds like is like kind of the thing that you'd be going for there is like get it all meshed up into your graph.
+
+**Justin:** That is super awesome. Uh, I am incredibly, incredibly excited about the future of membrane. It's, it seems, it seems so fascinating, so, yeah.
+
+**Juan:** Thank you guys
+
+**Andrew:** Well, that's it for this week's episode.
+
+**Andrew:** Remember the full episode is only available to our Patreon members.
+
+**Andrew:** Thanks for listening.
