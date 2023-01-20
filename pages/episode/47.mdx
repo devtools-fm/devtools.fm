@@ -1,0 +1,340 @@
+---
+title: Alex Arena - Interval
+youtube: https://www.youtube.com/watch?v=3eyWzQCOEDE
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/12083326
+tags: technology, programming, internal tools, node, react, javascript, devtools, devtools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Alex Arena, the founder of Interval.
+Interval is a batteries included approach to building rich internal tools directly in your apps backend.
+We talk about the inspiration for Interval, how it works, and how it's evolved over time.
+
+- https://interval.com/
+- [Building a bookmarks CMS with interval](https://www.youtube.com/watch?v=K4pddUlQ9CQ)
+- https://twitter.com/alexarena
+
+[Join our patreon for the full episode](https://www.patreon.com/devtoolsfm).
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+[Join our patreon!](https://www.patreon.com/devtoolsfm)
+
+#### Andrew
+
+- https://dotenv.org/
+- https://tauri.app/
+
+#### Justin
+
+- https://clay.earth/
+- https://hypertalk.substack.com/p/hello-hypertalk
+
+#### Alex
+
+- [Code spell checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+- [Ultimate ffmpeg guide](https://img.ly/blog/ultimate-guide-to-ffmpeg/#introduction-to-ffmpeg)
+
+<!-- TAB: SECTIONS -->
+
+[00:03:24] What is Interval?
+[00:09:10] Inspiration
+[00:18:40] Looking under the hood
+[00:29:34] Evolving Run Books
+[00:36:23] Dogfooding
+
+<!-- TAB: TRANSCRIPT -->
+
+**Alex:** we flip the sort of traditional, uh, sort of like low-code, no-code tool model on its head. You actually pull our SDK into your backend code base and then there's no further work you need to do in the browser to sort of like link your, your backend code base and the tools that are generated, like the source of truth for your tools, like is and remains your backend code base.
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, our guest today is Alex Arena, uh, who's the founder of interval.com. Uh, interval is described as a batteries included approach to building rich internal tools directly in your apps backend. Uh, it sounds really interesting and, uh, I'm really excited to have Alex on to talk about it. Uh, but before we get into that, Alex, would you like to tell our listeners a little bit more about.
+
+**Alex:** Sure. Yeah. So I'm a software engineer by background also. Thanks for having me. Uh, software engineer by background. I was just talking to you both before the show. I was actually working on, before Interval, I was doing a podcast app. I was a front end engineer, uh, at a podcast app that was sold to Twitter.
+
+So now I think is probably in light of recent events, uh, probably completely dismantled at this point. I'll, I have to check in with some of my former teammates. Um, so I have some background started as a full stack engineer. Went to front end engineering, became really interested in that, and then started interval, which I mean, we may get into more on the show, but it's followed a really, really windy path to where we are today.
+
+Uh, but kind of throughout the entire thing, I've just been really interested in like dev tools and like making our, like, no matter where I've worked, kind of like making processes better. Uh, I think it's like the, the sort of thinking is that developers are not necessarily always the most efficient, but they are the most Laz and out of laziness comes really interesting stuff.
+
+And for me personally, like laziness has definitely been a real motivator. Like I try to automate things wherever I can and I think, uh, if you see interval, you'll see a lot of that, uh, in, in the product for sure.
+
+**Andrew:** Yeah, I, I, I once heard a programmer say that laziness is the hallmark of a really good developer because, uh, a lazy developer is gonna try to make code, do as much, as much as it can. So it's a good sign
+
+**Alex:** Yeah, I may be by that metric and maybe that metric alone, I may be a good developer, uh, , that may be the, maybe the best one to measure me by.
+
+**Justin:** Yeah, something that you learn is you get like, I guess more mature in your career also, that like the more code you write, the more code you have to maintain. So it's like writing more code to solve a problem is usually not the answer.
+
+**Alex:** This is like the interval. I mean, without getting too deeply into the product to start, like this is kind of like the interval thing is like you kind of realize that you can just delete like entire blocks of code and you're not replacing them with like something that's external to the code, like some like drag and drop thing or something.
+
+It's just like replacing it with like a, a couple lines of code or one line of code or something. And like, it does sound silly, but it is true. Like the fewer lines of code you write, like the better code it is, um, within like, I guess within reason you can definitely get to like code golf things where it's like a single lie of code is doing way too much.
+
+But I think interval strike's a nice balance
+
+**Justin:** yeah, yeah.
+
+**Andrew:** take that. Elon
+
+**Alex:** Yeah. Seriously.
+
+#### [00:03:24] What is Interval?
+
+**Justin:** So, so give us the elevator pitch here. So what is interval, uh, and, and why would someone want to use it?
+
+**Alex:** Yeah, totally. So we kind of in, we like, and then I think we'll get to this more like as we talk more, but we've actually had like kind of difficulty describing exactly what it is. And so we've sort of invented a new word to describe it. And the way that we think about it is, it's like, it's a front-end endless framework for building internal apps.
+
+And the idea that's like this word front-end list, we sort of pulled it from the context of serverless, which is a misnomer, like in serverless it's a way to build server driven apps. Um, , but you're not maintaining the servers yourself. And so you're not, you're not responsible for all, like the DevOps work and the scaling work and that sort of stuff.
+
+Uh, but it is a way to build server driven apps. And so in this, like in the context of front end
+
+uh, it's a way to build UI driven apps. You're actually like, the piece that interval is giving you is the front end for your tools. It's the, it's the UI for your tools, but you're w just not manually building and maintaining the UI yourself.
+
+So we think for like internal tools and the, and that's really what intervals for, is this like internal tool admin dashboard, customer support tooling thing. You really don't care like what the border radius on the button looks like or where the tables laid out on the screen or something like that. And so like all these tools, whether you're just like writing HTML and CSS are reactor something, you're using some sort of like low code builder.
+
+They all give you that level of granular. And that level of specificity where you can control things like the border radius. And we just like don't think that is something that people want to do. It's not something that we wanted to do when we were building these things. And so we were like the kind of like the idea behind the product is what if you could just write code that corresponded to the things that you actually care about versus like defining the entire UI yourself.
+
+And so then the way this works then is we give you an sdk. Right now it's just a node js and type script s stk. So we might do more languages in the future. I think it's something that we're, we're pretty interested in. Um, you pull that sdk into your, into your backend code base. So similar to like using like express or fast fire, something to define like a, a sort of backend end points for like a rest or GraphQL api.
+
+So you write code that's pretty similar to that. But then what, what you get out of that is a web UI that anyone on your team can use. So you're writing like functionally pretty similar amounts of code is just pure backend, sort of rest GraphQL. API Generation Code, but you're getting like fully functional tools that someone on your team can use who's not technical.
+
+**Justin:** So, so to, to sort of clarify, this is specifically geared for building like internal apps, right?
+
+**Alex:** That's right. Well, for, for now, I think, um, we were really excited, like when we, when we're sort of starting working on this, uh, we were really excited about like how you could sort of use this, like the sort of style of programming. It's a, it's a really interesting, like if you, if you've built interval apps, you'll see like the style of programming, uh, is pretty different than something like React.
+
+Uh, it, it's actually pretty procedural. Um, and, and that's actually kind of fun to write. And so we think like the way of building with interval, like the interval sort of APIs that we're building are really cool. And we think you could use them outside of internal apps, but like internal apps was number one, the use case that we needed it for when we were starting.
+
+And like, number two, we think that it checks a couple other boxes that make sense in the context of like, of what the APIs are capable of. . So like for example, um, I sort of mentioned that we, we kind of explicitly don't want you to be thinking about like where things are laid out on the screen or how things look like border radius on buttons, that kind of stuff.
+
+Um, in external sort of like customer facing things like in a consumer facing app, you actually do care a lot about that. And so I think we wanted to scope it relatively narrowly to start because we don't want people basically using it for the quote unquote wrong stuff and then opening up like GitHub issues and stuff being like, well, we can't do this.
+
+And it's like, well, you can't do that. And it's, it's not because we couldn't build it, it's because we made like a design decision, not.
+
+**Justin:** Right, right. Yeah, that, that makes total sense. I think the, the approach is really interesting. I, I, I guess I discovered interval on Twitter, uh, to begin with. But it's like, you know, this idea that there are a lot of no-code or low-code, I guess, uh, internal tool apps, but most of 'em are like drag and drop on in canvas, you know, like you were saying earlier, it's like, uh, retool styled clones.
+
+There's like a ton of those. And the thing that I like about this is this. , you know, as you're saying, it's very procedural. You just read the code and it's like, oh yeah. Await for this input. And it's just like, oh, this is like maps to a form that will be generated somewhere or whatever. And I thought that, that the, the examples that you given are just like very, very terse.
+
+And I was like, yeah, that's, that's nice, right? Only the code you need to get the job done. So that's pretty cool.
+
+**Alex:** I appreciate it. Yeah. And in, in con like in, in sort of in actual practice, like the code is that terse, like you don't end up writing that much interval code. Like one of the weird things about the product itself is like you don't interact with it that much as you build, like, like people's, and we've seen this as we've like, helped companies migrate off of, like we've, we've helped them migrate off of like low code stuff.
+
+We also help them move from like, you know, custom like react admin panels they built themselves and you know, they kind of did it out of necessity, but nobody really likes it. Um, like they end up deleting like, I don't know, it seems like ballpark, like 50 to 70% of the code. But the stuff that's remaining is like, you know, like the business logic, like the, the meat of the stuff and like, The interval code you insert is just like not super extensive, like you get a lot out of it with pretty little lines of code or pretty few lines of code, I should say.
+
+#### [00:09:10] Inspiration
+
+**Andrew:** The API reminds me a lot of MPM packages like Inquirer or Inquirer, where it's just like this asynchronous, like gets stuff from the user, do stuff with that input. But the API itself is super simple and straightforward.
+
+**Alex:** So yeah, allow me to go off on a little tangent here. That's kind of the, like that is actually like the real inspiration for this is so we effectively working on a different project. , we kind of scaled it up like pretty, pretty substantially to the point where you had like tens of thousands of users for this thing.
+
+Uh, and they were like pretty non-technical. And so we had people on our team who were interfacing with the non-technical people, the users of the product. And then we had engineers on the team who there were like five of us. Uh, and we all kind of could do anything. We had, you know, we could write any code that we needed to make the, make the product do anything we needed to.
+
+Um, and then effectively what would happen would be non-technical, like sort of user contacts. Our customer support team, customer support team says either we, we'd given them a tool to do something. So for the really basic stuff, we'd made a tool for it in like a React admin panel that we built for ourselves.
+
+Um, but then if, if there wasn't a pre-made tool, they would basically put in a Slack channel for one of the engineers, Hey, would you please do x? And a lot of times there was a command line script and we were using enquire for it. Uh, and like there was a command line script that we'd written because command line scripts were like 10 x easier than building like a retool thing or building, like adding something to our react admin dashboard.
+
+And so like you would write command line scripts where you wouldn't write like full fledged tools. And so I was looking at these APIs and I was like, alright. we cannot, like I, and I actually, I tried it once. I tried to onboard one of our customer support people into like, I had them clone the get repo.
+
+I had them like install node. I had them like add just the secrets they needed and it was like, all right. Like, no. And then like they, kind of like, they ran the tool like once or twice, and then they like close the terminal window and then tried to run it again, but didn't know to like CD into the right directory.
+
+And I was like, all right, this is just a disaster. Like there's no way that you could scale this. Like this process is a mess. Um, and so we tried that and I, but then I looked at like the Enquirer, like APIs and a couple other like, ways to build CLI apps. And you're like, Ugh. It is so much nicer and so much more pleasant and so much quicker to build like these workflow style things in, in a CLI than it is to yeah, do any kind of web app creation.
+
+And so like one of like the ways that we've explored talking about interval is just like turn CLI scripts into web apps. Um, and that doesn't always like, resonate with people in, in the way that like, Could be in the way that we'd like because I think not everybody does the CLI script thing before they build like the admin panel tooling, but like it is bkind of core to what the product actually is.
+
+**Justin:** Yeah. Yeah, it's really awesome. I mean, I, I've seen, I've been around companies that have like invested a lot and either, so I worked at, I used to work at Artsy and Artsy had invested a lot of time and money in like Rails, admin dashboards where we just had like all these Rails admin dashboards. And then people would get like tired of that and like, they'd be like four patterns behind or something cuz we haven't touched it in years.
+
+And then they had like, somebody spun, spun up a new one in like Phoenix or something and it's like, or we had serveral like react based ones. And there's all this like infrastructural complexity around these things that ultimately are just like enabling people internal to the company to do things. And when really all we needed to do is like at the end of the day, the only thing that the engineers really needed is like, I need a way to get input and I need to wait to like write and read to a database and that's really all I want.
+
+Right. Um,
+
+**Alex:** Yeah, there's been like so many different, I mean, actually one of the, uh, so in interval is like, in addition to being like an open source thing that you can use, we're also a company, uh, and one of the, one of the investors in interval is, uh, my old boss at the podcast startup, but who's also the creator of Rails Admin.
+
+Um, and I think when I told him like, what we were doing, I think he was like, oh, I don't know that you wanna do admin tooling. Like, there's like, that's like, can of worms. But, uh, hopefully he's been convinced upon, like seeing what we've actually built.
+
+**Justin:** That's cool. So, uh, there's a lot of, there's a lot of competition in this space generally, there's a lot of internal tools on, on this, in this market. Um, how do you feel, how do you feel that interval is approaching, um, like satisfying this market or satisfying your niche versus like, all the things that are out there?
+
+Like, do you feel like you're well positioned to, to sort of get product market fit and to, to find your space here? Um,
+
+**Alex:** Yeah, I do. But I think it's like the, the sort of the, I think we're actually a really differentiated product once you understand how we're differentiated. Uh, and you guys sort of, it seems like, you know, you've, you've seen it and you kind of understand it a little bit, but it's not, it's not trivial to, to understand.
+
+And I think a lot of people, like, there's been so many successful, interesting companies in this space that all sort of have one model. That like if you, if you see it again, um, and you sort of just like maybe assume that we're, that we're much like those or like an iterative improvement on those, but in, in reality it's like they're not really similar products like us or any low-code, no-code thing.
+
+And so certainly, uh, like we, we like our approach a lot, but also if you're looking for that approach, you're gonna be like disappointed when you use interval. Like when you like sign up to, to interval and like open up like our dashboard. It's like here's the command you run in your terminal to get started.
+
+Like, we are not designed for non-engineers. So it's a, it's a super different like customer profile. Um, the other thing I would say is like conceptually, like we are different in terms of like, we flip the sort of traditional, uh, sort of like low-code, no-code tool model on its head. So, so the way that you generally would interface with something like a retool is effectively, like, you either give them access to your production database. That would be like, you know, you've got like a Postgres database, you use like the low-code tools database connector. Um, and then you're writing sort of database queries directly in their web app. Uh, we found actually in practice like that is relatively uncommon, especially as companies get big.
+
+Like, that is just, you're, you're punting and, and maybe for some startups that works to sort of punt on that. Um, but like functionally, companies are not comfortable giving like a low-code tool access to like right to the production database. Especially one that's on the public internet. Like we see a lot of companies on-prem tools like that at some point.
+
+But even then, like. Do you want like somebody who may not be a software engineer directly modifying a, uh, like an important data source or reading like directly from an important data source. Uh, there's a lot of compliance in sort of like production buying issues that go along with that. So that is not like the super common way that like companies at scale interface with these tools.
+
+The more common way they do it is they're writing like a rest or a GraphQL API endpoint, and then they're just connecting to those endpoints from like the low or no-code tool, web ui. And so that's like that model. It's almost like write something in your code base and then expose it. to the like low-code, no-code tool, uh, like by like going into your browser and, and wiring up that way, interval's kind of the, the complete opposite approach.
+
+You actually pull our SDK into your backend code base and then there's no, like, there's no further, like once you kind of put in your interval API key, there's no further work you need to do in the browser to sort of like link your, your backend code base and the tools that are generated, like the source of truth for your tools, like is and remains your backend code base.
+
+And so that model we think is like, is really appealing cuz you're not writing a bunch of that boiler plate code for like internal APIs. But we also think it makes apps a lot less brittle. Like one of the things that we've seen and, and we've tried a lot of the low-code stuff, like again, we were running an app with tens of thousands of users.
+
+We needed admin tooling. We kind of tried everything that there was. Um, one of the ways in which these get really brittle is that, If you like, for example, change a, an internal API endpoint and you like change either the, the inputs that it accepts or maybe the output that it returns or maybe even its name.
+
+You can do like a command F search in your code base and just say like, okay, this is an internal api. Like maybe if you've got a mono repo, you can be like, oh, the iOS uses it. The iOS app uses it here, the web app uses it here, we call it from another like backend of function here. And like you do that and then your code's good to go, low-code, no-code stuff.
+
+Like when you make that change and you do the command F search, like the fact that they're using that a, that API endpoint and that it's a private API endpoint, so you're not like documenting it, it's usage and you probably don't have good like observability into how often it's being used. Like it's very common to just accidentally break that.
+
+And then, you know, either the tool's broken for good or it's like broken until you can like get the engineer back on it. And so like the cool thing about interval is that it, it like works within your existing software engineering. like workflows. So like when you break stuff, you generally find out about it in ci.
+
+Like you can't really break an interval tool meaningfully if you've got like a good like, uh, CI process and a good, um, sort of like build process. And then it works really nicely with like TypeScript and so on. And so, you know, even like changing around like the argument order in, in functions will generally be caught by something like interval.
+
+#### [00:18:40] Looking under the hood
+
+**Andrew:** Are there, uh, other areas where this, like flipping of the low-code, no-code tooling, like has other benefits, like is it helpful with like security or authentication or other stuff like that?
+
+**Alex:** Oh, totally. Yeah. So like one of the ways that, so like one of the things that Interval does, which is, which is pretty cool, is like it like under the hood. It's basically, it kind of all boils down to. Two-way message passing. So like when you open up with your web browser and like click to run a tool that's in your backend code base, we like send a message to your backend, which is like, Hey, run this, run this like, uh, function.
+
+And then as that function runs, when you hit those await for like our IO methods and the IO methods are like collecting input or displaying output, um, those basically pass a message back to the front end saying like, Hey, render a text input with these parameters. And then when you, then the user enters in the input, like the message gets passed back, which is like, Hey, the user entered this input and then we parse it and validate and stuff on your backend.
+
+But importantly, that message passing means that like the function and everything is still executed entirely within your, within your code bas in, your runtime, so that you're not doing something like, you know, bundling up your app and passing it to interval. So we never see the source code of your app, which is really important.
+
+Um, we also don't need to know about any of your like secrets or any of your infrastructure. So like if you wanna render a table of like users or something to select from. Um, you pass that to the interval front end, but you're never passing us like, underlying information about how you connect to your database or where you got that list of users.
+
+So from like a, from like a security model perspective, um, we just know very little about how your app works. We have very limited access into like what your app can do. It's like basically nothing. Um, and we think like that model is like, it, it, it's, it's pretty, it's pretty slick for that. So, yeah. Um, I would say though, like we love that about it and, and we think that's great, but like the productivity benefits I think are honestly better.
+
+Like the fact that you can just like basically take a private backend like method that you've got and like wrap it in just like a little bit of code to expose it as an interval action. And then, yeah, if you need to collect additional input or display additional output, like we've got the sort of IO methods for you, like that productivity boost is just like, you know, It's pretty crazy.
+
+**Justin:** So what is the shape of the actual connection? So you're, you have to expose a portion of your backend to have a connection to interval. Uh, what does that look like? Are you modif, is it like internally modifying your api, like adding endpoints to like an express app that people might be familiar with that, or is it just like opening up a web socket connection?
+
+Like, what's, what's happening under the hood there?
+
+**Alex:** Yeah, it's web socket's under the hood right now. Um, interestingly though, uh, like, like it's pretty agnostic to, you basically need a, you need a two way, like you need a way to pass and receive messages. Um, and so web sockets are really good for that. Uh, like there's like sort of more up and coming ways to do this.
+
+So there's things like server scent events that, that, that you can use, uh, which are, are promising, um, but maybe aren't as like, Fully available everywhere as web sockets. Um, there's really interesting stuff in web rtc, like they've got, there's a data channels api, um, whi which is really compelling. And so there's a couple different places where basically if you can pass messages, like you can basically have like an interval sort of backend to our web front end connection.
+
+Uh, and, and we think that's pretty interesting. But yeah, so it's, it's a web socket connection and then the, the connection itself is actually to the interval server. So your app is connecting as a client, which is interesting. Um, big benefit of that is you don't need to like expose your app. Like if you, for example, if you've got just a back end process and you don't wanna, uh, expose like another port on your network or something, uh, you don't have to worry about that with interval.
+
+Like you just connect to our sort of, uh, existing back.
+
+**Justin:** Nice, nice. I guess the web socket makes that easy. So I mean, what do you do in the case where like the connection fails and, and you have these internal, uh, internal calls to interval? I'm not, I'm not sure if the, the interval calls are actually technically external, like interval is triggering an action that you have registered inside your app.
+
+Uh, but yeah. What if the connection fails? Like how do you handle like errors inside the user's app, I guess?
+
+**Alex:** Yeah, so we are really like this. This was actually a really big concern for us and for a while we would tell people basically, Like, don't run your interval app in the same process as your, like, as your like consumer facing app. So you'd basically have like two start commands, one for interval and one for your, for your main app.
+
+And we actually still think architecturally that's a good choice for a bunch of use cases because people tend to want to be quicker moving with internal tools. They want to like do a little bit less code coder view. So like if you're afraid that you might write code that has like a memory leak or like you may accidentally get into an infinite loop or something, uh, then like interval, you know, fundamentally we can't really, like, we don't do anything that makes that not possible.
+
+So, um, we still think it's a good idea to run it in a separate process. Um, and then you're, you're sort of, you're sort of safe from that, but from an interval perspective, like if, if you feel that your code is, is ready to be running, like it, you sort of hold it to the same standard as your end user facing app, uh, and, and you're, you're confident in that you can run it in the same process.
+
+And like, we do a really, really good job of, of sort of cleaning up after ourselves. . So if there's ever a chance when the connection can't be established, we just try to reestablish it in the background and we're just always sort of pinging it. And I think we do like, uh, I don't know the exact details of it, but I'm pretty sure if we implemented like an exponential back off.
+
+So we try really quickly at first, and then we try less quickly over time as it becomes like clear that maybe there's a problem with like your network connection or ours. Um, and so, so that tends to work pretty nicely. And then in terms of like other error handling, um, error handling from within inside of interval actions is really nice.
+
+You just throw errors and then we catch them for you and basically display them to the user as a, as an error, like in their, in their browser. Um, so if you give it a nice like message, like you have to do very little to get like pretty solid error UIs. So if you're writing user land code that generates errors, it's pretty nice.
+
+And then from our case, yeah, we just try as hard as possible to not write code that would like interfere with your, uh, with your ex existing backend process. But yeah, we're uh, , we are definitely cognizant of being like, by us being brought into your code base by us being an SDK that you, that you add just like any other like NP module or something.
+
+Uh, we just wanna be respectful of that and make sure like the code that we're shipping is like, pretty high quality.
+
+**Justin:** Awesome.
+
+**Andrew:** So this is a pretty complex app. Uh, so what are some of the hardest challenges that you've encountered while building out interval?
+
+**Alex:** Yeah. Uh, I think probably the, the biggest one is actually like explaining to people what it is and how it works. And I think we're honestly still iterating on it. Like, I think this is the first podcast interview I've done, uh, sort of explaining it. I've done like a conference talk or two sort of, sort of pitching it there.
+
+But I think really getting people into the sort of like the mindset of like, this is like actually quite different than like, just because we're talking about internal tools, like the approach is actually. Much different than the, than the existing things on the market. So getting people on that, uh, sort of, sort of to understand that has, has been like candidly a, a a pretty difficult challenge for us.
+
+Um, and I think it's like we just need to do a little bit more showing, uh, then, you know, like if you look on our website right now, there's sort of like a feature grid and like lots of other things have feature grids and I think that like we were sort of we're moving in the direction, like we'll have a version out in the not too distant future where it's just like live code examples that you can play with.
+
+We've just like embedded the full interval experience into the website, uh, with like a mock node environment. So you can like, pretend to read from your database and explore how, like, how interval functions. Um, and I think that should like really resonate hopefully with the right audience. Like when we first started and people kind of found, found us, we did like a Twitter launch back in June.
+
+Um, we got a bunch of like requests to sort of talk with like product managers. So like they, we'd hop on the phone with them. And if we hopped on, if we hopped on a call as a product manager or like you're, you're sort of a non-technical person inside of a company and we get on a call with you and you didn't bring a developer on the call, um, your eyes just glaze over.
+
+You're like, this is, this doesn't sound interesting. Like, I need non-developers to be able to write like the, to build these tools. Like, that's like the sort of promise of low-code, no-code. And so like we've just, effectively we've needed to learn over time, like, hey, don't get on calls with people who don't wanna bring developers onto the call because they're looking for something pretty different than what we have to offer.
+
+And so, honestly, yeah, it's like we're kind of building a new thing. And so explaining to people, um, how it's different has been like, you know, relatively complex. The other thing is sort of like knowing, um, where our strength, where our strengths are and sort of how the, uh, like how the APIs and the product are, are best suited.
+
+So, Like, again, we think it's really, it's like a really cool way to build stuff. Um, I think Andrew, you mentioned like it's similar to like, like the, the sort of APIs feel like you're writing like command line scripts or like enquire scripts. Um, and so sort of like targeting, okay, this is a cool approach, but what's it best for has been really interesting as well.
+
+Um, like we've had a lot of people ask us to do sort of just like general dashboards, uh, and we've started to sort of, we've shipped some things along those lines. Um, but like candidly, interval is really, really great for sort of workflow based things. Things that, like you previously had CLI scripts for sort of the, like the post put and deletes of the rest world, like the get side of things is like the sort of view stuff, dashboards side of things.
+
+Like I don't think we've nailed the perfect API for yet and I think we're pretty hesitant to ship anything like further. Without like a really slick API to make that happen. So I think like people want that, and I kind of understand why people want it, but um, we've had to be pretty like diligent about not shipping stuff that just like, seems appealing on the surface if there's not like a unique interval edge of like, this is why we're doing it better than, um, either like reactor HTML code you'd write yourself or like some like low-code thing.
+
+#### [00:29:34] Evolving Run Books
+
+**Justin:** Yeah, I mean, I think there's this like pretty broad area of. Run books or scripts that people have to write and run or like all these, like maintenance scripts that folks end up maintaining that like this, this hits pretty well on. I think the interesting thing for me is, so when I discovered it is like I, I've faced all these problems before, right?
+
+Is like I have no desire to spin up a React app to like talk to a database because like somebody needs like a form. It's like I hate forms to see if I can not touch a form ever . Um, I am super happy cuz people don't realize how stinking complicated forms can be. And you know, this thing is, is really cool for that.
+
+It's like, you know, I can write a little bit of code and an app and the tools that I'm already using spin up the thing. But I think where it gets really exciting for me is like the potential of the, the, the model. Cuz it's like you have this workflow. . Yeah. Right now it's, it's, uh, URL that you have, like a form or whatever, this custom input.
+
+But I mean, it could be, it could generate out a CLI command, you know, that could be like a really easy thing for it to spit out or, um, you know, it could be a desktop app or whatever. It's like there's a lot of opportunity here for like, yeah, this is how we make our runbook or whatever. And, you know, I think that that's kind of a cool, uh, inspirational thing.
+
+There's been other companies, it's like, uh, a long time ago, um, we're talking to some, some people who are building a CLI app, uh, like runbook framework and you know, it was the same sort of thing. It's like, oh yeah, we'll, like, have scripts that you can share in your CLI and, you know, distribute those out through your team.
+
+It's like, ah, that's, that's kind of an interesting way to get at this. But, you know, um, I think all these tools that like. Make it possible for developers to do all this side work that's important, but not primary product work and do that faster is is exciting.
+
+**Alex:** Yeah. You also kind of, I think you, you touched on this a little bit, but um, interval is actually sort of like what we call, like actaully render surface agnostic. Um, and so like to us the web is a render surface. So like when, when you're backend, like when you sort of, you call an interval action and your backend says like, Hey, request this input, um, right now, like it just requested from like the website where you, where you started running the interval action.
+
+Um, but we can kind of render our, our sort of apps anywhere. Um, and so without giving away like too much of like, and certainly without committing to any like product direction stuff, uh, , I think it makes a lot of sense to, for example, like trigger an interval action from a Slack bot and then, you know, the Slack bot, you know, all the places where we would prompt for input in the web app.
+
+The Slack bot can respond, like you were saying, like in a, in a command line context. Like we could actually sort of backfill the model, uh, because we've got lots of engineers like writing these, these, uh, these apps and, you know, maybe they prefer to run them directly f from a CLI script. And so could you run like interval, like a, you can imagine like an interval cli command, like interval run the name of the action.
+
+And then, you know, as you step through the action and it request input and so on, you get like a command line, read line or something. Uh, you can forward, it's like an iOS app. I mean, there's like kind of any number of places where you could sort of apply the model. And the really cool thing is like, because the code is just running in, like in sort of a backend app, running in the cloud somewhere, wherever your, wherever your app is deployed, um, like we can basically add those new, we could add the Slack app or the iOS app or whatever.
+
+Uh, and then you just like log into interval from, you know, where wherever you're trying to run your interval actions from, and then you can just start calling those existing actions. Like there's not different code to write. There wouldn't be code mods. So it's, it's actually like conceptually sort of different than like, I think some people think of it as like a react, like react native thing where it's like, oh yeah, the same react code can be used to generate an iOS app.
+
+And it's like, you know, it, it's similar, but you're still in, in that case, you're still building two separate like apps. You're just writing very similar, in some cases, the same code interval is like, all the interval codes you write can actually be interpreted by us to run sort of, or to render UIs anywhere.
+
+**Justin:** Interval just generates the client. Everything else is, is your business. Yeah. Yeah.
+
+**Alex:** Um, and I think so yeah, I, I think that's why we, for what it's worth, like that's why we sort of started with, um, with the internal tools is like clients, you're just not as, like, you're not as fussy about them. . Uh, but in terms of like also where we're going, um, I think there's a lot of like individual sort of like hacking on stuff yourself work that like you would like a client for, for yourself as a developer.
+
+Like I, I, I often find this, um, like I'm writing like cli scripts for example. Um, and then I forget like six months later when I, when I go run them again, like I forget exactly where it is or how it worked or, um, and so like UI are actually kind of, and like the interval model of like sort of structured saying like, Hey, at this point in the script, ask for this information of this type of this shape.
+
+Um, it actually like helps you write code that's like, not necessarily maintainable, but more like you, you can sort of run it again in the future. It's sort of, um, reusable I guess. Uh, and so I, I think like you could definitely see us applying this model towards like, uh, giving you a client for, for code that you're just writing as like a dev working individually.
+
+**Justin:** Yeah.
+
+**Andrew:** Yeah, I, I could also see it being useful for like home automation. Like it's the same thing of like, I, I did this thing like two years ago. I forgot all the things about how to run it or how it works, but I still wanna interact with it. That could be another good use case for interval.
+
+**Alex:** Yeah. And there's actually a bunch of, I mean, so interval right now is, is just a node sdk. Um, I mean, like, I, I think we may expand to other languages in the future. Again, it's, it's all kind of speculative there, and I think we'll just be driven by what the community is, is really interested in. But I will say like, uh, all the way back, like in like my college days, like I was doing a bunch of like node home automation hacking with, I forget what the, where the library's called is HomeBridge.
+
+It's like, like the, like o like Apple Home kit, like indie hacker thing is a node, uh, sdk. And so I think there's like a ton of, there's already like home automation enthusiast people building stuff in Node. So even if we never added another language, Like if we just sort of tailored it a little bit better to work for like enthusiast use cases, like I would use it for that.
+
+And it seems like other people might too.
+
+#### [00:36:23] Dogfooding
+
+**Justin:** So being that you've built this tool for building internal tools, what have you built at interval? How do you use interval at interval?
+
+**Alex:** Oh my God. We use it for every, I think we, we definitely, interestingly, and I guess I, I guess I'm happy to say this, we are not the most extensive interval users. Like there are, there are companies that like do a lot more in interval than we do. Um, but we also like run a lot of our operation in interval, like things that maybe even we wouldn't recommend other people do, like areas where we, um, like have like extended the model beyond like where it, where it makes sense.
+
+Okay. So I just pulled up our, I pulled up our dashboard so I can. Break it down into a couple things. So part of it is we're using it for just like admin tooling, things like admin dashboard stuff. So, um, we've got all sorts of things to like, help you with your account. So if you write into us and say like, Hey, I, I don't understand y person X can't run this.
+
+It's like, oh, well that person you added to your team as a viewer, not as like, they don't have like the right permission. Like, if you'd like us, if you'd like us to add it, we can just add that permission for you. Um, when we run, like when we do like marketing campaigns, so like we want to tweet out a link and see how it's doing, we have to create like little UTM links.
+
+So we've got a tool for like making those, uh, which, which is pretty neat. Um, our newsletter sending thing works through interval. Um, there's a, like we we're big fans of this thing called postmark. I don't know if either of you have seen this. Uh, it's like by far the best way to send transactional emails, uh, with like great deliverability.
+
+And they also now have, have a thing like they've got APIs for sending. , um, like not, I guess what are, what are non-transactional emails? I guess marketing emails. I guess a newsletter is like classed as like a marketing email basically, but they only have APIs for it. Like, they don't have like a way to like actually compose the newsletter.
+
+So we built like the newsletter composer inside of Interval. Uh, we've got an interval action for running our metrics. So every day we, this, this thing runs on a schedule. You can do scheduled actions and interval. So we send them, we send all of our metrics to a Slack channel every day. Uh, and that just, that little bot runs on a, runs on a schedule.
+
+Um, those are kind of like the, the basic ones we got. We then we've got some, like, we've got some really fun ones. Um, so we've got this email, new signups one, which is, I, I sort of like, I got a bunch of emails from services before as like a user, which is like, hey, like here's like your onboarding stuff. Um, and I kind of found that they were just like kind of spammy and I wasn't really interested in them.
+
+Um, so I actually wrote an interval action for myself. Basically, that pulls in everybody who's signed up. Um, and then it basically like gives me a couple like, email options to like send them. Uh, so sort of like if, if, if you're like, depending on like sort of where you are, like what you've done with the product.
+
+Um, and then kind of gives me like, you know, like if you've given us your website, like it'll show me like the link to your website so I can see like what you might be building with interval. Um, and then only if like, I think that there's like something valuable to add. Like it gives me like a little email composed thing and I'll just like shoot off an email and that connects directly to like, like I wrote that against the Gmail api, so that sends directly from my Gmail.
+
+Cause it's not a marketing email, it's not like a transactional email. It's literally just a way for me to like send this one type of email faster, which is like, Hey, like how are you using interval? So not everyone who signs up gets it because it's literally just, I look through our signups on like, uh, I dunno.
+
+Every day, every other day. And like, if there's something interesting or I think you might be getting stuck on something, I'll just like hand Taylor to reach out to you. So those are fun. Use it for feature flags, like kind of obviously like ev everybody should use interval for feature flags. Like it's, it's just a really obvious place to, to do that.
+
+Um, and then I would say the craziest thing that we, that we do with interval, um, the thing that, like we we're definitely thinking more about how to like sort of productionize this, but we, we are just doing it ourselves. Um, so interval is all code, it's all like node js code. We're big prisma users, like that's the ORM that, that we use.
+
+Um, it's really nice for like getting type safe data into and out of your database. Um, and so we wrote code that basically iterates over every single table in our database and generates interval actions corresponding to each table. Um, and so there's like a full fledged, like almost, we use it as like, almost like a post-IT code replacement or something.
+
+Um, we don't think that that is like that good of an idea in and of itself. Like we think that there needs to be a little bit more, um, sort of like work to make it like a really great usable tool. But I think you'll actually probably see us ship like an interval database connector in some form in the next like three to six months because like we think that there's definitely something there.
+
+And then like we've sort of like, we use that as a way to like sort of explore like the kind of like limits of CRA at building on interval. Um, so like, for example, any of the edit, delete or like create things, any like data mutations that you're doing against our database in that, like the actions that we generate, we actually put a step in there, uh, to like our, what we call the IO confirm identity method, which basically prompts you for a two-factor code.
+
+So like every time you want to use that tool to, like, for example, like edit something in the user's table, like it requires that you enter a two-step verification code that was generated by your like authenticator app. and like, again, like the user land code that we wrote, like if, like, if you wanted to build that in your companies, for example, like the user land code that you would rate for that is like a single line of code to prompt, to get someone's to confirm that someone, uh, has like access through their, like the two-factor set up.
+
+So like a lot of functionality in like a single line of code. So like we've found it useful to sort of use it as like a, a testing ground for other concepts. So we might want to pull forward into.
