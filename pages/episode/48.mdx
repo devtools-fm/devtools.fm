@@ -1,0 +1,348 @@
+---
+title: Tobias Koppers - TurboPack, Webpack
+youtube: https://www.youtube.com/watch?v=ZYDZumH5DU8
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/12174870
+tags: javascript, webpack, turbopack, bundler, vercel, typescript, tooling, devtools, devtoolsfm, podcast, technology
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Tobias Koppers, the creator of Webpack, and now TurboPack.
+We talk about the origin of Webpack, maintaining Webpack, and what's next for JavaScript bundling.
+TurboPack is a new bundler from Vercel, and it's built on a completely new architecture with a familiar API.
+Join as as we dive deep into the future of bundling.
+
+- https://turbo.build/pack
+- https://webpack.js.org
+- https://twitter.com/wsokra
+- https://github.com/sokra
+
+Join our patreon for the full episode https://www.patreon.com/devtoolsfm.
+
+<!-- LINKS -->
+
+### Tooltips
+
+Want to hear use talk about our tooltips?
+Join our patreon! https://www.patreon.com/devtoolsfm
+
+#### Andrew
+
+- https://maath.pmnd.rs
+- https://github.com/vercel/satori
+
+#### Justin
+
+- https://github.com/julusian/node-elgato-stream-deck
+- https://progrium.com/blog/
+
+#### Tobias
+
+- https://github.com/salsa-rs/salsa
+- https://v8.dev/blog
+
+<!-- TAB: SECTIONS -->
+
+[00:01:18] Webpack's Origin
+[00:08:22] Maintaining Webpack
+[00:12:48] What is TurboPack?
+[00:24:29] Next Gen Bundler
+[00:33:17] Plugins
+[00:40:38] Turbo Toolset
+[00:44:54] Webpack's Future
+
+<!-- TAB: TRANSCRIPT -->
+
+**Tobias:** So our main goal by building the architecture was to make incremental updates or the performance of incremental updates, independent of app size.
+
+So it should always be constant in performance and, and it doesn't matter how large application goes.
+
+**Andrew:** Remember the full episode is only available to our Patreon members
+
+**Andrew:** Hello, welcome to the dev tools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Our guest today is the one and only Tobias Copiers. Uh, Tobias is the creator of Webpack, now Turbo Pack.
+
+Uh, Tobias, we're really, really excited to have you on to chat about what you've been up to at Vercel. But before that, would you like to tell our listeners a little bit more about yourself?
+
+**Tobias:** Yeah. Hi. My, I'm, my name is Tobias and I'm from Germany, from Bavaria and a little town. And yeah, I am working on, uh, maintaining web pack like since 10 years. For 10 years now. And. Two days, two years ago I joined Vercel and started working on tour pack. Uh, yeah, so just bundling stuff.
+
+#### [00:01:18] Webpack's Origin
+
+**Andrew:** Uh, j just bundles is playing it down a little bit. Uh, Webpack has been such a huge tool in our industry for the past decade, uh, but I think some of our viewers might be surprised how it came about. So, could you, uh, fill us in on how you started WEbpack?
+
+**Tobias:** Yeah, it was fun. Funny story actually. Um, so, um, when I did my master thesis, I did a web application as master thesis. And for that I was looking for like the JavaScript tooling. I, I wasn't into the JavaScript at all at that time, so I just looking around, just looking for a bundler or basically a tool to like optimize my application.
+
+I was a little bit into over optimizing stuff, maybe cause it's a Masters thesis and you, you just do that and Yeah. So. I found a, a Bundler, which was, was called s um, modules Web Make. And I basically, I proposed this feature named Code Splitting. Um, basically I, before doing studying, I uh, um, worked with GWT which which is Google Web Toolkit, which is a Java to JavaScript compiler.
+
+And yeah, you probably expected from a Java to JavaScript compiler, the bundles end up to be really large and it has this great feature about like splitting your application into like some code being loaded on demand. And I, I was missing this kind of feature in the JavaScript tool I was working with. So proposed, made an issue on, on this bundler I found like model's web make and basically proposed it.
+
+And yeah, there was, we had some interest, um, but in end I ended up implementing a prototype by re-implementing the whole bundler and. basically this prototyped was, was then renamed into module's webpack and then webpack and badly developed as an own tool. Now I think the, the issue is still open, so, um, yeah, it's, it's funny.
+
+um, yeah, and the, the story continued a little bit. Um, it was really small tool that I had a few people writing issues using it a little bit. But this larger success was when, like Pete Hunt from instagram.com made this, I think on OSCON 2014 or so, he made this talk about how Instagram works and basically promoted webpack as tool they're using.
+
+And, um, I think their, the success of Epic started and more people, again, getting adoption. I think I was a little bit lucky with that Um although. I also, I hit like the right thing at the time because I was over optimizing this kind of bundler and a little bit like code splitting you, you probably at that time, you probably don't need that feature because applications was like thousand or maybe hundreds of modules, so nobody need needed that.
+
+But this was really cool and, and, but the web applic web development in general grow and uh, applications became larger. And so code splitting ended up to be really useful for that kind of development trend in web development. And I think that was like the major success point of webpack. And maybe another thing was, that we focused on exte, extensive extensibility and flexibility, which was also useful in the growth of web applications in general because we, we experimented a lot with different technologies, what, whatever typescript , flow, all this kind of stuff that were developed at this time.
+
+And I think the flexibility of that pack was a really huge point at that time. And I think still is.
+
+**Justin:** Yeah, absolutely. Mm-hmm.
+
+**Andrew:** Yeah. It's, it's cool how, uh, it came out of such a small use case. Like you started as an issue and was just like trying to solve this one tiny little thing. And now Webpack is like, it's so all encompassing of all different, like, ways you build your application now. So, uh, ex you, you touched on extensibility for a little bit.
+
+Uh, what was your guys' initial approach to extensibility? Because from my, uh, my perspective, what Webpack has today is like, Even though it's a very, very big plug-in API surface, it's so flexible and allows for so much creativity.
+
+**Tobias:** Yeah. Yeah. The thought about flexibility was that, my idea was about like, uh, the web tooling also was that like, it, it's often used in companies and companies have these kind of super special cases. I, I think every company has this kind of, yeah, I'm special in that way. I'm special in that way, or I have this legacy code that need to be integrated.
+
+And that was my motivation behind like the flexibility of webpack said I wanted to solve like, All these edge cases that that people have in their company application or whatever, and all this legacy stuff. I just wanted to give them the opportunity to use Webpack by like providing the, at least the tools to build something to integrate the, the stuff they want to have in the bundle and the tool. So that was like the idea.
+
+**Justin:** that's really, that's really interesting. I, I think a lot of times when people are approaching projects, they're like, all these edge cases, they're like, this is all outta scope. Like, we don't want anyone to think about this. It's like one that really narrowed down, but it's like explicitly saying, okay, I want this to be flexible enough so that you can target your own edge cases.
+
+Is, is kind of a, uh, a really compelling case. And I, I think that like, especially as Webpack has developed over the years, it's been sort of one of the. It's been such a great example of how to build like a really good plug-in architecture, for example. For sure. Um, I know Andrew has used, uh, the, the sort of similar like plug-in architecture that, that Webpack uses.
+
+**Andrew:** Yeah, I, I love tapable. I've used it in probably like three or four different projects now.
+
+**Tobias:** Yeah. Yeah. It's really cool. Um, yeah, maybe, maybe even like webpack, API surface is too large in some cases. Like it, yeah, it's kind. it can, can become a problem because like you, you have this really large plug in interface and you build plugins, can do anything. And, but it also means like anything is part of your, everything is part of your, uh, like API and part of your semantic version API interface with, if you want to make refactoring the changes in that kind of things that plugins could access it to us tend end up to be a breaking change for something.
+
+So it, it's really hard. It can, in some, in many cases it can make it harder to like iterate on, on, on larger changes or larger effect doings, especially if you want to avoid breaking changes and, but yeah. Yeah. People dislike
+
+#### [00:08:22] Maintaining Webpack
+
+**Andrew:** The, the ease of use of the plugin system is definitely a double edged sword. It's like, oh, look, we can sh uh, give all these features to the developers, but then the, the backside of that is, oh, well man, I need to support this hook. That wasn't the most well thought out, uh, forever now, which is a lot to carry.
+
+**Tobias:** Yeah. Yeah. But yeah, it, I think this is like a trade off between flexibility, extensibility and maybe, maybe yeah. Migration story and like, uh, bring the changes and major versions. Yeah. That, yeah. In the past term, it turns out that like, often web pack major versions were really hard or like harder than usual to like, migrate on, especially as like plugins need to be upgraded.
+
+Yeah. So we, we, we can control like the configuration a little bit, but like plugins, it's always, it, it always, it often, um, needs some attention from like, maintainers of plugins that may not, may or not be there anymore. And it can, can be hard
+
+**Justin:** Yeah. When, when your migration story becomes a community effort, then it like, definitely increases the complexity.
+
+I was reading an interview, uh, that, uh, Richard Hip, uh, was given Richard Hip is the, the creator of sql Light.
+
+Um, and, and he was saying that like, SQL Light was sort of like this accidental problem. He's like solving something for a customer and he is like, oh, you know, I just need like a database on disk. And so he, he created that and he's like, it was a lot harder than I thought it was gonna be. He is like, I thought it was gonna be not that bad.
+
+And I'm curious, was Webpack like the problem, did it become like a lot more, was it like a lot more difficult than you anticipated when you, like, first started diving into it and like, how had, how has that sort of changed over time?
+
+**Tobias:** I think it was initially when I met the prototype, it was. I think easy as than expected. Like it was really easy to like make a really simple bundler, which can like deliver the one feature. It's like it, I think it has become harder over time when you add and more features and more features and all the stuff, and then you have a lot of test cases and you, you want to change the one thing and it breaks the other thing.
+
+And you probably know that, um, I think like the, the, the small initial bundle was really easy, but like, and then the interaction of many features becomes a problem. Then like Yeah. Especially if like, because of the flexibility, like people use this configuration, that configuration, then in this kind of weird combination, it breaks and I think then it becomes really hard to make it or change a feature while keeping all the other features intact and working expected.
+
+Even with like people using in unexpected ways and stuff like that.
+
+**Andrew:** Yeah. So, uh, touching on the success of it a little bit, uh, has that success been hard? Like, were there things that you wanted to do with Webpack b that because of the success and because of the way the project went, you just couldn't accomplish?
+
+**Tobias:** Good question.
+
+I won't think so. Like, uh, like, especially like, I, I didn't, I, I don't really know. I, I wouldn't say, I wouldn't say no, I, it wasn't like, not that that success hindered me in doing something special, something what I wanted to do. Like it's, I was more, more, I think most of the time working at Webpack, I was not really driven by my own use case because my, my own use case vanished like after a short while, but like I was.
+
+like motivated or like driven by community feedback and like, worked with a lot of people at the start, um, looking at what, what their use cases are. I was just doing this project for funding to start, so I, I wasn't like have, I didn't have any special goal with it. It was just like I wanted to build something cool and want to like, make the people happy that using my project and yeah, it was kind of, that was the motivation.
+
+And I think that this, that motivation, I, my goal is to make the community happy and like, so the success I think is more like a, uh, good factor in this case and not, uh, and like a block it,
+
+#### [00:12:48] What is TurboPack?
+
+**Justin:** So let's talk about a little bit, uh, forward looking. So, uh, OA announced turbo pack, which is from my understanding, the the next generation of Webpack. Uh, could you tell us a little bit more about like turbo pack and what it is and what its purpose is in the ecosystem?
+
+**Tobias:** Yeah. Um, I can start with the motivation of turbopack. So, so yeah. webpack is like 10 years old, so it's, it's, and I, I told you that like, it is hard to iterate on the, like, larger factoring sensor stuff and one major problem of webpack, or maybe not, yeah. Not a major, but it's a problem of webpack. It's a, like, it's a performance, it's a little bit problematic in some cases, especially if you grow really large with your application. So it, it, it works well. But in, if, if, if you have like multiple thousands of modules, then you, you cannot end up this multiple seconds of, uh, incremental compilation, which is technically still pretty fast.
+
+But, uh, user expect like, like subsecond of updates and stuff like that. And, um, yeah, that like one motivation was this performance aspect, which is really problematic in Webpack. And we, we wanted to change that and we wanted to fix it, and we, we fixed a lot of performances, so we made it a lot faster, but we hit it like a point where we like couldn't optimize it anymore without like, refactoring the whole architecture.
+
+So, so like the underlying architecture was a problem, but we, we can't really change that without, like breaking every plugin and every user. And that is not something we want to do. And, and I think that in this case, creating a new name and a new product, um, which is like, based on the same ideas of Web Pack, but like with a different architecture and different plugin system.
+
+And, um, is better than like making a webpack six or seven or 10 or whatever that breaks every user was completely re-implementation of everything. And then it's then is clear that you can't, like, it's, it's, it's more expected that you have to migrate to something than like more than a major version of breakking change of something.
+
+And another motivation was also like, there was three kind of major motivations. So performance was one. And um, basically in next js we use webpack, but we not only use one webpack we basically. I think four, five compilers of webpack just to make like client compilation, server compilation, server rendering compilation, server components, compilation, and yeah, basically like we needed a lot of compilers to orchestra stuff and basically lets them communicate together.
+
+And that's, it's, it's error prone. It's also hard to implement that you have to care of a lot of edge cases and race conditions and stuff like that. So we, we also made this kind of major change in turbo pack that we wanted to have like the, the module graph and cross environments where you can like just import modules between environments and you have just, you barely have all different environment modules of different environments in one single module graph, which make lot of things easier. And also like having new opportunities about like optimization, like between environment optimization. Like you can, if you use only some properties of a client component, then in the server, then we, we can optimize something like that and tell us more about that. But that was one of the ideas and We, we, we started this project on, on top of like a completely new architecture that was like, designed, was a goal of incremental compilation first.
+
+So like, we made everything just to make, uh, like incremental compilation as fast as possible to not only to like fulfill like the subsecond goal for the current applications, but, and we, we have to think like webpack is 10 years old, but we also, we invite a new tool. We, we want to like, aim for being alive at least 10 years.
+
+And if you like, like think about the next 10 years of web development, how applica, how large application gonna be, uh, per probably pretty large. So we want to have like something that could work within like, hopefully 10 years. Not sure what happens there, but, um, so we, we really designed to. in. So our main goal by building the architecture was like to be in, so to make incremental updates or the performance of incremental updates, independent of app size.
+
+So it should always be constant in performance and, and it shouldn't matter how, uh, it doesn't matter how large application goes. So, so if you have hundreds of modules, thousands modules, or 10,000 modules, uh, update speed should be constant and only like affected by the size of the update and not by the size of the application, which is the case in that webpack where we have this kind of management overhead for just getting all the modules from the cash and stuff like that, which scales by application size. So that was like the driver behind, like the new architecture of Turbo Pack. Yeah.
+
+**Andrew:** So to go faster does, is it relying like on ES modules more because like a big tool right now is, uh, Vite and a lot of the core fastness of Vite comes from the way it uses ES modules,
+
+**Tobias:** Yeah, yeah, yeah. So, so, uh, I can't explain why. Um, so basically we, so usually we built the replica is a bundler, but vite like it is more a non bundler. It's, it's like, it's a similar space, but it's, it's technically not a bundler because it doesn't, uh, like my hybrid, but, but focus on the non bundling aspect.
+
+So it's the non bundler for your application code where it doesn't really bundle your code into, into larger files and then ships these files to the browser. Instead, it barely ships your code pair module of code like unbundled, just as small code, maybe transformed a little bit to the, to the browser.
+
+And let's basically let's the bundle, um, let's a browser take, um, over, um, over basic visits, own module system, ECMA modules. Let's. , it lets the browser make the work of connecting all the modules together and like, not bundling them, but like bringing them together into like one execution. So that makes it really fast for incremental updates because you, you usually a bundler has to rebundle application and then like the new bundle or send the update bundle and basically bundling aspect and all those like works that happens with a modeulegraph.
+
+It is scales by application size and the chunk graph, it scales by application size. It vite or non-bundlers in general don't have, don't have to do that. It just sends you modules. It's basically a simple or kind of a simple server, which you ask for a module and it sends the module and the browser and only in the browser.
+
+The modules came together into a module graph, which in, in case of updates it, it only has to like process one module and set it back to the, to the browser and it makes it really efficient for, for like. really fast updates because it doesn't have to do this kind of management overhead of a bundler. Um, and you asked if, if you do do that, and actually we do not do that.
+
+So we, we, turbopackk is, it's a bundler, it's not a non bundler. So it, it's the same kind of thing that Webpac is basically. Um, but we implement it in a way that it's like due to the new architecture, that it's as fast as a non bundler by, by making some kind of tricks, like this kind of incrementally incremental compilation thing.
+
+And we also, like we don't bundle, if you make an make an update, we basically only send you the one module changed to, uh, is affected by the change via web socket. And that makes it, uh, updates as fast as a non bundler even while we are bundling in total. Um, but why, it's a good question. Um, , um, so basically a problem of non bundlers is it, It, it's initial startup.
+
+Um, you have to send, like if you have 10,000 of modules in your application, you have to send 10,000 of requests from the server to the, to the server, from the browser to the server just to get all the, the 10,000 modules and bar. By not bundling, you barely get this kind of lot of request. And that's basically the reason why we bundling for production is to reduce the number of requests, send modules in a more efficient way.
+
+And we, it also makes sense by not like that hard of a limit to make the same kind of thing doing development to just send it more efficient to the, to the browser. and it, especially if you scale larger than like these kind of 10,000 modules requests can get become really problematic, especially if you have devtools open, which is really like not really efficient in handling, set many lines in the in network tab.
+
+Um, yeah, so, and there were, was, there are also some other reasons why bundler are different, why we choose a bundle. And another reason was hmr. That because in, in, in a non bundler, the, the browser basically owns the module system. So it's skip modules, so it owns it. So we, you can't really, like, what usually HMR does in web pack is that it just sends you new, new module, then it replaces the, the module in the, in the module graph. for in, in non-bundlers, when the browser owns the module system, you, you can't, you, you can't replace a module. It's like immutable in the module system, there are some hacks to, or like, like worker ones to, to get a new model, like in timestamp and then you have to reconnect the stuff. And it's not, it's not the native HMR way of like just replacing the module in the running application graph so that it is another reason why we choose to make a bundler.
+
+Mm. Yeah. And the third reason was that, um, , in vite it works great for development, but in production you still have to bundle something. And now you have this world where you have like ecma, skip non bundled in development and then production bundled with a different tool in, in, in, in production. And then we, we don't want that.
+
+We might want to have like production and development as similar as possible to, to like rule out the problems of production only things and weird things that behave only in development or production, like different environments. Development and production is, can be a problem in, in some, in some cases.
+
+And that why we trying to like make, like turbopack a bundler and we also wanted to like improve the speed of production build and that non bundler approach or ECMO approach doesn't help us for that. So we, we want to have faster builds and faster death mode and yeah, that's, Basically reason why we choose a bundler.
+
+So if we would have to choose a non bundle, we basically would have to implement a non bundler for development and a new bundler for production. And yeah, that's kind of topic word. And we, if we can make it a bundler as fast as a non bundlers, then we are happy with it.
+
+#### [00:24:29] Next Gen Bundler
+
+**Justin:** So you've learned a lot over the years of working on webpack, especially. Um, are there assumptions that you can make now to improve, uh, how bundling and tree shaking work that, you know, fundamentally webpac didn't allow previously?
+
+**Tobias:** y Yeah, I would say it wouldn't say assumption, but um, there were some things that didn't exist at time of writing web pack, like ECMAscript modules or type script or, yeah, like all this kind of optimization opportunities. And I think with, with, with the knowledge that I have now that, that these kind of things exist and we basically settled on ECMAscript modules and we also kind of settled on type script and we settled.
+
+I think that, so technology spaces in general generally more settled down on a few technology that are really mainstream and few things disappeared, like coffee script or all this kind of other things. . Yeah, I think there's more clearness in, in the web application development world, so we can make a lot more assumptions about, like, these as a tools that you properly use or, uh, you want to use like TypeScript.
+
+So topex ships with TypeScript default by default, uh, support by default. So that's kind of one assumption we can make that either you want to use JavaScript or TypeScript, and maybe there's something future, but at least we can say TypeScript is something you properly want to use. And in Webpack, like I think TypeScript didn't exist, that start of Webpack.
+
+Um, but also Webpack was like, it's really low leveling kind of sense, so it, it doesn't trip with a lot of defaults. Um, mostly because we didn't, yeah, didn't exist and there was also flow and like the community wasn't, like, hadn't chosen one of that. Um, and it's the same with many of these continuities. Um, so yeah, that was.
+
+Kind of things we can do better now. And with ecma script modules, like before there was only like common JS and AMD, which, which were, were really genomic technology. So it, it doesn't, didn't have this clear definition of this is an export and it's how you use it. It was more like you get an object and then puts, gets the properties from the object.
+
+And it's like you can make really genetic ways. And with ECMA script modules we have this clear exports definition and it's more statically analyzable compared to, uh, common js and. With this knowledge or basically by knowing that the module system is really static and analyzable, you can build something, you can build on top of this and make more optimization on like vo up, like Pioneer Pi on that kind of space where they use EcMAscript modules and they are statically an analyzable module system format to make more assumptions about or make more optimizations, which, um, so Webpack wasn't designed for that.
+
+Um, because like at this time it didn't exist and there it was not clear or it wasn't not expected that there was something statically liable in the future. And we, we, we still implemented something, um, which kind of goes into this direction. Like we, we too, too shaking. But I think there, there's more opportunities, there are more opportunities to optimize even further.
+
+And we have some plans for tool pack to like, Uh, get more out of like motor format and, um, yeah, optimize further, which was like not, it was not happening for Webpac because it was just too complicated, but it was also not happening for Webpac because it was just, it, it's really performance intensive, um, to like implement that kind of thing.
+
+So the basic idea is to like, instead of, so currently we have modules as lowest level of optimization. So we move them around, we can skip them, we can maybe shake some exporter sets, but in top pack for production, we planning to like, make statements a declarations the lowest level, like of optimization.
+
+So instead of having a module graph, you basically have like module fragment graph where, where each statement of each group of, um, connected statements is one. Module fragment is the graph. So we have a, a, basically your model graph grows by the factor of 10 or or 20 just because it's like split into smaller pieces.
+
+And these kind of more granular pieces allows, allow you to optimize more cleverly, like put one part of a module in one chunk and put another part of the module in another CH chunk and the shared part into a search chunk. Uh, something like that. So it's more gra aligned. It, it allows more granular optimizations.
+
+And I think with the web, web, with the performance of webpac, we, I think we wouldn't be able to do that by, like, we, we couldn't scale the model graph by factor 10 or 20 or something. I think that, yeah, would just like make it really so.
+
+**Andrew:** So, so, uh, does that mean that some of the more core technologies are being rebuilt as part of this too? Because, uh, one thing that I, I found out while doing lots of bundle trimming myself is that Webpack itself isn't doing a lot of the dead code elimination. A lot of that responsibility falls to terser.
+
+Does the thing you just described kind of like replace the need for cursor, or are you guys going to like develop an alternative to cursor, or what's the story there?
+
+**Tobias:** Um, yeah, so it's, it's like, um, the current tree sh tree shake. So dead code elimination is mostly minimize that shop, but tree shaking is like combination of removing unused exports and dead code elimination. So basically removing them and then there are other things are no longer half against. And then, uh, dead code eliminated.
+
+And yeah, it's true that like most of the dead code elimination is in, in Intel and erseTerser only do like the, the. , um, basically removing the export, it's, it's actually not really removing export, it's only removing the export keyword, which makes it like a viable declaration, which is unused and then dead code emulation will like get it, uh, get rid of it and we are still like relying on, so we, we didn't, so actually it's like more the future because we didn't implement production mode yet.
+
+Um, but in the plan is that we still rely on the minimizer, but it's, but turbo pack is also more in, more integrated with the minimizer. So we are using not Terra because tell us the space we are using swc, which really we as Vercel worked on like the few last years to make it like as compatible as te to to terser.
+
+for, for minimizing. Um, and so badly we, we rely on, on SWC and we, Tupac is also really more deeply integrated into, uh, SWC is more deeply integrated into turbo pack. We, we use all the AST transformation kind of staff and we implement transform for C and use C for code innovation. So we really heavily use SWC and um, I also expect that we more deeply integrate with the dead code elimination of SWC.
+
+Um, because currently it like the, the, the current approach of that, like removing and use exports and then dead code elimination, that works, it fines in most cases, but in some edge cases where you have dead code that spans across multiple modules, maybe. . Um, then it, it can't really handles that because it, it, it only looks like per a function that contains some code, like one module, and then s WC can't see the, the connections between modules that are basically implicit, uh, through require, um, statements and stuff like that. And so it, this, it's missing some opportunities to optimize and this, this, like the, the turbo pack future approach. We hope that we can like get like this kind of graph more integrated with that dead elimination, maybe making a combined parts of both and you know, like, like getting more out of, uh, the code elimination for, for top pack and for assembly seat.
+
+**Andrew:** That sounds super cool.
+
+**Tobias:** Yeah. Funny, funny.
+
+#### [00:33:17] Plugins
+
+**Justin:** So, um, A large part of what powers Webpack is the ability to control what happens, uh, with loaders and plugins. Uh, will Turbo Pack have a similar setup? Will it have a similar structure with this plugins.
+
+**Tobias:** Yeah, so our plan, so turbopack is written in rust. So we, you, you might expect that we only offer rust plugins, but we, we didn't choose that way. So we, we want to offer JavaScript, and rust plugins because we think that like making rust the only, uh, platform of writing plugins would hinder a lot of adoption of writing plugins.
+
+And I think most plugin authors are probably writing them out of their own use case in the dev applications. So they're probably familiar with the javascript and typescript, weather, whatever, and, um, they just can't learn rust just to write the plugin for a bundler They want to use their edge case or the, the special case in the company and just.
+
+Solve them with a bundler. And I think giving people the opportunity to write the, javascript plugins or our based plugins is much, much, much easier for, for people to get started with writing plugins. Even if the trade of is that JavaScript plugins might be a little bit slower than rust plugins but I think in, in, in most cases, like 90, 95% of plugins, it probably doesn't matter because like the plugin is only evoked five times or something and then it, it, it doesn't matter.
+
+Or in many cases, the people don't really care. It's more like they want to solve this problem, even if the build like takes 10 seconds long or something. It's, it's a trade off. You, you can like, um, write the plug in faster, but maybe you lose some performance But I think that's, that's a fine trade off to do.
+
+And in the end, um, if you later discover that you plugin code is low because you written it, never skip, you can still port it to rust or pay somebody to port it to us, like opensource it and hopefully somebody, um, migrate it to rust. Um, so I think, um, it's really important to offer Yeah, skip plugins or types, good plugins or whatever kind of language, similar one to use.
+
+Um,
+
+**Andrew:** Yeah, that, that's awesome to hear cuz uh, , I, I like the idea of fast plugins, but I don't like the idea of me having to learn rust every time I wanna write a little one-off thing that just adds a little, little thing to my build
+
+**Tobias:** Yeah, yeah, yeah, yeah, yeah. rust is actually what really have to write. It's like, if you like, I think it's there also like a good idea to write your, like in, in, in, in the Javascript first because you can iterate fast on it and like develop it. And then maybe in the end you write it migrate into rust, even if you already film with rust.
+
+And it's might still like a good idea like Rust is, is much, much faster than writing and prototyping and like iterating on it compared to rust that
+
+**Andrew:** Yeah.
+
+**Tobias:** it's like it's more safe and more yeah fast. But yeah, there are trade offs
+
+**Andrew:** Yeah. But as you said, like most of the time, like you're not gonna be writing something that. Executes for every single file. Like that's like, those things can be relegated to rust and be really, really quick. But everything else is like you're, you're probably only doing one tiny thing.
+
+**Tobias:** Yeah. Yeah.
+
+In most cases that's fine.
+
+**Andrew:** do, do Will, will there be extra work to provide the plug-in API surface for both JavaScript and Rust, or is there like some way you can automatically do that?
+
+**Tobias:** um, not sure yet because we didn't write it so far. Um, but we, we have this interface. We, we need to interface to JavaScript anyways. So like, like for, in example, current cases, we want to read next chest conflict. But next chest conflict is not, not just a chase and fights like, uh, uh, no, node js module. So we have to execute it.
+
+And so, so we, so very, we, we need the same like infrastructure to like, Here's some node model that we want to execute some code of that and we want to track all the dependencies and like basically what that stuff. Um, so we, the infrastructure and, and we, we already have it because of server side rendering this basically the same technology.
+
+We want to execute something not that and, and watch it and all the dependencies of that. Um, so we need that and we have that and we, we can use it to write plugins too. And then I think we are fine with that. Um, so it, it, it's probably, it's an extra cost, but they are, we were willing to take
+
+**Justin:** Yeah, that's awesome. The, the, the Rust Bridge will be, will be interesting. I've been, uh, been ridingwritinga lot of rust myself recently and also playing a lot with Deno. And yeah, I, I don't know. The native bindings are always, always, always an interesting journey.
+
+**Tobias:** uh, yeah. . Yeah. Um, so currently we, we just like spawning and node js process and communicating with it. Um, um, I'm not sure if it stays where we have more native binding kind of way. Um, there is an overhead of serialization between rust and JavaScript and we, we, we discovered it, uh, like hit this hit business hardly while integrating SWC into Webpac.
+
+And, um, basically SWC is super fast and passing five in rust, but if you run, like, want to visualize it AST to to JavaScript, it's, it's really huge cost and it's like it then in this case it didn't, didn't even like, um, like it was not inverse to like civil AST compared to just passings it in ya capital. Um, Yeah, it'll be like, I mean we, we look into that and we, we also like with also our performance goals, we also have this, we build up some tools to like get more private profiling information, get more insight into, into the like performance. So we, we trying to visualize this kind of overhead of like, Javascript invocation all for the user because if you write a plug in and you, you should know if it's fast or slow and you should know, which we should give you the insight to know which plugin is the slow part of your build and which should be port to us or like improved or whatever.
+
+Um, so, so that's hopefully really helpful then doing all this stuff.
+
+**Justin:** Yeah, the serialization thing is, is a pretty common problem. I, I've always kind of wondered, and this is a little bit off topic, but I've always kind of wondered if, uh, s I m d, uh, would maybe unlock some of that. Like if there's some way you could use that creatively to like, reduce the serialization problem.
+
+But maybe that's a, that's a topic for another time,
+
+**Tobias:** Yeah. Yeah. I think there's some JSON parser with you said and Yeah.
+
+**Justin:** Yeah. Yeah.
+
+**Tobias:** I think that also like the MA Main Rust JSON parser uses it and it's pretty fast, I think. Yeah.
+
+#### [00:40:38] Turbo Toolset
+
+**Andrew:** , so, uh, na we've talked about like what turbo pack is, uh, but the naming scheme kind of piques my interest a little bit. Uh, so Vercel also has a project called Turbo repo. Uh, does turbo pack relate to turbo repo in any way other than just the name?
+
+**Tobias:** Uh, a little bit. Yeah. So at at least the chairs, like the principles of, um, has this idea at, at, on a higher level where you have this graph of, of computation, of tasks and then you basically, if something evaluates and it follows this graph of innovation and, and the. The, the engine behind Turbo Pack, turbo Engine, um, uses this kind of same principle of having a graph of tasks and then following the graph for invitations to make some, like, independent of upsides, but on a really more granular machine.
+
+So it's really like, well, turbo repo is like, each task is one script execution by NPM script execution on, in Tubo pack. It's like one task is like a function in Rust and which is like really fast as like microseconds or something. And, ruh, so like if you want to like, fill the scales, like for one module in Turbo Pack, you get like 200 tasks in the task graph of the incrementally compilation engine.
+
+And so it's, it's really much more gu and the, the currently, um, they, they share the name obviously, but uh, also like the ideas, but they don't share a lot of code and. and, but the vision is to get, like, to get the tur, to get turbo repo, use the turbo engine to, to basically use the granular execution, incremental engine for their own execution.
+
+And then, uh, the vision is that if you use turbo repo on, uh, turbo repo on mono, um, scale and invoke like a ttrubo power task, like maybe next to or something, then it, it can basically share as this graph. So basically get, you get one graph of executions for the mono repo scale, but down to like function level in turbo pack.
+
+So we have this, um, really graph at everyone, graph for everything where you be with ideas that you can make really fast incremental builds, like down to front module level catching of, of turbo pack, but also like larger graph task, like to cable, hopefully making builds faster. , that's probably making it bits faster.
+
+**Andrew:** that, that's a cool vision. I, I hope to see you guys realize it
+
+**Tobias:** Yeah. I think we do will do that. Yeah. It's also like, um, there's some, some other things we want to share, like turbo repo has this, um, remote caching kind thing where can like upload the cach to the soil, choose the cloud, and then share that with your coworkers. And we basical want to say, have the same for, for trubo pack.
+
+So we, if we have this task graph of all the granuera executions and basically it basically is cache and we also want to upload that to the cloud and like get the same benefits where you, this module has already built by your coworker and yet you can just download it and then you don't have to compile it.
+
+And it's very likely that you share a lot of modules with your coworker because we probably operate on the same code base. And then you can like, uh, have lot of benefits about remote caching and, and. You want to, you go even further with like with some cloud computation things where you have this kind of same coworker sharing with like public caching where you basically can trust the cloud and then you only have to compute like the transformation or, or this turbopack stuff for module tools that you share with the whole internet, like NPM modules, which Ely, only one person has to like compile the note model NPM module.
+
+And that would be like the coolest vision and Yeah. But it takes a while to get there and we have to like implement a lot of features like before starting with that. But yeah, that's, that's a not tradition.
+
+#### [00:44:54] Webpack's Future
+
+**Justin:** So Turbo Pack sounds really exciting. Uh, it's, it'll be really cool to see, uh, all the new improvements that can come out of that. Um, but it sort of begs the office question of what's the future of Webpack and its maintenance.
+
+**Tobias:** Yeah, so the good thing is that like web is, web peg five is really stable and it doesn't need a lot of like emergent development that really like fixing back. So, so it's really, it, it really had 10 years of getting really stable and so it, it doesn't need that much maintenance if you don't want to push a lot of new features into that.
+
+And I think it, it, it, I at least it will stay maintained for probably at least five years because it will be in use for maybe more than five years or probably five years or more. Um, so there will be maintenance. , but I think there won't be like super huge much feature development, uh, at least for my side.
+
+Um, I will concentrate on getting like Tobo pack mostly on the same state to, to Webpack. And our Plan, Webpack plan is that we've already like announced that we plan to make Tobo pack and successor of Web Pack. So it's like we plan to make it and migration really easy for WebPack. We, we plan to support many, uh, probably all of the Webpack features and we also plan to support like just wanting webpack loaders in turbo pack.
+
+So there will be a lot of compatibility with between them. Um, so in the end, if, maybe in two years or one year, then when we have like a good migration story from, from webpack to , maybe earlier then you, you, you can easily switch between them and, and hopefully like this. Um, works for you. And even if not, wepacek will be maintained for at least five years or so.
+
+And I, I'm pretty sure it will be in use for at least five years. Um, because companies are using, we usually really slow in adopting new technologies. Um, yeah. But we try to make it really easy.
+
+**Andrew:** Well, that's it for this week's episode.
+
+Remember the full episode is only available to our Patreon members.
+
+Thanks for coming on, Tobias. This was a awesome conversation. I've been a huge fan of you. I've been a huge fan of you since like getting into open source software, so to have you on here has been a, a real treat for me. So thanks for coming on.
+
+**Tobias:** Yeah, thanks for inviting me.
+
+**Justin:** Yeah. You, I mean, I think just to echo what Andrew said, it's, you've been such a tremendous impact in the community. It's like, uh, I mean, one of my, basically how I really, really got, uh, into open source was not until I discovered Webpack and started like writing my first like webbpack plugin and like digging how wet pack plugins worked.
+
+And like, I gave a talk about that and that like, sort of like propelled my trajectory in the city. So yeah, I just like, you know, you've had a tremendous impact on the whole, uh, the whole ecosystem and yeah, just thanks and it was such a pleasure.
+
+**Tobias:** Thanks.
