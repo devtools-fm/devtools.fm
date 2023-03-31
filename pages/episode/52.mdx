@@ -1,0 +1,387 @@
+---
+title: Tanner Linsley - TanStack
+youtube: https://www.youtube.com/watch?v=sNDiFJDSjP8
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/12365468
+tags: technology, javascript, react, typescript, open source, react-query, tanner-linsley, tanstack, nozzle
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Tanner Linsley, creator of beloved tools like TanStack Query, TanStack Table, and many more.
+We talk about how he got started in open source, how he approaches building libraries, and what new things he has cooking up.
+Get a taste of what's to come in TanStack Router and bling.
+
+- https://twitter.com/NozzleIO
+- https://tanstack.com
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+https://www.patreon.com/devtoolsfm
+https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/studio-freight/lenis/
+
+#### Justin
+
+- https://web.hypothes.is/
+
+#### Tanner
+
+- https://observablehq.com/collection/@observablehq/plot
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:09] Nozzle to OSS
+[00:08:17] TypeScript from Library Perspective
+[00:17:09] Thinking in Types
+[00:22:08] Headless Libraries
+[00:31:53] TanStack Router
+[00:40:34] TypeScript Tricks
+[00:43:36] TanStack + Meta Frameworks
+
+<!-- TAB: TRANSCRIPT -->
+
+**Tanner:** this new router is where I've, I've tried to rewrite the routing experience from the ground up with types involved. And so that means that, uh, everything from route definitions**,** uh, even the nested definition stuff is all type safe and the resulting types or the resulting routing structure that you get, it has, it's fully typed.
+
+And then all of the APIs for consuming that routing structure, um, need to be fully typed as well. Lots of different challenges in each of those different layers.
+
+**Andrew:** Hey, before we get started, we'd like to announce we have a few new ways that you can subscribe to the podcast. With your subscription, you'll have access to all the full length versions of our interviews. You can now subscribe on apple podcasts and Spotify. With that let's get onto the episode.
+
+Hello, welcome to the Dev tools FM podcast. This is podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+#### [00:01:09] Nozzle to OSS
+
+**Justin:** Hey everyone. Uh, we're really, really excited today to have Tanner Linsley joining us. Uh, if you have heard of Tans Stack React Query, uh, many other things that Tanner's been working on, um, Tanner, it's such a, such a pleasure. Uh, really excited to talk to you. I use your software every day, uh, so it, it's great.
+
+Great to have you. Um, but before we dive into the topics, would you like to tell our audience a little bit more about yourself?
+
+**Tanner:** Sure thing, um, let's see. I've been doing front end development exclusively for about 10 years now. Um, programming for about 15 got my start in WordPress and php. and then, uh, eventually got roped into open source big time.
+
+So over the years, really been pouring more and more time into open source, trying to open source as much as I can and tackling more difficult problems as time goes on. About eight, nine years ago, I started a company with some friends called Nozzle That is, um, it, it's a search analytics for like marketers and SEO people, but in a nutshell, we basically reverse engineer Google's search rankings.
+
+Uh, like everything that comes up on that search page, we just like pull it out, sticking into a database. So we're just creating tons of data every day, um, and then trying to visualize it. So, uh, building a SaaS product around that. You can kind of start to see why some of my open source library. Kind of popped into existence tables, charts, querying, uh, and now a router.
+
+So yeah, there, there's lots of fun challenges that came up from that and uh, it just keeps sucking me in further. So got a healthy startup and a lot of healthy open source tools and things are going great.
+
+**Andrew:** Yeah, it's, it's really cool how, like, as you built out nozzle, you open source like seemingly every single part of the, the front end build pipeline in libraries. Uh, so, uh, typically that's a lot more work than not doing that. So why, why did you approach it in that way instead of just building out nozzle with only internal stuff?
+
+**Tanner:** So we've been really lean from the beginning. Um, in fact, the most employees we've ever had on the front end team, including myself, is two . So, um, for better or worse, I've, I've taken on a lot of, uh, responsibility and worn a lot of hats, and I have found that one of the only reasons I've been able to keep up with the demand on the product is because I've taken the most crucial, you know, performance driven parts of our application, you know, the critical pieces and pushed them out to the edge of the community.
+
+So all of our querying, all of our tables, you know, as much as I can and push out into this open source layer. And in a way, I kind of have a bunch of people working for nozzle. Um, finding the bugs, making it better. And, uh, just overall helping me have really stable tools at the core of our product. So that, that's part of the reasons why I do like to open source it.
+
+Second of all, I think that just kind of the nature of a lot of front end technology is just kind of open in general. It's really difficult to hide front end code behind intellectual property. Um, and also there's not a super good alignment of incentives there anyway. So if, if you can open source it, I, I think it's a good choice.
+
+And probably the third reason is that I found that when I started designing, um, and developing APIs for open source consumption, it improved the overall quality of my coat. So honestly, even when I'm developing something new inside of nozzle, that's kind of a, a fairly large piece. I will approach it as if it could someday be open sourced.
+
+Um, and that just helps with a lot of things. API design and documentation, um, you know, making sure it has great typescript support. If you approach problems with that mindset, it definitely changes the way that you structure even things that are internal or private.
+
+**Justin:** That's really fascinating. Um, it seems like there would be a few things that fall out of that. I mean, the very clear benefits, as you said, is like better documentation and you get like all these extra eyes on the code base, but you also have people who want functionality and features that your product doesn't necessarily have a need for.
+
+So how do you sort of balance, like what are the internal needs for nozzle versus like what the community wants out of a particular solution?
+
+**Tanner:** Um, I think the best answer I have to, that is just inversion of control. If somebody is asking me for a feature that they can't implement themselves or wrap up into, you know, some abstraction or a plug-in or whatever they want, I think that's a clear sign that the API needs, um, some better points of inversion.
+
+So, um, you know, uh, just maybe a couple years ago I had my React table library, but it was, um, it was a really, uh, coupled to the dom, coupled to the markup and I saw that people were requesting a lot of features around markup and can we move things where we want and can we, can we rip this out and put our own component in?
+
+And, and it was gonna take a lot of time for me to add those features. And yes, I didn't need a lot of those things. Um, but I think that was an indicator that we just had some bad abstractions. And once we took the table library react table and made it, um, an a headless library, uh, where, you know, we're just going to supply the logic and the state management and, you know, the non-op, opinionated mark of things about it, um, all of those issues and all of those requests kind of melted away.
+
+And we, we structured it so that it had a lot of inversion of control, um, around the core features. So now you'll, you have people, um, like Kevin Vandy, who have, uh, like built entire table components. Table libraries around the core use table hooks. Um, and that's, that's the power of like the right, you know, points of abstraction.
+
+So I don't have to worry about any of that stuff. Now, somebody wants a feature, they can build it themselves and if they suggest, and I'm like, Ooh, that'd be good for nozzle too, we'll work on it together, you know, so I think it's just, part of it is API design, and part of it is just saying no. Like, hey, that's a great idea and, uh, I, I will support you as much as I can by providing the right API options and abstractions and, and hook points where you can kind of hook into the library.
+
+But beyond that, if it doesn't align with nozzle, I don't want to have to just say, no, it's impossible. Mostly it's like, Hey, no, I can't do that, but it's possible if you want to put in the work. So that's, that is the balance and at least it has been for me, and it's working out great so far.
+
+**Justin:** Awesome.
+
+#### [00:08:17] TypeScript from Library Perspective
+
+**Andrew:** You mentioned the type script a little bit in there, but if I remember correctly, when you started on your type script journey, you weren't fully on board. I remember, you having a lot of struggles at the beginning with trying to type your very dynamic large JavaScript libraries.
+
+Can you tell us a little bit about your journey there? Because I think now you're, you're fully on the type script bandwagon and, understand the benefits.
+
+**Tanner:** Absolutely. So early on, um, you know, the notion of types was a little jarring at first because I didn't come from a typed world. Um, but I, I did become very familiar with Golang. Um, a lot of our backend is written in Goling and all of our backend as are go guys. And, and um, it, uh, it became, you know, immediately apparent to me that types were extremely critical and crucial for scaling a business and scaling teams and, and processes and just having more confidence in your code.
+
+So I, I wasn't necessarily against the idea of types from the beginning, but I was just very scared to learn it because I knew that it was going to detach me from my momentum for a little while. So timing was a, a critical piece for me. And when you have libraries that are moving quickly and you're one of two people on a front end team and you're just kind of.
+
+Moving very quickly there. It's difficult to sell yourself on. Okay, I'm, I'm going to just kind of halt everything I'm doing and start learning type script. To make matters even more complicated, it wasn't that I was just halting work on like our application, like our SaaS product because, you know, application on the spectrum of consuming application type script and, and providing library level type script, those are very different things.
+
+Um, I was gonna have to do both, and I, I didn't necessarily want to do them separately. So when I learned type script, I wasn't just consuming it in my, my SaaS product and using it kind of in a, in a very, uh, I guess end user developer way. Um, but I had to learn it from a very, uh, complex. Context as well in being able to, um, write really great generics.
+
+I had, I had to learn all about generics and I had to learn about architecture. Uh, how to build libraries with TypeScript in mind. And I had to learn about how the compiler worked and how types flowed through a system. I had to learn the do's and don'ts of plugin development and, and extending TypeScript types and extend like system extension in TypeScript.
+
+And some of it was just over my head because I just had no idea what was going on. So it took a little bit longer for me to kind of ramp up because I, I was, I jumped into the deep end on purpose. Um, but it was, it was extremely helpful because now I feel like, you know, I, I'm not scared of generics at all.
+
+I'm not scared of building library code or writing generics and, uh, it doesn't mean I know ev everything. I, I actually, there's so many people out there that know so much more about like complex type script and I, you know, now I know who those people are and I can just say, Hey, help me, help me write this, you know, and I can understand it and, and, uh, wrap my head around it eventually.
+
+But, um, that's kind of where I ended up and it was, um, , it was harder at first, so it literally took me probably six months to get anywhere even remotely useful with my libraries, especially React table was the library that I started with. It was, it's a very complex library. It had lots of plug-ins and options and lots of types that permeated the entire system.
+
+So it, uh, it was difficult, but once I, once I got it down, um, it, it only took me about another, you know, six months to be like, okay, I think I have a handle on this. Moving to other libraries and, and uh, react Query was actually the first one to get fully moved over with some help from the community. And to be honest, react Query is not too complex of a type script project.
+
+There's not a whole lot of types there. In fact, we mostly just manage about three to four, maybe five in some places. generics that kind of flow through the entire system as to, as opposed to something like table and router that, you know, are anywhere between like nine to 15. Um, depending, depending on what, on where you are.
+
+So, um, yeah, it, it's been rewarding. Um, and I knew from, from day one that it was gonna change the way that I thought about programming. It was gonna change the kind of developer that I was. So it was mostly just finding the right time. And yes, I, I complained and I was an, you know, I was like, oh my gosh, uh, everyone's asking about type script and I don't wanna build type script right now for my library.
+
+Just leave me alone . So I think everybody kind of does that, um, to some point when, if, you know, when you're, when you're seasoned in the ecosystem and, and you need to learn something new and you've got a lot of baggage, it can be hard to, to jump in. So my invitation to anybody listening is that, It. The time to jump in has passed.
+
+You need, you need to get on board. I still have friends who are swimming against the current and, and I just don't understand why, because the water is warm.
+
+**Andrew:** Yeah, I, I, I think where you approach it matters a lot. Like, uh, if you approach it as an app developer, like type script seems like, like just trivial. Like it's like, oh yeah, I'll add that to my project. But at the library level, it's a totally different game. And from what it sounds like, you didn't just jump into the deep end, you jumped into the very deep end because you weren't writing the libraries in type script, you were trying to define, uh, DTS files for your library, which in my mind is like an order of magnitude harder.
+
+**Tanner:** Yeah. I decided that early on that like adding types to the library. Was not really helping me. Um, it, it wa it was very quickly that I just decided it's gonna be a rewrite and we, I just basically, uh, nuked all the code. I, I mean, kept the implementation code for a lot of it, but, um, basically just had to nuke everything and, and start from scratch.
+
+Uh, it was difficult because, like you said, some of the dyna, the dynamic parts of JavaScript, um, are just typable. The way that we design APIs in old school JavaScript, that's just there, there's no meaningful way to, to keep and retain and convey that type information. So it requires you to rethink the way that you structure.
+
+And I think some people see that as a downside. They're like, ah, it's changing. It's changing the, the flexibility and the power that I have, um, when in reality. It's probably being, it's just making you think in a safer way, and it's making you structure your code a little bit better. Like in no way do I think it degrades any of the final output.
+
+If anything, it's 10 times better. Right? It's just different.
+
+**Justin:** Yeah, totally. It's interesting. Well, first off, it's really fascinating to hear about your sort of compressed journey with this because from going to little experience with types to like having this like. you know, these pretty robust libraries being fully typed or whatever is, is this whole massive effort.
+
+And you went through that really, really quickly. Uh, even the, even the sort of like cognitive shift from like, oh, I don't really want to do this. To like, okay, yeah, this is the way, uh, is, is sort of an interesting thing to hear about in sort of what I still consider a compressed timeline because I've uh, you know, I've heard stories that are like many years in transition of like really trying to, you know, come to acceptance with it. Um, but you know, it's, I think it's so true that there are things that you pick up on when you adopt type scripts or, or like any type language. But one of the things is I think about being more explicit with your intent. You know, just like using it as a tool for communication. Cuz you know, code is written for people as much as it is for computers.
+
+I think that's something that we don't value enough. Um, And then just going back to an earlier point too, I had also, when I started trying to do type script stuff, I'd started trying to just like add, uh, like DTS files, definition files to JavaScript projects. And it was so, so, so hard. Um, one of the things is I found that that was not the best documented workflow, uh, type script is generally they, they, I mean, they have good documentation, but like that the outer edges of type definition can be a lot more complex. Um, so yeah, I don't know. Interesting. But that, that definitely reflects my experience.
+
+#### [00:17:09] Thinking in Types
+
+**Tanner:** I remember you triggered a memory going back, one of the very first individuals to help me out with type script was Brandon Byer, creator of Blitz Flight Control. And um, you know, I remember being on a call with him and, and he's just kind of showing me the ropes, you know. And, and he was like, yeah, you know, let's, let's design this API that you have in your mind for, for this table library that you have.
+
+And we started talking and he was just writing types and declaring functions, but he didn't, he didn't write any JavaScript at any point in time. And I was like, how are you doing this? This is so strange. You know? And, and then, you know, he'd go to like, call the function and it was all just auto completed and type safe.
+
+And I'm like, but there's no implementation there. And he was kind of the very first person to help me really understand that, that type script. Uh, meta tpying is its own language and really if you want to be productive and you want to feel powerful with type script, cause it's, it's really try writing a program without doing any implementation.
+
+code you know, just declare types and functions and just see how far you can get. And I think that's really when you start to dive into what TypeScript really is. Right. In fact, um, I, I need to, I need to pull up my, my Twitter because, um, there's a project that I've been seeing lately, uh, that got me really excited.
+
+And let me, let me just scroll through my timeline here for a second and see if I'm can find it. But, um, let's see. It is a, it's a meta type script library that is being developed by somebody that I know on Twitter. I can find it just only a second, There he is. So, um, his handle is, Ecker Erbe, I'm not sure. It's e c y r b e d e v as his handle. He's a tech lead and creator of zos zos.org. Um, but he has been working on this new library called,
+
+basically created like a, like a programming, like, it, it's almost like lodash, it's very much like TS tool belt, but for types. And you can just, you can pipe types through transformers and map things.
+
+Um, My goodness. If we have to, I will find it and put it in the show notes after because Oh, hot script. There we go. So, it's, uh, a library of composable functions for the type level, transform your type script types in any way you want using functions you already know. So the first example here is where he's, he's piping the integer seven through a bunch of like type transformers. He's got tuple range tuple take tuple map match tuple joint.
+
+And you can just see if you go down to all of the different methods that they have implemented, we're talking things like, uh, We've got tuple manipulation, which is basically a raise, um, object manipulation. Um, there's unions and strings and numbers and booleans. So he created a J s O parser in type script like that, that, that parses j s o, in the type level type script language.
+
+Um, and he created it in just a few lines of code. It was really crazy. Um,
+
+**Justin:** I think that's something that, that people may not appreciate with TypeScript, especially if you're coming from a JavaScript world, typescripts your first type language. TypeScript actually has an incredibly, incredibly powerful type system.
+
+**Tanner:** yeah.
+
+**Justin:** and you know, it really goes to show that like Anders knows his business.
+
+Like, uh, it's, it's incredibly impressive.
+
+**Tanner:** Oh, here's the link to that tweet where he shows a, uh, JSON parsing and type script type system in just 50 lines. So using hot script, he creates a JSON parser &lt;LAUGH&gt; that will parse a string of whatever into like JSON type it. It's incredible. Anyways, we don't, we don't need to go down that tangent any further, but you know, may, may, that can be like the capstone of the TypeScript conversation, but it really is incredible what you can do with it.
+
+**Andrew:** Yeah, it's, it is crazy what you can do in the type system. The craziest thing I've done is I created a grid component for our design system that takes a grid template as a string and then breaks the template up into types and returns grid cells that can only use those as the area for their types. So it's, it uses like joins and trims and like, it's very hard to understand code while you're looking at it, but like the types are like, oh, it's just doing kind of like javascripty
+
+**Justin:** That's
+
+**Tanner:** right, right. Yeah, it's a lot of fun.
+
+#### [00:22:08] Headless Libraries
+
+**Justin:** another thing that I wanted to talk about before we move on and start talking about, uh, particular, uh, libraries. So one of the things that you've done recently is you've started making your libraries not react specific. Um, so making them where they're shareable across different front end frameworks.
+
+Um, I thought that was a really interesting choice as well because, you know, like the migration, the learning path from like, you know, un typed to typed to libraries going from like a targeting and a single framework to targeting at like, you know, generic usage is a really, really challenging thing to do well.
+
+So could you talk a little bit about like what motivated that and maybe even, you know, share some of your experience about like what you've learned from that process?
+
+**Tanner:** Yeah. Um, that, that transition that's still happening, um, felt really natural. , uh, because of underlying technology, uh, innovations that were kind of happening. So I think the first one for me was, was hooks. When hooks came out, it kind of kicked my mind into reusable logic mode, right? And no longer was I thinking like, oh, everything needs to be a component.
+
+We can just have hooks. And that kind of started detaching my brain from the two and decoupling, and I'm like, oh, you know what headless headless UI is, is where it's at. And the first library I used was Downshift from Kent C Dodds that I was like, oh yeah, headless is super cool. Um, so I was like, let's headless at everything.
+
+Let's go on headless for everything, right? But it was still React. Um, and then at that point I was like, oh, this is interesting. It's reusable logic, you know, um, like how much, how much would it take to then decouple that logic from React Utilities that I was using, like react to table, even when it was just a hook.
+
+It used to be implemented with a bunch of react hooks under the hood. You know, it's like used a used memo. Everything is used memoed and used callback everywhere. And, and I was just like, this is, this is weird, but I wonder what it would take to, to move all that logic into an agnostic layer, still hook it up the same way in like a react adaptor.
+
+So that's kind of what I did. And um, I, I think it was just kind of this move to headless that it was, it was like, how headless can we go? I'll be honest, I don't, I don't have any applications. Um,
+
+maybe, no, I don't anymore. I don't have any applications right now that aren't react like that I have like, in production. Um, so I don't necessarily have an immediate use case to be like, oh, let's go framework agnostic and, and let's, let's, you know, I, I need that. But it was easy enough after you, after I went headless, it was kind of just a skip and a hop to.
+
+to rip out all the react stuff and replace it with just kind of an adapter and that, that exposed some interesting patterns along the way. Um, you know, it, it reveals to me more in more clarity, the pros and cons of react, you know, the great things about it and the things that I'm like, eh, I don't really like that so much.
+
+And then it, it started getting me thinking about other, other libraries and frameworks and, and a lot of the challenges that came up that are still coming up in trying to make agnostic tools and the, the different ways that every single framework thinks about reactivity. And I know that signals are a really hot topic right now, but they're very, I think they're very important to talk about because most of the entire ecosystem outside of React thinks in terms of signals or observable.
+
+and they have for a while. If you go back before React, it was, it was kind of all about signals and observability and kind of this mutative, um, API for reactive system. And React was kind of the very, one of the first ones that was like, you know what, we're gonna throw reactivity out the window, , and we're basically just going to create this massive immutable system.
+
+Uh, and immutability honestly wasn't all that popular. Even in data, like even in front end in data, like data flow immutability wasn't super popular until the React ecosystem really pushed it into overdrive. Um, including me. Like I, I grew up, you know, on react with this immutable paradigm. And so it was really interesting talking.
+
+In the early days with Ryan Carniatto, you know, he's showing me solid and he's showing me signals and, and you know, all these different ways to approach reactivity. And cuz I wanted to build solid adapters, um, for all my libraries. And it just really, it really showed me that react is honestly kind of weird in a great way.
+
+Like, it, it's really easy to, it's easy to reason about data and immutability when you're in that mode. Um, but it comes with a lot of weird immutable overhead like use memo and use callback. We're talking about compilers now. So most of my learnings through going agnostic have been shedding more and more light on just kind of these weird differences between these libraries.
+
+And I think at the surface level, everybody looks at view and react and svelte and they see, they used to see maybe differences and it was like, well, Template versus jsx, you know, um, how do we do our markup and single, single file components? And a lot of that is becoming, you know, uh, it doesn't matter anymore.
+
+Like JSX is clearly superior, let's be honest. But, um, but what really, what really is coming down to matter for me is just like the, the data flow and the data model and kind of the last big, like aha moment I've had with a lot of this is, um, you know, I was looking at my spreadsheets for like my budget and spreadsheets for things at work, you know, and I'm looking at Excel and I'm just like, what a fantastic performant system.
+
+You know, Excel's amazing. It's basically built on signals, observability, right? And you can create crazy UIs in Excel. Uh, and it just got me thinking, you know, Maybe it's time to go back to signals now. All the talk about signals and everything. So, um, that, that's kind of been where my head has been with moving agnostic with all this stuff.
+
+It was very natural to kind of, to push the boundaries. And I've gotten to the point now where I'm pushing a little, maybe a little too hard on some of the, the agnostic stuff. And I've, I've actually had to rebound a little bit, and that's mostly in the router that I'm building. If we want to talk about specific use cases.
+
+Um, all of the other tools I have, query table, the virtualizer, a lot of these tools, they fit really well into the agnostic, uh, like the agnostic ecosystem. Um, but the router is not one of those. , like early on, early on I was like, even in my hype video that's on my Twitter right now that I showed at JAMstack Conf, it was like agnostic router and it's like, could we build the agnostic router?
+
+It's like, yes, I did it, and you can build adapters for it, but you wouldn't believe the hoops that we were jumping through to get, um, a core router, state management system to work with both React and solid. It was working with Ryan Carniatto on this. It was like, either, either way you're gonna pay. if you, if you build your core state management in an immutable fashion, you have to pay in performance to get it to work in, in a, in immutable system like solid.
+
+And then I was like, what if we just wrote the state management for all of our libraries in signals and solid and stuff like that, like just signals. And then we, we down sampled it to immutability for React. And you pay big time going that direction too. There's just so much at odds with each other. And then, uh, you know, over the last few weeks, I've been on vacation for two weeks, to be honest.
+
+And, and I got back and one of the big realizations I had is that every single framework has its own router. That's relatively first class for that framework except for React for whatever reason. I mean, we know the reasons React was like, we're just a UI library. We're very underpinning it. You know, at least that's how it was.
+
+**Andrew:** Yeah.
+
+**Tanner:** We could talk about the differences today, but. But like, you know, react was one of the first ecosystems where it's like, you know, there's a, like that it's even really possible to build a great, like a bunch of different great routers. And there are so many of them out there. Obviously React router is the most popular, but there's like router, next.js.
+
+Has their own weird router now. So thinking about it from that perspective, router's the only library where I've kind of like dialed it back and I'm like, okay, not everything needs to be agnostic. Router is framework kind of. So I've dialed it back to, to make 10 stack router react only. And honestly the hope is that I can take the ideas and the core out of that and transport that to other core routers, like the solid router.
+
+Like I'd love to help Ryan, you know, rewrite the solid router to, to be completely type safe and have all this great stuff. So, sorry that was really long-winded, but
+
+#### [00:31:53] TanStack Router
+
+**Andrew:** So moving on to like what you're currently working on, you've been working, you mentioned earlier that you're working on a new router for React. Uh, so why another router? Uh, how is it different and what is it doing differently?
+
+**Tanner:** Great question. Um, so yes, it's a new router. I honestly didn't want to have to build it in the beginning. Um, at Nozzle we, we have a lot of dashboards, and these dashboards are showing a lot of data, a lot of widgets.
+
+They're data exploration dashboards, and essentially every dashboard is like a function that just has a lot of widgets on the screen. And each one of those widgets has its own parameters in its own state. , all of that needed to be stored in the url, like every bit of it. And we, we looked into ways of, of taking the state and hashing it and putting it on the server and sharing links with, you know, with IDs and, and it's just a terrible experience to do it that way.
+
+It's so much better to leverage what's already there in the url. Um, so in the beginning I just wanted to design this entire dashboarding experience so that all of the widgets state and everything lived in the URL itself. Um, and essentially that meant taking this, this big JSON structure that represented the state of each dashboard and finding ways to reliably serialize it into the URL and bring it back out.
+
+And it wasn't that difficult to get my hands dirty in the beginning. Um, I was using reactor router V five search paras, you know, um, and just kind of doing it real in a really hacky way. Right. Um, and then I was like, oh, might as well try reactor router, V6 beta. So I, I was actually using the beta in nozzle for a while, uh, for, you know, I was in beta for a long time.
+
+Um, but then some, some problems quickly arose with, with that. The first one that was very apparent, even from V five was that when I started moving everything over the type script, a lot of my libraries were moving over. Uh, you know, things were getting better, but one thing that was kind of like lagging behind and stuck in the stony just was the routing logic.
+
+Um, and at first I was like, ah, routing, like, it's not that bad. You don't need to be super type safe. But then I, I was like, oh crap. All of my search parameters are coming out of the router and that's driving a majority of my state now. And in fact, the more and more that I got into using the URL for, for state, which I think is a really, really great pattern and we should be doing it more.
+
+Um, so much of my state was moving from U State into the url. And honestly, if you think about type script and types and state, like that's where all of your state comes out of usually is just like you state moving it into the URL is basically moving it into this new black box that I lost all my types and I, and it essentially had to start like, you know, type casting everything.
+
+Um, and that just, it's terrible cuz it doesn't track through the entire system. Um, and it's just hacky. Um, and, and it kind of opened up, I started opening up this black box of like type safe URLs and type safe routing. And I started learning a lot. Um, I, I started learning that like, you know, the URL as a serialization destination, uh, acts a lot like, some, like an external asynchronous resource, uh, as you would with any other external state.
+
+When you fetch it and you get it back, you, you kind of have to validate it because it's just coming from a JSON string. So similar to how people are like writing ZD schemes for, you know, their, their crud. , their, their crud fetches and fetch and, and, um, GraphQL schemes and whatnot. The URL has that same exhibits, those same features where you need, you know, you are essentially allowing users to input whatever the heck they want into this box on the screen.
+
+And you need to reliably parson, validate it, set defaults, and at the same time type it so that you, you have a consistent and reliable interface coming out of it. That entire pipeline was just, it. It's not that it wasn't, um, it wasn't built in, but it was even difficult to do in user land with React Router, v6.
+
+I, I basically had wrapped every function, every export, everything that I could get out of reactor, router, v6, I had wrapped and proxied until the point where I was just like, I've basically rewritten my own router just through this proxy layer. That's how React Location was born, which was my toy router.
+
+it wasn't type safe, but, uh, it was me kind of just getting a grasp on how to build a router. And finally this new router is where I've, I've tried to rewrite the routing experience from the ground up with types involved. And so that means that, uh, everything from route definitions**,** uh, even the nested definition stuff is all type safe and the resulting types or the resulting routing structure that you get, it has, it's fully typed.
+
+And then all of the APIs for consuming that routing structure, um, need to be fully typed as well. Lots of different challenges in each of those different layers. And we can talk about those if you want. I think they're all interesting. Um, but yeah, types were the biggest driver for this. Obviously. It wasn't too difficult and, and very obvious for me to, it was obvious for me to layer in things like data loaders and.
+
+um, actions and, and layer in, you know, nested routing is kind of just the new standard. So it was easy for me to take some of the best parts of, of react router and next and, and wouter and um, and just kind of put it all together and, and build the system that I wanted. And it's got support for zod schema and it's, it's a lot of fun and it's a joy to use.
+
+So, uh, some of the features right outta the gate that I can tell you, like all of the, all of the paths are type safe. So you, you know, it's almost, it's basically impossible to write. Uh, you know, write a link that isn't type safe. So if a page doesn't exist or a route doesn't exist, you'll get, you'll get red squiggles for it.
+
+Uh, if it requires SEARCH paramsou have to supply them. They have to be the right type. Um, if you, if you're writing links that are relative, like it knows about relative link navigation and where you are, uh, it knows all the types, know about your nested nature of your routes. So if you're in a deep, deep component, uh, you're not just getting routes or type type information for the route you're in, but the parent, the, the entire routing structure is actually reduced as you go down the usage APIs.
+
+So you are, you know, down here at, at the, you know, level C, you've got type information for a, going into B and going into C and kind of getting intelligently merged together so that you know of all of the search params and all of the loaders and all of the things that you have in that moment. . Um, and even in the definition files or the def the ne the definitions themselves, um, you know, you can define search parameters in a top level route and then have nested routes.
+
+And at the, in the definition itself, it will know about the types that you have created in parent routes, um, while you're in your definition, which is, is easier said than done. Um, so it, it's, and it's required some, some interesting API design and engineering to, to get around this kinda stuff. But, um, at the end of the day, it's what I needed.
+
+And so I'm, I'm actually still hooking it up into nozzle. But what it means is that all these widgets and all these crazy things that I have on all these different dashboards when you, when you hover over a link, I know of as surety, that it's going to a place that exists with search parameters that are exactly what need they need to be.
+
+And that the, that the URL that's produced is going to be exactly what the user wants to see and they can share it and collaborate with it, with teammates and, um, I mean, just day one of popping in a nozzle, I found like just tons of bugs, you know, just trying pass search prams that don't exist and passing numbers or they should be strings.
+
+So, yeah.
+
+**Andrew:** Must must be a good feeling finding those bugs.
+
+**Tanner:** Good and sad, you know, you're like, oh man, Tanner, you are an idiot. Why did you do that? You know? But I mean, I don't blame myself too much and I didn't have type scripts, so it, it's a, it's a lot of fun.
+
+**Justin:** Yeah, that's fun.
+
+#### [00:40:34] TypeScript Tricks
+
+**Andrew:** Um, so, so all of that type safety comes pretty easily from like the user standpoint. I saw in the docs you kind of do this like one cool trick to make the types available. I think what you do is, like, you d you declare your router and then right below it you do like a type script, declare and then declare an import, and that like, kind of just makes everything work, right?
+
+**Tanner:** Yeah, because without that, you would have to provide an, an API layer that consumes the router, um, everywhere that you use it. Uh, which is still possible if you. For some reason, can't do it the way that we want. Um, so instead of doing that, you're right. So we, uh, we use something that's kind of an interesting hack in TypeScript.
+
+Not really a hack, but it's just an interesting pattern. Um, it uses declaration merging, but what we do is we export an empty interface called a register, and we export that interface. Actually, we're doing it across almost all the libraries now. There's just a register interface. And what you can do is you can declare that interface and then under specific keys for different libraries, like, so in router it's, uh, the router key.
+
+So you declare the router key and then you pass type of your router. And what that does is it registers, uh, because interfaces are mutable, it registers the type of your router into, uh, the inner type space of like the entire module. And what that means is that, Now when you go to consume, uh, exports right out of the library, like use route or link or something like that, um, we can actually just reference, uh, a special type inside of the library called registered router.
+
+And registered router is a, uh, it's a conditional type that says, Hey, if, you know, if registered dot router extends a router, use that. And if it doesn't, then just use kind of the default router type. Um, and that way you can provide type safety to the rest, like to all of your top level exports, uh, without ever having to necessarily import your router everywhere you go.
+
+It's pretty great.
+
+**Andrew:** Yeah. Super cool pattern. Yeah.
+
+**Tanner:** We're actually using and react query now, um, in the new, in the next version. So you're gonna be able to, uh, you can actually set the default error type so that if across your entire system. You know that you're only, you know, you want Axios errors or something, you can actually register the error type and, and pass Axios error.
+
+And that will set the default generic across the entire library, uh, to be that. So there's a lot of cool use cases for it, for setting type defaults without having to, uh, without having, being forced to use APIs that rely on, on scripted composition, you know, to, to get that kind of default.
+
+**Justin:** That's awesome
+
+#### [00:43:36] TanStack + Meta Frameworks
+
+**Justin:** got some stuff that you're, you're working on in the future. Uh, you've, you've had this tan stack brewing and it's brought together all these like disparate technologies, and we've heard chat about some other future projects that you have. Um, so there's this thing called bling, uh, and some sort of other stuff in this space.
+
+Could you, could you sort of talk about what some of your future plans are here and what you're currently working on?
+
+**Tanner:** absolutely. So my future plans can be summed up, uh, by, Collaboration, . So essentially I, I, I'm, uh, always just kind of looking forward, just the fastest way to get something done. Um, and, uh, moving up into the upper spaces of tooling, you know, getting into routing, routing is a significant portion of what we would consider frameworks.
+
+Um, and after that, a lot of what it constitutes a framework really comes down to, you know, usually there's some level of like opinionated routing structure for file systems. Um, and then there's opinions around deployment. Um, and then there's also opinions around, um, kind of like co-location of code and a server code and full stack kind of things, right?
+
+And so, uh, after exploring what that would look like for something like Tan Stack Router, uh, I came to the conclusion that. You know, a lot, a lot of these, a lot of these concepts about frameworks are not really that unique. The routing experience and, and the framework that it's built on are super unique.
+
+But meta frameworks overall, they share a lot of the same tools, a lot of the same goals. And, um, naturally, uh, you know, there's a lot of prior art in React. You know, you've got X, you've got Remix, you've got Gatsby. A long, long time ago I even built React Static, which was a static site generator framework, um, that I had to let go back in the day.
+
+But, um, I didn't want to ha, I didn't necessarily want to recreate anything here in this space, but I wanted the ability to, um, to have a full stack framework that I would also be able to use my router in. Um, because if I, if I move to next, I, I lose my router. Uh, and I know they're working on type safe routes.
+
+Um, good for them. Uh, it's still, you know, not exactly where I'd like it to be. Maybe they'll get there eventually. Um, but then I also didn't wanna have to be forced into the most of the next ecosystem as well. If I move over to remix, it's the same story. I, I have to drop my router. Everything seems to be based around the router, right?
+
+And I, I have strict ties to my router now. I, I demand the type safety I want out of my router. Um, and I demand the APIs that I have to build these scalable solutions that are really search param heavy and nobody else really seems to be taking that seriously. And that's fine. It's mostly a, you know, it's not a massive use case for a lot of other people.
+
+Um, but like if you were to go to AWS or Google Cloud console, um, look at that url. Clearly they have built their own URL because of how much state they're storing in url or they've built their own router. So I wanted to get into this space. , but I wanted to be able to use my own router, but I didn't wanna build the rest of anything else.
+
+So I talked about, I talked about this to Ryan Carniattite, we talk a lot. If you didn't, if you didn't gather that, and he was like, oh, that's really interesting. You know, in, in solid. We, we just kind of have our router, but then we have, um, you know, we, we have these, uh, transforms that happen at bundle time. And so he started looking, he started showing me, you know, the, the server dollar sign approach that they have for a lot of stuff.
+
+And he's like, it's kind of like quick, but it's not exactly like quick is, is very proprietary. And, um, and you know, they're based on resume ability. He's like, this is mostly just about code extraction. And I was like, this is really interesting. How could I use this? My framework. And he's like, oh, I don't know.
+
+And that kind of started the conversation between me and him and Nikhil Sark, uh, who is heading up a lot of like the work under blinging. Like he, he's a lot of the brains behind it, to be honest. Nik is awesome and, uh, he started abstracting out a lot of the logic from solid, um, that allows it to do kind of this full stack story, um, using these code, this, this code extraction.
+
+And recently Ryan was on with, uh, the quick team talking about code extraction, and it was really great. Uh, we'll have to find the link to that and pop it in here, but that's kind of how bling was born. I imagined kind of this world where, you know, um, it didn't matter what framework you were using, uh, all that mattered was, you know, you met a couple of dependencies like vite or, or Babel or maybe we'd even support, uh, s wc, right?
+
+But at the end of the day, you could do these code transforms and the bundler would kind of separate your stuff. And what happened was after we solved that piece, just kind of a proof of concept, the only piece that was left over was the deployment story. Again, something that I don't wanna build. I look at all the work that went into next in their deployment story and remix and all the adapters that they maintain, and I just didn't want to have to deal with any of that.
+
+Well, another good friend from Astro is like, talked with Fred a whole lot at Astro and it's like, look at Astro, it's exactly what I wanted. Right? And me and Ryan were looking at it like, dude, Astro they don't, they don't even know what they're sitting on. It's, it's gold mine, right? Where they've built all the adapters, they, they've built all the infrastructure and they, they literally are very agnostic about the front end.
+
+So, We, we decided let's build new framework. Let's build a new framework. Tanex start, and let's upgrade solid start eventually, right? To say we're gonna, we're gonna build everything on top of Astro and just get deployments and, and get compiler and get all of that for free. Astro's built on top of vite so all we have to do is supply vite, uh, functionality for bling, and then we can wrap all that up into an astro plugin, , and then, and then you can just use whatever router you want.
+
+And there's your framework, right? You've got a router, you've got code extraction, and you've got deployment. And at the end of the day, those are, a lot of, those are most of the core pieces. You need to have what people think of as a framework. And so Tan Sack start itself isn't even really a library yet.
+
+There's nothing, I mean there, there is a little bit there. It houses the plugin for Astro. That you import. And then there's a couple of components for doing react things like, you know, uh, serializing all the hydration data and uns serializing it and hooking it up to Tans stack router. But aside from that, most of the logic just sits inside of router and inside a bling.
+
+And then all the great stuff that Astro has has given us. So, uh, it is still a work in progress, but that, that's kind of the vision that I have for it. And, you know, we're also very keen on kind of the, the ecosystem moving towards like React server components. And I personally don't think that server components should necessarily be branded or owned by a specific framework.
+
+They're, they're more of just a concept overall. Um, you know, and we see the used server and the used client, and that's just one way to do it. Right. But server components, um, they're, they're bigger than that. They, they're like, Astro technically had server components a long time ago. Um, but I think that everybody's converging on these patterns.
+
+Um, and instead of chasing after, uh, you know, these patterns that will only work in React and probably only work in next for a while, um, I'm way more interested in pursuing agnostic framework agnostic solutions to the same thing. You know, I think that, I think that with a little bit of work and, and some collaboration we could achieve, um, you know, server components for all with, with extraction, uh, you know, that that kind of fits the majority use case.
+
+Maybe not the whole resume ability, uh, you know, really, really granular stuff. Like, like quick, but fit fits a good use case, um, for everybody. So that's kind of, that's where we want to take it. And, and to be honest, we'd probably be a little bit further, but I've been on vacation for two weeks and I, I'm kind of heads down at nozzle right now on, on some, on some sprints.
+
+But it's, it's coming, the day's coming where I think, uh, we're gonna have some good progress. In fact, I have a call scheduled tonight with Ryan and Nik, where we're gonna discuss a lot of fun things, so,
+
+**Justin:** That's awesome.
+
+**Andrew:** Yeah, that sounds super interesting. Uh, once it gets a little further along, we might have to have Nik on to dive deeper into those topics.
+
+**Tanner:** oh yeah. The code extraction is really fun. I mean, you get into balle and AST transformations and it, it, it's a lot of fun. So,
+
+**Andrew:** Want to hear a full conversation with Tanner subscribe test on Patria on Spotify or apple podcasts. Okay. Uh, that wraps it up for Tooltips this week. Uh, thanks. Coming up for coming on, Tanner. Uh, this was a lot of fun. Uh, the, the conversation we had about how, like we started with your like beginnings and type script and how like that's fed into what you're working on now with Tant Stack Router, I thought was super interesting and I'm super excited to see where you guys go with
+
+**Tanner:** guys. Me too.
+
+**Justin:** Yeah. Tanner, such a pleasure. Uh, use your stuff every day. You've done great work. You continue to do great work. Uh, yeah. Just wish you the best.
+
+**Tanner:** You know, and I also need to shout out before we close out, um, TK Dodo and, uh, Kevin Vandy and Pik, I mean, these guys, they maintain, uh, they, they help me maintain or just flat out maintain a lot of it, uh, of those libraries that, uh, that I don't, I don't necessarily have time to just be everywhere all at once.
+
+Um, they are honestly what's keeping these libraries up and, and making them better. Um, and just kind of all the sponsorships that we have on Tans stack is what makes that possible. So, uh, they deserve as much or maybe more credit for a lot of this stuff than I do. So we gotta make sure that they, that they get their, that they get their dues.
+
+**Justin:** Yeah, for sure. Absolutely.
+
+**Andrew:** Yeah. Love sentiment.

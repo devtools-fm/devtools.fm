@@ -34,12 +34,12 @@
   - [ ] Add tags
   - [ ] Add sections
   - [ ] Add end frame
-- [ ] BuzzSprout
-  - [ ] Upload
-  - [ ] Add description with link to `https://devtools.fm/episode/NUMBER`
-  - [ ] Add tags
-  - [ ] Upload Transcript
-  - [ ] Add sections
+  - [ ] Upload paid
+- [ ] Spotify Podcasts
+  - [ ] Upload Free
+  - [ ] Upload Paid
+- [ ] Apple Podcasts
+  - [ ] Upload paid
 - [ ] `devtools.fm` post
   - [ ] Add title
   - [ ] Add transcript
