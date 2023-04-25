@@ -29,7 +29,6 @@ export default async function handler(
     {}
   );
   delete data.tabSections;
-  console.log(data);
 
   res.status(200).json(data);
 }
