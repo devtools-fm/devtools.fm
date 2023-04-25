@@ -44,7 +44,7 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
 
             <div className="text-lg md:text-xl mb-3 md:mb-4 font-bold dark:text-gray-200">
               {" "}
-              {episode.frontMatter.title}
+              {episode.title}
             </div>
             <div>
               <div className="flex space-x-2 mb-2 text-sm">

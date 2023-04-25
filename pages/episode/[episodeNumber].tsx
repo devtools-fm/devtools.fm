@@ -82,7 +82,7 @@ const Episode = ({
   youtubeId,
   buzzSproutEpisodeId,
   tabSections,
-  frontMatter,
+  title,
 }: ProcessedMdx) => {
   const showNotesTab = tabSections.find(
     (tabSection) => tabSection.type === "SHOW NOTES"
@@ -90,13 +90,17 @@ const Episode = ({
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const [activeTab, activeTabSet] = useState(
-    view === undefined ? 0 : view==='youtube' ? tabSections.length : tabSections.findIndex((t) => t.type === view)
+    view === undefined
+      ? 0
+      : view === "youtube"
+      ? tabSections.length
+      : tabSections.findIndex((t) => t.type === view)
   );
   const { episodeNumber } = router.query;
   const episodeNumberString = `Episode #${episodeNumber}`;
   const tags = (
     <MetaTags
-      title={`${episodeNumberString}: ${frontMatter.title}`}
+      title={`${episodeNumberString}: ${title}`}
       image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
       description={showNotesTab.description}
     />
@@ -120,9 +124,7 @@ const Episode = ({
       <ColoredText className="mt-4" color="blue">
         {episodeNumberString}:
       </ColoredText>
-      <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">
-        {frontMatter.title}
-      </h1>
+      <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">{title}</h1>
 
       <iframe
         className="mb-8 md:mb-12"
@@ -159,14 +161,14 @@ const Episode = ({
           <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               {
-                (tabSections.map((tabSection) => (
+                tabSections.map((tabSection) => (
                   <Navigation.Tab
                     id="about"
                     icon={tabIcons[tabSection.type] || <DataIcon inline />}
                   >
                     {titleCase(tabSection.type.toLowerCase())}
                   </Navigation.Tab>
-                )) as unknown) as JSX.Element
+                )) as unknown as JSX.Element
               }
               <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
                 YouTube

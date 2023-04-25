@@ -52,7 +52,7 @@ export default function Episodes({ episodes }: EpisodesProps) {
             <Navigation.Panel className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">
               <div className="divide-y-2 divide-gray-300 dark:divide-gray-600">
                 {episodes.map((episode) => (
-                  <EpisodeRow key={episode.frontMatter.title} {...episode} />
+                  <EpisodeRow key={episode.title} {...episode} />
                 ))}
               </div>
             </Navigation.Panel>

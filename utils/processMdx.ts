@@ -220,8 +220,8 @@ export async function processMdx(
     runTime: sectionsTab.sections[sectionsTab.sections.length - 1].time,
     youtubeId,
     buzzSproutEpisodeId,
-    frontMatter: data as FrontMatter,
     tabSections,
+    ...(data as FrontMatter),
   };
 }
 
