@@ -1,0 +1,484 @@
+---
+title: Charlie Marsh - Ruff
+youtube: https://www.youtube.com/watch?v=8GziDXg1Mzc
+buzzsprout: https://www.buzzsprout.com/1772992/episodes/12365468
+tags: Python, Rust, Linting, Developer Tools, Open Source, Astral, performance, technology, programming, coding
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Charlie Marsh, the creator of Ruff, a fast python linter written in Rust.
+We talk about his journey from working on the Khan Academy mobile apps to building developer tools for the Python ecosystem.
+We also talk about the challenges of building a linter, fostering a community, and the future of Ruff and his new company Astral.
+
+- https://twitter.com/charliermarsh
+- https://github.com/charliermarsh/
+- https://www.crmarsh.com
+- https://github.com/charliermarsh/ruff
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+https://www.patreon.com/devtoolsfm
+https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens
+- https://github.com/ds300/lazyrepo
+- https://maturin.rs/
+
+#### Justin
+
+- https://github.com/hmans/miniplex
+- https://github.com/cozodb/cozo
+
+#### Charlie
+
+- https://github.com/Boshen/oxc
+- https://www.npmjs.com/package/elm-review
+
+<!-- TAB: SECTIONS -->
+
+[00:01:59] Charlie's Background
+[00:04:21] Working with Python
+[00:12:58] Building with Rust
+[00:23:50] Fostering Contribution
+[00:35:02] How to Lint Python
+[00:49:52] Astral
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 54 - Free
+
+**Charlie:** [00:00:00] I just kept coming back to tooling because I find it to be like the most gratifying thing to work on. A lot of my last job was actually, I didn't really like think about it this way at the time, but it was building like developer tools.
+
+I was building tools to enable other people to do great work. That to me is like the most rewarding thing.
+
+**Andrew:** hey, before we get started, I'd like to remind you that the full episode is only available to our paid subscribers. The current platforms you can subscribe on our apple, Spotify, and Patrion.
+
+In the full version of this episode, we talk about Charlie's habit of reading, open source code to find inspiration.
+
+Uh, a budding linter community on GitHub. And of course, all of our tool tips for the week. And with that, let's get onto the episode.
+
+​
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, today we have [00:01:00] Charlie Marsh on with us. Uh, really excited to have you on Charlie. So Charlie is the creator of Ruff, which is a, a really fast, uh, python linter, and we're really excited to dig into that. Uh, also just, I don't know, I, I do rust every day now, so I am really excited to talk to someone else who's like working on a, a dense rust project.
+
+**Charlie:** Yeah. Thanks so much for, um, thanks so much for having me on. I, I already said this, but I'm a big fan of the podcast, so being on the podcast is, feels like a big honor for me. Um, and, uh, I also love talking about this stuff, so, um, you know, just excited to get into what Ruff is, um, how it works and maybe, uh, you know, hopefully also talk a little bit about sort of like the journey to getting here, um, because it's been, um, it's been a really fun, I don't know, six ish, six-ish months.
+
+Um, and like a lot of stuff's happened and I think I've learned a lot. So hopefully we can get into some of that too.
+
+#### [00:01:59] Charlie's Background
+
+**Justin:** [00:02:00] Yeah. That's awesome. Before we dive into the topic, would you like to tell our audience a little bit more about yourself?
+
+**Charlie:** Yeah, sure. So, um, I'm a software engineer. Um, I've really been, uh, like an IC for, um, pretty much my whole career. Um, I, I started my career at, uh, company called Khan Academy, which is an education technology company. Um, and, uh, I really kind of like jumped around and worked on a lot of different, um, like technology stacks.
+
+Um, so like at Khan Academy, I did like a year, uh, of Android on some of our first Android apps. I worked on our, like first, um, iOS apps. Um, and then I did a lot of like web, front end, web backend. Um, and then maybe like five-ish years ago, I moved to a company called Spring Discovery, which is an early stage, um, like computational biotech company, which is like a totally new thing for me.
+
+I had like no bio background, um, and I also like didn't really have like the technical background for what I ended up doing, like I was building. [00:03:00] Um, it was all Python, um, and I was building a data and machine learning, uh, you know, framework. So my users were like eight to 10, like data scientists and machine learning researchers, and I was like building the infrastructure, um, that they used to actually like run experiments and like ask questions about data.
+
+Um, and, uh, you know, sort of simultaneously I was building actual software or software for our scientists, so people who would use like our front end applications to actually like, look at the data and try to like an ask and answer questions, um, about it that way. So I spent, you know, um, several years basically like jumping between like TensorFlow and then like I'd be doing like react and like, you know, just sort of like jumping all around the stack.
+
+Um, and so, uh, a lot of my opinions about like, tooling and um, like technology come from, I think those like influences of like having worked in web, um, having done a bunch of Python. Now we also started doing, um, a good amount of rust. Like in my [00:04:00] last job we started moving towards a sort of rust, python hybrid, uh, monorepo.
+
+And so, um, I try to find the things I like about all those different ecosystems and like pull them together in different ways. Um, and now I'm working on, uh, rough full-time. Uh, so I'm building out, uh, high performance developer tools, uh, for the Python ecos ystem.
+
+**Justin:** That's awesome.
+
+#### [00:04:21] Working with Python
+
+**Andrew:** so while you were working on those python things, like did you feel a need that there, the tools were slow, that the tools did need improvement? And was any of that, uh, influenced by what you were seeing going on in the JavaScript ecosystem?
+
+**Charlie:** Yes, yes, uh, massively. So like a couple things happened, um, during my time at Spring, which was that the company I was at most recently, um, that kind of like led me to ruff. Like when I built ruff I was kind of trying to build the thing that I wanted, like from my own work. Um, and, [00:05:00] uh, you know, like I said, a couple things sort of happened at once.
+
+So one was, um, we had this fairly large Python project. Um, and, uh, I was responsible for, um, all the tooling and infrastructure. So, um, you know, I was getting, uh, we had a pretty large, like, pretty high like product slash like infrastructure service area to maintainer ratio. So like, there are kind of like two of us who are really responsible for like, all the infrastructure.
+
+Um, and uh, so, um, we relied really heavily on tooling. Um, like we had a lot of, like, especially given Python, we had a lot of static tooling. Um, and our code base was like very, very heavily typed, um, you know, a lot of linters, um, a lot of auto formatting tools and, um, I felt this pain point of like the tooling being slow, uh, a lot.
+
+Um, and it was, it was super, obviously it was super useful and like there's no way that we could have maintained that code base without all of that [00:06:00] tooling. But I felt it slowing me down like all the time. Um, and then I'd be going over to web and I'd be seeing, um, all this tooling that to me felt really like aspirational.
+
+I mean, people have a lot of, like, a lot of people criticize like web tooling, um, you know, and it has its flaws. Um, but uh, there's just like, there's so much like really powerful, amazing stuff and there's just a lot of, um, like energy, like in that ecosystem of like people building. It's just has this like gravitational pull, it's sucked in all these like, Um, I don't know, in my opinion, like really smart people and they all wanna like, build tooling.
+
+Um, and I was like, wow, okay. There's kind of all this amazing stuff going on there. And like, one of the threads that they're pulling on is, um, writing, writing tools and not JavaScript, right? So like, we had ES build, um, we had s wc, um, and then I was seeing, you know, I was seeing bun, um, and uh, I was kind of thinking, you know, could you take those same ideas [00:07:00] and apply them to Python?
+
+And then maybe like the last thing that happened was we started using Rust. Um, and so we started moving some of our like, performance critical systems into rust. And that both gave me some exposure to rust Um, although I was like absolutely terrible at it, um, I was not the person that that introduced it and I was always trying to get like in and out as quickly as possible.
+
+Um, but, but it did sort of expose me to Rust. Um, and it also exposed me to this idea of like, rust Python. Interoperability and like the ways that you could use Rust, um, like from Python. So like, you know, the fact that we could call out to rust modules from Python and like the people who were writing Python didn't even have to think about that to me.
+
+I was like, whoa, like that's crazy. Um, we can like do all this cool stuff. So all those ideas kind of came together and, and I, you know, I left, I left Spring and um, I was sort of trying to figure out like what to work on. Um, you know, I was like, I think I could have [00:08:00] ended up working on like a lot of different things, but I just kept getting sucked back into tools and um, uh, you know, Ruff for me was like, I have these ideas about how Python tooling could be faster, so let's try to like leverage rust.
+
+Um, uh, I was also influenced, sorry, I should also mention by Rome and like Rome's vision of like unified tooling. Not just rust, but like unified tooling. And so I was looking at all this Python tooling and I was like, can we unify it? Can we use rust. I mean, you could pick a different language, but could we use a lower level language?
+
+Um, and could we just try to build something that's like really, really fast? Um, and I'd never built anything like that before, by the way. I had like no background in building that kind of thing. I had like, I'd like, worked very minimally with ASTs. Um, and so for me, I was like a linter that looks tractable.
+
+Um, more so, I don't know, like, yeah, okay, there's a lot to it, but I was like a linter, that seems like a feasible thing. Like I [00:09:00] think I can build at least a proof of concept there. Um, and that's what I did. So I, you know, I worked on Ruff for like a few weeks and then, um, I kept being like, I don't know, I should, I should stop working on this.
+
+Like, this is like just a huge distraction. And then my friend kept being like, no, no, you need to keep working on this and like, you need to like, follow your instincts that like, this is like an interesting thing. Um, and so, um, I really focused on. Getting it, um, getting it into a state that I was happy releasing it, um, like sort of as quickly as possible.
+
+Um, so when, um, when we released it, um, we supported like, I don't know, I don't even know if we supported like 20 rules. Like we supported a very small number of rules and I was like, the thing I wanna prove is this point of, I think the tooling could be much faster. And so what are the things we need to do to actually like prove that?
+
+Well, [00:10:00] we need to be able to like parse Python source code. We need to be able to traverse the, the source code. We need to be able to track, um, like bindings and do some amount of semantic analysis so that we could detect things like unused imports. Um, so I kind of really focused on like building out, like proving that core idea, like that that's like really what I focused on and I wasn't focused on like how do I implement all of the rules or whatever else.
+
+Um, and that's sort of what, uh, That was like the first release of Ruff It was like, I think tooling can be faster. I'm like influenced by these ideas of like, um, write it in a more performant language. Um, use rust. It can still be pip installable. No one who installs it has to have rust installed. Like it can feel like a Python dependency.
+
+So that's, it can feel like Python is like the one idea. It can be written in a faster language as another. Um, and I just bundled those together to try and, I guess prove that point. And then, [00:11:00] um, more importantly, I guess see if anyone actually cared, um, because, uh, I didn't know if anyone would care about a faster linter.
+
+Um, and, uh, I don't know if I'd asked people at the time before building Ruff if I had asked them, if I had said, do you want a faster linter? I think a lot of people would've said, no. Um, I think a lot of people would not have said, have said, yes, this is like the most important thing in my tool chain. Not that Ruff is the most important thing in their, in their tool chain.
+
+But, um, I, you know, for me it was about like, prove out the point and see if anyone cares. Um, and tapping into those different ideas is what sort of got me there.
+
+**Justin:** Performance is one of those things that it's like, you know, a lot of times this, your thought isn't, oh, I want a performant tool. It's like, oh, this slow tool is like really messing with my workflow. And it's like so frustrating and. You know, that's such a big point. It, it's really funny you, there was a lot to unpack from what you said
+
+**Charlie:** Yeah. [00:12:00] Sorry,
+
+**Justin:** one of the things that
+
+**Charlie:** things.
+
+**Justin:** All good, all good?
+
+No, it was great. Loved it. Uh, one of the interesting things about the web ecosystem, there's a lot of interesting things about how that's developed. Um, is one of the things is people who have like done a lot of development on the web are really, really. Interested in fast iteration cycles because you can just like run things in the browser and refresh the page and whatever.
+
+And getting used to that means that like, oh, you know, I want my tools to be really fast. And you know, we went through our slow era for sure when we got into like big, uh, build tooling. But another interesting thing about the web ecosystem in my mind is that it pulls all these different people from all these different ecosystems.
+
+Cuz the web is ubiquitous, you know, it's like, sure you use JavaScript, but like there's a lot of people who are like, they're c programmers rust programmers or Java programmers or whatever, but like, they all have to come and like do stuff in this sandbox
+
+**Charlie:** we're all trying to build websites, you know?
+
+#### [00:12:58] Building with Rust
+
+**Justin:** Yeah, [00:13:00] we brings a lot of like really interesting ideas from a lot of ecosystems, and I think it's been this like Petri dish for innovation of just like watching all these things kind of mesh together.
+
+We've went from like, you know, really rapid transition from object-oriented programming to like functional reactive programming. Like, like all these like really interesting explorations and, um, I don't know, it's all, it's all really cool. But like your, your journey sounds like, you know, it sounds like a, a pretty like graceful path into this, this sort of world, which is, um, I hope, and I would be really interested to hear your opinion on this.
+
+I hope it's actually, it's more approachable now than people think it is, because it's like, with rust in particular is like it learning curve for sure, but like, you know, compared to the days of like c plus plus is like, let me build native performance tooling. It's, it's, it's different ballgame. It's totally different.
+
+**Charlie:** yeah. I mean, I, um, let's see. I've written like basically [00:14:00] no c plus plus. Um, like almost zero. Um, and the only C I've written was in college for like my intro systems course. Um, so I don't come from that school of, of um hmm. Not school of thought. I don't come from, that's not my background. Like, um,
+
+**Justin:** For sure.
+
+**Charlie:** and, uh, to me, the fact that I can actually like, operate in rust.
+
+Like, I, I wouldn't say that I'm like, like super good at rust or anything, but like I am now getting to the point where I'm like, I'm like productive and I can, I, I think I am thinking about problems in like the right way. Um, and like when my code doesn't compile, I can kind of predict that it's not gonna compile.
+
+And I kind of know why, even if I don't always know like what exactly, how exactly I need to change it. Um, but to me, like writing rust is like, I don't know. [00:15:00] It's kind of a superpower. It's like, I don't, um, I would be really scared to go and, and write some like c and c plus plus. And, and some of that I think is, is probably like on me and like, I shouldn't, I probably shouldn't have that opinion of an eco of ecosystems that have been like, massively successful or massively popular.
+
+A lot of people love working in them, but to me they just like seem intimidating. Um, you know, take that as you want. Um, and I love working in Rust and so like, um, I don't know, to me that kind of says a lot about rust. Um, and a really cool thing that we have seen, um, you know, released Ruff. It's like, and even after Ruff became like somewhat popular, we had a lot of people telling us, um, you're never gonna be able to find contributors.
+
+Like, you're never gonna be able to like, find people to like help you. Um, Like build the project, like people won't be [00:16:00] able to contribute because it's rust and like, it's different. It, it was, it wasn't about the fact that it was rust, but it was about the fact really that it like wasn't Python. Um, and, um, people were like, you know, you're not gonna be able to, like, you're not gonna be able to find people to work on this.
+
+And I was like, actually, first of all, we have like a lot of contributors and um, also something I'm like really proud of and that I think is really cool is that a lot of our contributors, at least they claim that they have not written rust before. Um, so they, they come in and they're like, Hey, I, I work in the Python ecosystem.
+
+I'm really interested in learning rust. Um, I think that we've done a pretty good job of like setting up Ruff as, um, you know, an entry point for people who like, know Python and, uh, you know, they understand the semantics of Python. They understand the. Python ast, even if they haven't worked with ASTs, right.
+
+Um, they'll understand the idea of like a function in a class and a variable. Um, but they haven't really written rust before and [00:17:00] Ruff. Um, you know, I think, I think it's a little bit to do with sort of the modular nature of the project. Like implementing a lint rule is like a pretty, um, well contained thing to do, um, as opposed to having to like, um, change a bunch of core infrastructure.
+
+So we have a lot of people who haven't written rust before or are just sort of trying to learn or dabbling and rust and they're able to come in and make like great contributions and then, you know, they keep coming back and contributing. And so, um, that to me, um, I don't know what I expected, like when I started, like, I don't know whether I expected that to happen or not.
+
+Um, but it has been a very cool. And very rewarding thing to see as a, as like the maintainer crater of this project is see people coming in and like, not just contributing, but like, they're like learning and hopefully like getting a lot out of it too. Um, and so I, I don't know if that would've happened if Ruff were written in like c or c plus plus, like [00:18:00] maybe, um, uh, but it has definitely happened with Rust and that is very cool.
+
+**Andrew:** Yes. Steve Klabnik was on the podcast a few ago, episodes ago, and he, he, he put it in a really good way that like rust is like a 2000 tens take on a systems programming language. And that, I think that's, that's the thing, like our expectations of software have changed so much since the seventies and what we expect out out of our dev tooling has changed along with that.
+
+Like, if I try to open up G C C, I'm lost. There's no, there's no highlighting, there's no colors. I'm, I'm a, I'm a fish outta water. But with like a modern take on a tool, I feel like it's much more approachable and Rust really fills that niche quite well.
+
+**Charlie:** Yeah.
+
+**Justin:** Yeah, totally. There was an era where programming was just hard. It was just accepted as this is a hard thing to do, you know? And as there weren't as many resources to learn there, the tools didn't hold your hand as much. And, and importantly, [00:19:00] in a lot of these cases, the failures that happened, the failure modes you experience were often at runtime.
+
+They're runtime failure modes and not compile time failure modes because it is like, the tool wasn't trying to give you so much safety, which is, I think a interesting thing of rust is like, it's hard to make code compile sometimes, but when you make it compile, you can be guaranteed or you're reasonably certain that this is going to work, you know?
+
+**Charlie:** Yeah.
+
+**Justin:** Um,
+
+**Charlie:** It's the, the learning curve is very real though. Um.
+
+**Justin:** no, it's, it's super real. It's super real.
+
+**Charlie:** why I was like, I mean, I don't know that no one's asking for my advice on how to learn rust, but like, I, but like, this is why I made this joke. Like when I was at my last, my last job, um, I worked with this extremely talented engineer and he, um, he introduced Rust into our code base and he was, um, you know, really comfortable in Rust and I wanted to help maintain that system.
+
+And so I would kind of jump in and, and, and change things. [00:20:00] But I was like, like I said, I was always trying to get in and out as quickly as possible. And so I was like, how do I just like get this to work without like really learning it? Um, and then after I left, think about, after I left, I read the Rust book.
+
+Um, or maybe while I was still there I may have read the Rust book, which was great. Um, and that, that helped a lot. But really, I. It's, it's quite personal, like your learning style, but for me, I just had to like, like bang my head against the wall like a lot, um, and lose a whole day trying to figure out lifetimes.
+
+And like, I, I, you know, there are better ways to learn than that, but like, that's what it took for me. Um, and, uh, I guess also like building something like from scratch, um, where I had to like think through everything and, and, um, you know, I had to familiarize myself with the ecosystem. Like what do I use for, um, [00:21:00] command line argument parsing, um, what do I use for logging?
+
+What do I use for error handling? Like all those decisions that if you jump into an existing project, a lot of those decisions are, you know, I mean, it's a good thing, but a lot of those decisions are made for you. Um, but if you're trying to learn it all, it's kind of nice to put yourself in this position where you're like, Are introducing things incrementally.
+
+So I don't know, I always kind of need to learn by like doing and making a bunch of mistakes. Um, but for me that's what it took to, um, get comfortable writing and reading rest was just like time.
+
+**Justin:** Yeah. When I started at oxide at at knew zero rust, and I, I just had to, I just had to like, try, you know, it's like, oh, I gotta get in and like, make this API change, and it's like, all right. Oh, I can kind of like pattern match my way through some of this stuff. And, you know, eventually, I, I think one of the good things is about rust is that it, it, it kind of does teach you as you go along, the, the error messages are pretty good.
+
+They're pretty easy to search for, uh, and [00:22:00] pretty, like, somebody who really knows rust can, can pretty quickly tell you is like, oh yeah, here's, here's what's happening. Fixing it is not always straightforward, you know, it's like sometimes it's like, Well, you've written this thing in a way that like, really won't work.
+
+This, this won't work,
+
+**Charlie:** Right. But those issues, those are almost, if you find yourself in that position, the thing that I have, the instinct I have learned to, I have tried to build in myself is that you're probably thinking about the problem wrong or you're designing your solution wrong or something. You need to like step back often.
+
+Um, or at least I do. Um, oh, the other thing about Rust, um, I have like such bad Twitter brain. I can't remember if I actually tweeted this or if it's just something that I thought about tweeting. Um, but, but the thing with Rust is, um, the, there's so much to admire in like the tool chain. Um, because when I clone a rust project, like I'm very confident that I will be able to build it and very fairly [00:23:00] confident that I will be able to figure out like how to run it, how to run tests, how to run the linter, how to run the formatter, like.
+
+As compared to other ecosystems like the standardization, I think that's happened there amongst other things. Like, I'm just very confident when I go and clone a rust project and, um, that confidence like builds over time that you'll be able to kind of like figure it out. Um, and so there's a, um, like I still don't, I'm, I don't think, I still don't think I really write like idiomatic rust.
+
+Like I think there's a lot of like, idiomatic and like advanced rust that I am like not, I'm not there yet. And like I've worked with some people who are capable of doing that and like, it's extremely impressive and like, I'm not there yet, but I am like comfortable. And I think like getting to that is an, is um, there's a lot of different levels of knowing rust.
+
+#### [00:23:50] Fostering Contribution
+
+**Justin:** Yeah, pulling back. Uh, on a point that you made way earlier about like con uh, contributors when you're writing something in Rust and it's like for Python ecosystem, [00:24:00] JavaScript went to the same sort of thing, right? First it was type script, right? It's like, oh, if you start writing this thing in type script, people aren't gonna like know type script and they're not gonna contribute to your project.
+
+And I was like, well, that was like obviously false, type script is very popular now. And, and it made contributions easier in some ways because it's like, oh, well there's types and there's this extra documentation. And then, but tooling for the same thing. For years it was like, we're gonna, we want to write things in the same language that we're running on or running against or whatever.
+
+So it's like contributions are easy and we paid that performance cost, right? Um, and the caveat here is like, Rewriting something and Rust doesn't necessarily make it performant. Uh, you know, there is, there is still like ways to write performant non-performance code, right? So, but it, out of the box, you probably are gonna get more performance, um, and. The thing that's like really [00:25:00] surprising is that people are, people are willing to, to bridge that gap for like a good tool. They'll learn what they need to learn to be able to contribute to it. And I think because like the point you're just making, because like Rust is so standardized and you can just get in it like, okay, I can kind of figure out how to run the test.
+
+I can kind of figure out how to do all this stuff. Then it makes that barrier entry lower anyway. So I think there's like a whole lot to that. Both the language choice and the ecosystem it comes with. And the fact that like people just want really good tools. They don't really care what they're written in.
+
+They want 'em to be fast, you know? And you'll get contributors to whatever you write it in. I mean, some things are gonna be reduced your subset, right? If it was like, you know, obviously if you're writing a tool in an assembly, you're gonna get like very, very, very few people are like gonna get in there.
+
+But if you're doing something you know, more mainstream, then like you'll get contributors.
+
+**Charlie:** yeah. I mean, the, the, should you rewrite it in rust. Um, Like the answer to that question is, you know, unfortunately [00:26:00] it, it's entirely like, it depends. Um, like, yes, not everything should be written in rest. Um, and, you know, and you should not blindly take your tool and like rewrite it in rust, like obviously not.
+
+Um, but there's a lot of, there's a lot of like nuance to this, right? There's like, it's like, just cuz your tool isn't written in rust doesn't mean you shouldn't care about performance, right? So like, even if your tool, if your tool's written in JavaScript, like you can still, like, there's still ways to like, make that fast and make that slow.
+
+Um, and so, you know, you don't have to, you don't have to rewrite in Rust to make something fast. Rewriting something and Rust doesn't guarantee that it's gonna be fast. Um, when you do rewrite something in Rust. I mean, the thing about people being able to contribute like that, that is a real cost. Like I'm sure there are a lot of people who would, who, or, I don't know.
+
+I, I, I imagine that there are people who would contribute to Ruff if it was written in Python, but can't. And so like, yeah, that's like real, I'm not saying that's like, not a, that cost does not exist. Um, uh, [00:27:00] and it is a trade off. Like there are a lot of trade offs to this. Um, uh, but of course it's, you know, it's kind of nuanced.
+
+It's not like everything should be written in rust. Nothing should be written in rust. It's like, it really depends, like yeah, what is it gonna buy you? Um, and, um, what is the cost, right? Like, there are some tools, um, you know, there's the, um, I can't remember what the name of the project is, the rewriting type script in rust.
+
+Um, uh, but uh, that's a very ambitious project that's like super hard. Um, and like I'm not commenting on whether they should or shouldn't do it. But like, that's a, that's a big ambitious project that's gonna take a lot of time. Um, and it, it, you know, it seems like it could have a big payoff. Um, but you know, there's a lot of evaluation that needs to go on here and, um, everyone loves to rewrite it and rest, right?
+
+It's everyone, it's so cool and popular and like, um, yeah, I think it can be like really impactful, but it's not, it is not, I don't wanna [00:28:00] present it as being like, quite that simple. Um, cuz you know, even as someone who is rewriting a lot of stuff in Rust, I do not believe that everything should be rewritten in rust.
+
+And um, uh, I think it's worth, I think it's worth saying that cuz sometimes I give people the wrong impression maybe.
+
+**Andrew:** Yeah, the, the last episode we filmed Unaired at the, the moment of this recording with Steve Krouse, uh, he hit one of his previous companies, zap Lib, uh, was like, oh, let's, let's make everything into rust and Run, run it through WASM. And they had that initial thing like, oh yeah, it's gonna be a lot faster.
+
+We did a little few tests, but in the end they found out, oh, it's not all that much faster. So it's like, it definitely comes down to like how you write it and if it's the right tool for the job.
+
+**Charlie:** Yeah, yeah, yeah, yeah. There are other like, um,
+
+I don't know, there are also some like technical costs, um, that we pay for, writing the tool in rust. Um, [00:29:00] so I don't know, maybe a couple examples. Like if you write a tool in Python, like you get access to like the Python standard library and like that has like some, um, I don't know if I'd call them like meta programming tools, but like, it has, you know, a lot of built-in stuff that's helpful for writing, like Python tooling.
+
+like, I don't know, you can like detect like things that are in the standard library or not. Like there, there's just a bunch of stuff that's like helpful if you're writing a Python tool that's in the Python standard library. Um, and like we don't get access to any of that. So like when we need to, um, uh, implement, you know, when we need to replicate logic like that, we actually have to like rewrite that part in, in rust too.
+
+Um, and so, um, I guess like more trivial examples, like things we've actually rewritten are like, um, is this iden, is this a valid, um, like variable name? Like is this a valid identifier? Um, that's not like super hard, but like it just as an example, [00:30:00] um, you know, Python has utilities for that in the standard library.
+
+Um, and like we don't get access to this. Like we have our own. And um, that idea kind of can. Depending on what you try to do, you know, there's just things you don't have access to. Um, and so we sometimes have to like reimplement, stuff like that. Um, and that's a cost. Um, the other is we, um, it's, I, it's debatable whether this is a, this is a cost, but like we don't use the C Python, um, parser.
+
+So we use, we use a different parser for parsing Python code that's written in rust. Um, and well, it means that it'll have different, it'll have different bugs, right? So, so like, um, you might have code that, um, uh, we have to spend a lot of time on like compatibility.
+
+Um, like we were, we use a parser from, uh, a tool called Rust Python, which is, um, I mean, some ways like more ambitious than what we're doing, cuz it's like a full, [00:31:00] uh, It's meant to be a full Python interpreter, reimplementation in rust. Um, and so, uh, it's not just the parser, it's actually the, like the interpreter and the, you know, it's actually able to evaluate and run Python code, like all in rusts.
+
+Um, and, uh, you know, we sort of pulled out the parser, um, as, as a piece of that to reuse. And I, I think we were probably the first people that were using it for that purpose, um, because most people, most people were not or whatever. Um, so we pulled out the parser and we started parsing Python code and then because no one had used it for that purpose before, there were a lot of incompatibilities with how C Python represented source code.
+
+And so we had to, um, you know, we upstreamed a lot of improvements to try and bring those things into compatibility. Um, and it's, I mean, I think it's, I think the compatibility is very good right now, but it, but it, you know, it can be different. Um, and uh, when new language features come out, we actually have to like implement those ourselves.
+
+In the parser. Um, [00:32:00] whereas, you know, if Python introduced a new language feature, uh, it gets built into see Python like basically as part of that process. Um, so like a big limitation in Ruff for a long time was that we didn't support python's. Um, structural pattern matching syntax. Um, uh, which was introduced in a 3.9, I think Python 3.9 maybe three point 10.
+
+That's, uh, that's embarrassing. I should know that. It was one of those. Um, but we didn't support it. Um, and so if you tried to run Ruff over files that used it, we would just throw a syntax error. Um, and we couldn't really provide you any, you know, useful analysis. Um, and that was blocking people from adopting Ruff for a while.
+
+Um, and uh, eventually I went in. I sort of locked myself in a room and I was like, I, I've got, I have to solve this problem because like, I just can't keep hearing about how we don't support it. Um, and also it's, uh, you know, getting in the way of a lot of [00:33:00] users. So, um, you know, we eventually supported that, but like as new language features come out, we're gonna have to, you know, keep up, um, and, and implement those.
+
+Um, and so there, you know, there's a, the costs will be tool specific, but for us, this is just an example of not using Python to write Python tooling does have some technical costs and maintenance costs.
+
+**Andrew:** Yeah, could, could you have like done like a rust Python bridge thing where you like call internal functions? I know that would be like probably the worst performance you can get, but would there have been a way to do it otherwise?
+
+**Charlie:** Yeah, I've thought about this, I've thought about this a little bit, but it's also an area where like, um, I sort of like wanted to recognize some my own constraints, um, or my own inadequacies. Um, like I think in theory we could maybe reuse the C Python parser directly, which is written in c um, but I had trouble figuring out how to do that, and so I [00:34:00] didn't, and then I used, and then I used this rust, this rust parser, and then, um, it's, it's very performant.
+
+Um, we have, um, You know, we're able to contribute changes and improvements to it. Um, uh, there's a lot of like sub pieces to the parser that are like useful to be able to extract out like, um, various things for like parsing strings. Python has like a lot of different ways to represent strings and like how strings get formatted.
+
+And so, um, it's just useful that it's all like, it's all rust and it's all like one system I think. I think it is. I think it would be possible to do that, but I kind of gave up on it pretty early on because I couldn't figure out, I, it was sort of beyond me, which is fine. Play to your strengths. Okay.
+
+**Andrew:** Yeah.
+
+**Justin:** Beyond that too, the shuttling stuff back and forth, uh, between intermediate later there is hard and, and with the parseresli and rust, I'm sure you get to reuse some of the types, which is, I'm sure it's itself valuable. So
+
+**Charlie:** yes. Sorry. That's an extremely good point.
+
+**Andrew:** yeah,
+
+**Justin:** have to [00:35:00] invent all that
+
+stuff.
+
+#### [00:35:02] How to Lint Python
+
+**Andrew:** So bringing it back to Ruff a little bit, uh, I personally haven't ever looked at the Python lin space. What did it look like before Ruff? Like, uh, cuz in JavaScript it's like you have like two choices. You use eslint or whatever the other thing is, and then, uh, you, you can do Lin, but it seems like in the, uh, the Python space, it's a little different.
+
+**Charlie:** Yeah, it's a little more, um, I guess it's like a little bit more varied. Um, I don't necessarily wanna say, I think fragmented has negative connotations, but I, I guess what I would say is like, um, uh, often you're using like more of a, a sort of suite of tools, um, as opposed to like eslint with a bunch of plugins.
+
+Um, uh, I guess in JavaScript, this is kind of true too, cuz you have like eslint and prettier and I'm sure there's like other cool stuff that I'm not using yet. Um, but, uh, So in Python, um, for the linting [00:36:00] space, there are a couple linters that are really popular. Um, and also, you know, to be totally clear, like all these tools are still like way more popular than Ruff like by the numbers.
+
+Um, and they are, you know, they're great tools. I have a lot of respect for 'em. I use 'em all for, I've used them myself for a long time. Um, uh, so the most, uh, I don't know what's the most popular, but very popular tool is called Flake eight. Um, and, uh, that tool actually combines, like, there's sort of like a tree of tools here that actually bun basically bundles, um, to other tools.
+
+It's kind of like a tree of tools here. So flake8 actually bundles a tool called py Code Style and a tool called py Flakes. And one of those focuses on style and one focuses style linter and one focuses on, um, like semantic analysis.
+
+Um, so flake8 was built, um, and FLA Gate had a pretty robust, has a pretty robust, um, plugin system. So often people use FLA eight with a bunch of plug-ins. Um, and so you can have a plugin to lint your dock [00:37:00] strings. You can have a plugin to, um, add more sort of correctness and common error checks that aren't built into the linter by default.
+
+So that kind of looks like ES lint in that. It's like a linter that has a plug-in system and there's like a pretty big ecosystem of plug-ins. Um, there's also a linter called pylint, which is, uh, very popular as well. Um, that's, um, pylint does a lot of things that are almost closer to like what you would expect from a type checker.
+
+So pylint will do like cross file analysis, um, like it'll look at. Okay, this function was defined here and called here, and it has like the wrong number of arguments. Um, that's a lin error or you have an import cycle or stuff like that. Um, so pylint does a lot more, um, like static analysis and like branch analysis.
+
+Um, and it also supports like a lot of rules. Like I, I think they have maybe like 400 rules. Um, so, um, [00:38:00] in my experience, people tended to like either use like pylint or the sort of flake8 ecosystem. And then, um, there's a lot of other static tooling that people layer on top of that. There's a really, really popular code formatter called black.
+
+It's kind of like the, for the web folks, it's kind of like prettier for Python. Um, uh, there's a, there's a couple different choices for like type checking. So, um, type annotations and Python have become a lot more popular, especially over the past couple releases. Um, and, uh,
+
+A little bit like type script, but sort of not like the annotations are part of the Python, part of Python. They're part of the syntax, they're part of the standard Python syntax, but the language doesn't actually enforce them. Um, th there's a spec and third party tools implement the, that spec to look at the annotations and enforce them.
+
+Um, and so there's like, there's sort of like an ecosystem of type checkers similar to how in the web you have like, [00:39:00] um, a couple different package managers. You have like NPM and yarn and PMPM and BUN and whatever else. Here you have like a couple different tools that can all do type checking and some people use one, some people use another.
+
+Um, so you know, pretty standard stack would be like one of those linters. Um, formatter is very, very popular. Um, one of the type checkers. And then you might layer on some other tools too, um, that do other sort of ad hoc analysis.
+
+**Justin:** I hadn't heard about Flake eight in a long time. Uh,
+
+**Charlie:** Yeah,
+
+**Justin:** I started in c and c plus plus and went to Python after that and was using Flake way back
+
+**Charlie:** yeah, yeah, yeah, yeah.
+
+**Andrew:** So where did you start with building ruff? Like did you have an As, s t to ch choose from? Uh, did you build out your own a s t Did you fork other projects? I think I, I read in the docs that you like heavily, like translated some code from like flake8 or something.
+
+So like where did you start with Ruff?
+
+**Charlie:** Yeah. So, um, Like I [00:40:00] said, when I started building Ruff, um, I had never really built anything like it before, so I spent a lot of time reading code. Um, the, uh, the starting point was like, I need to find a way to like parse Python source code and like get an, get an AST that I can traverse and, and analyze.
+
+Um, and so, uh, I pretty quickly settled on using Rust Python for that. And, um, rust Python, actually, their a s T schema is generated from, um, effectively from the Python standard definitions. So, um, the, the, the, the actual definitions and the structure of the IST is very, is very similar, if not identical, to like what C Python uses.
+
+Um, and uh, what I did from there was I, I basically just read like all the py flakes and other like source code to understand [00:41:00] like how different tools, like track variable definitions, how they track bindings, um, uh, um, what limitations they have, like, like how scoping works, all that kind of stuff. Um, and I think one of the things that Ruff was kind of, sometimes I use this phrase like optimized for adoption.
+
+Um, like I think we made a couple of decisions that really helped with, um, getting, uh, facilitating adoption and like making it easy for people to relatively easy I hope, for people to adopt. Um, one of those was that from the start we really tried to be drop in compatible with a bunch of existing tools.
+
+Um, and uh, that's great because it means that if people are using those existing tools, they can move over to Ruff. Um, and. Ideally their code, if their code was passing before it's passing now. Um, [00:42:00] so, uh, that was really important. Um, the other is that we, um, we started to like bundle more and more tools and this was like almost something that happened by accident, but is now like, in my opinion, a very core part of, uh, a really a core benefit of Ruff.
+
+Um, which is we, we now bundle a lot of tools. Um, and when I say it happened by accident, it's because it's pretty hard to write a plugin system and rust. And so, um, originally I was like, oh, we're never gonna be able to implement all these plug-ins that people need. Um, we need like a plug-in system. And, um, couldn't really come up with like a good.
+
+Like sort of best practice way to do that. And so what I started doing was I started just implementing the plug-ins in Ruff directly. And so I just looked at what are the most popular flake8 [00:43:00] plug-ins. And I looked at a bunch of projects and I said, well, if this project wanted to adopt r, like what plug-ins would it need us to implement?
+
+And I've like literally just kind of went down the list and like worked through them. Um, and we implemented, uh, you know, a bunch of the most popular ones. And, and with each plugin we implemented, we would sort of unblock people from being able to adopt ruff um, and. The, the interesting thing is like, you know, we talked a little bit about like the importance of performant tools, um, like performant developer tools, fast feedback loops.
+
+Um, I'm a big, big believer in that. Um, but the interesting thing is that there are a lot of people who adopt Ruff and like, speed is actually not like the primary reason that they do it. Um, which is a little bit surprising cuz it's kind of the flagship. It's like, it's like the flagship feature. It's like, oh, super fast.
+
+Um, and it is, it's very fast. Um, but uh, there are other benefits and one of those is like, it can really [00:44:00] simplify your dependency chain. So like, um, when people move to Ruff like they're sometimes replacing like, like 10 or more dependencies with a single tool. Um, and, uh, I mean, that's cool. You get a bunch of red and your dependency diff or whatever, which is fine, but like really the benefit is it's like, It's like one tool, one invocation, one configuration that can replace a bunch of tools.
+
+And, and it's not just like FLA Gate with plug-ins. We also, for example, implement an import sorter, which in Python is a totally separate tool. Um, and in Ruff that's just a lint rule that like your imports need to be sorted. And we implement the, you know, almost the exact same behavior as that existing tool.
+
+So people can pull out their linter, their import order, a bunch of their pre-commit hooks and replace 'em with like one thing, like one cli, one invocation, one configuration. Um, and so, uh, that I think helped a lot. It, it, [00:45:00] it created like another like very compelling reason to like, consider this tool that like wasn't just performance.
+
+Um, the third I think probably was the auto fix behavior. Um, flake8 and pylint do not support auto fixing. Um, And there are separate tools that kind of like use, they kind of like leverage flake8 to do some auto fixing. Um, but we just, we built that into the linter like pretty early on. Um, and uh, over time we've been able to like expand the scope of the kinds of things we can fix.
+
+So, um, a lot of people are attracted, uh, when I talk about like optimizing for adoption, it's really about like dropping compatibility, like super important. We're going to use like very, like very similar APIs. Um, even if, even if we would make slightly different decisions, we're not going to, because it's actually really helpful for people.
+
+Um, uh, and [00:46:00] then just having like a bunch of ideally like good reasons to want to use the tool, which are like, it's fast. It's um, Sort of unified, like it lets you like simplify your, your tool chain, your dependencies. Um, and it's hopefully like more helpful and like faster to use, like the auto fixing and other, other features like that.
+
+**Andrew:** Okay. Before we move on to the future, I have one question to ask about Ruff. What about plugins? You've built everything in so far. Uh, a big part of my experience with linters has always been plugin. So do you plan to support them?
+
+**Charlie:** Yeah, so plugins, like it was, um, Yeah, plug-ins are tricky. So plug-ins, they were, I mean, they came up like basically immediately, um, as soon as we released it. And there's a very old issue where a lot of discussion about plug-ins has happened. Um, I, I would like to support plug-ins Yes. How we support them.
+
+And I, I, I [00:47:00] like to support plug-ins. I plan to support plug-ins, but I will not promise to do so on any timeline because, um, how we plan to do it, um, there are a lot of different approaches we could take. And it kind of depends on like what you, what you want out of a plug-in. Um, like it should a plug and be able to do like arbitrary things like, um, maybe, but like, I'm very interested, it's a little bit of a cop out, but I'm very interested in an idea, uh, or in a world in which.
+
+Plug-ins can be expressed declaratively without like writing code. Um, there's a tool called AST Grip, um, which is pretty cool. And it basically lets you write, um, like pattern matching expressions over ASTs. It's based on tree sitter. Um, and um, I was very interested in actually having Ruff like, support that.
+
+So like instead of writing Rust or Python code to write your plug-ins, maybe you could write your [00:48:00] plug-ins in with some sort of dsl. Um, I am still interested in that idea. Like I think a lot of, I think actually think a lot of the reasons that people need their own plug-ins fit into that paradigm. Um, it's like you want to make sure that people don't call a certain API or that they don't call import something before something else.
+
+Like, like typically there are rules that are kind of, this isn't the only use case for plugins, but like in my experience when we wrote our own custom rules at a company, it was always about like proprie. Proprietary things about the code base, like, like relationships that need to be enforced or like methods that shouldn't be called.
+
+And so I, that would be, the dream for me would be to find some way to let people author like rules and plugins that doesn't require writing rust or Python code. Um, and then that, that becomes like pretty easy. Um, the thing that becomes much harder is if you wanna let people like write like their own rest or python, uh, plugins.
+
+I think there are ways we could support that. Um, [00:49:00] there's a little bit of a problem, which is when you, which I'll speak candidly about, which is when you, when performance is a feature, it limits some of the things you can offer. So if we, if performance is a feature, but plug-ins are very flexible and people can do whatever they want with plug-ins.
+
+Um, there are ways for people's experience with the tool to be very slow. Uh, if, if the. Plug-ins are slow, but also if the things the plug-ins do are slow. Um, and so, um, I try to be mindful of that a little bit. Like I don't really want to, I don't wanna come up with a plug-in design that is like inherently slow, and I don't necessarily want to encourage plug-ins that are really slow.
+
+Um, so we'll see. I do plan to support it, but it's, there's like actually a pretty big design space of things we could do. And, um, it's not something that I'm working on right now. Disappointing answer.
+
+**Andrew:** No, that was that. That was a great answer.
+
+#### [00:49:52] Astral
+
+**Justin:** Cool. Cool. Uh, all right, well, let's dig into it. Uh, before we switch over to Tooltip, uh, we always like [00:50:00] to, uh, ask some folks questions about their thoughts about the future or like what their plans are.
+
+Uh, so one of the things that you shared with us privately is that you are. Uh, gonna start a company around this sort of dev tooling that you're working on. Uh, and we'd love to hear more about that. What are your plans? Uh, what is this company and what do you plan on doing with
+
+**Charlie:** Yeah. Yeah, absolutely. So, um, The company's called Astral. Um, and uh, the goal of the company is really to like, keep doing what we've been doing with Ruff. So like, uh, build more hopefully great Python tooling, um, uh, by leveraging, uh, rust and building really high performance stuff. Um, and, uh, you know, I think like being able to work on this stuff full-time was really important, um, to the success that we've had [00:51:00] thus far.
+
+Um, like I was able to, uh, be really responsive to people. Um, we were able to build really fast. We were able to, um, address issues really quickly, ship a lot. And like, I want to keep that energy up and expand the scope of like, the problems we're able to solve. And so the company exists. To accomplish that goal, which is we're gonna build more tooling in the Ruff model and, uh, and build out Ruff Um, so a high performance, uh, Python tooling, um, more static tooling especially, um, but also branching into, uh, potentially other areas that aren't quite, uh, as much of a straight shot from what rust Ruff does today.
+
+**Andrew:** So like what, what are the first types of tools that are like in your sites would like, uh, uh, auto formatter? I feel like that's the first one. Test runner bundler. Where,
+
+**Charlie:** Yeah. Auto formatter. So like, um, hmm. I'm always very hesitant to talk about this stuff, like even not, not the [00:52:00] company, but like, things we might do. Um, and, and this is true even before like announcing the company, because I, I like to, I like to be very open about like what I wanna do and like, sort of like the scope of like the work and.
+
+You know, the potential ambition, but I also try to be really mindful about like, promising things that take time to do. And so that can be a very fine line to walk, um, because uh, once you say you're gonna do things, it creates expectations, but if you don't say you're gonna do things and you're kind of not being open and honest.
+
+So, um, you know, for me, like the dream way that Ruff evolves is, um, it continues to grow as like a static analysis tool chain. So we have the linter, uh, the formatter and ideally also like the type checker. Um, and I would love to do all of those things and uh, I don't, this is where I have to be really [00:53:00] careful cuz like we're not working on a type checker right now.
+
+And like, I don't even know if we will cuz I actually think there are a lot of good reasons not to do it. But I'll just be open and honest and say like, that would be a really cool combination of tools because it, and by cool, I really mean like powerful and helpful for users. Um, and so, you know, the, the reason that that's so interesting to me is like they're all very complimentary.
+
+Um, and so, uh, it's similar to the vision that, um, like Rome had, which is, if you, if we're building infrastructure for a linter, um, there's a lot of common infrastructure that would be useful for like a formatter and for a type checker. And it's not just the infrastructure layer that would make all those things better.
+
+The tools themselves could also be better. So like in ruff we often have this problem where like we want to know the type of a variable. Like we have rules that only apply to pandas data frames, or we have rules that only apply to dictionaries, and we can only enforce those in like very conservative context because we can't actually do [00:54:00] type inferences.
+
+So we can't actually know if a variable is a data frame or dictionary. So if you added a unified like linter that had access to type inference and type information, like you could do a lot of really powerful stuff that like neither tool does today. Um, it's similar with the formatter. Um, you know, the linter enforces like style rules, but like a lot of those can be auto fixed by a formatter.
+
+Um, and when we do, uh, implement auto fixes and code changes, we often output on formatted code. And so imagine if the linter had access to the formatter, had access, access to the type checker. So, um, The, the sort of dream is like you build all those things in a very unified way. Um, and they're super fast and, um, better as one than like any of the tools would be individually.
+
+Um, there's a bunch of other things I'm, I'll admit that I'm also interested in, like, that are in a similar, um, like design space. Um, so, but they're may be like viewed as slightly more like sub-problems, like, [00:55:00] um, like docstring parsing like documentation, um, like extracting docstrings and like create and like validating docstrings.
+
+Um, but again, to me that's kind of like in a similar school of static tooling. Um, so, uh, I really wanna like, push on the things that I think make ruff good and that people like about ruff, which is like, it, it's high performance. Um, it's, it feels like integrated and unified. Um, it's highly compatible. With like a lot of your existing tools, that's like a really important piece here.
+
+Um, and just like keep pushing on that and like bring in more resources and like more, more like people to help us make that possible.
+
+**Andrew:** Yeah, when you were describing all of this and when I was doing my research, like Rome came to mind so much cuz like the value prop behind Rome was like, we have all these tools. They do all this parsing, all that parsings different, none of it's shared. And like the start of Ruff is very, the sa much the same.
+
+It's like, oh, we have 10 tools. Oh, they're all parsing different [00:56:00] things. You put it together, it's magically faster. And then we can layer on even more, uh, even better developer experiences on top of that.
+
+**Charlie:** Yes. And it's interesting cuz Ruff actually like, has already kind of, it's already kind of done this because, um, if you look at what Ruff replaces or can replace today, you have a bunch of different tools that were all doing their own, like parsing and ast traversal and like, um, like the Docstring Linter had its own parsing logic.
+
+Um, and the import sorter had its own like parsing logic and the Linter had its own parsing logic. And like now we just have like one system and um, there's like this weirdly counterintuitive thing where like as the system does more, it, it kind of, um, It actually becomes like easier to maintain and build more stuff on top of it.
+
+Um, like if you built a bunch of disparate tools that all need to analyze, [00:57:00] um, that all need to analyze some code, like they need to implement a lot of the same things like a bunch of times. And with Ruff it's like, you know, if we wanna pull in a new piece of functionality or a new, a new behavior, um, it's like writing a function in a module and then we get all this infrastructure.
+
+Um, and when we go to implement that function, we probably already have like a lot of logic and helpers that have been used for other rules or we're already tracking a lot of the semantic information that you would need. And so like the whole thing kind of, there's a little bit of like, I hope and I think like a snowball effect with like the way that the tools compound.
+
+Um, and, uh, my hope is that we can just keep building stuff that's like really impactful and that people that like really resonates with people like. That's like the whole joy. I mean, I like working on these problems, but like ruff has been like such a rewarding thing to work on because honestly, it like really resonates with people and people are like really happy when they use it and they like, they have a really positive response to it.
+
+And like, [00:58:00] to me that suggests that there's an opportunity to just like do more of that. Like, I, like really the, the purpose of starting a company here is just to like, do more of that and like build more unified tooling. Um, and try to like push python forward by like leveraging rust, like building unified high performance tooling.
+
+Um, and just like making everyone's lives like a little bit easier.
+
+**Justin:** Love the vision. That's, that's why we started this whole thing. It's like, you know, building tools makes the whole ecosystem better. And it's like, yeah, that's great.
+
+**Charlie:** I think building tools is amazing. I was like, it's, it's funny because I think, um, you know, I said at the start, um, When I left Spring, my, my last job, I was like, I don't really know what I wanna work on. And like, I could work on a bunch of different things, but I just kept coming back to tooling because I find it to be like the most gratifying thing to work on, like enabling, like really a lot of my last job was actually, I didn't really like [00:59:00] think about it this way at the time, but it was building like developer tools.
+
+Like I was building tools to enable other people to do great work. Like I was building like infrastructure and tooling. And like that to me is like the most rewarding thing. Um, and like seeing all the projects that like Ruff is already supporting, it's like so cool to me honestly. And
+
+**Andrew:** ones too.
+
+**Charlie:** very, very, like, it is like such a gratifying thing for me to just see people's response to it and like see how it's, um, making people more efficient and like, uh, you know, if we could make the Python ecosystem like, 1% more efficient, like in aggregate, like think about like the compounding that happens there.
+
+Like everyone's getting more done, everyone's more efficient. And you know, depending on how, how arrogant I want to be, I'll say well do more than 1%, but I, you know, like 1% would be like, that'd be a great, that's like a hu that's like a huge lift for like, the world. So I know it's a little like melodramatic, but, um, I really do like, like working on [01:00:00] tools and like, the point of this is to like, help people work faster, um, and, and be less, um, I don't know, get like good tools get out of the way.
+
+I wanna like, get tools out of people's way and like let them ship stuff. And so that's, that's really the point here.
+
+**Andrew:** Yeah. Okay. With that, let's move on to tooltip.
+
+That's it for the free version of the episode. If you want to hear the full thing, you'll have to subscribe.
+
+Cool. Well, that wraps it up for tooltip. Um, thanks for coming on, Charlie. This was a, a really fun dive into all things rust in, uh, Python Lin. Uh, I really enjoyed your perspective on becoming an open source maintainer, open overnight, and how you've dealt with it. It, it was a lot of fun to talk to you.
+
+**Charlie:** Thanks so much. This was, um, I mean, I love talking about this stuff, so this was a blast for me. Um, and, uh, yeah, appreciate you having me on and, uh, look forward to, uh, watching myself back, I guess.
+
+**Justin:** Seeing all the editing magic.
+
+**Charlie:** Yeah.[01:01:00]
+
+**Justin:** Yeah. Charlie, absolute, absolute pleasure. Uh, this is so relevant given how much rust that I find myself riding these days, and I can hear a lot of my own experience and some of the story that you've told. So, uh, this is a huge pleasure.
+
+**Charlie:** Nice. That's really cool to hear. Appreciate it.
