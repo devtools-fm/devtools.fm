@@ -1,5 +1,4 @@
 import { Navigation } from "@devtools-ds/navigation";
-import makeClass from "clsx";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
@@ -7,53 +6,7 @@ import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
-import { ComponentProps } from "react";
-import { firefox } from "@devtools-ds/themes";
-
-const H1 = ({ className, ...props }: ComponentProps<"h1">) => (
-  <h1 className={makeClass(className, "text-3xl mb-6")} {...props} />
-);
-
-const H2 = ({ className, ...props }: ComponentProps<"h2">) => (
-  <h2
-    className={makeClass(
-      className,
-      "text-2xl border-b-2 pb-2 border-dashed border-gray-600 mb-6"
-    )}
-    {...props}
-  />
-);
-
-const H3 = ({ className, ...props }: ComponentProps<"h3">) => (
-  <h3
-    className={makeClass(className, "text-xl mb-6 mt-6 font-medium")}
-    {...props}
-  />
-);
-
-const Blockquote = ({ className, ...props }: ComponentProps<"blockquote">) => (
-  <blockquote
-    className={makeClass(className, "my-8 pl-4 border-l-4")}
-    style={{ borderColor: firefox.dark.pink02 }}
-    {...props}
-  />
-);
-
-const P = ({ className, ...props }: ComponentProps<"p">) => (
-  <p className={makeClass(className, "my-6")} {...props} />
-);
-
-const Ul = ({ className, ...props }: ComponentProps<"ul">) => (
-  <ul className={makeClass(className, "list-disc pl-6 my-4")} {...props} />
-);
-
-const Link = ({ className, children, ...props }: ComponentProps<"a">) => (
-  <a className={makeClass(className, "my-6")} {...props}>
-    <ColoredText color="purple" className="underline">
-      {children}
-    </ColoredText>
-  </a>
-);
+import { Blockquote, H1, H2, H3, Link, P, Ul } from "components/system";
 
 export default function Episodes() {
   const tags = (
@@ -133,11 +86,13 @@ export default function Episodes() {
                 </li>
                 <li>
                   <Link href="https://www.bhphotovideo.com/c/product/1668624-REG/o_c_white_ulp_13_red_limited_edition_proboom_ultima.html/overview?ap=y&ap=y&smp=y&smp=y&lsft=BI%3A6879&gclid=CjwKCAiAtouOBhA6EiwA2nLKH8v1ksRPWxz8DV3uflYwV3HEsDqW930Nf2wOzWZL7tWptzQomu-ppRoC0hoQAvD_BwE">
-                    O.C. White ProBoom Ultima Gen2 Ultralow-Profile Adjustable Mic Boom
+                    O.C. White ProBoom Ultima Gen2 Ultralow-Profile Adjustable
+                    Mic Boom
                   </Link>
                   {" - "}
-                  While this is an expensive piece of equipment it is so much better than my last one.
-                  This mic arm has no trouble holding up heavy mics and very positionable.
+                  While this is an expensive piece of equipment it is so much
+                  better than my last one. This mic arm has no trouble holding
+                  up heavy mics and very positionable.
                 </li>
                 <li>
                   <Link href="https://en-us.sennheiser.com/high-quality-headphones-around-ear-audio-surround-hd-650">
