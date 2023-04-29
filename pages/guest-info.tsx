@@ -164,6 +164,16 @@ export default function Episodes() {
                 You can talk about anything from IDE plugins you've found useful
                 to cooking appliances you can't live without.
               </P>
+              <H3>Promotion</H3>
+              <P>
+                We'll be promoting your episode on{" "}
+                <Link href="https://devtools.fm">Twitter</Link>, and a bunch of
+                other places. If you could help us spread the word that would be
+                amazing! You'll be tagged in all of our posts so you can just
+                retweet them. If you have words on the topic a quote tweet is
+                even better.
+              </P>
+
               <hr className="my-12 border-gray-600" />
 
               <P>That's it! We look forward to our full conversation.</P>
