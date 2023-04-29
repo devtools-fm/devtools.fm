@@ -80,7 +80,7 @@ const tabPanelRenderers = {
 
 const Episode = ({
   youtubeId,
-  buzzSproutEpisodeId,
+  spotifyEpisodeId,
   tabSections,
   frontMatter,
 }: ProcessedMdx) => {
@@ -90,7 +90,11 @@ const Episode = ({
   const router = useRouter();
   const [view, setView] = useQueryParam("view", StringParam);
   const [activeTab, activeTabSet] = useState(
-    view === undefined ? 0 : view==='youtube' ? tabSections.length : tabSections.findIndex((t) => t.type === view)
+    view === undefined
+      ? 0
+      : view === "youtube"
+      ? tabSections.length
+      : tabSections.findIndex((t) => t.type === view)
   );
   const { episodeNumber } = router.query;
   const episodeNumberString = `Episode #${episodeNumber}`;
@@ -126,9 +130,9 @@ const Episode = ({
 
       <iframe
         className="mb-8 md:mb-12"
-        src={`https://www.buzzsprout.com/1772992/${buzzSproutEpisodeId}?client_source=admin&amp;iframe=true`}
+        src={`https://podcasters.spotify.com/pod/show/devtoolsfm/embed/episodes/${spotifyEpisodeId}`}
+        height="161px"
         width="100%"
-        height="200"
         frameBorder="0"
         scrolling="no"
       />
@@ -159,14 +163,14 @@ const Episode = ({
           <Navigation.Controls className="overflow-x-auto">
             <Navigation.TabList>
               {
-                (tabSections.map((tabSection) => (
+                tabSections.map((tabSection) => (
                   <Navigation.Tab
                     id="about"
                     icon={tabIcons[tabSection.type] || <DataIcon inline />}
                   >
                     {titleCase(tabSection.type.toLowerCase())}
                   </Navigation.Tab>
-                )) as unknown) as JSX.Element
+                )) as unknown as JSX.Element
               }
               <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
                 YouTube

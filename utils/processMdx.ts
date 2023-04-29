@@ -181,7 +181,7 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
 interface FrontMatter {
   title: string;
   youtube: string;
-  buzzsprout: string;
+  spotify: string;
 }
 
 export async function processMdx(
@@ -192,7 +192,7 @@ export async function processMdx(
 
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
-  const [, buzzSproutEpisodeId] = data.buzzsprout.match(/1772992\/\S+\/(\d+)/);
+  const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/);
 
   const tabSections = await parseTabs(content, components);
   const sectionsTab = tabSections.find(
@@ -219,7 +219,7 @@ export async function processMdx(
     guests: [...guests],
     runTime: sectionsTab.sections[sectionsTab.sections.length - 1].time,
     youtubeId,
-    buzzSproutEpisodeId,
+    spotifyEpisodeId,
     frontMatter: data as FrontMatter,
     tabSections,
   };
