@@ -65,8 +65,8 @@ const Link = ({ className, children, ...props }: ComponentProps<"a">) => (
 export default function Episodes() {
   const tags = (
     <MetaTags
-      title="devtools.fm - Stack"
-      description="The tools we use to produce and publish and episode of devtools.fm"
+      title="devtools.fm - Guest Info"
+      description="A brief overview of what to expect when you're a guest on devtools.fm."
       image="https://devtools.fm/og-image.png"
     />
   );
