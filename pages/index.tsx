@@ -11,6 +11,7 @@ import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { EpisodeRow } from "components/EpisodeRow";
+import { Link, P, Ul } from "components/system";
 
 interface HomeProps {
   latestEpisode: ProcessedMdx;
@@ -69,6 +70,35 @@ export default function Home({ latestEpisode }: HomeProps) {
 
                 <EpisodeRow {...latestEpisode} />
               </div>
+
+              <h2 className="text-xl md:text-2xl mb-4 md:mb-6">
+                Paid Subscribers
+              </h2>
+
+              <P>
+                There are two versions of the podcast: a free version and a paid
+                version. The paid version is the same as the free version, but
+                with an extra 20-30 minutes of content throughout the interview
+                and no ads. The paid version is available to anyone who
+                subscribes to the podcast for $5/month. You can subscribe using
+                any of the links below.
+              </P>
+
+              <Ul className="mb-10">
+                <li>
+                  <Link href="https://www.patreon.com/devtoolsfm">Patreon</Link>
+                </li>
+                <li>
+                  <Link href="https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe">
+                    Spotify
+                  </Link>
+                </li>
+                <li>
+                  <Link href="https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758">
+                    Apple Podcasts
+                  </Link>
+                </li>
+              </Ul>
 
               <h2 className="text-xl md:text-2xl mb-4 md:mb-6">Hosts</h2>
 
