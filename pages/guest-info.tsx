@@ -110,18 +110,6 @@ export default function Episodes() {
                 <Link href="https://twitter.com/devtoolsfm">@devtoolsfm</Link>.
               </P>
               <H2>Preparation</H2>
-              <H3>Software</H3>
-              <P>
-                Devtools.fm is a remote podcast. We record our episodes over
-                video chat. We use{" "}
-                <Link href="https://www.riverside.fm/">Riverside</Link> for our
-                video chat. It's a great tool that lets us record our sessions
-                with the highest quality possible.
-              </P>
-              <P>
-                You do not need to make an account to use Riverside. All you
-                need to do is join the link in the calendar invitation.
-              </P>
               <H3>Hardware</H3>
               <H4>Video</H4>
               <P>
@@ -135,10 +123,28 @@ export default function Episodes() {
                 Since you'll be doing the most talking the episode it really
                 enhances the experience for our listeners.
               </P>
+              <P>Please avoid using the following microphones:</P>
+              <Ul>
+                <li>Airpods</li>
+                <li>Lapel Mic</li>
+                <li>Laptop Mic</li>
+              </Ul>
               <P>
                 In the case that you don't have a microphone we can still record
                 the episode. We'll just use the built in microphone on your
                 computer.
+              </P>
+              <H3>Software</H3>
+              <P>
+                Devtools.fm is a remote podcast. We record our episodes over
+                video chat. We use{" "}
+                <Link href="https://www.riverside.fm/">Riverside</Link> for our
+                video chat. It's a great tool that lets us record our sessions
+                with the highest quality possible.
+              </P>
+              <P>
+                You do not need to make an account to use Riverside. All you
+                need to do is join the link in the calendar invitation.
               </P>
               <H2>Episode Content</H2>
               <P>
@@ -153,7 +159,7 @@ export default function Episodes() {
                 </Link>
                 .
               </P>
-              <H3>Tooltips</H3>
+              <H4>Tooltips</H4>
               <P>
                 At the end of each episode we do a segments called "Tooltips".
                 This is where we ask our guests to share some links to tools
@@ -175,7 +181,6 @@ export default function Episodes() {
               </P>
 
               <hr className="my-12 border-gray-600" />
-
               <P>That's it! We look forward to our full conversation.</P>
             </Navigation.Panel>
           </Navigation.Panels>
