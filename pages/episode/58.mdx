@@ -1,0 +1,503 @@
+---
+title: Steve Manuel, Ben Eckel - Extism, Dysolib
+youtube: https://www.youtube.com/watch?v=YWtGcBGAphY
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Steve-Manuel--Ben-Eckel---Extism--Dysolib-e2636ro
+tags: wasm, rust, extism, dylibso, technology, programming, developer tools, devtools, webassembly, web assembly, web, assembly, webdev, web dev, web development
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk with Steve Manuel and Ben Eckel from Dylibso about their project Extism, an extension framework built on WebAssembly.
+We talk about the inspiration for the project, the challenges of building a apps with WebAssembly, and the future of WebAssembly.
+
+- https://extism.org/
+- https://dylibso.com/
+- https://twitter.com/nilslice
+- https://twitter.com/bhelx
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://www.youtube.com/watch?v=zMf_xeGPn6s&ab_channel=Remix
+
+#### Justin
+
+- [Everything once sensor](https://shop.everythingsmart.io/products/everything-presence-one-kit) ([explainer video](https://www.youtube.com/watch?v=cH5sJFk_2wo))
+- [Threadboards](https://www.kickstarter.com/projects/3dprinteracademy/thread-boards-3d-printable-peg-boards-with-a-twist?ref=nav_search&result=project&term=thread)
+
+#### Steve
+
+- https://ziglang.org
+- https://helix-editor.com
+- https://github.com/MAIF/otoroshi
+
+#### Ben
+
+- https://github.com/bytecodealliance/wizer
+- https://www.lunarvim.org/
+
+<!-- TAB: SECTIONS -->
+
+[00:02:50] WASM Inspo
+[00:09:32] Extism
+[00:19:15] Bridging the Gap
+[00:25:15] Modsurfer
+[00:29:46] Building around WASM
+[00:35:59] Projects Using Extism
+[00:38:17] Sharing Modules
+[00:40:31] Dysolib the Company
+[00:45:38] Future of WASM
+
+<!-- TAB: TRANSCRIPT -->
+
+**Steve:** [00:00:00] I didn't have an off the shelf plug-in system that I could incorporate in my app. So I had to make those decisions and kind of. Reinvent the wheel over and over and over and over again. And when I first learned a WebAssembly five years ago now, ~~um,~~ the first thing that it struck me as was a contender for a likely last plug-in system or execution format that we ever need
+
+**Andrew:** Hey, before we get started, I like to remind you the full. Episode is only available to our subscribers. The current platforms you can subscribe on our Patrion, Spotify, YouTube. And apple podcasts.
+
+The full version of this week's episode you get To hear all of our tool tips and this week it was interesting And with that let's get onto the episode
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host, Justin.
+
+**Justin:** Hey everyone! ~~Uh, ~~Our guests today are Steve Manuel and Ben Eckle ~~uh,~~ from~~ I should have got the name of this first~~ Dylibso.~~ Is that right? Did I do it? All right, cool. Um, ~~So I originally [00:01:00] heard of y'all's work through ~~uh,~~ this project called~~ Ex~~ Extism, which is like a Wasm extension framework~~ uh,~~ that's really cool.
+
+I'm so excited to talk about that. ~~Uh,~~ I've been sort of following it for a while and ~~and ~~really wanting to dig into it deeper. But we do that, ~~uh, why don't you ~~take some time to tell us about yourselves and about your company. What do you do?
+
+**Steve:** Sure. ~~Uh, oh. Kick it off. Uh,~~ My name's Steve. I'm the co-founder and CEO of Dylibso. ~~Um,~~ Originally founded, ~~uh,~~ about August of 2022, ~~uh,~~ with the formation of the project Extism. ~~Uh,~~ It was kinda the first thing we launched. ~~Uh,~~ Before Extism, I was working as a compiler engineer at a quantum computing company, kind of bridging the worlds of quantum and classical computing.
+
+And then prior to that was at CloudFlare, where I worked on the workers' platform and built the workers' Rs project to bring Rust support to the Edge and allow for an alternative language to be used as kind of a first class citizen for the workers platform, which is previously just JavaScript. Ben.
+
+**Ben:** Yeah, ~~uh, ~~my name's Ben. ~~Uh, ~~Before Dylibso, ~~uh,~~ I was working at Datadog. ~~And uh,~~ And one of the things I was working on was trying to figure out how some of Datadog's tools would work in some of these [00:02:00] newer ~~um,~~ deployment environments, like the Edge, like CloudFlare workers, and Fastly computed edge, stuff like that.
+
+~~Um, and I was, I was, ~~I was like porting some of the tools to work in the Edge and I really kind of reignited a lot of my interest in the technology. ~~Uh,~~ And that's when I got back in touch with Steve, and~~ we,~~ we co-founded this ~~this~~ company along with our other ~~other ~~co-founder Zach. ~~Uh, but yeah, that's, ~~That's my short history of Dylibso.
+
+**Steve:** And ~~give just like ~~a brief background of the company ~~too, kind of what we do, and then put that rest for a bit, um, that those, you know,~~ primary mission is to help you take WebAssembly to production and then keep it there. And so for all the developers who are working right now and kind of learning about Wasm and experimenting with this new technology.
+
+~~Um,~~ There's a lot of gaps between, you know, writing your first line of code compiling to Wasm and then all the steps in between going to production. And so we build validation tools, testing, debugging, visibility and observability tools to basically could help fill those gaps of taking Wasm to production and then wanted to make sure that you have a good experience with it once ~~you're, you know, once ~~it's in prod two.
+
+## [00:02:50] WASM Inspo
+
+**Andrew:** Cool. Before we dive into the tools that you guys have built,~~ uh, ~~why Wasm? ~~Why,~~ why do you find it ~~uh,~~ a new exciting technology? One so exciting that you wanna build a company around it?
+
+**Ben:** ~~Uh, yeah, I'll take this one first. Um, ~~[00:03:00] Yeah,~~ so I think there's, there's kind of two there. ~~There's sort of a personal, and there's more of like a ~~a~~ kind of professional, um,~~ and more, more ~~something that's more ~~more ~~of a reason in the context of, you know, all your audience. ~~Uh, ~~And then those two things kind of intertwine.
+
+But~~ basically,~~ personally for me, I find Wasm exciting because ~~um, you know, I, ~~I really like to work with what I would call programming language infrastructure. ~~Um, ~~I like, ~~uh, ~~reading about ~~uh, ~~computing and things from the past and ~~and ~~Wasm kind of combines a lot of those different things for me, just in terms of the type of work that I'm doing in this space. ~~Um, ~~And it's also really challenging. ~~Uh, so, so~~ I mean, personally I find ~~uh, ~~those things to be really great and exciting. And then there's also the aspect of ~~like why, you know, ~~why it's important for our industry. And to me, I think the most important thing about it, really is it's sandboxing capabilities.
+
+~~Um, ~~And all of it's denied by default capabilities. I find that to be a little bit interesting and something that people overlook because typically as developers ~~we,~~ we look at security innovation, and we look at security as~~ kind of ~~a hindrance to our job, a lot of times. It's something that generally slows us down.
+
+~~Um, ~~But actually if you look back at a lot of the advancements over the past 30 years or so, a lot of it is driven by~~ you know, ~~advancements in isolation technology, right? [00:04:00] Like going from Hardware to Virtual Machines, going from Virtual Machines to Containers, and now going from Containers to Wasm. And this idea of basically moving the ~~isolation, ~~isolation boundary up closer to the application to where your applications are smaller,~~ um,~~ and faster. And you can pack more of them ~~on,~~ on a system.
+
+~~Um, so for me, I, I feel like ~~I don't really know everywhere that WebAssembly is somebody's gonna go, but I know that in 10 years like this, 2023 will be kind of a watermark moment for the evolution of a lot of these technologies. And I think, Wasm will be the reason why.
+
+**Steve:** Just to add my 2 cents into there. ~~You know,~~ Like, I've written a lot of code in a lot of different programming languages, and I've rewritten a lot of code from one language into another language. And I always just kind of find it a shame when I've got to basically like port something into another language, just because it's gotta run in the stack that the company has chosen for a certain project.
+
+~~And~~ WebAssembly provides, ~~like, I think this~~ maybe not the first, but maybe like the first real actualization of an opportunity to kind of reuse a bunch of you know, code that's sitting around in older libraries.~~ Um,~~ And because WebAssembly [00:05:00] targets ~~you know,~~ a single ISA, an instruction set that's common across ~~you know, ~~every runtime~~ uh, ~~where Wasm runs. You can do a lot of really interesting things with that as kind of your, you know, foundational layer instead of having to instrument all your source code with libraries and then expect the developer to do that, right.
+
+And include all of the places where, you know, a trace needs to be run and a span needs to to follow and then more spans, A lot of these things can be done automatically. And ~~um,~~ beyond instrumentation,~~ you know,~~ debugging and analysis, ~~uh,~~ there's just a lot you could do with a common instruction set. And some of this was ~~you know, kind of ~~illuminated for me working in compilers with the LLVM tool chain, where once you get your language down to LLVM IR, that's really where the magic happens.
+
+And WebAssembly brings this kind of to a more approachable layer, ~~uh,~~ where more languages can run in more environments, that we can bring more tooling to this ecosystem. And I always kind of say that like, we wanna make WebAssembly, you know, everybody's favorite binary format, but like nobody really thinks about binary formats or [00:06:00] cares about binary formats.
+
+And so I think there's an opportunity to like, make people actually care about this binary format.
+
+**Justin:** This is such a really interesting topic. I mean, as long as programming has been a thing, we've always wanted to share code and reuse code, right? And, ~~and~~ that's only become more and more important as our software system's gotten more and more complex. And I think we've taken a lot of cracks at it. You know, whether it's like, you know, DLLs or like shared objects or maybe even like getting into things like the JVM. Like, building common run times where you can have like different language compilers.
+
+I know like Erlang is sort of like developing a similar sort of ecosystem. You have like all these different approaches to doing this thing where it's like, you know, we're potentially gonna have multiple languages and we want to kind of run it on a shared ecosystem. But a lot of these ~~are, are pretty much like, they~~ are very specific to an ecosystem.
+
+And I think your ~~your~~ point about LLVM is ~~is~~ really an interesting one because it has become this sort of like common baseline in a way for like a lot of compiled languages, ~~um, ~~that, ~~you know, have,~~ have let [00:07:00] people upstream think about one set of problems and people downstreams that think about a separate set of problems, which is like, I think tremendously valuable to get sort of just like ~~a, a. ~~a greater lift in the industry of just like all that effort. Because ~~if, you know, ~~if you're thinking about like, oh, well I'm gonna optimize ~~you know, uh,~~ JavaScript runtime, or I'm gonna optimize, uh, Erlang runtime or JVM or something like that, ~~it's like ~~that's only benefiting really those sort of like siloed ecosystems.
+
+So it's kind of interesting.
+
+**Steve:** Yeah. While they are like a clean target for like higher level languages to come down and compile to
+
+a lot of the, ~~you know, um, ~~ ISA for the CLR or JVM was designed with the higher level language in mind already. And just tying those two together at that early stage makes it much more difficult for other languages that don't have maybe the same semantics or the same, ~~um, you know, ~~paradigms for security or ~~programming program ~~programming models, you know, to kind of fit into that ISA as like this lower level, you know, compilation state.
+
+And~~ um,~~ WebAssembly was designed from the outset to not have a language really attached to it as its higher level ~~um, you know, ~~[00:08:00] format. And I think that's really helped it gain traction as a target for a bunch of different languages to compile to, ~~um,~~ which is really exciting. And ~~we, we,~~ we think is a, you know, pretty critical ~~um, ~~component for WebAssembly as it matures is for more and more languages ~~to, ~~to make it down to Wasm. ~~Uh,~~ and we're seeing a lot of progress, which is great.
+
+**Ben:** Yeah, ~~that ~~also~~ allows it to, you know, a, a lot of people target some of these,~~~~ ~~you were talking about Erlang for instance, and the JVM. A lot of people target these as ~~kind of~~ platforms for their code. But ~~you know, ~~both of those things come with. A lot of stuff that you probably don't need. Um, like, ~~uh, ~~the JVM, ~~you know,~~ you can't really allocate memory without having be garbage collected.
+
+~~Um,~~ Also the JVM, any program that you run into, JVM can do whatever it wants. It can open sockets, it can open files. And WebAssembly is nice because it comes with nothing. Right? And if you don't need anything, then your WebAssembly program will be very fast and very secure. ~~Um,~~ and if you want those things, then you have to explicitly opt into them.
+
+**Justin:** Yeah, it's interesting for a lot of the listeners to this podcast, maybe the first sort of like sandboxing experience that they've had was just like running JavaScript and a browser. ~~You know, ~~like I have a tab that's running JavaScript. ~~And, ~~[00:09:00] Uh, there's ~~there's ~~a very interesting correlation here to like Node, uh, which took, you know, this language that sort of had ran historically in a sandbox environment and now has like access to everything kind of like, ~~you know,~~ the JVM.
+
+And then ~~uh,~~ contrast that with like Deno, how it has a, like more fine grain permission model. And I know that's coming to Node too, but like,~~ you know,~~ Deno designed from the outset to have a more fine grain permission model. So it's kind of in a similar vein of like, you can sort of think of this in that way.
+
+It's like building something in this sandbox where you can really control or just give access to what it needs and nothing else. That's really awesome.
+
+**Steve:** Absolutely.
+
+## [00:09:32] Extism
+
+**Justin:** So, uh, let's talk a little bit about Extism. ~~Uh, so. ~~Uh,~~ this is,~~ this is really exciting for me. ~~Um, you know, I,~~ I tell the story a lot that one of the things that really got me into programming was modding and games. ~~And, ~~And like, a lot of ~~like~~ modding engines are very like crude plugin systems.
+
+Uh, so maybe you could, uh, just talk a little bit about what ~~like what ~~Extism is and sort of what the motivation behind building it was.
+
+**Steve:** Sure. Uh, I mean, this goes back a long [00:10:00] ways. ~~Um, ~~I've written too many plug-in systems to like, you know, care to talk about. And it frustrated me every single time, ~~um,~~ trying to basically make the same decisions using a different stack or different language or a different model of executing the plugin and what format is it going to be in?
+
+How am I gonna give it some data to kind of be initialized with, and~~ what, ~~once it's initialized, how does it get access to other data? ~~Um,~~ can that plugin call other plugins? Like just all these things, like ultimately somebody else could have made these decisions and put them into a box for me, and I could have taken that box and put them into my program and then moved on with my life and been done with my plug-in system.
+
+But it just didn't exist. I didn't have an off the shelf plug-in system that I could incorporate in my app. So I had to make those decisions and kind of. Reinvent the wheel over and over and over and over again. And when I first learned a WebAssembly five years ago now, ~~um,~~ the first thing that it struck me as was a contender for a likely last plug-in system or execution format that we ever need.
+
+And someone just needs to like make a [00:11:00] runtime that can take web assembly, give it some data, allow for arbitrary function to be called, and then get some data back. And that's oversimplifying a little bit, but effectively, like that's the plugin system. And so for those who aren't aware what a plugin system really is or does, it takes your application and let's the programmer of that application kind of define a extension point or multiple extension points through the life cycle of that program and say, end user.
+
+Give me some code and I'll run your code at this point in my program. And then the next step of the program will take the results of your plugin and do something new. So maybe we don't cover all of the needs for you as an end user within our program's ~~uh, you know, ~~capabilities. We have a plugin system that lets you give us some code, we'll run that code.
+
+And now the program has extra capabilities that we didn't think of, we didn't ship, but you've ~~you know, ~~imbued into the program itself. And it's a really powerful concept ~~um, ~~and can give engineering teams like ~~a ~~a huge relief from these backlogs that ultimately like take up ~~you know, ~~way more [00:12:00] time ~~uh, that than,~~ than the teams ultimately expect them to.
+
+~~Um, and so it,~~ It was really that idea of like, could we create this universal off the shelf plugin system that any program could use to embed and kind of immediately get this plugin system, ~~uh, ~~available to it. And so ~~um,~~ Just one day kind of decided I'd had enough, I'd thought about it enough, I just needed to build this thing.
+
+And, ~~ you know, um, you know,~~ took a couple days to kind of create a proof of concept and got it far enough along ~~um,~~ to bring on, you know, Zach and Ben ~~to like, who, ~~who have taken it way further beyond ~~you know, ~~my imagination. And I'm very thankful ~~um, you know, that, ~~that they were interested enough to ~~to~~ come on and help.
+
+~~Um, but yeah,~~ Extism now is a plugin system that can be embedded into 15 different programming languages, ~~um,~~ including the browser and server environments. ~~ Um,~~ You can run plugins in your code that are compiled to WebAssembly. We have official support for seven different programming languages that compile to Wasm. But theoretically, anything that can compile to Wasm could be run as~~ a ~~Extism plugin.
+
+~~Um, ~~and we've got an incredible open source community ~~uh,~~ and Discord made up of programmers of ~~you know,~~ all [00:13:00] different levels of experience in different programming languages. And it really gives us a cool insight into the world of like, how are people starting to think about web assembly? How are they using it?
+
+What problems are they having? ~~Um,~~ And it inspires a lot of the product development that we ultimately ~~um, you know, ~~move into ~~at,~~ at the company. ~~Ben, if you wanna add anything, please go for it.~~
+
+**Ben:** ~~No, it was great.~~
+
+**Steve:** ~~Okay.~~
+
+**Andrew:** ~~Uh,~~ So the features that Extism ~~on Built are ~~built on in Wasm are that portability in that security. ~~Right. Uh,~~ Are there any other features Wasm that ~~uh,~~ help enable Extism to do cool things?
+
+**Ben:** ~~Um, yeah, I can take this one.~~ Yeah. It's funny, you ~~you kind of ~~really nailed it right. It's like, what's really important about Extism ~~are,~~ are those two key aspects, portability and security. And ~~um, ~~just to kind of give people some insight about why those things are important, ~~uh, ~~security again, instead of just looking at it generically as like not getting hacked or something that kind of restricts you in some way.
+
+~~Um, ~~It's actually an enabling feature, right? Because if you ~~um, if you~~ talk to a lot of web developers, we've had a lot of trouble explaining to people what a ~~plug ~~plugin system is. Because what's happened is a long time ago, or, ~~you know, ~~maybe back in the nineties, early aughts. ~~Uh,~~ back before we moved to the web and we had this kind of client compute model, plugin systems were very common.
+
+~~Um, ~~A lot of your [00:14:00] desktop apps have them, your browser has it, ~~you know, um,~~ we've done a lot of like reading about like music technology from the old days that has plugin systems and~~ um, I mean, it, it was, ~~it was always a common thing, right? And you just take a shared object of code that you could download online and you could plug it into your application and people could extend it, right?
+
+~~Um,~~ Game modding is another great example, right? ~~Um, ~~But what happened is when you moved back to the web, we couldn't really take shared objects with us, right? And there were all sorts of security problems with now doing plug-in systems in a multi-tenant environment. So I think like really one of the interesting things about this security aspect is it's gonna bring plug-in systems to places that just never really could have them before.
+
+~~Um, ~~The challenge is of course, that a lot of people have grown up learning to program on the web and they don't even know what it is. And we kind of have to explain it to them a little bit, but ~~that's,~~ that's really like a, a powerful thing, right? And then ~~the,~~ the portability aspect's important because ~~um, we also ~~our stacks now are very diverse, right?
+
+Like even ~~uh, ~~small companies that I've worked at, you usually have two or three or four programming languages across your stack. ~~Um, there, there, ~~And~~ And~~ plug-in systems are historically very siloed to the languages that you choose, either on the guest or the host [00:15:00] side. ~~Um,~~ And ~~it, ~~it's a really huge lift to like run it somewhere else in your application that has a different language or like rewrite your application in a new language.
+
+And how do you bring your plug-ins with you? Really cool thing about Wasm is you can bring your plug-ins everywhere and actually your plug-ins can actually outlive your host now. So, in theory, your plug-ins, you know, if Stripe builds a plug-in system, then maybe ~~you know, um, ~~some other payment system like a Square can use Stripe plug-ins too, right?
+
+It's like plugins can actually ~~now be, can now outlive or ~~live outside of ~~uh, ~~the host if they're ultraportable. So there's the aspect of like letting people bring their language, but also about moving these plugins around having them be independent from being these siloed things that only work in one person's application.
+
+**Steve:** One thing that goes hand in hand with security, and it's usually the trade off is speed or performance. And so like, yes, you can embed a JavaScript engine inside of your application. And this is kind of a ~~you know, ~~common way you see, you know, like a C++ application. It's gonna include a little scripting engine and it's probably JavaScript or Lua and like Ben mentioned, you know, yeah.
+
+That's siloed to that one language. You can only write JavaScript to then extend this [00:16:00] application. ~~Um, ~~but it's very secure. Like, you know exactly that boundary between the C++ host application and the JavaScript guest code that's extending it. ~~Um, ~~Where you lose out and the trade off is in the performance and usually ~~you know, ~~it's orders and orders of magnitude of a slowdown to go from native code and C++ and then into the scripting plugin environment in JavaScript. And web assembly provides this near native speed because that byte code, that Wasm is then compiled in most cases to native instructions and executed at near native speed in the host application inside of the process.
+
+~~Um, ~~But it's isolated and has all the ~~safety perform~~ safety ~~uh, ~~characteristics that you want out of a safe plug-in system. And so not having to trade off security for performance really gives you this unique new ~~power ~~super power that web simply provides that we really just haven't had in the past. And to Ben's earlier point, ~~you know about like, ~~we used to be able to kind of load a DLL or a shared object into our desktop software.
+
+One of the other pieces there is ~~like,~~ we've moved a lot of the software up to the [00:17:00] server. And like Ben mentioned, in a multi-tenant environment, you just can't load like a shared object and expect ~~Yeah, you. ~~to trust that code in any way ~~shape,~~ or shape. And it is actually kind of one of the, ~~you know, ~~foundations of the company.
+
+At least the name Dylibso is a Mac dylib and ~~a ~~SO, Linux shared object; as kind of like a, you know, acknowledgement to some technology that we think will be displaced for many use cases ~~uh, by, ~~by WebAssembly. ~~And~~ So a little bit of a appreciation for the old way, but making room for the new way that we think ~~is, ~~is much better across many dimensions.
+
+**Justin:** I~~ absolutely ~~love the name Origins.
+
+**Andrew:** yeah. Makes a lot of sense now. ~~Uh, yeah, the, the, the whole, ~~The whole idea of the portability is super cool to me. ~~Like, uh,~~ I work on an application called Descript. It's an audio video editor and like a plugin system for us. Makes a lot of sense. And a plugin system that allows you to maybe use some like Python. Audio processing stuff or just like things that have already been solved elsewhere and to easily include them a plugin, that's a JavaScript web application. That is just like super awesome. And the ease of use is the [00:18:00] real awesome part.
+
+**Steve:** Yeah, totally. We should talk about that. Uh, this like me wanting to reuse code, I mean, at the fundamental level, like having WebAssembly as a plugin system, you could use it in a bunch of different ways. It doesn't have to be to necessarily extend your software if you don't want it to be. It's like, let me take that rust code and bring it into my Java app. Or let me take that go code and bring it into Ruby.
+
+It's like there's just so many ways you can mix and match code now. ~~Um,~~ And even if you don't use Extism as a plugin system, it's a really easy way to get started with WebAssembly, which still today has some warts, you know, if you're not using a framework. ~~Um,~~ And I'm happy to go into more detail there. ~~Uh, ~~But that was also an additional lane that we considered of like, how do we make not only like this plugin system useful and out of the box, very capable for developers to use, but also as kind of a warm, fuzzy introduction into WebAssembly that doesn't kind of cause any pain or hurt you along the way.
+
+And there are some issues that people tend to hit that we feel are ~~are,~~ kind of ashamed because it could maybe turn somebody off WebAssembly, when ~~just~~ just beyond ~~you know, ~~that little hurdle. [00:19:00] There's just this whole world of~~ you know, ~~magic and amazement~~ um,~~ that you can experience. But a lot of people get kind of caught behind that.
+
+And Extism ~~is,~~ is a way around that hurdle. ~~Um,~~ And it's not ~~the ~~the right choice for everything, but it does help ~~you know, in, ~~in many, many cases, um, developers kind of get started with WebAssembly.
+
+## [00:19:15] Bridging the Gap
+
+**Justin:** I would like to dig into ~~the,~~ the performance and portability thing a little bit more. A lot of times, anytime you have ~~uh,~~ a bridge between two execution environments, ~~um, ~~often your performance is not necessarily execution in any one of the environments, but the channel of communication like message passing ~~back,~~ back and forth can be super expensive.
+
+And then if you're building. Any system that's incredibly portable, you tend to have to target sort of lowest common denominator. Wasm is the lowest common denominator here, but~~ you know,~~ there are certain things that you may not fundamentally have access to. For example, the file system. ~~Uh, and, ~~and for good reasons, right?
+
+If you're like shipping a Wasm module to the browser, like there is no file system. So it's like, you know, what are you trying to do? ~~Uh,~~ So ~~like,~~ help me understand the story about this a little bit more. ~~Um, you know,~~ and just [00:20:00] as an example, ~~if something, ~~if you're like wanting to make an extension that like, ~~you know,~~ acts on files, is it that your host execution environment, your language that you're writing in has to actually sort of define some vocabulary for ~~the, ~~the Wasm extension is like, &quot;Hey, if you wanna read a file, here's what you need to ask me. And then I'll ~~like~~ send you back the contents.&quot;
+
+And if that's the case, ~~uh, ~~what about that bridge? Like, you know, what is the ~~the~~ cost there?
+
+**Ben:** ~~you want me to take this one? Yeah. ~~
+
+**Steve:** ~~of work recently on this interface specifically.~~
+
+**Ben:** ~~So that's,~~ That's really~~ like a great, ~~a great question. ~~Um, ~~And,~~ uh, it, it's, ~~it's really an important question to answering like whether WebAsseembly is gonna meet all your needs at this moment. I do think one of the limiting factors right now is yeah ~~you're,~~ you're constrained not by the ability to invoke a function quickly or get a response quickly.
+
+~~ You're, you're, ~~You're constrained by the amount of data that you might need to push across that boundary because there is a boundary and for good reason. ~~Like, um, ~~WebAssembly has its own ~~address ~~memory addressing space, and it can't escape that, ~~uh, ~~address space. So if you want it to know about any data, you have to copy your data into that space.
+
+So there is some kind of copy in memory happening. ~~Um, ~~it's generally pretty quick ~~um, ~~but it can be a limiting factor if you have a ton of data. ~~Right? Um, ~~But that is [00:21:00] something that I think is being worked on and in the future there will be ways to pass references, like safe references across that boundary, but I can't really speak to ~~speak to~~ that at the moment.
+
+~~Um,~~ In terms of ~~uh, ~~like files, ~~so ~~as you said before, WebAssembly doesn't really ~~has~~ have any kind of concept of files or systems or anything, but there is a standard that's emerging called WASI,~~ which is a uh, system. ~~It's a generic system interface and ~~it's basically, ~~it just appears to WebAssembly is a bunch of functions that implement sort of libc ~~Posik, like~~ POSIX like stuff.
+
+~~Uh,~~ And if you enable WASI in a plugin or if you enable WASI in a Wasm program, ~~um, ~~And you use a sort of ~~uh,~~ WASI enabled compiler to ~~compiler your, ~~ compile your code, then it doesn't really see the difference between this WASI system and any other system that you're running, like Linux or something, right? So ~~you can actually, you can't actually pass~~ if you want, you could pass a, a path to a file, to a plugin.
+
+It could load that from disk, operate on it, write it back. ~~There's no,~~ There's no reason that ~~that~~ can't happen. ~~Um,~~ And that does happen. ~~And, ~~and you also have a little bit more ~~uh, ~~control. It's kind of similar to Docker, where ~~when you,~~ when you launch your Wasm program, not only can you control ~~um,~~ which SIX calls it can make, but you can also say ~~if you can op, if you, ~~if you open a file [00:22:00] descriptor, you can only open in these paths and you can kind of create mounting points of~~ um, my,~~ my host directory versus my sort of guest directory, ~~right?~~
+
+So you can constrain which files it can open and ~~how, and, uh, And, and~~ all those kind of things. And also you can sort of name space them. ~~Um,~~ So you could kind of think of it similar to Docker in that way.
+
+**Justin:** So how close is ~~uh,~~ Extism to ~~using WASI or~~ being WASI compatible or is that just still like very early?
+
+**Ben:** ~~Yeah. We, no, you,~~ We support WASI
+
+**Justin:** Okay.
+
+**Ben:** ~~um, ~~And actually some plugins you have to use WASI. ~~Um,~~ So we support it and ~~you know, uh, you can, ~~you can use it today. ~~Um,~~ But Wai is undergoing a transition to a new standard. It's still like an ongoing standard. ~~Um,~~ so there are a few rough spots.
+
+**Justin:** Hmm.
+
+**Ben:** ~~but we, but probably I,~~ I don't want to speak to any particular dates, but probably like by the end of this year or next year, ~~um,~~ there will be like the new WASI standard that is gonna be a little bit more stable. But right now they're in basically a preview mode.
+
+~~Um, ~~And for the most part it works perfectly fine in most languages I've tried. ~~Uh, and it's not, it's not a. You know, ~~it's not too bleeding edge, it's been out for a while.
+
+**Steve:** For things like, you know, I wanna make a network call through HTP or I want to open a file and write to it, or I wanna print to standard out in the console. You're not gonna find any problems with that. Like, for most languages [00:23:00] that have, you know, a WASI target or some other tool chain that lets you compile that language to WebAssembly, all that code compiles just as if it would, if you're compiling to x86 or ARM.
+
+~~Um, the, the big,~~ The big difference or things like if I wanna run a server or if I wanna build a database, I need multi-threading or parallelism and I need some more, ~~you know, ~~complex system, ~~you know, ~~and resource control and management. ~~Um, ~~Other versions of the WASI speck, we'll introduce those things. The current version does not have them.
+
+So you're not gonna use WebAssembly to like, write a highly performant, multi-threaded web server. ~~Um,~~ You can certainly run web assembly inside that performant, multi-threaded web server. ~~Uh,~~ And you can make network calls from it, and read files, and write files, and all that stuff. ~~Um, but as Ben mentioned, yeah, it's a, it's,~~ It's a moving target a little bit~~ um, ~~but what we have today works really well and has surprisingly, you know, wide support ~~for,~~ for a lot of things in a lot of different languages. ~~Uh,~~ For Extism specifically, we have an additional layer of control. So ~~you,~~ you create a plugin, you're gonna now load that plugin in your program. When you load the plugin in your program, you have the option to provide it at load time, at initiation time with Wasi or not.[00:24:00]
+
+So~~ if your,~~ if your plugin doesn't need it, you don't want to give it all these capabilities, you don't have to do that. You can choose to do so if the plugin needs it. ~~Um, ~~And then we have another layer of control where~~ you know, in, ~~in both the case where you're adding WASI or not, ~~um, ~~you have to specify.
+
+The hosts ~~that~~ that plugin has the ~~you know,~~ network access to talk to as well as those file paths that are gonna be available to ~~uh,~~ read or write data to ~~um,~~ from the plugin side. And it's also kind of cool cause you get to like, you know, kind of puppeteer your own file system in a way. Like you can emulate, you know, a standard, you know, Linux distributions file system.
+
+And so you can pretend like you have an etc and a bin, you know, and a root and all these other kind of directories. You know, a program might be used to having and then drop your own files in there, special for the plugin to use. And it thinks it's got access to the system, but in reality you've given it this ~~kind of, you know, ~~virtual world that it can play in and not cause any harm.
+
+**Justin:** ~~So you ~~
+
+**Ben:** Yeah, you also have a similar level of ~~of~~ control over ~~you know, like ~~things like networking, which is really important, right? ~~Like, uh, ~~If you wanna give it the ability to make network calls, you probably should not let it, like call internal [00:25:00] services and stuff, right? ~~Um, ~~And the nice thing about your host being the one that provides all those sys calls is can put whatever you want there.
+
+You can wrap them with things that actually control what those things do, right? ~~Not on,~~ Not only not opening files it shouldn't, but also not opening sockets it shouldn't, or really doing anything it shouldn't do.
+
+## [00:25:15] Modsurfer
+
+**Justin:** One more question on this topic before we move on,~~ but, uh, ~~given that, ~~you know,~~ for example, reading from the file system or accessing the network, those are very explicit capabilities. ~~Uh,~~ Is there some way that plugins and or hosts sort of express like, &quot;Hey, I support this.&quot;, or &quot;Hey, I do this.&quot; or, &quot;Hey, I need this.&quot;, because ~~you,~~ you can imagine, it's like if you in the future built in Extism ~~uh, ~~marketplace of extensions, right?
+
+That like you could just like pull this into your, ~~uh,~~ system or whatever. They would only work in certain situations depending on what capabilities were required. So like ~~how does that,~~ how does that sort of work in Extism?
+
+**Steve:** Well, this is a really good question. ~~And you know, I, ~~I'm forced to mention one of our products because it solves this problem which isn't solved, you know, universally. it's not a unique issue to Extism, right? This is a Wasm module that may or may not have certain functions exported to the [00:26:00] host. And it may or may not have functions imported available to it from that host environment in reverse, all right.
+
+There's bidirectional relationship of compatibility between the~~ host, mo ~~host environment and the module that runs within it. And over time, ~~we~~ I do believe that there will be more ~~um,~~ available tooling that solves this maybe from certain run times that do checks before modules are loaded.
+
+~~Um,~~ And also to be clear, like your module will fail if you try to load it. And there is an inconsistency with the imports available.~~ Um,~~ You know, and it just won't instantiate it all run times, you know, provide this, ~~uh,~~ as part of the spec. However, ~~and so, ~~ in the case of like a module not providing an export that the host needs to call it to actually like start the module, like an entry point, for example, ~~um,~~ there's really nothing.
+
+So like you ship your module up, ~~it it, ~~it's instantiated, ~~it,~~ it's fine, and then they try to call it. And it fails, and you just get a runtime error. And that stinks. ~~Um, And ~~So this is a common problem. ~~Um,~~ And so we've built some tooling for this, and~~ we have a product, ~~um, that you can download for free off our website called Modsurfer.~~ Um, ~~It comes with a CLI and it's basically like a system of record for all your [00:27:00] Wasm.
+
+~~Uh,~~ It gives you insights into the imports, the exports, the function signatures that are on both of those sides. Some complexity analysis of the module and other really kind of helpful information for just running like a production quality system that uses web assembly. ~~Uh,~~ But a feature of this is validation.
+
+And so we have this format called the Check File, that basically lists the expectations of that exact agreement, that contract between the host and the guest that says, I expect you to include these particular functions with these signatures, and I expect you to export these functions with these signatures, and I expect you to import from this name space and not from that one.
+
+And I expect your complexity of the code to not be over some certain threshold and so on and so forth. Basically allowing you to kind of add some policy to your WebAssembly code. And you run~~ a,~~ a command on Monster for CLI called Validate. And you pass the module and you pass the Check File, and then it just iterates through the module and does kind of a scan and says, &quot;Hey, you know what?
+
+This module does not conform to the specification set in this Check File.&quot; [00:28:00] And then spits out ~~a,~~ a report for you ~~to,~~ to help you fix those problems. ~~Um,~~ But the whole point here is like, how do we help close that gap between ~~the, ~~you know, this feedback loop of, I'm writing my module, I'm compiling it, I've got the Wasm, I've gotta ship it up to its destination, whether it's an Extism system or one of the cloud platforms that runs Wasm.
+
+And then I gotta run it before I even can tell if it's gonna work. And so we kind of short circuit that gap that says, well, before you go and send some traffic to that endpoint, see the failure, find the logs, read the logs, try to fix the problem, recompile the module, restart the whole process. Let's just short circuit it, run a validation and check that the expectations are met before we even bother shipping.
+
+~~Um, ~~And this is a really valuable tool. ~~Um, and, uh, yeah, Like I said,~~ I think there will be some additional tooling probably supplied ~~more, ~~more globally from ~~kind of~~ WebAssembly, maybe the Byte Code Alliance or elsewhere. ~~Um, ~~But ~~it's, it's,~~ it's not available now. And so ~~um,~~ if you're really trying to find ~~uh,~~ some tools to help you understand your code, validate your code, ~~um, ~~and implement some kind of policy on that code, ~~uh,~~ Modsurfer is a really helpful tool.
+
+~~So thanks for asking the question.~~
+
+**Justin:** Awesome. Does that actually operate on the like direct [00:29:00] WebAssemblies? Not the source that's compiled to.
+
+**Steve:** Yeah, yeah. ~~We,~~ We actually kind of have a little, you know, pseudo policy within the company that like build our tools at the lowest level possible. Build analysis, build tooling, build validation, everything on the Wasm instruction set, on the binary format that uses all of the sections within the binary itself, uh,~~ to, to get as. ~~to cover as much universal language, ground as we can. Because if we built tooling that's up at the Rust level, or the Go level or the Ruby level, right? We're gonna be implementing a lot of stuff over and over and over again. And because WebAssembly has this beautiful characteristic of everybody sharing the same target, let's use the target as our~~ you know, uh,~~ primary mode of~~ of~~ operating or building.
+
+And so ~~web, um, ~~ Modsurfer uses the format itself, ~~um, ~~to do this validation check.
+
+## [00:29:46] Building around WASM
+
+**Andrew:** ~~Um, ~~So switching up gears a little bit here, ~~uh,~~ in JavaScript, its Wasm was built for JavaScript, so calling out to WebAssembly modules in JavaScript is kind of trivial. But ~~uh,~~ what about other languages? Like before Extism was like calling [00:30:00] into Wasm from other languages a challenge. Because like a big part of Extism to me seems like you have this like, common interface, doesn't matter what the language is, call two things and you've loaded up your web assembly.
+
+**Ben:** ~~Yeah, I can, I can take that one. Um, ~~yeah, so obviously ~~you know, people,~~ people of know the history of Web Assembly being something that was in the browser. ~~And, um,~~ For the most part it was designed to operate with any language, but obviously it was important that it'd be able to interrupt with JavaScript and ~~it's, ~~it's generic enough ~~to,~~ to interop with any language, but a lot of the early tooling that was built, ~~um, ~~was just assuming that you're going to be loading and calling these modules from JavaScript, right?
+
+~~Uh, ~~and the thing that's kind of missing is really what I would call like an ABI layer. It's really the layer of like, you know, ~~how do,~~ how do you get data into it? How do you invoke functions? How do you get data out of it? A lot of the stuff that your compiler or your runtime and your language handles for you. ~~Um,~~ and they're all things that are unique to.
+
+Your different target environments, your different languages. ~~Um,~~ So yeah, ~~it, it's,~~ it's been a challenge because a lot of tooling ~~is, ~~is assuming that you're using JavaScript and there are a lot of good tools like WASM bindgen is one, where essentially if you use something like Rust ~~um, and, ~~and ~~these, ~~[00:31:00] a lot of these tools work in C as well, it will kind of generate a bunch of code that ~~that ~~generates the bindings between JavaScript ~~and, and ~~and Wasm module. So in a way, Extism is like okay, let's ignore that and we'll just kind of write our own that works with every language. So that's kind of what Extism is, that's what we're offering, right? We're like a generic of way to get data in and outta these modules and invoke the functions. We're kind of a generic universal ABI.~~ Uh,~~ and we also use some tricks to make it easy to kind of add this support for new languages and do ~~do~~ stuff like that.
+
+~~Um,~~ So yeah, ~~that, that is, ~~that is still a challenge. And as WebAssembly moves forward into the server, ~~Um, ~~people are starting to kind of figure out ways to build these generic technologies and then kind of eventually roll them~~ probably roll them~~ back into the JavaScript stuff, right? Like maybe in the future we won't be using tools like Wasmer engine specifically.
+
+We'll be using some more generic tool and JavaScript just happens to be the host.
+
+**Steve:** One of the other limiting factors for language support was the fact that WebAssembly runtimes just weren't available in a language. ~~So like there was, ~~There's no PHP ~~you know,~~ Wasm runtime. Can't just like take a Wasm file and in PHP natively [00:32:00] execute the Wasm in there. Needs to be something that interprets, that knows the byte maybe even can compile it ahead of time or ~~jit it, uh,~~ into native instructions.
+
+And these were limited to languages like Rust and C where Wasm Time and Wasm Edge, ~~um, ~~Wasmer and all these other ~~lang, uh,~~ runtimes were developed. And so that means only C and Rust kind of had native support to load these run times as libraries, link them and then load a Wasm module and execute it. ~~Um, ~~And one of the things that Extism did, which allows it to go to all these places, was decided early on that we are going to rely on the CFFI and provide an interface that allows us to do that work for you to embed the runtime into your language in a common way, ~~um,~~ that you don't have to think about as the developer.
+
+~~Um, ~~And then wrap that FFI in more idiomatic. SDKs libraries that make it feel like it's just native Ruby, it's just native PHP, it's just native Java. ~~Um, ~~So to the developer, it just really looks like I'm loading a library. Just like you do if you've ever used SQLite ~~in,~~ in your language of choice, right?
+
+You're really using a shared [00:33:00] library, loading SQLite from the system, and then making ~~uh, ~~FFI calls ~~uh,~~ from your language into SQLite to make queries and in certain read data. And so Extism works very much the same. The goal from the outset was universality. We want Extism to run everywhere, in as many platforms as possible. And this architecture is kind of the only thing that allows that.
+
+~~Um,~~ And so another element of this difficulty was just that ~~there were, ~~there weren't run times in the majority of languages. So we kind of did the packaging job to get a Wasm runtime into your language, but at the same time wrap that ~~ru~~ runtime with some kind of convenience layer that makes it really easy to.
+
+Like Ben mentioned, shuttle data in and out, make a function call within the Wasm module itself, without having to do the ~~you know, ~~offset tracking and allocation. And ~~you know, ~~digging out that function from the Wasm and executing it. And just knowing, you know, the calling conventions, and the ABI of how to work with WebAssembly within one of those run times
+
+**Ben:** ~~Yeah, and I ~~Ironically, ~~uh,~~ Extism itself ~~is a, ~~is a DIALib. It is a shared object. So[00:34:00] we're using some of the old way of doing things to replace, uh...
+
+**Steve:** As more ~~as more,~~ languages probably get native support for runtimes, like ~~the,~~ I'll call it the Y0 project in~~ in~~ the Go ecosystem. ~~Um, ~~Extism could re-implement our ABI on top of this. And some work Ben did not too long ago was to re-implement the Extism runtime APIs in JavaScript ~~uh,~~ to allow the same plug-ins that execute on, you know, in a Ruby program or a GO program in a server environment,
+
+~~uh, ~~to run in the browser and execute inside the JavaScript capable WebAssembly ~~um, ~~engine~~ uh,~~ that's found in all of the browsers today.
+
+**Ben:** Yeah, because in theory, ~~the,~~ the runtimes, ~~are all,~~ they should all be the same. Wasm is a standard, they should all be able to run Wasm. So Extism could just switch out the run time with anything,
+
+**Justin:** Yeah, it's pretty awesome. I did see that y'all have a playground, which is killer, like being able to load it up. Do you ~~do you literally, you~~ just literally drag your Wasm module in there and like load it up and that's it.
+
+**Steve:** Yeah, address by URL too. ~~Um,~~ So if you have it on GitHub or something, you can load it in, send somebody the link to your Wasm. And they can load it and then it'll populate the dropdown with all the function exports available to[00:35:00] pass some date with a MIME type. And it'll render it in the column if want to build together a little preview.
+
+And so it's a great even testing ground if you're not using a browser to try out your plug-ins before building a full fledged host. ~~Right? ~~The full-fledged host is the application within the plug-in, ~~uh,~~ where the plug-in resides, and that takes work. And so ~~like this, this plug-in~~ this playground is kind of a place to just go, try out your plug-in, see how they work, give 'em some data, see what the ~~you know,~~ return values are like and all that stuff.
+
+**Justin:** But again, this is gonna be limited by capabilities here. ~~I'm, I'm assuming that this is saying, ~~Uh, we're assuming that you have like a pure Wasm module that's like not making any like network calls or trying to do anything special.
+
+**Ben:** Yeah, but we can't ~~we can~~ support that. So ~~what, ~~what we can do is basically, Extism has its own way of making HTP calls and we basically just give it ~~browsers, ~~the browsers fetch. ~~Um,~~ So we can support like certain hose capabilities. ~~Um, it, ~~It's not too uncommon ~~for the browser to. ~~for people to run WebAssembly and then use some of the browser's capabilities to emulate like libc like stuff. Like people stuffing local storage~~ um, ~~implementations where it ~~you know,~~ makes file reads and writes.
+
+~~Um, so there, there's a certain limit. ~~There's a certain limit to what we can customize in the browser but for the most part, you can run most of your plugins.
+
+## [00:35:59] Projects Using Extism
+
+**Andrew:** ~~ ~~ ~~Um,~~ So [00:36:00] we've talked about the tech a lot ~~now, uh, ~~and I know it's early for you guys still. But is anybody using Extism to do cool things and make cool apps?
+
+**Steve:** Yeah, ~~I mean, we've got ~~a bunch of projects we can't talk about that we, you know, are interacting with kind of behind the scenes, but some of the ones that are open source. ~~Um, ~~My favorite is this project ~~um, ~~called Otoroshi, which is ~~a pro, ~~a proxy from ~~um,~~ a large insurance company called MAIF. ~~Um, ~~And ~~Uh,~~ it's this team that built this proxy, I think mostly for internal purposes ~~um,~~ but has open sourced it.
+
+~~Um, ~~And you can check it out at MAIF / otoroshi. ~~Uh,~~ And they've done an amazing job integrating Extism ~~um, ~~to where any point in the proxies, ~~you know, kind of ch ~~chain where it takes a commit, a request in and before it decides which backend or upstream is gonna take that request and, you know, redirect it off to or ~~uh, ~~whatever it's going to do. You can make a new decision.
+
+And that's implemented as ~~a ~~Extism plugin. And they haven't been gone as far to like, create some really excellent documentation, maybe better than our own docs. Um, for their product about how to use Extism inside of Otoroshi. ~~Um, ~~and yeah, we're seeing it pop up in all kinds of little fun use cases. Ben do you wanna talk [00:37:00] about that LED Matrix project?
+
+**Ben:** Oh yeah, sure. Uh, ~~yeah,~~ that's something I, ~~I ~~want to try soon. But ~~uh, someone made someone, ~~uh, a student made ~~like, uh,~~ a programmable LED Matrix where you could like, pull down people's plug-ins and ~~like, it, ~~it drives in LED Matrix. ~~Um, just like ~~Some kind of interesting sort of art pieces might be possible with this.
+
+~~Uh, ~~Another thing I would maybe plug is something we created called Game Box, ~~um,~~ which is kind of our canonical demo for Extism. ~~And it's, I would describe it kind of like a, ~~It's similar like Jackbox games, but you can upload your own game as an Extism plugin. And then you can have a group of people play like this sort of real time distributed game on their phones.
+
+~~Um, So it you know, I we're, ~~We're always trying to find ~~kind of, ~~new use cases and interesting use cases. ~~It's, uh, I, ~~I really think in the next, like year or two, a bunch of interesting things will come from this. But it's actually ~~quite ~~kind of hard to predict what people will do with it because ~~it,~~ it feels like a fairly new idea of using plugins on the server.
+
+**Steve:** ~~ ~~ ~~Uh, call or discord.~~ If you go to extism.org and just click the Discord link in the header, that's where you could probably find, you know, some interesting hints about other projects that are kind of emerging. ~~In use.~~ I don't want to you know, out the projects if they're not ready to be talked about. But there's lots of really awesome questions being asked. And, ~~um, ~~know, just the community inside this [00:38:00] Discord server ~~uh,~~ has emerged as not a place where we're even disseminating that much information, but we're learning a lot ~~from,~~ from these people and kind of the things that they want to ~~um, ~~try out and implement. It's driving some of our roadmap. ~~Um, ~~So ~~if you, ~~if you find anything that we don't support that you'd like support, please come join the Discord. And~~ um, ~~you know, rally some attention for your idea and reach out, and we'd love to hear from you.
+
+## [00:38:17] Sharing Modules
+
+**Justin:** ~~ ~~ ~~Do you do, like, is is uh, ~~Is it hard to do cross Wasm support? So I was reading about SQL Light having a semi-official Wasm module. I was wondering if ~~is like, ~~that's something that would be relatively easy to like bridge functionality between the two.
+
+**Steve:** ~~Do you mean being able to like, use the SQLite as a waza module as a sub-component of a plugin inside of Extism or. ~~
+
+**Justin:** ~~yeah. Just like you know, you have a plugin that like maybe uses the,~~
+
+**Ben:** So yeah, ~~I,~~ I can maybe answer this. ~~There,~~ There are a couple different ways that you could use, like an external kind of piece of code in~~ um,~~ Extism. One would be to somehow like statically compile it into your exes and plugin. ~~Um, ~~If that's possible, you can do that. And I haven't tried it. I think maybe someone has done this where they've gotten SQL lights to run~~ and ~~an ~~ex ~~extism plugin. Another way would be something that we call host functions, which we didn't really talk much about. But it's a really powerful ~~um,~~ concept which is that it allows you to provide references to functions in your host language to the plugin. [00:39:00] So if you have, say, a database you wanna give your plugin the ability to say ~~um, ~~you know, look up accounts in your database, right?
+
+Like, you could write a scoped function that you pass into your plugin and that would allow them ~~to, to, to,~~ to call it, right? And ~~if your plugin, ~~if your host is in Ruby or something, that would be a ruby function, or if it's in Java, it'd be a Java function. ~~Um, ~~And I've done some SQLite integrations that way, where I basically pass in a scoped ~~um, ~~function ~~with a,~~ with a session for that user.
+
+~~Um, ~~And I pass it in as a host function so the plugin can ~~make, ~~make calls ~~to,~~ to a SQL database using the host functionality.
+
+**Steve:** There is also a emerging project standard, something in between called the Component Model from Bytecode Alliance that when realized will allow for a lot more of the ~~kind of ~~interoperability between Wasm modules, like I think you're talking about Justin,
+
+where I can take SQLite. I understand the contract that it provides between, you know, the functions it's exposing and the functions it expects to receive from somewhere else.
+
+Maybe it's a host environment or maybe it's from another Wasm module and ~~the component module.~~ the component model would allow to describe those in a format called WIT, which is an IDL that's unique to WebAssembly. And when you have a [00:40:00] WIT file, ~~um,~~ there's tooling that'll allow ~~you know,~~ two modules then to ~~kind of~~ merged together dynamically or statically.
+
+And so in the case of like a static linked SQL light into another plugin or another ~~web, ~~WebAssembly module, ~~um, ~~I think the component model will unlock a lot of those capabilities that are a little bit harder ~~uh, to, ~~to unlock today. It's definitely possible. There's a cool tool called Wasm Merge, ~~um,~~ which does take two modules and put 'em together so long as ~~the,~~ the contract is~~ is~~ met implicitly.
+
+~~Um, ~~But ~~uh, ~~the component model should have unlock a lot of that stuff. ~~Um, ~~And that's at the Bytecode Alliance, so you can go check that out.
+
+## [00:40:31] Dysolib the Company
+
+**Andrew:** So we've mentioned it a few times ~~uh,~~ but I wanna get like ~~a,~~ a clearer picture and then what's to come. So what is Dylibso, like ~~what,~~ what's the goal of the company, and what are some products or ~~uh,~~ platforms that you plan to release with the company?
+
+**Steve:** Yeah, I mean, so at a very, very high level, it's really to help developers take their WASM to production. And that's vague, right? But there's
+
+a lot of surface area between, you know, your first code base that you're compiling to WebAssembly and now I've got this Wasm module. [00:41:00] And what do I do with it, and where do I run it, and how do I track the code, and how do I version it, and how do I understand what's inside that binary code?
+
+I can't just like click open it like a source file and see it, ~~you know, what, what, ~~what's in here? ~~Um, ~~And so we're building the things that we as developers have needed for the past ~~you know,~~ 20 years or so of our careers, you know, writing code and shipping it to large production systems. And being able to understand those systems once they're running. And being able to debug those systems once they're running.
+
+And so it really ~~is, ~~is a company, ~~you know,~~ built by developers who are trying to help mature this technology that we're very,~~ um, you know,~~ bullish about. ~~Um, ~~But ~~have,~~ have run into ~~you know, ~~all of the sharp edges that you could imagine ~~um, ~~or maybe that you can't imagine ~~are there,~~ but are there. ~~ ~~ ~~And ~~so the first couple of products that we're working on are all about like clarity and understanding what's in your WebAssembly code.
+
+I've mentioned this~~ um,~~ with that product called Modsurfer. ~~Um, ~~And Modsurfer is like ~~a, ~~a tool you want to include in your pipeline. So maybe like, ~~ you know, ~~you've got Maven or ~~uh, JRO or ~~Artifactory and you want to like load code into it and use it as a repository for your code. ~~Um,~~ Modsurfer is [00:42:00] similar in that, where in ~~in ~~addition to like maybe placing your code somewhere in your system, you need to be able to ~~un ~~understand where that code is, where does it live, and then some things about that code.
+
+Maybe some metadata you're associating with it. Again, I wanna understand ~~what are,~~ what's the interface of that code? So we actually read the binary format, unpack all the information for you, store it in the database, and then provide some searching capabilities so that you get a message in prop that says like, FD right, failed.
+
+What am I supposed to do with that? FD right failed. I don't know what modular came from. ~~You know, ~~I don't know ~~what,~~ what environment that's running in. I don't know which ~~you know,~~ problem I have to start investigating in order to come to, you know, some resolution here. And so like, you can take FD right, the string and search it in Modsurfer and it'll list all the modules that have that function available to it. And at least give you some you know, it'll reduce the surface area for where you ~~like ~~need to start looking to solve a problem.
+
+~~Um, ~~There's a bunch of other use cases that ~~that~~ Modsurfer is helpful for. I mentioned validation, Modsurfer also provides ~~the,~~ at least that I'm aware of, the only auditing capability for companies that need to stay in some kind of compliance. So WASI for example, In some cases, can kind of open the door [00:43:00] to maybe stepping outside of compliance.
+
+So if a module has access to read its environment's variables, but that module wasn't supplied by the company, it was supplied by some third party that might get you out of compliance with ~~some,~~ some vendor or ~~you know, ~~some government regulator. And if need to check your thousands ~~of ~~or more modules that are stored in your system, you might not have built the infrastructure to like easily find which modules just have _env r get_, which is the WASI function that exposes the capability for a module to read its environment variables. With ~~x, with ~~mod surfer, you know, I can define a check file that says specifically, show me all the modules that fail a validation~~ uh, that,~~ that import, that particular function.
+
+And I can quickly identify every single ~~you know, ~~module that might put us out of compliance and then can fix that problem through whichever means necessary. It also helps with things like this transition from WASI preview one to WASI preview two. At some point, you're gonna have to deprecate modules that import from the old format. Or at least identify 'em so you can recompile them or make them compatible with preview 2.
+
+And so this auditing [00:44:00] capability will give teams a much faster path to solving those kinds of problems. As far as what's next, ~~um, ~~we have a pretty awesome~~ um,~~ stack for observability. And as far as we know, this is also the first of its class to give teams actual runtime metrics on their WebAssembly code as it's run.
+
+So you're used to seeing things like traces in Jaeger or Zipkin, seeing which functions are running, how long that function takes, and then spans within that trace of whether the nested functions and how long they took. WebAssembly people are operating at like a black box right now because the isolation is doing its job.
+
+I can't just expect to drop in a WASI module in my program and get the same metrics out that I get from a Datadog or a New Relic or ~~other ~~other platform that provides those kinds of insights. And so we are doing a lot of this kind of primitive work to make that instrumentation and observability possible.
+
+~~And, um, Soon we'll release. ~~We're in preview right now, so if this is interesting to you and you're listening, reach out. But ~~would ~~soon we'll release ~~you know, ~~a ~~a, a ~~widely available ~~um, ~~observability stack. So that you can get runtime [00:45:00] continuous metrics out of your web assembly code as it executes. And do performance optimization or debug, you know, failing code, um, it actually get those insights into the code as it runs.
+
+~~Ben, you wanna add anything?~~
+
+**Ben:** ~~Uh, no, I don't want to, I don't wanna expose any, any more secret, secret projects,~~
+
+~~but I think that that's, those are, yeah, those are, those are definitely the big, the big points.~~
+
+**Andrew:** Sounds like a lot of tools that help you kind of like look into that black box and understand what's going on. More so, so good things to have.~~ Um, Justin, do you wanna ask the last question? ~~
+
+**Ben:** ~~Yeah, I think, I think the general, uh,~~
+
+**Andrew:** ~~Oh, go ahead.~~
+
+**Ben:** ~~No, you're good. I, I was gonna say, well, I was gonna say, ~~I think the general point ~~of, uh, yeah,~~ basically like going to WebAssembly, we kind of have to rebuild the world a little bit and we as developers, we kind of know, what a lot of these things are that we need to actually run things in production.
+
+So you ~~could, ~~can imagine everything that you might actually need to run things in production that we now need to build in the WebAssembly world gonna be things that are kind of in our targets.
+
+**Justin:** Yeah, observability is really important. Debugging is really important.
+
+**Steve:** ~~Turns ~~
+
+**Justin:** ~~error messages. ~~
+
+**Steve:** ~~a production system without being able to see what's going on.~~
+
+**Justin:** ~~Yeah. Yeah. Something's wrong. What's wrong? I don't know.~~
+
+**Steve:** ~~just tear it all down.~~
+
+## [00:45:38] Future of WASM
+
+**Justin:** ~~Yeah. ~~
+
+~~That, that would be a fun, uh, on call support session, uh, anyway, on that bright thought. Uh,~~ So one of the questions that we always ask all of our guests is something forward looking and being that we're talking about Wasm, ~~uh,~~ take us through your vision or what you would like to see or what you think is coming ~~uh,~~ in the future of the WebAssembly world. ~~Uh,~~ How is things gonna change in the next few years?
+
+**Steve:** ~~I've answered this a couple times in another podcast, so I think I'll give the Florida Ben not to put him on the spot, but.~~
+
+**Ben:** ~~Uh, it's not on the, the only thing that's hard is like choosing out of the, the dozens of idea, crazy ideas that I have, which one to say. Um, yeah, I think I, I'll give, ~~I'll give you ~~two,~~ two answers. I'll give you a short term and a long term. So I think short term, like short medium term, ~~um, ~~what you're gonna see is basically~~ I, I like, I, one of the things I mentioned at the beginning of the podcast is, is kind of, uh, you know,~~ isolation, technology [00:46:00] advancing and this being an evolution of isolation technology. And allowing us to have applications that are much smaller and load much quicker.
+
+I think the obvious thing for a lot of people right now in the short term is like, you know, do we need Linux to like call a function in a server, like for functions as a service platforms, right? Like, no, we don't really need that anymore. So why are we loading ~~these,~~ these huge like operating systems to invoke a function?
+
+~~Um, ~~And I think ~~you know,~~ you guys had Matt Butcher on, I think Spin is a good example of ~~and there are a few others out there ~~who are trying to build these kind of functions as a service platforms. And ~~what ~~WebAssembly is just a great ~~a great, um,~~ target for that because it can scale to zero, it can load up really quickly.
+
+It's language agnostic, ~~it's, you know, it's, ~~it's got everything that you need. ~~Um, ~~So I think that's kind of one of the short term things you'll see.
+
+Longer term, ~~you know, uh,~~ what I'm excited about is ~~kind of like I said before, like a lot of, ~~a lot of this technology getting into hands of people who haven't normally had access to it. It's been more ~~the,~~ the domain of like browser developers and like operating system developers. ~~Um, and, ~~And this idea of like maybe, ~~um, turning, ~~turning everyone into kind of like a development platform. right? Like~~ Right? I, mentioned ~~Steve and I both worked at a company called Recurly, we worked in the ~~the~~ payment space.
+
+That's where we met. And ~~uh, all,~~ a lot of these ~~these ~~SaaS [00:47:00] companies are kind of development platforms already, right? But ~~um, ~~what if they could actually start running people's code? ~~Um, and, uh, I don't know. I think,~~ I think there's a lot of stuff there. I also think ~~uh,~~ that we'll start to see a lot of like standards around these that get passed around to different industries.
+
+~~Like, like I,~~ I made a hint about like payments companies all maybe getting together and having a, ~~a kind of ~~standard about like what a plugin looks like on one of their systems. ~~Um, yeah, so, I think a lot of that's, a lot of, that's a little bit more out there.~~ And then the most out there ideas are really just, my opinion is ~~just kind of like WebAssembly is the,~~ the ~~kind of~~ target for web assembly is just like anything that can compute. ~~So I think that like, uh, ~~You know, anywhere where you can imagine like that we need to compute things like WebAssembly could possibly have a future there. And ~~uh, I'll spare you some of the crazier ideas, but, uh, I, I think, you know, in, ~~in 10 years we're gonna be really surprised ~~at,~~ at where WebAssembly kind of ends up.
+
+**Andrew:** ~~Yeah, I, I, ~~I definitely agree. ~~Uh, I don't, ~~I think even just a few years ago, if you told me the ~~oh, the, the. ~~ most exciting use case for WebAssembly is gonna be outside the browser. ~~Uh,~~ I probably wouldn't have believed you, so ~~I'm,~~ I'm very excited to see where it goes in 10 years.
+
+**Steve:** Totally.
+
+**Andrew:** Thanks for coming on, Stephen, Ben. ~~Uh,~~ This was a fun delve into the world of Wasm and all of the tools that apparently don't exist. So I'm excited to see you guys build them.
+
+**Steve:** Hey, thanks so much for having us on. It was a pleasure.
+
+**Ben:** Yeah. Thanks so much guys. It was great. Great to meet [00:48:00] you and ~~fun,~~ fun to talk to you guys about this.
+
+**Justin:** Yeah. Super exciting.
+
+**Steve:** Sensors.
+
+**Justin:** Yeah. Yeah.
+
+**Ben:** Yeah, me too.
+
+**Justin:** Uh, and I'll, I'll go use Extism, Extism. That's really hard for me to say. Extism got it.
+
+**Steve:** Look at it. Keep trying.
+
+**Ben:** Yeah, definitely. Come, definitely come jump on the Discord and uh, let us know how it
+
+goes and, uh, well, we're happy to help you out.
+
+**Steve:** Bye everybody.
+
+**Ben:** Bye y'all.
+
+**Andrew:** ~~Uh,~~
