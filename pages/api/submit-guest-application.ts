@@ -51,7 +51,7 @@ export default async function handler(
       },
     });
 
-    res.status(200).redirect("/guest-thank-you");
+    res.redirect(302, "/guest-thank-you");
   } catch (e) {
     return res.status(e.code).send({ message: e.message });
   }
