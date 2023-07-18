@@ -5,6 +5,7 @@ import {
   DataIcon,
   ClipboardIcon,
   ExportIcon,
+  StylesIcon,
 } from "@devtools-ds/icon";
 import { useRouter } from "next/router";
 import { Navigation } from "@devtools-ds/navigation";
@@ -28,6 +29,13 @@ export const NavigationTopBar = () => {
           onMouseDown={() => router.push("/episodes")}
         >
           Episodes
+        </Navigation.Tab>
+        <Navigation.Tab
+          id="guests"
+          icon={<StylesIcon inline />}
+          onMouseDown={() => router.push("/guests")}
+        >
+          Guests
         </Navigation.Tab>
         <Navigation.Tab
           id="stack"

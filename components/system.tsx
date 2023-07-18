@@ -24,6 +24,13 @@ export const H3 = ({ className, ...props }: ComponentProps<"h3">) => (
   />
 );
 
+export const H4 = ({ className, ...props }: ComponentProps<"h4">) => (
+  <h4
+    className={makeClass(className, "text-lg mb-6 mt-6 font-semibold")}
+    {...props}
+  />
+);
+
 export const Blockquote = ({
   className,
   ...props
@@ -53,4 +60,8 @@ export const Link = ({
       {children}
     </ColoredText>
   </a>
+);
+
+export const HR = ({ className, ...props }: ComponentProps<"hr">) => (
+  <hr className={makeClass(className, "my-12 border-gray-600")} {...props} />
 );

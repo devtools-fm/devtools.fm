@@ -1,5 +1,4 @@
 import { Navigation } from "@devtools-ds/navigation";
-import makeClass from "clsx";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
@@ -7,60 +6,7 @@ import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
-import { ComponentProps } from "react";
-import { firefox } from "@devtools-ds/themes";
-
-const H1 = ({ className, ...props }: ComponentProps<"h1">) => (
-  <h1 className={makeClass(className, "text-3xl mb-6")} {...props} />
-);
-
-const H2 = ({ className, ...props }: ComponentProps<"h2">) => (
-  <h2
-    className={makeClass(
-      className,
-      "text-2xl border-b-2 pb-2 border-dashed border-gray-600 mb-6"
-    )}
-    {...props}
-  />
-);
-
-const H3 = ({ className, ...props }: ComponentProps<"h3">) => (
-  <h3
-    className={makeClass(className, "text-xl mb-6 mt-6 font-medium")}
-    {...props}
-  />
-);
-
-const H4 = ({ className, ...props }: ComponentProps<"h4">) => (
-  <h4
-    className={makeClass(className, "text-lg mb-6 mt-6 font-semibold")}
-    {...props}
-  />
-);
-
-const Blockquote = ({ className, ...props }: ComponentProps<"blockquote">) => (
-  <blockquote
-    className={makeClass(className, "my-8 pl-4 border-l-4")}
-    style={{ borderColor: firefox.dark.pink02 }}
-    {...props}
-  />
-);
-
-const P = ({ className, ...props }: ComponentProps<"p">) => (
-  <p className={makeClass(className, "my-6")} {...props} />
-);
-
-const Ul = ({ className, ...props }: ComponentProps<"ul">) => (
-  <ul className={makeClass(className, "list-disc pl-6 my-4")} {...props} />
-);
-
-const Link = ({ className, children, ...props }: ComponentProps<"a">) => (
-  <a className={makeClass(className, "my-6")} {...props}>
-    <ColoredText color="purple" className="underline">
-      {children}
-    </ColoredText>
-  </a>
-);
+import { H1, H2, H3, H4, HR, Link, P, Ul } from "components/system";
 
 export default function Episodes() {
   const tags = (
@@ -180,7 +126,7 @@ export default function Episodes() {
                 even better.
               </P>
 
-              <hr className="my-12 border-gray-600" />
+              <HR />
               <P>That's it! We look forward to our full conversation.</P>
             </Navigation.Panel>
           </Navigation.Panels>
