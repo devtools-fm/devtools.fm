@@ -3,6 +3,7 @@ import { AutoThemeProvider } from "@devtools-ds/themes";
 import { QueryParamProvider as ContextProvider } from "use-query-params";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { Analytics } from "@vercel/analytics/react";
 
 import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
@@ -58,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryParamProvider>
       <AutoThemeProvider theme="firefox" autoStyle>
         <Component {...pageProps} />
+        <Analytics />
       </AutoThemeProvider>
     </QueryParamProvider>
   );
