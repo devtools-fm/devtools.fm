@@ -1,18 +1,9 @@
-import { Navigation } from "@devtools-ds/navigation";
-
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
-import { Browser } from "components/Browser";
 import { MetaTags } from "components/MetaTags";
-import { NavigationTopBar } from "components/NavigationTopBar";
-import { H1, HR, P } from "components/system";
 import Link from "next/link";
 
-import { Label } from "components/label";
-import { Input } from "components/input";
-import { Textarea } from "components/textarea";
-import { Button } from "components/button";
 import { ChevronLeftIcon } from "@devtools-ds/icon";
 
 export default function ThankYou() {
@@ -48,8 +39,7 @@ export default function ThankYou() {
             <ColoredText color="purple">Thank you for applying!</ColoredText>{" "}
           </p>
           <p className="text-lg text-center">
-            We'll be in touch if we're interested in recording an episode with
-            you.
+            We'll be in touch if we're interested!
           </p>
         </div>
       </div>

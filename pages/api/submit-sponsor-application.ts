@@ -11,16 +11,15 @@ export default async function handler(
 
   const body = req.body as {
     name?: string;
+    company?: string;
     email?: string;
-    twitter?: string;
-    description?: string;
   };
 
   console.log("body: ", body);
 
-  if (!body.name || !body.email || !body.description) {
+  if (!body.name || !body.email || !body.company) {
     return res.status(400).json({
-      data: "Missing a required field. All required fields are: name, email, description",
+      data: "Missing a required field. All required fields are: name, email, company",
     });
   }
 
@@ -43,11 +42,11 @@ export default async function handler(
     });
 
     await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID_GUEST_APPLICATIONS,
+      spreadsheetId: process.env.GOOGLE_SHEET_ID_SPONSOR_APPLICATIONS,
       range: "A1:D1",
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[body.name, body.email, body.twitter || "", body.description]],
+        values: [[body.name, body.email, body.company]],
       },
     });
 
