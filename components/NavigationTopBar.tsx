@@ -51,6 +51,12 @@ export const NavigationTopBar = () => {
         >
           Merch
         </Navigation.Tab>
+        <Navigation.Tab
+          id="sponsor"
+          onMouseDown={() => router.push("/sponsor")}
+        >
+          $ Sponsor
+        </Navigation.Tab>
       </Navigation.TabList>
 
       <Navigation.Right>
