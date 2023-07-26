@@ -5,8 +5,10 @@ import { MetaTags } from "components/MetaTags";
 import Link from "next/link";
 
 import { ChevronLeftIcon } from "@devtools-ds/icon";
+import { useIsClient } from "utils/useIsClient";
 
 export default function ThankYou() {
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title="devtools.fm - Submission Received"
@@ -15,7 +17,7 @@ export default function ThankYou() {
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 
@@ -24,11 +26,12 @@ export default function ThankYou() {
       {tags}
 
       <div className="min-h-[100dvh] flex items-center justify-center">
-        <Link passHref href="/">
-          <a className="absolute top-0 left-0 mx-8 my-2 py-4 flex items-center space-x-2 hover:pointer">
-            <ChevronLeftIcon size="medium" />
-            <span className="text-lg">Home</span>
-          </a>
+        <Link
+          className="absolute top-0 left-0 mx-8 my-2 py-4 flex items-center space-x-2 hover:pointer"
+          href="/"
+        >
+          <ChevronLeftIcon size="medium" />
+          <span className="text-lg">Home</span>
         </Link>
         <div>
           <h1 className="flex justify-center mb-10">

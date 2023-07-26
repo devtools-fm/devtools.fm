@@ -26,6 +26,7 @@ import { MetaTags } from "components/MetaTags";
 import { ThemedLink } from "components/ThemedLink";
 import { SectionsTab, ShowNotesTab } from "utils/processMdx";
 import { useState } from "react";
+import { useIsClient } from "utils/useIsClient";
 
 const mdxComponents: MdxRemote.Components = {
   a: (props) => <ThemedLink {...props} />,
@@ -98,6 +99,7 @@ const Episode = ({
   );
   const { episodeNumber } = router.query;
   const episodeNumberString = `Episode #${episodeNumber}`;
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title={`${episodeNumberString}: ${frontMatter.title}`}
@@ -106,7 +108,7 @@ const Episode = ({
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 
@@ -114,11 +116,12 @@ const Episode = ({
     <Page>
       {tags}
 
-      <Link passHref href="/episodes">
-        <a className="py-4 flex items-center space-x-2 hover:pointer">
-          <ChevronLeftIcon size="medium" />
-          <span className="text-lg">All episodes</span>
-        </a>
+      <Link
+        className="py-4 flex items-center space-x-2 hover:pointer"
+        href="/episodes"
+      >
+        <ChevronLeftIcon size="medium" />
+        <span className="text-lg">All episodes</span>
       </Link>
 
       <ColoredText className="mt-4" color="blue">

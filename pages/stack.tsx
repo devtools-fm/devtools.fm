@@ -7,8 +7,10 @@ import { Browser } from "components/Browser";
 import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { Blockquote, H1, H2, H3, Link, P, Ul } from "components/system";
+import { useIsClient } from "utils/useIsClient";
 
 export default function Episodes() {
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title="devtools.fm - Stack"
@@ -17,7 +19,7 @@ export default function Episodes() {
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 

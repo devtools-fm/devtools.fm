@@ -10,8 +10,10 @@ import { H1, H2, H3, HR, P, Ul } from "components/system";
 import { Label } from "components/label";
 import { Input } from "components/input";
 import { Button } from "components/button";
+import { useIsClient } from "utils/useIsClient";
 
 export default function Episodes() {
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title="devtools.fm - Guest Info"
@@ -20,7 +22,7 @@ export default function Episodes() {
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 

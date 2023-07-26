@@ -10,12 +10,14 @@ import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { EpisodeRow } from "components/EpisodeRow";
+import { useIsClient } from "utils/useIsClient";
 
 interface EpisodesProps {
   episodes: ProcessedMdx[];
 }
 
 export default function Episodes({ episodes }: EpisodesProps) {
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title="devtools.fm - Episodes"
@@ -24,7 +26,7 @@ export default function Episodes({ episodes }: EpisodesProps) {
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 
