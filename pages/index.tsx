@@ -12,12 +12,14 @@ import { NavigationTopBar } from "components/NavigationTopBar";
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { EpisodeRow } from "components/EpisodeRow";
 import { Link, P, Ul } from "components/system";
+import { useIsClient } from "utils/useIsClient";
 
 interface HomeProps {
   latestEpisode: ProcessedMdx;
 }
 
 export default function Home({ latestEpisode }: HomeProps) {
+  const isClient = useIsClient();
   const tags = (
     <MetaTags
       title="devtools.fm"
@@ -26,7 +28,7 @@ export default function Home({ latestEpisode }: HomeProps) {
     />
   );
 
-  if (typeof window === "undefined") {
+  if (!isClient) {
     return tags;
   }
 
