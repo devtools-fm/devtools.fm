@@ -1,0 +1,419 @@
+---
+title: Tuomas Artman - Linear
+youtube: https://www.youtube.com/watch?v=Vk15EYX6C8g
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Andrey-Sitnik---PostCSS--Browserslist--Autoprefixer--Evil-Martians-e276nm4
+tags: devtools, devtoolsfm, linear, sync, engine, backend, frontend, react, typescript, graphql, apollo, react, mobx
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Tuomas Artman on from Linear.
+We talk about his background, building Linear, and the Linear Sync Engine.
+Linear is a modern issue tracking tool for software teams that want to build software better.
+It's characterized by its beautiful design, fast performance, and powerful features, including issues, projects, and sprints.
+Join us as we dive deep on how the Linear Sync Engine works and has evolved over time.
+
+- https://twitter.com/artman
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://ui.shadcn.com/
+- supabase.com
+  - https://socket.dev/npm/package/y-supabase
+
+#### Justin
+
+- https://hurl.dev/
+- https://fly.io/blog/litefs-cloud/
+
+#### Tuomas
+
+- https://linear.app/blog/scaling-the-linear-sync-engine
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:01:05] Tuomas' Background
+[00:08:20] Building Linear
+[00:14:49] Previous Sync Engines
+[00:37:12] Chasing Fires
+[00:48:57] Updating the UI
+[00:52:44] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Tuomas:** [00:00:00] that was one of the, the, the learnings here. Um, it's not, you know, it's, it started with performance, but then it become, became sort of this, the, the secret sauce of, of, of the company to be able to ship that quickly, because you don't have to do all these, all these things.
+
+**Andrew:** Hey, before we get started, I'd like to remind you that the full episode is only available to our subscribers. The current platforms you can subscribe on are YouTube, Spotify, apple, and Patreon. And with that, let's get onto the episode.
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host
+
+**Justin:** Hey everyone. Uh, really, really excited today to have Tuomas Artman on from linear, uh, Tuomas. It's such a pleasure. We had joy on back at episode 44, which is really fun. Excited today to talk about the sync engine, which is, I think a really both compelling feature of linear and also just like a deeply [00:01:00] interesting technical topic.
+
+But before we dive into that, could you tell our listeners a little bit more about yourself?
+
+#### [00:01:05] Tuomas' Background
+
+**Tuomas:** Oh yeah, sure. Um, so I'm Tuomas, if you wanna pronounce it correctly. Nobody can. So I go by Tuomas, um, you know, anywhere in the world. Um, I'm an engineer by heart, like I started my, my career back in, um, in 96, um, doing CD-ROM multimedia presentations, um, for big corporate customers here in Finland. Um, if you ever had an Nokia phone, um, you know, that usually came with the C Drom with instructions on how to use that phone, chances are that what must make by the company or even me, um, back, back in the day.
+
+~~Um,~~ and, you know, the, the internet came around, ~~you know,~~ rather quickly, ~~you know, after,~~ after 96. So I founded my own agency together, the three friends, um, to, you know, still doing flash animations and campaigns. Um, and then, you know, going into, into sort of your regular, you know, web agency. ~~Um,~~ and it took me nine years to understand that, ~~you know,~~ that's not really what I wanna do, uh, with my life.
+
+~~Um,~~ like I think it was a Nokia project that, that, ~~you know, um,~~ that made me rethink like my life. We were working for Nokia [00:02:00] on, on, ~~you know,~~ Witt sets, which was, you know, back in the day it was one of, one of the biggest mobile services in the world. ~~Um,~~ and we were sort of the design agency. Um, and I was working on that project for like two years and then they just shut it down.
+
+'cause they didn't know how to make money with it. ~~Um,~~ and that was sort of the motivation for me to, um, to, you know, rethink things and sort of wanting to take control of my, of, of, of what I work on. Um, and so I built myself out of the, out of the agency. Um, did a few startups in, in Finland, um, and then moved to China for a year.
+
+Um, like we always wanted to sort of go abroad with my wife. Um, I. And it never happened because of the agency. And now that I, that I got out, I was able to go, uh, live in Shanghai for a year, um, doing games and toys and animations for the local market.~~ Um,~~ a small startup for like 250 people. ~~Um, ~~it was, um, it was weird.
+
+Very good at that time in, in China, culture-wise, super interesting, but, you know, professionally maybe, maybe, maybe not so much. Um, and then I got the opportunity to move to San Francisco to join Groupon, ~~um,~~ which I obviously took as an engineer. [00:03:00] Um, it, it didn't really matter whether it was Groupon or something else.
+
+Like I, I got to Silicon Valley, um, and, um, that was awesome. ~~I,~~ I spent two years that Groupon, building, ~~uh,~~ a point of sale application for high-end restaurants. And, um, you know, Groupon wasn't really the engineering powerhouse that I actually wanted to sort of get experience from so when I got my CRE card and was able to freely select where I wanted to work, ~~um,~~ and I switched over to Uber.
+
+~~Um,~~ and spent five years on the mobile platform team at Uber. I'm trying to scale mobile engineering. ~~Um,~~ we, you know, when I joined we were 15 mobile engineers at Uber, and when I left we were 400. So it was a pretty wild ride. Um, going through that, seeing Hypergrowth, um, learning that I never want to go through hypergrowth again.
+
+Uh, and you know, a after uber we, we, we started linear, um, together with the Karri and, uh, Karri and Jori. Um, so that's, yeah, a, a very brief intro into, into what I've been, I've been doing, um, in my sort of personal time. I don't really do much. I've got a family with two kids, um, and I do some gladder piloting, so I go flying on the weekends when it's good [00:04:00] outside.
+
+**Justin:** That's fun.
+
+**Andrew:** cool.
+
+**Justin:** How was, how was the experience of scaling at Uber? How has that shaped your time at Linear? How does that approach, how y'all do hiring and everything else is like,
+
+**Tuomas:** ~~Yeah. Um,~~
+
+**Andrew:** ~~Okay.~~
+
+**Tuomas:** it was a good experience. Like it's good to go through it once, um, sort of to realize. Because there, there's a lot of sort of work that goes into scaling a company, um, that rapidly. Um, and, you know, you see all the problems at the same time and you, you sort of have good stories after, ~~after, after~~ those few years of, of hyper growing.
+
+Um, but I, I sort of did realize that, you know, the, and I think, you know, Kari maybe~~ went,~~ went through something as well in Airbnb, Coinbase for certain went, went through the same things where like the, the problem with hyper scaling is that when you, um, when you have a product that you don't know whether it will find product market fit, you just try everything and you don't really care about, you know, um, any of the engineering or any of the technology that that, that you work with.
+
+And your architecture is probably, you know, total crap and everything that you do is [00:05:00] sort of throw away work. Um, it seems at least, um, and then you suddenly hit product market fit. And now you're suddenly in a race with somebody else and you, you need to scale quickly 'cause otherwise the other other company will overtake you.
+
+And sort of the same thing happened with, with with Uber. Like they, the architecture that they had was just, you know, really crappy. Um, all the service burned down all the time. And when, when sort of growth happened, um, it was literally fighting fires for two years. Um, I thankfully it wasn't on them on the backend side of things, but I, I, I did see how, how, um, sort of burned out everybody.
+
+Um, on, on that side was, 'cause literally for two years, they just, you know, week after week, they, they encountered new problems that they had to fix while everything was growing. Um, so they had to hire a ton of people. Um, and after two years, like you had suddenly, you know, 2000 engineers, um, you had a, you know, everything was burnt down, everything was on ashes, you know, all the teams were, were, were burned out.
+
+Um, and, and then sort of the growth started slowing. So you had a little, little bit of breathing room. Um, and suddenly you realized that you've got all these engineers [00:06:00] that you've hired because you know, they need to keep up the lights.~~ Um, Um,~~ you have nothing in terms of infrastructure 'cause, you know, everything's just been put together.
+
+Um, and now starts the project off. Like, you know, let's, let's redo everything. Let's start from scratch and figure out like what we actually wanna build and the next four years, um, you know, is going to be that. Um, and still, like when I, when I went back to, um, back to Uber, for example, this January, um, to see my, my former team over there.
+
+Um, and they were still working on the same things that they started when I left. So, um, it it just like crazy how much time sort of gets wasted in hypergrowth. Um, it certainly makes sense for, for many companies and, you know, Uber shouldn't have done anything, anything differently. Like if you have a product that is, um, Um, that, that you don't know whether we'll, we'll sort of, you know, find consumers or customers?
+
+Um, yeah, I mean, it doesn't make sense to, to build architecture, but, you know, the way we started linear, um, what was totally different, like, we knew that the, the customer segment was there and that the, the, you know, the market was there. Um, you [00:07:00] know, we thought we would be able to get product market fit really, really quickly, um, and easily like, it, it, it, there was no question about it, you know, whether we could build something better than, than what, what was out there.
+
+Um, so we just took the time to, um, to build up infrastructure first, um, and make sure that we can build on, on solid infrastructure from, from the get-go. Um, and ever since we've had the same philosophy, like, you know, we, we don't want to over hire, um, and we, we've want to be super sort of strict about hiring.
+
+Like we wanna say no un until we, we, you know, find somebody that we're super excited about. Um, and, um, until we really need somebody, you know, to, to help us out on, on, on certain fronts. So for example, on the infrastructure side, like. We're building the entire infrastructure of linear with three people. Um, it's me and then, then two others that sort of work on everything related to infrastructure.
+
+And, and we do think that, you know, by the end of the year, um, we'll have everything in place to scale infinitely, um, where we sort of, you know, have like obvi, you can always optimize. You [00:08:00] can always, you know, make performance better, um, and in increase the developer experience. But, um, we think that we'll have the sort of big hurdles covered, um, by the end of the year.
+
+And then maybe it's gonna be like two people, or, or one person on, on the infrastructure side to keep up the lights. 'cause we wanna make it a product problem, not sort of an infrastructure tech problem.
+
+#### [00:08:20] Building Linear
+
+**Andrew:** That's super cool. Uh, so before we dive more into those problems, uh, for our listeners who don't know what linear is, could you tell us what linear is and, uh, why you guys built it?
+
+**Tuomas:** Um, linear is, um, you know, a, a better way to build software. Um, we started off as an issue tracker. Um, and maybe, you know, going a bit into history. Um, like we always wanted to make linear a, um, a tool that would just make companies better at building software. Um, whatever goes under that umbrella. Um, and you obviously have to start somewhere.
+
+Um, and we started with issue tracking because that was, that was sort of what, what, um, what most of the smaller companies need when, when they get started. And we [00:09:00] wanted to start, you know, building out the tool with smaller companies. 'cause you know, when you work with startups, um, they're usually, you know, super vocal about, you know, what they want.
+
+They're easy to talk to, they give you feedback all the time. Um, but the idea always was sort of to, you know, graduate from that as, as the startups grow, so do their needs in, in terms of software, what they need in order to build better software. Um, so, you know, over time we've, we've made the product sort of, you know, footprint larger, um, and sort of gone away from just being an issue tracker into being, being a project management, um, suite.
+
+Um, and more is to come, like we want to build it into sort of a full fledged suite of tools that, you know, help you build, uh, be, be better at building software.
+
+**Justin:** ~~So let's, yeah, let's, sorry. Street noise.~~ Let's dive into the sync engine a little bit. So we asked Jori this back in episode 44 specifically is like, you know, why offline first. And, and one of his, his big reasons that he gave was performance. It's like performance being a first class thing. But I also wanna frame that question to you.
+
+So building a, a sync [00:10:00] engine where you can like, Work offline or, or more importantly, get the optimistic updates that, like Jori mentioned, is a non-trivial technical problem to tackle, especially when you're just starting a product. So, uh, why did y'all make that decision and what benefits do you think it gave?
+
+I.
+
+**Tuomas:** Uh, initially we, we didn't make it for the, for the reasons that we now want to continue using it. Um, initially like the, the idea was, um, simply performance. Like we, we've never wanted to make the product fully offline. ~~Um,~~ that wasn't the intention. Um, it happens that it works fully offline, ~~um,~~ if you, if you want to use it, but that wasn't the intention.
+
+Like, we do think that people will be connected most of the time. There's a few cases where like, you know, if you're on, on an airplane, it would be awesome to be able to sort of read through your issues and maybe even create an issue, ~~um,~~ and comment on some of these, um, and then sync them back up when you, when you get online.
+
+But that's, that's sort of a side, um, side case. Um, that's not the primary use case. [00:11:00] Um, literally performance, ~~um,~~ being able to offload. Most of the searching and the sort of page loading onto the client computer, ~~um,~~ not having to go over the network, ~~um,~~ just felt like, um, a, a, a great way, um, to, to build a per, you know, a, a very performant application.
+
+Um, and that's, that's initially how we started to look into the sync engine. Um, I've got a bit of experience with sync engines, like this was my fourth one that I, that I now wrote with linear. Um, so I knew what I was getting into. Um, and I had never, well, you know, at Groupon, I, the sync engine is still in, in, in, um, in place, so it still works.
+
+Um, and it, that was offline as well. Um, so it, we were able to sort of take, you know, swipe credit cards and, and, um, take orders while you were offline and then upload them, um, once, once again, uh, regain connectivity. Um, but I, I had never sort of before linear, you know, built a very complicated and, and full fledged application, you know, on, on sync.
+
+But I always had this idea that, [00:12:00] um, it. Sync felt to me like, you know, optimizing the developer workflow as well. Um, making it easier to build applications. 'cause like if, if you take the sync engine, like if you have the sync engine in place, which is a hard piece of technology to write, what you're left with is essentially a, um, a local client, like you have a local, you know, data structure, um, that somehow magically gets synced to a local computer.
+
+You know, be it index db or then, you know, even, even into memory. Um, and all you need as a, as a, you know, product engineer, um, you just need to manipulate that local data structure. Um, and everything else is taking care for you. Um, synchronization and real time, you know, aspects of the application are really, you know, a, a non-issue because it doesn't matter whether you make those changes or somebody else over the network.
+
+If the sync engine just updates your local data structure, like your UI will just follow and update, update itself, um, it it leads you to, um, have to implement functionality in sort of an [00:13:00] optimistic manner where you, you assume on the client that, you know, most of the operations that you do will not fail, um, and you guard against that.
+
+Obviously there's a, maybe a few cases where they might fail or, you know, your data might be updated once it hits the server. But most of the time, like, you know, 99.9% of all operations will just, you know, go through as they're applied on, on the server. Um, and, and the client will sort of make the validation and make sure that, you know, the data was correct when, when it got, you know, sent as a transaction to the sync engine.
+
+so essentially like, you know, there's a whole swath of problems that you can just take out from, from the engineers. Um, and that was the realization that we didn't start off. You know, building the sync engine, you know, because we wanted to, you know, ship features quicker. But, um, we pretty soon realized that that was sort of the, the main point that we, that we got out of it.
+
+~~Um,~~ we did obviously get the performance for the end user, but then we, we, you know, gained the ability to just write functionality super quickly, and just iterate on the product, you know, very rapidly. 'cause you didn't have to think about networking or making connections [00:14:00] or error handling or, um, any of the real time aspects or even offline, you just had, you know, you have your local data structure, you make changes and that's it.
+
+~~Um, it, it,~~ it becomes such a, such a, you know, simple model, um, to build applications with. Um, that~~ I,~~ I don't think I would ever want to go back, um, to anything else. It lends itself obviously to only, you know, certain aspects of applications. Like if you. If you have a, um, a app that has tons of data, um, sure.
+
+You can't load, you know, up everything in lo locally into the clients and it needs to have some sort of collaborative aspect to it. 'cause otherwise it really doesn't make sense, um, to, to load up everything and do even synchronization. ~~Um,~~ but if, if you have sort of a, you know, finite set of, of data, um, in your workspace, ~~um,~~ and it's collaborative and, you know, I, I don't think I would ever do anything else than sync from, from here on out.
+
+#### [00:14:49] Previous Sync Engines
+
+**Andrew:** So you mentioned that you, this is your fourth sync engine. That's a, that's a lot of sync engines down. Um, would you say that the main difference between like linear sync engine and those older ones [00:15:00] is scope, whereas in the past ones, uh, it seemed like maybe, like only like one or two features were kind of driven by it, whereas with linear, like all data is driven by this, uh, uh, live sync.
+
+**Tuomas:** ~~Um, not,~~ not necessarily like scope in, in, in the way that we have lots more data in the client that, that we, that we, that we sent. But, um, to give you an idea of what I've, what I've built before, like my first sync engine was in China, um, when I was working for a gaming company, they had a gaming portal and they were creating sort of flash, I think, yeah, it was Flash and then Unity Games.
+
+Um, and most of them, like, they wanted to create realtime, realtime player games. Um, and that is, you know, back in the day it was pretty hard. Like, units didn't really have any, any good multi-user servers, um, which is obviously what you used today. 'cause they built about everything for you. But, um, we didn't, so, you know, I, I created my first sync engine back then, which had a Flash client and then a Unity client.
+
+and it was essentially, um, there to sort of synchronize game state, um, so, you know, real time locations of your, of your [00:16:00] users. Um, it could, you know, interplate between, you know, sparse updates. It would work with a slow network as well. And it could sort of, you know, take up, take quite a few hiccups in, in network latency.
+
+Um, 'cause the network in, in China wasn't really that great. Like you regularly had, um, a ping of like 600-700 milliseconds, um, to, to the server. ~~Um,~~ so that was my, my first one. It was, you know, one small arena with, you know, max 16 users connected to each other, um, and sharing a few, you know, property updates of essentially locations of the EBIT avatar.
+
+~~Um,~~ moving around. Um, then in Groupon, um,~~ I, um,~~ I created an objective C client and a node backend. Um, and that was sort of much more sophisticated, but, you know, built in a very sort of hacky manner. Um, I don't think I was a good engineer back then when I joined Groupon. So I, I did all kinds of mistakes, like no unit testing on, on any of that stuff.
+
+And it was, and it written in JavaScript, um, nonetheless. Um, so no, no type safety at all, uh, anywhere. Um, so it was a bit, um, yeah, [00:17:00] bit unstable at, at times. I think they, maybe they rewrote it now, but, um, I sort of, you know, uh, keep on, keep on hoping that they still use it, um, somewhere and that was synchronizing essentially like, you know, the entire state of, of, you know, your p o s between one restaurant.
+
+So, you know, I was working on, on Breadcrumb, which was sort of a, you know, point of sale for high-end restaurants, but you had multiple iPads in a venue. He would take, you know, orders, he would swipe credit cards, he would say, send those orders to the kitchen. Um, and it was important that, you know, when you, when you sort of, you know, took a credit card that you wouldn't sort of double, double charge, um, the user so all their iPads would need to be in sync.
+
+Um, and um, yeah, it was very similar to like what the, the game engine was, but just a bit more sophisticated and like, it had rules around like, who can update these objects? 'cause it was again, important to sort of retain, you know, access to an object before you, you know, for example, to, to the bill before you started charging it.
+
+~~Um,~~ so it was just a more complicated version of it. [00:18:00] And, um, to, to some extent like the, the linear sync engine works in a very similar manner. It's just a sort of another iteration on top of it. Um, in between, I, I brought a sync engine for, for Uber as well. Um, It, it never, well, it, it did solve the see see the light of day.
+
+Like it was used in one product in New York as sort of a trial bit. But, um, we had sort of big ambitions, um, for it. But, you know, I, I think I was a bit too late, like hyper scaling started happening when I, or was already happening when I joined. Um, and it was, you know, almost the first project that an undertook, I was like, you know, sync is great for this use case.sLike if you have an Uber client, what Uber was doing back then, it was pinging the server every four seconds and retrieving the entire state of the world as a JSON blob, which was like 50 k of data at some point. Um, every four seconds it would retrieve it and then display it and retrieve it and display it.
+
+I was like, man, this, this, this is not great. Um, I, I know how to fix this and I know how to, how to build a better version. [00:19:00] Um, so built a sync, um, engine that was, you know, not I, it was a small team of, of people that, that build it. Um, there was a go backend. Um, then there was a Swift client, um, a Android client and a JavaScript client.
+
+So three clients. 'cause we, we had the intention of sort of moving all of Uber onto that sync stack and we were in the process of sort of, you know, making the data schema, ~~um,~~ work with sync ~~um,~~ 'cause there's certain aspects that we have to do in order to make it, make, make it work. ~~Um,~~ and at that point I sort of realized that, you know, the, the, the hall of Uber is moving too fast.
+
+There are too many people like you, you can't sort of force this upon anybody and there's really no use case for the backend engineers to, you know, take it on. And there many people just didn't understand what, what I was, what I was doing or why it was so much better. Um, so, um, it was sort of an uphill battle.
+
+And, ~~um,~~ then, you know, I started doing other things. ~~Um,~~ over there, the mobile platform team got formed, um, and I started hitting that. Um, so yeah, I mean, it, it was, I was maybe a bit late to the party if I had joined a year earlier. [00:20:00] Um, there might been a sync engine in, in the Uber client and there would be much better off 'cause it took them like four years.
+
+To come up with all kinds of concepts to make that pinging sort of smaller and in the end do do some sort of, you know, real time connection from the, from, from the server to the client that was very, um, very lightweight and, ~~um,~~ very brittle. Um, so they, they really could have, could have used the sync engine. ~~Um,~~ and ~~um,~~ it actually got open sourced, I think it's still out there, it was called JetStream if you, if you wanna have a look.
+
+~~Um,~~ it was never fully, fully developed, but you know, at least there were like three, three NU clients, ~~um,~~ to it. So, uh, yeah, then back at linear. Um, I hadn't done web engineering for, ~~um,~~ for ages for five years. I have, you know, just been doing mobile engineering. So I, I, you know, the first thing that I wanted to do is, you know, build another sync engine.
+
+~~Um,~~ and now on the, on the web, on the full web stack. 'cause you know, I, I hadn't used it for a while. ~~Um,~~ and I was keen on trying out, like how, how the tool chain has evolved, um, and how quickly you can, you can come up with a. Uh, with a sync engine. Um, and it took me a weekend, ~~um,~~ and I had, you know, sync [00:21:00] up and running on co on on couch base, I think was the first implementation, ~~um, on,~~ on the backend.
+
+Um, and that's how I gets, uh, got excited about the project. It wasn't really, you know, issue tracking, uh, that I, that I wanted to do or project management. ~~Um,~~ and I think Jori felt the same. Like we always thought that, you know, issue tracking is kind of, kind of a boring space, uh, to be at.~~ Um, ~~and it took us a while to understand that we're not really working on issue tracking, but, you know, we wanna help companies be better at building software.
+
+Um, but you know, at least me, I got excited about sort of the tech first, um, and, you know, building out a sync engine.
+
+**Justin:** That's awesome. Um, real time. Uh, Technology has evolved a lot over the years. Just the research has evolved a lot of the years. So there are definitely a lot more like off the shelf C R D T implementation, so I think of like auto merge from ink and switch these days. So you mentioned, uh, CouchDB, uh, which, which had its sort of own sync mechanisms built directly in, right.
+
+So there's, you could, I could see how you [00:22:00] could get up a prototype really quickly for that. For the sync engine that you have today or sort of what you've been working up to, do y'all still lean on CouchDB or have you taken a, a different approach and done things more custom? And sort of a follow up to that is like, have there been off the shelf libraries that you've been able to use that you've found helpful for doing this?
+
+Or have you had to really sort of like dig into this and do a lot of custom stuff?
+
+**Tuomas:** ~~Um,~~ yeah, we have to build everything ourselves. ~~Um,~~ there's nothing. Um, nothing existing in the sync engine. Well, now we start to use, you know, y j s for the, the, the last sort of feature that, you know, hasn't been real time, um, which is sort of editing issues or editing large documents. Um, and now we're finally putting that into place.
+
+Hopefully, hopefully we'll have it out, you know, not soon, but soonish. Um, but a apart from that, yeah, so the, the first trial was, was, was with coach, um, coach db, just to, you know, get something up and running and you immediately, like you, you, you, you hit, you know, [00:23:00] you hit problems very early. ~~Um,~~ with Coach db it was, you know, access control, um, like ditches wasn't any access control.
+
+Um, coach DB, at least back then, um, was really designed to synchronize settings for a user, and it wasn't meant for a multi-user, um, environment. Um, then, you know, the second prototype that it was on, on Firebase, and, and Firebase would've, you know, probably worked nicely. But, you know, I did some calculations at some point on like, you know, anticipated user counts and how many updates there and how much we need to load data.
+
+~~Um,~~ and, you know, it would've just cost immense amounts of money, ~~um,~~ for our intentions on how we, how we want to manipulate the, manipulate the, the data. And, um, yeah, I, I guess I always had the intention of building, building ~~a,~~ a custom one. 'cause I had done it so, you know, three times before already, um, all of these were custom implementations.
+
+so I wasn't really afraid of, of starting on that. And,~~ um, we weren't~~ sort of running against anybody, like we had time. We're still sort of, you know, working our day jobs when we sort of trial this on, on the side and, and build a few [00:24:00] prototypes. ~~Um, ~~so yeah, I like, I think today if I started, I don't know what I would do.
+
+Like I would probably start with an existing off the shelf solution. Um, but I would think that I would run into problems at some point again, which would, you know, have me switch to a custom one. Um, there's just, so, like if you think about like what we've done at Linear to optimize, ~~um, the, the,~~ the, uh, the, the user's journey, um, in the application to, you know, what we load a startup, what we don't load a startup, how we handle, you know, all these, all these problems that we faced.
+
+Um, you know, none of the solutions offer that, or they, like, they, they shouldn't really offer that. 'cause those are really custom to, ~~um,~~ to our application. Like, there's nothing generic that you could put in place, um, in, in, in order to, you know, create a sync solution that would work with any kind of application.
+
+maybe at some point somebody will write one, but, um, you know, they'll, they'll. Probably have like, you know, quite a few stirs under their belt. They've seen all the problems in [00:25:00] order to be able to anticipate those, those problems. So I don't think that any of the solutions currently would, you know, today work with Linear.
+
+**Justin:** Yeah, outta curiosity, so there's the engine, which is, you know, the comprehensive solution. And then there's a lot of business logic in there about what data you load and how you handle conflicts and, and a lot of that stuff. But there's some core data structure. Are you using CRDTs for that or are you using just like custom, a custom data structure, custom semantics to deal with like conflicts and things?
+
+**Tuomas:** everything's custom as I, as I said before. So, um, c no CRDTs, um, most of the operations that you do on, on linear, um, they don't like C R D T doesn't lend itself, um, to it like they're atomic operations. Like if you change the priority of an issue, Like, you know, it's either this or that. Like it's not in between, there's not no merging that you can do.
+
+Like literally the merge is like, last one wins. Like if, if you said it first, um, and this second person comes after that, you know, the second person wins. there's only a few fields that have sort of [00:26:00] textual input where you could use CRDTs to sort of, you know, do conflict resolution. Um, and that's where we're putting it in, in place now.
+
+Like we, we do it as an addition. So, so far, for example, if you've, you know, edited the description of an issue or, or a project, um, we've, like, we've, for three years now, we've been like, well damn we, we really need to fix this. 'cause we, we don't feel comfortable with the solution that we have, which is like, you write it locally and then when you unfocus from that, from that text field, it, it'll get updated and overrides anybody else who's made any, any changes.
+
+which sounds horrific 'cause you might be writing for quite some time. But we do save it in the meantime to sort of give you an indication that, you know, somebody else might be, might be editing it at the same time as well. But, but it's still like, you can easily overwrite people's changes. Yet it had, it has, it almost never happens.
+
+Like, just like in, in an an issue tracker. It's not that many people will write, um, you know, will look at an issue, uh, at the same time, let alone, you know, update the description of, of that, of that issue. so it hasn't really been a [00:27:00] problem. Like we've always wanted to fix it because we think that, you know, using CRDTs for that issue editor, um, Which is be a much nicer experience.
+
+~~Um,~~ but you know, it has been, um, sort of pushed along because like we've had more important things to work on. But now finally we're, we're getting to it. 'cause we do want to use the editor for even larger documents than issues where we do anticipate that there's, you know, you know, a bunch of people will want to edit it at, ~~um,~~ at the same time.
+
+Uh, so we need a good collaborative editor where we kind of have like the whole team jump in and sort of make edits at the same time. Um, and then, then, you know, certainties are perfect. but everything else, yeah, like the whole data structure that we have is essentially just a, you know, a a a tree of, of, of data, of JavaScript objects.
+
+Um, and we, we do, you know, quite a bit of work in order to, you know, hook that tree up together. Like if you, you know, have listened to my, um, to my two talks that I've done on the sync engine, like, to sort of give you a bit of an idea of,~~ of,~~ of how it works is, um, you've got individual objects. Like every [00:28:00] single model object is just an object that gets sent over.
+
+~~Um,~~ and the, uh, the decorators on, on the classes that represent those model objects, ~~um,~~ they tell where, where they should be mounted on. So, for example, an issue will have a team id, um, associated with it and a decorator saying, you know, this should go into the team's issues collection. So when you receive that object, the sync engine will look like, you know, whether we have that team already loaded.
+
+And if you do, then it will. Go into the collection and add that issue into the collection. So it builds out that tree over time as you, as you stream in, in your objects. ~~Um,~~ and that's how you, how you get to the tree. Um, so you can either look at, you know, all the objects in sync as individual objects, which the sync engine does, or then you can, you know, construct a tree of, of model objects, um, out of that, out of that representation.
+
+~~Um,~~ and that's what, you know, end users use or end users as in engineers?
+
+**Andrew:** So that's like the, the basic how it works. Like mostly you have this pool of objects that gets created into a tree, and [00:29:00] that tree is used to, uh, update the ui.
+
+**Tuomas:** Yes. Um, as a very sort of, um, you know, uh, yeah, that, that's how it works. Um, there, there's nothing, nothing more to it. So the, the, um, the, the sync engine literally has two jobs like it. Um, it, it gets the user up to date with the current state of the world or all the objects that, that you as a user see, and then it keeps you up to date.
+
+Um, and there's, you know, humongous, you know, complexity around, you know, both of these problems. Um, but in, in like, yeah, in, in effect, what happens is, um, when a user comes in for the first time and does, doesn't have anything on disk and, you know, logs in for the first time into linear, we make what we call a bootstrap call to the backend saying, you know, give me all the objects, like everything as a JSON blob, and the server will look at like, what, what the user sees, what, you know, what the access control says about like, what objects, you know, the user should have.
+
+Um, combines it all together [00:30:00] and sends it over to the user. The user then, you know, creates model objects out of each of these. Um, Well, here it gets a bit more complicated. It, it, it doesn't, you know, put everything into memory, but at least it, it stores everything on disk. So the disk representation has everything that the user has received so far.
+
+and then when we, when we start accessing, ~~um,~~ that data, that's when we create model objects out of, um, out of the representation on, on disk. And that's what gets bounded to, to the ui. So we do, um, load up quite a bit of data upfront, um, from the get go. Like all the objects that, you know, aren't that plentiful, ~~um,~~ but are important like, you know, the workspace and all the teams and the users, the labels, everything except essentially, you know, issues, attachments and comments, um, and issue history, um, that we keep on this and load it, you know, when, when we need it.
+
+Um, and that's how we get to sort of the first term visitation. Um, and, and the first rendering of your ui and now you can refresh at any given point in time. 'cause on disk we already have, you know, the, the whole, you know, [00:31:00] state of all the objects and we can load them up. Um, and at that point we do, you know, take a web socket connection to our, to our sync engine.
+
+Um, and then we start receiving, you know, data from, from, from that sync engine. Uh, like we tell the backend, like, what is the last sync packet that we've seen? Like every packet in the, in the, you know, entire organization has an id. It's just accounting number upwards. ~~Um,~~ and then the, you know, sync engine will essentially send you all the data that you haven't seen and keep you sending stuff.
+
+And as it comes along, um, you know, the actions that you know are applied, ~~um,~~ are essentially insert actions like when new objects are created. They might be update actions when objects are updated and then archived and delete actions in addition to a few others. Um, like that tell you like that your sync groups, for example, have changed with which, which we use for access control, um, to let the client know that there might be, you know, more data that you need to load, uh, from the backend, because now we were, for example, added to a private team.
+
+Um, and, um, that, that's in, in essence what, what the sync engine does. Like, you know, [00:32:00] whenever you refresh, you try to figure out what, what we need to load. We load it all, all stored on the, on disk, um, and then, you know, load it from disk into, into memory. And that's, you know, what you get as a, as an engineer.
+
+Um, and then there's so much complexity around, you know, the, these problems. 'cause the, the first implementation that we had, um, lasted us maybe, you know, half a year, um, until we had like, I don't know, um, uh, 200, 300, 400 issues, uh, in, in a workspace was to just load up everything into memory when we, when we go to the workspace.
+
+And then we started, started seeing that there's actually a pretty slow operation if you have lots of objects. Um, so then, you know, we needed to optimize and I. I, I guess syncwe've done like, you know, 10 pretty major optimizations to the syn engine in order to get to the performance that we're, that we're at now.
+
+Um, and we, we haven't sort of, you know, completed everything yet. Like, we're still rolling out ~~the, the,~~ hopefully the last of these optimizations that will get us at least, you know, two years more [00:33:00] time, um, to think about like what the next step is. ~~Um, uh, the, the,~~ the thing that we're doing is like, we're, we, we don't want to load up, um, sort of all the issues even in onto disk, like so far when you've, when you come to workspace, um, load up all the data, like you get a bootstrap that contains everything.
+
+Um, except, except for comments and issue history. Uh, those were easy to sort of load later, um, as needed. But now we're doing the same thing for issues and attachments. Um, 'cause those are the next, you know, huge objects that, that people will have. Um, and we're leaving those out. Like we load none of them and we make it all dynamically loaded.
+
+Um, and ~~the, the,~~ the big problem there is that you see issues everywhere. Like they get rendered. Literally on every single screen, you've got calculations, you've got aggregates of like what the issue count is or how many items you have in your inbox, or, you know, whatever. Like it, it, it is everywhere. So we needed to build a very complicated loader that lets you essentially stream in all the data that you, that you need, um, for the ui, just can request whatever.
+
+~~Um,~~ it can say, you know, I need, you know, [00:34:00] all the issues for this team and then I need all the issues for this user. Um, and there's a, you know, centralized place that will then de-dupe all these requests coming in from all the different areas of the UI and then create an optimized batch request, make that to the network and load up, you know, everything in one go so that we don't hit the, you know, backend, you know, 200, 300 times as we otherwise would.
+
+**Justin:** Interesting. Interesting. When you were talking earlier, You mentioned a A packet and a packet id, and I was thinking, I was like, all right, you have like an aggregate log of packets, which are probably like deltas of things that have changed over time that you can just like, Hey, this is my last state. ~~Give me the thi~~ give the other things that I need.
+
+But when you're talking about like dynamic streaming, you're like, well, I guess maybe that's not, that's not actually the store state. This is just like, I wanna prefetch X list of things or like, or X category of things. And you still have your like packet ID of like, this is my latest state, or this is the world that I know about.[00:35:00]
+
+So those are, I guess, separate sort of forks.
+
+**Tuomas:** Yeah. Um, they're separate. Like obviously the, the main database will have, um, the latest version of all these model objects in. So when you make a query, um, to the backend and load up, say all the issues for a specific team, ~~um,~~ you get almost the latest version and that's where the complexity kicks in.
+
+Like, yeah, um, you, you get a snapshot in time, but after you, you get that snapshot, you might have a. Other sync packets or changes that, that are exactly being sort of, you know, mutated in as you're making that one request, um, to the data. So you have to, you know, figure out how to keep everything nicely synchronized and so that you don't override changes, ~~um,~~ that have at the same time streamed in.
+
+Um, and ~~it, it's,~~ it's not too complicated, but it, you know, it, it required us to find these issues and figure out like all the places where we might have raised conditions and then take, take that into account. Um, the easy solution there is like, yes, you, ~~you~~ load up, you know, in batches you load up, [00:36:00] you know, and arbitrary amount ~~of, ~~of, of data, but you don't store it on disk, ~~um,~~ if you have it already on disk.
+
+Um, 'cause essentially like once, once something is committed to disk, that means it has come from. Um, you know, either a Bootstrap call or, you know, a much more recent sort of, you know, sync packet, um, that has streamed in as people have, have been making changes. So if you've written that to this already, then you know, the, the disk version will be newer than what you have in your, um, in, in your batch.
+
+~~Um,~~ maybe just on override those, those changes. Um, and then, you know, because you do that you can actually start, ~~um,~~ you know, taking snapshots that, you know, might even be older. You don't really care. Like there, there's certain, like you need to be aware of what the client has seen already in terms of sync package.
+
+Like if the client has, you know, only seen the last, um, I don't know, you know, the last 20 minutes of, of sync packets, then you can't load from a snapshot that is older than that. 'cause otherwise you might be loading old data that is incorrect. 'cause the client hasn't seen all of that. But if we know that the client has [00:37:00] seen, you know, more, or has loaded a more recent version of that, um, it doesn't matter how old the snapshot is that we load.
+
+~~Um,~~ so we can go to a cache. We don't have to go to the main database and we can sort of optimize the backend with, with that as well.
+
+#### [00:37:12] Chasing Fires
+
+**Andrew:** so I was watching your, your recent talk on all the changes that you did, uh, for this. And it was fun to watch you like move the, the fire emoji across the stack, uh, to where you move the problem to. I found a few of those, uh, a few of those problems Interesting in that the technology choices that you had to make, To fix the problem.
+
+So the first one was the, uh, GraphQL, uh, originally, uh, in like the first version of the sink engine, it seemed like you relied a lot more on GraphQL to do a bunch of the stitching. Uh, can you, uh, explain like what GraphQL was doing, uh, why you moved off of it and what you move to?
+
+**Tuomas:** We actually moved to GraphQL to, you know, fix some of the, some of the problems that we had. Um, so, you know, the, the story of GraphQL is, um, like obviously we, [00:38:00] we could have had the sync engine sort of also handle all the mutations, like using web socket connections. Um, but what, what we already knew in the beginning that we wanted a public a p i that people could hit as well.
+
+Um, and then you need to, you know, use some kind of standard in, in order to achieve that. And we wanted to go with GraphQL, so we built all of our mutations on top of GraphQL and then it really didn't make sense to sort of build all the business logic twice, like once for the incline and once for GraphQL.
+
+So we ended up with solution of, you know, um, saying that the client will just hit that same. GraphQL endpoint as a public a p i user. Um, and then, you know, aside from that, you, you, you get a second pipeline of all the, all the changes streaming in, into the, into the client. So if you make a change on, on the client, it'll actually hit a GraphQL a p i endpoint, um, that a p i endpoint will, um, then, you know, write all the mutations or all the changes to disk.
+
+And as a result, um, which is also part of the public a p i, you [00:39:00] can, you can query that, it'll send back the last sync id, um, which essentially means like that the last change as, as it got added to, um, to the queue of changes that happened with that mutation. Um, 'cause again, the mutation might make, you know, hundreds of other mu uh, changes at the same time.
+
+Like your input might affect other, other, um, properties as well. And that is sent back to the client as, as a response. And then the client starts waiting on sync and, you know, counts through all the packets that come in until we hit that. That number. Um, and that at, at that point we can say that, okay, the transaction has been completed and that request is now, is now done and applied to the local database as well.
+
+Um, so there's a bit of playing with, you know, GraphQL, you know, to send the mutations and listening on the results, um, on, on, on the sync engine. Um, but that's what we chose, um, in the beginning. Um, and uh, in the first situation what we did was because of all these race conditions, um, that you might have, like when you catch up with, with, [00:40:00] with a user.
+
+So if you have some sort of state in your local database, um, and connect to the socket server, you might be behind like, you know, a thousand packets for example. And you need to catch up with those before you can connect to the livestream of, of packets in order to sort of, you know, you need to apply all the packets in order.
+
+'cause otherwise you might get out of sync, you might, you know, write a update. That was done earlier. Um, you know, on, on, on the changes that were Yeah. You, you might get out of, out of date, um, with, with those packets. So what we initially did is when the client connects to the web socket, um, the web socket would then load up all the changes that the client needs to see in order to catch up and then send them to the client and then continue normal operations.
+
+But the, the socket server would have to stop the world while the client was waiting for those changes. 'cause, you know, otherwise we would have to have, you know, cues for each individual client to figure out like whether we can send these updates now to this client or whether that client is still catching up.
+
+And that would be just a [00:41:00] complicated, um, Uh, complicated, you know, sync engine. So that was the first implementation and the, almost the first problems that we had was that, you know, stopping that world was just making everybody just wait for a client that connected that had to catch up with a lot of packets.
+
+Um, so we, we got rid of that and we, you know, put that on onto GraphQL. 'cause GraphQL was actually, oh, sorry. Yeah, we, we did them, we did them replace graphql as well. So first we moved into GraphQL, um, and said, you know, hey, graphql, give me all the changes that I, I haven't seen. And the GraphQL, you know, uh, response would then send you a thousand, um, Delta packets to catch up, which is fine with a a thousand packets.
+
+But then you got into tens of thousands of packets. Um, and now suddenly your response was so big that it would just crash the memory of your graphical servers because you would have, you know, hundreds of times doing it at the same time. And those packets, you know, they consume memory 'cause you've got them in memory like three times.
+
+First the database load and the JSON, and then whatever you put into, into the pipe. Um, so then we got rid of GraphQL again, um, and we moved to a REST [00:42:00] endpoint, um, uh, 'cause we could implement streaming on top of that. Um, so we, we moved both sort of the full bootstrap, um, and then the delta syncing. So the catching up, um, onto that, you know, streaming rest endpoint.
+
+So the client would head, um, the endpoint. The endpoint would then, you know, take a streaming connection to the database with a query. And as the database would respond with objects that, you know, fulfill that query, um, the rest endpoint would stream them to the client and then immediately forget. So it would just pipe through to the database.
+
+Um, and that made things faster, um, as well as much more, more efficient. 'cause you wouldn't, like in graphQL, you have to wait for an entire response and nicely package it up and then send it to the client. Um, so it doesn't work well if you have a lot of data to send.
+
+**Justin:** You have a lot of really interesting problems here. So, you know, given that you have an a p I, um, and you're sort of aggregating a bunch of events that are coming from clients and you're likely having to sort of normalize those in some ways. So if people are hitting the [00:43:00] a p I, they can say, Hey, I want the list of issues, the latest issues from this project or whatever.
+
+You have to be able to serve that. Um, which ultimately means, you know, likely your database on the backend has to have some normalized representation of like what your business data looks like. Whereas, and you'd mentioned earlier that the client has its own view of the data. So a lot of the project engineers are only really thinking about like, How is a client storing this data and what is the, you know, I can sort of access this locally and just forget that there is a, a, a backend, the Sync engine will just take care of it.
+
+So, um, how do you, how do you manage the complexity of like having to sort of define this data in multiple places? Is it, is it, do you try to, uh, how do I best ask this? Is it like, do you try to just have the same schema in your data store on the server as you do on the client, or do you just like handle it in a case by case basis?
+
+It's like, how do you avoid inconsistency there?
+
+**Tuomas:** Yeah. Um, it is all the same, [00:44:00] like the, the, the, the data representation, the database is the same as the object representation on the a p i, which is the same as the GraphQL representation, um, or the GraphQL schema, which is the same as the client schema, um, with some differences. So, um, the, we, we use type scripts for everything.
+
+So, you know, the on, on the a p s side, it's easy. We've got one definition, ~~um,~~ for a, what, what a, we call it an a client entity is. Um, and it has a bunch of decorators. One is the decorator for the DA database representation. One is the decorator for the GraphQL representation. And out of that you can generate both schemas.
+
+Um, so you write it once and, and that's it. Um, we wish we could sort of, you know, automatically implement, um, the, the client representation as well. Um, but as it turns out, like it's not really a, a big thing to write it twice. Like we just copy whatever we synchronize over. Um, We name the properties the same, and, um, on the clients that you have a, you know, bit different decorators 'cause [00:45:00] you need to stitch it up in a, in a, in a different manner.
+
+And obviously the business logic might be very different between the client and then the a p i. Um, but the data representation of the property names are the same. Um, so we don't do any, any translation there. Which, you know, if you look at our GraphQL a p i, um, means that it's not the best graphql a p i, like, it's very raw.
+
+Um, and that's sort of, you know, the, the,~~ the, ~~the bad side of, of, of doing this. Um, but, you know, it just keeps things much simpler and let's us move faster, um, without having to sort of transform the data or keeping multiple, multiple schemas alive. Um, so that's how we, how we manage it. Like TypeScript helps us immensely, um, with that.
+
+And, um, we do have certain decorators on the, on the, um, on the a p I side where we can say like, you know, this property's not part of sync. Um, so it will, it'll never be sent over, um, to, to the client. So you can have some hidden fields in there, like secrets or, you know, a p i tokens or whatnot, um, that just exists on the backend and never gets sent to, to the client.
+
+**Andrew:** So another step that I [00:46:00] found interesting on your firefighting fighting journey was what you chose to do with the database. Uh, at first you had a replica and then you moved to a second technology that I probably wouldn't have chosen myself, but I found pretty interesting. So, uh, how did you fix your database problems?
+
+**Tuomas:** Um, caching. Yeah, that's usually, usually how it works. Um, yeah, we, we had a big, you know, problem with, with, with the full 'Bootstrap, um, the, um, The logical representation of that data in the database is just like, it's a relation database. We use, you know, Postgres for that. And if you want to query all of the data for clients, um, it's a huge query.
+
+Um, you know, the client might receive anything. If you unzip everything, it might be, you know, even a hundred megabytes of, of data that you get during a full bootstrap. Um, so querying that, um, together with other users on a relational database just doesn't work. Um, you can't have enough memory to fit everything into memory, um, to make that very fast.
+
+Um, so we wanted to cache the data 'cause, um, again, like we, we, we know [00:47:00] that, you know, the clients can already catch up. Like they can make a Delta sync, say, you know, I've seen, you know, up until here, just give me the rest, um, through Delta Sync. So we can take a snapshot every now and then. Um, save that in some cache, make it somehow clearable so that, you know, individual clients can still receive the data that, um, that uh, they have access to.
+
+Um, and then just, you know, try to make that as fast as possible. And we actually tried two technologies like the, you know, we were all on G C P, so we, you know, the first implementation that we wrote was Big table using, using big table. Um, 'cause it felt like, you know, we want to normalize, like all the data was already J serialized into that, um, into those roles.
+
+So we were just sending strings over. Um, so big table felt like, you know, good idea. Um, and then, uh, it felt a bit slow. Um, it was like, uh, you know, why, why is this taking so long? We did all the right things and, um, we don't even have that much data data in there. So we did a second implementation on top of Mongo.
+
+' cause, you know, um, one of the engineers had used Mongo [00:48:00] before, so he was like, ah, I can, I can just write some up. So we, you know, we initially wanted to just get, you know, a benchmark of, you know, how slow are we? Um, and you know, whether Mongo, how much slower would would Mongo be? It turns out that Mongo was like three, four times, uh, faster.
+
+U m, then big table, so we stuck with it. Um, it's like we use Mongo for, it's literally a cache, like it, it's caching, you know, serialized versions of, of those model objects. Um, and now also the, the delta sync packets. Um, so that it becomes, you know, very easy and, and fast to query, query those out. We can cluster them much nicer, nicer together.
+
+Um, and, you know, fetching a lot of objects is, is super fast.
+
+**Justin:** That's awesome. That's a really interesting use case. Um, I, I think. You, you probably are able to avoid a lot of the, the sort of warts of Mongo if you're, you're, you know, have a relatively like, straightforward, uh, usage. I mean, it is a pretty fast database when you're just doing reads. Turns out,
+
+#### [00:48:57] Updating the UI
+
+**Andrew:** Um, so we've talked about like all the [00:49:00] technical complexity of the sync engine and the back engine, but we haven't touched on what it's like as a front end developer to consume any of this. So, uh, like the two, my two main questions would be like, how, what does updating the UI look like?
+
+Do I have to care about it as a front end engineer? And, uh, what does updating data look like?
+
+**Tuomas:** Uh, yeah, I mean, both, both answers. That's super simple. You don't have to care about, ~~um,~~ updating the ui, ~~um,~~ that is handled automatically for you. Um, we use MobX, ~~um,~~ for all the UI updates. So literally one thing that you need to remember is just, you know, put an observer tag or observer function around your component.
+
+~~Um,~~ and that's it. Whenever that data changes, your component will be re rendered. ~~Um,~~ and there's nothing you have to do, um, about outside of that. So every single property on all the model objects that you touch are, um, either getters or observables themselves. ~~Um,~~ so if any of the UI touches those properties and then they get updated either by the user, um, or, you know, via remote call, then the UI will just, um, will just [00:50:00] update, um, automatically.
+
+So there's nothing, nothing you need to do. You just render your stuff and you know, that's it. Um, and if you want to change things, you just change them. ~~Um,~~ and then you have to call save on, on that method and that's it. Um, some nuances like if you, if you wanna, you know, make sure, like there's some cases where that don't really work nicely in offline mode, um, like creating a team in offline.
+
+It seems like a bad idea 'cause we don't know how long you might be offline, offline for. Um, and there might be another team with the same name. So then that operation would fail and by that time you've created a hundred issues in there. So we don't want to do that. So we, um, there's ways of, of for you to detect those in that safe method.
+
+When you call, um, you get a transaction bag and you can listen whether you know that transaction got offlines, if it did, you can consulate and display and display an error. And there's ways of handling errors as well. Um, usually the sync engine takes care of showing you all those errors as well. 'cause they're usually, um, very generic.
+
+Um, like if you. Have an update operation. We know what you're updating [00:51:00] and we can give you a nice toast on, you know, oh, fail to update issue. Um, and then, you know, the error message will be retrieved from the graphql, um, user error, um, that, that, you know, we can, we can put in, in the backend. So usually you get nice errors, um, as well without you as an engineer doing anything.
+
+Um, and that's it. Like, you know, you have the structure, you render it out, um, and when you want to send transactions, you just change the data and then call save. And that's all you need to know about sync. If, if you're front-end engineer.
+
+**Andrew:** Beautifully simple.
+
+**Justin:** It is pretty awesome. We do, and as an industry we do tend to spend a lot of time and complexity on the boundaries between services. So the, you know, having worked on the mobile app for a while, I'm sure you felt this ~~like. Yeah, ~~very strongly is that, you know, thinking about how you interface with your a p i and how you change your a p i and, and those interactions, especially with mobile like versioning and, and stuff like that, becomes a, a really, really, uh, [00:52:00] heavy, uh, complexity.
+
+So this is, this is just like a really interesting and refreshing sort of approach. Um, we've seen a lot of, like a lot more backend for front ends that are trying to make the a p I layer more and more seamless. Um, so I don't know. This is just a really interesting perspective there of like how both a sync engine can benefit you and giving you all these more features, but also just making the integration to the UI a lot more seamless.
+
+**Tuomas:** Yeah, I, I totally agree. Um, that was one of the, the, the learnings here. Um, it's not, you know, it's, it started with performance, but then it become, became sort of this, the, the secret sauce of, of, of the company to be able to ship that quickly, because you don't have to do all these, all these things.
+
+#### [00:52:44] Tooltips
+
+**Andrew:** Awesome. Uh, with that, let's move on to tool tips.
+
+And that wraps it up for this week's Tool Tips. Uh, thanks for coming onto tuomas. This was a really interesting deep dive into how Linear Sync works and, uh, I, I, myself, am inspired by it.
+
+**Tuomas:** Thanks so much [00:53:00] for, for having me, Justin, Andrew. Um, it was, it was awesome sharing a bit of this stuff and, and hopefully like, you know, uh, people should really get interested in, in sync and, you know, get inspired, um, and, uh, start building their own sync engines or use some existing tools. Um, just use sync.
+
+It's, it's so much easier to build, like if you have the, the correct. Um, You know, if you're building the right application, um, that lends itself for, for sync, um, you'll, you'll, you know, you won't regret putting it on sync.
+
+**Justin:** Yeah, so also to hear about it and, and this just reinforces to me the, the sort of care and technical excellence that goes behind building linear, it definitely shows within the product. So it's, it's so cool to hear about.
