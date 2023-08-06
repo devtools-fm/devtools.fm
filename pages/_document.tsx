@@ -78,7 +78,10 @@ class MyDocument extends Document {
           />
           <meta name="application-name" content="devtools.fm" />
           <meta name="msapplication-TileColor" content="#FFFFFF" />
-          <meta name="msapplication-TileImage" content="icons/mstile-144x144.png" />
+          <meta
+            name="msapplication-TileImage"
+            content="icons/mstile-144x144.png"
+          />
           <meta
             name="msapplication-square70x70logo"
             content="icons/mstile-70x70.png"
@@ -101,7 +104,7 @@ class MyDocument extends Document {
               async
               defer
               data-domain="devtools.fm"
-              src="https://plausible.io/js/plausible.js"
+              src="https://plausible.io/js/script.tagged-events.js"
             ></script>
           )}
         </Head>

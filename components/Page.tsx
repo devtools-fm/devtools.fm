@@ -1,39 +1,5 @@
 import { AutoThemeProvider } from "@devtools-ds/themes";
-import makeClass from "clsx";
-
-const PODCAST_LINKS: ActionLinkProps[] = [
-  {
-    src: "/apple.png",
-    href: "https://podcasts.apple.com/podcast/id1566647758",
-    text: "Apple Podcasts",
-  },
-  {
-    src: "/spotify.png",
-    href: "https://open.spotify.com/show/142I2b9HGjWhRgPXhOYUnN",
-    text: "Spotify",
-  },
-  {
-    src: "/youtube.png",
-    href: "https://www.youtube.com/channel/UCFsRlOn7gODgv6WUriLrzXg",
-    text: "YouTube",
-  },
-  {
-    src: "/twitter.png",
-    href: "https://twitter.com/devtoolsfm",
-    text: "Twitter",
-  },
-  {
-    src: "/rss.png",
-    href: "https://feeds.buzzsprout.com/1772992.rss",
-    text: "RSS Feed",
-  },
-];
-
-interface ActionLinkProps {
-  src: string;
-  href: string;
-  text: string;
-}
+import { LinkShieldList } from "components/LinkShieldList";
 
 const FooterLink = (
   props: Omit<React.ComponentProps<"a">, "target" | "rel">
@@ -48,7 +14,7 @@ const FooterLink = (
   );
 };
 
-export const Footer = () => {
+export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
   const year = new Date().getFullYear();
 
   return (
@@ -60,22 +26,11 @@ export const Footer = () => {
         </FooterLink>
       </p>
 
-      <ul className="flex space-x-4 justify-center my-8">
-        {PODCAST_LINKS.map((link) => (
-          <li key={link.href}>
-            <FooterLink href={link.href} title={link.text}>
-              <img
-                src={link.src}
-                className={makeClass(
-                  "h-12 w-12 rounded-xl",
-                  link.src === "/youtube.png" &&
-                    "border border-gray-300 dark:border-none"
-                )}
-              />
-            </FooterLink>
-          </li>
-        ))}
-      </ul>
+      {!hideShields && (
+        <div className="my-8">
+          <LinkShieldList />
+        </div>
+      )}
 
       <p className="text-sm mb-8">
         Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>
@@ -120,14 +75,16 @@ export const Footer = () => {
 
 interface PageProps {
   children: React.ReactNode;
+  hideShields?: boolean;
+  hideFooter?: boolean;
 }
 
-export const Page = ({ children }: PageProps) => {
+export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
   return (
     <AutoThemeProvider theme="firefox" autoStyle>
       <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
         <main className="flex flex-col flex-1">{children}</main>
-        <Footer />
+        {!hideFooter && <Footer hideShields={hideShields} />}
       </div>
     </AutoThemeProvider>
   );
