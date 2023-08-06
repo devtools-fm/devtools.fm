@@ -86,7 +86,7 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
 
 export function LinkShieldList({ limit }: { limit?: number }) {
   return (
-    <ul className="flex flex-wrap gap-4 justify-center">
+    <ul className="flex flex-wrap gap-4 justify-center max-w-xs mx-auto">
       {PODCAST_LINKS.slice(0, limit || PODCAST_LINKS.length).map((link) => (
         <li key={link.href}>
           <a
