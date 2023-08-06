@@ -50,7 +50,7 @@ export default function Home({ latestEpisode }: HomeProps) {
       </div>
 
       <div className="mb-12">
-        <LinkShieldList />
+        <LinkShieldList limit={5} />
       </div>
 
       <Browser>

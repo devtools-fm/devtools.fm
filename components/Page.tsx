@@ -76,14 +76,15 @@ export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
 interface PageProps {
   children: React.ReactNode;
   hideShields?: boolean;
+  hideFooter?: boolean;
 }
 
-export const Page = ({ children, hideShields }: PageProps) => {
+export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
   return (
     <AutoThemeProvider theme="firefox" autoStyle>
       <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
         <main className="flex flex-col flex-1">{children}</main>
-        <Footer hideShields={hideShields} />
+        {!hideFooter && <Footer hideShields={hideShields} />}
       </div>
     </AutoThemeProvider>
   );
