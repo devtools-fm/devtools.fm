@@ -90,6 +90,8 @@ export function LinkShieldList({ limit }: { limit?: number }) {
       {PODCAST_LINKS.slice(0, limit || PODCAST_LINKS.length).map((link) => (
         <li key={link.href}>
           <a
+            target="_blank"
+            rel="noopener"
             href={link.href}
             className={`plausible-event-name=Shield+Click plausible-event-position=${link.text.replace(
               / /g,
