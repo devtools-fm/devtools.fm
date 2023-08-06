@@ -13,6 +13,7 @@ import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { EpisodeRow } from "components/EpisodeRow";
 import { Link, P, Ul } from "components/system";
 import { useIsClient } from "utils/useIsClient";
+import { LinkShieldList } from "components/LinkShieldList";
 
 interface HomeProps {
   latestEpisode: ProcessedMdx;
@@ -33,10 +34,10 @@ export default function Home({ latestEpisode }: HomeProps) {
   }
 
   return (
-    <Page>
+    <Page hideShields>
       {tags}
 
-      <div className="mt-10 mb-12">
+      <div className="mt-10 mb-8">
         <h1 className="flex justify-center mb-6 md:mb-10">
           <Logo />
         </h1>
@@ -46,6 +47,10 @@ export default function Home({ latestEpisode }: HomeProps) {
           <ColoredText color="purple">developer tools</ColoredText> and the{" "}
           <ColoredText color="blue">people</ColoredText> who make them.
         </p>
+      </div>
+
+      <div className="mb-12">
+        <LinkShieldList />
       </div>
 
       <Browser>
