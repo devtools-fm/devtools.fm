@@ -89,7 +89,14 @@ export function LinkShieldList({ limit }: { limit?: number }) {
     <ul className="flex flex-wrap gap-4 justify-center">
       {PODCAST_LINKS.slice(0, limit || PODCAST_LINKS.length).map((link) => (
         <li key={link.href}>
-          <a href={link.href} title={link.text}>
+          <a
+            href={link.href}
+            className={`plausible-event-name=Shield+Click plausible-event-position=${link.text.replace(
+              / /g,
+              "+"
+            )}`}
+            title={link.text}
+          >
             <img
               src={link.src}
               className={makeClass(
