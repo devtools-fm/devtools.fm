@@ -10,8 +10,8 @@ export default function Episodes() {
   const isClient = useIsClient();
   const tags = (
     <MetaTags
-      title="devtools.fm - Stack"
-      description="The tools we use to produce and publish and episode of devtools.fm"
+      title="devtools.fm - Subscribe"
+      description="A podcast about developer tools by the people who make them."
       image="https://devtools.fm/og-image.png"
     />
   );
