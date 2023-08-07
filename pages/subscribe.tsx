@@ -38,8 +38,7 @@ export default function Episodes() {
             <ColoredText color="blue">people</ColoredText> who make them.
           </p>
           <p className="text-center">
-            Join us as we embark on a journey to explore modern developer
-            tooling and interview the people who make it possible.
+            Click an icon below to follow us on your favorite platform.
           </p>
         </div>
 
