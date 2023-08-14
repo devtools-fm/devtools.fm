@@ -34,7 +34,10 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
       <div className="h-full flex-1 flex flex-col justify-center">
         <div className="mb-8">
           <h1 className="flex justify-center mb-2 md:mb-6">
-            <Link href="/">
+            <Link
+              href="/"
+              className="plausible-event-name=Shield+Click plausible-event-position=home+page"
+            >
               <Logo />
             </Link>
           </h1>
@@ -46,10 +49,13 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
           </p>
 
           <div className="mb-6 flex justify-center">
-            <Link className="my-0" href={`episode/${latestEpisode.number}`}>
+            <Link
+              href={`episode/${latestEpisode.number}`}
+              className="my-0 plausible-event-name=Shield+Click plausible-event-position=latest+episode"
+            >
               <div className="w-full h-[fit-content]">
                 <img
-                  className="w-full max-w-64 rounded-lg h-full max-h-[150px]"
+                  className="max-w-64 rounded-lg h-full max-h-[150px]"
                   src={`https://i.ytimg.com/vi/${latestEpisode.youtubeId}/maxresdefault.jpg`}
                 />
               </div>
