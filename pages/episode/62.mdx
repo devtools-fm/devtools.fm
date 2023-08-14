@@ -1,0 +1,431 @@
+---
+title: Erik Bernhardsson - Modal
+youtube: https://www.youtube.com/watch?v=nb06_um98ss
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Erik-Bernhardsson---Modal-e27s25k
+tags: serverless, cloud, data, machine learning, python, gpu, kubernetes, docker, containers, aws, lambda, devops, infrastructure, data science, data engineering, data pipelines, cron jobs, data teams, technology, software, engineering, developer, tools, devtools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk with Erik Bernhardsson about Modal, a serverless platform for data teams.
+Erik talks about his background in data science and machine learning, and how he saw a need for a better tool for data teams.
+We talk about the challenges of building a serverless platform, and how Modal is building a new vision for serverless cloud.
+We also talk about the challenges of building a platform that is both easy to use and flexible enough to handle a wide variety of use cases.
+
+- https://twitter.com/bernhardsson
+- https://modal.com
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://microsoft.github.io/TypeChat/blog/introducing-typechat/
+- https://upstash.com/blog/qstash-announcement
+
+#### Justin
+
+- https://www.quill-ui.com/
+- https://github.com/ggerganov/ggwave
+
+<!-- TAB: SECTIONS -->
+
+[00:00:54] Erik's Background
+[00:01:48] What is Modal?
+[00:07:49] Configuring Container
+[00:15:00] Simple Primitives
+[00:19:34] Serverless GPU
+[00:28:07] Building at the lowest level
+[00:32:27] What's being built on modal?
+[00:37:58] What's next?
+[00:41:17] Thank you
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 62 - Free
+
+**Erik Bernhardsson:** [00:00:00] the fastest feedback loop you have is when you're writing code locally. So what if you can put the cloud inside of that feedback loop? It has this ability to like, you know, run things like super quickly and then when you're done, you just deploy it.
+
+**Andrew:** Hey, before we get started, I'd like to remind you that the full episode is only available to our subscribers. The current platforms you can subscribe on are YouTube, Spotify, apple, and Patreon. And with that, let's get onto the episode.
+
+**Andrew Lisowski:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin Bennett:** Hey everyone. Uh, our guest today is Eric Bernhardsson. Uh, Eric is the CEO of Modal Labs, which we're really excited to talk about, uh, before that led engineering at
+
+better, and before that had a big sprint, uh, at Spotify. Um, but Eric, before we start, would you like to tell our listeners a little bit more about yourself?
+
+#### [00:00:54] Erik's Background
+
+**Erik Bernhardsson:** Yeah, sure. And it's great to be here, by the way. Uh, yeah, so I've been coding for [00:01:00] I don't know how many years, 30 plus. Um, started back in nineties, uh, on a Mac, Mac plus. Uh, and, uh, yeah, like you mentioned in particular, I was a Spotify for almost seven years. Built a music recommendation system there and, and ran data teams and machine learning teams.
+
+I was a C T O for a number of years at Better. And then the last three years I've been building my own startup, uh, modal Labs. That's my very condensed story. Uh, yeah.
+
+**Andrew Lisowski:** ~~Um,~~ so, uh, did you yourself build the music recommendation system at Spotify?
+
+**Erik Bernhardsson:** Yeah, I mean, I like, you know, a I left eight years ago and like, there's been a lot of work since then, but, and like b you know, towards the end when I was there, we, I had a team of about 30 people. But, but yeah, I mean, initially I, I built, um, I built the first version and, and, and scaled it up and, and then started getting help when, when people saw potential in what I was building.
+
+#### [00:01:48] What is Modal?
+
+**Andrew Lisowski:** pretty cool. Um, so let's, let's just jump right into modal since that's, uh, what you've been working on lately. So, uh, for, for our listeners who don't know, how would you, uh, pitch modal to us?
+
+**Erik Bernhardsson:** [00:02:00] Yeah, Mo Modal is a tool for data teams, and I'm a little nebulous about what data teams mean, but like people who work with machine learning AI or also kind of compute intensive things or building data pipelines or, or cron jobs or whatever. Uh, and modal helps you deal with all the infrastructure, so you don't have to think about provisioning and resource management and scaling.
+
+basically just describe your code as neural python, and then modal takes that code and executes it in the cloud. And it's, it's, it's essentially, we are a cloud provider in the sense that we, we execute in our, on our platform and, and then we, we charge per usage. And so it's sort of a serverless platform, sort of like, you know, in the style of like a w s Lambda, but more targeted towards what data teams need.
+
+**Andrew Lisowski:** Um, so like, why, why did you start, it like was, uh, was working with data and working in this fashion hard to do? Like, is there a lot of infrastructure to set up if you wanna do these types of data processing stuff?
+
+**Erik Bernhardsson:** Yeah, totally. I mean, I've been working with data since like most of my professional career, so 15 plus [00:03:00] years. Uh, and, uh, and to some extent purely selfishly, I always like wanted to have a better tool and I also wanted to build a better tool for myself. Like I always felt that like, you know, there's, there's.
+
+There's, there's so much stuff where like the, the, the most of the complexity is like less about, like, actually, like building a prototype is, and, you know, that works locally. It's like getting it into production, right? Or, and like, there's so much stuff around like scaling and scheduling and stuff where like, it just gets in the way of delivering value.
+
+Um, uh, and as well as the rest of the data stack, frankly, like, like there's also a lot of stuff higher up, like, you know, thinking,~~ I, I, I, ~~at Spotify in particular, I built a, a workflow, uh, an orchestrator slash a workflow scheduler called Luigi. So, so I've also like spent a lot of time, like higher up in the stack and thought a lot about like different data frameworks and, and tools and, and systems.
+
+And what, what I realized was like a lot of that stuff is, is fairly, uh, is fairly fragmented. Data teams spend so much time on, on infrastructure eventually, like most companies, like once they get big enough, they end up like building their own data platforms, which is often like a thin wrapper on [00:04:00] Kubernetes.
+
+And then data teams are, are usually not happy with that. Uh, because it doesn't, doesn't let them a lot do a lot of the stuff they wanna do. And particularly like now, I think that's very clear with like G P U stuff, it's getting very hard often for data teams to iterate based on ~~the,~~ the existing platforms.
+
+~~Um, so,~~ so yeah. So I, I wanted to rethink the entire data stack. I realized like the best place to do that is, is really in the runtime layer. What, what I mean by runtime is like building the cloud infrastructure that executes code, essentially building almost like a Kubernetes that's cloud native and focuses on the types of needs that data teams have.
+
+Uh, you know, it's serverless, it scales up and down. Like it just, you know, builds containers very quickly, enables you a very fast feedback loop. So I started building it about three years ago, end of 2020. Uh, I pretty quickly realized, I was like, this is a deep technical problem. Like I have to go do deep down and like, you know, file systems and Linux and containers and everybody else is like, I can't do this on top of Docker and Kubernetes, so I'm gonna have to rebuild all of that stuff.
+
+Um, and everyone thought it was crazy for, for saying this back then. [00:05:00] Uh, but, but I realized actually like these things, like you can do this. Like, it just takes time. There's a lot of work, but, but you can have to, you, you can't go, you know, someone built Docker so clearly, like, you know, I can also build something equivalent.
+
+Um, so, so yeah. So started dabbling with that and, and pretty quickly realized like, this is what I want to do. Like this is what I want. Turn into startup and, and started hiring people in, in 2021. And, and now we're still relatively small. ~~We're, ~~we're,~~ we're, we're~~ still 10 people, uh, but definitely. It's starting to feel like, you know what we're building Makes sense.
+
+**Justin Bennett:** So, is it fair to say that like a lot of those infrastructural problems that you were seeing, uh, in your, you know, past experience or other companies you're going through, it's like you want to take, solve a lot of those problems and just sort of give a nice. Um, sort of runtime layer for people to sort of dive into and I guess get a lot of those benefits.
+
+**Erik Bernhardsson:** Yeah, totally. And, and like I, I think like a couple of examples would be like, let's say you're like building a machine learning. Um, some, some inference, like an inference endpoint. Like you have some model you wanna productionize, [00:06:00] like, you know, like often, like you can get that working pretty easily locally.
+
+Actually it is not that easy these days with GPUs. ~~But, but, but, but you know,~~ but even, you know, like once you get it working, then often, like you have to rewrite everything or like rewrite like a ton of it in order to get it working in the cloud, right? And, and so I, I think there's this like, Huge, like, you know, chasm between like getting things running locally and getting things running in production.
+
+It's gotten a little bit better with containers, but, but in order to work with containers now you introdu need to introduce containers into workflow. It's kind of annoying to have to like rebuild dock containers all the time to run things. Like, like a lot of the like stuff we've done in the last like five, 10 years with infrastructure has like, you know, maybe, you know, enabled us to like bridge the gaps between local and production a little bit more.
+
+But it's actually made the, like feedback loops like much worse. Like I, you know, like in the sense that like, you know, like a couple decades ago I used to use like s s h into machine, like write code and like when I was done, I just like, just copy it into the production folder and like, stuff like that.
+
+And like, I think there's something to be said about the feedback loops that you had, you know, when, when the, [00:07:00] the, the production and cloud was, was the same. And, and so like to me, like my starting point was like, I wanna make data teams really productive. Like, and, and I want them to not have to think about this, like production versus a, a cloud.
+
+So, so, so what if I can like, Take the, the, the local development and put the cloud inside of it. Like that, that loop when you're writing code, like I, I always thought that like if you, if you, when I think about like developer productivity, best way to understand developer productivity is in terms of these like feedback loops.
+
+Like, like you have this like, you know, feedback loops and, and, and the fastest feedback loop you have is when you're writing code locally. So what if you can put the cloud inside of that feedback loop? It has this ability to like, you know, run things like super quickly and then when you're done, you just deploy it.
+
+'cause it's all like built in a way where like it runs in the cloud already. Uh, and that's what I was like realizing that that's, that's the key to supercharging developer productivity, speci specifically with like data tools.
+
+#### [00:07:49] Configuring Container
+
+**Andrew Lisowski:** Yeah, I've, uh, like, I'm not much of a data engineer myself, but I've been building some products that need GPUs and, uh, like, you're right, like setting it all up [00:08:00] locally is, is tough, but then setting it all up in the cloud is like a second level of toughness and what you guys have done with modal, the DX is just like, Super nice.
+
+It's like instead of hopping between multiple YAML files and worrying about my infrastructure, I just write one, one file, define it all in one place. Um, yeah, so the DX is amazing.
+
+**Erik Bernhardsson:** Yeah. Is zero YA model. It's like, in fact it's zero configuration. It's all code. Uh, and that's very intentional that, that, you know, because like, and that's a promise I can make to all the listeners and all the users of modal there will ev there, there will never be a single line of YAML in modal.
+
+**Andrew Lisowski:** Yeah. So let's, let's dig into that a little bit. So like, uh, my first example is like docker. So usually you have to create a docker file and all of this. How does, uh, setting up your Docker instance and modal work,
+
+**Erik Bernhardsson:** I mean, you don't use Docker. So in modal, you basically describe the infrastructure inside the code itself. And, and I think this is not necessarily a novel idea. Like there are some interesting frameworks that do similar things. Like in particular, like we use plum at model. And I think plum is kind of [00:09:00] interesting in a sense.
+
+Like, it's like, I dunno, plum me for people who don't know, it's basically like Terraform, but it's like programmable. It's all like code. And like when I started using it, like blew my mind the idea like really, really plum me has other issues, but, but like, you know, the core idea is like very solid. Like you just like write code that define like, you can put, like write like four loops and functions that like, you know, create like Route 53, whatever.
+
+So, so, so I wanted to have something similar like inside the code itself. But then like the step further is like, I also wanna put the app code inside of it too. I think. I think like there's a couple of like a w s frameworks, like C, D, K and like Chalice, and you sort of the same idea. And I think there's some lambda based frameworks, but, but anyway, the idea with model is like you just write code like Python, we focus on Python and the benefit of data teams is like 99% of it is Python.
+
+And inside a code itself, you just define the environments, but you also write the functions and then, You know, if you have a bunch of different functions running in each, in different containers, uh, they can just call each other just like normal Python functions. You don't have to think about, okay, like this stuff is running here and then I have to like, [00:10:00] serialize this and invoke this other thing.
+
+Like, it's just like a function call, like it's internally. So, so you can define, build this application inside model, just like one single Python script or multiple scripts or whatever, multiple modules. Um, and define all the different dependencies, all, you know, all the containerization on a functional level, and then have all these like functions calling each other and mapping over each other.
+
+Uh, and then when you execute that, the model itself builds necessarily containers, lazily, if needed. Uh, and then schedules everything, you know, scales up and down, containers as needed, and, um, and, and executes it and streams back the output right to, to, to your local laptop. Like you don't have to like, like there's like, there's this like a w s feedback loop where you like have to like build a docker container, push it to the cloud, then go into like console and click a button, and then it like runs.
+
+And then when it's done, you have to download the logs. And then you, and then you like look at the logs and you're like, shit, okay. Like, I forgot to like add a, you know, whatever semi colon on this line, right? Okay. I have to start over. Right. So whereas like in modal it's all just like, just like, you know, run the, the script and [00:11:00] then it like prints the output.
+
+Uh, and so you have this like very fast feedback loop and with, with, uh, like I mentioned, zero configuration, it's all like a single script.
+
+**Andrew Lisowski:** Yeah, the, the feedback loop is really nice. For the thing I was building, I was trying out like hugging faces, inference, endpoints, and I just found like I was waiting like 10 minutes to build docker every time. But with modal, like as I change, uh, my containerization layer, it does that little bit of extra evaluation it needs to, and then the next time I run the script, it's just like super quick and I'm like in the problem space.
+
+**Erik Bernhardsson:** Yeah, totally. And, and modal lets you deploy code in a couple of seconds. Uh, and, and if you need to rebuild a container, even that only adds typically like 10 seconds for like installing a Python package or whatever. Uh, so, so we've really thought about it from the point of view, like, we want to have this, like, fast feedback loops.
+
+Like we want to have this like, developer experience that feels magical. Like you wanna, it's like, it's like you, you want it to feel like, like, oh, is this even running in the cloud? Like, it actually run, like, I, I want people to not believe it when they see it. I don't know [00:12:00] if we're quite yet there, because there's a little bit of like a noticeable delay.
+
+Like it's not quite as fast as running things locally. Uh, but we'll get there.
+
+**Andrew Lisowski:** Yeah, this, uh, we, uh, a few a, a a while back now, we had the creator of Unison on, and it has a very similar feel to me where it's like making the cloud and calling things outside of your computer, feel like it's just local. Like there is no like, communication layer between my client and my server. It's, it's just code all the way.
+
+**Erik Bernhardsson:** Yeah, totally. Yeah. I looked a little bit at you and so I, I think it's super interesting. I think, I think the difference between modal is like for modal. With modal, it's like, You get that, but to some extent also like, like you get the normal Python environment, like all the libraries, like all, you know, the normal stuff you're used to.
+
+Right. And I think it's a big ask to ask people to move to new programming language. Whereas like with Modal, it's like, it is the same Python you're always familiar with. It's the same i d like you run code the same way, almost like, you know, but you know, you can actually run it in the cloud and we deal with all the scaling and all that other stuff.
+
+**Justin Bennett:** [00:13:00] Something interesting about the sort of data ecosystem, or at least like developing a Python these days feels a little bit more fragmented.~~ I.~~ Probably than it ever has to me. At least. I haven't actively done a lot of Python in a long time. But, um, so when folks are using modal, is it sort of a bring your own tools?
+
+'cause you know, there's like a plethora of package management solution for Python, for example. And you said you're, you're doing a lot of the stuff on the cloud as sort of a really tight feedback loop. So I'm assuming that when you're specifying packages, you're doing that. Through some light dsl wrapper inside of your configuration files.
+
+It's like, Hey, I have these dependencies that function
+
+**Erik Bernhardsson:** There is no configuration files.
+
+**Justin Bennett:** uh, I mean, like in your actual runtime code,
+
+you're, you're talking about how it's like, uh, yeah, like this D s l that's like alongside your function. Um, so is that, it's like we give you the tools that you need for doing things like dependency and everything else, and then you're just like, you just write this function and then it's good.
+
+Or is it more like, [00:14:00] here's how you slot into your. Other workflow, you know, you're using, I don't know, poetry or whatever,
+
+**Erik Bernhardsson:** Yeah, I mean we, we tend, we, we tend to just like, push people into using like pip, I tend to think PIP is like, it's like the only thing that I've used that like generally works. Um, and so, but I, I think the other benefit is also like in the cloud. Like we build everything from scratch and, and so like, it's sort of less of a problem.
+
+I tend to think, like the big problem with Python is always like when you have a bunch of different virtual environments, like locally and you have to reconcile different stuff and like, but whereas like, I think the like dumb approach of like just create a new virtual environment for everything. Kind of works or like, let's just build a new container for everything that also kind of works.
+
+Uh, and if you do that, it's actually less, uh, critical, which, which, um, package, um, framework you're using. I tend to use PIP most of the time 'cause it's like the, the most commonly used one. It's like well understood. Uh, we do support other ones too. Like in theory, like a bunch of people use conduct with modal.
+
+Uh, you could in theory use poetry. We have some basic support for poetry [00:15:00] too.
+
+#### [00:15:00] Simple Primitives
+
+**Andrew Lisowski:** ~~Um, ~~so, uh, what, what are the primitives that modal provides to help you, like, build up these things? Like how, how do you define one of these cloud functions?
+
+**Erik Bernhardsson:** I just write a normal python function and you apply a decorator, and in that decorator you define the runtime environment. So that's like basically what image it is. Uh, and you can also define things like, you know, do you need A G P U then to specify what G G P U type. Uh, there's a bunch of other stuff, like you can add like a crawl syntax if you wanna, like, you want the function to be automatically triggered certain times a day, or, uh, you can actually mount, you can mount like file systems to it.
+
+So we have this ability modal to define, uh, essentially like an N F S equivalent and mount that to the containers locally. So you can set up like shared, uh, uh, file systems, uh, and a few other different things. Uh, and, and then those functions are just normal Python functions, right? And you, you can, you can, you know, in those functions, you can call other functions.
+
+You can, um, Uh, you can map over other functions and then we automatically scale out A couple of other things you can do that, you can set up secrets. So you can set up in the web interface and model. You can define [00:16:00] like credentials, your A SS credentials or open AI keys or whatever. And then you can import them in modal, you can annotate functions and say, I wanna inject these as environment variables.
+
+And then you get them available as just, um, as environment variables and runtime. So this way you don't have to like deal with, uh, hardcoded secrets in code. You just inject them in the cloud. Uh, what else? Um, yeah, there's a, you, you can define things to be a web hook. So you can take a function model and basically annotate it as, I want this to be a public, uh, web hook that's exposed, uh, to the world.
+
+And then model will then generate a, a, a random or, or a unique u r l that you can then go to and that that will trigger that function. Uh, so, so those are some of the perimeters we have in model that could build quite powerful apps with.
+
+**Justin Bennett:** Is this position more like a serverless framework in the sense that they're more for, uh, short, shorter running jobs? Uh, so you do like a shorter running process. Versus maybe, uh, more longer term living. You know, [00:17:00] maybe you're, you're doing a, a really big analysis or something, uh, sending that to A G P U. Yeah, I guess like in that scenario, you might have like a server that is dedicated to the, like this process or, or whatever. Um, yeah, I, uh, to reframe, is it
+
+shorter or longer, like longer running jobs that you're sort of aiming for?
+
+**Erik Bernhardsson:** I think we're like fairly unopinionated about that. Like modal as a whole. Like you can run things for up to 24 hours. Uh, and um, but that being said, I, I think, I think probably like it skews towards shorter running stuff. It has to, and I think the, the, the main reason is probably like one of the benefits of running things, serverless is really cost.
+
+Like when you have, um, when you can auto scale to the actual usage. Like let, let's say when a productionize. A machine learning model, and you don't know how much traffic you're gonna get, right? Like the, the, you know, with a traditional system like Kubernetes, like you essentially have to, like, the, the system scales quite slowly, right?
+
+Like, it doesn't scale within seconds, so you have to provision to some extent for peak capacity, right? [00:18:00] Uh, which means you're gonna have like, pretty low utilization rate. So, so where, where I think we, we've done, like right now where we see, uh, by far the most usage is like deploying. Gen ai, like G P U based models, like GPUs are also expensive.
+
+So that's the other thing, right? Like people wanna save money by running serverless. Uh, and so that, that, that, I think that's like the biggest, one of the biggest benefits that's, that's evident with model right now is like people see, you know, a lot of people may actually move from e c two to model and, and end up saving a lot of money, uh, because they, they have this ability to, to autoscale very quickly up and down usage.
+
+So, s o for that reason, it tends to be, Uh, shorter running things like a couple of seconds, like typically like inference, endpoint, like doing stable diffusion episode, that, that kinda stuff. But we have a lot of people also doing things like fine tuning is getting more and more common. So, uh, so an example of fine tuning would be like green booth for instance.
+
+So like you can like basically like fine tune this like custom stable fusion model based on like pictures of you or whatever, like pictures of your kids or your dogs or whatever. [00:19:00] And then you can generate like, you know, uh, uh, stable effusion, pictures of your dog or whatever. Uh, and, and, and that fine tuning process often takes like 30 minutes.
+
+So that's something people do quite a lot with modal. Like they'll have this like thing running for 30, 40 minutes on model, on a one hundreds or something like that. Uh, we also have some people doing training with modal. So in that case, like you might actually have like things running for like several hours or days.
+
+Um, ' cause you, you, I think you can actually I said 24 hours, but I believe you can actually extend it to, to seven days. I forget what our upper limit is. So we have some people running it for, for much longer than that. But ~~I,~~ I, I would say the ~~median~~ median is probably like five seconds.
+
+#### [00:19:34] Serverless GPU
+
+**Andrew Lisowski:** Yeah, that's mu much longer than most other serverless platforms where you're like, capped at 20 seconds. Can't do too many interesting things in 20 seconds. I think the, the, the, the autoscaling is a huge point. Like when I was comparing platforms, it's like I come from a front end JavaScript world. I have never had to run a G P U before.
+
+Uh, and running a G P U for a month all the time is like five, $600. So like the ability to like be an indie hacker and say, [00:20:00] oh, I wanna. Put this model somewhere, uh, and only have it spin up when I need it to spin up is super powerful.
+
+**Erik Bernhardsson:** And if it goes viral, we'll scale,
+
+**Andrew Lisowski:** Exactly. Yeah. And I like all the features you guys have for like, oh, like maybe have this run for like three minutes after, uh, the last request, or keep like one or two of these always on. So it's, it's very nice and very like flexible to the needs of the developer.
+
+**Erik Bernhardsson:** Yeah. Yeah. Now the problem I think on the technical side, just 'cause I think it's interesting to talk about, uh, with, with, um, doing serverless, G p U is, is the cold start, right? Because in order to do the g um, these model serverless, you need to spin up the, um, containers very quickly. Like on demand, like a user request comes in, now you, and you spin up a container very quickly.
+
+And, and that's a problem in itself just for C P U based functions. Like Lambda has solved it clearly. Like they, they can spit up containers very quickly. Uh, but when you're dealing with G P U models, uh, suddenly it's a much bigger problem. 'cause like some of these GPU models, like just starting with stable [00:21:00] diffusion, that's five gigabytes.
+
+So you need to take something that's five gigabytes large, you know, tradit, like with Kubernetes, it's like brutal, right? Like you need to pull down a docker container. Then like, you know, start up the container, then that one has to read like a, you know, five gigabytes from network into memory and then, you know, copy it from memory to G P U.
+
+So that's like, you know, a minute or two, right? But with modal, we ended up building our own file system. We built it on building our own container around time, our own container image builder. And so because of that, we can do something similar in just about 10 seconds, like, like starting a container.
+
+Loading the five gigabyte model files, like from network into C P U memory, and then copy from C P U memory to G P U memory. Uh, I hope to get that down to a couple of seconds. Eventually. Uh, there's clearly, you know, five seconds or 10 seconds or whatever it takes, it's still, uh, a long time. Uh, and it's not as a noticeable latency.
+
+And it gets even, even worse for some of these, like very large like language models, right? Like you have these language models that are like 40 gigabytes, right? Uh, but, but those are some of the very super interesting technical challenges we're dealing [00:22:00] with is, you know, how do you, how do you load these very large models into G P U memory very quickly in a distributed system?
+
+**Andrew Lisowski:** So do you guys like, I don't think you guys actually like own the hardware, right? Like who? Who actually owns these
+
+**Erik Bernhardsson:** Yeah. We didn't go that deep.
+
+Like we do run this on the, on the, the hyperscale of the public clouds. Right? Like in particular, Oracle has good GPUs. We run this on AWS and G C P as well for some burst capacity. Uh, yeah, we, we haven't gone quite as deep as building our own hardware. Uh, I, I think that's a, that, that's a bridge.
+
+I'm not sure if we're ever gonna cross, uh, uh, maybe one day, but, uh, but, but everything down to that point, right? Like we, we've done a lot is like, you know, performance tuning Linux kernels and like, like, there's a lot of like deep stuff that we've had to do in order to, to get to the performance we wanted.
+
+**Justin Bennett:** Yeah, I think just working at Oxide has, has taught me this lesson where if you step outside of the sort of. composed software and even hardware components that you're putting together and think more [00:23:00] critically about what is the holistic problem you're trying to solve. You can often come up with solutions that are much more performant.
+
+You know, because there are all these trade-offs and all these layers and general composable software. You know, you've got Kubernetes and you've got Docker and all these things, and they're meant for a specific use case. And you know, maybe this use case is non-optimal. ~~So~~
+
+~~Yeah. it's really cool. ~~
+
+**Erik Bernhardsson:** ~~Yeah. And, ~~and I always like think about this, like, there, there's modern computing has like so many obstruction layers on top of ion layers at the top of abstraction layers, right? Like, you know, and, and every obstruction layer usually adds like an order of magnitude overhead. And so, so why is it that like, you know, when I go into a w s like computers do, like what?
+
+Like, you know, A billion or a trillion floating point operations a second. But when I go into aws and I update some load balancer setting, it takes like 25 minutes sometimes for it to propagate. Right? Like, why? But i think the, the solution is like, there's so many different layers of like abstraction that like, you know, that are all, that are all relying on like cash invalidation or TTLs or like, you know, so many different like [00:24:00] things that all just like add up and, and that's why we end up having this like slow stuff, right.
+
+Uh, and, and, uh, but a lot of these things, like if you actually like, push through, like you can actually figure out ways to make it a hundred times a thousand times faster than what people think. Not always, of course. I mean, there are like fundamental limits, like network bandwidth. This, like hard, like once you saturate like, you know what, what a network, you know, interface can do.
+
+Like, it's hard to get around that, but, but a lot of stuff is like, you know, how fast should a container start? Like, I don't know, I don't see a reason why it shouldn't start in like, you know, few milliseconds.
+
+**Justin Bennett:** Yeah. I mean, I think that's the beauty of like building a company like Modal where you're really looking at this problem. I. Holistically, you know, you're like, all right, this is what we wanna do. We wanna provide this dx, we wanna provide these performance guarantees, uh, and give this like, just general experience.
+
+And you're able to say, we don't need this, or like, let's redo this, or something. That wouldn't make sense. Maybe, you know, if you're on a team at Amazon or whatever, you're like, Hey, yeah, you know, we could remove these abstraction layers. And they're like, we could, but also we have to ship [00:25:00] these other things.
+
+Or, you know, we're
+
+focused on these metrics this quarter, or whatever, you know.
+
+**Erik Bernhardsson:** totally. And, and I think that's a big benefit of building for a particular use case or a particular team, right? Like I, when I look at AWS, like I have tremendous respect for a w s, like I love a w s for what? It enables me. To build, and I don't think we would be here without a s right? But like a w s their products are like, they're trying to build for like a very large, you know, group of people at the same time.
+
+And what that often means is that they're not really thinking through what people need. They're building, you know, more like infrastructure and just like throwing it out there and then like hoping people pick it up and, and whereas I think, you know, something like modal. Uh, we can actually like kind of start over and think about what data teams need.
+
+And then, you know, I didn't end up building what this, a continuing infrastructure, because I wanted to like, in a way, like, it's like almost like building it out of spite. 'cause I got mad, but, but like, but, but like, I, I, you know, we we're doing it in the service of like building better, faster feedback loop for data teams.
+
+And like, I think a lot about like, you know, Versal is a company I look up to too, a lot too, right? Like they're, they're starting with a, it's a very [00:26:00] different company, right? Like very different product. But like, I think in a similar way, They're starting with a problem, like they're starting, okay, let's make like front end engineers faster.
+
+Like, like, let's make it easier for them to deploy things. Right? And, and then, you know, and then they can optimize in a way it's almost like repackaging the cloud in like a vertical way for a particular workflow and for particular set of users. And I think if you, if you make that assumption, suddenly you can like really go deep on like what those people want.
+
+**Andrew Lisowski:** Oh, that's a, that's a very interesting way to look at that. I could see many other companies popping up in that like vertical for a specific developer.
+
+**Erik Bernhardsson:** Totally. And, and I think to me, that's been fascinating, right? And I've written a lot about it on my blog too, is that as much as I admire, you know, I, I like, I love the cloud provider and I think a w s and the other ones have such tremendous technology. But, but I think like the, the last, you know, the developer experience was never there, right?
+
+Like I, I, I've used a w s for 15 years and it's still hard, right? Like, you know, deploying a lambda and then I a m and like whatever, it's like hard, right? So it's, I think it's been [00:27:00] interesting to see like in the last decade or so, or the last five years, like there's been an emergence of what I call like a second layer of cloud providers, right?
+
+Snowflake is a good example. Datadog , versal, uh, and modal, hopefully, right? Like also like railway or like fly or whatever. Like, and, and the idea is that like they kind of packaged this cloud and like offer a better developer experience and then even though they may actually use the cloud provider under the hood, right?
+
+Like Snowflake, you know, which is a, a SQL based data warehouse, right? Like they end up using uh, uh, a w s under the hood and also the other cloud providers. And so the question is like, how are they able to compete with a w s 'cause a w s is also trying to go up to stack and they have this Redshift thing.
+
+But, but I think what, what, what's been evident is like, A w s does the underlying compute layer extremely well, like the e C two and the route 53, and like SS three and like all these things like so well. But in the layer above, like I think there's plenty of room for people to compete on developer experience and rethink what that looks like.
+
+And, and I could see a world where like, give it a few more years. Like [00:28:00] a lot the, the average engineer may not actually interact with the clouds anymore. They may interact with those tools that are layer above the cloud.
+
+#### [00:28:07] Building at the lowest level
+
+**Andrew Lisowski:** Yeah. Super cool. Um, so I wanna dig a little bit deeper on some of the technologies you mentioned. Like you said, you had to rebuild the file system. Like I would never think that, oh, I need to rebuild the file system to, to get this performance guarantee. So like, oh, why, why did you do that? ~~Yeah.~~
+
+**Erik Bernhardsson:** Yeah, so, so ~~I mean,~~ first of all, like, it kind of open secret is like, it's actually less hard than, than you think to, to build a file system. I mean, there's like Fuse, which is like file system user space. So you, you, you can, and there's even like a Python wrapper or like there's a Python implementation of it.
+
+So our first prototype file system, we actually wrote in Python, which is a terrible idea, but it was great for like, develop, you know, kind of proving the point, like it actually worked anyway. Why do we build our own file system? So the problem is we wanna start containers very quickly. How does, how do containers start?
+
+Right? Like a container essentially from a Linux point of view, it's basically like a couple of different primitives. There's a couple of things around resource isolation and security, but it's also a thing around, uh, defining [00:29:00] a root file system and pointing to, here's the root file system in my Linux, uh, uh, machine.
+
+Please start a container from this Linux file system. And what we realized is that the average container image, uh, is very large. It contains so many files that are never actually read. And so when you have this like pushing and pulling of container images, there's a lot of very in, there's a lot of inefficiencies like moving a lot of data that's never read.
+
+Um, and also to some extent moving the same data. 'cause like a lot of different containers, they actually contain the same data over and over. Uh, and, and so there's this, that deduplication based on layer, but, but that actually doesn't accomplish too much like in terms of efficiency gains. So what we realized is like, what if we instead build this file system that presents this?
+
+File system to the container engine, but however, those files actually don't exist on local disc. But when the, when the container engine runs c or or something like that, requests this file, then we go and fetch them over the [00:30:00] network. So that way you can accomplish, you know, the, the, just getting rid of, you don't have to copy all these files that are never actually read by the container.
+
+The other thing we realized is that a lot of the files are the same. So what if we checks on them? And instead of storing them based on path, we just store them based on the check sum. And we built essentially what's called the idea is a well known idea. Other people have been doing this since the sixties, content addressed file system.
+
+So we built a content address file system where we, we compute a check sum for every single file. We store that separately, and then we have index files that then resolve to this underlying blobs. And then we, we built this file system that presents that to the container around time, as it is, as a, as a root file system.
+
+But under the hood, we actually go out and, and, and fetch the underlying blobs and then cash them locally on SSDs. And, and if you do a lot of these tricks, uh, you can get very low latency container startup and very high cash efficiency, which means you can boot containers very quickly, which was the, the, the end goal that we wanted, [00:31:00] uh, to get to.
+
+**Justin Bennett:** That's super cool.
+
+**Andrew Lisowski:** Yeah. Uh, and it once again reminds me of unison me and both just me, both me and Justin smiled at the same time. Uh,
+
+**Erik Bernhardsson:** Oh yeah. 'cause they also have some sort of like check sum based Yeah, I, I remember reading about it. Yeah. Yeah. You, you're right. Like it's, it's pretty interesting. Yeah. It's a
+
+**Andrew Lisowski:** yeah. It's,
+
+**Erik Bernhardsson:** Yeah.
+
+**Andrew Lisowski:** that's super cool. Uh, like you basically made a lazy file system, which, uh, one of the biggest things in performance is just make things lazier and that'll make it faster. And it seems like you guys took that to the extreme here.
+
+**Erik Bernhardsson:** Yeah, totally. It's kind of like a C D N in a way. Like we think of it as a c D N in in, in many ways.
+
+**Justin Bennett:** That's awesome. I feel like this is a, a, a space that definitely should be explored more. I've seen some really creative experiments with people just playing around with Fuse, just like building really cool stuff and it's like, yeah, file systems are are really powerful and there's a lot of things that you could do with them potentially.
+
+And this is such a great example of that.
+
+**Erik Bernhardsson:** Yeah, totally. And, and our file system is proprietary, but, but I think there are some people, there are some open source ones where people have been trying to implement this within Kubernetes and within Docker, uh, there's [00:32:00] a project called NIUs, uh, and there's another project called DragFly, I think something like that.
+
+Maybe it's the same thing. So there's like, and then there's another file system called like Star Gz or something like that. So there are some attempts to implement this within the existing sort of Kubernetes docker realm. Uh, I don't think it's widely used. Um, but it's sort of interesting to see like these ideas are in a way, like kind of if you actually go deeper and like, think about it, like I think there's a lot of people have sort of arrived at the same conclusions.
+
+#### [00:32:27] What's being built on modal?
+
+**Justin Bennett:** so, uh, I, I'm sure you have a lot of really interesting use cases for this. Uh, you know, one of the, one of the delightful things about building a product like this is just seeing how customers use it. So what are some of the cool things that you've seen built with modal?
+
+**Erik Bernhardsson:** Yeah, totally. It, it, it's funny you're asking it, 'cause like actually for the first year and a half, like we did not have like a particular use case in mind. Like we, we were just building this thinking like we're building a Kubernetes for data teams that's cloud native. Right. And like I, I always had a high conviction that like, this makes sense.
+
+But I didn't really know like, what's the [00:33:00] killer app or like what's the main use case. And it wasn't until last summer that that started, we started realizing like there's a lot of cool stuff happening in Gen ai and we have a lot of the primitives that are that, that, that would really be valuable for that audience.
+
+Like we had G P U support serverless, you know, fast boot up. And so that's really where, where we've been seeing a lot of traction. So it tends to be a lot of the things that we see. Um, Since then, it's been like stable diffusion, like some people generating lots of images, like basically like prompt to image generation.
+
+Uh, it's been a big use case stream booth, uh, control net. We've also seen a fair amount of like text to speech, speech to text. Uh, we've seen some people generating music on modal. Um, we've also seen a lot of people, a couple of people doing. 3D rendering on modal, which is kind of unexpected. I think it's funny 'cause it's like, you're like, oh wait, you can use like GPUs for rendering three D and they're like, wait a minute.
+
+Like that's actually, like, you kind of forget That's what GPUs originally built for it. But, but yeah. So people use, um, some, [00:34:00] there's a bunch of people using modal for like three D gener, um, rendering 3d images. Uh, and then we have a couple of people doing things out completely outside of ai. Right?
+
+Like doing, um, like computational biotech like alpha fold or like. Sequence alignment, that kinda stuff. Web scraping, video transcoding, like stuff like, just like batch running, like f f n, peg, uh, there's, there's kind of a wide range of stuff that people are, are using it for.
+
+**Andrew Lisowski:** Yeah. It uh, It. It must've been very nice when you're like, oh, wow, ai. Like it just popped onto the scene and kind of just like made for the perfect use case
+
+**Erik Bernhardsson:** Totally. Yeah. And, and I think in hindsight, like what, what I think was. Is clear now is like, you know, a year ago or so, like we built this thing we felt was like much better than Kubernetes, but I don't think it was like fundamentally like good enough for people to really like, feel like, oh, I'm gonna switch.
+
+It's not quite worth the switching costs. But when all this like AI stuff started starting happening, then I,~~ I,~~ I thought it was very clear that like, you know, traditional infrastructure breaks in a big enough way where like there's now suddenly a, [00:35:00] a very clear reason to switch to something new. Right.
+
+And, and that's where we felt like with. Um, position our ourselves really well, but like, my goal to be clear is not to like, you know, be like an AI company, right? Like, I, I, I, I love this AI stuff. I've always been, you know, working on AI stuff, my whole, you know, most of my career. And, but I, I think there's so much other stuff, right?
+
+Like, there's so much other non-AI stuff. There's so much like compute intensive stuff completely outside of ai that's also like super exciting. Uh, and we wanna support those things too.
+
+**Justin Bennett:** Yeah, I, I think especially now, With as much excitement and in intention as there as there is one of the really interesting sort of value props here is just lowering the overall barrier of entry, right? Because there's a lot of people who want to experiment, who want to like put out products and you know, in a traditional sort of infrastructural setup, you've got a lot of engineering investment as you've already pointed out, just in getting started and setting this stuff up.
+
+And it's generally like mature organizations who are doing it
+
+and you know, Having [00:36:00] somebody, a person or a small group of engineers who can get together and then on a weekend hack together, like a proof of concept of a product because they have a fast food feedback loop, like you said, because it's like, you know, infrastructure on demand, you know, all of these things, really good UX that is, is huge. And just enabling people to build products. Um,
+
+~~so I think,~~ I think that's, that's incredibly
+
+exciting.
+
+**Erik Bernhardsson:** To totally. And, and, and, and, and it's not just necessarily like lowering the barrier. Like I, I think that's like one side of the spectrum, right? Like you, you definitely want to like, make it easier for people to, to, to do this. But, but I, but I never wanted to build what I, what I've been like, jokingly referring to like Kubernetes for kids, like kind of a simpler version of Kubernetes.
+
+~~I, '~~ cause I, I think it's really important also that you're building something that also like advanced users wanna use too. Right? And, and, you know, Like, for instance, like I think about myself, like I understand a w s really well. Like I understand Docker, you know, Terraform, like all these tools, right? Like I've been using it for like 15 plus years, but like, even to me, like gets in the way of like delivering value.
+
+Like I wanna write code. Like I don't wanna write yaml, I wanna write code and like build cool [00:37:00] applications and ship them, right? So, so to me, like. The, they're like, you know, the best tools has, has always been the tools that sort of appeal to both sides of the spectrum. Both the people are like starting to dabble with something new and like, you know, and then they're like, oh, this is really easy to get started with.
+
+But also the people that are like, are really into like, you know, you know, have all this deep expertise and they're like, this is like getting in the way of like, me, like doing stuff. Like I just wanna like do stuff. Right? So that to me is like, you know, it's a sign, like that's a tool I always wanted to build.
+
+It's like, you know, you, you, you appeal to a very wide range of, of users.
+
+**Justin Bennett:** For sure. I mean, I feel like this goes back to, it's all really related to the same thing. It's the layers of abstraction. Action. Just introduce a lot of incidental complexity. It's like we don't intend to spend all of our time, you know, tuning Kubernetes, but we end up doing it because we have to do it to get, you know, whatever we want.
+
+Deployed. Deployed, and
+
+the, yeah, so
+
+definitely experts or beginners or whatever. It's just like if you don't have to deal with, you know, a bunch of configuration or whatever, it just helps you move faster.
+
+**Erik Bernhardsson:** absolutely. Yep. Yep.
+
+#### [00:37:58] What's next?
+
+**Andrew Lisowski:** so let's look to the future a [00:38:00] little bit. Uh, what, what's next for modal? What are you guys building towards next? You've, it seems like you have a platform that works for a lot of use cases. What, what are you planning on?
+
+**Erik Bernhardsson:** Yeah, I mean, we're, we're not ga yet, generally available. Like we still have a wait list and, and, um, we're, we're growing, you know, deliberately and intentionally, uh, but not, you know, open to anyone to just register. Uh, so, so that's the next milestone is to, to get it out of ga. The main focus right now to get there is just performance and scale.
+
+Like we, we need to make a bunch of fundamental infrastructure investments to, to be ready for that scale. And also to some extent, like fixing a bunch of like minor like client stuff that's like bothering me. Like there's a few things where I need to break the ss d k in a few ways where I wanna do that before we launch because I don't wanna deprecate like too many people's code.
+
+Uh, but, but that's, I hope relatively soon, like, you know, you know, could be as soon as like end of the summer. It could also be like end of the year. Like I don't quite know, like we'll sort of see, but to me that's the next milestone. And then I think a lot of it is just like scale and performance for the rest of the year.
+
+Uh, like I mentioned, [00:39:00] call starting stable diffusion is on the order of 10 seconds. Like I would love to get that down to three seconds, but that's a hard technical investment. Uh, and, and probably would involve us like doing crazy stuff like snapshotting running containers and restoring memory and like snapshotting GPU there, there's like, getting below where we are from now is, is is definitely hard.
+
+Um, think in the long run, like, I, I mean like I, I think, you know, moving outside of ai, like, you know, we are interested in biotech, we're interested in like financial applications. There's a lot of interesting like, you know, back testing and financial simulations that are pretty interesting. Uh, We tend to do really well with startups right now, but we're starting to get some enterprise customers, and that's another area I definitely want to explore further.
+
+We, we just, just got our SOC two compliance, uh, done. So hopefully that's a sort of starting point for, for getting some more enterprise customers. Uh, and then, you know, who knows? Like, I don't know. The, the, t he exciting part about model is like once you build this foundational, like runtime, like there's so many different directions we're going in, so it's weird.
+
+[00:40:00] We're exploring a few different, like, you know, we're dabbling with some ideas. Like one of the ideas I'm kind of excited by it might mention is like, what if we could build like sandboxing so like people can run like code in a safe way. There's actually a lot of our customers are running LLMs that generate code and then they're like, we want to execute this code, but we want, we don't want the code to hack ourselves.
+
+So like they, they want like a safe code execution environment. So that's like one of the like kind of proof of concept things we're like exploring with 'cause. 'cause we have all the primitives for that. Uh, so we'll see if that, to me, that's like kind of a research project. We'll see. But, but we have a lot of those ideas of like, yeah, we could do this, we could do that.
+
+Like, let's try it. Like, let's see. And then, you know, maybe some of them will work, maybe some of them won't. But, but to me, like where we are right now is super excited 'cause we have this like starting to have, you know, have this like really nice solid platform that you can build a lot of stuff on top of.
+
+**Andrew Lisowski:** Yeah. Uh, you, you fooled me. I, I didn't realize it wasn't GA yet. Uh, your guys' docs are great. You have so many good examples. Like, uh, me, me, as I said, I, I'm a front end developer, but I got [00:41:00] into modal and was productive with it within hours. So like you, you, you guys have done a very good job at communicating on the website
+
+**Erik Bernhardsson:** ~~Yeah,~~ that's awesome. Next time, next year. I wanna get that to minutes though. Like, uh, it should take minutes for people to be productive and then the year after should be seconds. And then milliseconds.
+
+#### [00:41:17] Thank you
+
+**Andrew Lisowski:** uh, that wraps it up for tool tips this week. Uh, thanks for coming on, Eric. This was a, a fun talk about, uh, the world of modal and data serverless stuff. Something that both me and Justin really aren't all that accustomed to, but, uh, it was fun to talk about it nonetheless, and thanks for coming on.
+
+Awesome.
+
+**Erik Bernhardsson:** Awesome. It was great to be here. Thanks a lot for, for hosting me.
+
+**Justin Bennett:** Yeah, Eric, and, and to just repeat what Andrew said, really awesome to have you, and also. I Mean, thanks for doing this. Like I, I know that you were, this is a problem that you're like, sort of nerd sniped into doing, but modal, it provides like some real value and this is a space that I'm excited, you know, just to reduce that. ~~Or~~ give people an option to reduce the incidental complexity a little bit so they can build more products.
+
+**Erik Bernhardsson:** Yeah, I a hundred percent agree. Hold on. I'm very [00:42:00] biased, but definitely agree.
+
+​

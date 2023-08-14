@@ -2,53 +2,90 @@
 
 ## Editing
 
-- [ ] Upload footage to Descript
-- [ ] Transcribe
-- [ ] Run automated video cuts
-- [ ] Fix transcript
-- [ ] Add Video Elements
-  - [ ] intro and outro
-  - [ ] tooltips
-  - [ ] Name cards
-- [ ] Add section markers
+- [ ] Editor Handoff
+- [ ] Andrew Passthrough
+  - [ ] clipping session
+  - [ ] stinger
+  - [ ] outro
+  - [ ] Guest name card
+  - [ ] Add section markers
+  - [ ] Split Free and Paid
+  - [ ] intro
 
 ## Exports
 
 - [ ] Full
-  - [ ] Video
-  - [ ] Audio
+  - [ ] Publish + Download
+  - [ ] Audio 1 Channel (Patreon)
+  - [ ] Audio 2 Channel (Apple Subscribers)
+  - [ ] Vtt
   - [ ] Text
 - [ ] Free
-  - [ ] Video
-  - [ ] Audio
+  - [ ] Publish + Download
+  - [ ] Audio 1 Channel
   - [ ] Vtt
-  - [ ] Srt
+  - [ ] Export Markdown Transcript for Website
 
 ## Publishing
 
-- [ ] YouTube
-  - [ ] Upload video to YouTube
+### Website
+
+- [ ] Add transcript
+- [ ] Add sections
+- [ ] Add title
+- [ ] Add show notes
+- [ ] Add tags
+- [ ] Add links to YouTube and Spotify
+- [ ] Run website to copy rich text for Spotify/Patreon
+
+### Platforms
+
+#### Patreon
+
+- [ ] Video
+  - [ ] Upload
+  - [ ] Add description
+  - [ ] add txt transcript
+- [ ] Audio
+  - [ ] Upload
+  - [ ] Add description
+  - [ ] add txt transcript
+- [ ] Announce
+
+#### Spotify Podcasts
+
+- [ ] Free
+  - [ ] Upload
+  - [ ] Add description
+  - [ ] Set episode number
+  - [ ] Copy link to website (Can't do until it is live)
+- [ ] Paid
+  - [ ] Upload
+  - [ ] Add description
+  - [ ] Set episode number
+
+#### YouTube
+
+- [ ] Make YouTube Thumbnail
+- [ ] Upload Free
+  - [ ] Add description with sub links
+  - [ ] Add chapter markers
+  - [ ] Add Tags
+  - [ ] Add end screen
   - [ ] Upload Transcript
-  - [ ] Make YouTube cover image from figma component
-  - [ ] Add description with link to `https://devtools.fm/episode/NUMBER`
-  - [ ] Add tags
-  - [ ] Add sections
-  - [ ] Add end frame
-  - [ ] Upload paid
-- [ ] Spotify Podcasts
-  - [ ] Upload Free
-  - [ ] Upload Paid
-- [ ] Apple Podcasts
-  - [ ] Upload paid
-- [ ] `devtools.fm` post
-  - [ ] Add title
-  - [ ] Add transcript
-  - [ ] Add sections
-  - [ ] Add links to YouTube and BuzzSprout
-  - [ ] Add show notes
-- [ ] Patreon
-  - [ ] Export text transcript
-  - [ ] Upload video
-  - [ ] Upload audio
-  - [ ] Announce
+  - [ ] Add link to website
+- [ ] Upload paid
+  - [ ] Add description with tooltips
+  - [ ] Add chapter markers (use paid composition)
+  - [ ] Add Tags
+  - [ ] Add end screen
+  - [ ] Upload Transcript
+  - [ ] Manually launch at 9pm before launch day
+
+#### Apple Podcasts
+
+- [ ] Upload paid (Can't do until spotify goes live)
+
+#### Twitter
+
 - [ ] Create next ep twitter header
