@@ -5,8 +5,15 @@ import { MetaTags } from "components/MetaTags";
 import { Link } from "components/system";
 import { useIsClient } from "utils/useIsClient";
 import { LinkShieldList } from "components/LinkShieldList";
+import { getLatestEp } from "utils/getLatestEp";
+import { ProcessedMdx } from "utils/processMdx";
+import makeClass from "clsx";
 
-export default function Episodes() {
+interface SubscribeProps {
+  latestEpisode: ProcessedMdx;
+}
+
+export default function Subscribe({ latestEpisode }: SubscribeProps) {
   const isClient = useIsClient();
   const tags = (
     <MetaTags
@@ -32,11 +39,23 @@ export default function Episodes() {
             </Link>
           </h1>
 
-          <p className="text-lg text-center mb-4">
+          <p className="text-lg text-center mb-2">
             A podcast about{" "}
             <ColoredText color="purple">developer tools</ColoredText> and the{" "}
             <ColoredText color="blue">people</ColoredText> who make them.
           </p>
+
+          <div className="mb-6 flex justify-center">
+            <Link className="my-0" href={`episode/${latestEpisode.number}`}>
+              <div className="w-full h-[fit-content]">
+                <img
+                  className="w-full max-w-64 rounded-lg h-full max-h-[150px]"
+                  src={`https://i.ytimg.com/vi/${latestEpisode.youtubeId}/maxresdefault.jpg`}
+                />
+              </div>
+            </Link>
+          </div>
+
           <p className="text-center">
             Click an icon below to follow us on your favorite platform.
           </p>
@@ -46,4 +65,12 @@ export default function Episodes() {
       </div>
     </Page>
   );
+}
+
+export async function getStaticProps() {
+  return {
+    props: {
+      latestEpisode: await getLatestEp(),
+    },
+  };
 }

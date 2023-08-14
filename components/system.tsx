@@ -55,7 +55,10 @@ export const Link = ({
   children,
   ...props
 }: ComponentProps<"a">) => (
-  <a className={makeClass(className, "my-6")} {...props}>
+  <a
+    className={makeClass(className, !className?.includes("my-") && "my-6")}
+    {...props}
+  >
     <ColoredText color="purple" className="underline">
       {children}
     </ColoredText>
