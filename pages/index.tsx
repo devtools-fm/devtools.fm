@@ -13,6 +13,7 @@ import { Link, P, Ul } from "components/system";
 import { useIsClient } from "utils/useIsClient";
 import { LinkShieldList } from "components/LinkShieldList";
 import { getLatestEp } from "utils/getLatestEp";
+import Image from "next/image";
 
 interface HomeProps {
   latestEpisode: ProcessedMdx;
@@ -75,6 +76,33 @@ export default function Home({ latestEpisode }: HomeProps) {
                 <h2 className="text-xl md:text-2xl">Latest Episode</h2>
 
                 <EpisodeRow {...latestEpisode} />
+              </div>
+
+              <h2 className="text-xl md:text-2xl mb-2">Sponsor</h2>
+
+              <div className="flex items-center gap-4 mb-2">
+                <a
+                  href="https://www.raycast.com"
+                  className="block h-20 w-20 flex-shrink-0"
+                >
+                  <img
+                    alt="Raycast Logo"
+                    src="https://raycastapp.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F9dab15c5-70d8-4f0d-a8b1-604b0b85912b%2Fraycast-logo-256.png?table=block&id=ce1ccf83-06b1-4ac8-b8d4-7b3276bf34e0&spaceId=50d13040-8e7c-4990-aed4-0844f62c7aa2&width=250&userId=&cache=v2"
+                  />
+                </a>
+                <div>
+                  <P>
+                    This podcast is sponsored by{" "}
+                    <Link href="https://www.raycast.com">Raycast</Link>. Raycast
+                    is a blazingly fast, totally extendable launcher. It lets
+                    you complete tasks, calculate, ask AI questions, and much
+                    more. It is a must-have app for anyone who works on a Mac.
+                  </P>
+                  <P>
+                    Interested in sponsoring the podcast?{" "}
+                    <Link href="/sponsor>">Learn more here</Link>.
+                  </P>
+                </div>
               </div>
 
               <h2 className="text-xl md:text-2xl mb-4 md:mb-6">
