@@ -1,0 +1,733 @@
+---
+title: Josh Goldberg - TypeScript ESLint
+youtube: https://www.youtube.com/watch?v=8xfHlnhuMWQ
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Josh-Goldberg---TypeScript-ESLint-e29dgsr
+tags: typescript, eslint, prettier, tooling, javascript, typescript-eslint, open source, linting, static analysis, static typing, developer tools, software engineering, software development, web development, programming
+---
+
+<!-- TAB: SHOW NOTES -->
+
+In this episode, we talk with Josh Goldberg about TypeScript ESLint, a tool that enables you to run standard JavaScript tools like eslint and prettier on your TypeScript code.
+We discuss the recent v6 release, the differences between formatting and styling, and the future of TypeScript ESLint.
+Josh also shares his thoughts on the future of TypeScript and the JavaScript ecosystem.
+
+Sponsored By Raycast (https://www.raycast.com/)
+
+- https://twitter.com/JoshuaKGoldberg
+- https://typescript-eslint.io/blog/announcing-typescript-eslint-v6/
+- https://www.learningtypescript.com/
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/fabian-hiller/valibot
+- https://kysely.dev/
+
+#### Justin
+
+- https://github.com/qewer33/qpaperOS
+- https://github.com/denosaurs/deno_python
+
+### Josh
+
+- Knip (https://github.com/webpro/knip)
+- Nonviolent Communication (https://en.wikipedia.org/wiki/Nonviolent_Communication)
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Intro
+[00:00:56] Catching Up with Josh
+[00:03:49] Ad
+[00:10:20] Stylistic Lint Rules
+[00:22:19] Lint Caching
+[00:30:33] TypeScript Best Practices
+[00:35:19] Keeping up with the Language
+[00:41:07] Spicy Takes
+[00:44:00] What ext for TSESLint
+[00:48:00] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 66 - Free
+
+**Josh:** it's impossible to satisfy everyone.
+
+Typescript eslint had a bunch of stylistic recommendations in our recommended rule sets. As you can imagine, that caused a lot of, to put it nicely, user pain, put it less nicely, people screaming at us on the internet. So we've split out the recommended configs into recommended and stylistic.
+
+**Andrew:** hello.
+
+Welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Josh Goldberg back on the podcast. So, Josh, we talked to you back in episode 35. Uh, almost, uh, it hadn't been too, too terribly long. Um, but it's really great to have you back on. Uh, last time we had talked about your learning TypeScript book, and this time we are really excited to talk more about, uh, the work that you've been doing around eslint.
+
+#### [00:00:56] Catching Up with Josh
+
+**Justin:** Um, but before we dive into that, would you like to tell our listeners a little bit more about yourself? Maybe some updates of what's changed since last time?
+
+**Josh:** Sure. Well, first of all, thank you for having me again. It's, it's exciting to be a second. I am. Uh, yeah. I'm just thrilled to be here. I'm Josh. Hey everyone. I'm a full-time independent open source maintainer in the TypeScript ecosystem. Which means instead of working at a single reputable company, I have no formal job and instead bounce around on open source projects on the internet.
+
+So, uh, I've mostly been working on TypeScript Eslint, which is the tooling that lets you run standard JavaScript tools like eslint and prettier on your TypeScript code. But I also do kind of an assortment of random other things and TypeScript plans for, for fun and profit. So that's me.
+
+**Andrew:** Uh, uh, so I gotta ask, how'd the book launch go? Was it successful? Did, did, did you have a good time?
+
+**Josh:** I had a good time. I'd say it was successful in that it has sold books and no one has attacked me physically yet. Uh, I think there are a few more typos and I wanted in the print edition, so the electronic version fixed all those. But it's nice, you know, uh, I'm a book author that, that feels weird and cool.
+
+Like my name is on a print thing. It's weird.
+
+**Justin:** it's a huge thing to have on your resume, and it's like, and you also get, I, I guess you get, um, royalties, checks every now and again. Maybe that'll just be a surprising thing for the future. It's like a random royalty. You're like, yeah, nice.
+
+**Josh:** ~~Yeah.~~ So go buy my book people. ~~ ~~
+
+**Justin:** Yeah,
+
+**Andrew:** No, no plans for a second one.
+
+**Josh:** Not yet. TypeScript evolves pretty quickly. Um, the language is pretty stable, but they're always adding new features, and it hasn't quite been, I think, long enough to justify a second edition, but there already have been features that have come out that have made parts of the book kind of outdated. For example, TypeScript Decorators in the book are explicitly mentioned as this old thing that TypeScript implemented back in the day and they're experimental, and eventually JavaScript might have decorators.
+
+And then of course, one to two months after the book comes out, TypeScript now has support for the new decorators. Hooray. So maybe in a year or two, who knows?
+
+**Justin:** I am gonna need somebody to write a book to describe using to me, 'cause that syntax is bizarre, but I, I digress.
+
+**Andrew:** Have you done any fun type system gymnastics lately? Uh, since that's, that's, that's where you're, uh, I, I, what, that's what I really with you in my head is all of that. So, in your free time, have you had any chance to do that?
+
+**Josh:** thanks. No, I'm sad. I've submitted a couple of conference talk proposals about doing graph theory in the type system, like setting up nodes and edges and then a traversal algorithm. But for some reason no one has accepted that. So I, I have been getting stale. But I will say though, it's cool, a lot of efforts have happened online to do type system gymnastics and someone actually implemented TypeScript in typescripts type system, which is the, in the best possible way, one of the stupidest things I've ever seen.
+
+I love it so much. So would, would recommend looking up, uh, hype script online. Very cool.
+
+**Justin:** That's wild.
+
+**Josh:** Yeah, just, just thinking about the amount of code it would take to, to do like imperative style programming in a logic-based type system is, is horrifying and beautiful to me.
+
+#### [00:03:49] Ad
+
+**Andrew 2:** We'd like to thank Raycast for sponsoring our podcast. Raycast is an app for Mac that is like spotlight but with superpowers, besides just opening files, URLs, or apps, it provides a bunch of other features like clipboard history, window management. You can even view your calendar.
+
+**Justin 2:** Yeah, so I've been uh, using Raycast a lot lately in my note taking workflow. So there's two pieces of functionality I've been taking a lot of advantage of. One is the floating notes feature. So this is just a built-in feature in Raycast, but it's like a sticky note. So it's just like really easy to evoke, have a shortcut for it, and it pops up and you could just like simply write some notes there.
+
+It's nothing fancy. But it's really great for quick reminders to myself, and I've been enjoying it a lot. And the other feature that I've been using, I use obsidian to take notes. So if you're, if you haven't heard of this, talk about it before. Obsidian is a markdown based note taking app. Really love it, really recommend it.
+
+But there is a community written extension for the city in, in recast, so you can use that to open your vaults which like opens all your markdown files. You can have it, search your notes, add a new daily notes. There's just a lot of stuff and it really empowers my note taking workflow.
+
+So I've been enjoying that a lot. The other thing that I would say that I've really come to appreciate is how easy it is to create shortcut keyboard shortcuts. In recast. It really changes the game when you can. Basically make a keyboard shortcut for anything. So definitely if you start using it, I would highly recommend checking out that, just play around with some shortcuts.
+
+It's really cool.
+
+**Andrew 2:** You should also check out Raycast Pro with Pro, you can do a bunch of things with ai, but what I really like is using that keyboard shortcut feature Justin just mentioned. I can have an AI chat just a keystroke away, and I'm always just popping it open instead of Google now
+
+**Justin 2:** To learn more about raycast, you can visit raycast.com or you can check out episode 38 where we had the C e o Thomas on the podcast to talk about the product.
+
+**Andrew 2:** Do you want to advertise with DevTools fm? If so, visit DevTools fm slash sponsor.
+
+**Andrew:** Uh, so let's, let's dive into TS ESLint. Um, would you like to tell our listeners what the project is and what it's ha what, how it's changed in the past few months?
+
+**Josh:** Yeah, I, I'm real excited about this. So, to start off, the name of the project is TypeScript dash ES lint, A K A T S E Slint. Uh, we have yet to find a title that is better than that. Uh, in theory, maybe we should call it T S E S Tree because it lets you represent the tree of nodes. That's how programs programmatically represent code.
+
+But most developers don't really have any strong positive association with the word tree. Uh, TSS lent is a tool that's been dead for years, so we can't call it tss ltt. But it's a bit of a misnomer because it doesn't just support e es l, it's, it also supports prettier. It is how those tools parse raw strings, raw code into a format that they can understand and reason with.
+
+So, TypeScript, Eslint, that's us. And we just had a V six major release, which had I think a lot of really good changes. Uh, we just had a high level. We applied some breaking changes to the format of code that should make it a little easier and better for tools that use us and more user facing. We WeWork, the recommended lint rule configs.
+
+So, uh, the rule sets are a little more powerful and a little more customizable to what people might want to use 'em for.
+
+**Justin:** So this is both telling tools how to parse the TypeScript a s t and like make sense of that. And I guess providing whatever hooks like eslint and prettier may need, and a set of rules for linting, like kind of like all in the same project.
+
+**Josh:** Yes, you can think of the word or the term TypeScript. Esly is kind of a family or a monorepo of tools. And the two main ones are what you described. Yeah, the parser and then also the plugin.
+
+**Andrew:** ~~Oh, what,~~ what are some challenges that are unique to TypeScript eslint? Because regular eslint is like, it tries to be very simple. It's like we're, we're linting one file. The file is, is the thing that we're carrying about. But with TypeScript, you have a whole project, you have many different files, and it all has to work together.
+
+**Josh:** Yeah. eslint was never architected for that. Uh, back in the day when eslint came out, TypeScript was not a dominant force. It was barely a thing at all. So, Trying to work within the constraints of current day eslint is really tough and there are a lot of small edge case issues that we may or may not sometimes be able to overcome.
+
+For example, if you have two files, A and B in your editor, a imports from B and then you change something in B such that the thing A imports is different. eslint l doesn't really know about that when it's linting A. So you probably have to restart eslint in your editor, which is one of the biggest complaints we found online and thus had to add a FAW or two in our docs.
+
+Um, I will say though, that there is a long-term initiative that started, uh, on the eslint team to rethink it. eslint, it'll be a lot of years until that's ready and, and doable. But I'm kind of excited about that because we've been talking with them and I think it's gonna gonna make things a lot simpler for tools like us that build on it.
+
+**Justin:** Yeah, I'd heard some heard about some rumblings for that. And I mean, that's really exciting. 'cause I feel like some of these foundational tools that have been really important for the establishment of the ecosystem are seeing some new life. So, um, we had a conversation with the author of, uh, post c s s and like, now Lightning CSS is like a potential replacement for that.
+
+And it's just like, you know, seeing the, oh, we've learned all these lessons over the years was like, what could we do slightly differently? And maybe the, the single file approach might be a thing that the new s l a can do differently. So that's cool
+
+**Josh:** ~~Yeah.~~ I really love that, that you touched on that we keep learning lessons and then applying them to new tools. That's kind of how the industry works, right? Like we're never gonna just have a thing and forever it's perfect. We, we constantly have to iterate and that iteration brings pain and change. But long term, I think oftentimes it's worth it.
+
+**Justin:** Yeah, I mean, I, I feel like a lot of people got, uh, like framework fatigue or whatever, when there was moments of really rapid iteration. But I also think my, my whole perspective on the, the front end space in particular is that we've went through so much rapid change and, and such a relatively short amount of time.
+
+I mean, the, the amount of tooling that has been created and discarded and improved and whatever in this time has been pretty crazy. And I think the fact that we're starting to settle on really good tools, really good, uh, user experiences and developer experiences, and, and they're. You know, making it a lot simpler to build these like pretty crazy kinds of app architectures that just take care of a lot of stuff when, you know, if we think back to like, oh, I don't know, like 2015, it's just like doing half what we're doing now would be a nightmare.
+
+You know, it's just like changed a lot. So it's cool.
+
+#### [00:10:20] Stylistic Lint Rules
+
+**Andrew:** ~~Um, sorry, I was, I was browsing, uh, um.~~ So, uh, let's, let's go over some of the overarching themes of this release of TypeScript eslint. Uh, so one of the things that seems to be really like pushed to the forefront of the, the release notes is the difference between formatting and styling and all the different config changes.
+
+So you could, could you walk us through those and like, why did you mess with all the default configs so much?
+
+**Josh:** Definitely I love, I love the flow of conversation. We discuss how change is oftentimes painful. We have fatigue three seconds later. Let's talk about why we changed so many things in a breaking way, because it's good, it's useful. We've learned, um, we, I like to think of there being generally three concerns that you might have in a static analysis tool that runs in some kind of formatting or linting space.
+
+There's formatting. There's style and then there's logic. I think a formatter should be the thing you use for formatting something like prettier or less commonly D print in the JavaScript space. Uh, then you have style concerns, which are kind of hard to get right, and it's certainly difficult to make an opinion that works for everyone.
+
+Formatting concerns would be things like white space, new lines, semicolons. Whereas style would be like, how do you name things? Do you use one syntax for generics or arrays versus another? And then you have actual logic, which is actual bug finding. So the eslint project has kind of deprioritized stylistic rules because everyone has their own edge cases and complaints about style, and it's impossible to satisfy everyone.
+
+And for a while we, in type typescript eslint, just out of inertia, had a bunch of stylistic recommendations in our recommended rule sets. As you can imagine, that caused a lot of, to put it nicely, user pain put it less nicely, people screaming at us on the internet. So we've split out the recommended configs into recommended and stylistic.
+
+That's, that's the first major change. How does, how does that all feel so far?
+
+**Andrew:** It seems reasonable.
+
+**Justin:** Yeah, it makes a lot of
+
+sense.
+
+**Josh:** So let's complicate it further with two more things. One is that we, we have a lot of rules that are really good, really powerful, but really strict and not everyone would want them. So we wanna give some kind of preset where people would be able to use those rules, but we can't have it in the the base recommended one.
+
+Otherwise users would be like, oh my God, linting, TypeScript isn't possible. I'm gonna go back to coffee script or whatever. So now we have two recommended rule sets that don't do stylistic things. There's the actual recommended and then there's strict. Strict contains all of recommended plus some other stuff.
+
+Lastly, sub rules require type checking to function. For example, determining whether you say, created an async promise and handled it appropriately. We need type checking to know whether something is a promise in the first place. So each of those three configs recommended, stylistic and strict. Has a type checked version, which means we now ship a total of six possible recommended configs for users to choose from.
+
+I don't like shipping six configs, but we have not been able to figure out a smaller number of configs that would satisfy people in a reasonable way. So this I think is like the smallest set that we can come down to.
+
+**Justin:** And really, so you have these, uh, these like three main categories recommended, strict and stylistic, and you have like type check checked versions of each. Is the type check inclusive of the non-type checked, or is this like you have to just like enable which ones you want, you know, individually.
+
+**Josh:** It is inclusive, which is actually a change in V six, previously V five and earlier. You would need to enable both say recommended and recommended requiring type checking. Now we renamed it to just recommended type checked, which also includes recommended. So, you know, save you four or five characters there.
+
+**Justin:** Nice, nice.
+
+**Josh:** Yeah, I mean, I, I like it. I think it's fun. Uh, one of the things I've been doing is, is sending issues, discussions and PRS to frameworks like, uh, remix it next soon, hopefully Astro to, to get them using the recommended presets. Now that they don't include stylistic rules, they can do so without risking angering, you know, thousands of internet trolls.
+
+So, I, I'm personally really excited about these presets.
+
+**Andrew:** Were those projects previously not using a preset just because of the stylistic rules mixed in?
+
+**Josh:** I don't know why, but I suspect it's something to do with that. Also, for a long time, TypeScript eslint say didn't have a major Docs website that happened, I wanna say a year or two ago at most. So, kind of part of the general trend of educating users and rolling out the recommendations has, has been, you know, working with major frameworks.
+
+It's kind of a virtuous cycle where the more we document, the more we work with people, the more we know how to improve, to unlock working with more people and so on. Hooray frameworks.
+
+**Justin:** that makes a lot of sense. It's, uh, just outta curiosity, are you still using, like in, in the projects that you work on that, that use this, are you still using the stylistic rules or have you started like disabling them by default? Curious to know what your own take on this is.
+
+**Josh:** I definitely use the stylistic rules. I use strict on top of recommended, recommended and I use stylistic. Um, I've learned the hard way not to recommend stylistic for a lot of people. Uh, for example, we included it in Create T three app, which is a popular template for TypeScript apps, and people did not like that it enforced using, say, interface over type or, uh, array brackets instead of array of generic.
+
+So we disabled those rules in, in the create three, three app presets. But for the most part, if it's my personal repo, oh yeah, I'm enabling stylistic and getting all strict up in there. It's great. I'm curious, do you two use stylistic mid rules at all?
+
+**Andrew:** Um, I don't think we use them all that much. Uh, uh, we have quite a large code base and quite a lot of differing opinions, and I too don't wanna argue with people about stylistic rules. ~~We~~
+
+**Justin:** Yeah, we don't, we don't either. The, the big thing is, uh, so the approach to at oxide is, is to keep things as as simple as reasonably possible. And this especially applies with like tools and configuration and things. So if there are, if there's a really, really good reason, like it adds a level of correctness or like some, you know, appreciable benefit, then we'll we're like good with adding it.
+
+But otherwise we do try to keep things very, very sort of lean. Um, and then sometimes, you know, it's one of those things where it takes. It takes a while to sort of figure out to get a good intuition if, if something is making your code base better or not. Um, so, you know, it's like one of those things that maybe people can enable it as warnings, if you don't mind warnings and just see how it feels and
+
+**Josh:** Yeah,
+
+**Justin:** yeah, I don't know
+
+**Josh:** yeah, it's tough. I think there is value in standardizing the code base so that a new person doesn't have to question which thing to use, but that value is so much below the actual logical rules that'll say find bugs, uh, and still is above the actual discussion of which stylistic things. For me personally, I, I consider it much more important to have a style than it is to, you know, figure out the exact perfect style, given the choice between two almost identical things, like I really don't mind using type script interface as long as it's just one.
+
+**Justin:** Do y'all remember writing coat style guides?
+
+used to be a thing. It used to be like, I, I remember a, a job in 2014. The job ahead In 2014, there was a code style guide of like, here's how you should write code in our project. And that was, I think, uh, the big thing that I knew about at the time was, uh, God, what was it?
+
+Standard? Standard JS.
+
+Is that,,
+
+is that the tool? Yeah. And the people I was working with did not like it. So it was like, we just have a style guide.
+
+**Andrew:** Yeah, it,
+
+**Justin:** We've come so far.
+
+**Andrew:** it's amazing. Prettier caught on at all. Like we had, we had decades of people like arguing over stylistic things and then everybody was like, ah, who cares? Let's just use the tool. And I'm kind of surprised by that.
+
+**Josh:** It is so fascinating watching the growth, the now like super high, uh, percentage usage of prettier. I've been on teams where developers staunchly refused. They, they were completely, totally against any concept of an auto formatted because they needed it to get perfectly right. They wanted two spaces here and an uppercase there and everything.
+
+But I now it is just standard. Right. And I, I also think prettier, you can tell kind of from its docs, especially the first few years, what it was a reaction to. Prettier is super into being very opinionated. You don't discuss it at all. And later formatters such as D prints, which for those who haven't tried it out, is a, a very nice fast replacement for prettier that's written in rust.
+
+Uh, it's used in Dino, for example. Uh, d print is much more customizable because d print is not in the space where it has to convince people to shut up about it and just use the tool D print's Now in the space where people are using prettier and kind of dissatisfied with some of the decisions, really interesting to see how the, the project focuses are reactions to the, the industry around them.
+
+**Andrew:** Yeah, we're de, we're definitely at the cycle in prettier where it's like, okay, there are things wrong. How are we gonna fix them? Like you see projects like pee prettier, uh, to like paralyze prettier and try to make it faster. And you see things like d print. Uh, I just learned about d print yesterday, uh, from, from posts about you wanting to integrate it in the TypeScript repo.
+
+Uh, so. How, how? Imagine I don't know anything about D Print. How am I going to replace prettier, which is like a very opinionated tool with D print and not change every single line and how formatting goes already.
+
+**Josh:** Oh, what a great question. So there are two repos that are getting d print added to them. One is the TypeScript repo, so the, the repo that contains the actual TypeScript language, the type checker and such. Uh, that one was done by Jake Bailey. Shout out on the TypeScript team. Uh, the reason why they picked a d print over prettier, um, from what I understand and I'm not, the primary source here was two reasons.
+
+One is that it is quite a bit more configurable, so if they could match the existing preferences much more, uh, which actually makes it in a sense a little bit easier of an onboarding 'cause it's fewer changes. And then also because it is absurdly fast, um, I don't have stats for types keep itself, but on the other repo definitely typed that we haven't yet converted to, but are starting to, uh, it's, it's an order of magnitude faster seconds instead of tens of seconds or minutes.
+
+So that's incredible.
+
+**Andrew:** And I, uh, the TypeScript repo's case had like a, even another asterisk. The, the reason why Prettier was so slow is 'cause most of TypeScript is written in one file.
+
+**Josh:** ~~Yeah.~~
+
+**Andrew:** Prettier just doesn't work on a file that is that large. So, which is just mind blowing that somebody can work that all of TypeScript basically is just in one file.
+
+**Josh:** I know it's wild. It's such a good counter example to so much of what we all consider to be goods tooling. Like, oh yeah, your files shouldn't exceed whatever, a thousand characters, no checker. TS is tens of thousands of lines long, and it is built by one of the greatest development teams in the history of TypeScript, literally the TypeScript team. I'll also say though, that the TypeScript repo predates ECMAScript modules, uh, until also Jake Bailey in fact, uh, a couple years ago. It wasn't even written in modules. They had to auto migrated over. So they're, uh, gires, ignore file. I forget the exact name, but the file that tells GitHub that certain commits are autogenerated, don't look at them in the history, is slowly growing over the years as they migrated to newer and newer tooling.
+
+But yeah, it's wild. It's, I have found it inconvenient to work in because of the lack of a format. So personally, I'm just really excited that it finally uses a formatter.
+
+**Justin:** I feel like I've heard that opinion in other places though, that big files are okay. And then I, I saw someone who was like, had a project that was like a really big file and they just like had a bunch of tabs open to the same thing, just like split across different ways. And I was just like, there the whole thing was like I just find and, you know, search and replace stuff really easily.
+
+And I was like, yeah, but you can do that across many files. It's like,
+
+I dunno.
+
+**Josh:** it's different competing project concerns, right? Like TypeScript doesn't need to be as friendly to newcomers because newcomers are probably not contributing to the language itself. And then also it's super performance critical where they have to use ugly quote unquote hacks to, you know, get a little bit of performance using number NUS as bitwise NUMs instead of string literals, because that saves you some number of bites per node.
+
+So they're just a different project than say the vast majority of whatever node or react or et cetera projects.
+
+**Justin:** Yeah. And the order, the order of JavaScript matters, you know, so it's just like they can make decisions about that without it being sort of this black box in deterministic. We're just gonna join modules up how we think they should be joined, you know? And like most of the time it doesn't matter. But you know, maybe in their case it does.
+
+#### [00:22:19] Lint Caching
+
+**Andrew:** Something that's been on my mind lately is, uh, eslint ability cache and by extension, uh, TypeScript eslints ability to cache. Uh, so we'll just start it off with how, how well can I cache things with TypeScript eslint?
+
+**Josh:** The problem with caching a TypeScript b a lint is that typescripts is not designed to be extremely cache friendly at the Lins level. In theory, a change in any file could impact almost any other file in your repo depending on how the files are structured or their types declared. Like you can have global types in file A that impact file B, and there are ways to work on that, say project references or not using weird things that aren't C friendly, but you don't have to use them.
+
+So I, I personally do not use eslint cache cache cache, uh, command line. I, I actually don't remember if that's the name of it. I don't use eslint caching person. Great. Um, I will say that performance is probably the biggest concern for TypeScript eslint now that we've fleshed out the doc site and we worked the configs, so, Until eslint is rewritten to have the concepts of like a built-in pluggable type checker or multi file awareness for caching.
+
+My personal, I don't know, priority for PERF is gonna be using TypeScript APIs that are a little more perf friendly than the ones that we're currently using, which actually is an ongoing effort that folks can try out. Now we have this new command line flag, sorry, not a command line flag. We have this new, uh, parser option called experimental use project service, which switches the APIs that TypeScript Besant uses for type checking, uh, from an old set of APIs which aren't super per friendly to a new set of APIs, which are actually the same ones that, uh, language servers and like VS.
+
+Code use. And we're hopeful that those will speed things up and require less config on users' ends. But it's experimental. We've seen it to everything from like negative 11% performance to plus 50% performance. So 11% worse, 50% better, and then there are bugs with it. So definitely try it out and report the bugs to us 'cause we really wanna get it good for these seven.
+
+**Justin:** aside from that feature, how much. Performance space, do you think you actually have in TypeScript eslint? I mean, I would assume that Prettier or eslint in general are gonna govern the performance that you can get and you're sort of like a mild baseline, but maybe that assumption's very wrong. Maybe you have a lot to do.
+
+**Josh:** So, that's great question. Uh, for prettier, the way that we work for Prettier is it calls to our parser to generate the structure, the a s t as it's called, uh, to use. So I've never seen a performance complaint about us with prettier. Hooray. Good. Uh, prettier is real fast. Props to the project for eslint
+
+uh, same thing actually. If you don't count type checking, which is a whole other can of worms. Uh, we're real fast. eslint natively is real fast, and if you don't use type checking, then yeah, the caching for Esent works. But it's so fast that I've never seen it really be. Like a big game changer. The perf issue comes when you enable type checking rules.
+
+'cause those called the TypeScript. And the TypeScript type checker is very powerful and does a lot and is, you know, as a result, kind of slow at times. They've, they've done a lot of perf work there, but just inherently that is a slower tool than a standalone winter. So at the very worst, if we do everything right, we're still never gonna be faster than running the type checker on the files.
+
+You're linting. So that's kind of the wall there as, as once someone rewrites type script and rust or go or something, then we'll have a new wall that we can strive towards. But until then, that is our, our best case scenario.
+
+**Andrew:** Yeah, I, I can't wait for that, uh, that eslint rewrite. I like literally yesterday, like the slowest part in our CLI right now is, uh, eslint, not In eslint fault. We have lots of rules and lots of code, but it's just so frustrating that there really is no solution. Like, I, I can't do caching. I have to wait for this, this pending rewrite.
+
+It's uh, And like for CI especially like local, everything's really fast locally, but like for CI it's like we run these jobs on every, commit every piece of code. And because we're not caching, it's like you can literally attribute like, oh, thousands of hours of com compute was spent, linting things that didn't need to be linted.
+
+So like I, I really wish that tools would, like caching needs to be a first class thing. 'cause it's like you literally look at it as an environmental issue is like if we're, if, if, if we're mad at Bitcoin for running servers to mine Bitcoins, why aren't we mad at our CI servers for running things that don't need to be run?
+
+**Josh:** Yeah, it's a great point. I will say there are kind of two classes of perf issues that I've seen with eslint or type two P slint. One is stuff that's fixable. Um, there are some common gotchas that people do. Um, there's some plugins that can be slow and configured, so if you're using a plugin, especially us or e esm plugin import, get, get a, a grasp on their FAQ's page.
+
+See if they have an entry for performance, uh, because plugins like import and types could bees sl that have to do out of band parsing, meaning multi file shenanigans. Those, those have some gotchas. And then the second category is just, yeah, you've enabled 500 rules and half of them use the type checkers, so things are gonna be slow, get wrecked.
+
+So good luck with that.
+
+**Justin:** I wonder how much, uh, Viability there is in like, just testing, deltas, testing changed files or if there's any performance benefits there. I remember, uh, a coworker of mine at Artsy, uh, David Shedrick, who was our first guest, uh, wrote a library called gudetama, uh, after the Lazy Egg, you know, and it was like lazy ci and it was, you know, a lot of it was the same sort of thing that, um, uh, vercel Turbo, turbo repo project does is like figuring out dependencies and like running things on the, the fewest, uh, amount of files possible.
+
+I suppose. Um, it sounds like the type checking part might be the hardest aspect there because you have to like load everything in, but I mean, with the eslint typically being filed by file, that would probably be sufficient, maybe.
+
+**Josh:** Yeah, I definitely would recommend if folks are seeing slow builds and you have a large repo, highly recommend something like NX or turborepo repo, uh, these days to split it up. You get caching per mono repo component package. So let's, let's take the example of my favorite lint rule. No floating promises.
+
+It says if you create a promise, it needs to be handled. Let's say you have an async function and you call that function, you should do something like AWAI it or a dotc catch or try-catch or something. Just make sure that if you make a promise that could reject it's handled. And let's say that every single file in your code base calls to that, that function and then you switch that function from async to not async.
+
+Or maybe it wasn't async and now it is. Now every single file in your project needs to be checked because that function might violate no floating promises in a way it wasn't before if it wasn't async or maybe it no longer is async. So you have a bunch of unnecessary awaits, which violates another one of my favorite rules, uh, which is await notable, you should only await something that needs to be awaited.
+
+If it's like a number or whatever, there's, there's no point. So that's, that's why caching is hard because even though you changed one file, if it happens to be that one file that everyone uses directly or transitively, well you now have a bunch of failures that may or may not be caught in CI direct. I would be very interested in seeing someone write a tool that does some kind of type script dependency analysis to see which files need to be linted.
+
+Maybe you could. You know, get, get away with a small subset there, but it would still be in the worst case, a lot of your files. So who knows? You both look very upset about this. Am I? Am
+
+I disappointing
+
+you?
+
+**Justin:** I I was just thinking about the ramifications of that. I, I feel like, I feel like that TypeScript is gonna probably have to process the whole project anyway. I don't, I I don't foresee it like being able to, I mean, unless you're doing, yeah, I don't, I don't know. I feel like that would be a very, very hard problem.
+
+And if someone is really excited about heart problems, and please give that a try,
+
+~~but, ~~
+
+**Josh:** yeah, you're right that that's a hard problem and TypeScript does have to re parse a whole bunch of files to just know that something doesn't change other things.
+
+**Justin:** Yeah. It, I think it, it might be, I think the, the more tract tractable problem here might be to say is, is it possible that this rule could be invoked that needs to like load the full types? And, and maybe that's a, that's a, a simpler sort of thing, maybe. I don't know. Um, anyway, it's an interesting
+
+problem though.~~ ~~
+
+#### [00:30:33] TypeScript Best Practices
+
+**Andrew:** ~~Okay. Um, let's, uh,~~ since you've thought about TypeScript, linting rules a lot, uh, you've probably also thought about TypeScript best practices a lot. So, uh, what are some of your go-to TypeScript best practices tips.
+
+**Josh:** I love it. Um, nothing I will say and nothing anyone ever says in response to that question should be taken as 100% always the right thing. There are always edge cases and little considerations, but, you know, inferred types over types. Uh, I think if you're writing out complex types in your type annotations, And TypeScript would've inferred them anyway.
+
+Most, but not all of the time. That's a waste of time. Uh, I've seen people do things like constant name colon string equals quote, some name. You're not telling TypeScript anything. It didn't already know it, it knows the name is a string, and in fact, it, it's losing information if you say it's the general primitive string and not the literal, whatever the name is.
+
+So especially when you get to the types where types, you would've inferred something smarter than you go for the inferred type. Save your, save yourself the, the, the pain of writing things
+
+**Andrew:** Yeah,
+
+I definitely agree with that one. Does that, uh, opinion stretch to return types?
+
+**Josh:** Ah, sometimes, much of the time I've seen a lot of functions that have the explicit return type string or void, and then it's the same thing, uh, especially with string, where maybe types two wouldn't refer to literal. I will say though, subtypes type skips inference is not what you want. I. I'm not saying it's incorrect, just there are debatable cases.
+
+Did you want to return a union of 15 different objects or was it a specific interface or type, or is it a discriminated type union? Which is a whole other thing. So yeah, if if TypeScript inference is not what you wanted, then yeah, definitely be explicit and tell it, no, I'm right, you're wrong. But for the most part, that's, that's
+
+not a common case.
+
+**Andrew:** Yeah, the, the return types get me a lot. We have 'em sort of enforced in our repo and then I get to a react component that returns a J S X element and that is not right. And it's just like I'm battling it, especially with forwarded ref components. Not, not a fun time.
+
+**Josh:** That's one of the cases where a TypeScript gets harder to use when you have the generic components and props and as, and forward ref and all that. It's, it's hard, but it's conceptually difficult. Like humans have a hard time describing that, let alone
+
+machines.
+
+**Andrew:** Yeah, it's the only, it's one of the only times I've encountered the possibly infinite type error. Uh, not a fun one to come across. And a lot of the design system code that I've written over the years has, has had to cast refs to as any, just 'cause like, it's not gonna work if you're making a polymorphic component.
+
+**Josh:** that's one of those little achievement unlocked things, right? Like you don't expect to get a, you should, someone should write a VS code extension that puts up like the Xbox 360 style bloop at the bottom whenever you do something cool.
+
+**Justin:** That's amazing.
+
+**Andrew:** Um, so let's extend the, the question to the next thing. Uh, so you have opinions about async code too. Uh, what are those?
+
+**Josh:** Oh boy. In general, async code can be easy to mess up. So try to find a pattern that's linkable, for example, just enable the type two BSS lint recommended. Or if you can, even the strict configs, they will catch a lot of issues for you. I think if you're gonna make a promise, make it a avoidable, uh, and make it something.
+
+That could be handled in a, in a way that that works well. Uh, what I mean by that is if you have a lot async functions, um, and you don't wanna have to constantly wrap them with try-catch and then a logger call. If they fail, consider writing a shared utility helper that can take in an async call and turn it into dot catch logger dot complaint if it, if it rejects.
+
+Uh, but honestly, as long as you're doing things in a way that type could be eslint, rules can assure you is, is safe, you're you're in a good
+
+starting place.
+
+**Andrew:** How would you write code that isn't able to be caught by those rules?
+
+**Josh:** ~~Um, ~~let's take the example of an on click. Let's say you're writing some UI framework code and you have a button, standard button class, and it's on click can be just any function. Uh, suppose you want to pass. Async logic, like on click the button starts a spinning, sends a network request, and then the network request finishes, it does something else.
+
+So you pass an async function to this on click if you declare the function's on click or whatever equivalent as returning just void. And then that promise rejects you likely had nothing in your code to handle the rejection. So if something can receive an async call or an async function, then I recommend marking it as potentially returning void or promise board, let's say.
+
+So that way the function call in the buttons on click handler can be wrapped with like a try catch or something. Or if you don't really want to do that, have some like shared handler like takes in function that returns void or promise void that can consult more and a collier whatever, loger on the case of rejection.
+
+I, I apologize, I dunno that I have a very good succinct answer to that question. 'cause most of it boils down to don't do things that the linter can't cash for you because that, that's really the, the best way I think to, to, to start these things. But everything else kind of ends up being app or framework specific.
+
+**Justin:** Yeah, it makes a lot of sense.
+
+#### [00:35:19] Keeping up with the Language
+
+**Justin:** Um, on, on the sort of like, while we're talking about this topic, I am kind of just thinking about, you know, obviously, uh, releasing this, this new breaking change and, and new rules and everything. And also how interesting or challenging it must be to keep up with typescripts like release cycle.
+
+I mean, they've released relatively, it's not too frequently, but you know, there's a steady cadence there and there is definitely new syntax that's been introduced recently. Um,
+
+Has that been a challenge to just like, you know, add new syntax as it come up? Or is it like relatively easy? And then maybe a follow up question, is there like anything that's coming that you've either seen because you're working on this or that's been recently released in TypeScript that you're excited about? Something like new in the language?
+
+**Josh:** I think you referenced this earlier, the using keyword. What's really interesting about 2023 era typescripts, I think, is that there's very little change happening in TypeScript specific syntax. Like, we're not getting new constructs like satisfies anymore. Or if we are, it's, it's not super often. Most of it is just taking a new JavaScript features, like the using keyword is a new JavaScript keyword.
+
+So now we, instead of having three ways of declaring a variable var led const, two of which make us happy, we now have five ways Var led const using, away using. So for those who haven't seen this, don't worry about it. For those who have seen this, TypeScript supports it now. Yay. It's a JavaScript thing. So, yeah, every three months TypeScript has a new version.
+
+They're actually really kind about how they release them. There is a beta a release candidate. They have a whole issue pinned with the plan ahead of time. I'd say we're, because we're an independent project, we, we don't always get to it on time. Sometimes there's a week or two between TypeScript and new minor version and type two BSN support.
+
+But for the most part, recently, the last year or so, it's, it's been mostly fine.
+
+**Andrew:** ~~Why,~~ why did they pick using, it's the worst thing? How do you Google that JavaScript? Using, using JavaScript? Like,
+
+**Josh:** Well, I challenge you, what's
+
+a better keyword for
+
+this?
+
+**Andrew:** I don't know what it does. What, what does using do I, I feel, I feel flabbergasted. I don't know about the new JavaScript feature. I'm blindsided right now.
+
+**Josh:** How could you possibly not know every new feature that comes out to Jo? Okay, it's, most people will never use this thing. Like that's, it's fine. But the idea is if you create a, a new thing that needs to be disposed, like let's say you read a file from DISC or like make a handler for a file and it should always call some disposed method.
+
+Um, in other languages, some of them have like a, a disposable concept, which is an object that has a disposed method in JavaScript. Now there is symbol dispose, which can be used as a key on the object to say if you, if you create this object with the using keyword instead of let var, then once that object is out scope, so like outside of whatever function or block, its maiden, then call symbol dot dispose on the object.
+
+It's like if you have a file, it'll like release the file handle or whatever. And also you can create them asynchronously, which is why we have both using and await using. And the only reason I know this is because we had an issue and then a pull request to implement it in types bss. So I would've never.
+
+You know, deeply cared myself because I don't personally do a lot of disposable oriented programming, but apparently it's quite useful for certain areas of programming and a lot of people are very excited about this landing in JavaScript and therefore
+
+TypeScript
+
+**Justin:** Yeah. Um, Atom, the ATom editor, they had their own, uh, event emitter. Class and it had disposable as a first class. So it was just like, as a first class concept. So you'd create a new emitter and it would return a disposable function, you could call it later. And I always like the pattern, but you know, so it's, it's interesting to see them, you know, first class that into the language.
+
+It is. It is interesting how it sort of like latches onto symbol, um, and the definition is a little awkward, but yeah. You know, I guess it's useful. ~~So ~~
+
+**Josh:** ~~yeah.~~ That's honestly, I think that the good example of what we were talking about earlier about evolving as a, as a language or ecosystem. People have been writing JavaScript for so many decades now that we've seen all the common patterns, or a lot of them at least, and we're turning them into language level things like using and eventually the, the pipeline operator.
+
+Uh, so excited. That's like my biggest. Please add to JavaScript points, pipelines. So some would say that this is complicating JavaScript, the language that there's more you need to learn, but I would say that previously you already needed to learn it. It's just every project did it some weird, wacky, different way.
+
+So now there's one way to learn it and therefore good docs instead of, well, maybe the project documented it, maybe not. So very, very,
+
+big excitement
+
+here.
+
+**Andrew:** Yeah. Another one to throw into that bucket that you just described, uh, signals. Uh, there's been the, the uptick in people wanting signals as part of the language, and I think there's even a proposal.
+
+**Josh:** That's exciting.
+
+**Justin:** Yeah, this is, this was reminding me of just like the whole observable, like we've, we've, you know, come from this, you know, well, we got PR promises in the language, which is, which is a huge, huge moment, you know, and there is like more real time aspects coming along the pike, but it does feel like it takes a long time to sort of figure these things out.
+
+And, um, similar to the pipeline discussion, there's like different ways to implement pipelines and, and all the sort of functional programmers coming out of the woodwork. Like, no, like, do it my way. At this point, I'm just like, do it anyway. Please. I want it. I will take whatever you give me.
+
+**Josh:** Yeah. Functional programmers
+
+and hard opinions.
+
+**Justin:** ~~Yeah. ~~
+
+**Andrew:** would've guessed
+
+**Josh:** Truth of the universe.
+
+**Justin:** Yeah, it is a thing. I, I think it, it's, it's, there are always like hard fault opinions. You've had to deal with a lot of pain over the years and you've like, you know,
+
+**Josh:** yeah. Well, I have to imagine that when someone works in a paradigm that works really well for them and is beautiful and clean, the way functional is, it is beautiful and clean, and then they have to go back to the rest of the world where we have like beautiful references and you don't get those beautiful guarantees.
+
+It is rightfully annoying to not, not have it as as
+
+pure and beautiful as it was before.
+
+#### [00:41:07] Spicy Takes
+
+**Andrew:** Yeah. Where are all my parentheses? I need more parentheses. Okay. Uh, so moving on more to the wrap up questions here. Uh, before we ask about the next version of TypeScript eslint, uh, what's your spiciest dev take?
+
+**Josh:** ~~Oh boy. ~~People should not complain about something if they don't, at least at a surface level. Understand why people love it. And I bring this up because it's a universally true statement in and out of tech, but the tailwind discourse in particular has really been rubb me the wrong way. People are getting all excited about how tailwind is the devil.
+
+It ruins your ability to write. CSS or tailwind is the only way to write c s s. You couldn't possibly use modules or whatever, and that, but that's stupid. Like the, the, the tailwind is great first because it makes it really easy to ride styles. Second because it lets you compose design system style primitives and have a lot of nice utility libraries and full stop like that, that that's the, that should be the start of the discussion.
+
+Whether you prefer tailwinds wave versus not is up to you different styles. The industry's gonna evolve within the next five years to something new anyway. But my god, the amount of vitriol that I've seen on the internet over this specific issue is, is ridiculous. We, why are we getting mad about this? It's silly.
+
+**Andrew:** Yeah, utility c s s is nothing new. Why is everybody so mad about it now? And like to the argument that people are like, oh, this is a bad way to like start using CSS I argue the exact opposite. Like the tailwind docs are phenomenal and if you wanna learn what display block is, that's probably the best place to go.
+
+'cause they're gonna tell you in detail with like a visual example and other CSS So like saying that it like hurts your CSS writing ability. Very false. I think. I think it, if anything it's just like it guides you, it puts some tracks down and it's like you don't actually need that crazy super deprecated CSS feature that five articles say you should use, you should use the c s s rules.
+
+These are the only ones you need.
+
+**Josh:** Yeah, I don't even like Tailwind personally. Like I, I prefer like a design system builder, like vanilla extract or something like that. Uh, for me personally, I wish Tailwind was more easy to make statically analyzable, like with TypeScript, but I would, I would never tolerate someone bashing tailwind without, you know, a proper explanation of why and, and when you should or shouldn't express that, that bashing like that.
+
+I, I really like tailwind. I think it's great.
+
+**Justin:** Yeah, I think this is just the nuance of like, online communication is like, most of the time it's on Twitter or something and you, you can't do a whole lot in 180 characters, so it's really easy to just like fire off and like, oh, this sucks. And like no context. It's like, yeah, but also some people really care about this and they've spent a lot of time working on it and making it good for people's problems.
+
+And it's like, you know.
+
+**Josh:** Yeah. How arrogant is it to say such a thing is stupid? No one should ever use it when like hundreds of thousands of people use it. Like, what, what,
+
+how are you smarter than all those people and your opinion's blessed and you know, better?
+
+**Justin:** there's plenty of hubris in our, uh, our industry for sure.
+
+#### [00:44:00] What ext for TSESLint
+
+**Andrew:** So, uh, what's next for TypeScript eslint? Uh, do you have any idea what V seven will hold?
+
+**Josh:** I don't have a strong idea. I hope that the experimental use project service flag will be stable by then. it's hard to say. It is very experimental. It's, we, it's something that we've never tried, uh, in production before and needs to be flushed out. We've already had a few TypeScript pull requests merged to, to help us use it.
+
+So my, my dream would be that we make very little. Changing stuff happen to the configs because people just love 'em the way they are. And then performance is completely solved and perfect and beautiful with, uh, used project service. But honestly, it's, it's pretty early. So if anyone is interested in helping us reach that, that zen utopia, uh, please reach out.
+
+I'd love to try out used project service on your repo and, and see what horrible pain you go through. Try the early versions of it.
+
+**Justin:** Before we transition into tool tips, I would like to ask one last question. Uh, mostly just about how being, uh, an indie dev working in open source is going, um, what are the goods, what are the bads? Uh, yeah. How is, how is that life treating you?
+
+**Josh:** ~~Oh boy. ~~I like it. It allows me a lot of freedom. I get to work on projects that I think are cool and fun. Like one week I'll be talking with folks from Bloomberg or the TypeScript team, and the other week I'll be working on like my template TypeScript note package. So that's cool. I. Um, funding isn't great, but I did pass New York State minimum wage, uh, earlier this year, so that's exciting.
+
+My, my previous accomplishment was last year passing, uh, the, the Pennsylvania or the federal min minimum wage. So, you know, that's, that's good. Uh, I'd say the downsides are that I've had to put a lot of effort into begging for money on the internet, which I hate. And thanks for the reminder to you and the learners and listeners and everyone out there.
+
+Please give me money. Please sponsor me on GitHub. Please sponsor typescript eslint I will not be able to do this forever without your support. Um, and then also, uh, this was something I learned deep in. I miss having a team. I miss having a mentor or manager, mentees, coworkers, a sustained project that I'm working on year over year with people and a pm and a designer and such.
+
+Like, you get a lot of benefit from that, which I liked and didn't fully appreciate having when I was like a more traditional industry role. So, who knows, maybe I'll go back to that. Maybe I won't rely on my, my spouse for health insurance forever.
+
+**Justin:** I will definitely wish you luck on that. Um, I, I'm glad that you're at least able to do it. Uh, I think it's a, it's a common dream and I don't know, it's just one of those things where, and this is a, this is kind of cliche at this point, but we definitely need more, better funding models for open source.
+
+And we talk about it a lot, but it continues to be true. This is like people, you know, spend a lot of time and life working on these problems that makes all these companies, you know, money ostensibly. And, you know, ideally it'd be nice if that was kind of spread out a little
+
+**Josh:** Yeah. I think long term, I, I want to increase societal pressure on companies to use platforms like GitHub sponsors to, ~~to~~ fund their dependencies or failing debt. Use platforms like Tide Lift or Thanks Dev or Stack Aid that you give some lump sum to when they automatically distribute. To, to your dependencies.
+
+I think that's great. Just like send Tide, lift a a $500 a month check and, and let it decide who gets your money. Um, I would also love to find time to work on this project. I started with Relle Scarlett from GitHub called Open Contributions, where we're trying to make a set of resources to help people advocate for that to their company.
+
+I haven't had a lot of time for that, but, uh, hopefully within the next six to 60 months that'll, that'll be realized. T B D
+
+**Andrew:** Yeah, it's a hard problem 'cause like open source at its essence is completely opposed to everything in our society. Like you, you, you explain it to anybody and they're like, that, that's a thing and that works. And people do work for free. And you're like, yes. And then you're just like, oh yeah, that doesn't make any sense with anything that this country does or the world really.
+
+**Josh:** Yeah. You area fore fitting a, a. I don't even know. It's if it's socialist or anarchist or whatever, utopia within the bounds of a capitalist society and somehow
+
+it's not working well, who would've thought?
+
+**Andrew:** who would have thought.
+
+**Josh:** ~~Yeah.~~
+
+#### [00:48:00] Tooltips
+
+**Andrew:** Okay. With, with that flowery note, let's move on to Tooltips with that, with that warm fuzzy feeling we have in our stomachs now.
+
+Okay. You know the drill, so I won't say the drill. ~~Um, ~~
+
+**Josh:** ~~Who ~~
+
+~~starts ~~
+
+**Andrew:** ~~uh, I, I'll, I'll go first and then when you see your tool tip on the screen, I will say what it is and then we will hop into it. Okay. Is the ~~
+
+~~right ~~
+
+~~screen ~~
+
+**Justin:** ~~slowly getting to that point where I'm starting to melt, so I'm glad they we're at this point of the show. ~~
+
+**Josh:** ~~Same. I have ~~
+
+~~emptied my ~~
+
+~~water ~~
+
+~~bottle. ~~
+
+**Justin:** ~~Yeah, likewise. mine's mine's done, ~~
+
+**Andrew:** ~~I will try to get this going. Oh, I'm not on chrome. Oops. ~~
+
+**Josh:** ~~joke about ~~
+
+~~performance. ~~
+
+**Justin:** ~~I, yeah. Yeah. ~~
+
+**Josh:** ~~Oh yeah. The, the deep fees, honestly, really helpful. I kind of regret not, I have the same shirt that Martin Short wears in season three episode. I wanna say two of only murders in the building. I've had it for years. It's, we call it Arabian Knights. It's this like blue and gold silk thing.~~
+
+~~It's so comfortable. Oh my gosh. Plus one to only murders. ~~
+
+**Justin:** ~~Yeah. Yeah. ~~
+
+**Josh:** ~~Deep V on ~~
+
+~~that. ~~
+
+**Andrew:** ~~for the wardrobe. ~~
+
+**Josh:** ~~Yeah. ~~
+
+**Justin:** ~~Yeah. Just for the wardrobe, ~~
+
+**Andrew:** Okay, so, uh, my first tool tip this week is valibot. Uh, valibot is a replacement for Zod that was built to try to be as tiny as possible. And it sports a bundle size of 300 bytes, starting at which, I don't know, know how that's possible. That sounds like a sentence of English. Uh, but if you've ever thought, oh, my 10 kilobyte dependency is too heavy, I need a one kilobyte dependency for type validation, you might wanna give this a, a shot.
+
+Uh, I saw it pop up on my Twitter and a lot of people were hyping it up for various different reasons, so you might wanna check it out.
+
+**Josh:** I'm so torn on this. On the one hand, that's awesome. Like I, I really love it that it's so small, it's able to be so fully featured and I think having, you know, competition in an ecosystem that's early stage, like the T S J S validation library areas is nice, but also like what, as you said, what was the size of zad a problem to begin with.
+
+**Andrew:** Yeah. When we live in a world where if you wanna add, uh, a Lotty animation to your app, it's 300 kilobytes of JavaScript plus 200 kilobytes of Json. It's like 10 kilobytes. Doesn't look too bad.
+
+**Josh:** ~~Yeah. ~~
+
+~~Cool. ~~
+
+**Andrew:** Next up, we have Knip,
+
+**Josh:** yeah, this one of the, it's hard to look at this repo without chuckling, uh, knip, uh, what is, what is the tagline? knip it before you ship it or something like this. On the readme, there's a photo of a cow with some kind of sunglasses and scissors generated with open ai, but it's such a useful tool. Uh, shout out Web Pro, uh, or web prolific for making a fellow named Lars.
+
+Um, it is a static detection library for unused files, constructs, and files dependencies. And it is fast and powerful. It detects unused like types, unused values, dependencies, uh, that are declared in your package json, but unused even dependencies that you import from files, but warrants declared in your package JSON which is dangerous when you ship.
+
+Uh, really love it. I've been using it in all my projects. Uh, I've even, I just today, uh, time recording, published a blog post about how I consulted, uh, pro bono with a company and found like dozens upon dozens of unused files in their code base, just with like knip with two lines of config. So really big fan of this cool tool.
+
+K N I P E.
+
+**Andrew:** I will probably use this after the recording. I'm very interested in this tool. Uh, I, I love finding hidden caches of unused files that I can delete, but if I had a tool to tell me to delete them before they, those changes got merged, I would happily sign up. Can you set this up as just like a script that you run on ci?
+
+**Josh:** Yeah. Yeah. That's the best part. Well, one of the best parts, I have it in my template TypeScript note package where it just runs in ci, like any other linter or formatter in check mode. And I constantly, oh yeah, no, I forgot I created that and now I don't use it anymore. With it. So definitely recommend first enabling it and then making it a CI step to block prs.
+
+Ugh, I love it.
+
+**Justin:** That's really awesome.
+
+**Andrew:** Uh, next up another e Inc. Project from the e Inc. Fiend himself.
+
+**Justin:** Well, kind of on brand for me. Uh, I, I have a fascination ever since Pebble, I have a fascination with E Ink watches. Um, so
+
+~~I ~~
+
+I own, uh, another E Ink watch from the S Q F M I. Um, I forget what the, what the name of that model is, but you know, I, Homebrew Ink Watch is, are really fascinating. And there's another one, um, The, I don't know exactly what the model, uh, it's, it's built on, uh, ligo.
+
+Um, there's this like, yeah, LIGO t risk, e ePaper, e s p 32 development project or whatever that this is for. But the, the GitHub that I've linked specifically is the, the operating system for it. Um, I don't know. It's, it's really fun. So if you've ever wanted to sort of play hack around with your own hardware, maybe make your own semis, smartwatch, um, definitely check this out.
+
+Uh, it's, it looks really nice. Um, I, I don't know. It's kind of fun.
+
+**Josh:** It's
+
+pretty.
+
+**Justin:** Um, I, I don't want to buy it because I have too many, like I have, I, my, my electronics like workbench is just like a graveyard of like ink devices. There's just like so many,
+
+**Andrew:** yeah, it's a good looking device and it looks like it takes Apple watch bands. That's, that's pretty cool.
+
+**Josh:** Oh, interesting. Is that legal?
+
+**Justin:** Yeah, a lot of these, a lot of these standardize on the, I mean, the band size are pretty standard, right? And, and I mean, apple does that, you know, for a purpose too, so you can like change out their bands too. ~~So, ~~
+
+**Josh:** cool.
+
+**Andrew:** Cool. So keeping up with TypeScript themes, uh, I've come across this project a lot. A lot of people say they like it. Uh, it's called kysely. It's a type safe SQL query builder. Uh, so it gives you a way through code gen, uh, to generate the types for your code base. And then you get this nice query builder that is type aware you get all the strings auto completed.
+
+And from what I've read, like compared to Prisma, uh, since this really isn't an ORM and just builds your queries, you can end up building much more complex queries than you could, uh, in a prisma like setup. So, uh, if you've been looking for something, uh, that helps you interact with your database in a type safe way, this might be the way to do it.
+
+Do you have any opinions on type, safe, safe database access? Josh,
+
+**Josh:** I think you should do it. Uh, I would never given the choice, right? Without an O R M~~ I.~~ Shout out if anyone recognizes the sneaky subtweet that I just stated. Uh, I, I think this is great. I think it's, it's really fun using something like Prisma and I like seeing competition and innovation, so I, I need to dive in their, by the way, their website is beautiful.
+
+kiley.dev, this little demo. Really nicely done.
+
+**Justin:** I wonder how they generate the types for the schema.
+
+**Andrew:** Uh, they have a code gen package that works, uh, off your database. And then I think it, it also works off your prisma types. I, I don't really know how that, that tools go together and why you would use both, but, uh, you can,
+
+**Josh:** Yeah. Does this integrate well
+
+with Prisma? Like is
+
+that an
+
+intentional
+
+thing?
+
+**Andrew:** uh, they have a code generator intentional, like with Prisma in the name. So, uh, I think it is supposed to work with that. But as I said, I don't know why you would wanna use both the arm and the. And the query builder.
+
+**Justin:** Well, I mean, it does make sense, right? So, uh, Prisma doesn't always generate super performant queries. I mean, that's just a trade off that you get out of the box of really any o r M, right? So if you need to do something, if you need to query like tune, query performance for a particular query or write something that Prisma can't express in base primitives, then it probably would work really well.
+
+**Josh:** Plus one. I would love to see a future in which Kysely becomes a thing. Folks try out a lot, we kind of figure out the right way to do it, and then it gets onboarded to tools like Prisma as a first class construct. So instead of having the two layers of super supported yolo, you're on your own. We have this as like a, a middle tier within the three.
+
+**Andrew:** Cool. Up next we have the Wikipedia article on nonviolent communication.
+
+**Josh:** Yes, I thought this would flow well from my complaining about complaining about tailwind. Uh, i, I, a while ago, read the book, nonviolent Communication by Marshall Rosenberg, and it really changed how I approached discourse both in person and then online. And for starters, be careful when using this with a spouse because, uh, my, my wife did not appreciate the way that I constantly rephrased everything as a question immediately after reading the book.
+
+But it is, in theory, a really good methodology of trying to understand where people are coming from, uh, make them question their principles by asking them to explain them to you. Uh, that's, that's just a good way to do things compared to the old way of just screaming your opinion at the world. So I definitely recommend, at the very least, read the Nonviolent Communication Wikipedia article, but also the book Nonviolent Communication is, is wonderful.
+
+**Andrew:** Yeah, I can imagine how a spouse wouldn't like that. Uh, my spouse already doesn't like it when I answer her questions with questions.
+
+**Josh:** So you're saying that it's annoying when I ask questions. Tell me more about that. Why is that annoying?
+
+**Andrew:** Okay, and last up for the day. We have Dino Python.
+
+**Justin:** Um, this project is a little cursed in maybe the best way. Uh, I, I actually tried to write something similar for Node back in the day when I was transitioning from working in Python open source to working in JavaScript open source. But Deno Python is a library that does exactly what's on the tin. It lets you use Python code from inside of~~ d~~ Dino.
+
+Now, the really, really fun thing about this is it uses Python's, c a p I, so it does the c foreign face, uh, or foreign function interface, uh, integration. And that's how it like connects with Deno. Um, I think that's really interesting and hopefully performant, uh, is like a nice way to connect these. So, as an example of how you could do it wrongly, is I was trying to spin up like the python shell and like pipe code to it, which is like not performant, not a good way to do that.
+
+Um, I don't really know if there is any level of type coverage for this. If it's like trying to, you know, add cogen and generate types and stuff, or if it's just, you know, pretty loose. But the thing that I'm really excited about is, um, you know, especially if you do any ML AI stuff, Python is king really in that space.
+
+And having more bridges between different languages could be, uh, kind of nice if you want to, you know, bring some, you know, powerful library for like, I don't know, building UI from the node dino world, uh, into sort of like combined with the, the power of like these Python scripts. So really cool, interesting library.
+
+**Andrew:** Yeah, I could see this being super useful. Like, uh, as I've been toying around with AI stuff, I've had to use chat g p T to teach me Python. It'd be a lot nicer if I could just say, grab the Python thing and let me do it all in JavaScript or type script.
+
+**Justin:** Yeah, I'm, I'm sure you hit diminishing returns pretty quickly, but it, it's still sort of novel and you know, the expression and I don't know, maybe it enables people to do something that they couldn't do
+
+**Josh:** That's really cool. This is kind of one of the things people were happily scared of with wm, right? Being able to have a much easier interrupt between different paradigms.
+
+**Justin:** Yeah. Yeah. Totally.
+
+**Josh:** ~~Cool. ~~
+
+**Andrew:** Okay, that's it for this Week's Tool Tips. Uh, and that's it for this week's episode. So thanks for coming on, Josh again. Uh, you're our first, second time guest and this was a lot of fun and I learned a lot about TypeScript eslint V six.
+
+**Josh:** Cool. Yeah, thanks for having me on. It's always, always a pleasure to chat with y'all. I also just wanna shout out, this is a visual thing, ~~Andrew.~~ Andrew is currently wearing one of those like metal type script jackets. It's, I forget what band it's in the style of, but it's
+
+really cool And I'm
+
+impressed.
+
+**Andrew:** And if you wanna buy one of those, all you have to do is go Shop.Dev Tools.Fm
+
+**Justin:** we have merch, we have swag.
+
+**Andrew:** Yeah, with a new bomber jacket this week. Very cool.
+
+**Justin:** Mm. Yeah, it's cool.
+
+Yeah. Thanks Thanks again, Josh. It was, it was really great having you on. Always, always a pleasure. And you know, I hope the indie journey, uh, goes well and that people continue to pay you and maybe pay you lots more 'cause you deserve it. Uh, your work is great.
+
+**Josh:** Thanks. Appreciate it.
