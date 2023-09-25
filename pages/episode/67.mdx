@@ -1,0 +1,869 @@
+---
+title: James Pearce - TinyBase
+youtube: https://www.youtube.com/watch?v=hXL7OkW-Prk
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/James-Pearce---TinyBase-e29nlh8
+tags: technology, software, developer tools, devtools, devtools.fm, James Pearce, TinyBase, Meta, Facebook, Portal, React, React Native, PyTorch, Llama, Llama 2, Local First, Local First Web Development, Ink and Switch, TinyQL, TinyQL Playground, TinyQ
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by James Pearce, creator of TinyBase.
+James has a long history of working on developer tools and open source software.
+He was the engineering director at Meta (formerly Facebook) for over 10 years, where he worked on a variety of projects including React, React Native, and PyTorch.
+He also worked on Portal, Meta's smart speaker, for a couple of years.
+James is currently living on a boat and working on TinyBase full-time.
+Local first software is a big part of TinyBase, and James has been working with the Local First community to help build out the ecosystem.
+
+Sponsored By Raycast (https://www.raycast.com/)
+
+- https://tinybase.org/
+- https://tripleodeon.com/
+- https://github.com/jamesgpearce
+- https://tinybase.org/guides/releases/#v4-1
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/biomejs/biome
+- https://jazz.tools/
+
+#### Justin
+
+- https://www.scattered-thoughts.net/writing/babys-first-wasm-compiler
+- https://multi.app/
+
+### James
+
+- https://typedoc.org
+- https://www.npmjs.com/package/ts-unused-exports
+
+<!-- TAB: SECTIONS -->
+
+[00:01:08] James' Background
+[00:10:46] Ad
+[00:12:28] Working on Portal
+[00:17:08] Setting Sail for TinyBase
+[00:26:57] What is TinyBase
+[00:38:48] Reacting to Data Changes
+[00:44:07] Type Generation
+[00:46:19] TinyQL
+[00:50:02] Local Future
+[00:57:33] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**James:** nothing quite kind of had like the, the right mix of relational structure in memory reactivity, which I wanted the UI was gonna react immediately when, when data changed.
+
+I looked around for ways to do this and, uh, there didn't really seem to be anything. So I thought, well, how hard can it be to build an in-memory, uh, tabular data store? And, um, It's quite hard. It turns out, uh, I may have overcomplicated it
+
+**Andrew:** hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, today we're really excited to have James Pierce on. Uh, so James has a, a very illustrious background and really excited to dig into that. Uh, but your current project is Tiny Base, uh, which I'm incredibly excited to talk about actually.
+
+I've been eyeballing tiny base for a few side projects that I'm working on. Um, but before we dig into that, uh, would you like to tell our listeners a little bit more about yourself?
+
+#### [00:01:08] James' Background
+
+**James:** Certainly. Okay. Well, uh, firstly, thank you very much for having me on. Uh, huge privilege. Um, secondly, I need to point out to both yourselves and to anyone watching or listening, I'm on a boat and, uh, so if you see the background going up and down, that's totally to be expected. The boat is, uh, is rocking a little bit.
+
+Uh, I am currently off the coast of a little island in the southern end of the Caribbean called Grenada, uh, where I have been hiding out for the, for the summer months. Uh, hopefully, uh, avoiding the hurricanes. Um, but yeah, I live on this boat, it's called Scout. Uh, and it's kind of a fun, uh, lifestyle, sailing around warm parts of the world and writing software when I can.
+
+Um, so anyway, that's the context for the, for the horizon, going up and down in the background. Um, prior to, uh, this, uh, Marine Life, I was, uh, an engineering director at Meta. Uh, so I was at Facebook and then meta for, uh, just over 10 years. And I worked on a whole bunch of different things there, uh, including running the open source program, uh, working on a bunch of, uh, developer infrastructure projects, uh, which obviously very relevant for the listeners to this, uh, podcast, uh, data infrastructure.
+
+And, uh, I even worked on portal, which was the company's smart speaker for a couple of years. So yeah, did a bunch of interesting things at, uh, meta, uh, and prior to that, yeah, a whole host of different startups and various bits and pieces in, mostly in the mobile arena, uh, stretching way back to pre-iphone days.
+
+But, uh, anyway, that's a whole other podcast probably.
+
+**Andrew:** Yeah. So while you were at, uh, leading open source at Facebook, that was like a very pivotal time for Facebook. I think lots and lots of different like, uh, open source technologies that we all use today and have influenced what we use today, uh, were created during that time. What projects did you help steward or get out or like what were you involved with during that time?
+
+**James:** Uh, probably hundreds in the end, uh, many of which have not gone on to become, you know, huge successes. Uh, but a few of them like React and React Native and PiTorch, uh, obviously did. So, um, yeah, just a little bit of a background to this. Uh, I worked on that program for about four years, from 2013, I would say, through to about 2017.
+
+Uh, historically Facebook at the time had done a bunch of open source, but generally not done it very well. Right? It had, uh, launched things, whether it was Cassandra or like some of its data infrastructure, and it kind of threw it over the wall and forgot all about it and it really got into a, a bad state.
+
+And, uh, I felt like when I took the program over, the first thing to do was try to get that back under control. And then like as we launched new things, do them with a bit more structure, a little bit more discipline, making sure we kept them alive and, and, and listened to the community. And, uh, yeah, react was one of the very first projects that I was sort of peripherally involved with.
+
+And I, I say peripherally because like ultimately, you know, the, the, the, uh, honors go to the engineering team that worked super hard on React for years and years. Well, obviously still are. Um, but I was there I guess to sort of help get it out there, cheerlead it. Uh, we built a bunch of internal tooling to make sure that we could synchronize the repos between GitHub and the internal mono repos so that, you know, what you were seeing on GitHub was always what was running on master if you viewed source in facebook.com.
+
+Um, and, and, and that kind of support system for making sure these projects were run well. Uh, we put a bunch of instrumentation around the projects as well so that people could, uh, teams internally could make sure they were staying on top of their issues and pull requests and stuff like that. Um, but yeah, it was like a huge, uh, eye-opening experience, seeing something like React, just go stratospheric.
+
+Um, you know, it was this internal system that like, even internally didn't. You know, uh, get, get a, a win immediately. Like it took a little while for people to start using it internally. Uh, I'm sure you, you've seen the, the React documentary for the kind of the inner story there. But, you know, obviously once, once people started Twigging, uh, it was, you know, very exciting to see it take off.
+
+And we used a lot of what we learned from React on subsequent projects. Like what's that playbook for, um, you know, beginning a, a community and, and, and watching it, uh, nurturing it, you know, helping it to grow. What are the different kind of phases of an open source project lifecycle, um, that you can sort of, uh, uh, chaperone these projects through, uh, hopefully, uh, onto ultimate success.
+
+Uh, and yeah, things like PyTorch, I guess, you know, followed some of that playbook and, and, and that itself has been successful. And since I've left, there's obviously llama and Llama two, uh, which are a little different, but, but you know, still hopefully building on, on some of the learnings that we had from those early days.
+
+**Justin:** Yeah, that's all super exciting. Um, I mean, yeah, uh, like Andrew said, incredibly pivotal for especially the front end ecosystems. Um, how did that time sort of shape your views on open source software?~~ I.~~
+
+**James:** Well, obviously deeply, uh, since I was thinking about it pretty much 24 hours a day. Um, but a lot of things did surprise me. I think when I first sort of went into that gig. Um, you know, by the way, I wasn't sort of asked to work on open source. Uh, it was, it was kind of a cool thing, uh, at the time, uh, within Facebook we had this saying, you know, nothing at Facebook is someone else's problem.
+
+And I could see that open source was kind of a bit derelict and needed help. So I just like, uh, put my hand up and I'll jump in and see if I can help it. Um, But one of the things I think I naively thought was like the big win for the company is gonna be that like, external developers are gonna like commit code and like that's cheaper than hiring people.
+
+It was like that wasn't anything to do with the value that we got out of the, the projects in the end. Like we did get external contributions, which was awesome. And you know, obviously as the community grew it was more, more and more of that, but that was not the big value that came from, from running this program.
+
+Um, the, the biggest value was really just sort of helping kickstart our engineering brand, especially in front end. So I don't know if you can recall what the uh, Facebook engineering brand was like in 2012, but it was basically, it's a bunch of kids in a dormitory hacking on P H P and they dunno what they're doing, uh, which wasn't quite true.
+
+Um, and uh, certainly there was no reputation for like front end excellence. Um, and we just had trouble hiring people. Like we couldn't get JavaScript, uh, luminaries or, or anybody really in the door to kind of stick at the company and work on it. Um, and so Tom Occino, who was the engineering manager on React at the time, like really wanted to use React as a showcase for the quality of Facebook engineering.
+
+And use it as a way to, you know, encourage more, uh, talented front end engineers to come and work at the company and not be embarrassed. Um, and so react, uh, I mean, maybe we overdid that because I think at the beginning people didn't understand react. They felt like, what, what are they doing? Like this is some kind of crazy out there thing.
+
+Um, but I think after it started to sink in what it was, people began to realize, eh, maybe these aren't just, you know, dormitory kids hacking on P H P. Like maybe they do have some unique problems to solve and maybe they do have some unique solutions to it. And uh, and yeah, it really sort of started helping people to see meta as a reputable engineering brand, um, alongside all the backend work that was happening as well.
+
+And then in time, machine learning. And I have to be honest, like the big benefit that accrues over time is that that's just a recruiting, um, bonanza, right? Because people now want to come and work with the people that are building these things, and they see our code and they know what it looks like. And, you know, rather than going into this opaque environment, they, they, they, they know what they're learning themselves in for and maybe they're inspired to come, uh, and join the company.
+
+And I think certainly on the JavaScript side, uh, didn't really look back for, for a very long time, right? It was, uh, you know, a lot of talented people that we were able to bring in and, and help work on these problems. Um, so yeah, that was, that, I guess that was my eye-opening moment. The value to the company ultimately was, was the brand, the innovation that we were able to, to drive through it.
+
+And, uh, and then yeah, recruiting in time.
+
+**Andrew:** Yeah, that's, that's really cool to hear. Uh, I, I'm definitely thankful what, for what you guys have done, and it's cool to see how it's like evolved, like React has like kind of broken the barrier of the Facebook walls and now is like a multi-company effort, which is like, it's really cool to see the technology mature like that.
+
+**James:** Yep, So that was another thing that we spent a lot of time thinking about. Really for every major project, it what is the, what is its lifecycle, right? It starts off, it is not fully formed when you, when you open source a thing, right? It's, it's still embryonic. And we had a policy that it had to be something we were using internally, right?
+
+We weren't allowing people to just. Throw over, you know, intern projects over the wall. Like there had to be things that we were using in production. Um, but yeah, sometimes they're still pretty young. We don't know whether the community will get it. Um, but then over time it grows, it evolves and like at some point, yeah, it reaches a level of maturity.
+
+Maybe it's too big for the company to, you know, uh, from a, from a governance or a stewardship point of view. And then what do you do? Do you give it to the Apache Foundation or do you sort of, uh, you know, create some working group or, or committee of other companies? Um, and, and different people who are invested in the project.
+
+Like, there are various paths for where, for where these things go. And of course, sometimes a project doesn't go anywhere and you just kind of have to sunset it and archive it. But, you know, that whole lifecycle of an opensource project is, is super, super interesting. And yeah, I've been, uh, obviously tracking what's happened to react over the last couple of years, and it really seems to have burst, burst the boundaries of, of, uh, uh, you know, being stewarded by meta alone and, uh, and getting out there with, without, I think.
+
+You know, fingers crossed without it suddenly becoming a big, kind of bureaucratic process oriented thing, like I, hopefully, hopefully it's still able to keep some of its fleet of foot, um, in terms of the innovation that's happening there and react to the whatever competitive challenges that it sees, right, uh, fulfilling the needs that people have.
+
+#### [00:10:46] Ad
+
+**Justin:** we'd like to thank Raycast for sponsoring our podcast. So raycast is an app for Mac that's like Spotlight, but with superpowers besides just quickly opening files, URLs, or apps. It provides clipboard history, window management, a schedule overview and more. It also has this Clean React based a p i and an extension store to distribute your own custom extensions.
+
+**Andrew:** One feature I've really been liking about Raycast is the clipboard Manager. I know clipboard managers are good to use, but in the past I haven't used them because it's adding a new tool to my workflow. I don't wanna have to compare a bunch of different options, but with Raycast, the built-in one is perfect.
+
+It's changed how I use my computer. I now just copy things to my clipboard just so I know that I'll have them for later. So if you've ever wanted to use a clipboard manager but don't want to download a whole new program, Raycast might be an option for you.
+
+**Justin:** You should also check out Raycast Pro. With Pro, you can take advantage of Raycast AI to summarize text in any app and translate text on the fly. It all so gives you access to the cloud sync feature so you can keep your settings synchronized across Max
+
+To learn more, you can visit raycast.com and you can also listen to episode 38, where we had the C E O Thomas on the podcast to talk about Raycast.
+
+**Andrew:** do you wanna advertise with DevTools fm? Head over to DevTools fm slash sponsor.
+
+**Justin:** Yeah, for sure. I mean, it, it's been really amazing to watch it, you know, go from, in the early days being this thing, people are like, what is this? Like what is J S X? Like, what is like, what are you trying to do here? To now it is sort of a defacto industry standard. Like most of the time people are pulling for this.
+
+And, and that's a, it's an interesting journey for sure. That's like very compelling. Uh, so I, I think y'all made a lot of really good decisions in those early days for sure.
+
+#### [00:12:28] Working on Portal
+
+**Justin:** Um, so I, before we moved on to talk about other things, you did mention that you worked on portal a little bit. Portal was like a really interesting device.
+
+I actually, I think, um, so what part of that, uh, product did you actually work on?
+
+**James:** Uh, right. Okay. So this is also a pretty interesting story. It kind of gives you an insight into how, uh, Facebook engineering culture works. Uh, so I was an engineering manager at the time. Uh, I was running a bunch of dev tools teams. We had an i d e team. We had a a build system team. And, and, and, and I suddenly, you kind of woke up one morning, you're like, I wanna go back to writing more code.
+
+Like I want to go and become an engineer again. And, uh, basically I wanted to, you know, challenge myself. Maybe go and work on a consumer product, uh, you know, switch a few things up. And, uh, yeah, this opportunity came along for what, at the time was a very secretive team within the company. They were called Building eight and they were working on like secret hardware and like brain machine interfaces and all this kind of stuff.
+
+And I'm like, wow, that sounds awesome. Um, so basically went and switched up, uh, almost everything about my career overnight. So I went from being a manager to being an individual, uh, contributing engineer. I went from working on infrastructure to working on a product. I went from working on software to working on hardware.
+
+Uh, and suddenly I'm in this kind of crazy r and d environment. Um, but within a couple of weeks, uh, you know, kind of found my feet, uh, learned a bit of Android, which was. Probably what we were gonna be building this thing on. And, uh, yeah, sort of rolled up my sleeves and, and, and started, uh, figuring out what we, we could do.
+
+And, and the idea was really pretty, uh, fuzzy at first. It's like, uh, you know, how do we make it more seamless to stay connected with your family? Um, you know, rather than the effort of having to get out your phone and find someone in the address book, like, what if you just want to chat to a family member whilst you're making your breakfast or whatever.
+
+And so the idea of this smart speaker where a screen was born, um, and then there was a, a machine learning team that had gone off and discovered they could do post tracking live. And so we put that in as well so that as you're walking around the kitchen, it kind of zooms in and follows you around. And, and it was a kind of cool tech in a way, looking for a problem to solve at first.
+
+Um, but then the smart speaker market started picking up, so Google had a product and, and, and Amazon had a product and we're like, whoa, actually maybe this is a thing. Um, and if we can bring some of the magic of like, Facebook's assets like, uh, messenger and, uh, some of the Facebook content and, you know, the WhatsApp, ultimately, if we can bring those to this device as well, then you know, that's a, that's a fairly compelling package.
+
+Um, and so my responsibility ultimately was to work on these kind of content integrations. So how can we get, uh, news feed into portal? How can we get, um, uh, you know, third parties like Spotify? Uh, how can we get the Spotify player onto this device? How can we, uh, you know, hook into all of the other Facebook properties?
+
+Um, Alongside the calling experience. So yeah, you, you could make these face-to-face calls, but then you could also share in, let's say a, a Facebook watch video. Right. And, and watch together and stuff like that. So yeah, I built a bunch of the, sort of the app platform, I guess you would say, uh, for all these, uh, you know, third party or second party content sources.
+
+And, uh, yeah, it was wild. Uh, obviously one of the big headwinds that the company was against was the fact that this was a camera with the Facebook logo right next to it. So people were a little, um, you know, unnerved, I think by the, the sort of privacy implications. Uh, as, as a matter of fact, the privacy was done really well.
+
+It was, uh, kind of something we'd been thinking about right from the start. But, um, Yeah, I think that the magic there was always gonna be how could we marry the, uh, Facebook portfolio of content and, and, and services into this device so that it was more than just a, more than just a, a dumb smart speaker, which of which there were many at that point.
+
+So that was, that was my brief, uh, was to try to make it come alive. And, uh, yeah, I think we got there. Um, obviously a year or two after we launched, we went into lockdown and pandemic, and the sales of this thing just exploded because all of a sudden it was basically the only way that people could ambiently stay in touch with each other.
+
+Um, and we pivoted towards doing, uh, enterprise so that, you know, you could use it as a, basically a remote, uh, VC system for people working from home. And, uh, yeah, that, that, that was a big boost, uh, to it. So yeah, in the end it was a successful project. I mean, I think in the most recent round of kind of cost cutting, it's probably not, not, not continuing in its full form, but, uh, yeah, it was an awesome project to work on and, uh, like I said, I just got to write some code, so that was sweet.
+
+#### [00:17:08] Setting Sail for TinyBase
+
+**Andrew:** Yeah, I, I, I resonate with swinging from dev tools back into product because you, you, you just get that itch where you're like, I, I, I've, I've helped enough other people. I wanna make something myself. Uh, but recently you've swung back the other direction back into dev tooling with tiny base. So, uh, you now, as you mentioned, you now live on a boat and completely do open source, full-time.
+
+So like, what, uh, what made you think that you wanna make that transition of a, uh, oss full-time and b, traveling the world on a boat?
+
+**James:** Hmm. What makes you want to travel the world on a boat? Well, I dunno, where do you wanna start? It's awesome. That's why, um, yeah, no. So, uh, after, after portal, yeah, actually, I, I didn't leave, uh, meta straight after borderline did also go back to, to work in infrastructure for a while. And you're absolutely right.
+
+You, you come back from product land and like, guys, guys, I got so many things we need to work on. Um, 'cause you've got that first like, firsthand experience of having been like a, a customer of yourself, so to speak. So, um, yeah, and I think that's ultimately where my, my real passions lies is, uh, making shovels and picks for, for people who are out looking for, for gold.
+
+Um, I. It kind of helps you kind of get leverage and, you know, maximize, uh, you know, the impact that you can have across all the people that, that will use your thing. So, yeah. Uh, stayed at Meadow for a couple of years after Portal and then, yeah, I just reached a good point in my life. Um, kids were leaving school, um, you know, boat, boat was nearly ready and we're like, ah, let's just do it.
+
+So, um, myself and my wife, uh, yeah, sold the house in Silicon Valley and jumped on a boat and we've been sailing pretty much the last year or so. Came down the east coast, uh, started in Boston, came down East Coast through, uh, the Palmas and the Caribbean and down to here, and yeah, it's been fantastic. Um, but look, I think, uh, one thing you need to know about me is that like writing code is like part of my d n a, it's like baked into who I am.
+
+Almost, uh, started programming when I was a, a kid on a, a zx. 81 actually, which is a, a British computer that, uh, your, your European listeners may, may know about, uh, not so popular in the us but like it was this little, uh, Z 80 based, um, uh, computer that, that we all had in, in, in school, uh, in the early eighties.
+
+And, uh, yeah, I've been writing code ever since, right? It's just part of who I am. And so even when I left my professional life, I knew like, I just have to have this, it's like, it's pretty low down my Maslow's hierarchy of needs in terms of things I have to have, uh, after water and food. I have to write code.
+
+So anyway, that's, uh, that's kind of the background. And, and, and so living on a boat, yeah, there's a lot to do to keep a boat going. It turns out, and obviously there's the actual sailing and traveling and that takes up a lunch a lot of time, but there's also a lot of downtime. And what am I gonna do? Just sit and watch Netflix or am I just gonna sort of hack on stuff?
+
+And, uh, so that, that seemed pretty obvious. Uh, and, uh, yeah. Had, uh, been dabbling with this little project that I had started called Tiny Base, and uh, it sort of grew and seemed like something that I could sort of root my, uh, efforts around. And so, yeah, put it out there. Got it. A website. Made a little, made a little logo, uh, started billing some documentation and, and, and there we are.
+
+So yeah, we, we, we'll obviously come on to talk a little bit about what Tiny Base is, but yeah, in a way it's just a way of me keeping some, some, you know, fingers, fingers on the keyboard and, and actually building things, which I, I can't live without, to be honest.
+
+**Justin:** Did the idea, was the idea for like a, a local first sort of database, was that inspired by like living on a boat and like having poor connectivity? Or is it something that you'd been thinking about previously
+
+**James:** I, I sort of have to grandfather in the origin story a little bit. That wasn't the original idea, but it turns out that that is actually a nice, uh, resonant story. Um, no, I started on this because I had originally been trying to build an app that would be a sort of, um, not surprise, surprise, like a dashboard that would let you see all your open source projects and, and see how they were growing and, you know, what was trending and which ones had too many pull requests and stuff.
+
+And I wanted to have basically, uh, at the time, an electron app that was gonna be able to pull this data from GitHub and then display it. But, you know, the GitHub, uh, APIs, you don't wanna be polling those every minute. So I wanted to have a way of storing sort of pretty structured tabular data locally on my, uh, device.
+
+And I didn't really want to go through all the malarkey of setting up like a full relational database. 'cause you know, there's not a lot of data, but you know, enough to be a hold in memory. So I figured look. I, I looked at things like, you know, Redux and MobX, and there's a bunch of other kind of state management systems, but nothing quite kind of had like the, the right mix of relational structure in memory reactivity, which I wanted to, you know, really important for me that, you know, the, the UI was gonna react immediately when, when data changed.
+
+And, uh, yeah, I looked around for ways to do this that didn't involve polling GitHub every minute. And, uh, there didn't really seem to be anything. So I thought, well, how hard can it be to build an in-memory, uh, tabular data store? And, um, It's quite hard. It turns out, uh, I may have overcomplicated it, but, uh, that, that, that was the origin story.
+
+And then once I moved onto a boat and I don't have continuous data, uh, connectivity as you can imagine, it got me thinking like, what, what, what are the apps that work? Uh, and, and a lot of the apps on my phone literally don't work when we're at sea. Um, and those that do, like, they've obviously been built with that in mind, but it's not the default.
+
+Like a lot of people are just building apps, assuming there's a cloud, assuming there's like fiber grade bandwidth and like, ah, it's not true. And like if it's not true for me, a first world, you know, user on a boat, it's probably almost certainly not true for second or third world folks who are, or developing countries who don't have the, the connectivity or the device, uh, uh, power to be able to, to stay connected.
+
+So anyway, it got me thinking like, why, why have we so over rotated onto just like the cloud being utility when like it isn't actually for a lot of people. Um, And, uh, uh, the, the then I just, you know, on, on Twitter started stumbling off upon people starting to talk about this local first movement, um, which was, yeah, building your apps with, with local storage in mind first and cloud second rather than the other way around.
+
+And, uh, I'm like, yeah, actually that fits quite well. So maybe I'll kind of work in that angle to how I'm thinking about Tiny Base and that that really kind of propelled the roadmap on from there. Um, we can talk a lot about Local First, but, uh, yeah, I would definitely recommend people go check it out. Uh, actually stood up a little website recently called, uh, local First Web Development.
+
+Uh, so I think that's Local first web.dev, um, which has got a bunch of resources and, and tools, uh, around this thing. Um, so I don't wanna take credit for the local first movement, but like, there's a lot happening there and it, it's, it's pretty fun. And, uh, yeah, I'm all in on it as a, as an option for, you know, the way to think about building apps.
+
+**Justin:** Yeah, I love this. Is this related? So this is related to the dis, the local first
+
+Discord.
+
+**James:** Yeah, right. So this is another funny little story. I'm
+
+just like, there doesn't seem to be a good list of all these things. Uh, and so like it's 1995, I'm gonna build a static webpage with a list of links on it, and I put it up and da. The next thing you know, there's like a community forms around it and, uh, there's a guy called Jonathan who went and started the Discord.
+
+And like the next thing you know, they're doing monthly meetups and it's super awesome. So, uh, yeah, um, that, that's been a lot of fun. And it's still pretty small. It's a little embryonic. It's a little heretical perhaps the, uh, idea that, you know, you're not going to lash yourself straight onto some cloud provider right from the start of your development process.
+
+But, um, it's pretty alluring when you think of some of the benefits and, and like, nothing's exclusive. Uh, like, you know, you can start building local first and then later choose to, to make something, uh, That connects to the cloud, but uh, yeah, it's just a slightly different perspective of thinking about things.
+
+**Justin:** It's interesting how the conversation has changed a little bit. So, I mean, we've had Offline first is a thing that we've talked about for a while, you know, so even back in the, you know, even earlier Facebook days and you have like a web app and you're like, want people to have like some access to some things if they've already loaded it. Um, and I, I saw that just like. You know, terminology used for a while and now we're getting to Local First, which is that you like, don't necessarily need an internet connection, but it, it seems to be more about, well, like, uh, data sovereignty has become like a big
+
+component of how local First Software is talked about.
+
+Um, which I think is, uh, a
+
+fascinating
+
+**James:** Yeah, no, for me, it was purely practical. It's like I want to build apps that I know will work when I'm, you know, 40 miles offshore. Um, there is an awesome manifesto, however, written by, uh, kind of a design lab called Ink and Switch, and I would, you know, anyone that wants to kind of get to the root of the local first movement needs to go and read that.
+
+And they have seven kind of local first principles and yeah, they lean pretty heavily on the fact that, yeah, like unless you own the data, it's not yours. It's a bit like the maker thing, you know, if, if, if, if you can't fix it, you know it's not yours. And, uh, I, I suppose the same thing if, if the data doesn't reside on your own device as some kind of pseudo source of truth and like, is it really your data?
+
+Um, and that's that, yeah, that's kind of compelling. I'm not quite as, uh, kind of, uh, um, religious about it as that. Uh, I, I do see the cloud as being a sort of a pretty important component of how you make this work. Uh, but yeah, knowing that I have a copy of that data wherever I'm in the world is, uh, you know, a pretty, pretty compelling thing.
+
+Um, so yeah, there's lots of resources. But yeah, definitely that Ink and Switch article is a link you need to put in the show notes.
+
+**Justin:** Big fan of In Switch. They do a lot of GR really great work.
+
+#### [00:26:57] What is TinyBase
+
+**Andrew:** Yeah. So moving on to talk more about like what Tiny Base is and like how, how it differs. Uh, how, how would you compare it to things like, uh, Redux or like anything else that is like similar? So like what, what is Tiny Base and what makes it unique?
+
+**James:** All right. Uh, people often ask me, oh, you know, how does this compare to eggs? Or how does this compare to y or how does it compare to, it was like, oh, groggy. That sounds like marketing. Now I've gotta go off and do it like a matrix of like all the things that I do. They don't, and all the things they do, and I don't.
+
+Um, to be honest, I, this was very selfish. I just built the thing with the a p I that I wanted, that felt natural, and I hadn't been able to find a version of, so, you know, take it or leave it, folks, if you like my a p I, go for it. If you don't, No problem. Um, but for me, um, yeah, the, the key thing was reactivity.
+
+Uh, you've gone to all that effort to use something like React where you want the user interface to, you know, react immediately to changes. But, um, you know, obviously if your data's off in the cloud somewhere, like the immediately is not gonna happen. So like, how can I bring that data to be as close as possible to react and how can I make sure that it's as, um, amenable as possible to having hooks and listeners and all the other things that that'll react immediately.
+
+Um, so yeah, maybe I'm getting ahead of myself. Firstly, like. I'm not gonna do as good a job talking about it as the website does. So definitely tiny base.org is, uh, the kind of source of truth. But no, essentially it's, uh, it's a little bit more structured, I think, than some of the other state management systems that you would see.
+
+I'm a bit more opinionated about how you store your data in there. So rather than just kind of some big JSON object or fragments of serialization all over the place and actions firing here, there, and everywhere, it's like, nope. It's gonna go in a table and a table has rows and rows have cells and like that's it more or less.
+
+And you can change a whole table at once or you can change a whole row at once, or you can change a whole cell at once and you can listen to a whole table at once. Or you can listen to a whole row at once, or you can listen to a cell at once and like all the kind of, the granularity works out. So if you're listening to a whole table and only a cell change, you'll get told about it if you listen to a cell, but the whole table changes, you'll get told about it.
+
+Um, and so that kind of reactivity, regardless of how you're listening to something is, is very, uh, important. Uh, by the way, it's not just tables. I now also have like a key value store in there as well. So yeah, you can, you know, have a. A set of values, um, uh, which are always, by the way, strings, booleans and, uh, numbers.
+
+So like, you know, you can't do anything too fancy. It's all, it's all pretty straightforward. Um, but what I discovered is that you can actually build an awful lot with these two kind of paradigms. You don't have to let people do arbitrary, big, unstructured un schematized, uh, Jason blobs. Like you can actually, uh, go a very long way with, with these structures.
+
+Um, and so, yeah, for me the key was using that opinionated data structure to its best, uh, Um, and, and you're getting the best outta the fact that I've made that constraint. So like, making sure that the, uh, listener model and, and the reactivity is like as blazingly fast as possible. You know, see if I can provide auxiliary functions that are a bit like what people might've wanted from a relational database.
+
+So I'll let you do aggregations on numerical data. I'll let you do indexing on textual data. Uh, I'll let you create relationships between tables like you can in a database. So it's not a relational database, but a lot of the things that you would normally do in a relational database can be done in memory, in JavaScript on the device.
+
+Local first, uh, is all blazingly fast. That's the idea. Um, there's a few other bits and pieces in there actually. There's a lot in there too. But, uh, yeah, that, that, that's the basic idea. And, um, Uh, yeah, I think, uh, the best way to sort of get a sense for how this actually works out is maybe looking at some of the demos in there.
+
+So we have like a drawing app, like an exela draw kind of thing where it's all local first and you can have multiple windows and you moving them around and they stay in sync. Um, you know, uh, uh, analytics tools, client side analytics tools, which is kind of an interesting thing. Um, databases of large amounts of data, like movies or cities, various other things.
+
+Uh, and it's kind of interesting to see. Yeah, you can actually fit quite a lot into the memory of a browser. Like, it, it's, it's pretty fast. Um, and you don't really have to sit there waiting for a spinner all the time. Yeah, maybe there's a little spin at the beginning if it needs to pull down any reference data, but like after that everything is like milliseconds, at least 16 or less.
+
+So, um, yeah, it's, it's, it's, uh, it's pretty sweet to see how you can push, uh, the, the performance of the, the reactivity. And, uh, I've been pretty pleased with how it worked out.
+
+**Andrew:** Yeah. Speaking of using the browser, uh, what like technologies are you using to like actually store the data? Because I know like if you're using like index DB or local storage, like each one has like different constraints and different performance considerations. So like what, what are you using and like, what are the performance characteristics of
+
+that?
+
+**James:** ~~Well,~~ so outta the box, uh, tiny base is just in memory. You, you instantiate a store in memory and that's it. Um, and, uh, someone refreshes the browser, gone start all over again. So that's the default state. But then of course, what you probably wanna do is persist that. Um, that's a, I'm not sure that's the best word, but that's the word I settled on.
+
+Uh, you either want to persist that or load from somewhere else that, that, that, that has already persisted. So yeah, the obvious thing is can you persist that memory to local or session storage, um, and load it and, uh, and save it. And by the way, I always try to have the loading and the saving of these things be also reactive.
+
+So in theory, if. Someone came in on some other browser tab or just hacked, you know, the local storage, then tiny base would detect that the change had happened and load the new changes into memory. So you kind of get reactivity all the way up the, the chain. Obviously you can pull data from an external, uh, server.
+
+Um, and, and so yeah, it this is kind of where local first, you know, isn't local only, right? Local first. But then also we're trying to keep stuff going in the background so that this is either being saved or persisted, maybe to the cloud, maybe to the browser, whatever. And, uh, I haven't done Index DB yet. And the reason I haven't done Index DB is that I can't figure out how to react to changes that have been made to index DB somewhere else.
+
+Like, I can obviously react to changes that I was in control of myself, but if someone comes in and like makes some other change, like I can't pick it up, and that's very frustrating, uh, because who knows, maybe there's some background service worker that Winder made a change, but the UI doesn't see it, that's a big problem.
+
+So I haven't quite done that one yet, although I've got some ideas. Um, but the big breakthrough in the last, uh, couple of months has been, uh, connecting tiny base to, uh, SQL light. So, uh, whether u are running tiny base on a server, which of course you can do, um, and have it connected, uh, direct to SQL Lights or if you've got SQL Light running, uh, under Wasm in a browser, uh, then yeah, you can basically store and, uh, load your tables.
+
+Into memory from the database or, or save them back. Uh, and that is reactive. It's not perfect, but like there is some reactivity there too. 'cause SQL light sends you an event when something changes. Um, so yeah, if someone, some other process wrote to a table, I would spot that, that had happened quickly load it into the memory store and boom, the UI is, is updated.
+
+Um, and the sweetest implementation of this, uh, is with a project called CR SQL Light. This is another one you definitely need to link to in the show notes, um, which is, uh, built by another ex, uh, Facebook employee as it happens in his name's Matt. Uh, and he is at Tanin, I think on Twitter, and he has basically figured out a way to have sequel light in, uh, synchronize using a technology called CRDTs.
+
+So if I save. Tiny base to his database. That database can then be conflict free, replicated to other browsers or other servers. And that kind of all happens magically in the background. So yeah, I'm, I'm always on the lookout for other ways to persist this data. I think I can do Postgres next, probably maybe super base, something like that.
+
+I will have a go at Index DB eventually. Um, and uh, party Kit is another one that's kind of on my list of, of things to figure out, like, can I use Party Kit as a way of persisting, uh, tiny base change sets up and down so that, yeah, you get that pure multiplayer experience, uh, with a tiny base based app ~~I Like that's,~~ that's Like
+
+my mental roadmap of all the shit I have to do.
+
+**Justin:** yeah. No, no, no. That was, that was really awesome. That was really awesome. I saw a tweet the other day that was talking about, uh,
+
+Tiny base and party kit and a few other things as like a really good, like local first, but multiplayer set up. So, uh, yeah, I mean I definitely think that that would work really well. Um, also, this is really exciting. I feel like especially around SQL light, there's so much really exciting integrations with SQL Light.
+
+I feel like there's a real, like groundswell support for this. Both like really great extensions that's coming out, like the official sort of SQ l light WASM extension, but also things like this that sync to SQ l light and then cloud services, like, so CloudFlare has their own SQL light service and um, you know, fly.io has a a, a sort of sinking service and it's like really cool to see all the support, especially with SQL Light as
+
+sort of like a, a, a base data store traction because it's
+
+really solid tech.
+
+**James:** I would love it if it just had one little bit, one more notch of granularity on its reactivity. That's, that's the only kind of, uh, request I have, uh, at the moment. I know when a table's changed, I would love to know that just a cell had changed. That would be sweet. Um, which I think you can't do outta the bogs at the moment, but yeah.
+
+One day if we keep pushing this reactivity thing, maybe it'll get there.
+
+**Justin:** Yeah,
+
+Yeah, I could definitely see it. I wonder if that's like a achievable with an extension or if it has to be a, uh, like a core change.
+
+**James:** We think it is. Uh, I've been chatting to Matt a lot about this. Um, someone's actually done something similar, I think in Swift for native iOS apps. Can't remember the name of the project now, but I can, you know, maybe find it for you later. Um, so yeah, it is doable. Uh, and then, yeah, then you've got like full end-to-end reactivity and that's, uh, yeah, I think that's a big deal.
+
+**Justin:** Yeah. No, that'll be huge for sure.
+
+Um, so do you use any waso with tiny base, just outta curiosity?
+
+**James:** ~~Nope,~~ Nope. I mean, obviously when my, uh, SQL Light is running in Wasm, I yeah. Connect to that. But no, tase itself is vanilla JavaScript, um, pretty modern, which is, uh, Kind of like another opinionated thing that I did. Uh, and, uh, it, uh, it's tiny. I dunno if the name kind of was the clue. Uh, but I've really, I've really optimized to try to make this thing as small and light and fast as possible.
+
+Uh, wasm might be able to make it faster, but like it's already pretty fast, so I'm not necessarily leaning into that. Um, yeah, no, it, uh, it's a whole, uh, other podcast by the way, talking about like how to like ultra minimize things. Uh, that's, that's been a lot of fun. No developer, uh, sorry. No. Runtime dependencies is the, is the, is the trick, right?
+
+So, um, yeah, it has, it has no dependencies whatsoever. Um, and, uh, yeah, it's like, I don't know, five K or something, uh, compressed, which is, is pretty good for what I, well, I think it's pretty good for what you get. And, uh, so yeah, I don't really have any need to do anything too fancy. Um, it's all just maps and sets wrapped up in a nice a p I.
+
+**Andrew:** Yeah, I I don't think you'd, uh, be able to get it that small if you were on wasm. Like they, they, they aren't five kilobytes
+
+big. They're much bigger than that.
+
+**James:** Yeah, no, exactly. Just the whatever, the loader probably bigger than that. So, um, yeah, no, look, I think, uh, if you ever wanted to run something like tiny base in, uh, server environment, which of course you could, um, ~~uh,~~ maybe you'd wanna have some kind of rust based implementation, but like, I'm not racing to do that right now.
+
+It's, it's plenty fast I can assure you.
+
+#### [00:38:48] Reacting to Data Changes
+
+**Andrew:** yeah, So moving way up the stack, uh, how do I integrate tiny base with my front-end react code? What does that look like?
+
+**James:** So, uh, Out of the box. Basic tiny base just has basically a listener, a p i. So you register a listener and you can destroy it later, but you'll just get told of anything that's changed. And so you don't have to use React. You could use anything you wanted, any UI that knew how to react to changes like that.
+
+Um, so that's fine. Obviously a lot of people do use React and like I wanted to benefit from the, the reactivity. So there is an additional optional module, which I call UI React, and that then, you know, Creates a bunch of generic components that set up hook, uh, with and hooks, sorry, that, uh, set up listeners on the database.
+
+So you can just say, look, I want a cell here. Uh, it'll give you the value of the cell and it'll register. Listeners of any subsequent change, uh, is reflected. It kind of, uh, uh, makes it pretty easy to build user interfaces, but that is not React dom based. That is just react. So that actually works in React Native too.
+
+Um, and we've already got Expo doing a whole bunch of work to build tiny base into, uh, their actually connecting it to their SQL light implementation as well. Um, so yeah, I actually got more people than I expected building tiny base, uh, based applications with React native. Uh, so that's cool. Uh, and then just recently, like, I don't know, last week, two weeks ago, I.
+
+Figured I would go all the way and provide a third package, which is actually a, uh, react dom implementation where I'm actually providing some headless components, uh, that you know, are intended to render in a browser so you directly can get. Tables of tabular data, lists of key value data, and you get magic things like pagination and sorting and filtering and all those things, um, outta the box.
+
+And look, I'm no UI designer, but I know how to knock together an HTML table or two. Um, so, you know, I, I would expect people to go and style 'em nicely. Uh, but, but yeah, you can now add this third module and get these sort of, I guess, scaffolding outta the box. Uh, because if you're building an app that's like, I don't know, just a to-do app, yeah, no doubt.
+
+You'll want a table of all the to-dos at some point and you'll want be able to sort it and filter it and like I know how to do that stuff super fast with the activity, so I'll just do that for you and you can just chuck some Css on the top and boom, there's your to-do app. So yeah, that was a lot of fun.
+
+And, uh, so if, uh, for those of you keep in count, that was tiny base 4.1. And if you go and check the release notes out for that, you'll see a couple of, uh, un style components, uh, actually more than a couple, maybe like six or seven unile components that you can use for that. Um, as well as mutations, there's like some editing controls as well as you can go and edit data and it knows how to go and write the changes back.
+
+Um, also a little bonus feature, uh, since I now had all this user interface, uh, infrastructure, I went and built a, a kind of an inspector, like a, uh, web tools dev tools inspector. So you can actually in the side of your app pull up a view of the tiny base data and then see like how things are structured, mutate it, uh, as a developer, which kind of helps build up people's mental model of what the data is and how it's structured inside, uh, tiny base.
+
+And yeah, that's also a pretty fun thing to play with.
+
+**Justin:** That's really awesome. Uh, the anytime there's direct developer tools, And a, like a state management solution in particular, it like raises the quality of the overall experience, I think so it's, it's really
+
+awesome that you added that,
+
+**James:** Well, that's, uh, let's hope so. I mean, I'm, yeah,
+
+obviously it's, still pretty early. Happy to have feedback if anyone thinks that's not the case.
+
+~~Yeah,~~
+
+**Justin:** definitely the case. Definitely the case. Uh, what, what are the specific features that you, uh, expose via the developer tools? Is there,
+
+is it just like, just getting a view of the data and like how things are changing? Or do you, I mean, is there anything in particular that you try to, highlight? ~~I. ~~
+
+**James:** You see all the data in so you can see all the tables, uh, you, can see all the indexes, you can see all the metrics, you can see the results of all the queries that you've set against it. There, there's a reactive query system I didn't mention. Um, so you can see the results of all of that.
+
+Um, the underlying tables, you can actually put it into an edit mode. So you could, in theory, go and like edit the raw table data. And, and by the way, you know, on the left hand side of the screen, you'll see the app change, uh, immediately. So that's, that's pretty sweet. Um, there's probably more I could do in there.
+
+I don't know, uh, maybe giving some statistics about how many listeners you got referenced or how many, uh, you know, rows you got in each table and, you know, potential performance issues. But, uh, yeah, we'll see. Um, for, for now it's more just like inspecting the data, editing the data if you need to, helping people get a sense of, of how the data is structured inside.
+
+Uh, tiny base.
+
+**Andrew:** You gotta go the replay way and do time travel
+
+data debugging.
+
+**James:** Well you say that there's another thing I forgot to mention. Uh, actually Tiny Base does have an undo stack, uh, kind of built in. You can set checkpoints and it knows how to roll back, um, but haven't exposed that in the dev tool. So yeah, a little light bulb moment there. I should probably list out all the checkpoints you've got so you can, uh, see whether to go back to a previous state or not.
+
+That's kind of important when we're doing synchronization 'cause you need to kinda like, okay, what has changed since the last time I synced? And then like, boom, now you have a C R D T. So anyway, that's a, that's another
+
+**Justin:** Yeah. That's awesome.
+
+#### [00:44:07] Type Generation
+
+**Andrew:** Um, so you mentioned that it's written in vanilla JavaScript, but the world is largely moving towards TypeScript. So how does, uh, tiny base support TypeScript?
+
+**James:** Uh, So I may have misspoken, uh, I mean, it's vanilla JavaScript in the fact that I haven't done anything fancy, but, uh, it, it, yeah, I mean, it's fully typed and, uh, the APIs are all fully typed and internally is typed script,~~ so ~~
+
+~~Yeah. ~~
+
+**Andrew:** ~~um, but isn't, is there any like ~~
+
+**James:** ~~it than that, by the way. Just, Just,~~
+
+~~let, yeah. ~~
+
+~~Sorry.~~
+
+~~You're gonna ask, ~~
+
+**Andrew:** Uh, I was gonna say that pr perusing through the docks, I saw that there
+
+was like type generation and stuff like that.
+
+**James:** Right?
+
+Correct. Okay. So, uh, firstly Tiny Base itself is, is is fully ty, uh, fully typed script based. All the APIs are fully typed, uh, by the way, lots of documentation. I really kind of over indexed. Probably on documentation, but if you go go and look at the definition files, it'll blow your brain and like, it's like 98% text and like 2% actual types.
+
+Um, so yeah, that's, that's all fine. But yeah, I got a bunch of requests from the community people saying, oh, you know, we love things like, uh, I guess Prisma and various other O R M tools. Like if I've created the schema for a database table, like, can't I get like magic methods and like stuff? So, uh, yeah, there's a little tools module that you can use to automatically generate basically a a an a P I on the front that is like schema specific.
+
+So if you've created a database table for, you know, a pet store, then there's now gonna be, you know, a method for ADD pet or you know, get pet or, you know, Get pet number of legs or whatever, which are very sort of domain specific. Um, so there's two versions of that. One where it's actually auto generating, you know, it's code generating some, some, some methods that, that, that are domain specific, but there's also a version where it infers the types of the methods from the schema directly, uh, which was something I was pushed to do by the community.
+
+They're like, oh, Zod does it. You should be able to do it. I'm like, oh my God. Like, I'm not sure my types script's good enough to do this. So that was a bit of a journey. Uh, I now know more about, uh, TypeScript generics than I ever thought I needed to. Um, but yeah, basically you can now runtime provide, uh, a schema and all the subsequent calls of the method will adhere to the schema.
+
+And, uh, yeah, that's, that's kind of neat when it works. Um, ~~so yeah. ~~go go check that out. ~~Yeah. ~~
+
+#### [00:46:19] TinyQL
+
+**Justin:** ~~Yeah. ~~
+
+Uh, one thing that you mentioned earlier and, and something that I saw on the docs that was really interesting. So you also have a little, uh, query language called Tiny ql. Um, that's really, really interesting.
+
+Uh, how do you sort
+
+of, like
+
+how would you describe that to someone and and what are the
+
+benefits of
+
+that?
+
+**James:** Right. So, like I said, I, I,
+
+try not to use the word database because then people get carried away. It's gonna have SQL and, you know, all the rest of it. Um, but I do try to provide ways to do things that people like to do in databases. And obviously one of the things they like to do is query. So when, um, when I looked at like how this was gonna fit into the tiny base, kind of like opinionated universe, uh, I, I didn't think I could do a full implementation of sql, by the way.
+
+Like I love sql, but it's, it's also terrible. Um, and I can say this, having worked on data infrastructure at Meta, um, SQL is like this incredible technology in that it's pretty awful. Objectively, and yet everybody uses it everywhere all the time and it shows no signs of dying whatsoever. Um, but I pretty sure that I wasn't gonna be able to fit a full like sequel parser and, uh, evaluation engine into my, into my little, into my little thing.
+
+So instead I went for sort of SQL ish a p i, uh, with a kind of a fluent a p i where you could, you could chain chain stuff together that would e essentially mimic most of the things that you do in sql, like selecting which columns you want, joining onto other tables under certain conditions, uh, wear clause group by and having, that's basically it, right?
+
+That's 95% of what most people want to do with sql. Um, and so yeah, you can define a query. It's all imperative. So, uh, you know, it's, it's not some big long piece of text that you have to kind of, uh, inject variables into. It's like actually just a, a regular type script based a p i and yeah, you then get out a table, uh, where I am keeping track or rather tiny base is keeping track of all of the, uh, heritage or, or, or provenance of the values of that result.
+
+So if something way upstream changes, then I will be able to make that result set reactive immediately. So rather than having to run the query every second to see if anything's changed, you just say, I'm gonna build a user interface that displays the results of this query. And that's the end. And then if the underlying data changes, then tiny base will automatically, you know, send the listener, uh, an event to say, this thing has changed.
+
+And that is quite cool though. I say it myself. Uh, it sounds a little, uh, Yeah, I'm proud of this. Like, it, it was hard. It was hard to make that work.
+
+Um, and, uh, yeah, it, it, it's pretty magic when you see it happening.
+
+There's a demo on the site. It's a movie
+
+database where basically I've just got a table of all the movies, a table of all the actors, a table of all the directors.
+
+And obviously these things are all, like, there's a relational model in there. Uh, and you can be looking at, uh, you know, the, the data for one given movie and let's say in the inspector you and, and changed an actor name. Then like, you'd just see it change immediately. It's kind of keeping track of all the connections across.
+
+Um, so yeah, that's fine.
+
+**Justin:** Yeah, I mean, it, it is really awesome. I, I think the whole combination of this, it's like small size, really concise APIs, really good types, um, I think make it into this really compelling solution. Es especially in the, in the local first space, which, uh, is still in, it's sort of,
+
+it's sort of nascent stage where we're really starting to think about
+
+this really intensely.
+
+**James:** absolutely. Don't feel embarrassed about saying that. Like it definitely is early. Yeah.
+
+#### [00:50:02] Local Future
+
+**Justin:** Yeah. Um, But I mean, stuff like, like tiny base especially makes me really excited about this space. And I hope that in the future, more applications are built to be local
+
+first. Um, and maybe on that topic, let's talk a little bit about the future. We usually try to end our episodes with, um, a
+
+topic like this's, forward facing.
+
+So how do you think, uh, this model will evolve the, the local first model versus like traditional like cloud application development? Do you see this like expanding or do you
+
+think it'll
+
+just like kind of stay as a niche
+
+or like what do you, I don't know.
+
+What do you see
+
+the
+
+future
+
+as
+
+here?
+
+**James:** Oh gosh. Well, that's a good question. Um, firstly know it is, it is nascent, it is embryonic. So like I hope, at least in the short, medium term future, I. We start seeing more people building apps. I go, I'll be frank, there's, there are not a lot of kind of headline showcase apps that really lean into Local First.
+
+Um, I'm sure you know of, uh, actual, which was a finance app that James Long built, um, ex SC Drawers, arguably, uh, local first as well. And I see a few, um, where you know, you're working in your browser and it's all local until you actually come to Press Save or something. I said that, that that's pretty cool.
+
+But like there isn't a really totemic app from some big app provider that's like, yeah, that's. That's a, an amazing example yet, um, you know, Google Docs is, is not look first, right? Um, but like there will be some, some hopefully some moment like that where somebody builds a really spectacular app. It's fast, it's just beautiful.
+
+User experience is killer and it works on a boat, 50 miles off shore. And they'll be like, okay, now everybody's gonna want to copy that. And then they're gonna go back and like rip, tear it down, like see how it was built and, and start kicking the ties on these things. There is a little bit of a risk, I think with Local first that it's looks a little bit like it's an r d project coming out of the lab.
+
+It's got a bunch of cool computer science, c r dts. Woohoo. But like, wait, are we actually solving any problems for any humans yet? Um, and like we've just got across, across that little early adopter chasm, I think. Um, So that's what I hope happens in the short to medium term. Um, in the longer term, what I'm expecting, and I'll, you know, I'll, I'll cover tiny Base's, ears whilst I say this.
+
+Like, what I'm hoping in the long term is that we start seeing browsers that start to support this kind of model more natively. Like you mentioned, you know, SQL Light going into the browsers. You know, we, we, we had web sequel and like back in the day I was like, oh, we were so close. Even Google Gears, it's like we've been through iterations of this stuff way back.
+
+Um, and, and, and you know, maybe, maybe there's some critical mass of de developer demand, uh, as well as. Platform incentive? Well, I'm not sure if there's a platform incentive, but like may, you know, maybe the browsers will start to include more of this stuff outta the box. Uh, and there's no need for things like Tiny Bays or CR SQL eight or whatever.
+
+And it just, it's just a way that you build apps right from the start. And by the way, like the future is the past here, because for those of us that were around a little earlier, uh, than the internet, like, like this is how we always used to build apps. Like you built an app in the late nineties. It was, um, you know, visual Basic on Windows with a access database in it probably.
+
+And the. The idea of the ever connecting to the internet was kind of like, uh, fairly foreign. So it is back to the future really building apps where, you know, the data, the logic and everything is right next to the user. Um, it's actually not that heretical at all. It's more like, more like back to the future.
+
+Um, but look, I, it is not ever gonna be a panacea that usual, usual, um, black and white, you know, scale of gray thing. Uh, there is a, well, there's a wide range of classes of apps that are just never gonna work as a local first, right? Uh, I don't think Facebook is ever gonna be a local first app. There's no way I can load 3 billion people's personal data onto my phone.
+
+Um, and I don't want my bank to be a local first app either, right? Because I want all that data to be. Stashed away safely somewhere in, uh, in Wall Street. But the, uh, but the number of apps that will benefit from being local first is pretty high. Uh, I just think that maybe we haven't kind of popped out of the like, cloud only, cloud only kind of, uh, way of thinking yet.
+
+And so, yeah, I think the big moment will be when we see some amazing beautiful app pop out and people are like, yeah, I love it. Like, what else can we build that's like that? And then symbiotically, or simultaneously we start to see the, the browsers providing more, uh, platform support so that, uh, it just works.
+
+**Justin:** Yeah, well, I think there will all be, always be a need, even if browsers do add some better base primitives for things like Tiny Base, because it's like, it's the UX all, or the dx, I guess, all the way up the chain that really makes a big difference and that's something that
+
+I feel like user space code will always be required
+
+for.~~ I also think ~~
+
+~~of, ~~
+
+~~uh, so in, ~~
+
+~~sorry, go ~~
+
+**James:** ~~I, ~~I was gonna say that, that's, that's how this stuff always works, right? People build the
+
+libraries they need and then eventually, You know, we get query selector all. ~~Mm-hmm.~~
+
+**Justin:** Yeah, for sure. Uh, so back in episode 61, we, uh, talked to Tumas of linear. And Linear is sort of built in this way where it's like local first in the sense that it stores everything locally and does syncing. And, um, a great example of like how a very polished app can be built with this sort of technology.
+
+And, you know, go back to, to what you're saying about like, you know, originally all applications were local first, and then like we had, you know, internet connected apps. And, and it it really interesting that, you know, the pendulum always swings, uh, but. You know, with every swing something changes slightly.
+
+You know, it's not the same, uh, place that we were before. So, like before, you know, in the early, early days, it was just like no network connectivity. So everything was local by, you know, necessity, uh, or, or network to like a local area network maybe. And then you had more sort of like, you know, the cloud era, everything being centralized.
+
+And now I feel like we're getting into the sinking era where it's like, maybe more things are local, but we still want collaboration and we still want, you know, these richer things provided by the
+
+cloud. So
+
+it's like building bridges between these two. It's gonna
+
+be, I
+
+think, the
+
+next
+
+big
+
+effort.
+
+**James:** Yeah, I, what I hope is
+
+the sort of, the real symbol of this succeeding is that we never see any spinners again. Right? Death. Death to the spinner is like kind of a nice rallying cry here because I mean, despite the fact that I now have a faster laptop than I've ever owned, and I'm sure Google's data centers are bigger than they've ever been, like I still seem to be watching just as many spinners as I ever did.
+
+Uh, except in the nineties I had no spinners whatsoever, right? Because everything was as local, it was great. Like spinners are a function of the internet, and I would love to go back to a world where there are no spinners 'cause yeah. I wait five seconds for something to happen and I called, oh, I'll just, uh, you know, command tab across to Threads or Twitter, like, boom, like, there's another 10 minutes of my life gone.
+
+So what can I, you know, what can we do to help people stay in the, in the, in the zone with their productivity or in the flow, whatever. And yeah, I think banishing spinners is a big deal. So I think, uh, data sovereignty and everything aside, like, can we just get to where UX is like 16 milliseconds for everything or less, right?
+
+And yeah, sure you can do some spiny stuff in the background. I go, really don't care. Synchronize whatever you want on some background thread, but don't ever show a spinner to a user. Um, and I hope that's the thing that's different about the future. Um, and yeah, there's cloud, there's local, but there's no spinners.
+
+There we go.
+
+**Andrew:** A nice goal to have. And with, with
+
+that, we will transition into tool tips now.~~ So I'm gonna get set up. It never wants to share.~~
+
+**Justin:** ~~Ported. ~~
+
+**Andrew:** ~~Yep. Come on. Oh, here we go. Cool. ~~
+
+#### [00:57:33] Tooltips
+
+**Andrew:** ~~Okay.~~ My first tool tip of the week is a, Uh, new kind of project called Biome. Uh, so Biome is the official fork of Rome. Uh, Rome was a company that was, uh, aiming to solve all of the a s t bloat in the JavaScript, uh, tooling space. Uh, you might not know it, but you have a bunch of tools in your project and they all parse your code in different ways using different ASTs.
+
+And the performance of that sucks, and none of those tools can integrate with each other or like build upon each other. So, uh, what Rome, uh, set out to do was to create an a s t for all of those and to build new versions of all of the formatting, linting, bundling, transforming tools on top of that, a s t uh, roam.
+
+The company unfortunately didn't make it, but, uh, the project and the core team has chosen to keep maintaining it and take the project forward. Under a new name called Biome. Uh, so, uh, definitely a project to watch if you were at all interested in what was going on with Rome. 'cause, uh, it's the same people for the most part, uh, with the same goal.
+
+**Justin:** Really ambitious project. Um, but I love to see that it
+
+just didn't
+
+die when they, uh, when the company went under. So it'll be
+
+interesting to see
+
+where it
+
+goes.
+
+**James:** I spent so much time on the first revision of Tiny Base, just figuring out the tool chain. It was. Like having worked at Facebook where like internally everything just kind of worked. Uh, and coming out and working on like a proper open source thing, uh, that was a, that was a real, uh, grief laden period of the project.
+
+But, uh, yeah, something like this where it's kind of all done in one place and fast is like, if they can make it work, oh, sign me up.
+
+**Justin:** This is one of those areas where Dino really shines. Uh, I'm becoming a Dino evangelist because it has all of these tools just like built into the, like one, you know.
+
+binary that you download or whatever. So it's
+
+just like,
+
+I don't know.
+
+I.
+
+**Andrew:** Yeah, I, I think, uh, so when we were interviewing Andre Nik about, uh, post c s s, he was like, lightning c s s is kind of like post CSS V two, it's the next successor. I think Biome has a chance to be that, but for Eslint, 'cause Eslintt is under like, basically a multi-year effort to refactor to the next version.
+
+I think it's the perfect opportunity for another tool to step in and be like, yeah, we're, we are already that, but better and built on rust. So a biome could, could definitely be that interesting to watch. ~~Oh, I closed the window wrong. Next up we have Baby's First was compiler.~~
+
+~~Is ~~
+
+~~Justin ~~
+
+**Justin:** ~~Maybe. ~~
+
+**James:** ~~That's awesome. ~~
+
+~~I. ~~
+
+**Justin:** ~~It's still hanging. ~~
+
+~~I don't see your screen recording yet, but I Is it, is it up yet? Do you, do you see it? Is it just me? ~~
+
+~~Technology? ~~
+
+~~Oh. Did you lose me? Oh ~~
+
+~~no. ~~
+
+~~Uh, ~~
+
+**James:** ~~I thought it was gonna be me with a bad internet connectivity on a boat ~~
+
+**Andrew:** ~~yeah. ~~
+
+**Justin:** ~~fuck. ~~
+
+**Andrew:** ~~I, ~~
+
+~~um, ~~
+
+**Justin:** ~~Uh,~~
+
+**Andrew:** ~~yep. Okay. Um, let's, well we can switch over to you, uh, real quick and do ~~
+
+~~type doc. ~~
+
+**James:** ~~uh, ~~
+
+**Andrew:** ~~He's probably ~~
+
+~~just ~~
+
+~~reconnecting.~~
+
+**James:** ~~right. So I, I didn't, I didn't quite get the brief that I need to mention. One thing, I got a whole bunch of cool stuff that I wanted to mention. Um,~~
+
+**Andrew:** ~~I. ~~
+
+**James:** ~~But,~~ uh, yeah, I just wanted to give a shout out for type doc. I'm sure plenty of people are familiar with it, but it just doesn't seem to be used as much as I was expecting.
+
+Um, type doc is basically, um, uh, build tool that runs, uh, across your type script definitions. Uh, takes the JSS docs out of, uh, comments or whatever and produces a really well structured documentation site. And, uh, I love it. It's got, um, I mean, I heavily customize the output for, for Tiny Base, but if you go into the tiny base APIs, you'll see it's, uh, you know, every, every method has got really nice type annotations, uh, documentation, example code, et cetera.
+
+Uh, and they've got a really nice a p i and yeah, I just wanna give, uh, a shout out type doc 'cause I absolutely rely on it and it doesn't seem to be as popular as it should be.
+
+**Andrew:** Yeah, the, the documentation generators for types don't seem to be like a thing that caught on in community at all, but they're definitely super useful tools. I think it's just that they're like very technical. It's like showing you all the types and it feels like a very like complex
+
+thing to approach.
+
+**James:** Yeah, so back in the day I used to do a lot of, uh, dot net development, microsoft.net and like that, that was the kind of the look and feel like these, or, or Java I guess is another one, right? Just these massive long lists of classes and nested hierarchies. But actually, if you really kind of mix up the C CSS and the structure, you can kind of make it a little bit more approachable, um, which is, is what I ended up doing.
+
+Um, and, uh, yeah, some nice hooks in there as well. So, for example, I can take the example code out of the comments and I can actually execute them, uh, in jest. So every, every comment, oh, sorry. Every example in the documentation is actually a
+
+unit
+
+test, which is kind of cute,
+
+cute
+
+**Andrew:** ~~that's nice. Uh, while we're ~~
+
+~~on ~~
+
+~~TypeScript ~~
+
+~~w~~
+
+**James:** ~~There's a bit of ridge eggs involved, but, ~~
+
+**Andrew:** while we're on TypeScript, we can cover your other tool tip, uh, which I think I actually have a tool to one up with you with We, we learned
+
+about it last week.
+
+**James:** oh dear. Okay, so, uh, this is the unused exports tool.
+
+**Andrew:** Yep.
+
+**James:** ~~Are we looking at I sorry, your screen's.~~ Yeah, that's right. Okay. So, uh, yeah, look, maybe I need to shop around a little bit, but, uh, yeah, I noticed that I would, I would build some helper function and then I would use it and then I would refactor it away, or I'd refactor away the call sites and then I'd be left with this function that wasn't being used.
+
+And, you know, I'm obsessed about the size of tiny base, so I'm like, okay, how am I gonna make sure I don't even have to tree shake this stuff? I just don't even ship it in the first place. Uh, and TS unused exports was a, a cool little one that I found. Uh, it'll tell me if I've accidentally exported anything internally.
+
+Um, Obviously you need to exclude all the things. It's deliberately exporting externally. But, uh, yeah, that, that was, uh, that was, uh, a godsend for me to make sure I wasn't shipping any unusual, unused rubbish. Uh, but no, if there's something better, I should, uh, you should, you should
+
+tell me to upgrade what's going on?
+
+Ooh.
+
+**Andrew:** Yeah. Um, our guest last week came on and told us about this, uh, it's like the tool you just mentioned, but for literally everything in your project. So if there's a Css file, css class, whatever that's
+
+unused. This, this will
+
+alert it to you. Uh, and
+
+~~I think it actually mentioned.~~
+
+**James:** ~~All right. You got me. You got me. ~~
+
+**Andrew:** ~~Yeah,~~ I think it actually mentions, uh, the tool you just mentioned as like, prior art.
+
+So like it tries to take all of these tools, uh, and
+
+combine
+
+them into one. Yeah.
+
+**James:** Okay, great. So there's a new tiny base, uh, release coming soon with K Nip in it. Uh, I like the, I like the shape of their, uh, downloads curve as well. that's
+
+uh, that's very promising. Alright, great. Thank you.
+
+**Andrew:** Gotta like the hockey stick. Yeah. I think some, uh, bigger repos recently picked it up.
+
+**James:** ~~Sweet. ~~
+
+**Andrew:** ~~Um, Justin is still making his way back. Um, I might have to finish the episode without him. I, I'm ~~
+
+~~gonna wait for him to ~~
+
+**James:** ~~Yeah, ~~
+
+**Andrew:** ~~just to ~~
+
+~~internet issue. Oh. His internet is down right now. Let's see if you can use a hotspot. Um, w while he's gone, we can, uh, decide what we will talk about. Uh, you, you did provide a lot of links, so, uh, of the links, do you wanna cover ~~
+
+~~the ask e chart stuff or the vs code stuff or the ~~
+
+~~boat stuff? ~~
+
+**James:** ~~boat stuff ~~
+
+~~will be fun. Why ~~
+
+~~don't we do that? ~~
+
+~~Just, uh, something a little different. ~~
+
+All right. So yeah, for my, for my last kind of theme here, I'm going to leave the JavaScript world altogether. Uh, talk a little bit about what it's like to live on a boat and some cool tricks that I've learned. Um, first thing you need to know about a boat is like there's no utilities, so don't have running water.
+
+Uh, plumb from the mains don't have, uh, infinite power plumb from the mains. Um, so yeah, definitely spend a lot of my time thinking about how to manage resources. Got big solar panels on the back for producing power. Got a wa water maker for producing water. Um, got some big lithium batteries, uh, but they're all 12 volts, right?
+
+And so if it comes to any kind of electronics, I am always on the hunt for a 12 volt version of a thing versus a 110 or 220 volt version of a thing. And I got quite good at like picking products that, uh, that I can power offer basically a cigarette lighter, you know, a car adapter, uh, 12 volt. Um, so yeah, I got a bunch of power tools on the, on the boat for example.
+
+And, uh, I went with, uh, DeWalt. 'cause uh, there's a, uh, car adapter charger for the DeWalt batteries. So I don't need to turn on the, uh, two 20 volt inverter just to be able to, you know, run a drill or something. Uh, so that's, that one's pretty awesome. Uh, got some sweet, uh, power adapters for U S B C, so not just like kind of regular ones, but ones that are actually like decent, decent power.
+
+So I think I can get like, I'm thinking maybe 85 or a hundred watts, uh, for powering, you know, fast charging, uh, phones and laptops. Pretty cool not to have to fire up the inverter just to, to run my laptop. Uh, and then I had this awesome, uh, little journey through Amazon last week. Uh, I was on the look lookout for a bigger screen.
+
+Wanted a bigger monitor. Uh, but, uh, it, it turns out like most monitors are obviously 110 or two 20 volts. Uh, really don't wanna have to turn on the, turn on the inverter just to, to have a bigger screen. But I found this beautiful little thing. Uh, it's super light, it's a view. So I'm not, not a, I'm not a paid representative of view, so, but like, this is a cool little thing.
+
+It's like a 16 inch monitor, no power. Okay. Powered entirely off. U S B C. So you can either power it, uh, and also have H D M I going into it, or in fact, I think you can power it straight off the laptop. So basically it works as a second screen for my laptop if I need to. Um, but yeah, no need to turn on the power to watch tv, which is sweet.
+
+And, uh, also, you know, gaming whatever works great. $124. Can you believe it? Unbelievable. So, uh, yeah, highly recommend. If anyone wants to live on a boat, get yourself a TV that
+
+runs on 12 volts for $120.
+
+**Justin:** That's awesome. Projectors may
+
+be a good idea too if you have space for a projector.
+
+**James:** Yeah,
+
+so I looked into that. Uh, problem is we don't actually have any flat walls to project onto, so then I was gonna have to mount a screen and then the boat's rolling around and so the screen is swinging back and forward and the movie's going in and out like that. Um, now there are some big super yachts that we see sometimes where they like, you know, they have a proj outside projector on the back of the boat, and they put the sails out and they project this onto like, you know, onto the IMAX size, onto the sails.
+
+But no, for us, uh, a little, uh, 10 80 p uh, monitor is just fine.
+
+**Andrew:** ~~ ~~Okay. Uh, onto my last tool, tip of the day. I'm not completely sure I understand what this is, but it seems cool from the homepage. Uh, it's called Jazz Tools, and it says it helps you create telepathic data, uh, which that sounds like a made up marketing term for, for something. Uh, but, uh, what it looks like, it, it relates a lot to the, our conversation that we had here today.
+
+Uh, but it lets you have local reactive state, but distributed across the cloud. So kind of like maybe a competitor to tiny Base. It doesn't seem like it's all that out yet, but, uh, they also have this global mesh thing where they're using like edge computing to, to do all of this stuff and do it server serverless.
+
+So maybe like a tiny base plus party kit thing going on here. So tool to watch
+
+if you're
+
+interested in the space.
+
+**James:** Yeah, actually the author came along to the local first meetup just yesterday, which I think is recorded on YouTube somewhere. So I'll get you the link for that as well. And, uh, yeah, he talked through the, the rationale and yeah, it's pretty new, but like everything in the local first phases, so, uh, I wouldn't, wouldn't hold that against him.
+
+Uh, Yeah, it's pretty awesome.
+
+**Justin:** Yeah, that's really cool. I call it part of that meetup, and this is fun to see.
+
+**Andrew:** Next. Last up
+
+we have multi.
+
+**Justin:** Yeah, so, uh, there's been a lot of collaboration apps that have coming out recently. Multi is just like collaboration for your entire Mac, um, which is novel. It just, you know, screen sharing of old, but you know, somehow more native. Uh, so yeah, I don't know. Kind of cool. It's just interesting to see how people are doing more collaboration features.
+
+I mean, this reminds me of like v n c screen sharing of like, you know, the olden days where you could like really share control of your machine or whatever. But it has the more Figma style like bubbles and, you know, the, the drawing and stuff is, you know,
+
+still pretty, uh, pretty standard for, for a interface like this.
+
+But it is a, a Cool app.
+
+**Andrew:** Cool demo too. Really shows it off.
+
+**James:** That's nice.
+
+I'm getting Citrix vibes. ~~Yeah,~~
+
+**Justin:** Yeah, for sure.
+
+**James:** ~~that's cool. ~~
+
+**Andrew:** Okay, that wraps it up for this week's tool tips. Uh, thanks for coming on, James. This is a really interesting look into the local first movement and how tiny base is a part of it. So
+
+thanks for coming on.
+
+**James:** Huge pleasure. Thanks very much for having me,
+
+guys.
+
+**Justin:** Yeah. Uh, thanks for joining from your boat, uh, and. Ironically, my internet's the one that dropped out first, so sorry about that. But again, thanks so much and thanks for building tinny base. It's a really cool technology, uh, and for putting a lot of energy in the local first software movement. I am, I'm incredibly excited about this space and I, I hope that it
+
+yeah, just thrives.
+
+So I appreciate it.
+
+**James:** Well, me too. And, uh, yeah, do whatever we can to, to move it forward. And obviously looking forward to any feedback, anyone listening to this has, uh, coming to this fresh, coming to this new local first or, or tiny base, uh, yeah. Always looking for, for feedback
