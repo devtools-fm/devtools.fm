@@ -49,8 +49,17 @@ export default function Home({ latestEpisode }: HomeProps) {
         </p>
       </div>
 
-      <div className="mb-12">
+      <div className="mb-6">
         <LinkShieldList limit={5} />
+      </div>
+
+      <div className="mb-6 flex justify-center">
+        <Link
+          className="plausible-event-name=Newsletter+Subscribe+Click"
+          href="https://devtoolsfm.beehiiv.com/subscribe"
+        >
+          Join newsletter
+        </Link>
       </div>
 
       <Browser>
