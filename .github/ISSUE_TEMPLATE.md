@@ -3,7 +3,7 @@
 ## Editing
 
 - [ ] Editor Handoff
-- [ ] Andrew Passthrough
+- [ ] Andrew Passthrough - Podcast
   - [ ] clipping session
   - [ ] stinger
   - [ ] outro
@@ -11,6 +11,11 @@
   - [ ] Add section markers
   - [ ] Split Free and Paid
   - [ ] intro
+- [ ] Clip Edits
+  - [ ] Title Clips
+  - [ ] Choose 7 clips
+  - [ ] Edit all down to 1 minute
+  - [ ] Add visuals
 
 ## Exports
 
