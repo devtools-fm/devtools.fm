@@ -8,6 +8,7 @@ import { LinkShieldList } from "components/LinkShieldList";
 import { getLatestEp } from "utils/getLatestEp";
 import { ProcessedMdx } from "utils/processMdx";
 import makeClass from "clsx";
+import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
 
 interface SubscribeProps {
   latestEpisode: ProcessedMdx;
@@ -67,7 +68,13 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
           </p>
         </div>
 
-        <LinkShieldList />
+        <div className="mb-12">
+          <LinkShieldList />
+        </div>
+
+        <div className="mb-12">
+          <NewsLetterSubscribe />
+        </div>
       </div>
     </Page>
   );
