@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const openai = new OpenAI({});
 const model = "gpt-4-32k";
-const template = fs.readFileSync("pages/newsletters/62.md", "utf8");
+const template = fs.readFileSync("pages/newsletters/63.md", "utf8");
 
 async function main(episode: number) {
   const episodePath = path.join("pages", "episode", `${episode}.mdx`);
