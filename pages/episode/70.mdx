@@ -1,0 +1,475 @@
+---
+title: Emmanuele Stoppa - Biome
+youtube: https://www.youtube.com/watch?v=Vx8SzrqIJHo
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Emmanuele-Stoppa---Biome-e2akb29
+tags: technology, software development, developer tools, dev tools, rome, biome, rust, linter, formatter, typescript, javascript, css, html, ast, cst, compiler, cli, daemon, lsp, language server, plugins, extism, typescript, import, eslint, typescript, javascript, css, html
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Emmanuele Stoppa about Biome, a continuation of the Rome project.
+We talk about the history of Rome, the fall of the company, and the rise of Biome from the ashes.
+Biome aims to be a one stop shop for all your JavaScript/TypeScript dev tool needs by building unified syntax tree for all your tools.
+It's a linter, formatter, and aims to be much more in the future.
+What will be the future of Biome? Listen to find out!
+
+- https://twitter.com/ematipico
+- https://www.linkedin.com/in/emanuelestoppa
+- https://github.com/ematipico
+- https://biomejs.dev/
+
+Sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://v0.dev/
+- https://github.com/sxyazi/yazi
+
+#### Justin
+
+- https://github.com/orbitinghail/sqlsync
+- https://smith.langchain.com/hub
+
+### Emmanuele
+
+- https://blog.jetbrains.com/rust/2023/09/13/introducing-rustrover-a-standalone-rust-ide-by-jetbrains/
+
+<!-- TAB: SECTIONS -->
+
+[00:02:19] What was Rome?
+[00:10:09] Ad
+[00:11:10] The Fall
+[00:15:43] From the Ashes: A Biome
+[00:20:15] Are We Plugins Yet?
+[00:25:11] Building an Ecosystem
+[00:32:05] Using a CST isntead of an AST
+[00:45:30] New Runtimes
+[00:48:00] Building the CLI
+[00:52:51] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Emanuele:** December of last year, we were let go, all the employees.
+
+I managed to, recover, mentally. I said, okay, I mean, I love the project. I love rust. I want to keep working on these projects. So these two passions kept me, working on the tools. And that's when, we resumed, releases new features and new patches
+
+now biome is like actually a good formatter and a good linter, they are really fast.
+
+Hey, before we get started with this week's episode, we'd like to announce that we have started a newsletter. If you head over to mail.dev tools.fm, you can subscribe. Justin will be running the newsletter and he'll be curating a set of interesting links about dev. Dev tools news that happened throughout the week. Each newsletter will also. Contain a breakdown of the episode that we released that week. Along with some of our post show notes so if you're interested we'd love for you to join us
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Eman Soppa, uh, on with us today. So Iman is, uh, the maintainer of Biome. Uh, so if you haven't caught up with the news of Biome, so Biome is a sort of continuation of the Rome project. Uh, we're really happy to talk more about that. But before we get started, uh, Eman, do you want to tell our listeners a little bit more about yourself?
+
+**Emanuele:** Hi everyone. Sure. So I am Emmanule, uh, Ema as a short version. Even my family doesn't call me with my full name. It's too long, so it's completely fine. I present myself as Emma, uh, and I'm a developer. Tools, uh, Developer, uh, I like more than 10 years of experience. Uh, I start as a HP developer and then shifted on front end for many years, and, uh, in the last few years, working as a dev tools.
+
+And yeah, I'm a, OI like video games a lot, so I have like a switch and, uh, PS four and now PS five currently playing seal stars.
+
+#### [00:02:19] What was Rome?
+
+**Andrew:** Awesome. So, uh, we're here to talk about Biome, but we can't talk about Biome. We're talking about Rome a little bit. So could you tell us what Rome is and what, uh, the initial goals of the project were?
+
+**Emanuele:** Yeah. So Rome was or is to. A bit of a weird, but let, let's call it the present. So Rome is, uh, uh, was born as a, uh, a 360, uh, tool chain that aims to essentially cover, the majority of all the tools that we have, in the frontend development all in one tool. So you use just one CLI one L S P, and the intention is to actually give you all the tools needed for, for matting, leading, bundling, documentation generation.
+
+Uh, so everything, uh, it's quite, uh, a goal, uh, but also like, uh, that's one of the reasons why I joined, uh, the, this tool at the very beginning. And that's why I like, keep working on it.
+
+that's what it's rome but it's now biome.
+
+**Justin:** Yeah. It, it's such a ambitious project, but I mean, and really much needed because we have so many different tools and written in different languages that are all, uh, building their own ASTs and, and doing all these transformations. And we end up just like re parsing code again and again and again and transforming different ways for different tools.
+
+So it's always seemed like a, a really good opportunity, but like you're saying, very ambitious because, you know, each one of the really popular tools like linter tools or format or tools or whatever had like large contributor bases or whatever. So it's, uh, it's, uh, a challenge. Um, When you first got involved with Rome, uh, what was, was there any like, particular technical angle?
+
+Was it like, oh, you know, I'm really interested in like, Linters or, you know, formatters or, or was it just like the whole package overall that sort of really sold you on it?
+
+**Emanuele:** Initially I was actually, uh, attracted by the, by parsing and compiling. So, um, that's because essentially it's something that as a, uh, a product developer, which I was, uh, you can't do. Okay? So it becomes like a passion. And as a passion, you cultivate this one in, uh, your spare time. And Rome at that time was new.
+
+I did have a lot of contribu contributors, so I thought it was the, the right place to, to cultivate this passion. Uh, study compiler, uh, work in a, on it. Uh, and that's where, and the linter is actually a really good place. Uh, it's part of the compiler, but at the same time, you don't need to care about infrastructure and whatnot.
+
+You just build your own rule and a diagnostic, a possible, uh, fix and. You're happy. So, and that's why I started. Um, and then also the CLI like, uh, also like, uh, I've built a lot of CLIs in the past also pet projects, uh, or, or not. Uh, I was actually a member of the webpack CLI, uh, a few years ago. Um, and that's where my passion about building a, a terminal tool, uh, was born.
+
+And this Rome CLI was really, really good. Especially colors diagnostics. Uh, diagnostics were like, wow, that's amazing. That's something that you don't see every day, uh, in a CLI. So that was the second reason why I joined, uh, that project.
+
+**Andrew:** Yeah, it's uh, it's funny how like lots of front end developers end up also creating cli, but really it's just like a CLI for like your tool or it's a front end for your tool, so it kind of makes sense. We're still putting boxes on pages, we're still modifying the colors of things. Um, so I wanna dig into like, uh, like Rome is a very ambitious project.
+
+Like, uh, you're, you're trying to create a bundler, a linter, a formatter, X, y, z, lots of different things. So like we, right, right now we live in a world where all of those are separately, uh, maintained tools by separate teams. What makes it so that this project is able to make all those different tools?
+
+**Emanuele:** Ah, that's a, like a, a big question. Like the big question for a tool like this, and I don't have a clear answer, uh, but, you know, I'm trying to, to make other people understand, uh, why choosing such a tool, uh, could make a difference for, uh, your, your project or, uh, your product. And I. Like, there's also lot, lot of technical details, uh, around it.
+
+But also like the fact that you, you're a product developer and you wanna set up, you know, the CI tests, uh, then you have a, you know, lin all these tools. Uh, how long does it take? I mean, uh, I was like, uh, I did that. Uh, and it takes a lot of time. Uh, it's really time consuming. Um, like, uh, you can't spend time, uh, working on the product because you are actually focused on setting up and it takes a lot of time, like just, uh, installing prettier with ES land.
+
+It's not just a, a clear installation, but we have to run a bunch of commands, uh, install other plugins or configuration in order to. Make them happy, you know? So sure there are like templates, but why are there templates because of this? So, you know, the, so the community is actually investing a lot of time, uh, on these tools around tools.
+
+Alright. Instead with Rome, you just, you just don't, don't need it with Biome, sorry. You just do, you can do a N P X, uh, biome format, uh, folder and you're fine. Or also the check, you just do check, which does formatting and linting at the same time. So it's, I think it's kind of, kind of rewarding you having a tool that works outta the box without spending too much time to configure it or configure it.
+
+Just, just doing the an in it or, uh, you know, And you just need, you have everything. You're in one single file, you know, so you don't need to go around, uh, searching different configuration files, try to the right, uh, combination. So if you have one, just one tool with gun, one config, well that's, uh, that's neat.
+
+**Justin:** Yeah, that's huge. I mean, the ecosystem in general, I feel like has seen an explosion of config files. So it's like you start, you see, you dive into a new project and there's like 10 config files. Uh, and that can be pretty intimidating for, for beginners. Um, also like this, just like if you have this rich ecosystem of tooling for like parsing and AST transformations and everything, then like building new tools on top of that is hopefully a little bit easier.
+
+So it's a, the promise is there and it's really exciting. And I think tools like Deno and BUN who are showing that, Hey, we can provide you a tool with like, all these other tools just kind of built in, um, shows like some real. Powerful value for just like a, a, a nice bundle of tooling like this. Um, sort of before we go further with this, I think it's good to talk about the history.
+
+#### [00:10:09] Ad
+
+**Andrew:** We'd like to thank Ray cast for sponsoring our podcast. Raycast is an app for a Mac that's like spotlight, but actually useful.
+
+Besides just doing all the normal stuff, like quickly opening files, URLs, or apps, it provides cool things like a clipboard history manager, window management. You can even manage your calendar entirely from Raycast.
+
+And as a developer, one of the really cool things is that its extension API is super easy to use. If you've ever used react before it looks just the same.
+
+You should also check out Raycast pro with Raycast pro you can take advantage of Raycast AI. You do a whole bunch of cool things with Ray cast AI, but I can't stress enough how much your workflow will change. If you have AI chat, just one keystroke away. Uh, I use it in my podcast, editing workflow. I use it to code. I use it to Google things now.
+
+Along with that Raycast has pro gives you access to their cloud sync feature. So your settings will sync across all of your devices. To learn more you can visit Raycast.com or you could go listen to episode 38, where we talked to the CEO Thomas about the product, why they built it and what they plan to do with it.
+
+#### [00:11:10] The Fall
+
+**Justin:** So, uh, the project was Rome and now it's Biome uh, Rome. There was actually a company around that. So could you give us a little bit of the history and sort of how we ended up where we're at now?
+
+**Emanuele:** Yeah, sure. So, um, I think like a couple of, uh, years ago, um, Sebastian noticed a lot of interest in this kind of tool. It was, uh, Like announced as a open source project. At that time, the project was still written in TypeScript. Um, I think he run like a, a, a funding campaign. And after that he actually, he noticed like a lot of interest from people and he used this, uh, funding campaign, uh, to investors to attract and uh, VC funding.
+
+And, and that's when the company was born. So, and I mean, I was like, uh, I'm gonna do it like, uh, uh, from, you know, it's a startup. You never know how it goes. But we are an industry at that time where there was a lot of jobs. So if it doesn't go very well, I can find another job in a couple of months. And, uh, the salary's good.
+
+I will, I had savings, so I. I mean, if I don't do it now, uh, when should I do it? Um, so I joined as, uh, one of the first two employees of the company and it was great. I mean, uh, eventually where we decided to rewrite the two rust. So from one point of view was like, uh, a step back. Uh, but um, it was needed, uh, the tool at the time, it had a lot of stuff, but it was suffering from perfor, uh, performance.
+
+So it wasn't that great. Uh, and rust seemed the, the right, uh, choice. It's a really strictly typed so, um, it's, it's memory safe. It offers a lot of goodies and like as a beginner, yeah, it can be. Steep learning curve, but it has a, a rust, offers a lot of, uh, primitives. Uh, so you can do a lot of high, high level stuff, but also low level stuff.
+
+So as a really a, a good range. So, um, it, it's a welcoming language. Uh, so yeah, a step back. But in a, in a here we managed to actually, uh, write a cript parser and the formatter, and by mind that the formatter went through three rewrites. So it took a lot of time, a lot of brains, a lot of energies. Uh, but eventually we landed a really great infrastructure, which, which is actually also the same infrastructure that pumps a ruff, which is another.
+
+Rust project, uh, a linter and the formatter for Python projects. So it's another ecosystem. It's in rust and, uh, it was the same engine. Uh, so it works very well. So after couple of years, were growing great. Uh, but functionally, uh, we were let go. So there were, there was no more money apparently. Uh, I don't have, uh, details around it, so not even sure if the companies still, uh, like alive.
+
+So I'm not in touch with Sebastian anymore. So, uh, the only details that I have is at, at December of last year, we were let go, uh, all the employees. Uh, so. That's when, uh, the developments, uh, stopped. And, but, you know, after a small break, you know, it was around the holidays. Uh, so I managed to, uh, to recover, uh, mentally.
+
+And uh, I said, okay, I mean, I love the project. Uh, I love rust. I mean, I want to keep writing rust. I want to keep working on these projects. So these two passions kept me, uh, working on, on the tools. And that's when, uh, we resumed, uh, releases new features, uh, and new patches. Uh, and that's also when. We also had the linter, and now biome is like actually a good formatter and a good linter, uh, and they are really fast.
+
+Uh, so, and yeah, so that's essentially the story, uh, Rome.
+
+#### [00:15:43] From the Ashes: A Biome
+
+**Justin:** Cool. Yeah. Uh, yeah, I mean, startup life is hard. So, you know, definitely, you know, it, it, it sucks to see any company like that fell. Um, and, and I think Dev tooling companies in general are really hard too, because it's like, uh, you know, we talked to Charlie Marsh about this and who's working on, on Ruff, and it, it's, yeah, it's just a hard thing.
+
+It's like, Uh, sometimes it's easy to get money, but like, making a sustainable business is hard. Um, so, uh, you've, you've sort of forked own now into Biome, um, who's, who's helping maintain that now? Is it, is it like some of the other original people that we're working on it too? Is it just you? Like what is the, the sort of stewardship of the project look like?
+
+**Emanuele:** So I'm the only original people like, uh, from since the, the beginning. So the, all the ex-employees, uh, take their own path. So they are not that much involved, uh, into the project. Uh, in the meantime, uh, when Rome was a company, they were still, they were like, uh, third party contributors, um, with the same passion, you know, uh, working on compilers, new languages, a trust.
+
+So I. Uh, working on Lin. So we managed to, to have a few people, and I publicly asked them if they wanted to, to continue after the wrong company, uh, went under if they could keep helping me, and they said yes. So, uh, now essentially they are the core team. Uh, so we are like five people. Uh, we hope to, to, uh, flesh out the governance so more, more people will, will come, uh, fortunately.
+
+Um, so it's just, uh, five, uh, um, volunteers, uh, that like, uh, the, the ecosystem, uh, the small community that we have. Um, that, so that's it.
+
+**Andrew:** So, uh, is the goal of the project still the same? Do you still want to conquer all the other dev tools in the space?
+
+**Emanuele:** I don't think so. Like, uh, uh, in, in my mind, yeah, I still want to achieve that. Uh, but, you know, uh, we don't have the, the same manlpower we had before. We don't have so many contributions because the combination of like, uh, language and the, the, the end users, they are finding a combination like that. It's completely, it's really difficult. Uh, so at the moment we want to, uh, focus on my energy, uh, energies on formatter linter, and. CLI. So trying to flesh out more rules, uh, having a better infrastructure for the linter To provide even more sophisticated rules, uh, we want to slowly, uh, focus on parsing, uh, more languages. So we recently started C SS, uh, parsing and also H T M L, and this would unlock more languages.
+
+So, uh, we want to focus on the tools that we have at the moment because they are stable. Uh, they work quite well. Uh, we have a lot of good documentation. So if we, uh, push on on those, uh, hopefully we're gonna add also more contributors. Uh, but in the meantime, under the hood, slowly, I also want to, uh, start like com compilation.
+
+So transformation that I, like. I created something for TypeScript. It's really. Uh, really, uh, small, you know, just transforming an enum into a, just in function, so, uh, as a foundation of the compiler. Uh, but yeah, like, uh, I don't see like a test runner, for example. Uh, you know, uh, but yeah, I would see like a compiler, but you know, that, that that part of the industry is quite c there are leading like a lot of competitors.
+
+Uh, we, I mean, we have V which is, uh, use s a roll up and is doing great. Uh, we have SS wc, well, it's not the bundle, but, uh, um, I mean, it's also a tool we used by, uh, we have tool by, for example, we have ACE Build. So, uh, there's a, there's a lot of competition. Uh, so not sure we are ready to go there,
+
+#### [00:20:15] Are We Plugins Yet?
+
+**Andrew:** Yeah, but I, I, I think if you get like a capable linter that can do like its own fixes, like having like a Babel layer, just like right above that seems like a pretty easy hop. But I do agree with you like going full bundling is like that. There's a lot of competitors in that space and it is a far, far more complicated thing to do.
+
+But like for lightweight code transformations, I, the, the field right now, like Babel set a great precedent of like making it really easy to write code transformations and include them in my project. And like, if you go like the full type TypeScript route nowadays, like there is no equivalent for TypeScript.
+
+So like, Those types of code transformations are kind of becoming a second class citizen. Uh, so in Rome, like, how are the plugins written? Are there plugins? Uh, can I make my own lint rules? My my own transforms.
+
+**Emanuele:** No plugins yet. Like we are not plugins yet. So like there are like, uh, some, uh, domains that they say like, uh, are we plugins yet or are we web yet? So in, in our case, we are not plugins yet. So that's, uh, so for people that are listening, if you wanna switch from eslint and you have custom rules, don't do that yet.
+
+So we are not there yet. Use the tools that you have and you'll be happy. Uh, but we are talking about it like we are trying to not understand how can we write, uh, custom rules. So we are evaluating different approaches like, uh, D S L or maybe just rust. Or Yeah, maybe in JavaScript, but like, no, we'll see.
+
+We'll see. Or even like, uh, so web assembly. So yeah, you're writing rusts, but then, uh, it's a web assembly, uh, which is a, an approach that used by d print. Uh, but still you will have to learn a bit of rust. So
+
+**Andrew:** yeah, we could use a JavaScript, but, um, there's also the fact that maybe using JavaScript could like, uh, uh, slow down the tool.
+
+**Emanuele:** So, uh, it's a, it's a choice that we have to evaluate. We have to evaluate all the, the pros and cons. Uh, we need to understand what the users want. Uh, do you want a fast tool or do you want, uh, a slow tool but you won't write, uh, task, uh, file. So, Uh, it's a, it's a hard thing to, to decide, but yeah, it's now in an hour.
+
+Our Raiders, uh, but I don't see it happening like in the next few months.
+
+**Justin:** Yeah. Uh, the, the plugin question is really hard when you have native code because, uh, you have to deal with. You know, if it's just like direct, if they're like writing more rust, then you have to figure out like, what is the interop story? Or like, you know, do we have to, you know, write some like shared object or something or yeah, performance implications of like, oh, now we have to like, pass off all these strings or like the AST nodes to like this different language and that transformation layer can be pretty slow.
+
+So it is a really hard problem. Um, I think, uh, we, we had an episode where we talked to the, the, uh, dylibso folks behind extism, which seems like it could be a really cool option for like m plugins and stuff, but I'm really interested to see what y'all do with this because it's something that I, I sort of, I want to see more experimentation with, like these native, I mean, 'cause we are getting more and more native tooling in, in the ecosystem, right?
+
+And, and plugins are also have been incredibly important for us. And it's like, you know, the plugins don't necessarily have to be written in the same thing, but there is definitely performance trade offs. So, um, yeah, I'm, I'm really interested to see what y'all come up with there.
+
+**Andrew:** Yeah, the, the extism route seems really, really interesting to me. I, I wonder what the performance implications are. Uh, for our listeners who may not know, extisim is a, uh, a tool that lets you create a plugin system, but the plugins are written in was, so, it makes it really easy for you to like, have a plugin that is in Rust or a plugin that's in Go, or a plugin that's in JavaScript.
+
+Um, it'd be interesting to see what the performance characteristics of that are, because like, I, like, I know JavaScript is slow. We all know that, uh, and JavaScript plugins will be slow, but like, I, I still wanna write 'em, like I, I write one off ESlint plugins all the time, and for me, like an es an ESLINT replacement, which I see Ki Rome kind of fitting the bill for needs plugins in my opinion.
+
+So I'm very excited to see what, uh, what you guys come up with. If you do,
+
+**Justin:** Or Biome as it
+
+were.
+
+**Andrew:** sorry. I'll, I'll fix it all in post.
+
+#### [00:25:11] Building an Ecosystem
+
+**Justin:** So just sort of like asking about some of the other features. So you have, um, so you, you said that you're probably not gonna do a test runner right now, uh, but you have, uh, did you say you have an l ss p uh, language server, uh, plugin. Can you, can you, or can you talk a little bit about that?
+
+**Emanuele:** Yeah, so we have a out of the box L S P server, so, uh, which is quite convenient. Uh, we already know that we, there are like, uh, third party, um, editors that use that. So like, uh, there's a, uh, Neo vem, uh, plugin for, for Biome already, so, Uh, there was for Rome, but there's already for Biome. So, and it's quite easy because like we have a a CLI command, like a Biome L s P proxy, and essentially we spawn a server that does essentially, uh, uh, functions as a proxy to our demon.
+
+And the demon essentially, uh, is gonna work as a, uh, as Ls l Ss p. And so it's quite easy to create, uh, editor plugins for that. Uh, also our vs code extension, which is, uh, maintained in our repository, like, uh, the T Creek code is just, uh, maybe thousand lines of code, even less. So we don't need to do much, we just need to register it and, uh, and resolve the, the binary and that's it.
+
+So Uh, there are also some Alex uh, plugins, so, and we are also working, so we have a con, a third party contributor that is working on, uh, a plugin for Intelli. So, which is something that, uh, a lot of people are, uh, uh, have asked so far. So e it is gonna be really a huge boost. Uh, I'm looking forward to it because I'm a intellij user, so I, I use a web store and ion daily, so having it is gonna be, uh, great.
+
+And yeah, so we have a, an L S P that, uh, uses, uh, this great called tower, L s P, which was actually written by one of the guys of Deno. So, uh, and it was great. Like, uh, it's really easy to, to use it. Uh, it uses sync rust, which is quietly, uh, easy to pick up, and it was quite a. Like easy to, to use our architecture.
+
+So we, we architected the code in a way where we can use it as L S P and as a CLI, which is not that easy sometime because you have to have a right balance between, uh, performance at, you know.
+
+**Andrew:** So you mentioned the Damon. Uh, so I, I don't use many Damons, uh, on my machine right now, or maybe I do, and I don't know. Uh, so like, what is it and what is it doing and how does it make like the performance of Biome better?
+
+**Emanuele:** Yeah. So the demon was, uh, uh, like a comp sector that we, we had since like the, the first round. So essentially the idea is to have, uh, these long running process, okay. Uh, where you. You look, you ping it to essentially get all the information that you need when, uh, you do operations such as formatting a code or analyze a piece of, uh, a snippet or anything.
+
+Or also gimme the code actions relative to this code. So anything around that. And it also, there was also the idea to use the demon also also for, uh, remote caching. Okay. So you have this demon that does, it could also run on some other machine and you just connect it remotely and you can use the same cache used by this demon.
+
+And that's where the concept of portable cache was born in wrong, which we don't have yet in the, in biome since we've done the, uh, the, the right. But that was also like one of the things that. We wanted to do, and portable cash remote caching was also one of the things that we could use as a service for enterprise.
+
+You know, big companies that work on virtual machines and touch and such and, uh, big cis. Um, so at the moment, uh, the, we, you use the demon when essentially you run the L S P. So, uh, you use your VS code extension. Uh, we have the L S P that essentially spawns, uh, the, uh, the demon and there's a continued, uh, back and forward.
+
+Uh, every time there's a, a query from the L S P, like, uh, Formatting range, um, anything. So you go there and in the demon we actually cache, uh, things like virtual files or like files. When you do also CLI operations, we cache D s T also. So, um, if you have a file that hasn't changed, we don't need to re parse it.
+
+We, we, uh, we take it from the cache and the things are quite fast because we essentially, we don't re parse it. And that's the the amazing thing because if you need to format a link, the same code, you just reuse the same cache and the same AST you don't need to do any, uh, additional operations for run two tools at the same time.
+
+**Justin:** That's awesome. I, I think one of the, one of the like, subtle benefits of this is also you're, you're skipping out on a lot of, a lot of startup time costs if it's a persistent process. Because like a lot of the tools that we have, they have to start fresh, you know, and, and re initialize and do all this stuff like right away.
+
+And if you already have this thing churning in the background, then, um, you know, just a little bit faster, which is uh, which is great.
+
+**Emanuele:** Yeah. I could Also, the CLI at the moment, when you run it, uh, it just ponds, uh, a workspace. It doesn't actually use the, the demon, but we have an option where you can actually use it. So you, you use it an option called the use server. And if you have a demon running, it'll use that demon and it could be slower because essentially you have a server and you have to contact every single time.
+
+So, It could be slower, uh, but if you have multiple, um, if you need caching and things like that, or also the L S P, uh, in the future, it could be really useful. And yeah, you don't need to, uh, start up again. Uh, the service on really big projects.
+
+#### [00:32:05] Using a CST isntead of an AST
+
+**Andrew:** so I wanna, I wanna ask you a few questions about the AST. Uh, recently I was looking in the ESlint and I learned that, uh, the two most popular plugins are also probably the two slowest plugins. Uh, those plugins are types, the TypeScript plugin and the import plugin. Uh, and they're both slow basically because of the same reason that, uh, ESlint is built on the principle that like we're linting one file, we don't really care about the other files.
+
+But those two plugins in particular have to care about all the other files. TypeScript has to know all the files. Type check. The import plugin has to go check if the thing you're importing is importable. So does, uh, biome have the concept of like multi file lint rules and is that built into it?
+
+**Emanuele:** Not yet, but we, I actually, uh, thinking about it, we've had discussion. Um, I'm also like, uh, there's another person that is building, uh, a really similar product to ION and is actually actively working on a crate to actually resolve, um, node dependencies. So, and I think we're gonna aim to use that tool, uh, for us.
+
+Uh, so we don't need to do everything from scratch. Uh, like we're gonna do a real, a really great partnership. We are in really good terms. Um, his name is Boshen. He was actually, uh, he started to actually work on, on this tool, uh, thanks to actually Rome and the Rome's mission. So, um, I don't see why we shouldn't, uh, partner up and use, uh, his tools.
+
+He's doing a really great job and, and it's gonna help us in that to actually support, uh, like creating, uh, link rules that are aware of other files. Uh, and we'll see how it goes because these kind of operations, yeah, they, uh, they are slow. But imagine like, uh, you have a, your ESlint plugins, they are not aware of each other.
+
+Like they, I don't think they share the same AST uh, I. So Imagine Biome, yes, you, we do dependency resolution and whatnot, but then everything is well aware in the same, uh, demon, in the same workspace. Um, so I could see a lot of benefits once we, we will able to flesh out, uh, this feature, like Boshen is actually, uh, actually working on supporting the import plugin, uh, is like pushing it a lot.
+
+I see a lot of work advancement. Um, yeah, I mean, uh, looking forward to use, uh, his work inside bio.
+
+**Justin:** Boshen's another like really awesome dev that we would love to talk to. Uh, just admiring that work from afar and there's a lot of really interesting stuff happening in that space too. So,
+
+**Andrew:** Yeah. So, um, a little bit more about the AST. Uh, so like currently, basically all the, all the tools are built on like packages that do the AST parsing for you. Does Rome provide a package where I can build my own tools on top of the Rome AST?
+
+**Emanuele:** A package to build? Not that I'm aware of. Although, although, um, you know, we have our playground, our playground actually does parsing and thing is, it doesn't aim it like, uh, JavaScript bindings, but like you can actually, uh, we were thinking actually, uh, Um, like, uh, having a way to actually export, uh, this AST as a json and then do whatever you want with that.
+
+Uh, I think we have a time to, to implement it was a really an experimental thing. I think it is like, uh, biome doesn't work within AST. Uh, I'm not sure if you know it, but Biome, uh, is actually works with the CST. So, AST uh, stands for abstract syntax. tree CST stands for concrete syntax tree So difference that the CST, uh, uh, saves all the information of your code.
+
+Also comments whitespaces and new lines. This is an information that usually you, you lose, uh, when you create your AST. So like you have a, your AST explorer, you go there with bubble, you see your, your AST, which is fine. You have everything, but you don't know where are the comments, you dunno where are the new lines.
+
+You have to essentially compute them. So you have your royal location and then you have to do some competition. Order the tool to, um, to resolve them. Uh, biome actually uses CST because the, the idea is we want to support D L S P, uh, and if you don't know it, the parcel that work, uh, in the IDs and, uh, editors most of the times use, um, A A CST.
+
+So a concrete, uh, parsing phase, uh, because they also need to, uh, be aware of all the spaces and, uh, comments. Uh, Uh, especially when they, they want, they need to provide auto competition or snippets or anything that has to manipulate the, your file. And, and also other than that, uh, biomes, parser is a recoverable parser.
+
+So you will never see, uh, biome essentially breaking, uh, because there's an invalid syntax. Biomes parser is able to detect invalid syntax, continue the parsing until it, it, I dunno, it recognizes a token or something that re resemble, I dunno, a body of a function and res resumes, the correct paring, or there's an endo file.
+
+And at that point, what we do, We create a node that we call it bogus. We call it bogus node, uh, which, uh, concept we borrowed from the T net parser. Uh, rustling, uh, rustling has been like one of our, uh, source of truth and inspirations. We took a, there are a lot of, uh, nomenclature and concepts, and one of that is the bogus node.
+
+So if you go to our playground and you write invite code, you actually will see that, uh, the par tries to, to do its best to understand what you wrote, but if it doesn't understand it, you just have a bogus, uh, node. So essentially with this, you can do a lot of incredible stuff. Like you can format code that is actually broken.
+
+Like, uh, you can, we have an option that says, uh, format with errors. So if you have a broken code, you can actually able to, to, to format the, uh, the healthy parts of the code. And the same goes for our link. So if you have some, uh, code that is partially broken, like uh, whatever, and some the part, the part of the code that is healthy and contains some, uh, invalid code in terms of, uh, linking rules, you will see, uh, the red squiggle on yard d e saying that, okay, this is, uh, an invalid thing for that rule, but the, the rest of the code that is broken is will stay there.
+
+So it's, it's also something that we, uh, we are proud of. We can do things that other tools can't.
+
+**Justin:** Yeah, that's a really huge feature. Uh, so this is like, um, you know, you, you have a single lint error and like sometimes or a single parse error or whatever, and it just, like, you get nothing else for the rest of the file. That's like, everything is like broken. But with this you can maybe see like multiple errors at one time or whatever.
+
+And that's, that is, that is is really powerful, especially for feedback loops. 'cause sometimes it's like the first error in the file is not the thing that you want to fix right away, right? It's just like there were errors down below that are actually like more important and, um, So yeah, I, I, I definitely appreciate that.
+
+'cause I, I relate this to like, it feels very much like form validation. Some people, like the first invalid entry in a form is like the error and you don't see the other errors in the fo in the form. And I'm just like, ah, this is so frustrating. So you like fix one and go fix another. So this is like kind of the equivalent there of like, you know, giving you all the errors all in one.
+
+That's, that's really, that's really awesome.
+
+**Andrew:** Yeah, I've, I've never heard the, or I don't think I've ever heard the term concrete syntax tree, but I've definitely encountered the problems with the abstract syntax tree. Uh, I wrote a custom rule that just enforces that if you have a function and you put a comment above it, that should be a JS doc comment.
+
+And like, to my surprise, that was actually hard to write in ESlint because as you said, the abstract syntax read doesn't hold any information about comments since that's not like part of the language. So I had to like, literally like, use the source code and like Reg Xs to like see is, is this actually a comment before the this line?
+
+So that's, that's really interesting that, uh, you can solve that with a, a slightly different, uh, data structure.
+
+**Justin:** do you, out of curiosity, so, um, so CSTs are, are definitely required for, you know, things like I. linters, for example, or an L S P. Um, but definitely there are some tools that are not gonna need all the extra granular information. Um, and this is one of the things that I was thinking about as a challenge for building Biome is that, you know, different tools need sort of different information and, and the AST or CST or like dif different granularities, uh, do you actually always pass around the CST nodes, uh, even if it's like extra information or are there times when you actually simplify it down to an AST for, um, you know, I, I'm not sure if any of the tools you have or you're working on right now need like the, the less thing.
+
+But I mean, an example here of like why you'd wanna do that is just there's less nodes to walk, right? So it's like it's faster to traverse an AST than it is at CST.
+
+**Emanuele:** Yeah. So at the moment, uh, yeah, we all response, uh, all the information. So linter and, and formatter get, uh, the same AST, uh, like CST, but essentially it's a. Uh, less d s D essentially, uh, eventually also allows you to get all the, we call it trivia. So trivia are essentially all disinformation that are not part of the code.
+
+So spaces, comments and new lines and et cetera. Uh, but yeah, I mean, you are right, like, uh, for example, maybe a bundler. Uh, I don't, I'm not even sure, but it, yeah, there are maybe tools that don't need it, and sure, we will need to, to actually address that. Like a minifier, for example, a minifier won't need to have this kind of information.
+
+Maybe some edge cases for, I don't know, uh, some bundling and tooling. Uh, but yeah, and that's an operation that we haven't done yet, which is the, called like a syntax lowering, essentially dropping all the information, uh, that, uh, we don't need. And that's something that I thought about it. Uh, but so far we have had, uh, a use case and I'm sure that once, uh, we'll walk, uh, the path where we will need that.
+
+I'm sure that something that we have to, to write and it's gonna be fun and a lot of time consuming. Uh, but yeah, like, uh, like this CST seems magical, but like, uh, it, it has a lot of cons. Like working with TRAs is actually quite painful, especially when you have a link rules that need to provide the code fix and you, you wanna maintain like, uh, uh, uh, spaces.
+
+Uh, you want to, you know, ri you ever writing some code, you want to keep the comment and attach the comment to the new no. So it's not always easy. Uh, um, Actually, it's quite, uh, painful. So, uh, sometimes we struggle to find the, the, the right balance. Sometimes we are like, but let's just drop the comment, you know?
+
+Okay. But, you know, sometimes they're actually important because they may be JS docs. So we have, uh, there are like some type information needed to, to the user, but most of the times, uh, those code actions, we deem them like unsafe. So we, so if the user needs to opt in, in order to, uh, to help them. So, but yeah, it's a, it's a struggle.
+
+So even though you have a lot of information, this information come with a, with a, a price.
+
+#### [00:45:30] New Runtimes
+
+**Andrew:** so recently new JavaScript runtimes have been the hotness. Does biome only work in, uh, node or does it support new runtimes like Deno and Bun?
+
+**Emanuele:** I think it works also with Bond. Actually, I, yeah, I'm pre, I'm actually sure that it works also with Bond. We have some, um, uh, some person in the community that asked and they actually used it. Uh, they also asked to have a, a binary with the, the ban shebang. Uh, but like I no expert with bun, so I dunno how to do that.
+
+But like, if there is someone there that is able to help us, they're more than welcome to, to like launch a PR or jump on a Discord discussion and we will have it. But it seems like if you do band run and then you write, uh, you write the, the Biome command, it seems to be working. Uh, that's what, uh, I saw on the, on our Discord server.
+
+Uh, on Dino? Uh, well, I'm not even sure about that. Um, don't have, uh, an answer, but I wish to, to, to have the, the support for Dino, to be honest.
+
+So, um, maybe last thing about Biome, uh, of maybe something we haven't talked about or something that we have talked about. What's your, what's your favorite thing right now in biome or favorite thing to work on, or, or whateverOh. Uh, I really like, uh, the CLI maybe 'cause it's essentially, uh, my baby. I, I wrote most of it. Uh, I rewrote most of it and also all the, the configuration. Uh, I'm essentially the creator since the beginning of the, of the configuration. All the new stuff that we create, uh, and, um, The R F C, we have also a bunch of fcs to improve it.
+
+Uh, uh, yeah, so I really like, uh, how the configuration is coming up and, uh, all additional features that we, uh, gonna have in the next month in the configuration. So there are, there are a lot of ideas, a lot of suggestions from the community. Um, it's gonna help us to make the, the, the tool more fine-grained, especially now that we are able to parse and handle multiple files such as Js, O files and J files.
+
+And so also C SS files, if we have a fine-grained, um, really like a customizable configuration, I think user will be happy.
+
+#### [00:48:00] Building the CLI
+
+**Andrew:** Uh, for the CLI, did you build like a bunch of your own packages to build the CLI or did you use like rust crates?
+
+**Emanuele:** I actually use the rust crates. Um, there are a bunch of, um, the ecosystem I chose. One is not, it's not that well known, uh, it's, but uh, I studied it and, uh, I really liked it. Uh, it's called the, uh, bbuff. Uh, I also contributed back to, to the package. Um, like, uh, now it's able to, to generate, uh, mark out, mark, mark down, um, a mark out document with the documentation of the CLI.
+
+So if you go in our website, uh, you go to the CLI reference all that, uh, markdown document is actually autogenerated, uh, by this create using the rust, uh, documentation comments. So we get a lot for free. And, uh, and yeah, it was, uh, like a. Uh, really great working with this CLI tool, uh, works really well and it's quite light, as opposed to clap, which is ano, which is essentially the defacto, uh, CLI library in the rust ecosystem.
+
+A lot of tools use clap, for example, Deno uses clap, but it, it gives a lot of features that we don't need at the moment. Uh, so I opted for, uh, bbuff and I'm quite happy. Like also Bo uh, he saw my work. Uh, he asked me if I'm happy with that, I'm happy. So also the, the oxidant CLI uses, uh, buff as a, uh, CLI argument parser.
+
+**Andrew:** Yeah, it's, it's awesome that the rest community is so much like the JavaScript community with, uh, how like, uh, crates and N P M are managed. Just like being able to use and collaborate on all this, like underlying software is so cool.
+
+**Emanuele:** Yeah.
+
+**Justin:** Totally. Uh, before we move to Tooltips, we always like to ask a question about the future. Um, so you've, you know, the, the fork of biome is not too old now, but, uh, you know, I'm sure you have, uh, plans for the future. So, so what's next? What's next for Biome?
+
+**Emanuele:** Yeah. So in the short term, wanna uh, have a governance, so a way, you know, to reward the user and have like a, some kind of bureaucracy, you know, uh, so users, uh, are safe, they know what's, how things work, you know, it's not everything up in the air. So we want to have something that is well written, so you can now Become also a core contributor in the future and join us, uh, with this adventure. Um, and so I essentially, in the short term, I want to make like a, a better community, make it more stable. Um, community is also make a, a great thing, quite important for us, um, when I try to have more, um, first code issues, uh, LP users.
+
+Um, so that's, uh, the short term also having an open collective. So trying to get some sponsorship or some donations. That's another thing that we want to have in the, in the short, uh, short term, uh, medium term. So, well, as I, I mentioned we wanna try to do the transformations, so having a way to transform your code. Uh, so without maybe using babel or TypeScript, uh, to transform your code. So it's gotta be fast, uh, it's gonna be challenging, uh, 'cause you know, if you use a TypeScript, you also have, uh, the D t S files. So it's something that, uh, we wanna try to, to support for the users and well, long term. Um, I'm hoping for a, I dunno, to be honest, I haven't thought about that far.
+
+There are a lot of things, you know, uh, that you want to do. Uh, so you want to do this, do that, and that's quite difficult to, to focus. But yeah. So I wanna say Bundler, but it's, I think as I said, it's too much. Maybe a minifier you know? That's it.
+
+**Andrew:** Yeah, hopefully more contributors come. Uh, I, I definitely looked at contributing at the start, but then I got scared away by rest.
+
+**Emanuele:** Yeah, I, I get the, I understand the fear.
+
+**Justin:** I think rust is not as bad. You know, it takes, it takes a little while to learn, but like, once you sort of get comfortable with it, it's, it's
+
+really,
+
+it's
+
+not bad.
+
+**Andrew:** Yeah. Well, I, I was looking at writing like a, a lint rule and like trying to contribute that, and that just seemed like, oh God, I gotta learn so much just to contribute a lint rule.
+
+#### [00:52:51] Tooltips
+
+**Andrew:** With that, let's transition to tool tips.
+
+So my first tool tip is something that literally came up on my feed not two hours ago. Uh, this is V zero from Vercel and what it is is an LLM that you can interact with to generate, uh, front end designs.
+
+So they have a bunch of examples here from like different employees at Vercel going like, add, uh, a border to this thing or give me a settings UI and it comes up with something that is passable and good for a V zero. Just like the name is, uh, V zero.dev. Uh, uh, I'm both excited and scared to see my job getting easier and going away all at the same time.
+
+So, uh, interested to see where this goes. For sure. And Vercel is just like overall almost pivot into like supporting people. Making AI things is very interesting to me. It's not something I would've put in my 2023, uh, bingo, bingo card.
+
+**Justin:** I, I feel like it's like in part really, uh, individually driven, uh, I don't know if it's like an overall strategy or something, but you know, Jarred Palmer, I think had worked pretty heavily on this, this functionality. So it is interesting just to see what things they're targeting and how they're growing their business.
+
+Um, because I, I think hosting, there's always like a limited window there and they have to find some other business opportunities to, uh, but yeah, it's, it's cool and scary. Um, I would like to see the code that it generates. I wonder when it's
+
+like,
+
+**Andrew:** Yeah, probably nothing too interactive. Okay. Next up we have
+
+SQL Sync.
+
+**Justin:** So, um, Uh, listeners of the podcast may know I love SQL Light, uh, and I love local first apps. I'm always on the lookout for like new syncing capabilities and new tools for this. Um, so SQL Sync is a library that basically does that. You can, you can, uh, sort of write these SQL queries, uh, right to a database and it syncs it remotely.
+
+One of the things that I really love is they have, uh, a plugin for Cloudflare's, uh, SQL Light Solution. So you could have like local, uh, data that you're storing and that could get synced to CloudFlare. Um, I dunno, really interesting. Library is relatively young. Um, so, uh, definitely check it out. Uh, I don't know.
+
+It's a, it's a, something to keep an eye on for sure. Uh, I'm, I'm really, really loving the proliferation of tools in this space because I want to get to the point where people are more comfortable just building apps that store data locally and offer syncing solutions because I feel like this is the, this is the sort of best future for people like owning their data and like having a better understanding of like what things are stored or whatever.
+
+And hopefully building like apps, like multiple apps that can use the same data source, which would be like a really cool feature.
+
+**Andrew:** this is a cool little demo they have here where it like shows everything happening live and I can change the,
+
+the queries happening,
+
+so, so cool.
+
+**Justin:** Yeah, you can open another tab and like there's a checkbox of status connected and like you can disconnect it and, and you know, do some stuff and then reconnect it and see it all sync between the tabs.
+
+**Andrew:** That's cool.
+
+**Justin:** Yeah.
+
+**Andrew:** Well done. Okay, next up we have Rust Rover.
+
+**Emanuele:** So, Not sure if you are into intellij IDEs, uh, but like, uh, if you do, you know, that if you wanted to use rust you had to download, uh, the official plugin, but now they just released the standalone, uh, i d e for rust only. I mean, I think this is quite huge. 'cause like it's like acknowledging that rust is actually quite used.
+
+There's a demand, uh, there are essentially lot of people in the enterprise and the business that are actually using rust for their products. So the fact that we have a dedicated id, it's like, uh, confirming that rust is gonna be here to stay. So, uh, yeah, let's see how it goes. I think it's like in the, in preview.
+
+So, Uh, I tried it LA last night a bit, uh, and works seamlessly like it was with a, with a plugin. So I hope to see more of it.
+
+**Andrew:** Yeah, I'm, I'm surprised that there wasn't a rust i d e before this. Uh, maybe just rust. People love using vim, and that's all they needed up until
+
+now.
+
+**Emanuele:** Like there's a, the plugin works, uh, with all the IDs, like a P h p, uh, web, web store, or any ID and, uh, of Intelli. But if you want to do debugging, so you want to have your break points and whatnot, only Sea Lion is the, the one that fits, uh, the bill. Uh, but now you have a dedicated i d e, so you can do all the departing that you want without problems.
+
+**Andrew:** that's cool.
+
+**Justin:** Yeah, that's really awesome.
+
+**Andrew:** Okay. My last tool tip is one that came up on my feed, and it's a nice little terminal file manager called yazi. Uh, it has this nice t u i, it shows images. It has a bunch of cool features like battery naming and stuff like that. Uh, so if you've been looking for a way to manage files through your CLI that isn't just the normal, uh, Unix commands, uh, this might be a fun way to do it.
+
+Uh, I haven't reached this level of geekery yet, but I hope to one day.
+
+**Emanuele:** That's nice.
+
+**Andrew:** Yeah, it looks like a lot of work went into
+
+this
+
+and of course built on rust.
+
+**Justin:** I could see that being really great for like a media server that you like s s h into or something.
+
+That would be awesome.
+
+**Andrew:** It would be. Okay. Last up we have uh, Lang Smith. Yeah. Lang
+
+Smith Hub.
+
+**Justin:** Well, so this is Lang Chain. This is their, uh, hub of, of resources. So, uh, going back to the AI topic a little bit, uh, for those of you who haven't heard of Lang chain before, Lang Chain is a, a, a method of like building these sort of AI agents where each one has like a different task and they can like call out to APIs and stuff.
+
+So this is like giving LLMs access to the, to the real world, you know, like reading emails or, or doing whatever. Um, this Lang Chang hub. Is just a collection of a bunch of agents that people have written, uh, to do various tasks. So it's, it's sort of, they're providing these, this repository of like Lego building blocks of like building this, you know, really capable, um, I guess a p i helpers or whatever, or, uh, AI helpers, a p I helpers,
+
+AI helpers that use APIs.
+
+Yeah. Anyway, uh, I, I've, I've really been interested in L Chain for a while. Uh, I, I think that there's this notion of building personalized virtual assistants. It's very appealing to me, and it feels like that's closer and closer to being in reach and having this sort of GitHub like experience where people are, are sharing these, these agents that sort of take care of things for you is I think just really, really exciting.
+
+So definitely, definitely check this out. Um, it's it's a cool, it's a cool, uh, resource.
+
+**Andrew:** Yeah, it's cool to see all these, like hubs pop up for ai. Like a hugging face is basically like GitHub for models. Uh, very useful. And being able to just like, see like how people are prompting the, the LMS is super useful and you can just like look at these and improve your own prompting.
+
+Okay, that wraps it up for tool tips. Uh, thanks for coming on the podcast, Eman. This was, uh, very fun, uh, very excited about the project and to see where it goes in the future. And, uh, I
+
+wish you luck on it.
+
+**Emanuele:** thank you for having me, for inviting me. It was, uh, really fun talking about the project and about me and yeah, brick leg.
+
+**Justin:** Yeah. Just to echo what Andrew said, really great having you on. I, I'm glad that you picked up the project again. Um, you know, I, I, I really thought that it was, there's so much potential there and was sad to sort of see it. I. Like, stop. So I'm glad that you picked it up. I, I hope that you're in a better place and you're more comfortable with it and it's like really exciting and you're refreshed and everything.
+
+'cause I know, you know, experiences like that when you know you're involved in a tool and the company around that fails or something can be hard. Uh, so, you know, good on you for doing it. And yeah, just, you know, we'd love to see your work and we're excited for the
+
+future.
