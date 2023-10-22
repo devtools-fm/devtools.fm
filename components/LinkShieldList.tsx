@@ -28,10 +28,17 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
     text: "Google Podcasts",
   },
   {
+    src: "/brand-assets/favicon.png",
+    href: "https://devtoosl.fm/rss.xml",
+    text: "Website RSS Feed",
+  },
+
+  {
     src: "/platform-logos/rss.svg",
-    href: "https://feeds.buzzsprout.com/1772992.rss",
+    href: "https://anchor.fm/s/dd6922b4/podcast/rss",
     text: "RSS Feed",
   },
+
   {
     src: "/platform-logos/overcast.svg",
     href: "https://overcast.fm/itunes1566647758",
@@ -86,7 +93,7 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
 
 export function LinkShieldList({ limit }: { limit?: number }) {
   return (
-    <ul className="flex flex-wrap gap-4 justify-center max-w-xs mx-auto">
+    <ul className="flex flex-wrap gap-4 justify-center max-w-sm mx-auto">
       {PODCAST_LINKS.slice(0, limit || PODCAST_LINKS.length).map((link) => (
         <li key={link.href}>
           <a
