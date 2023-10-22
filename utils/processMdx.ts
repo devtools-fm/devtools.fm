@@ -195,6 +195,9 @@ export async function processMdx(
   const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/);
 
   const tabSections = await parseTabs(content, components);
+  const showNotesTab = tabSections.find(
+    (tab) => tab.type === "SHOW NOTES"
+  ) as ShowNotesTab;
   const sectionsTab = tabSections.find(
     (tab) => tab.type === "SECTIONS"
   ) as SectionsTab;
@@ -222,6 +225,7 @@ export async function processMdx(
     spotifyEpisodeId,
     frontMatter: data as FrontMatter,
     tabSections,
+    description: showNotesTab.description.split("\n\n")[0],
   };
 }
 
