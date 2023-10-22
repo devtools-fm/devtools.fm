@@ -35,7 +35,7 @@ export async function generateRssFeed() {
     feed.item({
       title: episode.frontMatter.title,
       description: episode.description,
-      url: `${site_url}/episode/${index + 1}`,
+      url: `${site_url}/episode/${episodes.length - index}`,
       date: episode.postCreationDate,
     });
   });
