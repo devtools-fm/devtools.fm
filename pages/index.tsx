@@ -13,7 +13,6 @@ import { Link, P, Ul } from "components/system";
 import { useIsClient } from "utils/useIsClient";
 import { LinkShieldList } from "components/LinkShieldList";
 import { getLatestEp } from "utils/getLatestEp";
-import Image from "next/image";
 
 interface HomeProps {
   latestEpisode: ProcessedMdx;
@@ -50,7 +49,7 @@ export default function Home({ latestEpisode }: HomeProps) {
       </div>
 
       <div className="mb-6">
-        <LinkShieldList limit={5} />
+        <LinkShieldList limit={6} />
       </div>
 
       <div className="mb-6 flex justify-center">
