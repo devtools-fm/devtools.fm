@@ -1,0 +1,658 @@
+---
+title: Vlad A. Ionescu - Earthly
+youtube: https://www.youtube.com/watch?v=ue-uDEwXRBg
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Emmanuele-Stoppa---Biome-e2akb29
+tags: technology, devtools, earthly, ci, cd, build, automation, container, containerization, docker, kubernetes, github, gitlab, bitbucket, azure, aws, gcp, google, cloud, platform, azure, devops, jenkins, circleci, travis, github, actions, gitlab, ci, cd, pipelines, build, automation
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Vlad A Ionescu about Earthly, a build automation framework that helps you with containerizing your builds such that they behave the same way no matter where you run them.
+By using Earthly, you can run your entire CI scripts locally on your laptop with the same consistency as you would get in the CI, and be able to debug things faster, iterate faster, and get faster feedback.
+Join us as we talk about the challenges of building a CI service, the importance of understanding the business side of things, and how to price your product.
+
+- https://earthly.dev
+- https://earthly.dev/blog/shutting-down-earthly-ci/
+- https://twitter.com/VladAIonescu
+- https://vladaionescu.com
+
+Sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://docs.axflow.dev/guides/models/getting-started.html
+- https://www.hyperdx.io/
+
+#### Justin
+
+- https://www.burnerapp.com/
+- https://www.bhoite.com/sculptures/boron-lander/
+
+### Vlad
+
+- https://github.com/moby/buildkit
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:02:14] Past Startups
+[00:06:32] What is Earthly + CI?
+[00:08:51] Ad
+[00:19:11] Rethinking the Business
+[00:28:16] Meaning Behind the Name
+[00:30:01] What area Satellites
+[00:46:58] What's Next
+[00:49:27] Spicy Take
+[00:53:40] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Vlad:** in traditional C I C D, the caching is based on upload and download. The problem with uploads and downloads, is that they slow down your build. So your build may oftentimes may be slower with cache than without it, which is, uh, maybe bonkers if you think about it.
+
+Satellites are made such that the cache is local and really fast, so it's instant. There's no download, no upload, and it's also automatic so you don't have to think about even what to cache and what not to cache
+
+**Andrew:** Hey, before we get started, I'd like to remind you that we have a newsletter now. If you want to get all the latest dev tool news of the week and our post show reaction to the latest episode. Head over to mail.dev tools.fm to subscribe. This week, we've also put up some new items in our merch store.
+
+The TypeScript t-shirt now comes in multiple shirt weights, and a whole bunch of different colors. And we have a tank top two.
+
+And with that, let's get onto the episode.
+
+Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Vlad a Ionescu on. Uh, Vlad is the founder of Earthly, uh, and we're really excited to talk a little bit more about Earthly Vlad. You were previously at Google and you helped co-author a book.
+
+Is that true?
+
+**Vlad:** Uh, another book, but The Rabbit and Q Airline client.
+
+**Justin:** oh, nice. Nice.
+
+**Vlad:** yeah, exactly. And I was also at, at VMware and I also built another company called The Shift Left nowadays called, um, uh, quiet ai, uh, qw iet ai.
+
+**Justin:** Cool, cool. Well, uh, before we sort of dive, dive into more talking about Earthly You, you sort of started on your intro. Is there anything else you'd like to tell our audience about yourself?
+
+**Vlad:** Yeah, no, I've been, uh, in the developer tool space for, for a while, and I really, really like 'em. Um, I don't know what's, what's with them that I like so much, but I, I just like providing, uh, help to other fellow engineers and, um, you know, it's what makes me wake up in the morning. It's, uh, it's what gets me going.
+
+**Justin:** Yeah, Andrew and I would agree a lot on that. Thus, the, the podcast
+
+#### [00:02:14] Past Startups
+
+**Andrew:** so I, I guess I wanna, I wanna ask you about your old startup first. What, what was your, your first startup?
+
+**Vlad:** Yeah. Well, um, there have been many failures until the one I would call the first, but, uh, let, let's talk about the success first, I guess. Um, so before, before Earthly, I built, um, uh, ship left with another two co-founders. And, um, shift left is this code analyzer that, um, evaluates your source code for vulnerabilities and tells you whether you have any before you ship to production.
+
+And it does it so much faster and much more accurately than anyone ever could before because um, in the world of yesterday, you would leave the code analyzer to run maybe overnight because it would take hours at a time. But, but now with C I C D, you actually wanted to, to run really fast. And so, um, that's what we did at Shift left.
+
+We delivered on that, that particular vision.
+
+That's awesome. Um, what do you think was different about that startup that made it successful as opposed to the previous efforts that you had that were notYeah. Well a lot of it was just me learning how to do startups, you know, so I had many attempts before that, like, um, I was trying to build some sort of marketplace for rental properties and then I tried to build some serverless framework and um, you know, I think a lot of it was just down to me understanding how.
+
+A startup should work and how you can build something very meaningful. Um, not focusing, not just on the technology, but actually understanding the business as a whole. Understanding, understanding products and use cases and how to bootstrap your, um, your audience and so on. And I think that's maybe the, the main thing I would say, but also it was the, the partners I I worked with, they were amazing people.
+
+They are amazing people. And, um, it just helped me understand like they were mentors to me. They, I, it, it was, you know, um, a really good introduction for me on how to run a company and how to scale a team, how to be a leader. And, um, that kind of mentorship really, really helped. And, um, I, yeah, I would say it was a combination of factors, but mostly experience.
+
+**Andrew:** as a person who's like, tried to have like various side projects in the past, like I think developers as a whole kind of underestimate the business part of it. It's just like, oh, I just gotta make a thing and then I'll have a thing and it'll be successful. And it's like, that's almo, like the, the easy part is making the thing, the hard part is making the thing into a business.
+
+And that's, that's what a startup is, is a business in the end.
+
+**Vlad:** I always tell people that the go-to market part of a company is always the hardest. Maybe unless you're building, I don't know, rocket science or I dunno, self-driving cars or something. It's, it's almost always the, the go-to market that is harder than the tech. Uh, no matter how, how complex your tech is.
+
+**Justin:** Yeah, the, there, there are aspects of this that are interesting to me that it seems like there's a lot of things that you could sort of fall in love with, you know, that, oh, we made these tech decisions, or like, oh, you know, this is my vision for the, the product, or, oh, this is the problem that I think we wanna solve.
+
+And the interesting thing is this like, None of that may serve you. You know, you, you might have to like let go of any one of those things or all of those things at any one given point. And then, you know, importantly, if you got really excited about the problem or the tech or whatever, and that's what motivated you to do the work.
+
+And then you had this like mountain of other like really tedious, like, oh, you know, you gotta set up a company structure and you gotta deal with taxes and you gotta do all this other stuff that's like really important to like have a company, uh, you know, it'd be really easy to burn out, you know,
+
+**Vlad:** Exactly. Exactly. And I, I really resonate with what you said there like, You start off thinking it's your baby, your product, but the sooner you understand that it's not your product, it's your user's product, and you are basically to serve, you're there to serve your users, um, that's when you actually unlock your, your full potential.
+
+And, um, it's not quite as rosy as it might seem in the, on the outset. And you have to sort of accept that. And it can be fun, you know, it doesn't mean it, it takes away from the fun, but it's just a, a different ball game that maybe you're expecting.
+
+#### [00:06:32] What is Earthly + CI?
+
+**Andrew:** So, uh, let's move on to talking about the current ball game that you're participating in Earthly. So, uh, what is Earthly and how does it help me with my builds and my ci?
+
+**Vlad:** Yeah. Earthly is a build automation framework and it helps you with containerizing your builds such that they behave the same way, the same way no matter where you run them. So you could run them on your laptop or your colleague's laptop or in ci. And the typical example I give is when you have a ci cd failure and it's hard for you to understand what exactly went wrong, and you maybe change the script a little bit to try something else, you commit to GitHub all over again.
+
+Wait for the CI to kick in, wait for it to reinstall dependencies, re-download stuff eventually gets to minute 23. It fails yet again. And then you, you, you're, you're stuck in this little, uh, feedback cycle that is very, very slow, um, and it's extremely time consuming and very annoying. And, um, there are no good ways to, to deal with that.
+
+And for that reason, we built earthly. It's meant to replace your CI c d scripts, but not replace your ci. Um, and with that, you are actually able to run your, your entire CI scripts, uh, locally on your laptop with the same consistency as you would get in the ci, and, um, be able to debug things faster, itrate faster.
+
+Uh, something that you might do, you know, in that feedback cycle of 23 minutes. Maybe it's down to two minutes now because it's all fast and local. Um, and, um, yeah, a lot of people use it for that kind of consistency. But another value we deliver is also speed. we have ways in which we can, uh, ship your build to a remote runner, uh, that we run in our cloud, and it makes it, uh, really, really fast through the use of caching.
+
+Basically, we understand what has changed and what has not changed as part of your build, and we do not repeat those, um, very redundant sort of activities the CI does in the beginning, like, you know, downloading and installing dependencies. We just have those, uh, immediately from, from cache and, and so we skip them.
+
+We go straight to the point where you actually made the change, run that and give you really fast feedback. Um, and we call that product earthly satellites. These are remote runners that you could use in conjunction with Earthly or not. You could just run Earthly locally as well if you want to.
+
+#### [00:08:51] Ad
+
+**Andrew:** We once again, want to thank our sponsor. Raycast Raycast is like spotlight, but with super powers. if You've ever thought spotlight's not doing it for you and you want more out of it, Raycast is for you. It has an amazing extension API and extension store where you can install a bunch of things. People have already made.
+
+With just one keystroke, you can access so many different things on your computer, whether it's managing, what's playing on spotify to opening vs code. To doing math Raycast does it better.
+
+Another way Raycast helps you do it better is with Raycast pro. Raycast pro includes a whole bunch of cool things. But Raycast AI is where it's at. No longer do you have to go to some website or some weird app to access your AI chats, right from within Raycast, you can get to working.
+
+At my own workflow, this has been amazing.
+
+If you want to learn more about Raycast, head over to Raycast.com or if you want a deeper dive into what rake has to actually is go listen to episode 38, where were you? interviewed the CEO, Thomas.
+
+to advertise with dev tools, FM head over to dev tools, FM slash sponsor to apply.
+
+**Justin:** So there's something really interesting about this. So you said it's like explicitly not ci, it's sort of the mechanisms that your CI can use and like a very reliable way. Um, So I want, I wanna talk more about like the mechanisms of that and sort of maybe some of the challenges. 'cause you know, there are like other CI services, well there are CI services that have containerization, you know, options.
+
+So I think of like, uh, circle ci, you know, you can do containerization and circle, um, maybe it's not standardized across CI platforms. But, uh, before we get into that, um, you did have a CI service with Earthly that you ended up shutting down and we were just talking about startups and, and sort of the challenges with those and, uh, you know, sort of understanding the product.
+
+Could you tell us a little bit more about that and, you know, what the C I A service was and how it relates to Earthly and sort of why you ended up.
+
+changing things up.
+
+**Vlad:** Yeah, absolutely. So we started with a vision that your CI should run locally, right? And that, um, simple but very powerful vision, of course, translates into your productivity, being able to dev de debug things locally and so on. But it also, um, it meant we would have to build a ci. Well, at least that's what we thought originally, right?
+
+And so we built this whole, um, system incrementally starting from the syntax of the ci. And so that's what Earthly is today. And then the remote runners of the ci, I guess the runners, we didn't think they were remote at the time, but the runners of the CI and those, uh, became satellites. And then the different pieces of it, like the caching and the paralyzation and so on.
+
+So we built these, uh, incrementally. We did not ship a CI from day zero, right? And all of these individual pieces, we just put them out there and let people play with them. You know, let people experiment with them. And, and a bunch of these really interesting components got a lot of traction. And along the way we were thinking, man, if, if these individual components are gaining so much, um, momentum, imagine what our full vision will gain.
+
+And a lot of people were using these components in CI I C D use cases. And again, that was validation that okay, a CI is, is really needed in here. And so, um, after putting all those components together, eventually, after many years of, you know, um, well three years of, uh, working on, on these individual components, um, we put it out there and actually there were silence.
+
+Nobody, you know, crickets, uh, not many people actually wanted a, a new ci. And that was pretty surprising to us, given that we were getting all this validation beforehand and now, you know, crickets afterwards. So, um, we, we spoke to as many teams as we could. Well, what we gleaned from, uh, from the situation is that, um, well people are really married to their C I C D solution and it's really, really hard to, to go and replace it.
+
+And for good reasons. Some of them, um, some of the features they have are really advanced. Um, these companies have been around for quite a while to build this ecosystem. They have so many more resources than we do as a startup. And so they've invested in, uh, plugins and, I dunno, um, O I D C or, um, you know, all kinds of advanced features that an M V P like ours would not have.
+
+Um, so, so that's, that was one of the problems. And the other problem was that putting the, the CI as a product out there, um, Triple, um, get got some people, um, to trip the, um, like their, their alarm bells with, you know, I've tried cis before and I've tried them all, and they just all have different syntax.
+
+Um, but uh, ultimately they're all the same. So people just had a really, really strong bias that cis are undifferentiated. And even though we could then tell them, Hey, no, you get all these interesting features as part of that, you can run it on your laptop, you can, you can make it really fast and so on. Um, it just would not shake that initial bias of, of a ci, you know, being just kind of the same but different syntax.
+
+Um, it sounded just like, basically like, um, marketing speak basically. Um, and so after talking to many such companies and failing to get adoption in bigger teams and, um, having the product out there failing to get some organic adoption either, um, Well, we decided to shut it down and we did this pretty quickly.
+
+Like this was what, um, maybe six months after we released it. Released it. So, um, very, very fast. Um, and the reason we did it so quickly is from a lesson I I had learned from, from Shift left actually, 'cause we were just talking about it. So at Shift left, interestingly we had this, a very kind of similar situation where we had this interesting end vision that was really big and grandiose, and eventually we found out that the individual components of that vision were more valuable than the end product.
+
+Um, and, and so at Shift left we were, before we were, we were building this code and analyze their tool. Uh, we were building actually a runtime agent that is informed from your source code and could protect you from vulnerabilities in your source code automatically without you having to fix them. Um, and that required you to, uh, basically, um, analyze the source code, put it in C I C D, but also put it in production in run times.
+
+And imagine what kind of, uh, company would be the target audience for a security product. Of course, the most compliant, the most, uh, rigid sort of organizations, the healthcare organizations and the financial organizations of the world. Um, and it was just really, really hard to insert as a product. And, um, it took us, you know, initially we, we were thinking, okay, it's hard to insert, but if we had this feature and this other feature and this other feature, it would all work.
+
+And so it just kept pushing on it, despite getting all these signals that it's not working, it's, it's just too hard to insert. Uh, we just worked on it for, for quite a while, um, maybe a year longer than we should have. Um, and so my, one of my biggest regrets with that was that I. We had the information, but we did not stop.
+
+So, so, um, now going through this cycle again, it's, it's very similar in that the end vision, um, is not as strong as the individual components of the vision that are picking up quite a bit in terms of momentum. And so, um, I'm recognizing the signals is not the features that are missing. If you have a very successful product, it will be successful in M V P form two, but a s at a smaller scale, you will find enthusiasts and early adopters and mavens or whatever, uh, you might want to call them, but there's gonna be some, um, really early, uh, people who are gonna, uh, take those bugs.
+
+They're, they're going, they're gonna suffer through those bugs, those issues, those missing features and still use your product and, and still, um, advocate for it and so on. And we, we had a couple of them, but not never the scale we wanted to, so, Never, we could never get a bigger team to, to use it. And all of those were just signals to me that, you know, it's, it's, it's not the features that are missing.
+
+Um, it's, you know, this is not needed in the, in the formula. We thought it was needed. Uh, so we pulled the plug early, um, and decided to refocus on, on our other priorities
+
+**Andrew:** Yeah, that, that makes a lot of sense with ci. Like, uh, recently we moved, uh, at Descript from like half actions, half Azure to all actions. And just the pain of moving like half of the CI into actions was enough to be like, nobody wants to touch this. Nobody wants to have to go through that pain again. So like I can, I can imagine like the, the big org problem is basically like the people who would benefit from your product.
+
+Most are the big orgs, but the big orgs have the, the toughest time moving to a new CI platform that might not have all the same features. And then you get into the mixed scenario again where it's like, oh, part of it kind of runs better over here on Earthly, but then we have all this other stuff that depends on GitHub actions.
+
+So it makes sense how you like, had to break it apart.
+
+**Vlad:** Yeah, exactly. So now, um, we basically are able to deliver the same value, but without replacing your ci, and this seems to resonate much, much better with our audience. So we kept the, like, right now the, the runners are remote runners and the syntax is the same as before. Right. And, and these are things that were working even before we were, we had the ci 'cause we, like I said, you know, we built the components, uh, before we had the full vision.
+
+Um, and this is much, um, you know, much easier for people to accept. Um, they don't have to replace everything they, they know they can just take this stuff incrementally, put it in, um, in the parts of your project where it's the most painful or the most limiting for you with your current setup. And then just, um, unlock, uh, value with, with, you know, without replacing your CI essentially.
+
+So just, uh, drop it exactly where it's needed.
+
+#### [00:19:11] Rethinking the Business
+
+**Justin:** There's an interesting thing here where I think So there's a, there's a few aspects of the business that we're, we're looking at. So from my mind, a CI service is like a very clear, like how you charge for that business. It's like, is a very well known thing 'cause it's like a very well known product in the market, right?
+
+There's a lot of people that are doing this. And it does, it has a huge startup cost, it has a huge transition cost. Uh, there's a lot of broad features that people expect. Uh, platforms are coming with their own ci and people just like want to use the defaults out of the box. There's like a lot of, a lot of challenges.
+
+So you had to do this pivot where you're like, oh, when we were gonna build a CI service, and I'm sure that meant like you were thinking about like, okay, you know, we're gonna charge like teams for seats or something like that. And you're like, well, crap, this isn't gonna work anymore. And now we have to figure out, it's like, all right, how do we build a business out of something that is shared across cis?
+
+And you know, you could. Developers are, are classically hard to, to, to sell sometimes. 'cause they'll like, you know, go fall at your, like, audacity to try to charge for like some scripting thing or something. But, you know, you are in this, this case it's like, well we have to offer a product that people want to buy.
+
+These are the components that we know people like, I know you have a, an open source component and I'd love to talk more about like what parts of your business are open source, but, uh, how did you, like, was it very, was it clear from the moment that the CI was gonna shut down? That like, oh, well we're gonna do like a remote runtime and that will be sort of our, our sort of clear trajectory to build a business around this tooling?
+
+Or did you sort of have to go back to the drawing boards? Like, okay, crap, like what do we do.
+
+**Vlad:** Yeah. Well, luckily. This time around, we did not have to go back to the drawing board because we just built a company so much more incrementally than I did with Shift left. With Shift left. We, we just didn't imagine that situation happening, you know, uh, having to go back to the drawing board. And so we decomposed after we were done through it with experimenting.
+
+And so we had to sort of start over with many of, of our efforts. But this time around we just built everything incrementally and put it out there incrementally. And that helped with gathering user feedback and adjusting the product as we, as we went along. And, um, before we had the ci, um, satellites are, uh, were, were already successful.
+
+So, um, that was maybe the, yeah, the main thing, uh, it was very obvious when the CI did not work, it was very obvious that we would go back and focus on what's working actually. Um, maybe it was difficult for us to accept that we've put some work in, in CI and we have to let go of that. Uh, that's always difficult, but, um, at least it wasn't like a full on, sort of go back to the drawing board kind of, kind of thing.
+
+Um, and you mentioned something interesting with regards to developers and, and buying things and, and so on. Um, there's something my colleague Adam Gordon Bell said, which was really well put in that, um, developers will buy things, but you can never sell them something. And that is, that is a very interesting way to, to put it in, that you can never tell a developer, Hey, this is my tool.
+
+Come check it out. You know, come give us money for it. But you can, uh, put it out there and wait for the developers to come to you. And that is kind of backwards to what you're taught in sort of, um, go to market school, if you will, because that's exactly what you should not be doing. Basically. Like you should not just put the software out there and hope that people will come to it.
+
+Um, and, and so you have to become very creative. You have to, um, offer things to developers for free, uh, without necessarily expecting anything in return. And that's why, uh, the Yeah, earthly is open source and, uh, that's why, um, we write a lot of developer focused content that has nothing to do with, with Earthly.
+
+We just write interesting content. And, um, as we speak, actually something is on Reddit on number one in our programming right now, like an article of ours. We just keep on hammering these interesting topics that developers like. Without any expectation of, of return. And what happens is we build a lot of traffic on our blog, we build a lot of, uh, traffic, uh, therefore on our website.
+
+And eventually people, uh, trickle down organically. It seems like we just put it out there and people come, but actually we've invested a, a ton in this sort of motion, in this very bottom up motion. Uh, so like right now we have 2 million visitors per year on our, on our blog, uh, just from these articles.
+
+And we've been very sort of intentional with developing that. Um, but yeah, the, the other thing about pricing and the way traditional C I C D has been priced so far, I feel is, is very backwards. And we've taken a very opinionated stance around this. So if you think about, um, how the value aligns in C I C D, um, I.
+
+You are built by the compute minute mainly. So of course there is a seat price, but it's very small and it's intentionally small to make you believe it's cheaper than it actually is. Most, the bulk of your, of your, um, budget will go on, build minutes, and those build minutes are kind of hard to find actually on the pricing page of the typical C I C D vendor.
+
+Um, and um, the problem with that is that the slower your build is, the more profit the vendor, uh, gets from from it, which sort of, um, does not correlate with, with the value that you deliver. You're supposed to deliver developer productivity and make things really fast and so on. And, and so if you had a feature that would make your build 10 x faster as a CI vendor, you'd have to rethink your pricing or maybe not ship that feature, but of course you would not be very incentivized to to do that quite as much.
+
+Um, and so we've took, we've taken a very, um, Different stance with regards to pricing. We said, okay, uh, compute should be built at cost. We make zero profit from, from compute, and instead you will give us more money for the seat. And this will represent a more realistic of value of what you actually, uh, pay for.
+
+So when you look at the the pricing page, it is gonna be much more real. And we also bake a lot of included minutes such that you don't have to even think about minutes quite as much you think about individual developers. Uh, if we want to deliver productivity to developers, that's the main metric, the main unit of value that we need to be aligned with.
+
+And, and that's why we, we took our, that, that kind of stance. Um, so, so yeah, like, uh, we don't make profit if, if your builds are
+
+slow.
+
+**Justin:** That's huge. I'd never thought of that or really heard of that, but like. You're so right. What would the economic incentive to have like a performance optimization team and a CI company when that like directly reduces the amount of money that comes in? It kind of behooves you to do the opposite. It's like, ah, you know, we'll like be a little less efficient about how we download and we can like pump the numbers.
+
+**Vlad:** Exactly, and I, I'm sure nobody thinks like that in, in these companies. But you know, capitalism has its way of creating weird incentives in very obscure ways in which they're just hard to, to notice.
+
+**Justin:** Wow.
+
+**Andrew:** Yeah, I, I had never thought about the pricing thing either, and it just, it just makes so, so much sense that Fast builds don't mix with CI companies. Like where's the incentive? Uh, I remember when Turbo repo first came out, uh, before it had been bought by Vercel . They were charging based on the time you saved.
+
+So it, it was
+
+like the, the
+
+inverse of it.
+
+**Vlad:** Yeah, that's a good one. I, I think, um, we were thinking ourselves to, to build on, on something like that. I think that's probably the most, the, the most precise way in which you can align yourself with, with your, the value that you deliver. Sometimes. The hard part with that is that it's hard to estimate in advance, um, how much that will be.
+
+But, you know, I'm sure for many cases that's you know, that's the
+
+most fair way to, to price it.
+
+**Justin:** I do, I do like your pricing model though, because, you know, there's a, if you're selling to a large enterprise, especially, uh, there's this desire to have like a consistency or like a known quantity is like, how much is this gonna cost me? Because if you come to like a, a, you know, um, engineering director or VP of engineering or C T O or something, and they're like, Hey, we should use this tool, they're like, okay, what's the cost?
+
+And if it's like, You know, like a Lambda or something. It's like, well it depends. Uh, we're not sure yet, but it could be like this to this. And then you have all this work to do around like, just calculating projections and you know, and you know, lord knows if those are wrong. Maybe you get like, put in the hot seat because it's like, oh, you said this is gonna be, you know, $15,000 and we just spent like 50,000 or something like that.
+
+exactly. I've seen that so many times. It's, it's really hard to estimate, uh, compute, um, yeah, or, or, yeah. Uh, usage-based
+
+**Vlad:** pricing in general.
+
+**Justin:** engineers are not good at estimation. I I maintain that position.
+
+**Vlad:** Oh yeah, that, that
+
+too.
+
+Yeah.
+
+#### [00:28:16] Meaning Behind the Name
+
+**Andrew:** so moving to the service level a little bit. Why did you name it Earthly? I'm, I'm interested.
+
+**Vlad:** Yeah. So, um, earthly came from this idea of, um, this expression being down to earth, which I really, really liked. Um, this idea that you, you wanna be friendly and accessible, and I think I, I guess I learned this from Google. I was kind of surprised when I was meeting people higher and higher up in the hierarchy.
+
+Like, the higher they were, the more humble they were. It's like, at first I was maybe a bit scared by them. Like, oh man, these are gonna be like, you know, these, uh, really tough people or whatever. I don't know what I was imagining, but actually was the complete opposite that I was expecting. And, um, after thinking about it, it, it made so much sense, you know, like, um, I've, I've learned from the Google culture also that, um, you want to be the serving manager, the kind of manager where, um, you serve the, your employee, not the other way around.
+
+The way it's maybe traditionally portrayed in, in, I don't know, um, uh, popular media and so on. And, um, taking that this to the next level, I wanted, uh, our products to be also friendly and accessible, like, you know, down to earth friendly and, and so on. Easy to use and easy to, to learn. And, and that's why we chose the name Earthly.
+
+Uh, it's a testament to our, um, internal culture and hopefully to our products as well, to
+
+be as
+
+easy to use as
+
+**Andrew:** Interesting. If I had to guess before you gave me that answer, I would've said it had something to do with the environment and like cashing builds and like saving CI costs.
+
+**Vlad:** Interesting. Yeah. That, that is, I, I hope we're saving the planet in, uh, while doing that. And, uh, there is some interesting plays we can make in the future regarding
+
+that.
+
+#### [00:30:01] What area Satellites
+
+**Vlad:** So you mentioned satellite earlier, and satellite is the name of your runtime. Yeah, satellites are, uh, our remote runners. So, um, these, um, units of computation that are able to execute the builds for you, and they have really, really fast caching. So like that, that's key in very, in traditional C I C D, the caching is based on upload and download. Uh, so maybe you get a certain result in your CI and then you upload your dependencies or you upload a bunch of intermediate images that you, uh, built as part of that, and maybe you can reuse them on the next run.
+
+Um, the problem with uploads and downloads, um, is that they slow down your build. So your build may oftentimes may be slower with cache than without it, which is, uh, maybe bonkers if you think about it. Um, but satellites are made such that the cache is local and really fast, so it's instant. There's no download, no upload, and it's also automatic so you don't have to think about, um, even what to cache and what not to cache, maybe at least not at the high level.
+
+Um, it's, it's just, uh, fully understands, you know, the steps in your build and, um, which part depends on which other parts in your build. And with that information, it can just, uh, automatically derive, um, yeah, caching information that you can just instantly use on the next run. Um, and it's always fast regardless, so there's no question about it.
+
+Kinda like there is with, with traditional ci and that's why, um, you know, it's turned on by default. You cannot, well, there are ways to turn it off, but it, it's it's
+
+just, uh, always there, basically.
+
+**Justin:** So most of the model here is you're actually sidestepping, uh, a lot of computation on if you're, if you're running hosted, you're, you're, you're hosted solution, you're sidestepping a lot of computation on, on cis, whether that's, you know, CI that you're running in a rack at your data center or CI that you're running from like GitHub actions or something.
+
+You're more like saying, Hey, invoke this script, or, or invoke this like earthly thing. Uh, whatever you, you call them
+
+and. So invoke this earthly c l i and then, you know, you have an image or a series of images or something that you want it to run. And then the remote runners in this case are the things going off and doing that work.
+
+And, and I'm assuming that the CI on, uh, you know, whatever you're coordinating CI services is really just waiting for a response and then, you know, kind of, kind of continues on.
+
+**Vlad:** Exactly. Yeah. Um, and you can still combine other things in that ci like that's the thing that's different about, you know, earthly in screen form and earthly CI that we had before that we were thinking about is that, um, you can still combine whatever workflows you might have in your current ci.
+
+You can still use those in conjunction with, with Earthly. You don't have to say goodbye completely to your current ci. And that helps with, you know, the ecosystem of plugins that GitHub actions has or many other such ecosystems have. Um, and. And Yeah. Um, at the end of the day, we are sort of sidestepping the computation part and the CI is just waiting there.
+
+One thing people do as a result of that is that they use the smallest possible runner size because they don't do any C P U on it. They don't use, um, memory, they don't use much, uh, at all. Uh, and just leave the whole thing to, to earthly satellite to, to run the build and use the caching and all that. Um, and that, that seems to be pretty effective, um, because of the, uh, speed benefits that you get.
+
+Your CI build always ends up smaller as a result. Uh, so your say bill is what I meant. So you you're paying less and, um, yeah, sometimes it, it's actually, um, you're paying, you're saving more money than you're paying earthly for it. So, so that's an interesting, uh, thing. Um, you're adding services, but you're, you're, saving money at the same
+
+time.
+
+**Justin:** That's pretty
+
+cool.
+
+**Andrew:** so what platforms do these satellites support? Uh, like what systems? And like, do you, are you guys owning that hardware or is it like, you, like coordinate something with a w s, like how, how's it all set up?
+
+**Vlad:** Yeah, we use a W Ss underneath and the satellite are, um, single tenant, so like they're super secure. Um, so you're not sharing any computation with any other, uh, customer. Um, we al we're also smart about turning off those instances. We're not, they're not used, so you don't actually pay for things you're not using.
+
+That's kind of obvious, but, you know, it's, it's an interesting architectural choice. Um, and yeah, the platforms we, we support are mainly Linux based and I, I should say only Linux based. So, um, anything that goes, that runs on Linux, runs on Earthly. And earthly containerizes everything, of course. Um, and, and, um, containers are Linux in the end, so that's why we're tied to this container.
+
+Technology and containers, uh, right now only work on, on Linux. Um, but we support X 86 and arm 64, and you can also run builds, like cross run them. So for example, maybe your laptop is a apple silicon and you wanna run a build that actually only runs eight x 86 for some reason. Um, and you can run that on satellites natively and still get the result back to your laptop, um, you know, from, from that build without having to use emulation.
+
+And, and that is, um, yeah, oftentimes much faster than trying to emulate it locally. Um, and besides that, we, yeah, we use, uh, we we're compatible with any CI and we're compatible with any programming language that runs on Linux basically. We, we don't have a ton of opinion that we insert on top of your, uh, programming language specific, uh, tools that you use.
+
+Um, we believe that the creators of those tools, um, have the best, uh, experience for that tool. The best package manager, the best compiler, and so on. We don't try to replace that in any way. Uh, so maybe other tools like Bazel and such, they, they do have an opinion. They, they do want you to replace those, and that becomes very difficult to insert for that reason.
+
+Uh, we don't have that kind of opinion and we just make it compatible with, with anything.
+
+**Justin:** so o one more thing on satellites before we move on. Um, o one thing I, I've had problems with in the past with CI is like, say I want to test, like, performance or something. Like it's, uh, CI runners, their performance is very variable. You might get one that's like, great, you might get one that's not so great.
+
+**Andrew:** Can earthly satellites help me in that sort of situation? Do the satellites have like a more stable runtime performance than a GitHub action runner might?
+
+**Vlad:** I would say that because of the caching it can be a bit less consistent for that reason. Like it depends on, um, how much cache it would use on each run. So unfortunately, uh, now it'll not be consistent, but I would say it's consistently faster at least than, than the experience you're used to. So, um, that I can say for sure, most projects get, um, two to 20 x performance improvement.
+
+And, and that is like a, a game changer. It's not like an incre, incre, small, incremental, you know, uh, improvement. Uh, it, it of course, uh, depends on the setup and the specifics of each project. That's why there's such a wide range of like what we say is, is how much faster it is. But this is what our users report.
+
+So, um, we have people that, you know, get the full 20 x of faster experience and some people get nine x, a lot of people get just two x. And I think even that is, is really remarkable when you think about it. It's like taking a bill that's 40 minutes long and making it 20 minutes. Like if you do that 10 times a day, that's basically your whole day.
+
+So we're, we're giving you half a day back by by doing that, uh, as a developer. So, um, yeah, it's, it's not necessarily more consistent, but hopefully it still still helps with, um, yeah, making it, um, more, more, useful for you.
+
+**Andrew:** mentioned, uh, monorepo tools like, uh, basil or Basil or whatever we call it, um, does, so does Earthly itself work with those monorepo tools and does it work with like more jss based ones that aren't like as crazy as those other build tools?
+
+**Vlad:** Yeah, you can use them in conjunction. Oftentimes earthly is really good when you combine, um, different programming languages. Um, one problem with the way the language ecosystems have evolved is that they're very opinionated and they only work with that programming language. So like, um, N P M and Pi, PI and Maven Central and Cargo will not work together in any shape or form.
+
+Right. And there's no, um, sort of standard tool you would use to put them all together if you want to, if you wanted to just glue them together. And, and so people instead use, um, you know, make files and bash files and um, maybe some docker files and so on. But you have to sort of stitch that all yourself together.
+
+And the caching is very difficult to achieve. It's possible, but it's like incredibly difficult to get right. And while you're building those bash files, dos, make files and so on, you will run into these issues where it works one way on Linux, works a different way on, on Mac, and, uh, you will not find that out until some your colleague runs it and, you know, maybe you're asleep when they do 'cause time zones and all that.
+
+So like all this complexity, uh, is, can get very annoying, right? Um, and so what what Earthly does is it is of course able to containerize all your builds and therefore they run the same no matter where, where they run. Uh, so that addresses the consistency problem, but also in a monorepo setup. It helps with.
+
+Um, being able to only build the projects that you're working on and nothing else. So like, if you have a complex integration, uh, test where maybe seven microservices are being, uh, put together in, in a little setup, and you're only working on one of those seven microservices, uh, the Build with Earthly will just reuse the cache for those other six and, and rerun only that single seventh microservice, uh, to, to build it and then run the whole integration test with all of them combined.
+
+So, um, these kinds of things are extremely difficult to do to, to do right with, with like, do it yourself sort of stitching together different tools. Um, and, and yeah. Um, the, the Monorepo tools that are more specific to an ecosystem, um, don't work so well across other programming languages. Um, a lot of people still use them within Earthly, so like you might use like a turbo repo or a basil.
+
+Within Earthly, we've seen that being done. Uh, so, you know, sometimes that's, that's a, you know, that's a good way to approach it. But a lot of times you might have just individual bills for each sub project in your own very simple setup, like just N P M or VI or whatever. Um, and then, um, stitch them together through, through Earthly, and, and that gives you a really good, um, very simple, uh, but very consistent and fast set up.
+
+**Justin:** So that's pretty cool. Uh, this whole sys, or this whole setup is, is, is really interesting. Um, I, I'm trying to think of like what the process would be for going from, say we have an existing CI infrastructure and you know, maybe you're deploying Circle CI or GitHub actions or something. Um, you. Probably have some sort of containerization that's happening because those services are typically operating at container levels.
+
+Uh, and then you want to move to earthly. So can you talk a little bit about like, what the transition story is like? Like how does one person go from a traditional CI service to using your runners in their CI service?
+
+**Vlad:** Yeah, yeah, absolutely. So one thing about the way CI services use containers is that I feel like they haven't gone all the way. So they use it only in the cloud, but they don't use it for the purpose of allowing you to run your builds locally, which is such a huge miss that, you know, it is such a big opportunity.
+
+They, they have then and they did not take it. Um, and so we, we bridge that gap. But, um, yeah, to your question, the most typical way is taking your existing Docker files, which so many projects already have just basically copy pasting them into the earth file syntax. So earth files are these, Mix of docker files and make files.
+
+We basically took the best parts of those two things and put them together, um, and kept it really simple. So not, not none of the weird make file stuff, just, just the simple stuff. Um, and so, um, usually it's just a matter of copying your docker file, putting it into the Earth file instead. Um, and then, um, you know, evolving from there.
+
+Um, usually that just gets you started and, uh, allows you to run your, your image builds in, in earthly, but earthly doesn't stop on at images. So we, we also do, um, regular artifacts. Something like docker files were never meant to do. Um, you can output regular artifacts. Through containers, through earthly, uh, or, or, uh, run linters or unit tests or what have you.
+
+All of those being run through Earthly would be containerized. And that, that helps with the consistency and helps with wrapping up, um, your, your setup in an environment that's very consistent. Um, and so once you have that, you can just put it in CI and that's it. Um, what people don't often realize immediately is that you don't have to stop there.
+
+The way Earthly works is that it integrates really well with other earthly builds. So if you have another repository that is maybe somehow it's maybe a dependency of this repository and so on, you can just use Earthly to import things across. You don't have to think too much about, you know, where do I, which artifactory do I put this artifact?
+
+How do I download it later? And so on. You can just import it from Earthly and what importing means. It just says, um, I want you to build this other repo and then give me the result. And I want to use the result here. And because of containers and, you know, all this consistency, it, it doesn't really matter quite as much that it's running on your computer versus the ci.
+
+Um, and, and because of caching, it's, it's fast. And if you, you're using satellites, maybe a colleague of yours already built that other project, and so you're just using cache essentially. Um, and this power of combining, uh, different projects together in, in a single build is where Earthly is, is really, really good.
+
+Um, if you think about Docker files, they're typically more linear in structure. You do like this action and this action, and this is this action. And then, um, the caching builds up similarly, like linearly. Um, with Earthly, um, you're able to do a much more complex setup where, um, it's more like a graph instead of just one linear structure.
+
+So like, you can, you can have many projects and sub projects all leading into a feeding, into a single, um, bigger build or, or something like that. And it, it handles it really well through the caching and, and all that. And, um, and, and, yeah, um, you don't necessarily have to start with that, um, very complex setup and, but just building the individual pieces initially gets you a lot of the value already.
+
+**Justin:** Well, before we move on to talk about future stuff, uh, given that I work at oxide, I have to ask a very particular question. Uh, so you're help self-hosting the runners, and then I know you can run earthly just by itself, uh, without satellites. Uh, do you have any like, Plans in the future for like an enterprise level.
+
+It's like here, host your own, uh, satellites on your own infrastructure.
+
+**Vlad:** yes, exactly. This is not official yet, but, um, I will say we are thinking about a self-hosted runner, like a self-hosted satellite that would be free to use and, um, And, and so it's based on open source technology. So like, um, you know, it's, you know, you can see the source code, you can play with it even today.
+
+You can, you can still, you, you can even do that yourself, run it. Uh, you don't have all the features in there. But, uh, even today it's, it's, um, people actually run it on their own. But we're gonna have like a fully supported version of that, uh, and give you the benefits of having a control plane in the cloud to actually view and understand the way that your satellites are, are running and how overloaded they are.
+
+Or like, you know, having some, some basic ways in which you can monitor the situation. Um, so there are plans, I would say, not official, but, um, I'm, I don't wanna promise anything to anyone just yet, but, um, it's a little glimpse of, of what's coming next.
+
+#### [00:46:58] What's Next
+
+**Andrew:** what about some not so pie in the sky, what's next? Like, so what, what are you guys actually working towards next? What's on the roadmap? I.
+
+**Vlad:** Yeah. So, um, I. Uh, one of the interesting things on our roadmap is something we call autos Skip. It's a way for earthly to quickly figure out whether you have any changes in that affect a certain C I C D pipeline, and if nothing is affected, just completely skip that whole pipeline. Um, so, so that is something that's coming up and it's, it's just big taking the, some things that we're already fast at and making them even faster, basically.
+
+Um, but actually the more, the more exciting part that we're working on right now. And it's, it's gonna take a little while to, for us to deliver it, but it, it's something we, we decided to focus on as a result of having more manpower from, you know, taking from R T C I, uh, into, into the rest of the stuff that we're working on.
+
+And so, um, we have this thing that we call internally Compute V two, and it's this notion that I. You know, because the way Earthly works and everything that you run is containerized and it's basically a set of containers that just work together and you have very clear dependencies between these different containers.
+
+Um, we are able to take these different containers and run them, distribute it in a, in a complex system. Um, so the next version of, of earthly satellites will be a distributed version of earthly satellites that uses the power of a compute cluster to deliver even faster builds. So we're thinking this will, um, lead to a 10 x improvement for very big projects, uh, in, in speed.
+
+So, uh, just another sort of order of magnitude in, in performance to really make a difference and, and really, um, yeah, like, um, these things are, are possible through the way we've architected everything. Like from the very beginning we were thinking. Um, if your build no longer matter where matters where exactly it runs, um, we, we could just distribute it automatically and make it really, really fast.
+
+And the result of that is that we would also use some distributed caching and with the same benefits that you don't have to download or upload the cache, it's always there, always instant. Um, that will make a really, really performant, um, high scale system that, you know, um, I imagine this would be used in, in big enterprises and, you know, even not, you know, not, not even in smaller teams, they're really useful to distribute your, um, your workloads and make them like
+
+really
+
+fast.
+
+#### [00:49:27] Spicy Take
+
+**Andrew:** That sounds super cool and a testament to what you guys have already built. So, uh, good luck with that. Um, and one more question, uh, that I like to ask before we move on to tool tips been asking in the past few episodes is what's your spiciest dev take?
+
+**Vlad:** Well, it's. It's something strange. So I believe that every developer should have a budget. And, and the reason is that, um, the developers are the most expensive resource of a company. So looking, looking at every tech company out there, usually it's over just about over 50% of the workforce are developers.
+
+And those developers are probably more expensive than other departments, um, individually. Um, and yet we are very stingy when it comes to what tools we give to these developers and what freedom we allow them to have. And I think that's, that's kind of broken, like. does it really matter that that developer buys a $20 tool from somewhere like an id, uh, package or, I don't know.
+
+Um, if it makes their life easier and more productive, it's probably money well spent. Even if you waste maybe half of that, you know, half the time you, you're wasting the money, it's still, if you gain, gain even 10 minutes of the developer time, that's still such a big win. And, um, nobody's really thinking in those terms.
+
+And I, I remember from, um, I'm, I'm gonna sound like a Google fanboy now, but back, back in my days at Google, like, uh, um, we, in the, the, when I was using this MapReduce, uh, project, uh, which I'm, I'm sure everyone is very familiar with, um, when you would run a very complex MapReduce, um, job, it would at the end tell you how much that costs in terms of developer time.
+
+And it was the, it would be this massive, massive job going through. Um, I dunno, millions of queries that people searched on Google or something, and it would use 900 machines to do that and so on. And then every time the result of how much, um, compute cost that was, was such a tiny amount compared to the developer time and that, that just put things into perspective, right?
+
+Like, um, we're thinking about compute and, you know, budgets in general for the engineering organization in such a very strict manner. And we're not so strict when it comes to developer headcount necessarily, or like the time that the developers spend their time as and, and so, um, I don't know. I feel like that's an imbalance we have.
+
+We, we sort of have to fix that as an acy. So, um, what we do here at Earthly is actually we give a credit card to every, every person in the company. So like, you know, um, everything is of course approved. Somebody's reviews your, your charges, but you have the freedom to, you know, reasonably choose whatever you you need for your work.
+
+And, uh,
+
+that's totally fine.
+
+**Justin:** Yeah, I definitely think we're for better or worse, sort of getting into course correction territory where people are like reducing head count. And we've seen that a lot across the industry and you know, trying to. I don't know, in, in some ways trying to, I think reverse, uh, you know, it's like engineers in the industry have had a lot of, uh, salary power, I guess.
+
+And, and, and I, I think broadly the industry is trying to change that, uh, which I have conflicted feelings about for sure. But to your point, uh, yeah. Don't skip on the things that like actually save you money. I mean, you know. Yeah. That's, that's a great thing. And most of the places that I've worked at have had some sort of budget.
+
+It's like, oh, you know, here's like a conference budget or a personal equipment budget or whatever. It's just like, yeah. You
+
+know?
+
+**Vlad:** Yeah, those are great. Yeah, it's, it's a start, you know, and um, if you think about how. You know, startups, um, working towards creating better developer tools, they're gonna get stuck on that problem that individual developers don't spend money. And I feel like if, if developers were more open to that, you know, the companies where those developers work were more open to that, um, they would be more ways for developer tools to launch themselves.
+
+And that will inspire innovation, that will create more opportunities. Um, so yeah, I don't know. It's a interesting thing.
+
+#### [00:53:40] Tooltips
+
+**Andrew:** Nice. Uh, with that, let's move on to tool tips. Lemme get that set up. Cool. First up, we have Burner, and I really like the font on this website.
+
+**Justin:** yeah, so. I'm actually gonna, I'm gonna write a blog post about this soon. I am a big fan of having the option of digital, uh, anatomy when, uh, when it's necessary. Uh, uh, so for example, you know, you're like perusing a new service. I, I was looking for a interior design, an interior designer. Someone just said like, help me with my apartment a little bit.
+
+And, uh, I found a service and it looked interesting, but they requested all this marketing information up front. And I already have, uh, I use FastMail and FastMail can generate masked emails. So it's like a fake email. I use, uh, a service called privacy.com, which will generate a credit card or a debit card, I guess, for purchases that if you don't necessarily trust, uh, the place you're putting the card in, you can like cancel it or you can set limits, it locks it to the merchant.
+
+There's a lot of really cool properties with that. And then, um, The, the sort of last thing is, you know, I places ask for phone numbers and it's like, I already get so many spam calls and everything and it's like, there's gotta be a solution to this. So there's a few out there. Uh, burner is dedicated. Uh, if you get a year, uh, subscription, it's only like, $3 and 99 cents a month.
+
+Uh, it's 4 99 if you do it monthly. So it's like super cheap, you know, if you just like, have to put your number out there. There are other competitors too. So Mozilla actually has a service that will give you numbers and email addresses and maybe something else, which, uh, really surprised me. Oh, it's like a V P N service too, which that, that seemed cool.
+
+So if you wanna support Mozilla and their, their commercial efforts, then that would probably good a good product if you don't use fast mail or something else. But because I already had all these other services that I've used and rely on, it's just like I just needed the phone thing and, and I, it's on my first day using it, but so far, so good.
+
+You know, I like being able to, uh, cancel it and you get like texting calls and everything. I'm assuming it's just like a Twilio backend or whatever, but whatever.
+
+That's cool.
+
+**Andrew:** Yeah, I, I wish I had this tool maybe like two, three years ago. I currently have a thousand unread text messages, uh, because of just random services thinking they can text and call me. Uh, I, the industry is in a bad state right now, that's for sure.
+
+**Vlad:** Oh yeah, same here. I, I made a mistake to put my phone number in a press release at some point with Earthly, and
+
+yeah, I regret that ever
+
+since.
+
+**Andrew:** yeah, especially with those 2 million monthly visitors, that's a, that's a lot of, a lot of people seeing that number.
+
+**Justin:** Yeah, for sure. I mean, and I, I think this is the thing, like we have a lot of hesitation about getting, giving out contact info, right? And we, we shouldn't necessarily, you know, we should have the comfort to say, yeah, here, you can, you can reach me at this. But like, that doesn't mean, you know, there's like, there's like this ex described intimacy of like giving someone your phone number that like, You know, maybe we could have it different.
+
+It's like, here's the phone number I give to friends and family and here's the phone number I give to like marketers and here's the phone number I give to like coworkers. And you know, that that world I feel like feels more sort of like equitable and it feels like better because you don't have to make these really weird decisions is like, oh, do I know you enough to give you my number?
+
+Um, yeah, I don't know.
+
+**Andrew:** Tangential. But if, if you want a good telemarketing documentary, uh, H B O Telemarketers just came out three episodes. Amazing. It's crazy what they were doing. It's wild. Don't wanna spoil it. Uh, so uhm tool tip this week, my first tool tip is a thing called Ax Flow. It was actually released last week under a slightly different name, but they named it, uh, just today.
+
+Uh, what it is is a TypeScript library for easily interacting with LLMs and it gives you stuff like streaming and hooks to use in your React code. So like where the Open AI package has basically nothing in it and doesn't support any of this out of the box, or you might have to go to Vercel and try to use all the stuff that they've been building.
+
+This seems like all of that, but just in a third party package that you could use anywhere and not be tied to their platform. So if you've been looking for something like that, I definitely give ax flow a uh,
+
+**Justin:** The, uh, no shade to the developers, but the name was a weird choice 'cause that tells me nothing
+
+about what
+
+it
+
+is.
+
+**Andrew:** Yeah, it was AC axilla,
+
+so, uh, may, may,
+
+maybe they're like, they're course correcting slowly to a name.
+
+That makes sense.
+
+**Justin:** Again, no shades to developers. If you're listening to this, I mean, I'm glad you released something. Naming is really hard and nine times outta 10, anytime I name something, I'm like, Hmm, that was a really dumb idea.
+
+**Andrew:** You know, I wonder if, I wonder if, uh, APIs will become a bit different with, with streaming and LLMs. I feel like that's, uh, something that's not quite as standardized when it comes to, you know, like, um, rest APIs and so on. There's no standard streaming component. I feel like we need a standard for that. I wonder if LMS will
+
+**Vlad:** change that for us or not.
+
+Um, keeping my
+
+fingers
+
+**Andrew:** Yeah, it's, it is definitely interesting, like React seems like almost oddly poised to like take on the solution. Like it seems like a really good fit for like what they're doing at Vercel, like streaming the L L M responses and it all partially hydrating correctly like that. That just seems like a killer use case for like the built-in streaming that's in React. Next up, we have Build Kit.
+
+**Vlad:** Yeah, so this was my tool tip. Um, build Kitt is the underlying technology that supports Docker files. So, um, we've been using it behind the scenes as part of Berkeley actually. So, Um, over time we became more popular in terms of like, um, number of GitHub stars, if, if that's a metric you can actually rely on.
+
+But, um, I think, uh, bill Kitt takes all the credit for such an amazing, uh, flexible piece of technology that allows you to define container builds. And even though it's much more tuned towards, um, building images and not necessarily, uh, generic use cases like you would have in a C I C D environment where you also have tests, you also have artifacts and so on.
+
+Um, we were actually able to mold it into the shape that we needed it to for Earthly. Um, and, um, you know, it's, it's amazing in that, um, it can do a lot of these sort of. Parallelism sort of things that you would have in a build and this sort of com complex build graph that you would, you have within the build where you can actually, um, have different containers depend on each other and feed into each other as part of a build and so on.
+
+And, uh, their architecture is such that, um, you can define any, what they call front end. Um, basically the language in which you specify the build can be custom, like you can code that up yourself and the language results into an L L B is what they call it. It actually, it's shown on the screen right now.
+
+Um, and that l l B. Is maybe like a standard language that Bil kit understands to translate a set of instructions into builds. And so if you could build your own any language that you want, and use that l l B representation in the middle to, to give it, to build Kitt and it'll build, uh, container images for you.
+
+Uh, the way it's been sort of described by the authors is that LB is kind of like the IR or of, of L L V M. So it, in case you're familiar with compilers that is. Um, but basically you can plug in, um, any sort of language, you can make it translate into this L L B similarly, how you would translate a language into the L L V M ir and then the, the rest of the system just knows what's what to do with it.
+
+Um, and, uh, yeah, this is built by the Docker team. Um, it's not super well known, but it's, it's powering Docker files right now and it's, it's really cool. So,
+
+um, definitely,
+
+uh, check it
+
+out.
+
+**Andrew:** That's super cool that you, you, built earthly, basically just on the same dependencies as as Docker files. I, I love creating tools like that
+
+just to use the ecosystem.
+
+**Justin:** Yeah, and its, and it's also growing. So like the, all the feature sets that, that, that come, um, you know, whenever something is improved in bill kit, it gets improved in ly and that's extremely useful 'cause we do the same. Like if we fix bugs in in earthly, we
+
+**Vlad:** will fix them in in
+
+bill kit as well.
+
+**Justin:** This is also a good shout out to just like learning about intermediate representations, irs. Uh, so there's a lot more compiler work, especially happening in the front end world, and like understanding that having this intermediary layer actually makes it easy for a lot of other tools to leverage your, your sort of ecosystem.
+
+Uh, definitely highly recommend more people to, to do that. Take that
+
+approach.
+
+**Andrew:** Next up we have the Boron lander
+
+from I, I'm not gonna
+
+try to say that
+
+man's name. I'm sorry.
+
+**Justin:** it's mohit, uh, I think it's, uh, mohit bhoite . Yeah, something like that. Uh, so, uh, Mohit is awesome. I I, I love him as a, as a creator. So he makes these sculptures. Uh, this one looks like a moon land. Um, and it's so awesome. These are like actual circuits. They're like actual electronic components. They, they do stuff.
+
+They can, uh, I don't know if this one, uh, some of them will like, give you like, oh, what is the temperature? What does, like, you know, tell you something about the room. Uh, but Mohit does a lot of really, really interesting sculpture work. And they're all these sort of like raw electronics wires, sort of, uh, in this sculpture like form and.
+
+I love them. This is one of my favorite artists. Uh, I I consider them an artist. They're as much as an artist, as an engineer, I suppose. But, um, all the work from here looks amazing. And, and this is like a build plan for building your own. Uh, I think it's really creative and really unique and I wanna build one.
+
+So, um, definitely if you're looking for a new little side project that's kind of physical, but you don't wanna try to do your own thing too much. Like this, this build log is just beautiful and it's well written and there's so much detail here. Uh, and then you'll end it with like this really gorgeous piece of art that's both, you know, looks nice and is functional, and a great desk piece.
+
+**Andrew:** Yeah, this, this, this looks really nice. Uh, the Lego kid to electronics guy pipeline. I, I, I, I wanna see the graphs on that. 'cause this, this feels like adult
+
+Legos to
+
+me.
+
+**Justin:** Yeah, for sure.
+
+**Vlad:** Nice. It always grips me when, uh, sculpture is not exactly, you know, chisel and stone kind of
+
+thing, but it's such an interesting, uh, yeah, like especially functional art is, is really interesting.
+
+Like a different sort of genre of
+
+its
+
+own.
+
+I think there's so much crossover in the arts and tech communities. I mean, and, and I'm sure there's a lot of people who are fully aware of this, but like, as engineers, we are creating things and, and if you don't break out and try any other mediums, I highly recommend that you do because it's, there's such a vast world out there and it'll scratch a lot of the same itch.
+
+**Justin:** Um, and yeah, I don't know. I want more people making really interesting stuff like this. And, and I, if I could have every one of the things that Mohit has made on like a dedicated shelf, I totally would. I mean, they're all
+
+awesome.
+
+I'd buy one of these. all, they're all very nice. Okay. My last tool tip for the day, this came up on my GIT Hub Activity Viewer. Uh, something I've been reading a lot about recently, but not haven't personally experienced, is that Datadog has very high prices. Uh, so this is an open source version of Datadog that is also a 10th.
+
+**Andrew:** The price at like all price levels. Uh, and it looks really nice also. So if you're in the market for a Datadog replacement that doesn't cost an arm and a leg to use, you might wanna look at this.
+
+**Justin:** really cool. I'm glad alternatives exist. I, I'm always a little bit dubious of the claim. It's like, oh yeah, this will replace, this open source tool will replace this like, enterprise company that has all these features and does all this stuff and has all these people. Um, but. Competition doesn't hurt, you know, if it can help drive down the price.
+
+I've heard some horror stories about, uh, Datadog bills that were just like massively
+
+**Andrew:** insane, Yeah. The fact that I can take this slider to a point where the monthly bill would be $40,000 is, is just A A crazy number.
+
+**Vlad:** That's nuts. You know, when there's, when there's competition, the consumer wins.
+
+So that's, uh,
+
+that's awesome.
+
+Totally. And you know, it's one of those things, uh, a rising tide lifts all boats, right? So if they make a tool and they have some good features and data log Datadog stills it, then you know, that's better for all of us. Yeah. And on a long enough timeline, if, if we still continue to pick open source tools compared to non-op source tools, eventually everything's is gonna become open source to some degree. So, uh,
+
+I guess
+
+that's another good
+
+thing.
+
+**Andrew:** In my opinion, for sure.
+
+**Justin:** Yeah.
+
+The world I wanna see.
+
+**Andrew:** Uh, and with that, that ends the episode. Uh, thanks for coming on, Vlad. This was, uh, a fun delve into all things alternate earthly cis. So, uh, excited to see where you go with this.
+
+**Vlad:** Awesome. Thanks for, uh, having
+
+me on the show.
+
+It
+
+was, uh, really fun.
+
+**Justin:** Yeah. Thanks Vlad. Uh, also I really appreciate the, the sort of business insights. Uh, it's really interesting to see how, especially we've talked a lot about how companies with open source components make money and seeing the sort of transition this phase that you've gone through and the experience that you've had from previous startups is like really cool to hear that
+
+**Vlad:** yeah,
+
+Thank you. We're, we're learning and building,
