@@ -29,7 +29,7 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
   },
   {
     src: "/brand-assets/favicon.png",
-    href: "https://devtoosl.fm/rss.xml",
+    href: "https://devtools.fm/rss.xml",
     text: "Website RSS Feed",
   },
 
