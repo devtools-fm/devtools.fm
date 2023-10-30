@@ -1,0 +1,420 @@
+---
+title: Dax Raad - SST
+youtube: https://www.youtube.com/watch?v=V_2OLtsD0N8
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Dax-Raad---SST-e2b7kn7
+tags: technology, aws, serverless, sst, infrastructure, cloud, cloud computing, cloud native, cloud development, cloud development kit, cdk, terraform, pulumi, cloudflare, vercel, netlify, nextjs, react, javascript, typescript, nodejs, deno
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk with Dax Raad about SST, a framework for building serverless applications on AWS.
+SST is a typescript framework that makes it easy to build serverless applications on AWS.
+It's built on top of the AWS CDK, but provides a much nicer developer experience.
+ax also presents a critique of cloud service providers and a call for more open source knowledge.
+
+- https://twitter.com/thdxr
+- https://twitter.com/SST_dev
+- https://twitter.com/tomorrow_fm
+- https://github.com/sst/sst
+- https://thdxr.com
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://digest.browsertech.com/archive/browsertech-digest-how-rayon-is-making-cad/
+- https://github.com/infinitered/flame
+
+#### Justin
+
+- https://github.com/memgraph/odin
+- https://getdarkmatter.dev/
+
+### Dax
+
+- https://popsql.com/
+- https://replicache.dev/
+- https://www.amazon.com/dp/B0B5R3VQJ3?psc=1&ref=ppx_yo2ov_dt_b_product_details
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:02:32] What is SST?
+[00:12:20] Ad
+[00:13:54] Why not CDK?
+[00:24:16] Building with SST
+[00:37:39] Building Cloud Knowledge
+[00:45:12] Cloud Local Dev
+[00:49:12] Testing
+[00:52:13] Building a Cloud Company
+[01:04:43] Spicy Dev Take
+[01:10:04] Future of Cloud
+[01:15:38] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+**Dax:** All the companies in this space are just trying to make this stuff a little more opinionated and therefore a little bit more slick and easier to use .The key philosophical difference for us is we don't believe that has any financial value. Once you know how to do these things it's yours. Like you can just do that yourself if you want to.
+
+With a platform like Vercel is what they charge for. They charge for the fact that they have this knowledge, and it's hard to get and is a high barrier to, to acquiring it
+
+We want to eliminate that way of making money. It's not just Vercel, it's like a lot of the companies that basically charge for this type of thing.
+
+We do think if we make all this stuff fully open, it's a little bit harder for people in this category of company to say pay us just so we can rehost your stuff on aws
+
+​
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make ' em. I'm Andrew, and this is my co-host, Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited today to have Dax Raad on, uh, so you might know Dax from his really incredibly funny, very dry humor videos that you do. I, I, I love your videos so much. Uh, Dax you also work on SST uh, which we're really excited to talk about today. Um, but before we get started, would you like to tell our listeners a little bit more about yourself?
+
+**Dax:** yeah, so my name is Dax. Uh, for the past three, maybe two years, two to three years, I've been working on SST, which is a framework to help people build things on AWS uh, my background, I've primarily, Been at very early stage companies, either as a founder or first employee type of thing for the past 10 years. Um, done all kinds of things. Uh, being at early stage companies, like you just do all sorts of, all, all parts of the work. So, uh, when it comes to deployment, deploying in different places, different strategies, different tools, different technologies. I've kind of been through a lot of different phases. Uh, so a couple years ago I got interested in, like, I I, I was like, I've been an engineer for so long.
+
+I basically avoided learning AWS for a long time to try to like build with neutral technology to avoid, you know, any specifics to AWS. But I was like, for the hell of it, let me go to the opposite extreme and let me, let's see what it's like if you like, really buy into it. Uh, and it's kind of why I discovered serverless and kind of all the thinking and philosophy behind that. Uh, and, and yeah, I got, I got interested in that. Found SST very early on, probably right when it came out, started contributing to it and ended up ending up. First investing in the company and I ended up joining the company full time.
+
+#### [00:02:32] What is SST?
+
+**Justin:** Awesome. Awesome. So for those that had never heard of SST how would you describe to them?
+
+**Dax:** Yeah. So, uh, the way, I guess the way we think about our responsibilities is, uh, everyone knows AWS is big and ugly and painful, and everyone hates using it and it scares everyone. And they, they worry about surprise bills. All, all this fear and just chaos that people associate with AWS. We spend a lot of time, uh, thinking through different types of applications, different type of features that you would need to build. And identifying the best way to build it on Uh, and usually once we identify it, there's all these rough edges and gaps and missing tooling. Uh, and we'll build whatever's needed to make that as smooth of an experience as possible. So we are a very TypeScript focused tool. We do support other languages, but most of our users are in the TypeScript ecosystem. and we give you like very high level primitives to spin up everything you need to build all kinds of applications. And we have obviously like very early com early stage companies using us, but also like just giant enterprise companies. Uh, so that's kind of the one that benefits of focusing the AWS space.
+
+It's not hard to access like those bigger, more valuable customers. Um, and yeah, so we just spend time like, you know, oh, we people wanna do real time. We don't have a good way to do real time. Let's build a good experience around that. And that that'll go from, uh, you know, the, the. The libraries and tooling, you'll need to like spin up whatever underlying infrastructure you need for that.
+
+It's all done through code, no clicking in the console, nothing in the ui, uh, to application level like helpers, like things that let you use this infrastructure easier. And then once you're in production, um, can I debug this? Can I observe this? What are other things I need to do? Making sure we have the tooling there.
+
+So kind of full lifecycle for every thing you need to do. We try to try to get there. So we're spread really wide, uh, which is challenging at times. Um, but we do need to cover the breadth of kind of everything people would like to build.
+
+**Andrew:** so like AWS is huge. Like there's so many different service services and putting them all together is like, just so hard. So like, I see a lot of companies like SST popping up where they're like layers on top of AWS Why does AWSs make everything so hard? Or why haven't they done this themselves?
+
+It seems like Amazon's this enormous company with an unimaginable amount of engineers. Why can't they make their DX good?
+
+**Dax:** Yeah, so there's like, people have all kinds of explanations to to this and I would say a lot of the explanations fall in the category of uh, they chose to optimize for something else. Therefore DX being good at DX is impossible. I don't really think that's the thing that I don't really, really think that's explanation.
+
+Usually when a company is good at something you don't know, you'll be like, okay, they're doing X, Y, Z and they're good at this other thing. You can't tell whether they're good at it because of X, Y, Z, or in spite of X, Y, Z. So it's a little bit hard to tell just kind of why, of what's going on. I guess in my experience, what I've observed is, uh, the reality is it's a big company.
+
+They can be structured in a fairly unique way, which they are the whole like extremely small teams that like do not talk to each other set up, uh, But even that doesn't compensate for the fact that they are a big company, so things just move slow. They cover an enormous breadth of use cases, like everything from someone who hates the cloud to someone who loves the cloud, like they need to, you know, uh, build stuff for both those people and everything in between. The reality is, uh, if you're starting a new application today, uh, and if you think about like what, how much of AWS you actually need, it's a very small amount. I would say it's like five or six services and you can build like 99% of things and you could ignore the rest. For your unique use case, you might need to pick like one or two from the rest that aren't super common.
+
+Like, okay, maybe you're doing some very specific machine learning stuff, so you might use. They're machine machine learning services, but the core is actually very, very small. But because it's so big, the average person doesn't know what that small set of right decisions are. Um, and that was like the first, my first year of kind of getting into data and serverless.
+
+Uh, I would say it took me like one a year to a year and a half of, uh, fairly being senior already spending all my time thinking and learning about this stuff, experimenting to be like, okay, I found the right way to do, like most of the things. So it just, the average person does not have the time to, to spend on that.
+
+Uh, in terms of why AWS doesn't make it easier, they try. So people obviously asking this all the time, like, Hey, you guys are great at like mind boggling scale, but you're not doing well at this other thing, so can you guys fix that? And they try with things like amplify and it just doesn't, it just doesn't work. Uh, it's just like, it's just a d n a thing. Like it's hard to explain why, but. Once a company's culture's established, it's very hard to drop. You can drop in, you can really drop in our team inside AWS, and I don't think we would be able to get anything done at all. There's just like a cultural thing, uh, and it's like a, like a woowoo explanation, like this thing in the air.
+
+But that, to be honest, in my career, I feel like most things kind of boil down to that.
+
+**Justin:** I feel like you, you really hit the nail on the head there though. It's like the small teams that, that sort of run anatomically is really an important factor. And you can see this in a lot in the fact that they just can release so many products that AWS has so many services across that. And if you think about like, Hey, we want to unify the interface to make this like simpler to use and you're a team in that environment, well you're, you're cutting across the grain anyway.
+
+'cause now you have to talk to a lot of teams. It's like, Hey, can we do these things across all these different product spaces? And if the culture's already not like that and they're like, oh, we don't want to, you know, come to your meeting or whatever, then you are really sort of paddling upstream there.
+
+Uh, so I can see where that would be super hard.
+
+**Dax:** Yeah.
+
+And I and I think their philosophy is even when you try, let's say you could get everyone, let's say you did say, okay, we need to unify X, y, Z things. And you did get everyone to like, like we're able to force 'em to do everything you needed them to. Uh, their philosophy is, it still wouldn't work or it'd be kind of crappy, which I kind of buy into.
+
+Like, it just, it just is hard. Um, so their philosophy is, um, like, let's not even try, like trying is just kind of a distraction. That said, I don't like, I buy it to some degree. I don't think it's impossible. Like I see other companies like CloudFlare that, uh, do pull off a very unified experience across a very similar offering.
+
+Obviously they're a lot smaller than AWSs just in all kinds of ways, but. Uh, in terms of like functionality, if you like, look at the most modern way to build something on AWS, you can do that on CloudFlare as well. So they kind of achieve parody there, um, without like the same like chaos that you experience with AWS.
+
+**Justin:** Yeah, totally.
+
+**Dax:** so yeah, let's just talk about like sort of some of the value add of, of SST. Uh, so when you're sort of, you know, starting to use it out of the box, what are some sort of immediate differences that you're gonna see versus like just diving into AWS and trying to build something?
+
+Yeah. Uh, so the first thing off the bat is, uh, depending where you are, just on your experience, uh, you might have heard of infrastructure as code. You might have not heard of infrastructure as code. Uh, we, we actually try really hard not to mention this phrase infrastructure as code because we think it's sold in the wrong way, which is why it hasn't gotten as much adoption as it should. Uh, but the idea is like you don't go log into a UI and click a bunch of things to set up something, which is how I think a lot of people are still used to doing things. Uh, you define all that through TypeScript. You say, you know, new bucket 'cause I want to create a bucket and you can pass in a bunch of options. What's really nice about that experience is, especially when you're using TypeScript, is uh, one you get all the types, safety, all that, the editor tooling, all of that. So you know what properties are available. Uh, if you hover over them, you get like a quick documentation over like what it actually does. It's very predictable on how to. Abstract things, right? Like we're all used to code. We all know that you can have like a single field that does a bunch of things, but then if you want to have something more advanced, maybe there's like a sub object there to, to drill down. But the idea of hiding, uh, complexity, it's like very, it's like very intuitive. The thing with anyone trying to simplify AWS is you do need to do this. You do need to do progressive delo disclosure. When someone starts, you need to give them some configuration, but not all of it. But you do need to be able to give them a way to eventually tap into the more complex things. So we find that code is like a fantastic way to do that.
+
+Again, just 'cause everyone's so familiar with it, we're writing abstractions all day long. We're using them all day long. Um, very different than trying to simplify it using. A UI or a dashboard or something like you imagine a simplified ui, you can probably imagine a simplified UI for AWSs, but then how do you disclose the more complex parts of it?
+
+Your UI probably will start to get messy and kind of unwieldy. So UI approaches to simplify it, uh, tend to work really well for the simplest use case. But as companies grow, they tend to eject. And like we have a long history of this with, you know, like Heroku, I've done so many migrations off of Heroku to AWS uh, the next generation of those companies probably will experience a similar thing. Um, so for us it's about giving a TypeScript interface to do things very quickly in the beginning. And the thing I'm really proud of is, uh, we don't try to save you from having to know things. Uh, we make it easy for you at the beginning given you don't know anything. But over time a lot of people are in community, become AWS experts just by. You know, digging deeper into those layers. So I, I think our philosophy overall is yes, we want, you want to, we wanna keep it simple, but no, we're not trying to save you from like absolutely. Like never knowing how these things work under the hood.
+
+#### [00:12:20] Ad
+
+**Andrew:** Once again, we'd like to thank our sponsors without our sponsors. This podcast wouldn't be possible. Our sponsor this week is Raycast. Raycast is an app for Mac that's like spotlight, but so much better. With the power of extensions, you can unlock the true potential of your computer and do so many different cool things.
+
+This week, the cool thing that I'd like to highlight is the color picker extension. This extension was actually written by the CEO Thomas himself. So, you know, it shows off all the cool things Raycast can do. Uh, from your command prompt, you can initiate a color picker and pick a color anywhere from your screen. This could replace so many different apps that I use in my day-to-day workflows not only can you pick colors, but It remembers them and you can manage them from the command palette.
+
+But that's not it. In the menu bar. It's an actual menu bar app as well. So this kind of showcases the power of just easily being able to spin up little menu bar apps, Raycast, as an application shell for all of your different native Mac widgets that you could code is pretty cool.
+
+And the fun doesn't stop there with Ray CAS pro you get access to Raycast, AI, and you get to do so many different cool things. As I've detailed in past episodes, having access to AI chat. It just a short cut away is, a big workflow changer. At least for me.
+
+If you want to learn more about Raycast, head over to raycast.com. Or if you want to listen more about Raycast's journey, go back to episode 38, where he interviewed the CEO, Thomas.
+
+Do you want to advertise with dev tools, FM head over to dev tools, FM slash sponsor.
+
+And if you haven't subscribed yet, we have a newsletter, the newsletter at mail.devtools.fm Will get you weekly developer tooling, news updates, and some of our post show thoughts about that episode. We released that week.
+
+#### [00:13:54] Why not CDK?
+
+**Justin:** yeah. That's interesting. So, um, speaking of like infrastructure as code, uh, so AWS does have this thing called their C d K, the, I guess, cloud development kit. Um, and they have a, a TypeScript interface for that and among other languages, and that's sort of their, uh, code is infrastructure thing. How would you, how would you say the SST sort of differs from, from
+
+the c D K?
+
+**Dax:** So today's s c is actually built on top of c d
+
+K, uh, so we've spent the past two years or so building on top of it. Uh, so c d K itself is built on top of something else called cloud formation. So cloud formation is a way to do everything I described. But using yaml, nobody likes yaml. So they built c, d K to compile two yaml. So just like kinda layers on top of layers. And the reality is, is that, uh, cloud formation to begin with is not very good. The design of CDK is also really bad, and we've kind of really deeply understood that over the years of using it, everything from just like the design, the design patterns that the user ends up interfacing with to like how it works under the hood, it is like one of the most over-engineered, craziest code bases I've ever jumped into.
+
+Um, and for a while I was kind of convinced that I kinda had a really good excuse for them, which was okay, they, this was a bad decision, but is I was like, okay, I'll give them this, which is they wanted to support multiple languages and based off of what I was seeing, I was like, okay, maybe it's just really difficult to do something like this across multiple languages.
+
+So every time I saw like a performance issue or like a design issue, I was kind of like, okay, this is probably because they try to support multiple languages. But more recently I've like explored other projects that are like competitive with c d k, that do the same thing and have the same multi-language support and they just did a much better job.
+
+So again, like this is the type of thing that AWS is not good at executing at. Uh, like I, even the history of their project, I'm pretty sure that they did not want to make it multi-language, but they were forced to because there's like, nothing gets approved AWS unless it supports things widely. We have a bunch of people that maybe were forced into doing that.
+
+You know, it just, it just doesn't add up well. So there's just a lot of issues with C D K. We do build on top of it. We have patched like the heck out of a lot of these problems, hit a lot of the issues, uh, solved a bunch of things that they just decided not to solve. But we've hit a ceiling, uh, and all the problems, remaining problems we feel that SST has are because of the fact that we're built on top of C D K.
+
+**Andrew:** So does that mean you're gonna eventually start building out your own?
+
+**Dax:** Yeah. So realistically, we're not gonna build out our own, we're just gonna build on top of another deployment engine. So there's two issues with C d, K, so we'll just bucket, just a bad design and performance under one. The second one is it's just tied to AWS, like they're only gonna help you deploy AWSs resources.
+
+Uh, and you know, more recently there's been like a very good unbundling of AWS, where you have like really great database providers that are alternatives for R D Ss, but you might use AWS for everything, but your database might be somewhere else. And like for our product, that's the case. Like we use Planet Scale, but the rest of ourselves on AWSs, or like, you might wanna mix in a CloudFlare CD n or you might wanna mix in things here and there. So one, we want to support multiple, uh, like other, other resources outside of AWS in the same like code first approach. So you just, you're not like, Clicking into CloudFlare and like configuring stuff manually to like connect your a w account, trying to sync all the variables back and forth. Like we want it to be fully code first. Uh, and we want to fix all these performance and just kind of design problems. So we are going to move or we are gonna support another like, under engine, under the hood. Like we wouldn't, we wouldn't build our own because uh, it's, it's challenging to do well. It is, it is very difficult. And the main benefit is you want to tap into a rich ecosystem of like, providers that are supported.
+
+Uh, so like if we do our own, we're stuck maintaining all of those. Um, we haven't decided what it's gonna be. It's coming down to, uh, Terraform or Lummi. Uh, it's gonna be between those two options
+
+**Andrew:** and given, uh, the recent Terraform News, uh, you're probably not as keen to pull the trigger on that.
+
+**Dax:** Okay. So with that whole thing, it ended up, It's, it's a very complicated situation. So we were really thinking, okay, we're probably gonna do Terraform, but we need to like, evaluate everything. We can't just make an arbitrary decision. Then that Terraform thing happened where they, you know, had the B S L license, but then that kind of moved, that kind of forced terraform to be put in this really appealing position, which is, it got forked, it got, uh, funded by like a bunch of competitive companies.
+
+So like, it's kind of nice to have a diverse set of companies that, uh, instead just one company running it. It's like, I think five or six companies that are committing like a lot of resources to it. Uh, it got acceptance to the Linux Foundation. Um, I think they're applying to C N C F also. So it be, it went from being this like very, uh, kind of corporate sponsored thing to becoming like a very traditional open source project almost overnight. So they kind of. Made that happen. So now it looks a lot more appealing. Uh, 'cause the reality, like, I don't mind, um, I'm generally not someone that's like very extreme about open source. I think for most things, uh, you need to have some kind of sustainability. So yes, there need to be a company behind it and a company to have some kind of complimentary business model that, that funds the whole thing.
+
+It's totally fine, but some things are very low level, like a language, right? Uh, if you had a language like Go and Google was one day, Google one day was like, you can't use this to put anything competitive with Google. That just would not make any sense for something low level. Terraform to me is extremely low level. Uh, so the fact that they did this, I was like, this doesn't make sense. Like this is something that does belong in like a foundation type model, which I don't think makes sense for everything. But for something low level, I think it does. Uh, so, so like structurally now it's in like a better place than it ever has been.
+
+Um, you know, unless it's like four completely falls apart, but I don't think it will, um, So, yeah, so we're like debating between Terraform and plummy and I think for me, plummy is like a much superior product. I've gotten myself a lot more familiar with it. It is like shockingly impressive. There's like a lot of little things that I thought were really hard to solve.
+
+They solved really well. Um, and it just like severely underrated, I think just hasn't, again, because they were going head to head with like, we're pulumi on alternative to Terraform, which is an infrastructures code tool. You're just like in this isolated like DevOps operations world. That stuff doesn't really make it to application developers.
+
+Uh, so yeah, we're really considering them very strongly.
+
+**Justin:** That's cool. I'll have to re research pulumi a little bit more. I haven't, I haven't heard a whole ton about it.
+
+It is interesting.
+
+**Dax:** I, you know, it's just very underrated.
+
+**Justin:** Yeah, yeah, This like infrastructure of code space has, has been, you know, it's been kicking around for a while. Um, I, I, I'm reminded of like, there are a few companies trying to do, uh, DSLs.
+
+Uh, isn't there a company called like, is it like WASP or something? They're trying Wink Yeah. maybe that's what it is. Yeah. Yeah. Trying to do their own, uh, Uh, like sort of d s L for, for describing, uh, cloud service resources and everything. And it's, it's always a, it's sort of a fascination, fascinating exploration, but I think there's something particularly nice about, like, especially having types and, you know, having a little bit more, you know, ability to test things.
+
+Um, you know, there's, there's something
+
+pretty enabling
+
+about
+
+that.
+
+**Dax:** yeah. You just have all these classic situations where you do need, like I agree that ideally it feels, the stuff you write does feel very declarative. And I hate when, the thing that I hate is we give people the ability to write code to describe their infrastructure and then immediately go crazy.
+
+They start writing all these crazy abstractions and doing all the bad things that you can do with code and a lot of, uh, pushback for infrastructure as code, like specifically with. Like actual languages is that people do this type of thing. Um, I don't think that's like, yes you can do it and people do do it. Um, but again, mostly 'cause c d K is not very good. So people are forced to build their own abstractions would end up being like not great ones 'cause there's thought of them in the, in a day. Um, so yes, people can do that, but there's just certain situations that really suck. Otherwise, like a very simple situation is, uh, I've created a V P C and in each of my subnets I want to deploy these resources.
+
+So it's kind of a four loop over the subnets. Uh, so if you look at something like Terraform, they do have the ability to do loops and conditionals, but it's like definitely bolted on to what's otherwise a very declarative language, um, or a very like configuration oriented language. So some of that stuff is awkward, and I used to be a heavy Terraform user, and I still appreciate a lot of it, but I don't think I would go back.
+
+Uh, again, just like you said, the, the editor tooling also is a huge thing. Like the fact that it's just TypeScript and everyone's editors for the most part, like supports that really, really well, you can do a lot of cool things.
+
+**Justin:** Yeah, for sure. Uh, at oxide, we've worked on Terraform integration for our racks, and it's just like, you know, it's, it's a very similar sort of thing. It's just like, you know, always there's this challenge of, I mean, and this will be true of anything, it's just like learning the sort of like primitives of the tools and you know, how it wants you to express certain things and how it maps to systems.
+
+But, Um, tooling matters a lot, especially when it's infrastructural stuff because, you know, it's those things where it's like, kind of can be easy to mess up. I mean, I do appreciate Terraforms ability to give you like diffs of like, oh, here's like, you know, the things that we think you are trying to do and, and here's how we would roll it out or whatever.
+
+But, um, so I don't know it, but it's still a world better than, I don't know, Ansible and Puppet and
+
+like,
+
+**Dax:** Oh no, definitely. I think Terraform kind of invented, I would say, I would give them credit for inventing it and that they kind of really convinced everyone that this is a good way to do things. And now we're seeing like iterations on top of that. And I still like really love Terraform. It's, It's, how I discovered, uh, there's like a before and after for me.
+
+Like I remember before it, all my environments were like 80% the same and there were 20% of things were like, I did it in production, but like, I don't remember exactly what I did in production. So staging doesn't match. Uh, and like when I left, I would accompany, I'd have to like write up all the steps to like, here are all the steps, like set up the v vpn.
+
+It's just all this stuff that just goes away. 'cause the code you write is also, is also the documentation for what you did.
+
+#### [00:24:16] Building with SST
+
+**Andrew:** speaking of, uh, primitives and the power that they can provide, what are some of the primitives that SST provides?
+
+**Dax:** Yeah. So I would say, uh, obviously we're gonna start, since we're very serverless focused, we would start with a serverless function. So you can create a function which can just execute some code in reaction to an event. Uh, the most commonplace to put this is under our a p i construct, which is just an a p i with a bunch of routes that are mapped to functions.
+
+When the route is triggered, the function's invoked. Uh, so that's great for synchronous stuff. So front end makes a request, backend responds with it, front end receives it. Uh, but the biggest thing about serverless is I actually, to be honest, I don't even think of it as serverless. The architecture pattern that people generally are following is, uh, like event driven application.
+
+So you think of your whole system as a bunch of events and things that react to those events. So that a p I request is just an event and you have to reply to, it's a synchronous event, but you know, you have all kinds of asynchronous things that need to happen. Like, let's say, uh, a user, let's, let's say it's a product management app.
+
+Uh, the user marks an issue as resolved and you need to send a email notification. Um, you don't wanna do that synchronously in the request, 'cause that might take a while. It might fail and it might need to be retried. You emit an event that's ha that's named something like issue closed with somebody. Uh, so we have a construct called Event Bus that lets you emit events into it.
+
+Uh, we sp we put, put in the effort to make that all type safe. So you define. The shape of your event, then you can define receivers that subscribe to that event, uh, and get that in a type safe way. So you can say like, here's my subscriber for when an issue is closed. Okay, I got the event. I'm gonna send an email to all the people that are interested in this.
+
+Um, so I would say that's actually all you need, like some kind of a p i functions and a way to publish and subscribe to events. Um, and the next layer of this is obviously, uh, you get things like queues 'cause you wanna queue up work, you don't wanna do it fully in real time. Uh, we have support for a bunch of databases.
+
+Obviously databases are key. Like we support, uh, relational databases. Uh, we support Dynamo db, which is a fantastic option for serverless architectures. Um, and then, so those are like on the backend, those are probably the most popular. Uh, some other random ones like the like obviously bucket and everyone's created a bucket at some point to sort files. Uh, but the last year we focused a lot on supporting front ends really well. So historically we had like a static site concept, which is for like a traditionally, you know, uh, built everything at build time, deploy static files, like that type of situation. Um, that still is probably 50% of all the sites deployed, but we've now had a, like very native support for things like next jss Astro remix, solid starts, felt kit, uh, working on next. So these are more complicated front ends that have a static component, a dynamic component, um, a C D N, like all kinds of complex things. And we try to look at how companies like Vercel or Netlify deploy stuff and we like mirror that same setup in your own account in an open source way. Uh, so those contracts are very beastly and, and like complicated, but they do give you a very, very performant front end deployment that is like, In some cases, like a hundred times cheaper than, than hosting it with one of kind of the, the, the more dedicated providers.
+
+**Justin:** So why would you. You, I mean, why would you go with ss t over like more dedicated providers? I mean, are, are there like other benefits that you'd directly point to as like, Hey, yeah, this is, we think our real value add over, like
+
+Vercel or whatever.
+
+**Dax:** Yeah. So if you, I mean, if you just look at that example, um, I mean, I can, I can speak to what we see 'cause we see a lot of people leaving those platforms and, and coming over to, to deploying their own a a Ws account. Uh, the, the one thing that people discount, but it is like a huge driver. People just want one bill.
+
+They want one bill and they want one environment. If I spin up a bucket in this environment, I don't want have to go log into Vercel and then like put the bucket a r n into the environment variable and credentials. If you have one environment binding that bucket to your front end is like very, very slick and seamless. Databases, queues, all things I mentioned can all just be attached directly to these, uh, these frameworks. 'cause they're not just frontend anymore, they do a bunch of backend stuff as well. Um, so just that seamlessness is a big part of it. Um, the second thing is we see a lot of bigger companies, like I think the average, like, you know, individual person building a thing, this probably is not gonna register for them, but for bigger companies, like 90% of their system's already in AWSs, it's annoying to have to get approval to go use this other external thing, especially when that external thing is insanely expensive. Uh, and as much as people get excited about front end and talk about it all the time, for most companies, it's just a small percentage of their overall system. It's like weird to allocate that much like resources and like exceptions. Like by putting that outside AWS just for like deploying your front end. Uh, so for a lot, a lot of our, uh, customers', big companies that are like, yeah, we only deploy. Inside our environment, we're not gonna have some random front end on some other provider. Um, and the cost side of it is also, also kind of crazy. Like pretty much every, like, if you start to, if you're like the ideal Vercel customer, you're probably like an e-commerce type company, uh, which means you are public facing and you're doing a large amount of traffic, especially when you have sales or like Black Friday or things like that. Um, you're likely looking at like five plus thousand dollars a month, uh, which is kinda what we've seen. Like it's very normal just 'cause the bandwidth costs are so high, uh, for being hosted on Vercel, Brazil. And I think maybe for like a tech company that's like maybe reasonable, but if you're an e-commerce company, like that is a lot to spend on hosting.
+
+Uh, so we see a lot of those types of companies that come over to us too. So ultimately it's that same thing I said at the beginning. If you build a very simplified. Slick environment, you're gonna attract a lot of projects at the beginning of their lifecycle. As they start to get scale, they will tend to eject.
+
+Uh, we just realized at some point there's nowhere to eject to when you're using next js, but we created a thing that you could possibly eject to. Um, and we're kind of seeing that, that happen now. And it is important to get traction because next J is very complicated and we're not nextjs users. And the fact that we're fully open source is kind of critical too.
+
+'cause we need our community's help in figuring out like, Hey, they just launched this like patch version and they broke this really obscure feature that I had no idea was a thing. Um, and like so people running those tests and like telling us here's how to fix it, uh, is pretty important. And at this point that community pretty much runs that project on their own.
+
+Like we're not super
+
+involved.
+
+**Andrew:** Yeah. As a, as a next Js user, myself, I have been for like, probably like half a decade now. The, the free tier is amazing. Like it's very free. You can do a lot of stuff, but once you, you break the free tier, it's like, wow, I'm just spending so much I. Like when they, when they first released the serverless stuff a few years back, I tried to move one of like my side projects that I've had around for around a decade to all serverless.
+
+And then I, I got the bill and I was like, what the hell? This thing cost $5 a month to run on Heroku. Why am I, like, why do I suddenly have to pay like a hundred, $200 for like, hosting stuff? So it, it is very nice to see a, an option 'cause as you're right, there is no option. And it's kind, it's kind of similar to what we were talking about earlier with AWS, like there's a little bit of a decoupling here happening where like a lot of people use Vercel and depend on it, but they are very, very coupled to the, the whole system because of how next J S is built.
+
+**Dax:** yeah. It, it, it is a challenging situation. I think the one thing I. This whole situation, the main thing that frustrates me is that that experience you just had where like something that costs $5 is now like, you know, 20 times more expensive people. That's a lot of people's first experience with serverless.
+
+So now, now they kind of equate, oh, this is what it's like. You get these like big bills that make no sense. Um, but in reality when you have like an actual server system built directly on the company that provides those primitives, like I have like shocking, like shockingly crazy, like stories of how much money people have saved.
+
+Like, there's one that I posted like a, a year ago where, uh, kind of the standard Kubernetes setup. Uh, I, the thing that people forget is when you're doing containers, it's not just one container for like a real company. It's not just one container you have up, you need to have up a bunch and then replicas and other availability zones.
+
+So when things fail, like it, it does add up. Uh, and then you factor in that like, I. You, those workers aren't a hundred percent utilized every second of the day. If you really look at a lot of the deployments they maybe utilized like 15% of the day. Now multiply that by all the copies that they have running. Most people's deployments are extremely inefficient. So when they move to serverless, they see like, unbelievable savings. I think this company went from several thousand dollars a month to like $70 a month or something. Um, but that is typical for, for most companies. Like typical workloads are gonna be a lot cheaper. Uh, there are like specific use cases that are like, just does not make any sense for it, and you just go with the traditional state foot workload. Um, but I think the current perception is a little flipped because most people experience with serverless is usually through a company that's capturing those savings, right?
+
+Like Vercel sits on top with a hundred x markup. You pay like not that much cheaper, maybe even more expensive. And they kind of capture all, all the savings. Most of people experience serverless is, is in that type of situation. So, And there's a lot of just kind of like, because that's incorrect assumptions around it.
+
+**Andrew:** Oh yeah, I de, I definitely echo that. Like, even just vercel's limitations of like 15 seconds for a serverless function. It's like I, in my mind, I associated that with serverless in general, and then I researched a bunch and it's like, oh, you can actually put that up to 15 minutes. Just they don't expose the, the
+
+configuration option anywhere.
+
+**Dax:** It's funny 'cause I, I, that one I do wonder about because I think that they recently, I think they bumped that from 15 seconds to something and they recently did something else where like you need to explicitly say, I want more. But they, they don't let you go to the 15 minute limit that they have.
+
+So I, I'm trying to understand that. I think it's because again, here's another challenge with them. So for us, uh, a free tier type of user costs us nothing. 'cause they're deploying their own a Ws account. They get the AWS free tier, they get credits, whatever. Like that's AWS paying for that. But for Vercel, sale, every customer they get, that's not like a real company is a cost for them.
+
+So I think they're a lot more aggressive with those limits so that the overall cost of their free tier is, is not like overshadowing the companies that actually pay
+
+**Justin:** it's, it's a challenging area. I mean, I see a lot of what they're doing is just like selling a user experience or a developer experience as much as anything else. You know, it's like, here's the value that we add in the time that we save around the other areas. And, and I guess idealistically letting you think about less things.
+
+Um, And I, I, I feel like that's where like SST and, and similar tools actually fit a really good market because, you know, it is true that there are so many capabilities that are available on AWS and just like, pretty much anything you could ever think of or ever need, but getting into it, it's just, it's a bear.
+
+It's a real bear. And there's significant cost in just onboarding and ramping up and learning all the things and the foot guns that can happen where you just like, oh, like typically serverless is, is like actually relatively cheap, but I screwed up and I like have this like step function that calls a serverless function and then like recalls it like a million times and now my bill's like incredibly high.
+
+Um, I, I think that that sort of intimidation factor sort of really, you know, going back to the earlier part of this conVerceltion warrants more product abstraction layers to sit in front of that. And then giving people smooth on wrap, you know, from a more sort of like, Uh, just white glove turnkey service like Vercel to, you know, a more buffet style.
+
+You know, choose your own adventure. AWSs is, uh, you know, it's a good market to
+
+hit.
+
+I think, um,
+
+**Dax:** Yeah, I think we're all doing the.
+
+same thing and it's, it's a right idea, right? Like we're all trying to. All the companies in this space are just trying to make this stuff a little more opinionated and therefore a little bit more slick and easier to use with, with fewer mistakes that you can make. Uh, I think the key philosophical difference for us is we don't believe that has any financial value. Uh, 'cause it's just knowledge at the end of the day, right? Like, once you know how to do these things, it's, it's yours. Like you can just do that yourself if you want to. With a platform like Vercel is what they charge for.
+
+They charge for the fact that they have this knowledge, uh, and it's hard to get and is a high barrier to, to acquiring it. So they, you know, people are willing to pay for it, which makes total sense. Uh, but our goal is to make basically say, well you can get all that for free 'cause it's open source. Like we want to get to a place where like we eliminate that. I mean, from a competitive standpoint, like we want to eliminate that way of making money. Um, and it's not just Vercel, it's like a lot of the companies that basically charge for this type of thing. Um, and of course it's more than just a knowledge. Like there's a lot of things that come together nicely. But at a base level, um, we do think if we make all this stuff fully open, uh, it's a little bit harder for, for people in this category of company to say, like, to pay us just so we can rehost your stuff on aws
+
+#### [00:37:39] Building Cloud Knowledge
+
+**Andrew:** and like keeping in line with that like knowledge guarding thing. Do like the doc earlier you said there's like five things in AWSs that I, I really need to know about to be able to deploy an application. Do the SST docs kind of like help, help coach me through those, like stickier a AWSoncepts, presenting them in a simpler way for me so I can be like, oh, okay.
+
+Yeah, I see the components. I can mix and match.
+
+**Dax:** yeah. So we, we definitely do that. We of course, don't think we do that good of a job and we like, like we just feel like we just need to make that better. Um, I would say we do an, we do do that. We only do an okay job with that. We need to do it. We just need to spend more, more time there. Um, but you know, all of our users, so far, most of them have been, people, especially lately, have been people that. Just did not know about this stuff before and they kind of learned it through our docs. Um, I think it's funny, uh, I feel like every company at a certain size, you just start to get like crazy conflicting feedback. Like, we'll see tweets like, wow, the s st docs are amazing. Like I learned so much to them is way better than reading AWS docs. And then right next to it, there'll be a tweet that's like, like, I hate the s t docs. Like, where's this? I can't figure it out. So yeah, we do need to do a better job. We do know, like something at the core is working.
+
+**Justin:** I feel like that's a, it's sort of a common problem and you, you hit this interesting area, which I mean, AWS has as well, sort of, uh, which is there's a lot to learn. There's a lot of concepts, and you have to figure out what is the right pacing is like, how do I introduce you to concepts and give you what you need to know without just like fire hosing you right off the bat.
+
+And I think like AWS tries their best to do this by just like fragmenting the hell out of everything. So it's like, you're in this one little area learning about this one little thing, but like, there is a world of stuff and just like navigating around to like, oh, what do I even need to look up can be insanely hard.
+
+So, uh, it,
+
+it's, it's a hard balance. It really
+
+is.
+
+**Dax:** And there there's so many situations that are just kind of unbelievable, right? So going back to this realtime example, okay. You need to have something realtime on your app. You know, that web sockets help you do that. You go look up, how do I do web sockets? In AWSs you find something called AWS uh, a p i, gateway Web Sockets or Web Socket, a p i Gateway, I forgot what, what order it's called in. And it sounds like exactly what you would need. It seems directly made for your use case. It's all serverless, it seems, with the right choice, it's actually the wrong choice, believe it or not. It's the thing that you would find is actually the wrong thing for you to use. You need to use this other thing that nobody knows about called i o T core, which is like, what the, like, why am I doing some internet of of things thing?
+
+Well, it turns out they have a really, really great servers underneath all that, that is a, uh, realtime web socket serverless thing. Um, super performant, like supports broadcast topics. Like, it's like a really great service, but it's randomly in the IOT section. No average person's ever gonna find that, right?
+
+So for us it's about like discovering those things and, and saying like, making that the default. Uh, and like you don't even realize that it's weird, like from your point of view, it's like, oh, yes, I do real-time stuff in sst. Uh, yeah. It, it's, it's, again, it's impossible at this point, unless you're like really dedicated to becoming an AWS pro. is just not gonna happen.
+
+**Andrew:** so if I am an AWS Pro, what does it look like to like, break out of those primitives boxes? Like, is, am I able to use like all, all AWSs services under the sun, or are there just like a select few that I can tap into?
+
+**Dax:** Yeah. So this is the reason we did have to build on C d, K, but why we couldn't just go from nothing.
+
+'cause we're obviously gonna do a really great job for the 5% of services that we think most people need. But again, it's like, oh, I need to use their image recognition. A p i, I need to spin that up. Like, we're not, there's no way we're gonna have time to build something for that. Um, so our escape hatch is always just going straight to c D K, and c d A supports every single AWS resource. So you can always use that. Uh, even for our constructs, uh, you can break out of like the high level abstraction we have. If you need to configure something super low level, like we have an escape hatch in every construct to. To access those lower level properties. Um, it's really uncommon, even all of us building, like we build, using our own product. Uh, I think it's, it's somewhat common to need these random other services to break out of our construct and go into some weird deep r w s thing. Like we rarely ever need to do that.
+
+Um, and this is kind of why, uh, I said earlier like, when people try to do their own abstraction like this, it ends up not working well because you only have insight towards your current use case. Our constructs came about over like the thousands of companies that use us, thousands of complaints. We've gotten, uh, all the use different, like we run them through all the different cases and make sure we can support all sorts of things while keeping it simple. Uh, so we have a really good sense of what's important and what's not. Like what are you gonna need? What are you not gonna need? Um, and yeah, I think our value just comes from the size of our community at this point.
+
+**Justin:** of all of this, uh, just something I'm curious about, what do you think was the hardest thing to get right?
+
+**Dax:** One of the hardest things to get right, I think is actually the most basic thing, which is project structure. Uh, so we have, and you guys hinted this earlier, so we need to establish some level of opinion of here's how to do things. It can't be too opinionated 'cause it's brittle and everyone wants to escape it and it can't be too loose because then we're not really providing any value and we're letting people do things that kind of screw themselves over. So getting to a place where, and again, because we were built on top of c d K, and it's one of the hardest parts of building dev tools. Your earliest, most loyal users are your weirdest users. Because why the hell do they try out your product and start using it like they're like a weird group of people?
+
+Uh, as you evolve, oftentimes the right thing for you to build is not what that group of people want. Uh, so early on we obviously attracted like AWS serverless people, people with like certifications, people that were already kind of in this world and they had a way of doing things the way they wanted to do things. But we realized if we just continued to build for them, we wouldn't be growing serverless at all. We would just be selling into the existing market. So we had to realize, okay, we need to build something that could be tempting to people that aren't already in this world. So that requires us to be more opinionated and maybe in ways that are current user base might not like So, Understanding when you're at that like local maximum and realizing to get to the next one, you need to like kind of go backwards a little bit or like kind of lose your current footing. It's really hard 'cause one, you like know these people individually, you like them, they supported you early on, uh, making a decision that that means you're like not doing what they want. It's very, very hard. But if you're not able to do that, you just end up getting stuck. And now that I've understood that, I see it everywhere.
+
+Like whenever a framework comes out with a new version, uh, you see people upset 'cause they're like, why are they changing things for no reason? Things work well. They're overcomplicating it and sometimes they are like, stuff gets bloated. There's like a golden window where it was good and then kind of gets bloated. But other times it's the author recognizing the ideas that we've had. We're at a ceiling, like we've attracted everyone that would ever be into this idea. Uh, and that might be fine. Like, that's like something you want to, like, you're happy with where it is and you want to continue serving that, that group of people. Um, but our, on our side is like, yeah, we're not near making that kind of decision, so we need to keep looking for ways to attract people that aren't already looking at the way we do things.
+
+**Justin:** Yeah, and I guess the, the sort of like adding frameworks as a first class thing is like moving beyond just static side is a great sort of on ramp for that.
+
+**Dax:**
+
+#### [00:45:12] Cloud Local Dev
+
+**Justin:** Um, a, a traditional hard thing to do in any cloud environment is local development. Um, I, I've used a few serverless frameworks in the past and we've actually had some guests on that had developed their own serverless frameworks, and most of the time one of the things that they talk about is like, oh, well, he's like, we provide this, like, better experience for doing local development.
+
+So what are y'all's opinions about that? Or what are you trying
+
+to do in that
+
+area?
+
+**Dax:** Yeah, so, so the way SST got big initially, like when they first launched the way I, I found it was because they had a really funny idea with how to do local development. Um, so in this model, when you're like really, uh, letting yourself use these like cloud services, like queues, databases, all this stuff, you want your local development to actually be done in the cloud.
+
+'cause you want it to mirror what it's gonna look like in production. Um, And this actually works fantastically well for most scenarios, right? 'cause everything in the serverless world is usage based. So spinning up a copy of the environment for me, for you, for whatever doesn't cost anymore, it costs nothing unless I'm using it.
+
+And usually when I'm using it, I'm like, like, well within the free tier. So having copies for everyone of the full environment is amazing. And some of the reason why infrastructure's code is important 'cause you wanna be able to able to do this. But the part that sucks is the feedback loop. Uh, when you're changing code. So you update a function, but hang on this function, even though it's quote unquote local development, it's running in the cloud. So you hit save, needs to recompile, it needs to upload, the function needs to restart. And that's like, at best, I would say nowadays, at least in the AWS world, it's like three seconds, I would say. It's not good. Three seconds is not fast enough. Like you, like really feel that and like you start to get distracted even in, in a three second window. So what SS t did in originally was. Uh, we deploy everything for real except for your functions. Your functions. We deploy a fake function, and this fake function runs in AWS. Every time it gets a request, it forwards a request to your local machine. The computation is done there and the response is sent back, right? So it's like we're running the function. What's nice about this whole model is everything's like event based. Everything is meant to be like transferred around like this.
+
+So it's very easy to implement something like that. Uh, and what's great is when you hit save and the rebuild happens, it's ready to go at the speed that your computer can rebuild it. So now you've brought it down to like a hundred milliseconds type of cycle thing. So now that's way more, uh, acceptable.
+
+So for us, like, uh, we mirror everything except for that. Even the function that's running locally, it's running in an environment where it has like the exact same credentials it would have when it's deployed. So if this function doesn't have access to a queue, you're gonna get an error because it's running in a very similar environment.
+
+So, yeah I think our approach is the only right way to emulate the cloud. It's actually run it in the cloud. It's hard to emulate it. Um, except for those one area we're gonna carve a little caveat for, but we're still gonna try to make it, make it similar. And for some reason, B D K Sam Soros framework, they have not copied this.
+
+I'm gonna tell that. I'm gonna say it right here. Please copy it. Like everyone needs to just copy this feature. It, it is a good feature. I know, uh, and I've talked to this from some product managers, from these companies, like these projects, like I know people are asking for it. Just do it. It's like a great, it, it just works.
+
+We've done been doing it for years and uh, it is like the thing that, that hooks people.
+
+**Justin:** that's very clever. I love that.
+
+**Dax:** Yeah. Not my idea. But, uh, I think, I don't know who gets credit for either Frank or Jay. I would Frank. Uh, so the team is just the three of us. Uh, Jay is c e o, uh, and Frank is guess technically c t o. Um, Frank is very good at coming up with like freakish things to do in AWS because he is been doing it for a long time. So I imagine this came from him. Uh, more recently we switched it to using the iot core thing I talked about. So it now connects over iot core, which is already provisioned for you, nothing to set up, and, and, and it comes through it works well.
+
+**Justin:** That's
+
+awesome.
+
+#### [00:49:12] Testing
+
+**Andrew:** Nice. So, uh, one last, uh, thing on SS t before we move on to the console in the future, uh, on the docs, I noticed you have, uh, testing utilities, and I feel like for this sort of thing, you usually don't get any sort of like testing capabilities shipped along with it. So what sort of stuff does SST ship for testing?
+
+**Dax:** Yeah, so this is, I'm a little conflicted about this because, uh, the problem I would say, and C D K does a lot of stuff around testing because. Now that you have code, you're looking at it, you're like, I have code, therefore I can now test the code. So people write unit tests for their like c d, K infrastructure code, but I don't think they're very helpful.
+
+And I think most of the time, if you look at what people are doing, they're just writing their, their code twice. They're like writing the c d K code and then like rewriting it as a test. And when they change their c d K code, their test breaks every time. So like, they're not, I think there's like assumption that we need to, you know, write tests for this. Um, it is useful in some cases for some like really, uh, specific things like, okay, I wanna make sure that we never provision a database that's like exposed publicly because that's all expressed in code. You can write a test that ensures that. Um, or I want to make sure, I, I think snapshot testing is great for, for these types of infrastructures, code tests.
+
+'cause like, I. You built it, you know, it works. You don't really care about that detail. You just wanna snapshot that. And if this ever changes, you just wanna make sure the test breaks. Uh, we use those tests a lot because we ship constructs to people. We ship, uh, reusable infrastructure as code pieces, but we wanna make sure changes we make, we're not accidentally like deleting a database as part of this change.
+
+Right? Uh, so we use those snapshot tests, tests a lot. Um, but I think for the, for the average person, like you're not gonna, you probably shouldn't have too many of these. Um, we talk a lot about integration testing because again, spinning up a clone of the production environment cost nothing is gonna happen pretty quickly. Uh, we, we typically have people do a deploy, uh, to like a fake environment. Um, and then they'll do the test where the tests are hitting those real resources. So hitting a p endpoints. Which creates stuff from the database verifying the things that come back. Um, so we're really big on like integration type tests.
+
+Uh, and then you like smaller unit type tests, of course people can still do. Um, that's kind of irrespective of of our framework.
+
+**Justin:** Yeah. That's one of my biggest pet peeves too, is just folks writing a test that literally rewrites the source code or like, or worse is just
+
+testing the framework. It's like, did the framework do
+
+the thing that I expected it to? It's like, well, probably not the place to test that. If you don't trust it that much, maybe
+
+use something else.
+
+**Dax:** Yeah, it, it's very hard to come with useful tests and you tend to come with useful tests in the places you spend a lot of time in, like your application. Uh, you're probably not gonna come up with too many useful tests on the, on the framework side, but like I said, there are, we do have it in there because it is useful here and there.
+
+And like we, like I said, we
+
+use it, um, and it is a question we get. Yeah.
