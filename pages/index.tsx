@@ -85,7 +85,7 @@ export default function Home({ latestEpisode }: HomeProps) {
 
                 <EpisodeRow {...latestEpisode} />
               </div>
-
+              {/* 
               <h2 className="text-xl md:text-2xl mb-2">Sponsor</h2>
 
               <div className="flex items-center gap-4 mb-2">
@@ -111,7 +111,7 @@ export default function Home({ latestEpisode }: HomeProps) {
                     <Link href="/sponsor>">Learn more here</Link>.
                   </P>
                 </div>
-              </div>
+              </div> */}
 
               <h2 className="text-xl md:text-2xl mb-4 md:mb-6">
                 Paid Subscribers
