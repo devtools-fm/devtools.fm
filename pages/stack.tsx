@@ -257,9 +257,9 @@ export default function Episodes() {
                 To capture those viral moments we have social media accounts
                 that we post 90-120s clips to throughout the week. To schedule
                 these posts we use a tool called{" "}
-                <Link href="https://later.com">Later</Link>. With later we can
-                post to all of the platforms at the same time and customize the
-                message that goes along with the video.
+                <Link href="https://buffer.com">Buffer</Link>. With Buffer we
+                can post to all of the platforms at the same time and customize
+                the message that goes along with the video.
               </P>
               <P>
                 While we are editing the podcast we are constantly on the look
