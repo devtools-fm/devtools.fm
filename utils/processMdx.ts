@@ -192,6 +192,8 @@ export async function processMdx(
 
   const [, number] = filename.match(/\/(\d+)\.mdx$/);
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
+  const [, thumbnailId = null] =
+    (data.thumbnail || "").match(/\?v=(.*)$/) || [];
   const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/);
 
   const tabSections = await parseTabs(content, components);
@@ -222,10 +224,12 @@ export async function processMdx(
     guests: [...guests],
     runTime: sectionsTab.sections[sectionsTab.sections.length - 1].time,
     youtubeId,
+    thumbnailId,
     spotifyEpisodeId,
     frontMatter: data as FrontMatter,
     tabSections,
     description: showNotesTab.description.split("\n\n")[0],
+    transcript: transcriptTab.raw,
   };
 }
 

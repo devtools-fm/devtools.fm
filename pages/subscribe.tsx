@@ -57,7 +57,9 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
               <div className="w-full h-[fit-content]">
                 <img
                   className="max-w-64 rounded-lg h-full max-h-[150px]"
-                  src={`https://i.ytimg.com/vi/${latestEpisode.youtubeId}/maxresdefault.jpg`}
+                  src={`https://i.ytimg.com/vi/${
+                    latestEpisode.thumbnailId || latestEpisode.youtubeId
+                  }/maxresdefault.jpg`}
                 />
               </div>
             </Link>

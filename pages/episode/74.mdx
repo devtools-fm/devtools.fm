@@ -1,0 +1,975 @@
+---
+title: Isaac Schlueter - npm, Tier
+youtube: https://www.youtube.com/watch?v=1f-4Y-hbomQ
+thumbnail: https://www.youtube.com/watch?v=9qS55iBBWl0
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Isaac-Schlueter---npm--Tier-e2bralq
+tags: technology, npm, node, javascript, open source, tier, pricing, cjs, esm, startups, company, founder, ceo, package manager
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk with Isaac Schlueter, a founder at npm and Tier.
+We talk about the creation of npm, the early days of node, and the transition from CJS to ESM in node.
+We delve into the challenges of running a package registry (and a company) and his new company Tier.
+Tier is building a new way to define pricing for your products.
+
+- https://github.com/isaacs
+- https://www.tier.run
+- https://node-tap.org
+- https://fosstodon.org/@isaacs
+- https://twitter.com/izs
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+
+<!-- LINKS -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:44] Isaac's Journey with Node.js
+[00:16:35] Ad
+[00:35:44] Reflections on the Journey and Other Runtimes
+[00:45:32] Talking about Pricing
+[01:02:05] The Transition from CJS to ESM in Node
+
+
+<!-- TAB: TRANSCRIPT -->
+
+
+#### [00:00:00] Introduction
+
+**Isaac:** We'd seen what the JavaScript ecosystem looks like without, an easy to use package manager and. It wasn't as good. Like it didn't grow as quickly, there wasn't as much innovation. Like that's just not an option. So the other option was I could pay for it out, out of pocket and it's like, okay, well I don't have, you know, tens of thousands of dollars per month that I can spend on this thing. 
+
+So I thought, all right, well let's probably, we could figure out a way to make money with this thing.
+
+Let's start a company and maybe the company can keep it running. And so that's what we did. 
+
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make ' em. I'm Andrew, and this is my co-host, Justin
+
+
+
+**Justin:** Hey everyone. Today we're incredibly excited to have Isaac, uh, on podcast. So you may know Isaac as the founder of NPM, uh, former, uh, one of the former, like you're the dictator for life for a little bit for node, like back in
+
+the early, early days.
+
+**Isaac:** It turns out for life is only a couple years. Yeah, 
+
+**Justin:** Yeah. A short life, a short while. 
+
+**Isaac:** yeah. For, for a little while. That's what the L stands for apparently. 
+
+**Justin:** Well, Isaac, we're incredibly excited and humbled to have you on. Uh, your work has touched both of us a lot. Uh, I mean, we've obviously had a lot of interactions with NPM. It's been pretty pivotal in in both of our careers, so really, really excited to have you on. Before we dig into talk about more things, is there more that you'd like to tell our listeners about yourself? 
+
+**Isaac:** no, no, I think that that covers the, the rough strokes of it. Anyway, rough outline. We'll get into more 
+
+**Justin:** Yeah, absolutely. Sounds great. 
+
+**Andrew:** Yeah. 
+
+
+#### [00:01:44] Isaac's Journey with Node.js
+
+**Andrew:** So before we, uh, move on to like what you've been working present day, uh, I wanna touch on the past a little bit just because, uh, as Justin said, uh, npm and Node, I don't think I'd be in my career where I am in my career without both of those things. Like the biggest, uh, npm package that I have is an automated release tool that's built on top of SemVer.
+
+So lots of layers of Isaac, uh, all throughout that project. Uh, so you, you have seen the node project from the start. I just wanna get a little bit of perspective of like, what it was it like at the start and like, did you guys think it was gonna be this, like, industry defining of a thing at the start and Yeah, just how does it feel now?
+
+**Isaac:** so at the start, uh, I, I got into Node when cI actually got into server-side js before, before Node was really a thing. Uh, there was a bunch of different kind of explorations and ideas and stuff being kicked around. And, and mostly it was just because I was tired of having to write, uh, PHP on the server and JavaScript on the client, and I was like, well, I can't. Neither of these are like particularly good languages per se, but, um, you know, at least, at least if I could just have one of them that would, that would maybe make my life a little easier. So I started, uh, getting into server side JS. Uh, there was a group called, um, the server JS group, which kind of became then later, um, common JS because, uh, they incorporated, um, folks who were working on the, the, um, extensions platform at Firefox.
+
+And, uh, I wanted to implement a lot of the same APIs, so just kind of come up with a, a sort of a standard library was the idea, that all of these different implementations could use. And the assumption was always that. you know I mean, just culturally in JavaScript, we have many implementations and they all kind of interoperate and compete and, you know, compete for Mindshare or whatever with, with web browsers.
+
+And that is generally, I don't know if, if not a good thing, it's at least a expected common normal thing. and, uh, uh, yeah, so then, um, node came out and really kind of shook things up because there was, there was a lot of stuff in the common JS sort of discussions and specifications they were coming up with, um, that didn't really make sense in an asynchronous environment and an event oriented environment.
+
+So, uh, you know, things like file APIs and networking APIs and stuff that sort of assume that you'd be running in a threaded context or in a fully synchronous context. Um, which if you're implementing on top of the JVM or something else, that, that's kind of the most sensible way to go about, it's the most straightforward way to go about it.
+
+So. Note came out and it was 
+
+just, the thing that really, um, 
+
+jumped out at me at the time was like, this feels like JavaScript, like this doesn't feel like it's fighting the language nearly as much as a lot of other, um, common JS platforms felt like they, it felt like you were writing Java or writing C but just with JavaScript syntax. 
+
+and so yeah, I. 
+
+got, I got super into Node and it became pretty clear right away that like, if, if there is going to be, you know, multiple runtimes on the server side, JS world, like it's gonna probably look like this. And there've been a couple of other, um, I mean, there've been server side JavaScript, runtimes, as long as there's been JavaScript almost.
+
+I mean, uh, uh, Netscape had a, uh, 
+
+what was it, live server, uh, thing. And um, you know, there'd been a couple of other forays. It was even a, a few like pass systems at the time. Um. 
+
+Microsoft Active servers pages, you could write a JS script forever. So it's, it, none of it's really like brand new ideas. But, uh, the thing that was interesting about Node was it was, it was fully event oriented and asynchronous and felt like JavaScript without requiring that you sort of artificially constrain your program into this dom, you know, style of object models.
+
+So like with, uh, active server pages and JS script, you would have a script run at equals server and then you'd put your JavaScript code in that. But it's like, how do you use that to write a program that like, I don't know, reads a jpeg file and compresses it or, or changes or whatever, right? Like just does random stuff.
+
+Um, so it wouldn't be like a replacement for, 
+
+you know, we wanted something that would be a replacement for Bash or C or Pearl, like just one of these like general purpose languages that happen to also be really good for writing web servers. 
+
+So, yeah, node, uh, node really fit the bill and, and I kind of got into it very early on.
+
+And, uh, 
+
+back in the day when there was, you know, a, um, I think a lot of people don't, like, GitHub is so synonymous with poll requests. Now. People forget, there was a GitHub before there was poll requests. Um, 
+
+but most of the activity around Node in those early days all happened on a Google mailing list, which is still, you know, archived in the Google groups if you wanna go research history.
+
+and for a while, I mean there was like single digit, dozens of people involved with Node, and they were sharing interesting things and saying, Hey, you know, I. I published this module, it does X, Y, and Z and like in order to install it you have to pull the get repo and then run, make, and then it depends on this other thing.
+
+So you like have to check out the Submodule and Cop and, and build it as well and then copied it into this place. And then it all just works if you load this one specific file. And it's like I was, I was wanting to like build real things with this. So that meant, you know, pulling in a lot of people's code and, and playing around with other things that people were were doing. And that got really tedious. So I started, um, there was something in the common js, um, specification group that was like the packages spec. And so I wrote sort of an implementation of that. it deviated pretty, pretty widely from it actually. It didn't really like comply with the common JS spec 'cause it had a bunch of stuff in it that I just either didn't think was a good idea or.
+
+Just didn't make sense in a node context. 
+
+and the main thing that I really wanted to, uh, uh, to ensure was that if you, you know, we could avoid this sort of dependency hell, dependency hell as it was known in, you know, 2010, 2009, which is different than what people mean when they say the word now. The meaning has really changed.
+
+what it meant then was like, you know, I depend on module X and X depends on module Y at some version. And then sometime later I install module Z, which also depends on module Y, but it's a different version of Module Y. I have never heard of YI don't know why it's in my stack. I don't know what it's doing there, but it's telling me, and I, I ran into this so much when I was, um, working at Yahoo.
+
+Like this was just like the bane of my existence. Uh, 'cause for whatever reason, on every team, I ended up being like. The package manager guy, like the tool Smith guy who was in charge of our build script and making sure everything ran, which was weird 'cause I was also a front end developer. But, somebody had to do that job, right?
+
+And so, you know, we would update something and it'd be like, oh, uh, lib, N-I-C-U-F-F-I, it can't, you know, you can't upgrade this random PHP module because this other thing you've like never heard of. It conflicts with this different version. And I'd be like, combing through the dependency graph to figure out like what is the resolution of just, it's like this is, computers should do this for me.
+
+This is terrible. so with NPM really from the beginning, I made sure that like, if, if you have two different conflicting versions of something in the tree, it's fine. It'll just like load in this like sort of isolated. Space and each thing will get the version of all its dependencies that it says it can work with.
+
+Um, and everything's great. So the, what that actually did, which is really interesting, is like, you, you reduce the friction by doing that. You reduce the friction to using dependencies because why not? Like the only reason you wouldn't is that like, you know, the more dependencies you have, the harder it is to install.
+
+Well, you remove that obstacle and very quickly what we saw is modules got smaller and smaller and smaller. Because again, like why not? Who cares? It's not gonna conflict it. If, if it does, it'll just load another one. It's no big deal. Um, and, and thing, the dependencies that things pull in got, you know, those lists got longer and longer as a result because each thing is smaller and smaller.
+
+And so instead of, you know, one giant kitchen sink dependency that has everything you could possibly need in it, like you see a lot in. Most language runtimes right in, in Maven, in in, uh, pear and, and CAN is pretty common. Um, 
+
+we ended up in a state where we have modules like is odd, which is, it does a dependency on is even, which has a dependency on is number right.
+
+It's like, I mean that's, that's the absurd of example. But there are less absurd examples that are still pretty absurd by comparison to most other runtimes. So, um, now what people mean when they say dependency hell is, I have too many dependencies, but it's like, yeah, but they all built and you didn't actually have to look at them like, you're just complaining 'cause it's too easy is the problem.
+
+That's You're welcome. 
+
+Um, 
+
+so I guess, uh, uh, yeah, so I started sending people poll requests to add, uh, package JSO files to their, to their packages and caught on pretty quickly. Um, there were a couple of other package managers. That People had had sort of sketched together. And I think the main difference with NPM, it's not that it was better, it's that I quit my job to work on it.
+
+So it had somebody fixing the bugs. That's it. That's, that was the killer feature. Um, and uh, yeah. And then, and then once it kind of took off, it, it ended up more or less taking on a life of its own, um, everybody using it for everything. 
+
+**Justin:** I wonder, like in retrospect, looking at back at some of the early decisions and sort of how the node ecosystem and, and NPM itself has evolved, uh, are there things that you think now that you would've like, made slightly different decisions at that time?
+
+**Isaac:** well, I mean, 
+
+obviously 
+
+yeah, there, there, there definitely are. 
+
+I think, uh, I mentioned this recently. There was this, you know. This meme going around of like, Hey, senior, senior devs, like, what's, what's like your, you know, your biggest screw up that you ever pushed production? Uh, and I, I mentioned, yeah, my worst one was, uh, uh, which I pushed the production and it didn't even get noticed for about six years was, um, that, and it made perfect sense at the time, right?
+
+It's like a crud system. If you can, if you can write to it, you should be able to delete it. That just makes sense. And so you could NPM unpublish a package and that was never a problem until it was suddenly a really big problem. I'm sure, I'm sure most people have heard of Left Pad. Uh, what's, what's kind of interesting is sometimes, like, even though, um, very quickly we, we, we closed that, that hole, right when that happened and we saw what a big, uh, just what a big mess that caused, um, and realized like, oh, this, this is not like. Packages on NPM aren't just like some rando's little hack project, like this is actually kind of an ecosystem, and these things are inter interdependent. If you can just yank something out of the, out of the web there, it, it causes a lot of hassle for a lot of people. so we, we made it so you can't just delete a, can't delete a package.
+
+Um, there are still some cases where you can unpublish something, if it has no dependencies, and it's, you know, been published within the last 24 hours and, and, and, and it's like, I still sometimes, like I'll publish something and they go, oh, whoops. I meant to do diff, I meant to give it a different name.
+
+I try to unpublish it. And NPMs like, no, somebody wants this. I'm like, 
+
+
+
+how? Nobody's ever heard of it. It didn't even exist five minutes ago. Um, but yeah, I, I think, uh, I think just like making n the NPM registry. Append only strictly append. Only if you leak a secret. Too bad it's leaked. Like it was leaked anyway, you know?
+
+'cause there's downstream mirrors that don't, uh, don't necessarily, uh, respect deletes. Um, 
+
+**Andrew:** so yeah, that, that's, that's one, one big thing I would've done differently, I think. otherwise, yeah, no, uh, all, all the bad decisions were other people's. Yeah. It, it's, it's cool to hear that, like I definitely, uh, relate with like the front end guy that just like, for some reason is kind of just doing tooling and doing, doing infra, just 'cause you have like. The experience and you've done it a lot and it just kind of like comes down on upon you. And it's also super interesting to me that like you went through all of this and got us out of the first circle of dependency hell and into the second level.
+
+It's funny that people like wouldn't even like, like they'd probably look at the, the first dependency hell and go like, oh, that's like, that's not that hard. Really. Like, it's a much less problem. There's like, you're, you're just trying to install a few dependencies and get them to work together. Now the problem is we're trying to install thousands and get them to work together.
+
+So we've definitely like leveled up the game a lot.
+
+**Isaac:** Yeah. I mean, at least it's, at least now it's just a runtime problem though, right? Like, it's just, it's just your code that, that needs to worry about it. Um, I think also in hindsight, uh, I, I did not understand at the time, I didn't fully comprehend at the time, um, just what a massive pain peer dependencies would be.
+
+Um, peer dependencies in case people 
+
+don't. Don't fully know. It's, it's, it's a way to say like, I depend on this 
+
+or, or, but 
+
+I, I don't, I don't use it directly, but if you're using my thing, you have to use it with this version of this other thing. So like a React component that only works with React 18 and up or something like that.
+
+it doesn't necessarily have a dependency on React. If you installed a separate different version as its depth, that wouldn't work. The whole point is it should be working with this other thing. and yeah, from a, from the point of view of like, so that can actually get you back into that first ring of dependency hell, right?
+
+If I install two things that have a conflicting peer dependency, they actually can't be installed together at the same level in the tree. It took until NPM seven that we actually had an implementation of this that actually resolves peer dependencies. And the algorithm for doing it is kind of, kind of required just sort of a ludicrous amount of work.
+
+there are some things like pub sub like or pub grub and some other algorithms that are, that are pretty effective for at least trying to have heuristics to resolve some of these more challenging situations, um, that arise in, in dependency graphs. but it is, I mean, at the end of the day, it's like this is an NP hard problem.
+
+Like sometimes it just has to be like, I don't know, human, you figure it out.
+
+
+#### [00:16:35] Ad
+
+This week's episode is once again, sponsored by Raycast Ray cast is an app for Mac that's like spotlight, but a whole lot better. Besides just doing the standards, things like opening files, URLs, or apps, you can do a whole lot of really cool thing was that all the extensions that they provide. 
+
+One extension that I've been using a lot lately is another utility that just replaces a default tool of my Mac. So I have to use my activity monitor a lot to kill processes, or sometimes I use the command line to do that. But that's a lot of clicks. So recently I downloaded Raycast's kill process extension. And now I can kill a process really quickly without really losing context or having to click through menus. All for my keyboard really fast, right in my workflow. Right where raycast shines, but Ray cast us, doesn't stop there with Raycast pro you have access to Ray cast AI. 
+
+And let me tell you, having AI at your fingertips at all times, it makes it so much easier to use. This workflow has spread like a disease throughout me and my coworkers. 
+
+So now when I hop on a zoom call or a slack huddle, I'll often see my coworkers pull up their rate cast, quick chat. To solve a problem while we're working through something. 
+
+If you want to learn more about Raycast head over to raycast.com or if you want a more in-depth look at what Ray cast is and how they got to where they are. Check out episode 38, where we talked to Thomas, the CEO. 
+
+Do you want to advertise with dev tools, FM Head over to dev tools.fm/sponsor to apply. Also, if you haven't signed up for our newsletter, you got to, there's no better place to get notified about all the new episodes dev tools is putting out as well as all the cool dev tools news that's happening week to week. And this week we just opened up our discord. Come join us. And with that, let's get back to the episode.
+
+**Justin:** I am sure you have a lot of, uh, other really interesting war stories over your years at NPM. Uh, what's, what's besides the left pad thing, what's one of the most memorable?
+
+**Isaac:** You know, one of the tricky things about being a founder or ACEO or, or you know, any kind of like leader at a company is you end up with a lot of secrets that you're like, legally required to not ever share. Um, but, but would make really good content if you could. Uh, 
+
+I. 
+
+don't know. Um, so, uh, I mean, a lot of them, it ends up sort of, uh, if I, if I were to try to tell the story in a way that's, um, I. Sanitized for, for our purposes here, it wouldn't be super interesting. It'd be sort of what you could read just by looking it up online. I will say one thing that's really interesting, which I didn't, I didn't appreciate until I was sitting in that, in that position, is I, I just, anytime there's drama at a company, anytime there's a reason for people to be mad at a startup, at a company, at a founder, at an employee, whatever, and it, and these sorts of kerfuffles like leak out into the public sphere, it is without fail different from the story that you heard like 100% of the time.
+
+I'm, I'm willing to, like, that is a, that is an absolute, you never get the full story. Um, that's not to say that you shouldn't be mad at the person that the story makes you mad at. Maybe you should be a lot madder, right. Uh. Most often, like what ends up happening is like these stories and these situations and these things like get utterly stripped of any of their subtlety and they get sort of packaged into like the nearest approximation that a reporter could get someone to tell them, and a reporter could wrap their head around and 
+
+sort of package into a nice bite-sized story.
+
+Um, most often everyone involved is super messy. Everybody is, everybody is implicated. Everybody is doing their best. Everybody's trying very hard and means well, like, and, and everybody screws up and, you know, has, has insecurities and emotions and everything else that makes human beings messy. So 
+
+yeah, that's, that's kind of the main, the main takeaway I had there.
+
+you know, and we, we had a handful of those. We had some, 
+
+**Justin:** I hired ACEO. Uh, 'cause it's what you have to do sometimes, um, when you're a venture backed company and your investors insist, um, that didn't go as well as it could have. 'cause, uh, to put it, to put it very lightly, a hard role to hire for, to be fair. I feel like giving someone, the helm a, finding someone who's risen to that position, who's not a complete sociopath and no, no, no. Shade on 
+
+sociopaths and
+
+**Isaac:** people have to exist, I mean impossible impossible
+
+requirement right there. 
+
+
+
+you know, and, and the thing that made me realize, like going through, going through that of a couple of, of just sort of brutal news cycles at NPM, um, and also seeing the whole, like IOJS no Js thing up close. And then seeing the just wide difference in like public perception versus what was actually happening and how the two are like, not even really connected, you know?
+
+And people would be like, mad at joint for something, and I'm like, 
+
+no, that's not, don't, that's not the right reason to be mad at them. Like 
+
+that's,
+
+it's it's not even that you're wrong, like you're mad at the right person, but for the wrong reasons. Actually, that thing that you're mad about was a good thing that they did.
+
+And this other thing I can't tell you is why I'm mad at that. 
+
+Um, 
+
+so 
+
+yeah, 
+
+that was 
+
+you know, that was, that was always one, uh, 
+
+the big takeaway there for me, the big like growing up thing was realizing that like, yeah, the story on Twitter is wrong 
+
+**Justin:** Well, I think Twitter in particular is a platform with no nuance, right? I mean, it's constrained by design and, and also I think as we've had decreasing attention spans, even our news articles can tend to be smaller and like lacking in context in some way. So I feel like these situations are more prominent now. 
+
+
+
+**Isaac:** I don't know if I agree that it's Twitter. I think we've been, I think we've been idiots forever. 
+
+Like, I really do. Because, because even, even when, even when you have longer form things or, or you know, the situations where it's like, you know, where there's room to kind of discuss and get into the nuance, right? Like things like actual news articles or Reddit or Hacker News, or like just meeting somebody and talking to them about it, right? Like you, we are just so prone to, we're like, we're so optimized for the story that we can wrap our head around and accepting that, I mean, even if you look back, like, I mean this, this stuff goes back as far as we have history for, right? Like, people have always kind of accepted the easy, uh, the easy to understand story. And then when you start getting into the nuance, you realize like, oh, like it's way more complicated. I don't know.
+
+Most of it, in fact, I can't possibly know most of it because it's gone. Right? It's just like, 
+
+**Justin:** yeah. 
+
+**Isaac:** that's just reality. Like our, our histories are invented on the fly. 
+
+Sorry, I was getting a little, a little far afield. A little 
+
+meta.
+
+**Andrew:** no, it's, it's fine. Uh, o one more last question on the past before we move on to what you've currently been working on. Uh, no Node and npm have been managed in very different ways. Like Node is more of like an open source cross company sort of thing where npm became, as you said, a private venture backed company.
+
+So, uh, do you think that happening was better for the long-term health of, of npm and like kind of set it up to be where we are today? Or do you think it could have gone the same, uh, route as node. 
+
+**Isaac:** well, node and NPM are very, very different things, right? They're, they are connected only in so far as like, NPM is a node program, um, and it's used by a lot of the same people and like they ship together the, the client ships with the node binary. But like the, the actual work of maintaining it is very different.
+
+Um, the code base like the API Surface of the NPM client is relatively small, um, compared with the API surface of node js Right. Um, and the, the amount of, kind of, uh, complexity involved with maintaining the code itself, like the client code itself is dramatically smaller. On the other hand, NPM is a web service.
+
+It's a, it's a, a hosting service and a distribution platform. It's got, you know, CDNs and servers and so on. And that part, like Node doesn't have, that node has some build processes that like mostly run on GitHub actions and Jenkins, like, that's it. That's the server side bits of, of running the node project.
+
+I guess that's a website too. and so just like where the investment is needed, you know, like Node needs a lot of people contributing time and attention to the code base itself. And that actually lends itself really well to a, a big community run sort of foundation run project because what you need is just to like throw.
+
+Throw Debs at it. Um, NPM on the other hand, doesn't actually need a huge staff or a ton of people. What it needs is like good ops and hosting bills to be paid. so, uh, yeah, to no node. Actually, Ryan wrote it, wrote the, kind of the initial version, which wasn't really very useful. Um, oh yeah, it was useful.
+
+It was cool, but it wasn't like nobody was putting it into production. And then he was hired by Joy and they also bought as part of his, you know, hiring, they, they acquired the, the node ip, so you know the name, the code, the platform. That's why everything is copyright joint when you look at the, in the code base, um, or everything before you know the move to a foundation. 
+
+So.
+
+It was actually also run as a, you know, a private for company for-profit, uh, company for a while. npm So we got to a point when I was, I was working at Joint for a while, I, I, I joined, um, Ryan actually recruited me, um, and we worked together for about a, what about two years. And then I stayed on for another, like close to two years as, as the, you know, the BDFL, the benevolent dictator for a little while, uh, until I left as well.
+
+When I joined, I mean, I'd already started NPM 
+
+and or I'd already, you know, created the project. There 
+
+was no company 
+
+yet 
+
+and 
+
+they didn't really wanna. Well. They kind of,
+
+there 
+
+was once kind of a half-hearted offer to acquire NPM as well, and I was like, there's like too few zeros on this offer, so no thank you.
+
+Um, like I don't, I don't think we're even, it didn't get, even get to the point of like writing anything down. I was just like, mm, nah, I'll just keep it. Uh, so it, it, uh, hosting was donated first by, um, couch io, which became Couch One, which became Iris Couch, which became No
+
+Jitsu. And
+
+then it got to the point where no jitsu could not, uh, continue offering that for free.
+
+They couldn't afford to keep doing it. And, um, there were some pretty big issues that happened. I don't know if you were, if you were around at, uh, end of 2013, there was a, there was a month there where we had like one nine of uptime and It was not in the tens place. It was bad. Uh, it was, I, I, that's not exaggeration either.
+
+There was a, there was like a, a week or something where there was like 9.8% uptime. 
+
+So that was that was kind of a disaster. And it was pretty clear that like, this thing needs funding, it needs backing, and it needs it in a hurry. So I looked at what I could do. There was like a very short list of options.
+
+Um, I could just let it die. I could say, well, this was a, this was a, a good run and figure something else out. Now I guess start putting your packages, you can get repos or 
+
+something. Um, and that idea, just like that seemed like it sucked that that wasn't good. Like we, we'd seen what that looked like. We'd seen what the JavaScript ecosystem looks like without, uh, an easy to use package manager and. It wasn't as good. Like it didn't grow as quickly, there wasn't as much innovation. Like that's just not an option. So the other option was I could pay for it out, out of pocket and it's like, okay, well I don't have, you know, tens of thousands of dollars per month that I can spend on this thing. Like, that's not gonna happen.
+
+Um, 
+
+find another corporate donor wasn't super into the idea of, you know, Google or whoever, like owning NPM at that point in, in time. And, um, you know, joy actually offered to, to take over running it and, and providing hosting and stuff. But again, in exchange for taking the ip. And I was like, no. Um, plus that's just like, okay, then I just have a job.
+
+Like, and I don't actually get a ton of control over, like how this is gonna be run. Or we could start a company, um, or I could start a foundation. Starting a foundation took, takes more time. And 
+
+really sort of creating something that has the ability to 
+
+generate 
+
+the amount of, of money, like cash that's needed to keep a service like that Running as an open source foundation.
+
+Like a five, oh, what is it? 5 0 3 B? Um, uh, trade. Trade. What is it? It's like a, 
+
+oh, I forget it. 
+
+Um, it's some, it's like, it's not a, it's not a charity. It's a, uh, but it's a foundation, which is a, not-for-profit. That's like designed to be a consortium of people within a given, uh, of companies within a given industry.
+
+That's how most open source foundations are. And so doing something like that, that could, that could produce like the actual amount of, of capital and revenue to, to keep this thing running was just a lot of, you know, it'd be a pretty tall order. Uh, it'd be a pretty 
+
+uncommon 
+
+So 
+
+let's 
+
+So I thought, all right, well let's probably, we could figure out a way to make money with this thing.
+
+Let's start a company and maybe the company can keep it running. And so that's what we did. 
+
+you know, I, I think, uh, given my experience with it and given my sort of what I saw, 
+
+**Andrew:** 
+
+**Isaac:** again, you know, stories are always more complicated and more subtle than you think, like people think it's, it's not uncommon to find somebody who thinks that like VCs are evil or like, VC money is suspect, yada, yada, yada.
+
+And like, I, it's not as simple as saying that VCs are evil. There's a lot of evil VCs. I'm not saying they're not, but like. Also, there's a lot of evil founders, and a lot of times they just let the VCs be the bad guy because, you know, you know, you know those venture capitalists, they're just forcing me to not give you guys any kind of piece of this exit.
+
+No. It's like, yeah, no, you just, you just wanted to keep the money for yourself. That's all. Um, so yeah, that's another thing as a founder, you find out like, oh, I've got all kinds of freedom here. 
+
+**Justin:** 
+
+**Isaac:** All that stuff that people said venture capital's forced 'em to do. Like they, that's just, that was just you being greedy.
+
+Um, 
+
+**Justin:** actually.
+
+**Isaac:** the things they actually force you to do or way worse. 
+
+yeah, 
+
+so. 
+
+So, we started this company and, um, it was good for a while. We, uh. We did. There are definitely some things in terms of like 2020 hindsight that I would do differently there. I think we over-indexed on, uh, trying to create an enterprise product, trying to create, create like a standalone host your own enterprise version of the NPM registry.
+
+A nobody wants that. B the people who do want that, they don't want it just for NPM. They want a, a thing that they put in their data server that handles everything, that handles their, get repos, that handles their files, that their accounting team is managing that handles, you know, pearl modules and, and the downloadable binaries or the things that they ship on their web.
+
+Like they want a end to end whole company 
+
+artifact solution. And the space isn't that big. They're not willing to pay 
+
+that much 
+
+for it. They're certainly not willing to get more than one of those things. on the other 
+
+hand. 
+
+People who are much smaller, you know, or, or companies that are much smaller or individuals are willing to pay a couple bucks a month for like, look, I just need to like a place to put these artifacts.
+
+Like I've got everything else managed. I just wanna be able to like have us all share our stuff, right? They'll pay a couple of bucks for that. They pay for a private GitHub account. They pay for, you know, Google apps for domains so that they can share their spreadsheets. Like they're not looking for an all-in-one solution.
+
+They're looking for a lot of cheap, easy, like click a button and it just works type of solutions. So what we found was we spent all of this time and all of this attention and energy on, you know, building and marketing and selling and trying to, to be successful with this 
+
+like enterprise solution that you could stand up in 
+
+your own 
+
+data center. And for a little while it was providing about half of our revenue. And then, um, we, a, a big cus big company, uh, big customer churned, and we just never really recovered from that. And 
+
+meanwhile, 
+
+despite receiving approximately zero of our marketing budget and literally zero of our sales budget, uh, the, 
+
+the sort of SMB and individual, uh, private packages product just kept steadily growing until it was producing a significant chunk of our revenue.
+
+and 
+
+yeah, I mean, in hindsight I would have, long while I still had control enough of the, of the company and control enough of the shares of the company, I would've just dropped our enterprise product, like, like a bad habit and. Said, look, we're just gonna focus on the SMB thing. We're gonna market the hell out of it.
+
+We're gonna try and get this thing to grow organically. Um, it's what I knew, it's what I understood kind of how to, how to run. But I was like, 
+
+we had pitched this enterprise thing in order to raise money. We had a bunch of investors who had had, you know, good success 
+
+with companies like, um, like HashiCorp or, or Snowflake that did an open source thing and then went and sold the big enterprise deals. And there's something to be said about it because enterprise deals have an unlimited, virtually unlimited upside per deal. Whereas, um, if you're selling something as a SaaS, as a, as a self-service SaaS, your, your total top line, like your total upside potential, your total customer value potential is pretty low per customer. Um. 
+
+So even if you're getting, like, you know, and getting a million customers that pay you $10 a month 
+
+is objectively worse than 
+
+having one co one customer that pays you $10 million a month. Right? Like, it's more risky to have that one because like, happen with us. Like they can churn, but that's one person.
+
+You gotta keep happy. Like easy. You're right. And you, and there's a thousand more of them. So the the upside is, is much bigger. 
+
+Um, but yeah, it didn't, it didn't end up working out for NPM. 
+
+
+#### [00:35:44] Reflections on the Journey and Other Runtimes
+
+**Isaac:** Um, I kind of came to this conclusion way later than I really ought to have, and by the time I did it was like they were able to kind of put their foot down and be like, no.
+
+Like if you don't want to sell our enterprise product, we want ACEO. Who will? And I was like, Ugh, all right, fine. Because it was basically that, or. Get fired from my own company, so I did not want to go that route. 
+
+so, 
+
+uh, 
+
+yeah, where were we? Okay. So yeah, running NPM running node very different. in the end, I think, uh, you know, we, we had an exit that did not put anybody in a position where they could like retire and be set for life.
+
+It was like I got a good job and a bit of a bonus. Um, I think when I looked back over the, over the last 12 years, kind of sadly, I was like, you know, if I just like had stayed at Yahoo all that time, I would be better off financially than I am after this sale of the company. Um, but it was also a lot more fun and interesting. 
+
+or at least interesting. interesting 
+
+**Andrew:** Well, I, for one, am thankful for you going on that journey 'cause uh, it, it has been a pillar in like, my development journey throughout my life. So, th thank you for going on it. Uh, I love NPM and I hope to see it stay around for a long time. 
+
+**Isaac:** Well, and I mean, the thing is like, GitHub's not a bad place for it. I think, um, as, as exits go for like what was, it's tempting to like, look at any company, we, we have this idea that like our fiduciary duty as, as company founders or leaders or whatever is to like maximize value for shareholders and like, okay.
+
+So I kind of failed at that. Like, but the purpose of NPM, the actual mission of NPM was not to make money for its investors. I mean, that was legally what it had to try to do. Um, 'cause that's what a Delaware C Corp is kind of required to do. But it, um, you know, for me personally, my intrinsic motivation was like making sure that the registry stays running and that the system can kind of continue and keep going.
+
+And like . GitHub's committed to that. I believe that GitHub's committed to that. I may, I mean, I don't know, maybe they'll shut it down tomorrow and I'll feel like a jerk for saying that. But like 
+
+it's, it's gone a lot longer than it would have if it had just stayed a side project, that's for sure. 
+
+**Justin:** Yeah. 
+
+**Isaac:** So reasonably, you know, middling 
+
+success. 
+
+**Justin:** It's, a very valuable story to hear 'cause it is OI mean, one thing that we talk to a lot of folks who do dev tools, uh, or build companies around tools. I mean, a lot of these start as open source. A lot of 'em start as passion projects or like, Hey, you know, I wanna do this and then I wanna turn it into some business.
+
+Uh, and we've seen a lot of different models and, you know, sometimes you go more the acquihire route of, you know, Ryan and Joy and sometimes it's like, you know, gonna start a business behind this or try to bootstrap a business behind it. But I think all these learnings are, are, or incredibly valuable to hear anyway because, you know, I, I think as pivotable as NPM has been, just not only in the service itself, but in how it's changed, how we think about dependencies, both for good and for bad, uh, I think it's been incredibly valuable.
+
+As a key like source of inspiration. And I hope that, you know, other people hearing this can, uh, learn some lessons from your journey, but also be encouraged to sort of take their own steps and, you know, figuring out how to make their, you know, tool the, you know, thing that they can, they can do. I, I always, I always advocate for people to do what they're passionate about.
+
+You know, if you can make it financially viable, do it, 
+
+you know. 
+
+**Isaac:** So one, I mean, one thing that I think is, 
+
+
+
+uh, just, just part of being old and cynical, like there are. There is a kind of a common pattern now where you will see a tool get very popular and, you know, we're seeing this with bun, we saw it with Deno, and it, it gets popular in part because it's a legitimately useful or interesting or innovative tool.
+
+Yes. But also because there's a financial entity behind it that's pouring marketing into it. and again, like I'm not, I'm not trying to say that NPM wasn't that kind of thing. I mean, it wasn't for the first four years, it was just my own thing. Like the, the sum total of the marketing budget was every once in a while I would like make some Snickers and hand them out 
+
+at a meetup or something. But like the, um, you know, then we had a, we had a company and we raised a couple million dollars. Like, we spent a bunch of that on just trying to get people to like, feel good about NPM and know about it and use it and talk about how great it was. 
+
+And what can actually happen is that like sometimes that the, that like marketing machine, that engine of capital that gets put behind a company.
+
+Like, you know, I'm gonna pick on BUN a little bit just 'cause it's sort of like the most recent thing, but there's nothing, this isn't unique to BUN at all. but it's a common pat, it's a common enough pattern that you see in this, in this kind of hype cycle, right?
+
+Like 
+
+there 
+
+are. 
+
+Um, you know, and I don't wanna, again, like, I don't want to pick on BUN in particular, but just use it as an example. Like there's a company behind that. That company has investors. Those investors decided to put up quite a bit of money in order to build this thing that they hope that they have been led to believe will lead to some financial return for them and their limited partners. Um, that's like, that's how the game works. And so what happens if that does happen, if that doesn't happen, and like, what do all of those outcomes kind of look like and, and what does that mean in terms of like the believability of a lot of the marketing messages? I think that Jared Sumners is generally.
+
+Acting in good faith, right? Like he's been working on BUN a long time. He's done some really interesting and good work on it. Like, yeah, that's, that seems great. one of two things is probably going to happen. Either BUN will become extremely popular and useful and they will figure out a way to monetize and whatever it is that they're doing for money will become their main priority or it won't, and then that's really kind of puts the whole project in a very precarious position because now you've got, like, you know, like if you buy a house and it turns out that it's like not livable or whatever, you don't just burn it to the ground or say, okay, well whoever can have it.
+
+No. Like you, you go in there and you rip the pipes out and you try to sell 'em for scrap metal or whatever, like, that's what happens. It gets, it gets 
+
+pretty gross when things start going that route. And there are entire industries that are like designed to do this with companies that will like chop up a company and try to sell its IP for parts, you know, for pennies on the dollar. 
+
+So yeah, so I am somewhat, I, I have a, a somewhat of a like, you know, reserved level of excitement every time I see one of these like, oh, like great new best ever node killer, blah, blah, blah. I'm like, okay, cool. Well, like you're, you're only saying that because you've been paid to. So a, like, I don't entirely believe you.
+
+And B, good luck with that. I wish you the best. And I am going to keep sort of putting my, you know, putting my actual like, reliance on things that are a little bit more, um, you know, reliable for the long term. I'll keep an eye on it. I like bun. I think it's great. I just, It's also VC funded, so it's potentially can turn into 
+
+a somewhat dangerous animal to really rely on 
+
+**Andrew:** Yeah, whenever I hear those like, uh, exaggerated claims, uh, that come out from new people that are like, another one that I saw recently was like, nue js, which it's kind NUE and it's like claiming all of these things and it's like you made a thing that is probably only existed for a few months. It probably doesn't address like 90% of what the tool you're trying to replace does.
+
+And
+
+you're 
+
+**Isaac:** Oh yeah, that's that's the one that, oh yeah, that's the one that they, they decided to 
+
+die on the hill of calling 
+
+their branch master. Oh, wow. 
+
+Yeah. It's really not a big deal. That's why 
+
+you dedicated a whole section of your readme. Yeah. Okay. Good luck. Yeah, sure, sure. Me, me, me think the lady death protest too much or whatever, like, 
+
+but uh, 
+
+anyway. 
+
+Yeah, I, I think I'd be more successful in a lot of my open source projects if I was, um, more, more aggressively into the hype cycle. I wrote, um, I remember a long time ago I wrote this like blog post that was like intentionally ludicrous about NPM, that was like, you know, top 10 reasons why NPM is the best package manager of all time and blah, blah, blah. 
+
+And like, 
+
+I think it should have been really clear reading it that like, it was a joke. It was not supposed to be taken seriously. I was like throwing in all caps and stuff in there and like, I don't know, people, people cite it as like normal thing. Some people got mad about it. They're like, I just, why are people getting into this like hype cycle?
+
+I'm like, did you, how do you not get this parody? But I mean, the whole front page of, of, uh, like the No Tap website, I have this whole section that's like. Basically just saying like, Hey look, this is my preference and this is how I like things. If you like it this way, you'll probably like this thing, and if not, you won't.
+
+Good luck with that. Like, you know, do whatever you want. but yeah, it's, it would probably be a more popular test framework if I didn't do that. 
+
+**Justin:** Well, as you, as you fundamentally know, popularity comes with its own price, 
+
+**Isaac:** it does, it does, it is not free. 
+
+
+#### [00:45:32] Talking about Pricing
+
+**Isaac:** especially in open source. Speaking of not free, I would like to transition to talk about your current endeavor. Uh, so you are working, uh, on a product company called Tier. I, I, co-founded tier. Um, I've been, I've been in sort of a, uh, not. As full-time with it, I've been actually kind of taking a little bit of a break from it, to, uh, to focus on, on a bunch of open source stuff, which is why I've been so active in open source lately in like the last couple of months. Um, but uh, but tier is really interesting and they're doing some very exciting stuff.
+
+Um, 
+
+so one of the big challenges that I, that I found in running NPM and one of the things that I think made it hard for us to, um, to be as successful as we could have been, especially with our self-service product, was that we sort of picked a pricing model and we're more or less stuck with 
+
+it. 
+
+you know, it, this is one of those things that like 
+
+you can 
+
+tell, you can tell whether somebody's 
+
+actually. 
+
+Run a startup and run a product in a real way in production by how they respond to this story. Like, do they go, oh my God, yeah, that happened to me. Like, that's always, always the way it goes. Or do they go like, I don't get why that's a problem. Why didn't you just, and then they have some asinine reason that it's like, obviously you can't do that.
+
+Um, and I'm like, I went from one camp to the other, you know, the way that so many people do. uh, we, we did a lot 
+
+of like research 
+
+and analysis and thought and careful examination of things, and we decided on like a very sensible like way that we could price our product that made, you know, that seemed totally reasonable.
+
+And it was like trying to kind of capture the value and it was intelligible and we ran it by people and everybody said, yes, I would totally buy this. And like, this matches how we're paying for other things. Like we did everything you're supposed to do. We went out with this plan that was, uh, $7 a month per seat.
+
+Per, you know, per user, basically. And, um, if you were an organization, it was just $7 per number of that organization. And if you're an individual, it's just $7 for your, for your plan. Dead simple. The one thing we kept hearing over and over again was like, the pricing needs to be super simple, easy to reason about, et cetera. And like right away, I mean, right away it started becoming a problem because you have to be a member of an organization in order to get access to that organization's private packages. So what did all these companies do? They said, well, you know, look, we have a hundred developers, but only two of them are ever publishing packages.
+
+Who are, you know, only, there's only four people on our tools team and they're the only ones who are publishing anything. So everybody who's just read only should have like a lower price. And we like, we were like, well, we're not really, like, we didn't really set it up to be able to do that, first of all.
+
+Second of all, like, yeah, that's included in the $7 thing. Like we, we did a lot of math to figure out how much you cost us and how much we need to make. And like, no, if we just, they're like, well, I mean, I'd pay extra for the read write users. You know, when we figured it out, we were like, okay, well if we, if we required like people with Right access to pay like $12 a month, then we can make everybody with read only access, like two or $3 a month.
+
+It would still kind of work out the
+
+same. don't remember the exact numbers, so, you know, that's very hand wavy, but it, it was something in that neighborhood and people would've been okay with that. But again, like we just were using Stripe Inventory billing, like we were just. Bumping a counter up and down based on the number of accounts that there are in your, in your organization.
+
+And we had said that like, that number is worth $7 each per month. And so like striped did all the amortization and everything, changing that ended up being really, really hard because that like magic number, how many seats you have is just like threaded and hard coded through the entire system. Um, we had checks everywhere that were like, you know, there were certain features that were only enabled if you're a paid account.
+
+So there's checks that are like, if, if entity plan equals pro, then blah, blah, blah. And it's like, okay, well even if we wanted to experiment with this, like we're gonna have to run that like feature flag through our entire website on like every page because everything is like hard coded to look at the plan name.
+
+So we can't even change the plan name very 
+
+easily. 
+
+And it 
+
+just all in all, like made it very difficult to experiment. Um, Jeff and McDonald is, was the, um, actually part of the first, he was the first angel investor to get on board with NPM Inc. Um, and so I've known him since 
+
+then and he had a company called, um, 
+
+manifold, 
+
+which 
+
+eventually they, they were kind of like a, um, like a marketplace for SaaS providers.
+
+Um, 
+
+and what he found was that like the really, the, the thing that people found most compelling about manifold from the, from the, you know, the SaaS provider point of view was just their pricing page system. Because they let you like, sort of turn some dials and have a pricing page get spit out. And what he found was company, they would, they would get, um, you know, I told this story, like they would have users complain to them and say, Hey, the price is different on the manifold site from, on the actual website.
+
+Like, how come it's not even like, it's more or less it's just like completely different. Like, why does Manifold have the wrong prices? And they would look and be like, no. Like, well, we're, we're showing you the pricing page that the, the customer like configured it to show like we're doing the right thing.
+
+They reached out to the customers to be like, Hey, like, do you know that your, your prices are out of sync? Like, let's see if we can help you like resolve this. You know, that you can just serve your pricing page from us and then it'll always be synced up. And they're like, no, no, no. We're doing an AB test.
+
+Like this is literally the only way we can do that is that we have like you as one route that people can buy our product. And that's one pricing page. And then we have the other pricing page, which is generated by Stripe. And that's the other way that people can buy our product and we just like have our marketing send them to one or the other pricing flows.
+
+and it was just like, oh my God, this is, that is ludicrous. That is so much extra, you know, overhead. We've heard stories about people, like if they wanna run a promotion and it's, we did some, we resorted to some of the stuff at NPM Inc too. Like, you wanna run a promotion and literally the only way to do it is like, you know, have a button that when somebody clicks it, it like adds a row to a Google sheet and then you've got some poor support staff sitting in Discord or Slack that gets pinged and then they have to go into Stripe and like toggle some button with their human meat fingers.
+
+Like these systems are bad and they're like held together by chewing gum and bailing wire and it's the core of your business. Liter, it's literally the most important thing about your business. Um, because then it's like coming back on the other side, right? Once the sale happens, you wanna be able to go back after a month or a quarter with your BI system and say, okay, well which promotion worked?
+
+Which plan is most popular? You know, like, how much money are we getting from this product versus this other product versus our enterprise thing versus the, you know, 
+
+the self-serve thing, whatever. 
+
+And so that's kind of how the, the idea of tier came about, which was like, what if you could just have something that's like package JSON, that's like, but instead of that it's pricing do json and it's just a configuration that says, 
+
+these are my plans and this is how much they cost. Go make that my pricing. Um. Then in your, in your code, instead of having, you know, if user plan equals pro show, X, y, z feature, you say if user dot, you know, you say, if this user can see this feature, then show it. Right? So you sort of decouple through that layer of abstraction, um, what plan they're on, from which features they have access to. What that means is you can have as many different plans as you want. You could have a different plan for every customer if you wanted, it'd be totally fine. Um, because at that point the, the point of interaction that a dev actually caress about is like, should I show this feature or not? And this user has used this feature, right?
+
+So it's like that's kind of the only thing that you care about in the applications. The only thing the application should care about over on the purchasing side, it should care about which 
+
+plan are. 
+
+they buying and just, that's it. I. Um, on the billing side, it should care about which plan are they on and which, uh, features did they consume or technically which features did they consume at what prices.
+
+Um, and on the, uh, and that's also kind of what the, what the BI cares about, right? Because it wants to know like how do we track those prices back to a plan or, uh, a marketing or promotion promotional activity on the marketing side. And on the presentation side, you want be able to say like, what are the plans and the prices that I want to offer?
+
+And you wanna make sure that whatever you're offering on your pricing page is what they will actually end up paying after they sign up. Otherwise, that is a recipe for disaster. Um, you get users who are very upset if they think that something is gonna cost a dollar a piece, and you charge them $10 for seven of them, and they're just like, this isn't even.
+
+It's not even wrong. It's just like you, I didn't know that it was gonna be divided by that. Like, you know, or you said that they would get 10 free, but you actually start charging them for the after five, like whatever it is. Um, that just causes a lot of, a lot of problems. And also whatever you sell via a salesperson really should go into the same system.
+
+Or at some point you have to reconcile those things. Because if I buy something on the website versus I buy something by signing a document and it being turned on for my account by my account executive, like it should, it should be the same. The app should know that I have access to this feature. So, um, yeah.
+
+So Tier was kind of like designed to be like that missing nexus of information, that missing kind of like orchestration layer. Um. What it takes the place of really, you know, people have looked at it. One question we've gotten was like, oh, so it's just like a wrapper around Stripe. It's like, well, it's a wrapper around all the broken ass crap your company is doing.
+
+Like, it's, it's a wrapper around a lot of wasted time that you're gonna spend re-implementing all parts of price ops if you don't use a tool that just does it for you. Um, you know, if all of this stuff is kind of like hard-coded and threaded throughout your entire application, or implemented kind of implicitly by, well, every time there's a sale, we just know that we have to go update the spreadsheet.
+
+Um, which is like, that's state of the art. That's normal. That's how most people do it. Um, if they're very fancy, they have some integration with their Salesforce system that automatically updates that list. But like, yeah, it's, it's really, um. It's really an area that I think more, more companies ought to spend a bit of time optimizing and could really be much more nimble and much more, uh, efficient and successful if they did.
+
+one thing that's interesting, so that term, uh, price Ops, that was actually coined, um, I think as a, as a joke, uh, by, um, by our co-founder, um, Blake. and yeah, then we, we sort of kept using it and we saw that it really resonated in a lot of the conversations that we had. Um, and so we wrote up this, uh, price ops.org, which is the, the five pillars of price Ops, which would very just shamelessly try to make, look as much as possible, like the 12 Faster app.
+
+you know, and it's got a very similar kind of like approach and just like, Hey, look, this is not, we're not saying you have to use us, but like, this is how you should do it. Um. That just kind of goes through like the main data components and the, the main parts of this overall infrastructure and your overall like process that need to be able to fit together in a compatible way in order for your company to be able to make changes to your pricing model without totally ruining everything, without it being a disaster every time.
+
+And we've talked to companies where it's like, yeah, we wanted to change our pricing in or we wanted to add some like, you know, go from charging per bandwidth to per like unit of storage and it's a six month process that takes the entire company's attention and $3 million. And it's like, what? Okay, that, yeah, you better hope that that was a good idea because if it's that hard to make that kind of change, that means it's not something that you can change every week.
+
+It's not something that you can just like try on a whim. Um. And so you get, you know, these poor product marketing folks who like come in into these startups with all, you know, they, they come in on their job interview, they're all full of great ideas and they're just like, wanna hit the ground running and do a bunch of fun stuff.
+
+And then just very, you know, either very slowly or very swiftly, they're, their spirit is just crushed. It's just like, 
+
+oh, well, uh, to do that is gonna require touching the auth system. And like, 
+
+we don't touch the auth system. Uh, so I don't know, maybe we could find some engineering resources next quarter. 
+
+**Justin:** Yeah. That resonates a lot. Uh, and I, I think this, this is an echo of another theme that we've had a lot on the show of this sort of. Incidental complexity around running a company is just like, people get really excited about the, the original project, you know, the original tool that you're building this thing that you have a passion for, and you're like, okay, I'm gonna turn this into a company.
+
+And then all of a sudden there are all these things that you never really thought about that become really hard when you don't think that they should be really hard. So, I mean, pricing is a great example of that. Not just like how much do we charge, but like how do we actually integrate this and how do we really build a sort of a product layer around this tool that we're trying to sell? 
+
+**Isaac:** Yeah. And yeah, I mean, see the ear, you know, see also the, the earlier comment about, um, when corporate funded open source projects don't pay their rent, like getting evicted is not fun. 
+
+**Justin:** Yeah. Other thing that, just before we move on, uh, I'm always a strong proponent of just like thinking early and often about like what your business model is. I mean, you know, I think there was a time, especially when you could get away with more just like fast and loose. It's like, ah, we'll figure it out down the road.
+
+But like, I don't know that it really behooves you to do that because you're gonna end up making choices that are really gonna affect people's lives. You know, it's like hiring people and like doing a bunch of stuff like that. And, you know, I don't know. I think it, I think it's, uh, I won't say it's like a moral prerogative, but almost to that degree it's just like, you know, you should really think about it.
+
+Of course. 
+
+**Isaac:** I think it's fair to say it's a moral prerogative. I mean, I, I think, you know, with great power comes great responsibility, and if you're running a company like you, kind of have more power than most of the people that you employ. 
+
+it's, it depends on obviously what market you're in and what you're doing, right?
+
+If you're, if you're hiring, if you're hiring software developers who could just walk down the street and get a job anywhere, like, they obviously have quite a bit of, of leverage just through that, but. You know The company is always in a, some is in a stronger position, like the company has a bunch of lawyers and a bunch of capital.
+
+Like how many employees come into that relationship with a million dollars in the bank and a team of lawyers on their team? Like none. But that's not uncommon for the company to have. In fact, it'd be weird for it not to. So like, yeah, it's, it, it is absolutely a, a huge responsibility. I think if you have, if you have employees to like, make sure that you are thinking very carefully and, and very upfront about like, if you don't like what you know and what you don't know.
+
+we try to do that at NPM, at least to be, to be pretty clear about sort of what the plan was and what we hoped would work and that it was a risk. Um, but also it's like the longer you go, the more . The more people assume you must know what you're doing. That's not always the case.
+
+Okay. 
+
+
+#### [01:02:05] The Transition from CJS to ESM in Node
+
+**Andrew:** Uh, so switching gears a little bit, uh, no Node is currently and has been going through a transition from, uh, CJS, which you are a, a, a large like proponent of, and like the person who wrote the initial implementation too, I think, 
+
+**Isaac:** I was, involved. I don't think I wrote it alone. I definitely touched it a lot. Yeah. 
+
+Fingerprints all over it. 
+
+**Andrew:** currently the whole ecosystem is going through a transition to ESM and this transition, uh, has not been, uh, a quick or a smooth one.
+
+**Isaac:** Uh, a lot of people have compared it to the transition of Python two to three. So, uh, from your perspective, why do you think it's taken so long for us to get over the finish line and, uh, what do you, what do you think needs to be done to get us there? Like, recently I saw a tool from you called, I think it's called Tushy, That's, that's one way to 
+
+pronounce 
+
+it. 
+
+**Andrew:** Uh, and that tool lets you, uh, easily ship dual C-J-I-S-E-S-M support for a TypeScript package. Uh, so I, I like seeing tools like that, but do you think that's something that we need to get past the finish line, or what do you think, 
+
+that process is gonna be like? 
+
+**Isaac:** well, I think, uh, the comparison to Python two and three is, is 
+
+somewhat fair and somewhat not 
+
+Um, 
+
+I mean, it's not a different, it's not a fundamentally different language, but 
+
+like, 
+
+okay, so 
+
+lemme back up a, back up a step. Yeah. What, what does it take to get over the finish line? I 
+
+don't think 
+
+it's clear what the finish line is umm but 
+
+if we were to even sort of talk about the finishing area, you know, without maybe a clearly defined like line, there are some things in Node that are still not yet sort of at the point where they can be called stable, um, regarding ESM. So there a lot of them are very close. Like there's been a lot of work on it.
+
+And I'm not saying this to like complain about No, it's just like, this stuff is hard sometimes and there's things that have a lot of, a lot of, uh, subtlety and complexity to get that have to get, you know, you really have to get them right. Um, but like in, uh, in common JS, there's this thing called required extensions that you can use to specify sort of, to define a, a, a function that loads.
+
+Modules of a particular file type. So anything that ends in JS gets run with this, you know, function that sort of reads the file and evaluates the contents and and so on. Um, anything that ends in Node gets processed. DL Open, called on it and, uh, returns the results of that. Uh, and so that was a thing that, you know, in the days before TypeScript, when the main transp piled language was coffee script, um, which now, I mean, if you, when you talk about like Transpiling and other languages, it's like TypeScript is well over 99% of translation.
+
+It's just like, that's the one, that's the one that we're talking about. Coffee script was cool. Almost nobody uses it. If you use coffee script and I just offended you, I'm really sorry, but like get over it. Like it's not relevant. Um. TypeScript, however, is very relevant. And, the way that a lot of these things were built was using required dot extensions.
+
+Well, in the Ecma script standard, there's nothing like that. Like, uh, in the EC for modules spec, there's nothing like that. And in node's ESM implementation, the closest thing to that is, uh, something called loaders. And so a a, a runtime can. 
+
+So when, when you embed V eight, you can basically run things in such a way that you say, if there's a module that gets imported, like this is how you resolve it and this is how you load it. Because the language itself doesn't have any concept of what is a file of what is a web. Request. Like what is it, how, how to make fetch requests, whatever. Like that's not the stuff that the language is sort of interested in specifying. Um, what the inter, what the language does specify is, you know, when, when this kind of code is evaluated, here's the, here's the interface that the runtime needs to provide, that the host platform needs to provide.
+
+
+
+and so that's, that's what it specifies. And V eight gives, its has some ways to, to hook into those things, um, that, you know, Chrome and Node and any other thing in, uh, using V eight can, can hook into. And so what Node, uh, did what they came up with was a way to say, alright, you can run node, dash dash loader equals something, and that something can export some functions that, um, that node will then call in the process of like.
+
+Loading and, and, uh, resolving and loading the various 
+
+modules. And there's no spec for exactly what that needs to look like. Um, it's from the, from the language spec. It's just like 
+
+host platform does host platform things, and then a module happens. Um, and so browsers have taken to mean that like, it's AURL, I'm gonna load it like it's a JavaScript file, parse it in module mode, and you know, in its own kind of, kind of, um, somewhat like a closure environment.
+
+And then provide all the things that got exported, uh, in node that's meant. Some kind of interesting things because we were already requiring packages like you don't do require slash node module slash express slash lib slash index JS. Like you just wanna be able to do, require express and get express.
+
+So in order for it to even begin to be possible to be useful, like we had to have some way to do that. And so the node, um, ecosystem like, or, or so the node loader went through quite a lot of back and forth. I mean, over the last what, close to 10 years now, of, of just kind of like iteration and gradual improvements to get to the point where now we have a loader spec that is actually kind of close to being, um, uh, marked as stable or at least not experimental anymore.
+
+and. 
+
+So as far as 
+
+like, you know, 
+
+why aren't we over the finish line? It's like, well, 'cause like we're not over the finish line as a community because the project isn't over the finish line yet. Like the runtime is not really marked ESM as ready for primetime. Even though there are parts of it that are like, yeah, it's like it's ready for primetime unless you want to do anything with it.
+
+Like, unless you want to be able to run your code and get code coverage or, uh, you know, run TypeScript or, or whatever. Um, but at the same time, the, the challenge with experimental API surfaces in a runtime like node is like, if you don't support it at least a little, then nobody's gonna use it. And so you do still need to like, fix bugs in it and not break it capriciously, but at the same time, like you do need to know that like it's not final and it's gonna break because. You didn't like, you can't know that until you play test it. So there's kind of this like chicken and egg or, or you know, catch 22 problem, 
+
+where like you need to communicate that something's not stable, but then also get people over the hurdle of using 
+
+it. 
+
+The 
+
+thing that, anyway, the thing that is 
+
+**Andrew:** kind of 
+
+**Isaac:** like 
+
+Python three 
+
+is that packages that are written in ESM cannot be loaded with require, 
+
+which means if you have some code that does require chalk, like it doesn't work with the latest version of chalk, you can import chalk and you can also import things that you require.
+
+You know, you can also import common S, so why not just write it in comma, js? 'cause then that can be loaded everywhere. Except that then we're not ever making that transition like. Things that use I, and also things that you import from common things that are written in common js that you import from ESM, um, it's a little awkward, like the return shape is a little different.
+
+It can never really, it can never be compatible easily with something like Deno or a web browser that only implements ESM and does not support require unless you do a bunch of translation, 
+
+which I know I said it's, I, I said there's no coffee script anymore. It's all TypeScript. Other than TypeScript. The other reason to Transp pile is stuff like Webpack and Battle, which just massage things into common JS or out of common js essentially.
+
+Um, for use in web browsers or a node respectively. No, flip that, 
+
+whatever. 
+
+Uh, so yeah, one thing that I think is kind 
+
+of 
+
+just 
+
+the way that I've decided to go about handling this situation, um. Personally, I, I like the ergonomics of writing ESM better than common js, which might be weird because, you know, I'm like one of the common JS original proponents, but, um, yeah, it's 
+
+just, it's just a little bit nicer.
+
+You get top level of weight, like you can load anything including all of cinder. So who's code? And I use a lot of cinder, so who's code? Like, oh, I'm not gonna rewrite chalk. It's just silly. Like, just use the one that's out there. It's ESM, whatever. and so, yeah, so I wrote, I wrote Tushy. Um, what it does, what Tushy does is, and, and people have made all kinds of like, but puns about this, it's just great.
+
+It's like, it's an export manager. It's shapes your exports. 
+
+**Justin:** I didn't, I didn't 
+
+even 
+
+think of it that way, but that's quality humor. 
+
+**Isaac:** also, it's like, 
+
+it's like, you got the common JS and you got the ESM. I don't. Yeah. So anyway, uh, it's a, it's a type script. Hybridizer TS high, that's the, the actual pronunciation. Dirty minds out of the gutter. 
+
+**Andrew:** I would've never got that. 
+
+**Isaac:** it's right there in the, in the read me at the top, it's like type script. Hybridizer 
+
+tissue so what this does is it basically builds your code in ESM mode. Um, and it's very, very opinionated. It it. It reads a small amount of config in your package JSON N and then it produces much more config in your package json.
+
+Um, 
+
+but it 
+
+figures out 
+
+like, 
+
+okay, 
+
+like, you know, do you have a source slash index ts? Alright, I'm gonna build that to dis slash esm slash index ts. I'm also gonna build that to dis slash common JS slash index ts, and then set up the exports in your package dot json 
+
+Properly so that when somebody requires your package, they get the common JS, and when they import your package, they get the SM.
+
+Um, and this evolved out of, uh, initially handcrafted 
+
+exports and build processes. Um, 
+
+and 
+
+then I 
+
+realized, 
+
+oh, 
+
+youknow like, you 
+
+can, 
+
+if you put a package Json in the dis folder. Then node will correctly be able to interpret what type of of module that is. So I could have a single index js or, or a single index ts, build it into both locations and just drop a, a package JSON in those folders and node will just node to pull it in in the right way.
+
+Cool. TypeScript five two came out and that kind of broke a bunch of stuff for me. Um, so it fixed a bunch of things and it also broke some other things. It became much more opinionated about, uh, what you specify as module resolution versus what you said as module, and whether it's building as common js or as ESM.
+
+So they did all this to fix like the much more common bug, uh, the, some common bugs, some common foot guns in the much more common use case, which is you're either building common 
+
+JSS or 
+
+ESM, not 
+
+both. 
+
+I 
+
+would've made the 
+
+same 
+
+decision in the same situation, but like, wow. It was really frustrating for me.
+
+'cause all of 
+
+a sudden I had to like all my build 
+
+scripts broke. and that's when I realized just doing this all by hand was sort of not the best way forward. So 
+
+I wrote, 
+
+touchy. Um, what that does, is it actually puts a package json in your source folder. 
+
+then 
+
+does the TypeScript builds as ESM then swaps that package JSO file for a different package.
+
+JSO file in your source folder, does the TypeScript build for common js and then deletes that, uh, temporary package json file. So it's, it's doing some at this point, like it started out as like, you know, a replacement for like a four line bass script and it's grown into like a full, full on thing. but, uh, uh, there's some joke in there about butts getting big or something.
+
+I don't know. Uh. Um, so yeah, I'm, I'm using that in a lot of places now and it has really simplified stuff, um, because I just like, I just pointed at like, hey, like these are the three models I wanna export. 
+
+Um, another thing that I frequently kind of ran into is like the big differences between common JS and ESM, right?
+
+You don't, not only don't you have import meta URL in common js, if you try to check for import meta url, it's a syntax error. This is just like, oh God, I, I just, I want to, I want to have some words with somebody. I want somebody to make that make sense for me. That like, why is that a syntax error? Like you can't, anyway, but it's in the language spec now.
+
+Like you can't use import outside of a module context. You can't even like, look at import dot, meta import is, can only be used as dynamic import. Like if you try to use it in any other way, it's, it's actually a bad syntax. Um, so if you wanna look at like what is the current, you know, what's the path to the current module, there's two completely different ways to do it because you either have to look at, you know, double underscore dur name or file name, which don't exist in ESM or you have to look at import meta URL, which doesn't exist in common js.
+
+And if you try to check if it exists, that's a syntax error. You can't even like, try and catch it. 
+
+Um, I guess you could probably try eval, like that would probably 
+
+work, but I, I don't know, 
+
+like, just, so what I did was, um, what I started doing with uh, uh, with no tap was when I. Needed to get this kind of information, I would actually just write the module twice.
+
+Like I'd write a version that uses import meta URL and a version that uses double underscore file name. And in the common JS build, I would just like move the file to overwrite the ESM one, which like as long as you keep these kinds of, like polyfils really small, you know, like literally a module that just exports import meta URL and does nothing else or whatever.
+
+And so I know like, okay, whatever this thing is, it's gonna gimme a string and I can resolve against that string and figure out what I need to figure out. Um, then doing this trick where you, where you clobber it is not so bad. Um, and so in tuchy I actually made like a, a convention for doing that, uh, so that you can just sort of name something dash CJs cts and it'll like keep it out of the es m build.
+
+And then in the common JS build it'll like move the file into place so that it overwrites. e SM version. So yeah, that's, that's, that's been part of my, um, follow every side Quest adventure that I've been going on with Node Tap. Um, I'm, I'm eyeballs deep in like, basically implementing a pseudo terminal in JavaScript for my documentation right now.
+
+**Andrew:** That is quite the side quest. 
+
+**Isaac:** Yeah. Well it's like I, I have this test framework and it outputs reports that are like styled with antsy, um, you know, antsy color codes and whatnot. And, um, I wanna put in the documentation like what it looks like, 'cause that's what people wanna know, right. And I had been like, dumping it to a file and then doing like a find replace in Vim or whatever, to, to change it into HTML and CSS.
+
+And that just got really tedious. So I, I wrote a thing to like, um. Automatically convert those into, into CSS and then quickly found like, oh, but wait, some of the color codes that ink actually outputs are not, or some of the SY codes are not just color. They're like, go up three lines and go to the first column, and it all comes out in one big long stream.
+
+And I'm like, oh, I need a thing that's gonna parse that. And like, here, I'm so antsy sy to HTML will be, will be coming soon 
+
+**Justin:** There is a library, of course, there's a, there's a, package. There's 
+
+always a 
+
+package. 
+
+**Isaac:** there. You know, I found some, I found some that could, that could parse the antsy 
+
+color codes, but 
+
+not all the cursor positioning stuff. Yeah. And if you get like a slash r in there and it, and, or something again that's like erased to the end of the line. Like, I need, I'm actually, I'm using ink to do the output, so if
+
+what I wanna 
+
+be able 
+
+to do what I want is 
+
+**Andrew:** run an ink program, 
+
+**Isaac:** grab its output, like the stream of Ansy, turn that into HTML. Have it look right. 
+
+That's what 
+
+I 
+
+want. 
+
+**Justin:** that would be really cool. I've been writing some games, ink. Uh, I've got a solitary game that I wrote a little while back in ink, but I would love to do more of that. And testing is one of those things is like testing in docs and like rendering states and stuff would be like fun. So that'd be, that'd be really cool.
+
+I'd love 
+
+that. 
+
+**Isaac:** The, the ink testing library is pretty good. That's what I, that's what I use 
+
+in tap to test the reporters. Um, and the, the big, I don't know if you've found this yet, but like using, um, use layout effect instead of use effect is absolutely critical in ink. Like I, I had a bunch of tests that were all doing use effect and React was getting real clever about like.
+
+Batching and asynchronous and deferring and all my tests would just fail unless I put timeouts everywhere. So I discovered to use layout effect. It was just like, oh, that's what I needed. 
+
+**Andrew:** Okay, so, uh, 
+
+we went a little over on time, so, uh, we probably we're not gonna do tool tips this week. Uh, I just wanna thank you for coming on. Uh, this was, uh, a great conversation, like, honestly, a little starstruck, uh, being here with somebody I've known about in the JavaScript space for so long. So just thanks for coming on the podcast. 
+
+**Isaac:** Thanks for having me. 
+
+**Justin:** Yeah, Isaac, this was, this was such a, like a deep, enriching conversation. I love to hear about the history of, of npm, of course, and your experiences of that. And also just, you know, how you think a lot about a lot of these things and how the sort of ecosystems evolved and everything. So, awesome conversation. Really just super excited to have you on.
+
+**Isaac:** Cool. Thanks. 
+
+

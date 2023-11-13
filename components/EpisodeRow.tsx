@@ -27,7 +27,9 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
       <div className="w-full h-[fit-content]">
         <img
           className="w-full max-w-64 rounded-lg h-full"
-          src={`https://i.ytimg.com/vi/${episode.youtubeId}/maxresdefault.jpg`}
+          src={`https://i.ytimg.com/vi/${
+            episode.thumbnailId || episode.youtubeId
+          }/maxresdefault.jpg`}
         />
       </div>
       <div className="flex justify-between flex-col">
