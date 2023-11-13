@@ -81,6 +81,7 @@ const tabPanelRenderers = {
 
 const Episode = ({
   youtubeId,
+  thumbnailId,
   spotifyEpisodeId,
   tabSections,
   frontMatter,
@@ -103,7 +104,9 @@ const Episode = ({
   const tags = (
     <MetaTags
       title={`${episodeNumberString}: ${frontMatter.title}`}
-      image={`https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`}
+      image={`https://i.ytimg.com/vi/${
+        thumbnailId || youtubeId
+      }/maxresdefault.jpg`}
       description={showNotesTab.description}
     />
   );
