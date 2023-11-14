@@ -50,8 +50,8 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
           </p>
 
           <div className="mb-6 flex justify-center">
-            <Link
-              href={`episode/${latestEpisode.number}`}
+            <a
+              href={`https://www.youtube.com/watch?v=${latestEpisode.youtubeId}`}
               className="my-0 plausible-event-name=Shield+Click plausible-event-position=latest+episode"
             >
               <div className="w-full h-[fit-content]">
@@ -62,7 +62,7 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
                   }/maxresdefault.jpg`}
                 />
               </div>
-            </Link>
+            </a>
           </div>
 
           <p className="text-center">
