@@ -1,0 +1,608 @@
+---
+title: Braden Sidoti - Clerk
+youtube: https://www.youtube.com/watch?v=Z2Anm7_V-dc
+thumbnail: https://www.youtube.com/watch?v=CTVDE2JSwQ4
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Braden-Sidoti---Clerk-e2c52of
+tags: technology, auth, security, startups, business, developer tool, coding, programming, frontend, backend
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Braden Sidoti, CTO and Co-founder of Clerk. 
+Clerk is a developer tool that makes it easy to add authentication to your app. 
+We talk about the complexity of authentication, the role of session management, and the evolution of Clerk.
+
+- https://twitter.com/bsinthewild
+- https://clerk.com/
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://rivet.ironcladapp.com/
+- https://jsx.email/
+
+#### Justin
+
+- https://github.com/0xType/0xProto
+- https://github.com/seflless/skewed by Francois Laberge
+
+### Braden
+
+- https://resend.com/
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:32] Introduction to Clerk and its Purpose
+[00:04:55] The Role of Session Management in Authentication
+[00:11:28] Ad
+[00:12:51] The Complexity of Account Linking and Authorization
+[00:32:52] Scaling Challenges
+[00:41:49] The Evolution of Clerk: From Authentication to User Services
+[00:43:28] Dealing with PRicing
+[00:52:16] A Spicy Take
+[00:58:13] Tooltips
+
+
+<!-- TAB: TRANSCRIPT -->
+
+**Braden:** there's a lot of messy logic that needs to be secure here, especially around verified and unverified email addresses. There are some providers that sometimes return an unverified email address, which is an attack vector if you try and link that to an account that's verified. Um, and yeah, it's, it's kind of on a per OAuth basis.
+
+And, and that stuff all just kind of works at in clerk
+
+
+#### [00:00:32] Introduction
+
+**Andrew:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make ' em. I'm Andrew, and this is my co-host. Justin?
+
+**Justin:** Hey everyone. Uh, we're really excited to have Braden Sidoti here with us today. Uh, so Braden is the CTO and Co-founder of Clark. Uh, and we'll be talking about Clark today. But before we dive into that, uh, Braden, do you wanna tell our listeners a little bit more about 
+
+**Braden:** So I am, I'm Brayden. I've, um, I was an iOS developer for a really long time, back iPhone three GI think was the first one that I targeted. And I think an iPhone four was the first one I dropped and on cracked all over the place. Uh, but I made iPhone apps for a really long time.
+
+And, but as part of that, well, yeah, so I guess I'm just a developer. Worked at, worked in consulting, um, worked at, uh, a company called Ins Inspirato, and I made their iPhone app. And then I briefly worked at a company called Uber. I. on their iOS team before I started clerk. Um, and that kind of brings us here brief work history.
+
+**Justin:** Yeah. 
+
+
+#### [00:01:32] Introduction to Clerk and its Purpose
+
+**Justin:** So, uh, tell us a little bit more about clerk. What is it and what are you trying to do with it?
+
+**Braden:** Yeah. Uh, so I guess back four years ago, uh, as an I developer, people always kind of just, uh, ask you to make apps for them and I always would get stuck on the authentication piece. It was, it was, and I feel like still is unnecessarily challenging. Not only do you need to figure out how any given tool works, it does feel like you need to learn about the security model of the internet in order to use them properly.
+
+Um, and that's when you're just trying to build something quickly. That's not what I really wanted to do. I just wanted something that worked and I wanted to know that it was secure. Then I was following the right patterns. So, um, I actually co-founded clerk with my brother and I originally went to him asking him two things, like one, how can I do this really quickly?
+
+And two, why is this so hard to do? 'cause he's kind of more the web guy. Um, and so we just kind of started there and, and what it's turned into is, you know, another kind of authentication provider, but with an extreme focus on developer experience and making it really quick to get up and running, uh, while also having all of the features you need for, uh, at, at scale, at, with bigger companies.
+
+So at the time, what were the, the options that you had, because clerk provides a pretty like packaged experience where like you as a front end dev, you really don't have to care about any of the parts of it. What were your options before that?
+
+Yeah, so I think the options are pretty similar to what they are today. Like there's two, there's one major incumbent, um, as I see it, uh, that most developers will lean towards it and that's all zero. Um, they have a very similar offering. You go to their kind of website, they will talk about it as the same way, in the same way as clerk.
+
+And then the other option is open source and just building this yourself. those were the two options. And even when using AU zero, it ki you still have to do, you still have to learn about how the web security works in order to do it or how the iOS security works. The way that, uh, the all zero kind of works is you give it an email password.
+
+This is very, very basic. Obviously they have a ton of features, but you get an email password, it returns back a token, and then you do it with that token whatever you want to, and the rest is kind of onto you. open source, you know, has different, uh. Models as well. Usually there's a number, well, usually the data ends up getting dumped in some database that you control.
+
+Uh, and it has your user data in there and your session data, and it's kind of on you to extend everything beyond there. And there's quite a number of very powerful open source tools. where kind of clerk comes into play is, is that, I guess the major difference. It's easier to talk about in terms of all zero.
+
+The major difference is we pull in the session management piece, which has a lot of implications for how authentication works and more holistically user management could work and how a service could interplay with your application that you're kind of building locally or in production. Um, so that's kind of the extra piece that we added that that unlocks a lot of additional functionality.
+
+**Justin:** Yeah, we,
+
+uh, talked to, uh, James in an earlier episode, and he had the, uh, he had the opinion that like, you shouldn't have a user's table. You should just like, rely on something like a system to manage that. 
+
+
+#### [00:04:55] The Role of Session Management in Authentication
+
+**Justin:** And you're talking about, about like pulling in the session layer here, which is a, a big part and, and sort of can be more complex than you think it can be. Uh, but also I could see people say, well, like. know, if I'm using a, a given session layer, then I lose some control over my setup. Uh, so how do you sort of pitch that and, and what are the benefits you described to like taking over the whole session layer?
+
+**Braden:** so I actually think it's easier and taking over the user table is definitely a lot more thorny and not something that is even recommended for everybody. Like that's not the I. like I think the world will go there in five years type of thing, where just like, you're not controlling your Postgres database, you're throwing it on GCP or Planet Scale or whatever.
+
+Um, the user's service holistically can also be offloaded in a, in a similar manner where you don't need to have all that data in your specific database, which in this case is already hosted on someone else. So it's like we're, we're kind of moving towards that world anyway, where your data as a company is in the cloud and, and this is kind of the next, it feels like to me the next extension of that.
+
+And then that's with the user data, the session data. Nobody really wants to handle it all. Like there's not much, like if it just works, I don't think anyone would complain. And I think that's kind of what we're seeing is it, is it just, people will ask us about it when something goes wrong, but for the most part, there's a pretty standard way.
+
+Well, we, we think there's a, there's, there's a right way to do it. There's the huge debate between like what HB only cookies and JWTs, and how do you handle them? Uh, HTB only cookies are much better, or well, they're more secure and they're resistant to excess s attacks. and the JavaScript, JavaScript doesn't have access to 'em.
+
+So the way our session management works is there's a long-lived HT P only cookie, and that HT P only cookie has the right to create these short-lived JWTs. And then those short-lived JWTs, you know, are, are stateless and have all the information you need. And those can get sent anywhere, like your backend and then your backend can with zero latency decode it and know that, know with confidence that the user is not being spoofed.
+
+It's the, the user that the user that MA is making the request is the one that has that token. Um, there's some trade-offs there, but that's kind of how the, that's the. The best kind of approach here. You get the benefits of JWTs and the benefits of cookies while still being able to do things like session revocation and, uh, you know, force logging out people in case of security incidents and, and stuff like that.
+
+Um, and I guess from the front end perspective, you have a, you know, current user function and it just, everything else is abstracted away and you know who the current currently signed in user is. And, and same within your backend. That may have been very long-winded and, uh, hopefully that made
+
+sense. 
+
+**Andrew:** Session management. It's like something that you would think would just kind of be a part of the API. And then it's like, in my experience, a part of my apps that just is always buggy, like I've had, I built a like GitHub activity monitor and I built it on like next Jss Off and Authentication works, but then it logs me out every like hour or so.
+
+And like me wanting, I don't wanna write that code, that's not the code I wanna write. And having a service that unlocks that is, is really big.
+
+**Braden:** Yeah. Yeah. And there's, there's some other messy security things in there as well. Um, one of the features that Clerk has that we built in really early on that like pretty much no one uses, I feel like, or not very many people use, uh, that was a pain to build, is multi, multi-session applications, or I think we came up with a better name.
+
+Basically it's Gmail. You have that little like user, we call it user button, and you can switch between different users that are signed in on the same browser, uh, as far as the session management goes in, which that was kind of a pain to build. And there were, you know, there's implications like session fixation attacks.
+
+Uh, I think that's the main one where you have kind of to rotate a token whenever that session changes, uh, especially when going from a sign into a actual session. what other ones are there? There's kind of a bunch of just messy things like that, that aren't fun to code, especially when you know, you're trying to build like an application and you know, you're not, you're not doing anything novel here.
+
+You're making a sign-in page and you're making session and, and you just kind of want it to work.
+
+**Andrew:** Yeah. From my experience, especially as a frontend dev, I just want things to work and when it comes to security, it's like the most frustrating thing. And I'll be the first to admit I am like free, way too free with my security. Like I've literally shipped RSA keys and MPM packages 'cause it was just easier.
+
+So having a service that thinks about all of these details so I don't have to is big game changer. 'cause like that multi account thing, I have no idea ::where I would start with something like that.
+
+**Braden:** Yeah. It's, uh, you know, we thought more people would care about that feature, but it turns out it's like kind of niche, uh, uh, a niche thing like Gmail has it, and maybe there's a few others out there. But that's really it. Uh, and there's, um, you know, a ton of different ways to model it. Um, but the, the most, uh, the simplest one is like, you have your device.
+
+Your device can have one active sign in, one active signup, and it can have many sessions. And each of those sessions represents a user. And that's kind of that modeling. And then, you know, your user has some modeling as well. Um, and I think where a lot of things get messed up is if you don't start with that modeling, 'cause you don't need it in the beginning.
+
+Uh, how do you switch that modeling and that, that's where things get really messy and it's just a big time sink for adding some feature that, that you, some maybe that like, doesn't feel like it's core to your main products or what, whatever that product may be.
+
+**Justin:** I could imagine if you're working on like a Twitter clone or something that might be really valuable in switching between different user accounts, like potentially shared accounts and stuff. I think this like goes to the deeper point here though, that it's really easy to screw this stuff up.
+
+Oftentimes you think of like, you know, especially if you're, you're kind of, you're scrappy and you're trying to build a product. You're like, what is the MVP of auth? What, what is the least amount that I need to do here? And even if you do it right, uh, you can get into a situation where something that you didn't think about is suddenly a problem.
+
+So for example, there's a security incident and you need to force log everyone out, but you like. Didn't you, you made design choices that makes that not possible, which is really easy to do. 
+
+
+#### [00:11:28] Ad
+
+**Andrew:** It's that time of weekend and thank our sponsors. This week, we're sponsored by Raycast. If you don't know about Raycast, it's an awesome app for Mac that replaced the spotlight. If you ever want a spotlight to do a whole lot more Raycast as the answer. With all the extensions that it has, you can make it, do whatever you want and fit whatever workflow that you want. You can even build your own extensions with a really cool API. It looks just like react. 
+
+One thing I've been using Raycast a little bit more for lately and recommend to a lot of people is their window management. Typically you have to go find some window management software that eventually gets out of date between macro leases. Recast window management is just a feature. So you can use it just like any other Raycast feature, right from your keyboard, right. When you need it.
+
+And if you haven't given Raycast pro a chance, you should check it out.
+
+By now we all know how useful LLMs can be. But going to a website to use them or even just downloading and finding another app to run the LLM through could be a hassle. With Raycast pro. Bro. You have the ability to talk to Raycast AI and get feedback instantly. It's a great wall developing and it's kind of replaced Google my workflow.
+
+If you want to hear more about Raycast, head over to Raycast. Dot com or you can go listen to episode 38, where we talked to the CEO Thomas about why they created the product and where they intend to go with it.
+
+Do you want to advertise with the dev tools FM? Head over to dev tools.fm/sponsor to apply.
+
+And with that, let's get back to the episode.
+
+
+#### [00:12:51] The Complexity of Account Linking and Authorization
+
+**Justin:** uh, and yeah, that, that stuff is, is a lot trickier than we definitely give it credit for sometimes.
+
+**Braden:** Yeah. I mean, I think when we first started I thought this would be like, oh, well, you know, we'll bang out this off stuff in like a year, and then we'll be able to get onto other things and, uh, falling into that same trap as everyone else. But at least we, we were, we approached it with the mindset of like.
+
+**Andrew:** We are doing this to the ends and we're deep like uncovering any, every corner of this so that we can build it right, but it's, we're still working on all features and it's pretty crazy. Yeah, A as, as an app developer, like you just wanna get a thing that works out there quickly and then like with an auth system, if it's like, as Justin said, you want this feature now to force log out everybody, you have to now like take basically the base layer of your entire application and try to change it and then keep doing that going forward as you go.
+
+Like, oh, now we need multiple accounts. So having like a service that's already kind of like thought out, the most complex use case, so I can use the simple use case really easily is, is a fun tool to reach for.
+
+**Justin:** Another thing I would say is, uh, so we talked to, uh, Isaac from NPM recently, and he was talking about, um, this this startup that he had helped form semi-recently around like payment operations. And he had made this, uh, this sort of thing. This is like, oh, you know, payments are more complicated than you give them credit for in a similar sort of way.
+
+And then they tend to get tied into weird things. Like he'd given us specific examples like, oh, well a developer says, or somebody comes into the business and say, Hey, we want to change our revenue model. It's like, well, in order for us to change how we charge, we have to like go mess with the off system. Uh, and I thought that example was interesting because I think these things that are sort of fundamental to, to making a software business in particular, um, tend to be designed just in time. And also tend to start coupling to other systems that are also designed just in time to just like get over the hump. And what you end up with is business scenarios like that. So you've made a choice out of, you know, necessity or urgency or whatever and you've tied systems together or you've like not implemented a feature or whatever, and now somebody comes to you and is like, yeah, we just need this one small feature.
+
+And you're like, this is like fundamental layer stuff that we had to change across our application. Uh, so, you know, I think just further highlighting the point that not only is using a tool like Clark Good for the security benefits and everything that you get outta the box, but also at like, I'm assuming it capsulates up these models really well.
+
+So it's like isolated so you don't hopefully overly tie it to something like that.
+
+**Braden:** Yeah, no, I, I think that's a hundred percent right. And, and that is the ideal case that it does. I, I think too, like when AU Zero started, and I'm using them as a comparison, they were, I dunno, 10, 15 years ago is when they, when they started, and it does feel like they had to design their system to be more flexible because the sign in sign up process was different across different companies.
+
+And so they, they were selling to whatever that company is, and the company would be like, Hey, this is how we want it to work. And they'd be like, okay, we need to make our system flexible to work for that and all these other use cases. Um, one of the benefits it feels like we have is that we just look at like, you know, GitHub, Google, Facebook, and it's like, all right, there's a consensus here on how this stuff should work.
+
+We're gonna build that consensus and we're gonna try and give to everybody. Um, and so that's, that's nice. I would also say that this does extend. Two, uh, especially to B to B SaaS. So I do feel like there is a lot of pain for B to C companies in, in, um, just dealing with identity. And, and you'll see pretty much every large company or a lot of large companies that I've talked to have dedicated identity teams of, you know, three to five people, which is, which is pretty crazy.
+
+It's you're spending a million dollars a year or whatever it is on an identity team for that login page. Why isn't this service size and why does every company have that same team? That kind of feels like the, the bigger opportunity, but that's for the B to C app. And then there's also the B to B pane of the organization object.
+
+So B to C is like, you get this user object, but now you're building BB app and you want to invite a coworker to join and you want RAC, role based, access control, attribute based, access control, whatever access control system you want. Um, and that's like the bare bones of the organization. Object. Um. Uh, the B to B authentication problem does keep going beyond that, uh, like there's Microsoft OAuth, there's saml, um, depending on how deep you, you want to go in organizations like organizations have groups and then the permissions maybe cascade through all of these.
+
+And, and, and kind of the way we're approaching it is, alright, you have your, you know, we did the user object that was a prerequisite in order to solve this kind of organization object challenge. And, and I think we'll be able to provide more value there. And, and again, look at what we're doing is just looking at all the largest companies.
+
+I think GitHub has actually a really great, uh, B to B organization, groups, permissions model that's like the most advanced one. And that should be able to work for every other company, uh, even if you're like not using some of the features there. Um, so it's, yeah, even the organization stuff is off. Stuff is, is off.
+
+And then there's saml, um, which. Uh, if you've had the joy of working with is, is, uh, is great and, and, and non-intuitive. And, and also there's like a bunch of different versions out there of it. Um, they all say it's like, there's like SAML 2.0, but then you have pink identity, then you have, uh, which has its own flavor of it.
+
+Okta has a slightly different flavor of it. I think they all mostly adhere to the standard, but they're, it's not a super clean standard. And so there's like little edge cases they have to code for each of them. But like, what you want as, as an app maker selling to some business that's using Okta is ideally it just connects to that organization.
+
+Whatever role data or permission data structure they have in Okta, you can just ingest into your application and then use that same authorization model in your application. Um, it's hairy to build out and it's not something that can be easily. Done without having control of that kind of user object.
+
+Because at the end of the day, this stuff does get mapped to that user object and, and the authentication and authorization. so that's kind of, I don't know what, why I started on this tangent, but that's just like a, another set of holistic problems that we're kind of like looking at the industry, seeing who does it best and then trying to give it to everybody.
+
+**Justin:** That's, that is incredibly interesting. Uh, so at oxide we had to do this same sort of thing and are going, battling a lot of these same problems. Uh, so yeah, GitHub model is, is phenomenal. Some questions that we've had, uh, come up is like, for grouping resources is like, you know, so GitHub is like your, your organization and your projects and, and like that the domain modeling makes a lot of sense or your, your repositories, I guess that domain modeling makes a lot of sense for GitHub, but like once you get outside of that organization is like, is that like two tiered structure, like sufficient?
+
+Do you need other things? Like what does that look like? Um, and. De, depending on how you implement that, that can be really hard. Uh, and especially if you're like, I don't know if you have like cascading permissions like you're saying and you're doing something like, I don't know.
+
+No, I would say we're actually punting on a lot of that. So wh why I used, um, GitHub as an example is because they have the organization and then there's the members of that organization, but then they also have groups and all those groups are part of those organizations. I forget if a group can also be, can have subgroups, but.
+
+**Braden:** There's no reason that somebody wouldn't want that structure. And if you just kind of, uh, bake that in from the start, it's, it's pretty easy to do. But the repository that's now application logic and that's outside of our bounds, um, it gets really hairy to actually try and help out with anything there.
+
+Um, there's a lot of, or there's a bunch of authorization companies that are, are working on this problem. Um, and they're all, a lot of them are they, is it Zanzibar, Google Zanzibar type things? 
+
+Sorry, I don't know. Yeah, there's like, there's AU ZI think OO hq and they're all using Zanzibar kind of as a, as a model.
+
+Uh, we're punting on all of that. Um, we're saying we're gonna do the user and what their role is and what groups they're associated to and what organizations they're associated to. And basically everything that we can control on the front end and really split out. Once you start getting into like a repo, which is like application logic or I think, yeah, just application logic.
+
+You need to be deeply embedded in their code base and almost be running a service alongside their service. And that feels too messy. And we can provide a ton of value outside of that while also having like a clear boundary, like this is clerk and it's a box and it works, and then this is your, your application.
+
+And, um, having that clear boundary I think is helpful for knowing, for making the te tool easier to use and just kind, and also for us knowing where the boundaries of what we're, where we're trying to provide value are. Yeah. So I mean, and, and in, in practice, what that looks like is like you have some application, the user makes a request, clerk generates that JWT, it gets sent to the.
+
+Uh, to your backend, and it'll have a user id. Maybe it has like admin associated to it and maybe admin has a bunch of permissions associated to it that are just like simple strings. And then from there, that's all that clerk kind of handles. We don't know anything about your application IDs, your repository IDs, GitHub's case to connect that back.
+
+It's then on, on you. Um, Zanzibar does get into that stuff and it's very, uh, it gets very, very hairy. Um, and it's a, it's a hard problem to solve. The other benefit of this too is that all of that data I mentioned around roles permissions are the, is the minimum amount of data you need to power the front end part that, um, our customers end users can see.
+
+So, uh, basically that's kind of how we divvy it up. It's like if it needs to be part of the front end and and control part of this, then. It's kind of part of this. So, um, SendGrid, I think, and other people do this too, uh, but they, SendGrid has a really nice permissions, like it's a role creator, and that's the end goal of the Rback stuff is like, you have, like, clerk will have to know about all of this, this list of permissions, and then there will be some preset roles, but also the end user will be able to create their new roles based off that set of permissions such that they can kind of do it in a more fine grained way.
+
+**Justin:** And that all happens, um, not our, not with, not for our customer, but for our customers, end users. Um, and that all happens at the UI level. Nice. Cool. Yeah, that makes a lot of sense.
+
+**Andrew:** yeah. I like your guys' approach of like doing as little as possible. Like, you could have started with organizations and all that, but you chose to get users right first, and it makes sense that the next step in that journey is making organizations right and nothing further. I, I, I definitely agree that like mixing the app logic into the user stuff seems like it's definitely going to a place where you don't wanna be.
+
+One of the things I found to be most true in software is don't mix primitives when you don't have to. It only leads to pain. And, uh, it seems like Zanzibar would lead to a little bit of pain. I, I've ne I haven't read it, read, read through it myself.
+
+**Braden:** I think it's necessary necessarily complex too for the problem it's trying to solve. Um, and especially when you're starting like AB two B company, it's like we're not all Google Scale. We don't need Google's Zanzibar. And maybe at some point we you do, but also the role permissions, ABAC stuff is a separate problem from that giant authorization system that has crazier rules.
+
+Um. But yeah, again, I think this is like our kind of our bottom up approach showing here as well. Um, another thing I wanted to, so I I, this slipped my mind, or, or I wanted to respond, is like, I think with development, if you get the data model right, everything else kind of flows really nicely. Um, and I don't know, through like 15 years that that pattern just keeps, like, reinforcing itself and, and in, in a good way.
+
+**Justin:** And, and, um, yeah, love data models.Absolutely. I feel like a lot of times it's like anytime that I either, like how I'm modeling the data or how I'm like structuring it, screwing those up early on, like just makes the whole thing worse. And there is some fundamental truth there. This is like, you really have to think pretty hard about that in the beginning, which again reinforces why the val, the, the value of like, niche, niche sort of like service architectures, like, like clerk, I mean, because it's like these things are non-trivial, they're non-trivial and it's so easy to make one decision upfront that bites you in the butt for like the next two years, you know, until you had that big push to rewrite it or whatever, you know, or to refactor it and everything.
+
+And it's, uh, it's tricky.
+
+**Braden:** Yep.
+
+**Andrew:** so we, we, we've kind of like alluded to it, uh, but I wanna like ask about it in concrete terms. Um, so yeah, as you said, you have auth zero and a bunch of other competitors. Uh, clerk does something that's very different than all of those competitors, uh, which is you guys provide a lot of UI components.
+
+So, uh, when, when did the aha moment of like, oh, we should be a few levels down, or a few levels up, depending on your point of view, uh, and provide full UI components instead of just like endpoints.
+
+**Braden:** it was pretty early on, I would say like that, that was part of like the V zero of kind of wanting this stuff to work. And I mean, we're not the only ones who provide UI components at all. Like OS Zero has one. And uh, and they also have the like kind of, there's the redirect flow, which I'm sure you've seen where it's like you get redirect to zero and it's not ideal. Um, I think the power of the UI components, it's beyond just the sign in box and the sign up box. It's the fact that clerk knows and does that session management piece. So that means that it has that slash me endpoint that returns all of that user data. So power of the UI components comes into like the user profile and a lot of like actions need to happen on that for the user. So once you know, you go to Google's account portal and you can add an email address, you can add to FA, you can add remove to FA, you can sign out of other sessions. Um, do all of these things.
+
+If you don't have that session management piece and this the third party service in, in this case, clerk doesn't know who the signed in user is and, and can't communicate securely to that front end, you can't provide those UI components. Um, so by pulling in that session management piece, clerk has guarantees around who that user is.
+
+And thus you don't have to route a lot of these actions through your own backend. So like a simple example is like with AU zero, say a user like changes their password, um, you have to make a request to your backend saying, Hey, this user made this, uh, password request change. Here's the password payload.
+
+And then your backend has to go to and be like, Hey, this user changed their password success and then success. And it kind of, then you can show it back on the front end. Clerk can just kind of bypass that since we have that session management piece and they can talk securely directly to Clerk server as like its own standalone microservice.
+
+Um, the changing passwords is a very simple example. Um. The more complex ones are, are again, on that user model and changing usernames, adding email addresses, adding phone numbers, MFA soon pass keys. Um, whatever exists in those security settings is, is something that we can abstract away pretty cleanly.
+
+**Andrew:** one thing I've been wanting, uh, 'cause I wanna build a service that uses this type of feature is, uh, a lot of services allow me to like, link accounts. So if I have, uh, let's say like a TikTok account that I want to link to my, my user account and then interact with its API, that whole flow is, is not fun to code or to think about.
+
+Like, you get into questions about security, you're like, oh, what am I storing? When am I storing it? When am I refreshing keys? There's a whole like, can of worms that opens up when you're like, I wanna connect to accounts. Does clerk have any plans to address that problem or does it already address it today?
+
+**Braden:** Yeah, so we baked that in from the start. 'cause it's, it's always frustrating. It's when you go to sign in and you like type in your email address and it's like, it's like you signed in with Google last, you can't use your email address. And it's like, you know, like, you know, it works. Uh, so yeah, we, we built in, I, I guess we call it account linking.
+
+And so when you sign in with, or sign up with Google, and I'll use Google as the example, we'll go to the user model, say, all right, you have this o off the account that's linked to this user. And then we'll also take that email address and say, this email address is now also on this account. So it's linked.
+
+So the next time you go to sign in, if you type in your email address, it'll just, uh, it'll, uh, well you can choose, it depends on the offsettings you have, but it can send, it'll send you an email code 'cause you typed in your email address, you're expecting it to go to your email address. Or you can use the other options you have on the account, like sign into Google.
+
+Um, there's a lot of messy logic that needs to be secure here, especially around verified and unverified email addresses. There are some providers that sometimes return an unverified email address, which is an attack vector if you try and link that to an account that's verified. Um, and yeah, it's, it's kind of on a per OAuth basis.
+
+And, and that stuff all just kind of works at in clerk And, uh, we didn't really get into like the OAuth scopes themselves. Like that's kind of a whole separate problem. Um, and there's like progressive auth of, alright, you're signed in, you want the bare minimum permissions for the, or you signed up, you want the bare minimum permissions for signup, but say you're building some like Gmail app or something and you need to request access to that user's.
+
+Gmail, um, that's a, like a progressive off flow that you then need to reconnect, refresh the token. I actually don't even fully remember how it works. It's like there's a refresh tokens and access token. And then, um, this is something we haven't tackled with perfectly with the O scopes just 'cause it is really hairy and it's also kind of more niche of what happens when the, when you remove permissions from the OAuth provider side.
+
+So say you gave this some random application, um, access to your Gmail account and you're like, no, I don't wanna do that, but you remove it from your Google account, uh, your app needs to somehow get in sync and, and know that, okay, this person now no longer has access and we need to request access again if they're going to continue using the app.
+
+Um, that logic we don't have baked in yet, but it's, it's kind of in the same vein of like, can we make the OAuth and connecting to these accounts easier? Um. Being this authentication auth authorization layer. So yeah, it's like all of these things are, they're nitty gritty. They're, they're, they're, they're gross, they're big.
+
+Uh, and oftentimes you just kind of want them to work. You don't wanna deal with the difference between Google and Microsoft what else trying to build your, your email tool.
+
+
+#### [00:32:52] Scaling Challenges
+
+**Justin:** Just anecdotally, uh, I'm hearing a lot more about Clark recently, and I know that y'all have been growing. Especially in like usage. Uh, so congrats on that. I mean, it
+
+seems like you.
+
+are hitting a really good spot. Um, but, you know, achieving scale is hard for sure. Um, I, I, I'm sure that you know that better than most.
+
+Uh, so what steps did you have to take to make sure that, you know, clerk could scale out to all this new usage?
+
+**Braden:** yeah, I don't think so. Maybe we got kind of lucky with some of the scaling issues actually. I know we did. Um, like we did a very key database upgrade at one point. That could have been a lot messier. Um, and we still have a lot of work to do kind of on the scaling stuff, but core to what we're working on, authentication, it's, it's like we're almost, people see us as infrastructure layer.
+
+Like if we kind of go down, it's disastrous for, um, our customers. 'cause we do affect those end users because we pulled that session management piece in. Um, so our stack is very basic. We're not, we don't try and we don't pull in exotic technologies. We need everything to be battle tested and there's enough battle tested services out there that we can do that.
+
+Um. Which this basically boils down to, you know, we use GCP, we have a Postgres database, um, and now we are layering on tools from CloudFlare. Uh, with GCP, we're using Google Cloud Run, which will scale out automatically based on the usage. The database doesn't scale out as well, so we're trying to figure out how to, um, actually, I'm not trying to figure it out.
+
+We we're just working on building, um, separating the user functionality from the session functionality such that they can scale independently. And also if one goes down, the session management piece is still up and running, so it's not as disastrous, uh, our like fault points. Like if, if GCP has an issue, we are down.
+
+**Andrew:** Um, same with CloudFlare, but those are the two services that we rely on. And uh, I think that's, you know, it is what it is. I think if Google goes down, you get some leeway. Yeah, nice, nice snow day when the, when the cloud providers go down.
+
+**Braden:** yeah, exactly. Um, I would say like, honestly with the, with the startup, and I feel like that's the easy part of scale, or at least that's been the easy part for us.
+
+Um, the harder parts have been, have been, um, scaling, like support, scaling requests, scaling the team, uh, to be able to handle all of these requests. Like, uh, we kind of had a very slow start where we had like a dozen customers or something. And so if, if there was ever any issues, I would just jump on with that, one of those dozen customers and be able to help them out.
+
+And I would, you know, aggressively kind of promise things, uh, and we'd get it done because there's, you know, I'm gonna cater to this particular feature and, and, um. It's easy when it's small, but then once you kind of have this like explosion of, of new usages of new usage, like the support blows up and your docs aren't perfect and all of these things, and, uh, you need to kind of, you can't take that same approach.
+
+And I think it took us a little bit too long to make that transition. I was still just trying to run around, but you can't run around that fast. You need to kind of take a step back and be like, think about things more holistically. So that's kind of been, I would say the hardest part. And then also, um, figuring out how to, uh, scale the team.
+
+And, you know, there's a ton of, I feel like resources out there talking about this, of going from 15 to 50 kind of folks. When you're 10 to 15 people, it's really easy just to all communicate and kind of all know what's going on. And then as soon as you hit a certain number, it's uh, kind of a coordination nightmare.
+
+And, and it can slow things down. So. Figuring out how to keep that kind of smoothly going is, has been the hardest part of, of scaling. Um, yeah. The tech stuff is, you know, we get to rely on, on these massive companies, Google and CloudFlare, and that's, uh, easier than some of the softer stuff.
+
+**Andrew:** Yes, scale. Scaling out people can be hard, especially like for, I can imagine support for such like a technical product is also like a hard, hard nail to hit on the head. Just 'cause like support representatives need to be technical also to some degree, and I can see how that would be challenging.
+
+**Braden:** Yeah. And, and kind of the nature of where we sit at, at like the, at the intersection of the infrastructure and the product layer means we get questions like, we get blamed for all sorts of things that are aren't our fault. It's like, you know, next JS or remix will push something in some version and then something will start working on our end and it's like, oh, you know, next JS has this, this random bug.
+
+We'll, we'll have to work around this one. Um, same with React. I mean, it, it is just like the JavaScript ecosystem in particular moves a lot. And so once you get into the front end and are trying to build like a, a front end first tool, you are pulling on a lot more work. And I think this is one of the reasons why a lot of companies kind of punt here.
+
+**Andrew:** It's, it's a lot harder to to pull in the front end and then there's a lot more moving pieces and there's a lot more change. Uh, but it does feel like where API or tools and SaaS companies are, this is the next frontier to provide a lot of value. And we're kind of at the beginning of it, in my opinion. So we've touched on how a clerk is. Uh, at the core of many businesses. Uh, but, and we've talked about how to, how that can enhance your own business, but what about the case where you wanna move off of clerk? Uh, being such at the core of your product, it might seem like impossible to move off of like an authentication provider.
+
+So does clerk, uh, make it easier? Provide any tools for me to switch off of clerk.
+
+**Braden:** We definitely need to work on some of these, uh, tools. Uh, first and foremost, like all of your data is yours. We'll just export it, give it to you. Um, however that is, there's, there's a structure to that data, and then you need to make that structure work with whatever tool you're going to. And, and that's where the migration becomes non-trivial.
+
+Um, not impossible, right? Like we don't, we're, I feel like it's kind of cool to, to be building a company where we're just literally trying to make, I'm trying to make like my own life easier if I was making an app, right? And so that's kind of at the, at the basis of everything. And, and we don't wanna hold any data hostage.
+
+We don't wanna make it hard to switch off of clerk. Uh, that being said, we do provide a lot of crazy, like a lot of more advanced authentication features. So if you do switch off, you're either gonna have to drop those features. Or, uh, build all that stuff out yourself, which is exactly the pain that we're trying to solve.
+
+So I wouldn't say it's fully trivial, but like if you wanna export your data and go to like email password authentication, you could do that in a breeze. Um, or yeah, you could even, I mean even our, our UIs are, are open source. So anything that we have on the front end, our open source, I don't think you'd actually be able to realistically, uh, I don't think that would make your life
+
+easier. 
+
+I think copying the design there would make your life maybe a little bit easier. 'cause there's like an opinionated design, but trying to use that as JavaScript libraries, they're just so embedded. Probably wouldn't help. But, um, yeah, I mean that's kind of, that's kinda my take, I guess, if that makes sense.
+
+**Justin:** Yeah.
+
+I mean this is always an interesting one 'cause it's, it seems very counterintuitive to the like, spin engineering hours on how do we like, help people not use our products. It seems like not the place you wanna be, but I mean the other, the flip side of it is like, in the reality of the startup world is like, it's hard to run a startup and most startups fail.
+
+And you know, when you're making a bet on a startup for an infrastructural project, something as critical as off, you know, and it's just like. You have to really believe them in them, or you have to have some sort of like, mitigation plan. And that's, you know,
+
+always, always something that, that folks end up having to think about in the back of their head.
+
+
+
+**Braden:** Yeah. And, and honestly, like having a, a strong export strategy is something that, that's on our roadmap. And really it's to build trust. We want,
+
+like everything, I, I feel like everything, there's a lot of stuff in this that is, is trust-based and everything we can do to kind of help that and show that a, we know what we're doing, we think about all the security problems.
+
+We are very concerned about reliability, um, and we're trying to make this super easy, having a, a clean export strategy kind of. Is part of that trust story. So it, it is something that we will spend eng effort on, even though it is kind of counterintuitive.
+
+**Justin:** Yeah. Yeah, absolutely. I mean, I think, I think trust is so key and so central to the market that you're in. It is like, it is everything.
+
+Um. 
+
+
+#### [00:41:49] The Evolution of Clerk: From Authentication to User Services
+
+**Justin:** You
+
+were, you were saying earlier that, you know, there's a lot of big companies who have internal off teams. Uh, and you know, I think one reason is that they trust themselves, you know, to do it.
+
+**Braden:** And then that it's harder to, to sort of export that trust. Uh, and also a lot of them are just at a different stage, they started at a different time and there's two sides to that coin too. It's like a clerk also auth zero. We specialize in the security of this stuff.
+
+**Justin:** Yeah.
+
+**Braden:** I'm not saying we're better than an internal team at authentication that you know, but. This is all we think about. Like we have kind of experts spending on this.
+
+And, and that's kind of like when you're pulling in a service that's, that's more or less what you are doing. You're pulling in that expertise. Like, can clerk make a system more reliable than Google Cloud? Run that scales horizontally. It's like, no, we're not gonna try, we, we trust them to do that. It's a hard dependency, but we trust them to do that.
+
+And, um, it's a trade off. Uh, but yeah, I, I, I see it going both ways where people don't trust anyone. Like, you know, there's a lot of big banks that probably, well, you know, I think the, the take, their take on cloud is definitely softening, but it's not nearly as soft to where they're pulling in, uh, kind of a, a third party author provider yet.
+
+Um, although some of 'em contradict themselves too, which is always fun. 
+
+**Justin:** On this note is just like the thing that people are paying for is like both your expertise and the product interfaces and the sort of experience and the time that they'll save and not having to hire a whole team to, to do all this stuff. So there's a, there's a ton of tremendous value being added here. 
+
+
+#### [00:43:28] Dealing with PRicing
+
+**Justin:** ; Um, and with that in mind, let's talk about, uh, pricing a little bit. So, so pricing is hard. Um, you know, we had, like I said, we had an episode with Isaac from an MPM, and, and he was talking about price ops, uh, which is a whole thing that I, uh, a whole concept that I'd never heard of. But like, even infrastructure for pricing is hard. But, uh, you know, you are building something in this category where people will have this like, trust question, which is, which is real. Uh, but also this is infrastructure that people mostly don't want to build. Sometimes they feel like they should build it, but they don't want to build it. So. When you are balancing all of these trade-offs, uh, how did you think about pricing, uh, and, you know, how did that fall out for like different audiences like, oh, the indie developer building an app versus like, you know, some larger corporation wanting to, you know, 
+
+port something to it. 
+
+**Braden:** it's, uh, it's really hard and we thought about it, I would say poorly, and we're in the process of rethinking about it. It's also one of those things that you can't really iterate on too heavily. Just like you need some consistency and, and then how do you heal, deal with existing customers, um, and how do you deal with that in the confines of building a business?
+
+And also how do you deal with that in the, um, you know, ecosystem of. Of venture capital, quite frankly, as well, and, and having to show certain benchmarks depending on where the economy is. 'cause you know, they've changed from two years ago to now. And it does force companies to do certain things in different ways.
+
+Um, I feel like with clerk right now, we're kind of lucky in the sense that we have a lot of, of backing in a long runway where we don't necessarily have to think about it, about it too hard. Um, the thing that we do need to think about right now is how do we make it more appealing for, for people? And that really comes down to dropping, dropping the price and, and having a more generous, free tier and really adhering to the, the bottom of the market.
+
+Some of the pricing challenges we have are just the different types of businesses. Like it's, it's really easy to call us and, and come up with a. Custom plan that kind of works. But like we are dealing with companies that may have a thousand monthly active users, and then there are some that have 500,000 to a million monthly active users.
+
+So if you're charging per MAU, that makes it really challenging. Um, but also you're trying to build a business and, and show that it can't be profitable. So like that company that's getting a ton of value with a thousand maus, you still need to make something off of off of them in order to grow the business and reinvest and double down and provide more value.
+
+Um, I think long term we want to, like, we wanna provide value in places other than auth um, which will help us keep the cost of wealth down, uh, and, and make it really easy to use, like make it a no-brainer for people. an example of that is kind of like, uh, is billing, we talked about it being a thorny problem.
+
+It is a thorny problem. Uh, it's really hard, but the business models and, and all that sort, uh, at the end of the day. You are charging a user. And if you have, if you're originating that, that user, that in that user object, then you can probably in some ways simplify charging that user. Um, and so we'll, we'll be doing that with like a pretty in-depth stripe integration.
+
+Um, today with Stripe, you need to, if you're gonna pull in Stripe, uh, Stripe has a duplicate database of all of your users customers. There are customer IDs and you need to sync your customer ID into your user IDs. When a user gets deleted in your system, you probably wanna delete it in your Stripe database and any other services that you're integrating with.
+
+Um, when we build a Stripe integration, we'll be able to do that, um, on your behalf. And then we will be able to expose Stripe's functionality. You know, you'll put in your, your, your Stripe aki and we'll do like, use expose a user dot charge methodology. And for like the B two B SaaS, maybe we'll build out some sort of simple subscription thing and, and see how that goes.
+
+Um, if we can do that and kind of provide value there and, and, and it would, it would be kind of, and take a, um, uh, like, what am I saying? Uh, yeah, I mean if we can do that and, and kind of provide value there, then we can charge for that feature and then that can bring the cost of off down and, and, and it's easier to map that to the, to the customer.
+
+But I guess in the short term, what we're gonna be doing is, uh, dropping the MAU cost, making more transparent tiers of such that it kind of works for smaller to bigger companies. With the introduction of this B two B feature set in a bigger way, we'll be able to price differently for B to B companies versus B to C companies, which will, again, it's, that's basically bring down that MAU cost, which is where we've been.
+
+Failing and have had to cut like special deals with people who unexpectedly grow from zero to like 500,000 m Aus in a month, which is wild. Um, yeah, I mean, it needs to be affordable. It's not, that's the end of the day. And, and we don't wanna lose sight of the bottom end of the market and the smallest customers.
+
+Um, I think for me, the mantra is always, we're trying to make it easier to build apps and build, build tools for developers. And that starts with the smallest developers. So we never really wanna lose sight of that. Uh, other people kind of tackle us in different ways. Like a Zero has a free plan up to 7,000 maus, and then it's like, talk to Enterprise.
+
+**Andrew:** And nobody wants to do that. Like developers don't wanna do that and they don't wanna get like 10 XD when that happens. So how do you make it like a kind of a gradual thing and, and provide value for the cost? And it's a tough trade off. It's, it's hard. Uh, yeah, so what, what you said, like, it's interesting, like, it seems like clerk is moving, like the first initial value prop was off as a service, but from what you're saying, it feels like the user is really the service now and off is just like a feature of that user and it's like how can we like, bring in as many of like the useful user functionalities into clerk that makes it easy to build out nice user services 
+
+**Braden:** Yeah. And organizations is, is arguably the first additive feature there. Um. Billing and charging a user is gonna be another additive feature that, uh, we're gonna kind of dip our toes into, I would say. Um, but there's, there's a lot. I mean, the user dashboard is kind of the one that I'm like, I'm personally really excited about.
+
+I really want to build it out. It's like you just have this easy to use dashboard where you can go and see all of your users, uh, see their, uh, see all of their actions. 'cause um, like an audit logging type thing is, is kind of in our future as well. A big part of that are, are all these security things.
+
+And so it's, uh, it's a natural extension. But, um, one of the cooler features that we have in clerk that is super valuable is, is user impersonation. So out of out of the box you implement, you integrate clerk, you can then sign in as your users and see what they're seeing. Um, a lot of companies build this out for the support team.
+
+It's always kind of hairy. It touches the session object, the user object. It needs to be audit log itself. You need to have controls around who can do it. Um. And that is a, a cool feature. I don't know. That's like, that was one of the cooler features up there with the, the multi, the multi-session stuff.
+
+Those are like my two kind of like favorite ones. And I think it just kind of shows the power of the abstraction that we have and where we can kind of go with it. Um, extending the user object itself is, is super interesting. And we talked a little bit about billing that's, that's a user action, but then like being able to do like user.credit cards and even though they're maybe at the end of the day stored in, in Stripe with kind of all of the PCI compliance over there, you can still access it off of that simple clerk user credit cards and they're just right there.
+
+Um, there's a, yeah, no, I'm excited about the extensions and the user object as, as kind of an insertion point for being able to make other things a lot easier 
+
+to do as a developer.
+
+**Andrew:** Yeah. All, all those things harken back to the, like, it's a scary thing to do. Even thinking about like creating a button that lets my support people log in as another user seems like a can of worms. It's like an overwhelming thing. But to have a service that goes like, oh, that's just a feature. And we are experts at auth, so you know, this feature will work how you want it to work is Chef's Kiss. 
+
+**Braden:** Yep. And, and, uh, it's funny how many of these things like, felt like they were unlocked by pulling in that session management piece. Um, and 
+
+yeah, it's, it's Cool. 
+
+**Andrew:** okay. 
+
+
+#### [00:52:16] A Spicy Take
+
+**Andrew:** Uh, so, so one question I've been enjoying asking, uh, all our guests that come on the show, uh, is a fun one that's been making the rounds on Twitter. What's your spiciest dev take?
+
+**Braden:** Ooh, a dangerous one. 
+
+**Andrew:** Yeah, very fun. 
+
+**Braden:** I 
+
+guess I probably have a few, I think I'm more of a. Uh, I guess as a developer when I'm kind of making things, I prefer simplicity. Maybe that's not too spicy. I feel like it's probably spicier. Like I, I think I prefer simplicity and more procedural. And like when I tried to learn rails at one point I was frustrated by the amount of things happening behind the scenes that I didn't know about, couldn't control and weren't like shown to me kind of.
+
+And then with like Golan, I can just like look at the code and I can click into it and I can see everything and I can procedurally figure out exactly what's happening. Uh, that might just be how, like my brain kind of works and maybe I don't have enough foundation for other types of working or other types of frameworks.
+
+And, and, uh, I prefer to like start with simple and then build up from there that's not super spicy. Um, I guess another one that, that kind of comes up a lot, especially with Clark is open source versus kind of closed source. Um, I feel like. They're like, companies switch between open source and closed source all the time.
+
+And I feel like a lot of companies use open source as just because they think it looks good and they're really hamstringing it on purpose to the point where it's just marketing speak. Like it's literally like just for, uh, just for show. And I'm not a huge fan of that personally. Like, I like when things are, are what they say they are and aren't trying to disguise themselves, disguise themselves in another way.
+
+So I mean, with clerk, it's like all of our front ends are open source. You can look at them, you can use them, but the back end is not. And, um, that's where we're providing value. And, and to, to open source it, it feels like it would be kind of disingenuous because at the end of the day, we are working on building a business and, uh, it's also an easier way to provide value because you don't need to, um, kind of think about the implications of, of having that additional structure.
+
+In your 
+
+build process?
+
+**Andrew:** Yeah, that, that one hits home. Like recently, like yesterday, I don't know if I wanna name names. Uh, but, uh, so a popular testing library yesterday made it so that, uh, like they are open source, but if you install any of their, like, if you install any open source alternatives to their dashboard, it completely just fails the process.
+
+So it's like open source, but like, not really. So it's like, it feels like it falls in that category of like, yeah, we're open source, we'll take your free work. But not really. It's like if you want to build something cool off of us, good luck. If it competes, it's not a thing we'll allow. So it's like, ugh. 
+
+**Braden:** there's been, I feel like a bunch of stories and Amazon really kicked off. I feel like this convo in a big way a while ago about just like, I forget what, what the origin of it was, but it's like some. Very popular tool was open source and Amazon took that open source code and then 
+
+hosted it. And 
+
+**Justin:** Elasticsearch versus now open search. 
+
+
+
+**Braden:** yeah. 
+
+And obviously that's not exactly what your intentions were, but it's what you spelled out and it, it sucks. So it's like 
+
+now they're having to backtrack and maybe there's some model where of like, oh, if you're a company of X size, then you can't use it. But we wanna support other folks that are smaller. I don't know.
+
+It, it gets really dicey and I, I prefer it to just be clear about your intentions. And I think there are a lot of open source companies that's, that are like, uh, but it's, it's in that middle ground where I'm like, eh, like, uh, Yeah, 
+
+**Justin:** Yeah, I mean there are, we, we talk a lot about open source businesses and, and if you're making a product that is fully open source and you're trying to monetize it, then you get into some tricky gray area. You do. So, you know, we've had a bunch of licensed changes over the years. So folks like Mongo, for example, was very famous license change.
+
+Of course, uh, elastic changed their license, uh, because Amazon was hosting it and that calls Amazon to fork to open search or whatever. And, you know. That's something that a big competitor can come and do, like pretty easily is like, if you have everything open source, I don't know, it's hard. It's hard. RC had the same model of like all the things around the product that we don't really care about, well, not that we don't care about, but like aren't necessarily like the value add.
+
+So it's like the website was open source and like all of our tooling was open source. Even the app was open source. But like the thing that was like really, you know, the actual business logic for like dealing with galleries or like, you know, doing all the really, you know, deep interesting, valuable stuff that was just like close source and, and I think it's a, it's a good trade off to strike, uh, if you're gonna open source something, be, you know, genuine in that.
+
+And then also be open for people to use it and do things so that you know, or make sure you like, do the correct licensing or think about licensing really early on. So if you want people to not, to make a, you know, proprietary commercial product out of it, it's like. Be clear. 
+
+**Braden:** then there are always parts where you can contribute in a, in a genuine way and be like, this is, we want everyone to be using this part of, of kind of the open source. And it doesn't, and we can still have a sustainable business at, at the end of the day, which is un, I dunno if it's unfortunate, but it is one of the realities of, you know, building tools for other people.
+
+Um, if, it's not sustainable, it's going to like, you won't be able to continue on it. And it's kind of sees the end of, of it is, and, and, Yeah. 
+
+It's just, it's 
+
+tough. 
+
+**Andrew:** Yeah. 
+
+
+#### [00:58:13] Tooltips
+
+**Andrew:** Uh, with that, let's move on to tool tips. Okay. My first tool, tip of the week is a project called Rivet. Uh, a few podcasts ago I shared, uh, another AI tool called Comfy ui, which lets you use a node-based editor to like, create image creation pipelines. Uh, this is the same thing, but for LLM pipelines, so you can create this big nice, like. Uh, node-based graph and create prompts from, uh, editing that graph.
+
+Uh, I haven't used this much myself, but I find these visual programming languages really fun to mess around with and to like start understanding the, the concepts of the technology you're playing around with. So if you've wanted to mess around with LLMs and like making them do more complex things based off of maybe state or like flows through a graph, this would definitely be a project checkout.
+
+'cause I don't really think there's anything else like it at the moment. 
+
+**Justin:** I had a friend, uh, ask me to help them find some, some open source fonts, and I was just browsing GitHub, which has lately become my favorite place to look for fonts. 'cause you find some really interesting things. And so there is this font called zero X proto. Uh, it's in the OX type, uh, organization. Uh, and it's a really nice technical font.
+
+Uh, so it's, it's sort of labeled as like a, a programming font or whatever. Um, but I don't know, it has a really nice look to it, uh, and kind of, uh, like not everything is like super straight and super hard edges. It's kind of like a little bubbly in, in a way. And I don't know, it looks nice. So if you're. Looking for another open source spot and you're wanting to play around with some new 
+
+fonts, then definitely check this one 
+
+out. 
+
+Yeah. No more IL one confusion. 
+
+Yeah.
+
+**Braden:** I do feel like for whatever reason, like loop characters are like M and N and like I and J, like, I don't know how that happened, but it's the ones that look most alike. 
+
+**Justin:** Uh, I had a, friend, ask me to help them find 
+
+**Braden:** developer 
+
+**Justin:** source 
+
+**Braden:** and 
+
+**Justin:** and 
+
+**Braden:** look at that 
+
+**Justin:** browsing GitHub, 
+
+**Braden:** It's 
+
+**Justin:** my favorite place to look for fonts. 
+
+**Braden:** design, on point, but also email is 
+
+**Justin:** called zero X proto. 
+
+**Braden:** uh, have 
+
+**Justin:** it's in the OX type, uh, technical font.
+
+Uh, So it's it's sort of labeled as 
+
+**Braden:** Yeah, that's, I, I guess like, kinda like what you wish sendgrid 
+
+**Justin:** and kind of, 
+
+**Braden:** if you've ever tried to use Sandgrid, 
+
+**Justin:** Yeah, I, I honestly love, I love the unbundling of And I don't know, it looks nice. So if you're.
+
+Looking for you know, these dedicated products that do it really well. So, so this is cool. Clerk is cool. I love seeing the things that I've spent time and paying on that I didn't care about. Turning into products where I can pay somebody to care about it for me. That's awesome. 
+
+**Andrew:** train. This is a project that popped up on my feed recently called JSX email. It lets you build emails with JSX, uh, who would've guessed? Uh, but it's, it provides a bunch of like, uh, components that you can use to build out your emails. So it has like a body, uh, headings and all of that.
+
+And it just makes it really easy to style and send customized emails while writing what feels like react. So if you've ever been looking for something, I'd definitely give this a look. Uh, I'm pretty sure it's from shell scape who's a maintainer of, of roll-up in a bunch of other packages in the ecosystem. So definitely quality, definitely check it out if you've ever 
+
+had the need.
+
+**Justin:** Does this use MJML 
+
+under the hood, 
+
+**Andrew:** I have not looked at the dependencies.
+
+I haven't gone that deep on this one 
+
+yet. 
+
+**Justin:** MJML is like the classic, uh, markup for, um. 
+
+Email thing. 
+
+**Andrew:** It must like it. It has all these components, like I don't imagine why you would need a heading component for H ones through sixes if you weren't going to some other type of format. So yeah, probably built on that. Then last up, we have skewed, which is actually from a coworker of 
+
+mine. 
+
+**Justin:** so skewed is a library that's written a type script that, uh, takes uh, three D model and then transforms it into SVG. Uh, and it can do it in real time. Uh, and it, it has constraints on how it renders it. So, uh, it's orthographic projection. Is, is the only sort of way to, to do that.
+
+So it's like architecture models maybe, or maybe like furniture or something if you're, or like an isometric game, I guess. Uh, but, um, it's, it's really cool. I love seeing this sort of thing. I mean like, I don't know. That's SVG yo. That's crazy. It was like a demo of a a, a light run, like moving around a bunch of primitives and like doing dynamic shadows and lighting and everything. It 
+
+is like, 2d yo. 
+
+**Andrew:** Yeah. And Francoise has just been doing this in his free time for fun. There's no reason he's doing this. He's just doing it. Yeah. If you, if you wanna follow along with the development too, uh, follow his Twitter account, selfless, uh, he posts lots of updates about him working through various problems and trying to implement like, various shaders in this, like in the example he shows on the website, this is like realistic shading, but he's also has shaders for like cartoon shading and a bunch of other different things.
+
+Cool. With that, that's tool tips for the week. Thanks for coming on Braden. This was, uh, a fun delve into auth and really all things users, so thanks for coming on and 
+
+enlightening 
+
+us. 
+
+**Braden:** Thanks for having me. 
+
+**Justin:** Yeah, it was awesome to have you on. Uh, really love to see Clark continue to grow. Uh, it's an awesome product and it's been getting a lot of love lately, and we're glad to have you on. 
+
+
+
