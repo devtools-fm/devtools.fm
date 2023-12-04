@@ -186,7 +186,8 @@ interface FrontMatter {
 
 export async function processMdx(
   filename: string,
-  components: MdxRemote.Components
+  components: MdxRemote.Components,
+  includeTranscriptAndDescription = false
 ) {
   const { data, content } = matter.read(filename);
 
@@ -228,8 +229,10 @@ export async function processMdx(
     spotifyEpisodeId,
     frontMatter: data as FrontMatter,
     tabSections,
-    description: showNotesTab.description.split("\n\n")[0],
-    transcript: transcriptTab.raw,
+    description: includeTranscriptAndDescription
+      ? showNotesTab.description.split("\n\n")[0]
+      : "",
+    transcript: includeTranscriptAndDescription ? transcriptTab.raw : "",
   };
 }
 
