@@ -1,0 +1,740 @@
+---
+title: Yagiz Nizipli - Node.js Performance
+youtube: https://www.youtube.com/watch?v=waEKI4V70CU
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Yagiz-Nizipli---Node-js-Performance-e2cp1ld
+tags: technology, node.js, performance, rust, wasm, v8, javascript, webassembly, url, parser, benchmark, simd, utf, simdjson, simdutf, nodejs, deno
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Yagiz Nizipli about his work on Node.js performance.
+We discuss his journey into Node.js contribution, the challenges of URL parser implementation, the impact of competing runtimes, and more.
+We also discuss the current state of backend javascript's competing runtimes, and his views of VC Money and Open Source Funding.
+
+- https://twitter.com/yagiznizipli
+- https://www.yagiz.co/
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://zackoverflow.dev/writing/flappy-bird-in-type-level-typescript
+- https://github.com/farm-fe/farm
+
+#### Justin
+
+- https://github.com/seanoliver/audioflarey
+- https://wasmer.io/posts/announcing-winterjs-service-workers
+
+### Yagiz
+
+- https://ui.com/us/camera-security
+- https://prsguitars.com/electrics/model/silver_sky_2021
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:43] Journey into Node.js Contribution
+[00:11:43] Ad
+[00:13:18] The Challenges of URL Parser Implementation
+[00:31:05] Impact of Competing Runtimes
+[00:40:25] Contributing to Node.js: The Good and the Bad
+[00:55:10] Spicy Take
+[00:58:48] Tool Tips
+
+<!-- TAB: TRANSCRIPT -->
+
+
+#### [00:00:00] Introduction
+
+**Yagiz:** It's extremely hard to say that, um, my code is faster than yours. And I, uh, kind of respect, uh, the courage of those people that can say that publicly, but I can't, even though I, I know that ADA is the fastest what we GL parts in the world right now, but if you look into ADA's website, you won't see that claim. 
+
+​
+
+**Yagiz:** Hello, welcome to the Dev tools FM podcast. This is a podcast about developer tools and the people who make 'em. I'm Andrew and this My co-host Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Yagiz on the podcast today. So Yagiz is a Node js Technical Steering Committee member. Uh, you're also on the Open js Foundation. You're a voting member for that. Correct. Uh, and you've done a lot of work on nodes specifically, uh, around the like security. Is that like a big 
+
+thing?
+
+**Yagiz:** performance. Yeah, Mo mostly around performance. I added several different features as well, but I, I kind of refrain myself from adding new 
+
+features. 
+
+**Justin:** Great. Great. Cool. Well, we're really excited to talk to you about sort of your involvement in Node and some of the other work that you've done, uh, performance related. Uh, but before we dive into that, is there anything else you'd like to tell our listeners about yourself? 
+
+**Yagiz:** Yeah, I'm, I'm, um, engineer with around 10, 13 years of experience. I recently graduated from my master's and I, when I moved to New York, uh, that's how I actually started contributing to Node. Um, I recently became a father and that's, uh, ADA is the name of the URL parser of node.js and also my daughter's name.
+
+So, yeah, that's, that's the most important thing right now. 
+
+**Andrew:** Yeah, 
+
+I, I, I love it when programmers sneak their kids' names in. The one that I recently just learned about that blew my mind was the creator of MySQL. Uh, the things that he made, mysql Maria DB and Max db, those are all the names of his children. So like he has, his first kid was named my, so that's why I say mysql and that sounds like a totally fake thing, but it's, it's completely true.
+
+**Yagiz:** Well that, that kind of reminds me about Linux Torvalds like sneaking, um, dish, like his, um, daughter's birthdate into the actual Linux source code. So if you write timestamp of it, it reboots or something. I don't really remember. 
+
+**Andrew:** yeah, I, I thought you were gonna say that Git was his daughter's name, and I was like, wow. That's just, that was, that's terrible. 
+
+Okay, so, uh, onto like the actual work that you do. 
+
+
+#### [00:02:43] Journey into Node.js Contribution
+
+**Andrew:** So, uh, we touched it on it a little bit, but, uh, what is your involvement with No js? How did you get started and what drove you to become a contributing member to such a big project?
+
+**Yagiz:** yeah, so I'm, right now I'm a technical steering committee member. I founded and I'm still a member of the performance team of node js. Up until a month ago, I was the performance strategic Initiative champion, meaning that I was the champion, I was the person responsible for, uh, improving node js performance.
+
+Um, it all started around a year and a half ago. So at the age of around 28, 29, I moved to New York with my wife. Um, and I got into my master's. It was, uh, a computer science master's and I have a undergrad in computer science as well. So it was going really smoothly. It was really easy and one of the graduate.
+
+So I, I had to select a graduation project and I didn't want to write a to-do list or a mobile app or a simple product that I can, uh, like hack in a couple of days. And that's how I dive into the issues of node js, and I wanted to select a task that was worked my time and worked producing something so that my two, three months will be beneficial for others as well. And hence my experience. My, um, my work on URL parcel started. That was the task. So, um, James Snell from, uh, again, node js T-S-C. Um. Opened an issue saying that they wanted to, like, he, he had an idea about rewriting the URL par in WebAssembly, uh, meaning like we, we can write it in c plus plus or Ross, and we can, uh, use web assembly in order to have a much more performance.
+
+Um, URL par. So I spend around a month and a half just to start, start learning rust and write it, write the URL parer from scratch. Um, I wrote, um, not like 30, 40% compliant parer, and then I compiled in the web assembly and I realized that the performance is worse than what it is right now, meaning that when I dive into it, I realize that there are much more, uh, on performance sides of using web assembly for heavy, for, um, synchronous string related operations because of the, uh, communication, the serialization and de serialization of text encoder and taxco. So then I spent another two months rewriting everything in JavaScript, and I realized that V eight, uh, sucks, I think I can say that publicly. Um, and which made me realize that I need to dive into how V eight is implemented in order to, um, optimize it. I spend a lot of time on it, and then I basically realized that I've, I've reached a limit about writing a parer only in JavaScript language.
+
+Then I met, um. A professor from, uh, university of Montreal, uh, called Daniel Lemere, which is also the author of simd json and sim, UTF Libraries, UTF libraries. And we started writing a year parser. It took us around six months. And while doing that, I also contributed to several other things, but, uh, that's basically how it evolved and how I became a collaborator.
+
+And yeah. Um, last few years, November, uh, at i, I, I gave a talk about in Norcom about how to write a fast and efficient URL parts for node js in JavaScript. So that was the turning point for me, I guess.
+
+**Justin:** What's a, there's a lot to unpack there. Um, is there wasm in no js core right now? I mean, are there other parts of node js is using wasm? 
+
+**Yagiz:** but no other project inside, node core. Uh. Uses was, but it's, it's, it's really easy to do that. But I don't like, there's no other contributor that writes web assembly and contributes to node. But if someone did, then it'll be extremely easy.
+
+**Justin:** That's, that's really cool. I didn't, I didn't realize it was that far along to be used in core like that. Um, the, something that you said though is like. There is a boundary cost really, anytime you cross run times of like, you have the copy, you know, strings in the memory or whatever, shuttle 'em around and you definitely pay for that cost. love 
+
+**Yagiz:** but what folks like, what most people don't, doesn't realize is that, um, V eight does a really bad job at, um, those encoding and decoding of strings because V eight is written for browsers, not for server runtime. So you don't execute, they don't optimize for executing and encoding function a million times on a single device.
+
+And if it's executed a million times, uh, they assume that they're using one of the big good machines to brows internet, so it doesn't optimize it. And that was the bottleneck in text encoder and encoder
+
+**Andrew:** So when you encounter situations like that, is like, do people on the no team contribute to V eight and try to debug those, or is it like kind of hard to get those issues fixed?
+
+**Yagiz:** there are lots of people that contribute to, uh, V eight. Um, but they're mostly getting paid for it. Uh, I don't, so, um, I, I looked into the code. I even championed one of the issues, but I didn't have any time to onboard myself on the size of V eight while working on node js itself. But it's, uh, it's highly unlikely that a node collaborator also contributes to V eight, uh, and vice versa there.
+
+It's highly unlikely for a V eight developer to contribute to Node as well, unless they are getting paid by Microsoft or any other, uh, big corporations in order to fix, uh, runtime or a operating system specific issue. 
+
+**Justin:** Yeah, that makes sense. They're definitely different code bases. They're, they're doing very different things, so I can, I can, I can see how that would work. There's something that you said that I kind of wanna dig into a little bit. You know, you, you mentioned that you didn't think, or you, you had some problems with V eight.
+
+Uh, I just curious like what, what is it about V eight that was like non-ideal or hard to work with or whatever? Like. 
+
+Uh, because I've only heard positive things generally, but then again, I haven't heard, we haven't talked to a lot of people who've actually specifically done work NV eight, so it's a really interesting take.
+
+**Yagiz:** so all of my takes are, like, all of my comments about V eight will be mostly about performance, not about feature parity or any other thing, or as a product as well, because I don't have that much experience. I have specific experience on specific things that. That could have a huge impact on a wide range of users.
+
+So the problems that I tend to take is problems that are really hard, but when solved, they affect millions and billions of users. So, um, crossing the boundaries between c plus plus and geos script is one of them. V eight has support called B eight Fast, API, which means that instead of exposing, um, actual, um, c plus plus function, you expose a fast path to that function called like a c function to it, which reduces, um, calling that c plus plus function.
+
+But it has really extreme, um, extreme limitations. So like if a function that takes a parameter of string and it does some operations on it and returns the bullion, for example, you can use that function. But if a, if, if you have a function that takes a parameters of input, it allocates certain things and then returns the string, then you can't use it because you can't allocate new stuff in the fast API because they don't, they want to make it as simple as possible so that it doesn't have, it doesn't get garbage collected and so on, so forth.
+
+So this limitation, I think it's, uh, it's okay. It's, uh, it makes sense. What doesn't make sense and makes it really hard to use fast. API in V eight is. If you have, if you have a string that concatenates by two other strings, let's say you have a string called, like processed at PWD, and then you append it with slash load modules, then this string becomes an unflattened, like not a flat string, and there's no way for you to use that parameter and trigger the V eight fast API because, uh, V eight fast, API has a requirement of having one, uh, one byte strings that needs to be like unla strings, flat strings, sorry. So these kinds of things makes it really hard to find workaround around it. And, um, with the project, with the size of node, it's kind of, uh, pushes us to find creative solutions that's not, uh, always applicable to every problem.
+
+
+#### [00:11:43] Ad
+
+**Andrew:** Once again, we'd like to think recast without our sponsors. That pulls at. M wouldn't be possible. Recast. It's an app for Mac that's like spotlight. But with superpowers. Besides being able to do all the things that spotlight and Alfred can do. It has a host of other features that are supported by community made extensions. The extension API is super cool. It's actually built on top of react. And if you've ever written react, you can get into writing extensions super quickly. 
+
+One cool extension that they came out with this week is actually one from, the CEO, Thomas and Pedro, who also works at the company. It's a quick way to turn on your camera and take a picture. It just shows the ability of Ray cast to hook directly into your Mac and provide a unified interface for doing a whole bunch of things really quickly.
+
+You should also check out Ray CAS. Pro with pro you can take advantage of Ray cast, AI. And do a whole bunch of really cool things on your computer. From translating texts to summarizing text. Tapping a full blown conversation with the chat bot. You do a lot with it. 
+
+Rick has pro doesn't stop there has a whole bunch of other features. That'll get you up and go and really quickly. Uh, such as sinking your profile across your devices. 
+
+You want to advertise with the dev tools, FM head over to dev tools.fm/sponsors to apply. Do you want to not hear these ads? You can become a member on one of the various platforms that we offer memberships on If you do get one of those memberships, make sure to join our discord where, uh, we might not talk all that much, but if you're there, maybe we will. 
+
+If you want more dev tools, FM in your inbox. Head over to mail.dev tools.fm to join the mailing list. 
+
+And with that, let's get back to the episode.
+
+
+#### [00:13:18] The Challenges of URL Parser Implementation
+
+**Andrew:** So is that why, like, uh, of all things like you chose to, uh, rebuild the URL parser was the URL parser, like originally, like an in-browser feature that because of, uh, performance implications, it just wasn't a good way to use V eight?
+
+**Yagiz:** So V eight doesn't have URL parcel implementation in it. Chrome has it. Um, this is mostly, I, I don't know. They're trying to make the V eight code base as, um, as small as possible, and that only contains JavaScript, uh, implementation language, uh, problems. Uh, it was previously implemented by James Snell, which was the, uh, which was the TAC member that initially, uh, created the issue to replace URL parser.
+
+And he's also a really good friend of mine so I can, uh, talk about it easily. Um, so I forgot what, what the question was. Sorry. 
+
+**Andrew:** Uh, the, the question was really just like, why the UR URL parser first? Like, is it, uh, I, I was getting at like, maybe it was because of the, that intermingling of your code with V eight, uh, but what it sounds more like, like, I'm just interested why w why would you choose that? Does it like, touch a lot of different parts of no js and like a lot of performance could be gained out 
+
+of it?
+
+'cause 
+
+like, from my point of view, I don't parse URLs all that much in no 
+
+js. 
+
+**Yagiz:** Yeah. So the issue is, um, when you ask someone why you chose that task, and they will always say that, like, we assume that it'll be easy. That was, that, that was my reason. Like when you look at a URL parser, uh, URL specification, and if it in, it takes around like 10 minutes to read the actual implement like specification.
+
+You say that? Yeah, it's pretty straightforward because it's the implementation specific specification. So it, it actually tells you like, there's a function that needs to take this, and then you, if the function, if the parameter starts with this character, then call this function and blah blah. So I assume that it was easy and I had the same, uh, expectations that any everybody in the internet has, and URLs are extremely easy and like, yeah, it, it, it, it might be impactful.
+
+But when I dived into the specification itself, I realized that this is not the case. And even though you are not parsing a single URL at all, if you call fetch, fetch, fetch right now, um, it calls URL maybe four times before RES returning a response. Or if you just say node index.js . It calls the URL parser five times just to parse the actual path of the index year.
+
+So without knowing it, you are paying a lot of price and we assume that it's extremely small. That's why, uh, nobody in the last decade, uh, worked on URL parsing in the whole world. And, uh, that was a, a place that I thought that, uh, we could shine and we could, uh, write the library about it and affect millions and billions of, uh, users worldwide.
+
+**Andrew:** Yeah, that's cool. I wouldn't have assumed that. Uh, the URL parser is called five times when just parsing your index file. Uh, and I can definitely resonate with, uh, thinking that a problem that's small will be easy and. You can, you can attest it wasn't easy. It blew up into three different implementations, across three different languages in spanning eight months.
+
+So definitely a harder challenge. Uh, what were, what were some of the challenges that were involved in creating that?
+
+**Yagiz:** so the creating and writing it was not, um, uh, was not a challenge, but optimizing and writing the fastest one is there are lots of edge cases and URL parsing, uh, parsers that you need to optimize for. And most of URL parsers out in the, um, industry used by really big corporations, they're not optimized.
+
+Like, um, I can give you an small example that, uh, while I was investigating and benchmarking, I realized that if you have a URL, let's say, called htp s ww google.com, and if you have another URL that you have HTPs w google.com/that ends with a slash, um, it performs two times slower than the initial one on curl. And this was, this, this is fixed definitely, of course, but um. This is, this shows the complexity of the, uh, state machine that was initially, uh, implemented, that initially written as a spec. Because whenever you see a slash specification, then it says that you need to go to the pat state, which the pat name of the URL contains.
+
+And Pat name has this initialization saying that, okay, if it starts with a slash and if it ends with this, if it has a state override and blah, blah, and those kinds of things, then it makes it really hard to optimize it. And, um, not everybody, if you, if you're not looking directly for that specific optimization, could see it then.
+
+So we basically spend a lot of time finding those age cases and, um, also optimizing and finding, um, how to. Speed up the happy paths in the Uur L parcel. So URL, for example, URL specification states that the URL, um, whenever you see a hashtag characters, the URL will immediately go to the fragment state.
+
+But most of the usual cases you don't, uh, ever see an hashtag, um, because most URLs doesn't have fragments, but if you're working on NODE JS so we basically optimize it towards this and it contains several different edge cases and, um, things as well. And that's why we like, initially we implemented a pretty straightforward parser, which is a ADA URL version one.
+
+Um, whenever, whenever we are seeing a component in the URL, let's say pet name, we are allocating a new string. We are making it, uh, um, like a pet name, STD string. Whenever we see a query, we set it to query and then we were allocating lots of strings and as a result. node js. We were returning this whole array, which contains protocol, username, password, host port, and those kinds of things in an array.
+
+And then we were, um, converting that array to the properties of the, um, URL class. And because there, there were lots of strings and because V eight is extremely, uh, slow on serializing and de serializing strings, we written the whole implementation from scratch, spent two, uh, three more months on it and came up with a solution that only returns the starting and ending in indexes of each component instead of returning whole.
+
+So if you have, uh, hrrf of the URL, the whole input string, and if you have a protocol and which is the index that returns the protocol, which HTTPS, and it's like five if you have a username and which is equal to five, again, this means that you don't have username, uh, and so and so forth. Then you can actually have seven, um, unsigned integers and one STD string to just cross the boundaries of c plus plus and JavaScript.
+
+And this actually resulted in maybe, um, 70% improvement. So, yeah. Um, so there are some optimizations that we did specifically for the URL parser , and there are some optimizations that we did specifically for run times that have a cost of crossing the boundary, like node js.
+
+Yeah, I, I can, I can really do this all night long because not everybody's interested about, url parser I don't get, my wife is kind of bored about me talking about url parser 
+
+**Andrew:** I can imagine, um, my fiance has similar, uh, gripes about me talking about coding. Uh, so, uh, before we get onto, like talking more more about perf, uh, let's talk about some of the other features that you've implemented for node js. Have you implemented any other, like non per related features or championed any?
+
+**Yagiz:** yeah. So couple of months ago I implemented the file parser. Um, one of the TC folks, uh, were interested in adding that because, um, eventually we're thinking about adding a node json configuration pile to the node project so that instead of having this huge CLI with lots of arguments, you can just use that and go on and use that. One of the challenges was that like I, we needed to have a dotenv parer that supports mode options so that you can configure everything, blah blah. So this is, this is what I did. 
+
+
+
+Um, let me think. Uh, I recently added the navigator and broke lots of packages, uh, because I added hardware concurrency, but I didn't add user agent.
+
+So everybody was checking if type of navigator is not equally equal to undefined, then get me navigator. That user agent, but user agent didn't exist. So, yeah. Uh, this was pretty recent. Um, yeah, I think that's mostly it. I'm, I'm, I'm mostly like hold myself to not an add any features because I don't like the discussion around adding those features.
+
+Um, with Benchmark it's pretty easy. It's numeric value. I don't need to convince anybody, I just need to convince the compiler and the benchmarks. Uh, but even, apparently, even benchmarks, um, has lots of drama around it, uh, which made me question, uh, my life from time to time. I can say that. 
+
+**Justin:** 
+
+yeah, yeah. There's always the challenge of like, is the benchmark really representative of the performance as a whole? Is it like a artificial slice of 
+
+something? We see that a lot in 
+
+like framework comparisons. 
+
+**Yagiz:** So what, what, what I can say, let me tell small thing about it. Like, um, in the case of URL parser, I care about the name that I put behind it, which is my daughter's name. And Daniel, uh, is a professor that has, uh, respect behind it. So we literally spent, um, couple of months on top of actually implementing thing to just create the appropriate benchmarks.
+
+And we, like, for example, we crawled the hundred thousand websites in the world, um, and had a database of a million or 2 million URLs just to parse them as a dataset. We've crawled B, B, C because it's the most used website in the world and produce like a dataset of BBC URLs. We created a virtual machine of Linux and we booted every pet that, uh, um, newly installed Linux has to create a file, URL pad and so on and so forth.
+
+So, um, it's not about producing the fastest one, and it's about also creating the most reliable one because if someone comes and says that like, your benchmark is wrong, because if I put a slash at the end of the URL, then I can make your code. Like your code is extremely slow, so we didn't want to do it, do that. So, uh, yeah, that's my take on the whole benchmark stuff that's happening all around the, the JavaScript ecosystem right now. 
+
+**Justin:** Yeah, I think, I think typically, and correct me if I'm wrong with this, but it seems like something like URL parser, which is a little bit, probably a little bit more deterministic and like you can give it a a, you know, a finite defined set of inputs, just really about getting a large enough sampling size of inputs to really test performance and some other things are.
+
+More subjective. It's like how fast does a, does a page render? It's like, well, you know, what do you mean? It's like how fast is the first element on the page? How fast is it complete? How fast is it visually complete? What does it even mean? You know, there's a lot of like subjective stuff that can start 
+
+going into 
+
+some of the benchmarks, 
+
+which 
+
+makes it 
+
+harder to.
+
+**Yagiz:** so Mo most people don't realize that there's, um, unsimilar there's a magical part of benchmarking even in, um, problems like parsing because with like SIMD, which is like single instruction, multiple data, you provide hardware specific performance improvements, and on a different machine that doesn't have a neon architecture, which is like Windows or any other device, then your code might be slower.
+
+So, um. It's extremely hard to say that, um, my code is faster than yours. And I, uh, kind of respect, uh, the courage of those people that can say that publicly, but I can't, even though I, I know that ADA is the fastest what we GL parts in the world right now, but if you look into ADA's website, you won't see that claim. 
+
+**Andrew:** Yeah, I, I, I followed some of the issues you're on with like the performance debates and it's, it seems rough where like, it, there is less argument, but it's very easy for someone to come and going like, well, on my hardware this is slow. And it's just like, ah.
+
+**Yagiz:** Yeah. 
+
+Yeah. And, and like if, if you, if you have any file system operations, then it's extremely hard to benchmark as well, because if you delete and add file a million times, then. You're not benchmarking your code, you're also benchmarking your hard disk. You're also benchmarking your operating system and 
+
+so on and so forth.
+
+So it's extremely hard. 
+
+**Andrew:** Yeah, largely an unsolved problem. Like I, like a simple thing that I want is just like, I want some way to test that my website is performant in the ways I, I know it was one day. It's just so hard to do that in today's modern computing world. Like you can't just say, oh, here's a, a farm of servers. Go, go run performance tests.
+
+It's always gonna be off by a little bit. 
+
+**Yagiz:** if you use performance counts, it's not so if you use, so if you use hardware performance counters that are specific, like, um, there are some solutions that, um, like M1, MM two machines are providing, using Xcode, it'll always give you the same amount of instruction count. For the same operation. And then the question becomes like, how can I reduce this number from 12 to 11?
+
+And if you do that, it has direct implication on the execution time as well. So we are always, we are always comparing the execution times, but execution times might vary depending on the conditions, but the amount of instructions that gets run, it's not, but because we are benchmarking on Google Chrome, on, on top of a node, GS runtime on top of, um, another, um, goal written, uh, bundle and blah blah.
+
+So there's lots of things that you have to do and it's nearly impossible to benchmark them with, um, with a hundred percent confidence. 
+
+**Justin:** Yeah. Yeah. It, it, it's hard. The, the more abstractions you have between. What you're running and where you're expecting it to run, I think you the more the sort of side effects you have to deal with and everything. Um, so you've, uh, sort of been a, a pivotal part of the node performance team. Uh, so how does that team, how do you decide what work should be done?
+
+Uh, I mean yeah, like who, who sort of makes that decision? What's the prioritization? How do those 
+
+things come 
+
+up? 
+
+**Yagiz:** Um, so. Actually, 
+
+um, before answering that, I'm going to answer how, who decides what needs to get implemented and node.js and there's, um, a item and, um, um, onboarding document in the node js repository. I'm not really quite sure. I'm, I'm, I'm not going to quote it. I'm just going to say out loud. Um, nobody decides what needs to get implemented.
+
+You are the owner of the project and you are the owner of the thing that you are writing. So you def you define the agenda and the future of node js. The only part that node js TSC interferes is that if two different collaborators are not in line about adding a future, about a change or any other thing, then node js TSC comes in and makes, uh, that, um. Decision about which one is right and which one we should go with it. So the same applies to not, node js performance team as well. There isn't any specific agenda. There is some agenda for some people, uh, because we see that, uh, actually I see that, um, the, the internet and the other runtimes are performing really fast and it's extremely easy to spot what node js lacks in.
+
+And this kinds of gives me the motivation about where to look because in order to find that optimization, I also need to spend a lot of time to look into that. So if somebody, if a competitor, like competitor meaning other runtimes, um, do that, then they're actually helpful to me because I'm always looking for challenges, big or small.
+
+And if, if someone comes in and says that, then that defines the agenda for me. There are some questions, there are some challenges that I can't, uh. Contribute to, because of lack of my skills or lack of my knowledge or lack of time. But putting them on the agenda, I'm putting on the performance repository as an issue is also, uh, motivating for other, um, engineers as well.
+
+Because eventually we want to have a free and open source, uh, library, and we want it to be, we, we want it to be exist existing in the next five to 10 years. Hope that answer your, uh, question though. 
+
+
+#### [00:31:05] Impact of Competing Runtimes
+
+**Justin:** Yeah, absolutely. Uh, you'd mentioned, uh, competitors and, and that sort of inspiring performance, and I just did want to ask, uh, how do you feel about some of the other runtimes that's come out? Do you, I mean, do you feel like it's been helpful for the ecosystem as a whole, as, as you said, you know, inspiring performance improvements, perform, have there been challenges that's come up from that?
+
+Like, I don't know, what's your perspective 
+
+on it? 
+
+**Yagiz:** Um. I think it's good to have, um, opinions, uh, like not, not opinions. I, I think it's good to have different runtime, different tools that does the same exact thing. Um, but other runtimes being backed by VCs where node js is backed by people and zero money and backed by an open source and nonprofit organization has its small caveats and, uh, advantages. I'm, so 
+
+The 
+
+question is, it's about philosophy and science. Philosophy in, in philosophy, whenever you learn new things, you destroy the previous one and you put it, you replace that whole thing. But in science, we don't need to do that. We have the knowledge that we have and then we put more information on top of it, and then we improve it and keep it going so that it improves over time.
+
+What I don't like about the current situation in here is that, um, the code for node js is open, and anybody like me can come in and be a part of this organization and make decisions and rise to the TSC, uh, and have admin access to the node js organization. So, um, I wish that they all contributed to node js, so we had much more, um, performant runtime than all of the three runtime combined, but we don't, and that's the beauty of, uh, freedom and capitalism and, uh, whatever you call those kind of things.
+
+I respect everybody's time. But, um, 
+
+the 
+
+problem with 
+
+the, the, so the issue with the problem that they're trying to solve is that unless I'm a paid employee, I would never contribute to, uh, those run times and. People like me feel the same way. And that's a major blocker, and that's something that money can't, uh, money can buy through spending more money. I, I hope that's, 
+
+uh, yeah. Explained. 
+
+**Justin:** yeah. no, that's, that's fair. We, we've heard similar sort of feedback, you know, about the, the tension between like Node being an open source, you know, truly open, driven by a foundation sort of project versus, you know, Deno and Bun definitely being VC backed organizations and how like run times are actually hard to fit in the VC model.
+
+It's like ultimately I, I, I think probably the logical thing that'll happen is if those run times live long enough, they'll end up in the same place where they're run by a foundation because there's different companies that's bought into it and like want to, you know, have a say in the, the future of the project versus, you know, the obvious sort of, you know, if we look at.
+
+Dino's case, it's like they're, they're providing cloud hosting stuff like a key value store and a Q system and, you know, all these like add-ons, which of course are just like cloud products that they, services they provide. But that's sort of separate from the, the project of the actual runtime. So I, I think it's, that's, that's in line with kind of what we've been hearing 
+
+too. 
+
+**Yagiz:** so, 
+
+um, that kind of applies to node js as well. So the only difference between those run times and, uh, what node js currently is, is that a single guy that's willing to do the work. And most of the time that guy isn't paid. That guy girl, they, them, whatever their pronouns are, they're not getting paid and they're doing that work.
+
+Just recently there's an open PR just to add local storage support, which is a key value storage support, but with the winter CG compliance, um, there's another pull request that's open still to add FFI support to reduce the, uh, serialization and remove using the V eight into the equation. So there are lots of things that are happening, um, and. The other runtimes have the luxury to experiment with them and, um, try to fit in different, uh, libraries and tools into the equation. And because no, because of node js size, node js moves slowly. But that doesn't mean that the technology that we use to develop and you like to maintain node isn't 
+
+old
+
+**Andrew:** Yeah, I, I, I, I definitely understand the other side of it where it's like you see this enormous project, like say I wanted to contribute to Webpack and like change something super foundational about it. I don't think I, like, from an outside perspective, I'd be like, I can go do that. And I can see the same thing with these run times.
+
+Like, I'm sure Jared didn't look at, looked at Node and was like, I, I probably can't change that. Let's do a Greenfield thing 
+
+
+
+**Yagiz:** So if you go to Sean right now, uh, which is, uh, maintain of web, and if you say that like, I have a problem with web and we need to do this, um, in order to advance webpack, I'm a hundred percent sure that because not, not because I know him personally. I, I'm, I communicated with him, but like he will be op open about it unless you, you make an breaking changes that breaks millions of users and causes a lot more pain than what's, uh, what's getting to putting to the table, then that's okay.
+
+Um, so the same applies for node JS as well. Um, all of those new runtime authors, um, they all contributed to node js, but it's hard to. B, it's, it's hard to be a good engineer and also communicate really well. And that's the problem with the current, uh, ecosystem. If we all communicated really well, I think, uh, we could all, uh, be a part of this, uh, be, be, be a part of a single runtime.
+
+It doesn't have to be node js, or, uh, Dino or Bun or whatever. It'll be a lot beneficial for everybody. I can say that for example, like, let me give you a real example about it. Um, there is some, one of the node.js Collaborators recently rewrote, um, the HTTP par node js in Rust. And it's, it performs, I think, faster than the current implementation.
+
+But this means that we need to add rust into our ci. And, um, I recently became a member of the build working group. This means that I, I, I know what the devices are and there are like 30 different machines, uh, in variety of, in, in, in a range of places in, in a range of compilers and in a range of operating systems.
+
+And with knowing that, I know that it's extremely hard to add a rust, um, tool chain into our whole equation because we can add it. It'll take some time, but we can add it. What happens? Then? We need to upgrade that rust chain to the next version. Then we need to do the whole thing again. So this means that. Somebody needs to do that work and putting something to the project, writing it and contributing it is something else. And also maintaining for the next 10 years is also something else. So these are the challenges. And when you look at that way, rewriting everything from scratch and say like, fuck it, I'm just going to do what I do best, which is engineering.
+
+It might look easier, but it's the problem. Like 10% of the whole work takes the 90% of the time that I don't, I don't know if I quote it correctly, but that's, that's the whole problem that all runtime currently have facing. 
+
+**Justin:** Yeah. I think that's like true of any software project ultimately is like, it, it always seems easier on the outside before you're in the details and you're, you understand the trade offs. It always seems easier on the outside 'cause you just see like the, the happy path of like, oh yeah, this is the kind of thing that we need to implement and there's all these trade offs that you don't see.
+
+And then. You know, maintenance is, maintenance is hard. Uh, especially if you are running across many like hardware platforms, which I think is the thing, one of the things that probably people underestimate about projects like Node. So it's like if you're gonna run something like Node on, say like a Raspberry Pi for example, it's like what has to happen there?
+
+And you know, because a lot of folks don't actually cross that boundary. They're working at higher levels of abstraction. They're like, oh, you know, it'll just work, right? And it's like, well no, actually somebody had to go do some work to make that happen. 
+
+yeah. And like if, if you look at, um, if you go to, um, GitHub nots uh slash build, you will see all of the different machines that we support, and I. If you go to GitHub, node G slash reliability, you will see all the flaky tests that we have. And with a project of node js sites, which has around, I think, 5,000 tests right now, a single flaky test is, has a really huge implication to the whole project, and it drives the way lots of, uh, contributors as well.
+
+
+#### [00:40:25] Contributing to Node.js: The Good and the Bad
+
+**Yagiz:** So, and if you look at from a different perspective, the, let's forget about the maintenance stuff and let's forget about adding new features. Let's forget about, let's dive into keep keeping and focusing on performance. node js is around maybe a hundred to 200 different benchmarks. We have a dedicated machine just to run benchmark, uh, benchmarks.
+
+Um, but we also have lots of regressions. Bun has lots of regressions. Dino has lots of regressions, so it's not about making things faster, but also making things faster while adding new features on top of it. And. And not cause any regressions and effects on other, um, platforms. And I can confidently say that I broke lots of machines and lots of users in the past year.
+
+Um, like I can give one of my best examples because I'm super happy that I had this chance to, uh, break so many machines at the same time. In the, in, in one of the LTS releases in no 18, we added a URL par and everything was perfect. And I added an optimization for URL search prompts. Uh, everything was perfect.
+
+And then somebody opened the pr, uh, opened an issue saying that if you use port zero, it breaks because port zero zero is false value. So I was basically checking for like, if it's false, just, just recently we had another issue. Um, saying that if you. If you set a, if you create a URL, if you set it to, um, a invalid host, and then if you set it, set a valid port number to that value, then the whole mode process crashes. So yeah, so these kinds of things happen and 
+
+what, what's really frightening and also exciting about it, is that Ada, the URL parser has around, has more than a thousand tests. Um, I single handedly added maybe a hundred different tests to web platform tests on URL to increase the coverage. ada, um, has a huge impact on the ecosystem, including curl and boost and boost.
+
+Actually, um, converted transformed ADAS tests into Boost, and they found six bugs in the parcel by just porting our 
+
+changes. And we have around maybe 80% of foing test coverage of, because we're using GitHub oss F but on top of everything, writing the fastest one, somehow there's a user that breaks your code.
+
+That's really exciting because it's, it's like no one is safe, I can say that. And, um, so I'm 31 years old, um, before Node. I, like, I always work with small startups. Um, the most, the most users that I had was around 10 million active users per month for a, uh, mobile app or something. I can easily say that having this option, having this experience to cause this much harm and also this much benefit because ada On top of that, improve the performance of node js parsing by 400, 500%. It's extremely, um, unique experience that most engineers doesn't understand or grasp the idea about it. So this is 
+
+why I am contributing to 
+
+nub. 
+
+**Andrew:** yeah. Uh, like if you're in any other engineering discipline causing a bug in like your bridge or something that's, that's bad, like you, you don't want to brag about 
+
+that. We're in this 
+
+like special place 
+
+**Yagiz:** IYeah, I know, I know. I know. But like I, I can, I can say it right now because I like whenever that bug occurs. I fixed it in less than 24 hours. So I, that's why I can brag about it right now. But at that time, it was extremely stressing because 10. 20 different people were opening issues and we actually pinned those issues into GitHub repository just to make sure that like they don't open new issues.
+
+And no one in the node core team say that. Like, okay, yes, you closed all of these issues, you need to fix it. No one even said in one negative word to me, they were all happy and positive notes and people were all okay with it. And I even broke next.js Like all those things happen and um, you don't get to find those, those kinds of people in anywhere else. 
+
+And what I can also say about is that, um, so I, I have around 170 commits in node core right now. I have added around a hundred thousand lines to node js score, and I still do it free on my own time while I have a four months old baby. Because whenever I open a PR. There is a person smarter than me and more knowledgeable than me pointing out my mistakes or my, um, or my code and try to help me without knowing me.
+
+cAnd this is something that is really hard to 
+
+get in life. 
+
+**Justin:** Yeah. I, I think that's an undercounted part of open source contributions, which is just like the, the sort of mentorship, the community learning aspect of it, which is tremendously valuable. So yeah. That's, that's really awesome. 
+
+**Yagiz:** I learned that I'm going to be a father in node conf last year and whenever I learned it, I went to the bar and I was like, oh my God, my hands are shaking. Like, because I wanted to be a father. And I talked to James and, um, Mateo Colle. And they were like, okay, you'll stop everything. We're going to buy you whiskey and we're going to celebrate this moment.
+
+And I knew them for, this was the first time, node conf was the first time that I met with them. And this was so valuable and because like we were talking on internet and about Node, but this is, I think this is how friendships are made and I had the chance to do it and to experience this with a project of this size.
+
+**Justin:** yeah.
+
+**Yagiz:** Yeah, I think this is going to be a really motivational thing for node js 
+
+**Justin:** uh, you know, I think that this is, like, this is, this is a really important thing to highlight. 'cause over the course of the podcast, we've talked a lot about open source and the challenges of open source is, is something that like, comes up relatively continually. Like how it's good to draw very clear boundaries, how you need to learn to say no, you know, like the cost that open source can have on maintainers, et cetera.
+
+So we've talked a lot about that, but there's a reason why we spend so much time doing it. And, you know, there's a real upside to this, the human connection that you get, the mentorship, how much you learn, you know, the, this feeling of being a part of something larger, of, you know, really making an impact that spreads and affects a lot of people.
+
+It's like there's some strong, strong positive like cultural and social benefits to it too. And yeah, it's a, you know, it's, it's really great to highlight that for sure. 
+
+**Yagiz:** Definitely and, um, out of people are really welcoming. Um, I don't know any other open source projects except note, because this is the most major project that I've contributed in my whole life. But it's extremely rewarding in terms of friendships and um, experiences. 
+
+**Andrew:** So, so we've talked, we've talked a little bit about open source here. We just talked about like the cultural and social good aspects. And you know, I've mentioned, I've alluded to some conversations we've had in the past about the, some of the downsides of open source. Uh, and then we've talked a little bit about the differences in JavaScript, runtimes and how like Dino, uh, and BUN are VC based and Node is run by a foundation.
+
+**Justin:** The, the monetary aspects of that definitely impacts how people contribute and who wants to contribute in like, you know, there there some things there. Uh, something that would be really interesting. I just would love to hear your opinion about it. Uh, if you have thoughts about, uh, funding in open source or like, you know.
+
+Maybe what the future of this is, or like your own experiences with it or anything that you wanna share. Uh, because it's always interesting to talk to open source maintainers about money because you, you spend a lot of time doing something for free, 
+
+ostensibly. Um.
+
+**Yagiz:** So, um, up until a month ago, I, I couldn't even open a GitHub sponsorship account because, um, my Visa in United States. Didn't allow me to, uh, earn money other than the company that I work for. And at that company, even though I use not GSM maintain lots of microservices, um, it, it wasn't the reason that I contribute to node js the, the problem that we are all seeing right now is that there are lots of things that people want to do.
+
+They want to, they want to help it publicly, but when the time comes, they don't do anything. And I think, um, my recent example, um, is a really, like my, my, my recent experience is a really great example about this. So for people that doesn't know about it, let me summarize it. Um, after, after the backslash about me declining, um.
+
+Blog post about a comparison between runtimes because I'm not getting paid for it. Uh, I send out a tweet and saying that if I open the GitHub sponsorship account, would you sponsor me? And it had a poll about like, higher than a hundred dollars, lower than a hundred I will not pay. And then I'm not sure kind of four, um, solutions for, um, selections.
+
+And then time has passed and I got my green card just recently and I opened the GitHub sponsorship account and I tweeted about it and lots of my friends helped me spread the word. It has almost the same impression, um, in terms of, uh, tweets in that, um, in my latest post, even though, um, 20% of that. 10 15% of that 800 people, which corresponds around like 200 people, said that they're going to pay, like they're going to sponsor me.
+
+Um, right now I have around 39 sponsors on GitHub, and they're mostly small value, small, um, sponsors. So this kind of gives me the idea that, uh, this, this, this proves something. This means that people want fast things, but they're not okay with sponsoring them. They're not okay with paying for them because if you, if you, if if you sponsor them for a hundred dollars, it'll all benefit you.
+
+But it'll also benefit thousands of people. And then this kind of gives you the question about if it's going to affect, uh, a lot of more people, uh, then why am I the one there that are pee? Then it becomes a chicken in the egg problem right now and then no one does it. And then we are, we end up with the same situation that we want to avoid. So, um. It's extremely hard to monetize it. Uh, I, a couple of, uh, companies reached out to me personally, wanted to find a solution, um, for me to do what I do full-time, but under their, um, company. I didn't want to do it for full-time because this is too much pressure. I, I can, if I do it as a hobby, then it's something else.
+
+If it's my full-time job to find performance improvements, I think I can do it for three, six months. But after then, well, my lack of creative creativity will be, will kick in and I won't, I'm, I'm afraid I, I can't find some optimizations. 
+
+Um, so 
+
+the question is.
+
+There are companies 
+
+that are willing to pay for it, but they want to correlate this work with their work.
+
+And there are some companies, there are products that fit into those equation, but it's highly unlikely. Um, um, uh, senior engineers, um, will leave their full-time job and do this as a whole thing. So then it becomes, um, problem, it becomes the current situation that node js in. There are companies like IBM Ilea, um, or Red Hat or Google, that have dedicated people in both, uh, node js T-S-C or node js core, uh, core team that carry their own agenda, for example, including Windows arm support, uh, and making it to tier one or, um, improving a a EX, uh, smart West.
+
+Operating system support, blah blah. If, if, if you don't fit into those equations, it's extremely hard to find a, find a reason for companies to sponsor you. And then the problem becomes, am I a good developer relations? Like, am am, am I a good devel or not? If I'm a good devrel, then I, I tweet and then I reach out to more people and maybe 10 people give me $10 per month.
+
+**Andrew:** Yeah, 
+
+it's, it's a weird system we live with today. Literally just yesterday, last night, I was looking at my GitHub sponsors and I noticed I actually had to, and I have a total of $7 a month for all the work that I've done for an open source. So it's definitely like, it's a. It's a, it's a very weird feeling.
+
+It's, it's like somebody kind of cares, but like, not really, like, not enough for me to like actually focus on this thing. 
+
+**Yagiz:** Yeah. Uh. The good thing is there are people that actually, um, so what I, what I am told at my GitHub sponsorship page was that if you sponsor me, then I will prioritize what you want me to 
+
+optimize, which will be beneficial because I like Optim optimizations and this will make your agenda, uh, heard. And there's some people started doing it as well, but it's not, uh, a good amount that makes the full-time job or at least a part-time job to do it.
+
+It's a good thing to have some sort of money. Uh, but yeah, it's not feasible in the long run. But yeah, we will see, I guess. 
+
+**Justin:** Yeah, I think there is this thing there, there's like a threshold where it's like, you know, someone pays you, you spend like eight hours doing something and someone gives you like $2, you know, for like, oh, you know, thanks for doing this thing. And you're like, you know, honestly, like, I, I appreciate the sentiment.
+
+I really, I appreciate you doing something, but like, maybe you should have just not 
+
+
+
+**Andrew:** Okay. One last question before we move on to tool tips. Uh, this one isn't on the dock, uh, but I have been enjoying asking it to all the, all the guests. Guests that come on. 
+
+
+#### [00:55:10] Spicy Take
+
+**Andrew:** So, uh, what is your spiciest dev take? Feel free to take a minute to collect your thoughts. 
+
+URLs are free, are the most, uh, recent one that I like, had my eye twitched, um, performance. node js is slow is something that extremely twitchees my eye because it isn't, uh, it's a solution that particularly fits in a particular problem. And if you don't fit into that equation, it's slow. But go is also slow or rust is also slow as well.
+
+**Yagiz:** Um, my most recent, not my most recent, but my most impactful thing is that, so around, so a year ago, I didn't know any c plus plus at all. I wrote c plus plus maybe 10 years ago in college, but I didn't use attending. So my 2023, um, new Years goal was to write c plus plus, and that's why I wrote ada. And before that, in 2022, it was rust.
+
+And that's why I learned rust and did and This whole rust and c plus plus takeaway, like rust is better than c plus plus and so on and so forth, those kinds of things. And everybody's using c rust to write a new stuff is extremely annoying to me because Rust provides certain things and it's really good at the ownership about memory safety and those kinds of things.
+
+But in terms of if you care about performance writing something, uh, if, if, you start a new project, you can, um, write it two times the amount of time that it takes in c plus plus in rust. So it'll be slower if you write in rust, but you will always reach a performance, uh, limit. But if you write a c plus plus function, the c plus plus project, which, um, when I first write wrote the, uh, ADA Euro par, it was like 0.1.
+
+It was 10 times slower than Curl because it was really easy to make mistakes. If you don't make mistakes, if it's limiting, then it's extremely hard to optimize and learn what those errors are. And this is the whole, um, c plus plus rusting. And we like most recent one is that about this. So we added a c, uh, API to ADA and we started adding libraries.
+
+Um, we have a Python version, which is maybe two, three times faster than python's default parser. We have a go one, which is extremely fast. We have a rust, one rust version of ada, which uses c plus plus code, but through, uh, CAPI is three times or six times faster than Sables Euro. And then, uh, so I released the Rust version, and then I opened the PR to one of the large, uh, libraries to replace their own one with ADOS version.
+
+It was a lot faster, uh, and I had the benchmark to prove it, but it was like the main reason that like one of the maintainers responded to me and said that like, the main reason that, uh, we are writing rust is because, not because of speed, but because of memory safety. But up until that point, that project was, uh, like, um, fast blah blah solution for, uh, rust.
+
+And so like all rust developers are used, speed and safety and those kinds of things as um, um, as a way to market their programming language. But it's, it's really easy to make mistakes in rust as well, but it's extremely hard to optimize Rust code. 
+
+**Andrew:** It's good spicy take. 
+
+
+#### [00:58:48] Tool Tips
+
+**Yagiz:** my first tool, tip of the week is a doozy. This just popped up on my feed. Uh, this guy wrote a, it's so hard to explain. He wrote an entire game game engine in TypeScript types. Uh, so you can write, so right here in this blog post, he has flappy bird coded with TypeScript script types, and then he has a, I think I'm getting this right, a rust compiler that compiles the types into A-T-Y-V-M, which is his like bite code that runs the games.
+
+**Andrew:** And then he wrote a zig runtime to run that output, and that runs the game. I haven't read too much into this, but just the amount of magic that's going on here is, is absolutely crazy. Uh, it takes one, one of my favorite talks that I ever saw at, uh, TypeScript Comp, and really one of my favorite talks ever.
+
+I. Is Josh Goldberg guest of the podcast, uh, coded tic ttac toe, and a bunch of other things in the type system With this, you could actually play that and have like a game. So I think I just love the, the weird wizardry that's going on, uh, in the TypeScript type land. And I'm sure people in a real statically typed languages are a gawing over all 
+
+this. 
+
+**Yagiz:** Yeah, I, I think in the background, it uses the OXC Parser by
+
+it's pure magic to me just to like read it and understand it 
+
+**Justin:** it seems like, uh, you know, so you have to have all this extra tooling for the game to actually work, right? So it's just like you're, you're, you're picking a, a poor DSL for riding games at 
+
+this point. Like super, it. 
+
+**Andrew:** The question was not, should 
+
+we It was, can we and we have, we have answered that with Yes we 
+
+can. 
+
+**Justin:** Yes we can. 
+
+**Andrew:** Yeah. So if, if you're looking for some just crazy, weird coding to, to delve into over the weekend, go check out TYVM by, uh, Zach Overflow. Seems like he has a bunch of cool posts on this website. next up we have audio flare. 
+
+**Justin:** Yeah. So, uh, CloudFlare had released, uh, this AI like computational product where you can sort of like do some edge compute and run models on the edge or whatever, which was really interesting. Audio Flare is an open source product that is sort of like a one stop shop AI audio playground, uh, using Cloudflare's AI workers.
+
+Um, so it basically lets you like. Transcribe things, do some audio analysis, like whatever. Uh, but it, it's, it's kind of a pretty interesting use case of, uh, Cloudflare's AI workers. So if you're sort of interested in what those are and how they work and what kinds of things you can do with them, I think this project is 
+
+definitely one to check 
+
+out.
+
+Um, it's pretty interesting. 
+
+**Yagiz:** Like I, I I don't know you guys, but like I'm a huge fan of CloudFlare and the products they're developing it compared to how AWS's ui, I think CloudFlare is a lot better and how they are progressing towards a stable product, like a small step at a time. It's 
+
+fascinating. 
+
+**Justin:** well, so Andrew and I have talked a little bit about like productionizing AI models and like what it would look like to build a product on, on some of these. And, and like it's non-trivial. In most cases, you know, to like start doing something, uh, like to start productionizing something, but like these AI workers are really, really interesting for, so for a narrow set of cases, um, it has some limitations and restrictions, but for some narrow, a narrow set of cases, this is like a really viable way to take a lot of the AI models or the ML models that has been released recently, especially the smaller ones, and turn that into some sort of feature or product or whatever.
+
+So definitely don't sleep on this. I, I think, yeah, we love, like, we love CloudFlare. I love CloudFlare. They're doing a lot of really interesting work and, and this has been kind of cool just to see more productionization of, uh,
+
+ML functionality. 
+
+**Andrew:** Yeah, except 
+
+yesterday when they took 
+
+down the whole 
+
+internet, but different d, different, different
+
+issue. 
+
+**Yagiz:** what I, what I don't still understand about CloudFlare is that since we're talking about it, um, how pages right now CloudFlare workers has still have a limitation of 10 megabytes of to 
+
+deployment. It's like, okay, I want to deploy my block to it. Um, but 
+
+it's not possible. 
+
+**Justin:** yeah. I got some, some gripes with pages too, and I think pages and 
+
+workers are a little bit 
+
+redundant, but I 
+
+think they're also trying to work on 
+
+that to, to 
+
+unify it. But
+
+anyway, 
+
+**Yagiz:** So, um, I, I, I posted this, so this is a really, uh, common problem with parents and I wanted to mention it. Uh, so I have this really fancy camera that we use to make sure ADA is sleeping and like as a, uh, baby monitors. And a couple of weeks ago, um, we heard noise coming from the actual device. And we were like, oh my God, how is this even possible?
+
+It's 2023. How would, like, are they not encrypted, encrypting the communication between the device and the transmitter itself? And apparently they don't. Uh, there's a protocol called, um, I, I forget the name. So instead of encrypting the actual communication, the baby monitors that they change the frequency that they transmitting in.
+
+So from time to time, they change the frequency. So it, it makes it really hard to keep track of, uh, the frequencies and to keep, to have a consistent, um, listening, uh, of the whole, um, session. But if you have a really huge spectrum device, and if you listen to a huge spectrum of, uh, wide range of, um, like, uh, frequency, audio frequency, then the radio frequency, then it's extremely easy.
+
+So I was looking for solutions to find a hardware only. Um, camera that is not open to internet. And I was using a, a dream router by UI ubiquity, and I found this, basically if you have an internet and if you have a dream routers, you can add like a one terabyte of micro T Act into the actual, uh, router that you have at home.
+
+And if you have a wired camera, which is around like a hundred dollars, uh, in ui.com, which is a lot cheaper than what I paid for that shitty, uh, baby cam, um, you can have a really good, um, security and have a camera. 
+
+**Andrew:** Yeah, I've, I've heard nothing but good things about, uh, unify. I, this is like the, the final level of home automation is getting a 
+
+rack and just 
+
+loading it up with a bunch of their products. 
+
+**Yagiz:** Yeah, but I, I don't, I don't have the rec one. You can still have like a dream route router, uh, which is like a $200 router solution. And do the 
+
+same thing as 
+
+well. 
+
+**Justin:** Cool. 
+
+yeah, that's awesome. 
+
+**Yagiz:** But yeah,
+
+**Andrew:** that's the dream, to have a rack in house and I can deploy my own stuff and do anything. yeah, someday I'll, I'll, I'll look back and go, wow, how far I've come from my raspberry pie. Startings. 
+
+Okay, so this one also just popped up on my feet today. This is a vet replacement written in Rust. 'cause we all know that rust is the fastest language on the planet. Uh, I, I, this is a project that you just had to know was coming next.
+
+Like, uh, if RS Pac exists, something like this must exist also. Uh, I'm, I'm just excited for really fast builds and I, I hope we have a nice, nice community around it. Uh, so yeah, if you're looking for a, a vet replacement that's even faster for some reason. Uh, I'd check out Farm. It looks like it's in the very early beginnings of the project stage, but it does cool things like support all of the plugins, uh, that currently exist for Vet and for Rollups.
+
+So, uh, that's, that's a pretty big difference between other rust 
+
+based tooling in the space.
+
+**Yagiz:** Yeah, I, I think the most selling part of this whole product is that. Supports both Rust and JavaScript plugins because it's extremely hard to execute JavaScript and have a js script plugins in a rust project. So if they found out the solution, then I'm all up for reading the 
+
+code. 
+
+**Justin:** It is really interesting. So the, the V team is, they're writing a 
+
+rollup, like they're rewriting rollup and rust. Uh, and I wonder like what part of farm, like, what it, what farm is actually doing? Is it also doing that or is it like replacing the ES build part or like the, the glue between the things? I don't know.
+
+That's interesting.
+
+**Andrew:** yeah, 
+
+**Yagiz:** And like I, I, I don't know you guys, but like whenever I see a project like that, I basically go to GitHub page and see what the collaborators are and just calculate the bus factor of the project before I 
+
+make a 
+
+decision 
+
+about 
+
+**Justin:** Yeah, 
+
+Yeah, 
+
+**Andrew:** Yeah, 
+
+well, we'll see where this one goes. Uh, there's a lot of competition in the space today, but as you said, ya is, uh, I, I, the saddest thing I think about of the new way of, of JavaScript tooling is how it's all just like no more plugins anymore. And that was like the, like core manifesto of the last generation.
+
+So I hope we start to see tools where like they care about plugins or at least giving us the ability to 
+
+make our builds slower.
+
+**Yagiz:** Yeah, true. And also I, I, I, I wish to have new products that instead of having benchmarks for thousands react components, they actually, uh, rendered an actual, like real world application. That, like maybe CalCom, like, like if, if I was the maintain of this project, maybe this, like a good call out to them, uh, I would probably go and replace CalCom's, um, build with, uh, their solution and just share the solution instead of rendering thousand React 
+
+components at the 
+
+same time 
+
+**Andrew:** 
+
+an interesting example came up on my feed recently, an engineer at Discord moved them from WEBPAC to RS pac and like they saw like a 70% increase in like speed overall. So definitely some interesting examples out there. I'm very keen on RS pac. I wanna, I want to integrate that at Descript, but haven't 
+
+been able to yet. 
+
+**Yagiz:** They're, they're doing a really great work. I've been in touch with them before it was public, and it's really good to see a solution. 
+
+that's a hundred percent compatible with Webpac and provide a 
+
+faster solution. 
+
+**Andrew:** and it's, it's amazing how far that promise goes. Like our web pack config is by no means simple. Like I'm using types I, I have custom loaders, I have custom plugins, and I, I was able to get the types to pass just by replacing Webpac with RS 
+
+Pack. So it's already a very, very far along. way along. 
+
+Okay, up next we 
+
+have, uh, 
+
+silver Sky from 
+
+PRSs Guitars,
+
+**Yagiz:** So Paul Reed Seed is, um, is one of the companies that provide the best guitars in the world after FE Dash, and I forgot the other company. So this is a signature series by John Mayers. So this is actually signed by, not, not signed by, but like it's, uh, electronically signed by John Mayer. And it's a really great, uh, resonance.
+
+And it's, uh, and I recently got it last year, I guess. And if you're looking for, um, good guitar vitam, medium price range, I. Um, and I'm a hundred percent sure that this is the best guitar that you can get if you care about, um, sounds that are similar to John Mayer.
+
+**Andrew:** I'm not looking for a gar guitar myself, but it is quite a beautiful guitar. 
+
+**Yagiz:** Yeah, so the, the board is a Stratocaster, which is offender's signatures. Uh, but yeah, so basically instead of going for Fender for like John Mayer, instead of going to Fender, he went to uh, PRS and got the signature series. there's two different versions. one of them is Silver Sky, and one of them is SE Silver Sky, which is like a version, I guess. 
+
+**Justin:** That's awesome. 
+
+I need to pick up guitar again. Been too long. 
+
+**Andrew:** And last up 
+
+we have Winter js from Wasmer. 
+
+**Justin:** Yeah. 
+
+Um, so this is a really interesting project, uh, and this, there seems to be like, so there's a winter cg, which you guys, as you, you'd mentioned that earlier, uh, I think it's just like I, I'm, I'm just keeping my eye on this, like compatibility, the wasm compatibility story. Uh. So, uh, winter is sort of, uh, a JavaScript service worker server written in Rust, I guess.
+
+Um, and I don't know, it's a part of the overall, like this, like JavaScript executable, you can almost think of it like the cloud, uh, the CloudFlare execution model of like we're deploying a, um, you know, you're deploying like a serverless function or whatever in that model. Like it's a service worker, sort of that same API.
+
+Uh, so I mean, this is from Wasmer. Uh, well this is like related in that sphere, but I don't know, it's, it's sort of interesting. Uh, this is using Spider Monkey under the hood. It's kind of a cool project. I haven't really dug into it too much.
+
+Um, 
+
+but yeah, I dunno. 
+
+**Yagiz:** So this is, this post is one of my, another spicy step takes. If you go to the ish, you will like just read the description, the most performant JavaScript service workers thanks to Rust and Spider Monkey. And it says, most performance. And if you search for benchmark or performance or fast or speed, you won't see any references to it.
+
+And it's like, 
+
+after I read this, it's, and the 
+
+whole 
+
+point is 
+
+that, so, um, I have some folks and friends that actually. Work and, uh, contribute to Winter CG and having a name similar to Winter cg, but Winter GSS is like, it's the marketing take that I wouldn't do. 
+
+**Justin:** Yeah, they, they, they call out winter CG in, in the, in the, uh, in the post or whatever. Uh, and I actually 
+
+thought they were related. I didn't actually realize they weren't related, 
+
+but I guess, 
+
+**Yagiz:** I 
+
+think that 
+
+that's the whole point about selecting a name similar to Winter cg. And this is like, I didn't even talk about the technology right now, I'm just talking about a marketing page. Because that defines the future of any technology. Like whoever writes it and puts their name on this article, they're going to define the future of this technology, not me, not everybody else.
+
+
+
+**Andrew:** Yeah, you, you gotta back up those claims if you're saying you're the fastest.
+
+Okay, that wraps it up for tool tips this week. Thanks for coming on this. This was a, a very fun episode, delving into how no js works and how you've affected 
+
+its, uh, roadmap. So thanks for coming on and talking about it. 
+
+**Yagiz:** Thank you and thank you for hosting me as well. It's been a privilege talking to you and sharing my take about all of, all 
+
+of the things happening in the world. 
+
+**Justin:** Thanks so much. It was really interesting to hear all the like, uh, deep performance things and node, especially around the, the URL parer, so it was pretty cool.
+
+
