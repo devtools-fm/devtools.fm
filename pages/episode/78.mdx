@@ -1,0 +1,787 @@
+---
+title: Jess Martin - DXOS
+youtube: https://www.youtube.com/watch?v=pfbCT04WPBE
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Jess-Martin---DXOS-e2d356c
+tags: tech, podcast, dxos, crdts, sqlite, local first, data, identity, interoperability, collaboration, real time, web, p2p, peer to peer, web native, decentralized
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Jess Martin, a developer at DXOS.
+We talk about his journey to DXOS and what realizations he had along the way.
+DXOS is a framework for building local first, multiplayer, interoperable apps where users own their own data.
+Apps are built on top of a shared data substrate, and users can bring their identity with them across apps.
+DXOS is a wild reimagining of what computers could be, and we're excited to see where it goes.
+
+- https://twitter.com/jessmartin
+- https://jessmart.in/
+- https://twitter.com/dxos_org
+- https://dxos.org/
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/microsoft/inshellisense
+- https://sshx.io/
+
+#### Justin
+
+- https://platform.openai.com/docs/guides/text-to-speech
+- https://github.com/dflex-js/dflex
+
+### Jess
+
+- https://notes.jessmart.in
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:05:13] Ad
+[00:06:56] The Journey to DXOS
+[00:20:11] Understanding DXOS: A High-Level Overview
+[00:29:43] Challenges and Solutions in Data Management
+[00:46:53] The Future of DXOS: Enabling a Different Shape of Software
+[01:05:50] Making it a Business
+[01:10:20] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Jess Martin:** several years ago when I, you know, said I want to invent new capabilities, I was missing sort of a grounding in sort of the history of computing. I spent a fair amount of time, reading the foundational papers, that kind of grounded me in a set of ideas that have been explored, but haven't reached like mass adoption and helped me to see things of like, see the gaps like, oh, this is what we have today, but it's missing this, this very obvious thing that people have been talking about since 1970. Why do we not have that?
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, I'm really, really excited to introduce Jess Martin, who will be our guest today. Jess and I have had the pleasure of just running into each other across many meetups and conferences and it's been a joy to get to know him. I've watched him work on a bunch of different projects. Right now he's working on DXOS, which we're really, really excited to talk about.
+
+And Jess, you've done so much stuff, uh, you have such a rich, like, storied history of really interesting work, so this is going to be a fun episode. But before we dig in, would you like to tell our listeners a little bit more about yourself?
+
+**Jess Martin:** Sure. Um, yeah. So as Justin mentioned right now, I'm working on this thing called D. DX. O. S. But it might be somewhat interesting story to see how I got there. Um, I've been, uh, writing software programming, coding, whatever we might call it these days for a very long time. Um, actually started. Um, as like a six, seven year old, um, was one of those kids who was like really lucky to have a computer in their house very early on and internet in their house at a very early age.
+
+So I actually learned how to, like, read and write like regular reading and regular writing on an apple to E to C to G. S. Was kind of my first computer and first computer experience. And I was kind of hooked from the beginning. Um, I, I remember finding the Apple, uh, the basic manual and, uh, just typing in one zero print.
+
+Hello. And then seeing it, my computer do something was just magical from the beginning. Uh, and then my, my uncle was actually a software developer, professional software developer. And so I had someone to talk to about my interests and he kind of fed me different things like bought me my first compiler and bought me a copy of hypercard and, you know, that kind of stuff.
+
+Man, it was just, I don't know. I feel like I grew up in somewhat of the golden age of computers where the internet was becoming, was already a thing with like BBSs and telnets and all that kind of stuff, and then when the very first visual browser dropped, I remember when Netscape 0. 9. 2 was released, going to the computer lab and like loading it on eight different floppies to like take home and install on my computer at home so I could have a re like a visual browser.
+
+That was like a big deal. Um, so, yeah, it was fun times. Um, and then I went to school for computer science, uh, dabbled in philosophy and English while I was there as well. So if you guys want to go down those, those travails, I can travel with you. Um, but did computer science and then left, uh, went to grad school for a couple of years, um, thinking that I would probably be a professor.
+
+And what I learned about academia was actually really useful. Um, for kind of future career and where I am today of just academia wasn't quite structured around what I really wanted to do. I learned that I really enjoy, um, building tools for people and building things for people that make a difference and that's just not the, the, the token of exchange in academia.
+
+Um, it's all about publications and that kind of stuff. And so a lot of the work that I wanted to do wasn't really rewarded. And so that wasn't. It didn't turn out to be the a great place for me long term, but I learned a ton there. Um, and a couple of years at, uh, UNC Chapel Hill left there and, uh, joined, jumped in, like, on the ground floor of a software startup, um, that was doing Ruby on Rails stuff at the time.
+
+This was back in. Ruby on Rails, I think 1. 2 so very early versions of rails and I had been doing web development to pay my way through college on the side prior to joining this web startup. So I'd use PHP and ASP dot net and Pearl and all of the kind of predecessors Java, JSP struts, all of these things.
+
+And then when rails came out, rails was. Like an order of magnitude improvement over those other tools. And you could feel it. You could build an entire app in a weekend. Things that would have taken me a month or two before. Uh, and that was really exciting. So I joined this software startup, did some Ruby on Rails stuff, and then basically for the next, let's say, 15 years, kind of bounced back and forth between working on early stage startups, some of which were ones that I started, or some of which I was like, you know, sub 10 employee, and working as a consultant.
+
+Um, and the consulting path was actually really helpful, too, because that allowed me to work across a bunch of different projects, basically, as a consultant, every 3 to 6, maybe 9 months at the absolute longest, I would be switching between projects. So I got to see, you know, projects across industries, across technologies, across different user bases, and you kind of develop, um.
+
+You have to develop some sort of rituals or processes that you can use repeatedly in those situations because you're building a brand new product from scratch every three to six months. You kind of have to figure out how to get up to speed really quickly. So kind of bounce back and forth between those two things.
+
+What led me to DXOS and where I'm at right now is also somewhat interesting. 
+
+
+#### [00:05:13] Ad
+
+**Andrew:** Once again, we'd like to thank our sponsors without our sponsors dev tools. FM, wouldn't be possible. This week's sponsor is Ray CAS. Ray cast is an app for Mac that's like spotlight. But with super powers. You can do all the things that spotlight now for does can do a whole host of other things with its extension API. They have an amazing extension store that has all the things you could ever want. 
+
+You should also check out Raycast pro Raycast pro has a whole bunch of cool features, but the one that I liked the most is Ray cast AI everybody knows how cool LLMs are and how much they can help your workflow. But having an LM, just a shortcut away, really expedites the process and doesn't take you out of flow state whatsoever. 
+
+One extension that caught my eye this week is the arc browser extension. With this extension, you can do things like hop around the browser. See what tabs you have open. But what really excites me is seeing two best-in-class tools collaborate. A future where any of the apps on my Mac can integrate with my command palette would be so cool and just really shows the flexibility and the capability that Raycast has, has to offer. 
+
+If you want to learn more about Ray cast, head over to Ray cast.com or if you want a little bit more of a deeper look. You can go listen to episode 38, where we interview the CEO, Thomas. About why they started it and where they plan to take it. 
+
+Do you want to advertise with dev tools, FM head over to dev tools.fm/sponsor to apply. 
+
+Do you want to stop hearing these ads will just become a member on one of the various platforms we offer memberships on. And if you do head over to our discord where you can grab an exclusive discount code to our shop. 
+
+And if you haven't subscribed to our newsletter yet head over to mail.dev tools, RFM. This is a weekly newsletter that covers a bunch of news that's happened during the week in the dev tool space. And Justin also includes a few of his thoughts about the episode that we released that week. 
+
+We hope you join us with that. Let's get back to the episode
+
+
+#### [00:06:56] The Journey to DXOS
+
+**Jess Martin:** I guess in 2020 was I took a week to do sort of a mid career check in. Of, all right, I'm about 20 years into my software development career. Do I want to keep doing for the next 20 years what I was doing for the last 20 years?
+
+And it was really surprising going into that, into that week of like meditating on that, that the answer was no, not exactly. I'd really rather not do that for 20 more years. And I think the difference I was able to capture of what I want, the difference between sort of my first act of my career and my second act.
+
+Was in the first act of the career was really focused on taking computers as they were and figuring out how to build software or tools from the capabilities that were provided for me to solve a real users problem and ideally to make that into a profitable business so that you could keep making that piece of software and I had developed some, you know, frameworks and tools and that kind of stuff and had done that a couple of times.
+
+Um, and what I realized about the second half of my career is that what I was most interested in was discovering brand new capabilities or introducing brand new capabilities for the computer, such that people who are making tools, making software for the computer could make new things, kind of open up the possibility space that was back in 2020.
+
+So it's been about three years now that I've been kind of chasing that path. And, uh, it's been a circuitous one. As Justin mentioned, I've worked on a bunch of different things over the last three years. Um, but trying to, like, sharpen my definition of what is a better computer? What are the capabilities that computers need?
+
+Where are we? Like, what capabilities do we have? Um, you know, what? You know, so what's the immediately, the adjacent possible as Steven Johnson would call it. Um, and so, yeah, it's just led to a meeting, some really cool and interesting people like Justin and a bunch of other folks, um, reading a bunch of papers, working on a bunch of different projects.
+
+And then finally here at DxOS. 
+
+**Andrew:** lots to unpack there. I definitely resonate with the
+
+academia stuff. Uh, I, I was going to go do my master's degree. I submitted, like, I want to do my master's here at Cal Poly. And I was like, I want to do it on building apps and UI interaction, all that. And they're like, that's not a thing. Like, well, what are you trying to do?
+
+And so I just went straight into the workforce. Uh, interesting to see you took a similar path. And then with the, uh, consulting and dev tools, I think that's another pattern. We've seen a lot here. Like, uh, you could look at react router and remix. That kind of came from a consulting agency. You can look at evil Martians.
+
+They're a consulting agency that pumps out these dev tools. So it seems like, uh, if you want to get a good, like eagle eye view of the industry, starting in consulting agency and working with a bunch of different companies, it seems like the B be the way to go.
+
+**Jess Martin:** it is pretty, it's pretty interesting in a way rails itself, um, kind of emerged from a consulting company. 37 signals was, you know, they were building this product, but I mean, at the time, Basecamp was not much. And Basecamp, they built to manage their consulting projects, right? They're like, we have all these projects.
+
+How do we manage them? Um, and so, yeah, there's, there is a strong history of that. You're right. I hadn't really thought about that analogy. Um, and part of it is you do see a lot of different code bases and a lot of different technologies, and you see them stitched together in a lot of different ways, and you get to see, well, this thing worked, and over here, it didn't.
+
+Why is that? You start asking those kind of questions.
+
+**Justin:** Something I didn't really appreciate earlier in my career is, like, the direction that you choose. Is it's almost about the axis of learning, you know, it's like, what is your learning exposure exposure? So if you're working at an agency or consultancy, you're going to work with a lot of folks really, you know, in a short amount of time, you're going to work across a lot of code bases.
+
+So you're going to learn how to stand up things quickly. You're going to learn how to orient yourself really quickly. Whereas if you work at a larger software company, it's likely going to be very different. You know, you might be working on one product and a long tail for over multiple years, but I think in that.
+
+Situation, you're going to learn how to deal with like large organizations and building influence and not to say that you don't have to do a similar, very, very similar thing and consultancy because you have to deal with a lot of customers and clients and stuff, but it's just, Your, your paths of learning are very different.
+
+So I was, I was talking to someone recently about they're just early in their software, uh, engineering career. And they're like, you know, I'm trying to figure out what my next steps are. And I was like, well, you know, it depends on what kind of engineer you want to be, what, what's your most interested in learning.
+
+And I think that's a, that's a fun, uh, it's a fun way to think of things though.
+
+**Jess Martin:** Yeah. One of the quotes that, um, a guy that I really respect, who's like basically 10, 20 years ahead of me in my, in his software career used to say is, do you have 10 years of experience or do you have 10 of the same year of experience? So optimizing for that, getting a variety of different learning experiences and make sure that you're not rehashing the same set of things.
+
+Um, every year is really important. 
+
+**Justin:** Yeah, for sure. I want to talk to dig into a little bit about this like transition from focusing on just like building product to focusing on this more research oriented thinking like future thinking of adding capabilities. So you're very active in the local first software movement, as it were, the sort of future of computing space.
+
+You do a lot with end user products. Programming, malleable software, all of these, these concepts that have been around for a while, but are gaining some, some groundswell, or at least it feels like that to me. Uh, what is it about these spaces and about this topic in particular that really draws you to it?
+
+Um, so what's your sort of inherent motivation here?
+
+**Jess Martin:** Yeah, it's a good question. I think, I guess several years ago when I, you know, said I want to invent new capabilities, that sounds great. Um, but I, I felt like I was missing kind of two things. One, I was missing sort of a grounding in sort of the history of computing. And so I spent a fair amount of time, uh, reading the foundational papers, listening to talks by, you know, the pioneers of computing and familiarizing myself with sort of their vision of the world of what they thought in the 50s, 60s, 70s, 80s would be true in the 2020s.
+
+And, um. That was, that kind of grounded me in a set of ideas that have been explored, but haven't reached like mass adoption and helped me to see things of like, see the gaps like, oh, this is what we have today, but it's missing this, this very obvious thing that people have been talking about since 1970.
+
+Why do we not have that? Which is like a really great question. Why do we not have that? And that led me to kind of the historical piece. And then I think the other thing that I had to take time to form was an opinion. About what better computers are, um, what, what capabilities do we actually need and why, why do we need those?
+
+Um, and, and getting really concrete with myself was helpful. I think there were three that I came up with that I, I, it's interesting looking back on, I kind of had like one writing session, you know, three years ago where I like wrote up three topics, you know, three bullet points and I wrote a little bit about each one. And I pretty much haven't shifted from that. In fact, the XOS is like oriented around that. And then when I look back at my career over the past 20 years that preceded that, I can now sort of like trace the line of like, Oh, of course, I would say that. Um, and so the three topics for me were real time collaboration.
+
+Um, this was, you know, 2020 was kind of, uh, collaborative cursors were finally becoming, you know, like taking a peek out of the, out of the, uh, software world, like it was, it wasn't that they had taken over the software world post Figma acquisition. So it's fairly early in that process, but it was pretty obvious to me that computers could be real time.
+
+And especially when you look back at the history of computing. Um, if you look back all the way to like Doug Engelbart's mother of all demos, there are collaborative cursors and the mother of all demos from 1962 or whatever that whatever year the mother of all demos was given. Um, so like, you know, it was an idea that that I felt like was just beginning and I still feel this way.
+
+Just beginning to be explored in terms of the UI ramifications and like the social ramifications for what it means to collaborate with one another in a piece of software. Um, so that was one real time collab. The other one was, um, I call it knowledge representation. Um, basically, I had spent 20 years working with SQL databases and storing data and S3 and all of these other formats.
+
+And the insight there was all of these formats are great for computers. But the data that's in those things is actually for the humans. And so we actually have to do all this work to translate between the computational, the computer appropriate representation and a representation that's appropriate for the end user.
+
+And I want to know, I'm trying to explore ways that we can bring those two things closer together. How can we come up with knowledge representations that are more amenable for us to manipulate? As as humans and also allow computers to have the affordances that they need to be able to, you know, run, run and execute over them.
+
+So new kinds of data structures, new kinds of data stores, tools for thought. That kind of stuff was the sort of. Um, interests there. So yeah, knowledge representation, tools for thought, those two things were kind of big drivers of like, I want to understand more about those, um, about those areas, or I'd like to see computers be more powerful in those particular ways.
+
+**Andrew:** have you done in that area? And like, which ones out in the wild excite you?
+
+**Jess Martin:** Yeah. Um, so real time collab. So I guess I, um, back in, I think the, if I were to say, if I were to boil all of it down for me to like, what is the one thing that computers should be better at or software should be better at? I think the one word would be interrupt. Interoperability. Um, back in 2020, I was, you know, kind of casting about looking around for different things and I came across a, um, what was it called?
+
+Interoperable or interrupt. Remember the name of it? Um, it became a meetup called tools without rocks, which I ended up helping organize, but I came across it on the Internet and it was basically a discussion about interoperable software. Um, and that sounded interesting to me. So I joined it, or I joined the online meetup.
+
+Gordon Brander gave a presentation about an early presentation about subconscious and new sphere very early. This is 2020. Um, a guy named Blaine cook gave a presentation about this thing called at Jason, which is this sort of like you think of it like this universal adapter that allows you to adapt between a variety of different file formats.
+
+So it kind of solves the file format. Translation problem, which is actually a pretty big problem. Um, and each of these talks was all around this idea of interrupt and, um, that coming away from that, that was the piece that I started to realize is missing in like most of software. So, for example, like we're in this app right now called Riverside FM.
+
+You know what? The very first thing that I was hit with when I joined Riverside FM. You guys remember what the first screen is? It says type in your name and I'm sitting here going. I'm on my computer I'm using my operating system. You don't know my name? What is wrong with you, you piece of software?
+
+Right, like, there's, there's And that's because every software, piece of software you enter is like, a new world. It's like, completely blank. And you have to carve your name into this place. And same thing for Riverside. Riverside doesn't know me from anybody else joining. But that's ridiculous. My computer, it's my computer.
+
+I have all sorts of places where I've stored information about myself. Riverside should just be able to access those things. Maybe I should give Riverside permission. To access the data that it needs from me, but that's the way the, the software should be shaped, not the other way around where I have to come to this blank canvas and input everything all over again.
+
+And then I started to see like all these anti patterns around like import and export and like, oh man, let me like import my software from here and export it over here. And then, and now I just see it everywhere. I watched my wife use her phone and she's doing one thing in like one application and then she needs to move over to this other application.
+
+So what does she do? She takes a screenshot of the what she did in that one application and then like forwards it over to this other application and then maybe has to retype half of it. And I mean, it's just what this is crazy. Like all the data lives on her phone, but the different software applications can't actually talk to each other to get at that data.
+
+And that's crazy. Um, and that, and I feel like that is what makes for a lot of the problems that we have with software today, but I'll stop there. That could lead to like four different rabbit holes.
+
+**Andrew:** Yeah. Uh, yeah, there's a lot of different things to talk about when it comes to DXOS. Uh, I think the thing that stands out from what you just said the most to me is identity. Uh, we have, we've had one episode about crypto and it was about crypto identity. And I still think that even though crypto has its failings, like the most interesting thing that come out was this idea of decentralized identity and you owning your identity.
+
+And being able to port it around and like, as you said, I log into Riverside. It can just say, hey, can I, can I see who you are? Can I know your email? I just want to be able to say yes. And it sucks that that, that whole idea is basically intertwined with crypto at this point. Uh, there's like not really a way to get, get away from it in today's world.
+
+Uh, but you with DXOS have thought about identity a little bit. So, uh, can you, uh, detail like what. I guess we should probably talk about what DxOS is at a higher level first, before we dive into those topics. So let's do that. Uh, so what is DxOS at a higher level?
+
+
+#### [00:20:11] Understanding DXOS: A High-Level Overview
+
+**Jess Martin:** sure. Yeah. So, um, DXOS is a framework for building local first. Multiplayer interoperable apps where users own their own data. So those are like four buzzwords. I'll try to unpack those really quickly. Um, local first, uh, basically all of the data that when you're working inside of a DXOS application built with the framework, all the data is stored locally.
+
+So we have this wonderful thing called Riverside that we've already been speaking about. And it does this awesome thing of recording this episode locally on my actual machine, like in my browser, probably in OPFS, that's what we use, um, quite fast, quite durable. Um, and so if. We get disconnected from the internet.
+
+That recording is still there. Um, it's stored locally. So it's local first. Um, the next piece though, multiplayer, it's not local only. We actually want to be able to collaborate with each other. And so this, uh, the multiplayer aspect, um, we use a pretty common data structure nowadays called CRDTs to replicate all of the changes that are being made locally on my machine, both to all of my own devices.
+
+Which is really, really helpful, like synchronize between my phone, my laptop, that kind of thing, but also to any other peers that I've shared this application with. So multiplayer, local first, and then the interoperable apps piece is really interesting. And then we'll get to that last one, which is that identity users own their own data.
+
+The interoperable apps piece for DXOS is that there's a single shared data substrate. Across all of your applications and applications request access to get to that shared data substrate. And then they're writing collaboratively to the same 1. And so if you have a Kanban application that allows you to move cards around and talk about to do items, and you have a task list that just has a flat list of, you know, done or not done, those two things can write to the same data, um, without knowing about each other.
+
+That's the that's the hard part. Um, so that you don't have to program with other pieces of software in mind. You can just take the part of the software or the part that you want to provide the view for the activity for. And then allow other applications to like carve off other pieces. So that's the interoperable piece.
+
+And then the one that you were asking about is users owning their own data. Um, so identity is kind of, is not kind of, is baked into the core of DxOS. When you first start up a DxOS application, the first thing we do is say, do we know you? Just like I was mentioning with Riverside, Riverside doesn't know me.
+
+Um, with DxOS we say, we're looking for a private key. Which identifies which is stored in the browser or stored in your if you're writing a CLI application, it's stored in a well known place on your file system. It says, this is my identity. This is who I am. And then all of those messages and all of your data is encrypted with that private key.
+
+So, in a very real way, you do own the data. Via public private key encryption. Um, and then that's how we also manage security as you, uh, as you send that data out to a network of people, if they don't have access to your encryption keys, then they can't read that data. Um, and so that's the, the sort of the identity piece.
+
+And you know, that, I think carrying your identity with you across applications, uh, is a really powerful primitive, um, where I can say. Great. It's well known that, you know, here's my address book. Here's my. Name my email, that kind of stuff. And so then I can give, uh, give any application that has access to my data, um, access to that as well, to read it, to update it, that kind of stuff.
+
+**Justin:** It's, it's kind of nice just hearing you talk about this and like how well this fits in with that journey that you're on, you know, and just like that list of stuff that you like started in 2020. And this is like, it is DxOS you're like, wait, actually, this is all the things. So I, I love 
+
+that for you. it's it's
+
+cool. 
+
+**Jess Martin:** It's, it's really funny. Um, yeah, I think actually really funny story on that front is the beginning of this year, I was working on a project. Um, I actually worked last year with a company called vision. Um, and, and vision, uh, if you haven't looked them up vision. codes, um, they're building a lot of these decentralized.
+
+Protocols and some really powerful primitives and working with them on you can and web native file system you can as a decentralized authentication and authorization framework that can allow you to solve some of these problems of identity actually is kind of hard and off is hard in a decentralized way.
+
+How do we get away from a centralized OAuth like system to a decentralized system that gives us even more expressivity and power? So that's UCAN, and then Web Native File System is basically an encryption layer, uh, encrypted file system layer on top of IPFS, which is unencrypted. Um, so those are two, that was a big inspiration for me working with Vision.
+
+At the beginning of this year, I, I made this transition to wanting to work more on some place where I had a real context of use. And this is a term I'm stealing from like Andy Matushak, which I'm sure he's borrowing from other more illustrious folks. But the idea is, if you're building a tool for someone, you need them to actually be using the tool in real life to do a real thing in order to know whether it actually works.
+
+I mean, Andrew, you work on Descript. Descript has a few users. I'm sure you hear from them when things don't go well, and it helps you to guide what to build next with the tool, right? Um, so looking for that, um, I worked on a couple of projects early in the year and then a friend of mine reached out to me, uh, and he, he was surprised that I was not working at vision anymore that had been three or four months.
+
+He said, I wish you had told me I had this project for you. It's like, it's perfect for you. It's like all of the things you you've been talking about over the last couple of years, like, well, why have I not heard of it? And so he introduces me to, uh, to rich, who's the CEO at, uh, DxOS and. Rich gets me on the call, and within the first two or three minutes, he just jumps right into a demo of like interoperable apps.
+
+He's got like an email client, and he drags the person from the email client into a Kanban board. And then from the Kanban board, he like, um, starts editing or like double clicks on it, and it opens a CRM. And then he like puts in an address location and switches over to a map view, and it shows that person's address on a map.
+
+And it's just like a deluge of interoperable application experiences. And I stopped him and I was like, Rich, I know what this is. I have been searching for this. I know how hard this is. One, how far along are you? Like, you're showing me this amazing demo. Like, are people using this today? And two, how come I have not heard of this?
+
+I've literally been scouring the earth for this for two or three years. Um, so it was, uh, it was a fun, a fun, like, yeah, serendipity moment. And the answer to both of those questions is that the XLS had been working on this project for 2 to 3 years and they had been, even though it's completely open source, all available on GitHub, none of the people at the company are very online.
+
+And so there just wasn't, you know, a Twitter 
+
+account, 
+
+**Justin:** Marketing is hard. 
+
+**Andrew:** Marketing's 
+
+hard. 
+
+**Jess Martin:** there wasn't a blog. There was, just. there was just nine people doing amazing work and building this incredible, incredible framework such that, yeah, when I joined it, I mean a lot of, I say a lot of the hard work was done. A lot of the groundwork is laid 
+
+and now it's about like making it actually use, like actually work.
+
+**Justin:** Yeah, I want to dig into this context and use and sort of tie in a few things together here. So one, I, I. It's really interesting to think about early in your career where you're building products that probably look like the traditional SAS, you know, very siloed applications. All the user data like lives inside of the application interoperability is like.
+
+How do we make like, Oh, we can, you can export some data to another platform or, 
+
+Oh, like you can share this on Facebook or 
+
+**Jess Martin:** whatever.Or you set up a rest 
+
+API. Yes. Or zapier 
+
+**Justin:** yeah, 
+
+yeah, yeah, exactly. 
+
+Now you're into this more into the world of like where you want it to be, uh, where it's like maximum interoperability. Uh, you're thinking about data more about like how people think about data versus like how the computer is necessarily thinking about data to, to some degree.
+
+Uh, and. This is something that I think I think about a lot. This seems to be very, very tailored towards like more personalized applications or like very specific use cases. So if we think about like, Why do we use a database and put data in this particular format? Usually it's because you have a lot of data.
+
+It's like, not that it's the ideal representation for us to read and write to it, but it's like for the computer, it is the ideal. And, you know, there are some trade offs that we make, especially when you have like many applications. Hitting one data source and, you know, I'm just sort of getting into this, that there are certainly going to be trade offs with a platform like this, it is going to give you a certain kind of experience that you're not going to get and like a siloed sort of product experience.
+
+So my main question here is, when do you choose to use a technology like this? And when you should, should you choose not 
+
+to? 
+
+**Jess Martin:** Yeah. I mean, it's a great question. Um, let me start like at a smaller, uh, range of that question. Then we can like work our way to the larger question of when, when not. Um, so you mentioned these use cases where Um, so the within DX OS, there's a couple of components that we talk about pretty frequently.
+
+One of them is the echo data store. And basically, that's the thing that takes your state of the state of the program and replicates that across all the peers on the on the peer to peer network. Right now, it's peer to peer. Can talk about networking is a separate thing. 
+
+
+#### [00:29:43] Challenges and Solutions in Data Management
+
+**Jess Martin:** Um, but, um, replicating that data store, that local data store across all those peers, that particular data store has some characteristics that that are important to know, like things it's good at things it's not good at, um, and things that we'd like it to be good at in the future.
+
+Um, I think one of the things that is surprising to me about the big data question, um, is when I got right down to thinking about, you know, How big the data that you have actually is when you segment the data per user, the data actually isn't very big. So, um, Andrew, you're probably pretty familiar with, like, the data model inside descript.
+
+So for those, I mean, I'm pretty sure most people are familiar with the script, but the script of video editor or video and audio editor that allows you to have this, like, interactive experience where you're editing sort of a transcript and it's dynamically updating the video or the audio underneath that.
+
+Written transcript. Very cool, magical tool. Um, and so I've got projects probably, and edits maybe, um, that are like stored in database. I've got some identity stuff around, you know, my, my identity and that kind of thing. The, I would imagine the lion's share of data is blob, right, like video and audio. But if you pulled away the video and audio for any individual user, 
+
+ballpark, how big is the data, all of their projects, all of their edits.
+
+**Andrew:** Probably very, very small, uh, compared to like the video content, just some JSON really. 
+
+**Jess Martin:** And I think what I've seen in like looking at all the applications that I've built, that is by far the dominant case. When you take, when you, when you boil down data to an individual user's data, we're talking about a few megabytes. Um, it's mostly text and Jason and that kind of stuff. And your browser can handle that just fine.
+
+Um, in fact, it can handle all of that. You don't even need partial replication or anything intelligent or any lazy loading. Just send it all. Um, and that I've started to realize that a lot of the the. Challenges we have with big data and that kind of stuff are because we have 100, 000, 000 different users, all of their data in one data store.
+
+Now that's a problem when you have 100, 000, 000 different users in a single data store with, you know, five megabytes or so of data each across, you know, 20 different tables that that becomes a mess. Um, and so I think I would start by challenging the idea that your data is too big. Okay. Or that data is too big.
+
+And just say that like most personal data is actually pretty small, um, with the exception of blob store data. And that is, that is something that, uh, echo doesn't handle at all right now. And we're actually looking at several solutions. That's one of the big, um, feature requests we get when people come in and play with it is, how do I handle storing blobs?
+
+How do I stent handle passing around images and video? Right now our answer is like, store it in IPFS, which is unencrypted. Um, so you gotta be okay with that. Image or video being on, and then we'll store a reference to that, um, to that image or video. But the, I think the areas where we need to think about for echo is that.
+
+Um, it doesn't have the same resiliency as, uh, characteristics of a, of a traditional SQL based data store. Like, there's not like a backup mechanism that's executing regularly that has, you know, and sort of like PG dump, PG load kind of utilities that are there to, like, help you restore, um, restore the data.
+
+So it, it, it right now is an in memory graph data store that looks a lot like a key value store. Um, and so even, um, yeah, and so that, that's kind of, I think the, the, the thing we're coasting on with echo is it just doesn't have to be 
+
+that good of a database when data is so small. 
+
+**Andrew:** So like what, what, what jumps out to me there is like, we, it's all decentralized. So like we, we get a lot of new problems with decentralization and you said that you said kind of how it works, but like, how does it work if I like, say, I'm using your composer notes app on one computer, then I go to my parents house and log in on that computer.
+
+**Jess Martin:** If it's all like local first, like where does the data go? How, how, how does it get from computer aid to computer B and how does computer be, well, I guess computer B knows about me cause I have my private key. Right? The first thing you do is share the private key. But I mean, that so. Um, yeah, those are those are great questions. Um, I think one of the things that over the last few months that has maybe in even the last month, um, I spent a lot of time talking with, uh, Peter Van Hartenberg from Inc and switch and Jeffrey lit from you can switch about the networking layer.
+
+So they've been doing explorations into local for software for a long time. They're the, they're the source of the original paper from 2019. Um, and they've been building systems on top that are shaped very similar to D X O S for a while, some of which are completely unpublished. Like they're, you know, it's stuff that they've worked on in the lab hasn't made it into a publication yet.
+
+And they've been really, um, realistic about the limitations of sort of peer to peer in the browser right now. Um, so peer to peer in the browser is over Web RTC. Um, and there are other ways, but that is the main way That you're going to do it and there are limitations to basically the networking layer that allows you to appears to see each other over WebRTC.
+
+Also, WebRTC is kind of heavy. So anyway, I say all of that. Those are some technical details, but I guess the greater point here is currently DxOS is peer to peer, pure peer to peer. So if you go to your parents house. And you have been doing some work on your computer at home. One, your computer at home needs to be online.
+
+So if it's a laptop and you've shut the laptop, then it is no longer replicating the data on the network. So when you get to your parents house and you go to connect to that peer, it's not there. Um, and so your computer has to be at home, has to be on because all network, or all the data is transmitted between peers on the network, or at least one peer.
+
+That has your data from your laptop needs to be up. Um, and then we do have to because it's WebRTC and because of the vagaries of networking, we do have to use what's called a signaling server and it handles these different, um, ICE turn and turn protocols for allowing peers to connect to each other over diverse networking conditions.
+
+So like when you don't have a static IP to the Internet and you're in coffee shop or you're on an airplane and you have, and how does it route that packet to you? Um, there's a signaling server that enables that, but it's just a standard kind of off the shelf signaling server. And once those two peers are connected to each other directly via web RTC channel, the data goes in an encrypted channel between your computer at your house and your parents computer.
+
+And now it's living in both places. And as long as either of those peers is online talking to each other, all of the the data is being transmitted back and forth. And it's basically like an append only mutation log. Of like every mutation gets transmitted over the network and then the each peer knows how to take that mutation and turn it into like, uh, apply that mutation to the local objects. I don't know 
+
+I could answer more, but I'll stop and let you ask more questions about what 
+
+you'd want to 
+
+**Andrew:** yeah, I think that it, that mostly answers my question. So yeah, definitely research to come in this area. Uh, what, one, one thing that also stood out to me is, so if we do have like a shared data layer, the, the main reason. We kind of have our own data layers is I want to define what my data looks like, uh, with a shared data layer.
+
+How do we do that? Like, if I'm making a to do app and all of a sudden I want to add like a new field to dues, but every other app that does to dues also uses that. Like, how do we grapple with that? 
+
+**Jess Martin:** Yeah, I mean, I think that is, that is probably the largest unsolved problem in, uh, sort of decentralized systems like this. Um, so the, one of the ways that I've thought about, uh, DxOS and other platforms like DxOS that are providing this sort of, uh, these same primitives is, uh, the current sort of client server.
+
+Um, architecture for building web applications is this world where you as the developer are responsible for solving the distributed systems problem. You have a distributed system, you have a client and a server, and they are inherently out of sync. They're not the same system, and so you have to keep them in sync using a variety of different techniques.
+
+And that's where we end up with things like state management systems in the front end that say, Oh, well. This is what the state is locally, but the state on the database could be different. And then we have all this chatty layer in between of like making sure that, uh, make, we've optimistically updated the UI, assuming that this change will go through, but then we need to hear back from the server to find out whether we can actually apply that optimistic update.
+
+And so there's just a, there's a whole bunch of cruft that we have to deal with as developers. And we've built really good systems for this. But it still sucks. You still are solving a distributed systems problem. You still run up against edge cases where things break. Um, so a platform like DXOS, um, takes the distributed systems problem and it pushes it below the framework layer.
+
+It says just write locally to these JavaScript objects, like update them and read them locally. And we'll handle all of the replication and synchronization for you. We'll make sure that those events go to the right places will make sure that when events that conflict arrive, we resolve the conflicts in a, in a, in a reasonable way.
+
+And then you can just, like, draw the UI as if it were drawing from local storage, because it effectively is drawing from local storage. So we take it and we shove the distributed systems problem. Below the, below the framework layer, which is great. But then you trade the distributed systems problem for the scheme of migration problems of like, okay, now what happens?
+
+And, and you don't have to have a shared data substrate to have the scheme of migration problem. You can just have two different versions of clients, client applications that are writing to the same. Single data store, like normal, you know, application architecture, not shared application architecture. And if you want to do a data migration, you have the same problem of like, uh, the data, the shape of the data has changed between version one and version two.
+
+And both of them are currently writing to that and reading from that data at the same time. How are we going to reconcile that? Um, so it's just, it just becomes even more aggravated at the, at when you have different applications, all writing to that same data store. Um. For those who are like, uh, curious about pointers in this area, the, the best, like, uh, thought in this area right now has been the Cambria paper by Jeffrey Litt from Ink and Switch.
+
+Um, Jeff and, and at the Ink and Switch team, I think, are going to be starting work on a Cambria 2, basically, like, addressing some of the shortcomings of the Cambria paper. Um, that's taking this, this approach called lensing, where you basically have a piece of code that, that translates the data and at the read and write time.
+
+Um, and you would, those lenses would be part of your source code as well. And you'd kind of move those things forward. Um, there's some other work around, uh, Zod and TRPC as like these other ways of managing this sort of schema migration problem, 
+
+but we're, it's definitely not solved. 
+
+
+
+**Justin:** It's hard because I think your, your data, your schema becomes the product in some way. It becomes like the real application. The real thing is the data, you know, it's like you change, you put it on his head. Cause it's like, as in a traditional siloed application. The real data is so skewed and so nonsensical and, you know, optimized for performance and storage and all this stuff that like, that is not a real interface to the actual product that's being built is like, it takes all the way getting up to the front layer of the application before the product really comes together.
+
+And I think in this. world where you have like a simplified data abstraction, you have less data. You're starting to think about it more as like the data is the thing. Uh, and then all the apps on top of it were just views, right? They're just like different ways to slice that data. Um, this is the reason why going back to when we were talking about like when you should use this and maybe when it's not a right fit or thinking about product versus like what this is. You know, I really see this as like the realm, the future realm of like personal, uh, personal software. This is something that I've been thinking a lot about. It's like, if you want to build a tool for yourself, it's still really hard. Like, building an app for yourself is as hard as building an app for other people you want to sell, right?
+
+It's like, there is no reduction in complexity there. It's like, maybe there's certain features and functionalities you can ditch, but like, it's still hard. But this idea, you know, taking the like consultancy ideas, like you learn how to set up a project really quickly and you've got all this stuff set up.
+
+It's very similar in the notion of like, I have this data store that I'm already using for this other tool that I built. So like building a new tool is literally just like, I'll add some new data and the entry reuse some stuff that I already have and write a new view. And then I think that's a really exciting area for me and like what DXS and.
+
+DxOS and things in this area sort of represent, it's just like easier single user software.
+
+**Jess Martin:** Yeah, well, while we're on the subject to of things you should, you know, when to use and when not to use the DX. O. S. Um, I would say that if you're starting a startup today and you're trying to pick a tech stack to bet your business on, do not pick the DX. O. S. Today. Um, we are not, we're at the port of, I guess you would call it like alpha, um, where you can definitely build software on it today that you use every day.
+
+I'm using several pieces of software every day. That I, that are built on top of the XOS. Um, but it's not quite ready for what I would call like production use cases. And I certainly would not want you betting your startup on it today. Um, I'd say we're close. We're, you know, probably a few months out, um, from, from like nailing those last few things to where we could confidently say, go start, go start your product or your startup today on, on D X S.
+
+But we're not there yet. Um, the, uh, we've got a couple of problems that we're working on right now that are kind of interesting. One is the schema migration problem. So we're actually doing some active work on a schema ourselves, inspired by some of the stuff from, uh, ink and switch. And then also, uh, We're looking at giving the user, Andrew, you mentioned this in your question, uh, giving the user the ability to, to like write their own schema.
+
+Um, basically using like an air table, like interface of like, you can create a table and you can create columns in the table and you can give the columns names. And then you can get the columns types. And that's a schema on the types that are available are all the types that the system knows about and you can like define your own and that kind of stuff.
+
+And so then sort of, uh, we're playing with that as an affordance. I wouldn't say it's a solution. It's certainly not a solution to the scheme of migration problem, but it does give more agency to the user 
+
+of like their ability to kind of shape the data the way that they 
+
+want to shape it. 
+
+**Andrew:** pretty cool. If I were to distill what DXOS looks like to me, uh, when we were talking to Thomas Artman from linear, I asked like, Hey, this sync engine real cool. Is it like a thing I can use? And he was like, no, and it probably never will be. What DXOS looks like to me is that sync engine, like ready and able to use for whatever app you have.
+
+Like, I feel like the bet, like I'm not a marketer either, but the best way to market DXOS would be to create a best in class tool that is built on these technologies and then you can go around being the Thomas Artman of DXOS being like, look at all the cool things we did with our architecture. 
+
+**Jess Martin:** Yes. Yes. A best in class tool that is built on DX, built with DXOS. We might be working on something like that. Well, before I jump to that, actually, you guys had some really great guests on the podcast that are related to this idea. So, um, Steven Fabre of, uh, of Liveblocks came and talked. Um, so we, we talked a little bit about, like, when do you use this, why peer to peer versus centralized, that kind of stuff.
+
+Liveblocks is doing amazing work in creating this sort of replication layer. And they've chosen to go the server full route. Um, and I think that's a great solution for a lot of use cases, and it also avoids the pitfall of, uh, peer to peer, it avoids the decentralized identity problem, and it avoids a lot of these, like, unsolved research problems.
+
+I'm at DxOS for the unsolved research problems, let's be clear. If there were no unsolved research problems, I would not be here. I'm an applied researcher, um, and so, um, I'm glad to work on that at DxOS, but there's other great systems out there that are, Solving this problem in, in, in the real world today, live blocks.
+
+Um, James Pierce of tiny base is working on a little, basically if you just took the echo out of DxOS, um, that would be tiny base. Um, and I mean, there's this, his is a little bit different. It's a relational data store as opposed to a graph based store, but same idea. Um, and then Tomas from, uh, from linear, um, you, you also spoke to, uh, uh, Sunil from party kit, who's basically working on, like, the, the event replication layer, not the persistence layer.
+
+So it's like all these, like, little slices of the same problem. Paul from drifting space. He's working on this new thing called YSuite, which is a wrapper around Yjs, which basically just solves the synchronization problem, like conflict resolution. Um, and he's like trying to build some of the networking and that kind of stuff around that.
+
+And DXOS, we just said, we're solving the whole thing. Um, and that, that is both awesome and 
+
+horrifying at the same time. 
+
+
+#### [00:46:53] The Future of DXOS: Enabling a Different Shape of Software
+
+**Justin:** It does cover a lot of ground. It covers a ton of ground. Uh, so. Let's say in a hypothetical world where you're building some like, uh, application or example, uh, and let's say hypothetically, you called it composer. Uh, what would it hypothetically do? 
+
+Uh, actually transitioning in one of the, one of the things you are working on, you're working on this, uh, thing called composer, which I'm really excited about.
+
+Uh, so it seems like it's a, it's a framework for building applications on top of DxOS, but I would love for you to 
+
+tell us a 
+
+little bit 
+
+more about that and what it enables. 
+
+**Jess Martin:** yeah, man. Yeah. Composer's fun. So the, I think one of the things to know conceptually about the company, um, at DxOS is that, um, we are interested most as a company, like the individuals who work there, we have eight people who work there currently. We're interested in these problems being solved, uh, so that we can build software that has a specific shape in the world.
+
+It's not that we really just get up in the morning excited about chewing CRDTs. Like, we are not, we're not data structures people at our core. We're not, you know, and we've had to solve all these problems. Um, along the way, but we are absolutely using like the best in class available stuff from other people because what we want is like a single unified system that we can then start building really interesting software on top of.
+
+And so that that is, that's really the mission of the company is to enable a different shape of software. And we are really interested in shaping that sort of new medium. Um, yeah, 1 of the things that led us to composer. Is it was building a bunch of applications on top of the DXOS Um, Justin, you kind of started to go in this direction.
+
+Uh, when you were talking about the experience of, like, personal software software, just for me, or like, once I once I've got all these other problems solved for me, it seems like it wouldn't take much to build this little view on top of the data. Um, I guess about 6 months ago, I was having a conversation with Linus Lee, Um, Linus, as I was explaining D X O S to him, he has a very similar, uh, sort of shared information substrate for all of his applications.
+
+They all write to, I believe the same replicated file system and he just replicate like Dropbox style replicates that file system across all of his devices. And then they just write to that. And I think he actually uses either Dropbox or I cloud. I can't remember some commercial off the shelf solution for replicating that file system across all of his machines.
+
+And so he doesn't have to care about off. Because every time he because if he has access to that file system, he has access, then he has access. It's like off by, uh, by default. And then, uh, yeah, he doesn't have to worry about multiple writers because it's usually just him writing, you know, he's not gonna be using two machines at the same time, like editing in two places, have collisions, all that kind of stuff.
+
+And so he has this sort of shared file data substrate. And he was talking about how. As he would build these little personal tools for himself, because Linus is sort of famous for, like, building his own CRM, his own search engine, his own should definitely link to some of his awesome projects. But he, um, he said, as he was building his own personal tools for these different use cases, rather than, like, opening a tool.
+
+That he had built and modifying it, he would just start a new one from scratch. It's like, Oh, I have this thing I want to do this afternoon. Well, file new, like I'm going to create a new application from scratch because it was the lift from I've got my data here and now I want to get it on the screen and modify it in some ways actually quite small.
+
+And he was able to more quickly start from scratch and build this tiny little application on top of the shared data substrate and have it be custom for this specific use case. Then add a new set of features to an existing piece of software. Um, and we started to feel this ourselves as we were working with DxOS.
+
+We would build, um, these tiny little applications. They wouldn't take very long. And we wanted to extend what you could do with DxOS. We'd build another one and another one. We had all these different sort of apps running alongside each other. And what we, what we started to realize was two things. One, it was still annoying to deal with all the stuff around building an app today.
+
+Right. Um, NPM create blank, you know, uh, yeah, and you, you still end up with static asset hosting. You still end up with bundlers. Everybody loves bundlers. Uh, you still up and end up having and routing and all of these things. And when you look at like the file tree for like this brand new application where you've written this little component.
+
+That runs on top of the DX. O. S. There's all this other stuff. T. S. Can fake and you know, you're you're out folder and all this kind of stuff that you're going. I don't care about any of that stuff. All I care about is that little component and the several 100 lines of react code and very minimal like database queries and database updates that are right there in that That's all I care about.
+
+So, like, what if we could just take that component, just that component, and deploy it inside some running application so that you could just write components and be done? Um, so that was one observation. The other observation is, when we had all these applications next to each other, they're all reading and writing to the same data.
+
+You want it to like move, you want it to physically move things between them. I just want to drag this to do onto this Kanban board. Why can't I do that? Well, browsers, windows, you know, all of the things. Um, it's just not a great environment for that. And so, we ended up building this thing called Composer.
+
+Um, and Composer is basically a universal application host. Or a super app, you could call it. That basically allows you to write these little Components. And then they all sit inside this one application that has one connection to the data store. And then they, they're all, um, 
+
+kind of, yeah, they all work 
+
+within that framework.
+
+Does that make sense? 
+
+**Andrew:** Yeah, one of the things that like I got real excited about when I started programming was, oh, I can just like make my own front ends for things. And like, that's what a lot of my projects are. And as you said, like. There's a huge barrier to that of like, Oh, I have to create an application. I have to think about where the data is stored.
+
+Oh, I got an off to the thing every time. And it just like, it, it, it piles and piles up. Like the two, my, the two ones that I've used a lot are I made a sound cloud interface, uh, I didn't like there. So I made my own, uh, where. You can basically look as at an API as a layer into somebody else's data. And that's what I did a lot of the time.
+
+And then like another one, which I still maintain to this day, which would work really well in this type of environment is kickback. tv. It's like a automated top 100 music videos of the web every day. And then, uh, so if you're on DXOS, I could imagine you'd like, Oh, you just have some, some blogs that you follow.
+
+And then my little widget can run on top of that, look at them, see if there's any YouTube posts and like, you have this like nice little interface. So. I think, I think if we get to that place where like something like this is popular and then people can just go out and like produce their own little components and their own little widgets, just the amount of creativity we'll see is like just super exciting.
+
+Like, I could imagine someone creating like a Winamp UI for their SoundCloud 
+
+thing. That's like, 
+
+yeah, 
+
+**Jess Martin:** Oh, man. Yeah. No, that's awesome. Yeah. No, I bet that is definitely the vision and the what we've worked on with composer is trying to make it as just. Completely modifiable as possible, right? Like having the very fewest opinions that we have in terms of like what you can build. And so, like, Composer is.
+
+Nothing but plugins, like the whole, like the entire interface is by is plugins. And so, like, a composer application is literally just a list of plugins being loaded. Um, and everything about the interface is controlled via plugins. So, you know, the split view or like, do you want to, do you want a menu bar or not?
+
+That's a plugin. Do you want to, you want to write, write sidebar or not? That's a plugin. Do you want, you know, do you want all of these things? And then we we've worked on, so making it as plugin extensible as 
+
+possible. The other piece was, um, solving drag and drop for you So you get drag and drop primitives just out of the box any, and you can basically just say, like, make this surface wrist draggable and receive any kind of thing that, you know, things that have this shape and then, and then you get those primitives and it's cool because, like, you drag over it and it, like, gives you, like, the reject animation, like, of, like, Nope, that's not draggable or the accept animation.
+
+And that part, of course, is configurable as well. You can, like, configure your accept animation and all that kind of stuff. Um, So, yeah, the little plugins. This is a very new thing, as Justin was implying in his introduction of it. Um, we just, I think we just pushed it on our website, like, literally six days ago, five or six days ago.
+
+Um, and so the plugin API is still moving very quickly. Um, and, you know, we're adding new primitives all the time, but man, it's super fun. Like, it becomes, it becomes truly like an afternoon to like deploy one of these things, get it up and running, and then it's running in this 
+
+environment where all of your other apps are 
+
+already running, which feels really fun. 
+
+**Andrew:** drag and drop sucks. I, I just have to say that like, I don't know what they were thinking with that API, why they made it so hard to do, but like, it is, it's just terrible. 
+
+**Justin:** we we have, uh, yes, there's one of our engineers named Will, who has become a, an expert. Over the years and years in drag and drop. And so we'll ask him like, well, shouldn't this work like this instead? And he'll just bury his face in his hands. Like, no, I can't believe you're asking that. Like that's going to be a week worth of work, but you know, it's just, but it's great because like we solve it one time and then it generalizes across all the 
+
+**Jess Martin:** plugins. and 
+
+so all, let's fight this battle once and then be done.
+
+**Justin:** Not to nerd snipe you into something, but I think the, one of the things that I, I mean, you know, you talking about interop and, and sort of like being a little bit on the nose of composer composability of like different applications is that it lets you. Reuse a lot of like shared infrastructure. You've already put this work into it.
+
+It's like, let's get off the ground running really quickly. Um, I think the other big area here is sort of, if we think about like the pattern of componentization of UI and how that sort of spread distribution of like the software components and these mini micro interactions that you can sort of like compose in your app.
+
+I think that world where you have, now you have like, uh, A plugin ecosystem that you can like pull in all these plugins, pull in all these components, pull UI pieces. And, and when you can really start slapping apps together, super, super fast by. You know, writing the little bit of glue code that you need, and then, you know, pulling in a lot of components and stuff, it really gets to the, to the area of like, I can build a pretty fully function functioning app for myself or for, you know, this, this niche product area.
+
+And like, you know, just a few hours, then it becomes incredibly powerful. So that is where my mind is at in the future is it's like distribution of plugins, you 
+
+know, 
+
+**Jess Martin:** Absolutely. Um, in fact, that's one of the, that's one of the efforts over the next few weeks is, is to make a screen where you can like turn on and off plugins. And as you add plugins, that kind of stuff, the, the, the end game here is like fully dynamic plugins where you're, you can edit the plugins inside composer itself.
+
+And so you pull up an editor and you're making those changes. And when you commit those changes, the application reloads and then it becomes a full, you know, you can bootstrap the environment and the environment kind of thing. Um, yeah, it's, man. It's really exciting to work in, but I think the week I want to go back to like the context and use context of use.
+
+Um, because I think, um, Steve Krause from valtown talked about this a little bit in his episode when he was talking about valtown is like valtown is this beautiful, like vertical project, like you can do a lot of things with valtown. Composer has that same feel. And so I think one of our challenges recently has been.
+
+Well, let's make it do like one thing really, really well, uh, and then like make it do another thing really, really well and like figure out what those, those early workflows are that we want to build a set of plugins that are fairly robust around, uh, because being able to do everything is not why people come to computers, they come to computers to do a specific thing.
+
+Um, and so trying to figure out 
+
+what those early use cases are has been a big focus. 
+
+**Andrew:** Yeah, it's especially exciting in a world where we live, uh, with a program that can generate that glue code Justin was talking about and, uh, help, help normies even code too. 
+
+**Jess Martin:** Yes. No, we actually have several chat GPT examples, uh, integrated into composer right now that are really fun. Um, yeah, one of our, one of the components that are the plugins that you get out of the box. And one of the components that's provided out of the box is a chat interface. Um, so chat is just a plug or a chat is both a component and a plugin.
+
+So you can bring chat into your own application. Um, sort of, we call it threads because it's. It really isn't just chat. Like if you, uh, it's also the way that comments are nested in documents. Um, anytime you have a series of messages that come from humans back and forth with one another, or even with just themselves, that's a thread sort of a general component, but then there's actually a plugin as well that allows you to chat inside.
+
+You can build discord inside of, I mean, the number of things you can build inside composer is ridiculous. And that's why it's really important to say like, no, it actually has to do one thing. Really, really well. Um, and that goes back to, I can't remember whether it was you, Justin, or you, Andrew, that said, um, you need to have that one, uh, application, best in class application, and you can go around and be the Thomas of, of, uh, linear and talk about DxOS, the sync layer.
+
+And that's, we have to, it has to be best in class. It's something, um. My hunch here, and this is actually, I'm curious what you guys if you could build anything, what would be your workflows? Actually, I'll start 
+
+there and then I'll tell you mine. Um, what would be that 1st use case? 
+
+**Andrew:** I feel like the first use case for most people is going to build, build a dashboard of some type of my life that helps me do daily tasks. So like, uh, I, there's this one, one L developer that created Sizzy. He's on Twitter. Uh, he also, his new project is just like a to do app on steroids, lots of dashboards and everything. I feel like something like this would be, be very simple to 
+
+spin, like 
+
+something like that up. 
+
+**Justin:** An immediate self serving thing is just like building software for podcasting because it's something we do a lot. And, you know, we end up with like amalgamations of like Google sheets and you know, other stuff. And it's just like, you know, actually there are, I mean, you know, it'd be really nice for us to have like a proper, like lights CRM, you know, for actually reach out to people and like, you know, do a lot of.
+
+Stuff like that. And, uh, I mean, most of the time you just don't have the energy to build anything for that. It's like, you could build something better for yourself, but like, is it worth the effort? It's like, well, we can use GitHub projects and it's like, good enough. You know, it really doesn't do things that we want, 
+
+but like, we can't be bothered because we have day jobs and other things 
+
+**Andrew:** going on, Does DXOS. Does DXOS have like the concept of like piping things between places? Cause it, or not DXOS, a composer. Like, can I say, here's a box over here. I plop something in there and then I can like thread it to like other little components. 
+
+**Jess Martin:** yeah. So the, the really interesting thing that takes a while to get your head around when you're building inside the XLS is that, um, is this concept called transclusion? I don't know if you guys have heard this term before and said, uh, a Ted Nelson term that basically means that like the thing that you're, you're interacting with is here, but it's also in all of these other places and it is the thing.
+
+It's not piped or copied or anything else. It is the actual thing in all of those places. And so a great example of this is we have this, um, We have a thing called a stack, which is basically you could think of it is like sort of a simplified block based editor. It's just like you can basically like, uh, drag a whole bunch of any kind of data type you can drag into a stack and you can have an ordered list of all of those items.
+
+Um, and so you can have documents and images and all of that kind of stuff. Um, and then it's a really convenient way to, like, group a whole bunch of disparate items. And then the really important thing about Um, about things inside Composer and the plug in or the extensibility model is that everything operates on inversion of control.
+
+And so stack doesn't know anything about any of these data types, like documents or images or anything. Instead, the document plug in says, I know how to render myself in a stack. And so when, when you show the document into a stack, stack goes, Hey, anybody know how to render this thing? And the document plug in says, I do.
+
+Here's the here's the component for it. Um, and so that being said, you end up with this stack thing that has all these different items in it. And then we wrote like in an afternoon, a presenter for that to turn it into a presentation. And what it does, it actually doesn't know anything about stack the plug in.
+
+It just knows about the stack data structure, which is just a list of objects and ordered list of objects, and it does the same thing that stack does. It says, Hey, I've got a markdown document here. Does anybody know how to render a markdown document as a slide? Because I'm a slide presentation software and the document editor says I do.
+
+Here's how you do M. D. To M. D. To slide. Basically, it runs a function to turn that into like a slide. And so you end up with these. Uh, now the really crazy thing is. If you have two windows open side by side, you've got the stack open over here and you've got the documents and you've got the presentation over here as you're typing like character by character into that presentation.
+
+The slide is also dynamically updating, and so there's no notion of piping because it's all, you're editing the actual item itself. Um, now that's, I, I, I use that as an opportunity to explain like the transclusion thing and like how weird that feels. 
+
+But that may not have been your actual question when you were talking about piping. So feel
+
+free to like ask it again in a different 
+
+way. 
+
+**Andrew:** I know that that that answer is it's really just like the the way you have to look at it I was kind of more thinking of like in a like Paul Shen natto type thing where it's like I have this like node based editor and it's kind of like I want to create a pipeline of little programs doing little things to a piece of output.
+
+I may not want to like store that thing, uh, but in the, it seems like in the DxOS like frame of mind, it's more like you do store things, and then you have other things that operate on the stored thing rather than like creating a workflow. 
+
+**Jess Martin:** Yeah, that's a fair way of saying it. I think something we're playing with that we haven't implemented yet is different sort of views into the data. Um, so like materialized views basically of like, I don't actually want to change the underlying data. I just want to represent it in a different way. And then that materialized view should update anytime that that and it would reactively update anytime that underlying store updates.
+
+We just haven't had a use case where we've actually needed it, but I think that's maybe in line with sort of the natto approach of like, I've got 
+
+these things are wired together. I make a change over here, and it's going to automatically change over there. 
+
+
+#### [01:05:50] Making it a Business
+
+**Justin:** Before we move on to tooltips, uh, which we should because we're running over a little bit, there's one question that I want to ask. And pretty much any time we talk to someone who is working on an open source product, especially if they're working on some tooling layer. Uh, the big obvious question for us to ask is how do you make this a sustainable business?
+
+So you talked in the past about how You know, in a past life, you were very much like, we're going to build a tool, existing computers, uh, and we're going to make that into a sustainable business. And then it's like part of the, you know, part and parcel of the thing that we're doing, how do you think about that with DXOS is like, is it just like, this is an active research project and we're sort of like, you know, we have funding for this and there's some product that's going to be built with this thing.
+
+Or how's that 
+
+being thought 
+
+about? 
+
+**Jess Martin:** Yeah. So DxOS, I mean, uh, it is a venture backed company. Um, so we have a, we've raised a seed round and, you know, we have some amount of time to prove, you know, that people actually want this thing, um, as they call it traction in the industry and demonstrate that people actually want to build stuff with it.
+
+The there's a near term and a very near term answer in terms of revenue possibilities. But there's the real answer. Um, the near term answer would be people actually do want their data to be backed up somewhere. They actually don't want it to live on their device only. Um, and so that's a project we're working on right now called agent, which basically would be running our exact same client code on some cloud computing resource that you control.
+
+Um, it's basically like your personal iCloud. Um, and then that that enables two things. One of the enables offsite backup of like your device, your data is always available somewhere else as soon as you manipulate it locally. And two, it allows for constant replication. Or, um, so that, uh, case, Andrew, you were talking about it going from your house to your parents house.
+
+And if your laptop's closed at your house, tough. Um, if you have an agent up and running in the cloud somewhere, that's, you know, most of the time, then that data has been replicated to the cloud. And when you go to load up on your parents computer, it's going to go grab that from your personal cloud, um, rather than needing to grab it from your laptop.
+
+Um, so that's agent. That's a near term, and that will be a, uh, hosted service that you can pay for. It's also open source. So feel free to host your own. In fact, you can run an agent today. Um, we have, it's run via the D. X. C. L. I. The D. DX. O. S. C. L. I. Um, and so, but most people are just gonna want to click button.
+
+Get me get my backup. Um, but storage is a commodity. Even compute is a commodity. Um, those are not large, um, scale businesses unless you're already at the scale of an A. W. S. Or a cloud player. Yeah. Um, the larger answer here for DxOS is bringing into the platform the payment primitives themselves. So payment is another pain of like, how do I distribute and get paid for software?
+
+And so if DxOS plugins or standalone SDK applications turn out to be useful, we should be building the distribution mechanisms and the payment mechanisms into the platform at the protocol level, such that developers can get paid and end users can pay them. Um, and then there's some, uh, cut that's taken by the platform.
+
+So it's basically the app store model with one key exception is that everything that we're doing at DxOS has been built on top of an open protocol. So echo has a protocol. Halo has a protocol. It is, uh, it, the whole permissionless thing of like, we actually can't stop you from making an interoperable application with the DxOS, uh, another DxOS application, it's not possible for us to stop you by design.
+
+Um, the payment layer will be the same thing. Of like, if another, you know, competing network wanted to manage that it's all over this open protocol, so it's not the app store where on your IOS. It's like the map Mac app store versus the IOS app store. You can still install applications on your Mac. You don't have to go through the app store if you don't want to, um, and but IOS is not not that way.
+
+It's locked down. It feels like another important problem to solve for for end users of like, Okay. Yes, we want to be a sustainable business, but the better thing would be 
+
+developers who are 
+
+building things with DXOS can get paid.
+
+That would be 
+
+incredible. 
+
+**Andrew:** Yeah, That would be it. It sucks that we have all these software distribution mechanisms that distribute the software millions and billions of times a day. But the developers who made all those things rarely ever get paid for them. So building that into the platform seems seems awesome.
+
+
+#### [01:10:20] Tooltips
+
+**Andrew:** And with that, 
+
+let's move on to 
+
+tooltips.
+
+So my, my first tool tip for the week. I saw this come up on my little GitHub monitor thing. It's in Enchelicence from Microsoft. Uh, this is what looks to be basically just an open source alternative to Fig that works on all platforms.
+
+So, uh, If you've ever wanted better auto completion for your CLI, which pretty much everybody does, uh, you might want to give this a check, uh, a look, because it looks like it's pretty good. 
+
+It's really interesting. Is that, is that just 
+
+**Justin:** too easy? 
+
+Is it like, you know, is it actually. 
+
+**Andrew:** Uh, yeah, it 
+
+doesn't look like 
+
+they're doing
+
+what Fig does 
+
+with 
+
+like 
+
+using the accessibility API in like crazy ways, but to support Linux and Windows, 
+
+My biggest question is what happens when your 
+
+**Justin:** terminal is at the bottom, when you're at the bottom of the window, when you have a full window feed. So the, the screenshot here conveniently omits that edge case, literal edge case, if you 
+
+will.
+
+**Andrew:** it avoids that. Yeah.
+
+Next up we have, 
+
+uh, OpenAI Text to Speech. 
+
+**Justin:** Yeah, so, uh, this is just like highlighting the opening eyes guide for text to speech. I, of all the AI spaces, the thing that I'm most excited about is text to speech. Um, I love consuming books in particular via narration. Uh, it's like something that I value a lot and, uh, I'm really excited for the world where narration is more available, uh, with a little bit less work with the caveat is I also hope that narrators are also.
+
+Able to be, you know, appropriately compensated for their, you know, likeness and all the effort that they put in and stuff. I mean, I think it's still a very skill based thing and I don't want them to see that career go away. Cause I, I love great narrators, but, uh, open AI has, uh, some text to speech and text to speech API it's, uh, like.
+
+0. 015 cents for, uh, like a thousand characters or something for their regular version and like 0. 03 cents for their like HD version. So like relatively affordable, uh, and it's like pretty good quality. Uh, so areas where I've thought about using this, I'm sort of like tinkering with a home automation system that is, you know, loosely uses chat GPT just for, you know, giving like, uh, like vocal recognition and text to speech feedback from the system, you know, and just using it as a bridge and 
+
+their APIs are, 
+
+you know, approachable and affordable and it's 
+
+**Jess Martin:** kind of cool. It's awesome. 
+
+**Andrew:** Yeah, cool. 
+
+to see. Voice cloning's a very, like, it's a ethical minefield and, uh, for, that's why they only ship six built in voices, uh, it's something we take, uh, seriously here at Descript and have, like, a, a voice verification process to make sure you're not trying to clone other people because, like, literally just today, uh, it popped up on my feed, a dude got a spam phone call, answered it, and it was his mom talking.
+
+And his mom said, I've been kidnapped. Send me 5, 000. And it was her voice and they had used voice cloning technology 
+
+to like make the scam feel even more real. So 
+
+it's a, it's a crazy world we're going into. 
+
+**Jess Martin:** Yeah, they don't offer any voice cloning on OpenAS thing. They do have a policy that you have to inform any users that are consuming that, that it is automated and not a real human. So, I thought that was, you know, a good touch, nice. All right. Um, so yeah, I'm going to talk about an analog tool, um, or a combination of analog tools and digital tools, which is my whiteboard. So I, you know, this whole call, you guys have been, it's like off to my right. Um, it's literally so that I can like turn and write immediately on it. Um, but I also have this other camera.
+
+Which is over here, um, that I use for when I actually want to get up and like talk at the whiteboard during a call, I actually have a different set of lights that I turn on and all that kind of stuff to light the thing differently. And so that way, I can kind of be talking through the whole, um, uh, yeah, using a whiteboard on a call in a seamless way.
+
+And then the, the other advantage of that is that I have a, uh, another program that allows me to take pictures of my whiteboard that looks somewhat like this and then convert them into, like, a smooth. Um, and you know, more readable. It like de skews them and all that kind of stuff. Um, and so I have whiteboards going back like, I guess I started setting this up in 2021.
+
+Um, so several years worth of whiteboards and these end up going into my notes and getting into like emails and uh, and that kind of stuff. But I just find it, I find a lot of times that like when my, I'm blocked on something, two things help. One is Taking a walk. I cannot recommend enough taking a walk. I probably still I walk maybe six miles a day and I probably don't do enough walking for like the kind of problems that I usually need to solve on most days.
+
+Most days it's not typing. It's the bottleneck. It's thinking and making good decisions. And then the other thing that's helpful is like sometimes to transition from typing to actually just writing out the problem on my board or whiteboard and using like a 
+
+pure analog solution can be a pretty helpful 
+
+that might be one of the coolest tool 
+
+**Andrew:** tips we've ever had on, on DevTools FM. That, that is such a cool setup. I love how it's like. It's like a homespun smart whiteboard. Like you have the whole full history of your whiteboard and it was all done through just like some programs that you wrote. So that's awesome.
+
+I'm impressed. 
+
+**Justin:** it's really cool. 
+
+**Andrew:** Okay. Uh, my last tool tip. Of the day is a project that fits in quite well. This is SSH X. It is a collaborative, uh, terminal, uh, and it's also kind of like an infinite canvas type thing. So, uh, it's all web based. You can spin up a terminal, invite people to it, have a collaboration within the terminal. And then, uh.
+
+You can also use like an infinite canvas type thing where you have multiple terminals and just like a canvas of terminals. So, uh, if you, if you've been looking for something like this and a way to collaborate through your terminal, maybe, uh, teach one of your teammates something, uh, this would probably be something pretty cool to try 
+
+out. 
+
+**Justin:** Speaking of interoperability, we just need this in TLDraw. You know, 
+
+if you're 
+
+like 
+
+**Jess Martin:** That's 
+
+funny. Yeah, we actually have TL draw integrated into composer. It's wonderful. I use it all the 
+
+time. 
+
+Um, yeah, no, I, I think I've, I've joked about this before, but like put everything on a canvas, like browsers on a canvas, uh, terminals on a canvas. Uh, there's a lot of startups that are doing stuff like this.
+
+And, uh, I've, I've spent some time working in a setting where I had like. Web browsers on a canvas, and I found it to be incredibly helpful. Collaborative canvas. I could, like, welcome people in and that kind of stuff. And you could basically, like, leave a web page open in, like, a corner or create a cluster of, like, instead of having a bookmark, you've actually got a live browser that's, like, open to wherever you were.
+
+On that page. It's like having a book that you sat on the table that's open to the last page that you were on. It's so much better than like passing around URLs. Um, and then to be able to do that collaboratively is awesome. Um, especially like the shared browser with like shared scroll position of like I can scroll to a position and shared selection where I can like select this piece and you're seeing what I select.
+
+I think there's a lot of this is what I was going at the very beginning talking about real time collaboration. I think we're just at the beginning. Yeah. Of creating the appropriate U. X. Affordances for things like this, uh, collaborative terminal and 
+
+collaborative browsers on a on a canvas to like what should be there 
+
+to allow us to work well together. 
+
+**Andrew:** Yeah, it's a very interesting effect that like infinite canvases have where it's like you kind of just get this like spatial awareness all of a sudden where you're like, Oh, the concept I need is like over there to the right. And it's just like not something you have in like a normal computing environment.
+
+**Justin:** Yeah, my last tool tip of the day is something similar related to a conversation we were having. It's a drag and drop library. Uh, it's called Deflex. Uh, this is just one that had cropped up, uh, on my feed and I was looking through it and it's got some good attributes. Um, they try to be relatively performant and, and be very mindful of how they're shaping the DOM and like what DOM manipulations they're doing or whatever.
+
+Uh, it's been around for a little bit. Um, there may be better options out there. This is not something I'm recommending, but again, it was just something that popped up on my feet and I was like, they'd taken some novel approaches in this that I hadn't personally
+
+seen before. So it was just kind of cool to check out if that's something 
+
+that you're 
+
+interested in.
+
+**Andrew:** I've been spending a lot of 
+
+time in this area. And something I 
+
+will recommend is react. Aria is a drag and drop hooks like react. Aria as a whole is a very hard Thing to like come to terms with and like get get used to the API and all the different hooks that they provide But like, once, once you like, actually understand them, their use drag, use drop has, has simplified our code beyond belief.
+
+So if you're looking for something that is both accessible and has a nice API, I, I can't stop recommending React ARIA. uh, that wraps it up for tool tips this week. Thanks for coming on, Jess. This was a super interesting conversation about like, what computers might be in the 
+
+future. And I hope, hope you guys at DXOS are able to accomplish the vision you 
+
+guys have.
+
+**Jess Martin:** Thanks guys. Thanks, Justin. Thanks, Andrew. 
+
+Thanks for having me. 
+
+**Justin:** Yeah, Jess, it was a absolute pleasure. Obviously, always a pleasure to talk to you. I'm really excited about this area of research. Um, I think it's important and meaningful. Uh, we, we There's a lot of complexity in software and like reducing that barrier a little bit to build these like more rich applications, uh, definitely benefits, benefits us all.
+
+So it's cool to see. Thanks for coming on. 
+
+
+
