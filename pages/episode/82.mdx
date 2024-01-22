@@ -1,0 +1,533 @@
+---
+title: Daniel Thompson-Yvetot, Lucas Nogueira - Tauri
+youtube: https://www.youtube.com/watch?v=2AcyhLGy5Ss
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Daniel-Thompson-Yvetot--Lucas-Nogueira---Tauri-e2eocjn
+tags: tauri, electron, rust, crab nebula, security, governance, technology, programming, coding, software, open source
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Daniel Thompson-Yvetot and Lucas Nogueira to talk about Tauri, a framework for building smaller, faster, and more secure desktop applications.
+We talk about the advantages of Tauri over Electron, the importance of security in open source software, and the future of cross-platform apps with Tauri.
+After that we talk about the importance of governance in open source projects and how Tauri is approaching it with their new company Crab Nebula.
+
+- https://crabnebula.dev
+- https://tauri.app/
+- https://github.com/crabnebula-dev/devtools
+- https://github.com/lucasfernog
+
+Episode sponsored By Raycast (https://www.raycast.com/)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:03:19] The Birth of Tauri
+[00:07:17] Advantages of Tauri over Electron
+[00:15:26] Ad
+[00:16:55] Building Lighter Software
+[00:22:59] Governance in Tauri
+[00:33:43] The Nuances Between Tauri and Electron
+[00:37:39] The Importance of Security in Open Source Software
+[00:44:19] The Birth of Crab Nebula and Its Relationship with Tauri
+[01:05:23] The Future of Cross-Platform Apps with Tauri
+
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Denjell:** I think that we don't agree that it's all free real estate. Just because you've got 64 gigabytes of RAM in your MacBook Pro M3 doesn't mean that applications should be consuming everything they can get their hands on. When you're shipping an application that has a million users, you're shipping an app with a million downloads, and you're shipping that app.
+
+On a weekly cadence with updates that creates terabytes and terabytes and ultimately petabytes of traffic over a year that you don't need.
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Daniel and Lucas joining us today. Uh, so this dynamic duo are the co creators of Tauri , uh, and also have a company, uh, called Crab Nebula, which does consulting for Tauri and some new product work, which we'll be really excited to talk about today. Um, I am super excited.
+
+I'm a huge fan of Tauri . Uh, but before we dig in and start talking about that, would you each like to take a moment to tell our listeners a little bit more about yourselves?
+
+**Lucas:** Yeah, sure. I'm Lucas. I live in Brazil. I am 27 years old. I'm feeling a little bit old today because I keep meeting young superstars who are like 18 years old. Impressive And I started my career like seven years ago as a full stack engineer, but when we started Taure, I started doing more like native stuff and we, I co founded Taure together with Dano five years ago, I think, and that's pretty much it.
+
+**Denjell:** Hi, I'm Daniel. I'm the older half of the duo, um, uh, from the U. S. originally. I've spent a lot of years in Europe and currently living in Malta. Um, I think, you know, I'm sure we'll get into these questions later, but when I met Lucas, I knew my career as a software engineer was basically over. Um, he's, he's shown me so many ways to do things better that I decided, you know, the best thing I can do is get out of his way, support him any way I can.
+
+And, uh, you know, five years later, here we are, uh, still friends. And, uh, we've met each other's children. And, uh, you know, I think that the The friendship that we have is probably the most important thing for me that I get out of open source, uh,
+
+but yeah,
+
+anyway.
+
+**Justin:** That's really awesome.
+
+**Lucas:** that's what makes this do really dynamic, like I'm more like a coder and Daniel is more like a speaker. So he managed that for me. is actually my first time doing a podcast. So that's cool.
+
+**Justin:** Cool, we're glad to have you. Something Andrew and I have learned is that, uh, the division of labor is really important to figure out with a duo, and that marketing is really important, so having someone that can speak well is actually quite an important thing. Out of curiosity, how did y'all meet originally?
+
+
+#### [00:03:19] The Birth of Tauri
+
+**Lucas:** We met in the Quasar framework. I was working on this company here in Brazil and it was, I was basically doing some Angular work and I did not really want to do that anymore. So I started investigating some alternatives and I met Vue, which I Wanted to use.
+
+So I started checking some frameworks and I found this framework called Quasar. So I joined their Discord and that's when I met Daniel. And it's, it was on that Discord that Daniel made the challenge that started Taurus, really.
+
+**Andrew:** What was the challenge?
+
+**Lucas:** Yeah, I think Daniel can speak more about that one, but. It was basically just to have an app that uses the system WebView.
+
+**Denjell:** It does have a bit of a backstory. So, at Quasar, I'd sort of finished my two big tasks. And those were, you know, rigging up the testing framework and building an icon manufacturing tool. Uh, because what Quasar did was provided a framework for anybody to build a SPA, an SSR, a Electron app. At that time, I think it was still Cordova.
+
+And, I was looking to expand our reach because it was right around the time that Quasar was about to hit 1. 0. And, I discovered that, um, taurism or PureOS, was about to have an app store. That's what they were planning back in 2019, I think. And, I visited their, their, uh, matrix element chat room and said, Hey, how does it look to put apps on your Desktop app store.
+
+And they're like, sure, what's the stack? And I said, electron. And like, I've never been laughed out of a chat room before, but they were very friendly. They said, go check this FSF thread. That's 12 years long. This mailing list that has like trees of ungoogled chromium all the way to missing SPDX headers.
+
+And once you've understood why we can't put electron apps on to a Debian based well governed operating system, come on back, right? And it was right around that time that a friend. Uh, showed me the WebView library, which was basically just a, a C wrapper of um, I mean, basically there's a lot more going on to the hood, but it provided a method by which you could, uh, harness and interact with the system WebViews. And suddenly we thought, Hey, we've got a solution here and this is going to be easy. Famous last words.
+
+**Justin:** Famous last words indeed. Well, one thing I was going to say is I, I, I appreciate this challenge. So I work at Oxide. We do a lot of Rust based stuff. Uh, we build a lot of our own tools. Uh, we also run, uh, our, our servers run Illumos or a version of Illumos, which is a rather obscure operating system based off of Solaris, uh, back from the Sundays.
+
+Um, And a lot of times when you want to use a tool on that, you have to build the tool yourself. Uh, so recently I was like, Oh, I would love to like, write this Dino script. Uh, and then one of the guys who was like, helps maintain a Lumos who's on our team. He was like. Kind of laughed. He's like, well, good luck.
+
+You know, you're going to have to do a lot of things. And like, one of the things you're going to do is build V8 and like do all these other things. It's like, and then I started going down the rabbit hole of like, what does it take to actually introduce a, you know, complex tool to a new system like this?
+
+And can be non trivial for sure. So the less native dependencies you have actually for a lot of systems to better.
+
+**Andrew:** Okay, so, so now we've set the stage a little bit. 
+
+
+#### [00:07:17] Advantages of Tauri over Electron
+
+**Andrew:** Uh, let's explain what Tauri is to those who don't actually know. So, uh, what is Tauri and why would you use it over some of the existing alternatives like Electron, you said?
+
+**Lucas:** Well, uh, we've seen a lot of definitions. I think it kind of depends on your use case, because we try to be as agnostic as possible. But we are basically just a framework for app development. Uh, most of our users are using a web application to To transform that to a native app, but we also have ways to use OpenGL and that kind of stuff.
+
+And we try to provide all the tools they need to bootstrap, develop, and ship an application.
+
+**Andrew:** So, uh, I, I work on an Electron application at work and, uh, one of the big things that like people complain about with Electron is, oh, you sent me a whole browser along with it. And as you said, you guys use web views. Um, so are there like advantages and disadvantages to doing that because like what I can think of like every time I've mentioned Tauri to somebody, they're like, Oh, that's that's interesting.
+
+So I have to support like multiple browsers and I have to test in multiple environments. So is that one of the disadvantages that comes with this?
+
+**Lucas:** Yeah, that's one of the disadvantages, but if you are already building a web application, you already have to test. All those browsers. So it's not really that huge deal for most users, but, and that's also why the app is smaller and a little bit faster as well. And, but one of the major, uh, major advantages we see is that it's safer to patch, uh, security vulnerabilities, because it's handled by the operating system instead of you having to I'm going to bundle your application again because Chromium has some issue.
+
+You have something to add to them?
+
+**Denjell:** Sure. I mean, I think. At the beginning, we compared ourselves to Electron, and I'm guilty of getting into shouting matches on Twitter with Marshall of Sound. Love you, bro. Sorry. And we backed off a lot from comparing to the incumbent because I think I'm There are a lot of similarities to Electron, to Capacitor, etc.
+
+Um, but there's also a nuanced difference. And one of those nuanced differences is that when you ship your Electron app, you're shipping all of your JS code in PlayText. It's packed as an ASAR, but there's an ASAR decompile that will reconstruct the entire Uh, folder structure of your application. Uh, because TAU recompiles, it's not easy to reverse.
+
+Of course, you can reverse things and find secrets inside, but not being able to reverse the code to reconstruct and copy and clone a project is a huge advantage. I think another advantage is that you're not just limited to JavaScript, TypeScript, WASM on the user interface and JavaScript on the back end.
+
+Um, you know. The, the number of native languages that you can compile down to, um, basically, uh, binaries and ship them with Tauri EOPS and interact with them is limitless. We've seen a lot of people do this with Python, with Elixir. People are working on this with PHP. There's, um, also, JavaScript that you can embed.
+
+You can just PKG up a Node. js script and interact with it. And that's also a benefit. I think, um, you know, the, the size does matter. Uh, obviously that's the elephant in the room. When you do your job, right. And you care about binary size, Tauri apps are, you know, hitting six to eight megabytes. Uh, on average, and, you know, electron is 150, 200 megabytes and I think, you know, this might drift a little bit into the philosophical.
+
+I think that we don't agree that it's all free real estate. Just because you've got 64 gigabytes of RAM in your MacBook Pro M3 doesn't mean that applications should be consuming everything they can get their hands on. Now, I know operating systems don't work that way. But still, when you're shipping an application that has a million users, you're shipping an app with a million downloads, and you're shipping that app.
+
+On a weekly cadence with updates that creates terabytes and terabytes and ultimately petabytes of traffic over a year that you don't need. And, and for me, finding this like panacea of, well, we get to use rust. So we've got all the memory guarantees that must rust brings. That means that our binaries are smaller.
+
+And furthermore, we've got less surface area for attackers to, you know, dig into gadget attacks are always going to be possible. But, you know. There's less surface area to put stuff together on and all of that leads to a way of thinking that smaller is better less is more and security is something that you don't have to ignore because you don't have time for it.
+
+We help people build secure first and design things local first. And I think that would be my last comment about. You know, general purpose application development that Electron, in my mind, represents. We try to offer people who are developers or becoming developers the opportunity to, um, learn about what it means to do the thing that they're doing, right?
+
+That philosophical side of being a software engineer and shipping code to people who are going to use it. Is something we give people the opportunity to think about it. Maybe they don't all need to, but, um, being put in a position really helps them.
+
+**Justin:** There's a lot to unpack there. A lot of really good stuff. Uh, so one of the things I wanted to mention, so you talked about like running other languages. Uh, it's there's like, my understanding is like, there's two sides to Atari app. Like there would be two sides to a, uh, electron app. You have your, your, your client render, which can be a web view in your case, which would be Chromium, uh, like a Chromium render on an electron.
+
+And then you have like. You know, the back half was just some application. Uh, so you talked about like having Rust as sort of your, your native default framework and loved her language. And I'd love to talk a little bit more about that, but you talked about supporting other languages. And my understanding is this is from the sidecar feature.
+
+So you can have any binary can be just like registered as a sidecar that can be, that the Atari app can talk to. And
+
+**Denjell:** Yep.
+
+**Justin:** is that correct? 
+
+cool 
+
+Uh, That's, that's a really awesome feature. I actually really love that, uh, one just cause it's like, it does make it kind of simple to think about like deployment and like, you know, I can talk to any systems engineer about a binary, right?
+
+Like that's something people like, we have a long history of like interacting with these things, understanding the communication models, the security models, everything like that. So that's pretty cool. Um, I do want to ask one question. Why, why rust? Why rust as the language that the application layer is built on?
+
+Well, the first RPC was actually written in C because we were using this binding from Zsearch. That was the first binding we had contact with. And the next one was in Go. But we decided to go with Rust mainly because of the memory features that it has. So, memory safety is really important to us, and that's why we chose Rust.
+
+**Lucas:** Even though it was really a challenge because Rust is kind of complicated to learn and the compiler got me, like, most of my nights when we were 
+
+starting. 
+
+**Andrew:** I think Justin can resonate with that one.
+
+**Justin:** yes. Oh yes. Oxide is all rest all the time. So I feel ya.
+
+
+#### [00:15:26] Ad
+
+**Andrew:** Once again, we'd like to thank Ray cast without our sponsors. This podcast wouldn't be possible. Rick has, is an app for Mac that's like spotlight, but with super powers. It puts Alfred and all the competitors in the dust. It has a bunch of really cool features that they shipped with it. And the community has made a, made a bunch of extensions that extend Ray cast to be even more powerful.
+
+Rick has is great because it can replace so many different tools on your Mac. Personally, I've been using the clipboard history every single day since I discovered it. And it's completely changed how I use my computer. some other features that are recently learned about is Ray casking. I can completely manage all of the windows and spaces on your Mac So you can get rid of all those other random apps that you've downloaded to do this one specific task. Ray cast can do it all for you. And that's not all they have with Raycast pro you can access recast AI, where the world really opens up and you get AI at your fingertips. 
+
+Rick has pearls comes with break has teams. 
+
+So you can share all the cool workflows that you made that are company specific. Do you want to learn more about Ray CAS head over to episode 38? Or we talked to the CEO Thomas about where the product started and where it's going to go. Do you want to advertise the dev tools FM? Head over to dev tools.fm/sponsor to apply. 
+
+Do you want to not hear these ads anymore? 
+
+Well, we got a solution for you. You can become a paid subscriber on a bunch of different platforms, and then you'll get the episodes ad free. And you'll never have to hear this, part of episode again. 
+
+and last, but not least head over to our merch shop We can pick up cool things like this beanie that I'm wearing right now. 
+
+With that let's get back to the episode.
+
+
+#### [00:16:55] Building Lighter Software
+
+**Andrew:** Yeah, so Daniel, you said something interesting about a bundle size to me, uh, like. Like the cost that we pay for bundle sizes, it, we usually just like, Oh, it takes a longer time to download, but just like the angle of like that, those downloads cost something, they cost the planet something, they cost the people something.
+
+So like getting those lower is like, I think there's a lot of stuff in software right now that has a lot of optimization that can happen. And just bundle sizes being smaller is one thing that is, it could help the planet in my opinion,
+
+**Denjell:** Uh, it, it can. But, when was the last time you traveled to Switzerland?
+
+**Andrew:** never.
+
+**Denjell:** All right. So I live in Europe and I travel around a lot. My daughter lives in Germany. My friends live in Holland and there's conferences all over the place. And if I can, I take a train. If I can't, I fly. If it's possible, I'll take the slow ferry. But in Europe, you have a guaranteed price that you pay for mobile traffic.
+
+Um, it's the same if you're in Malta as it is in Germany or France or Spain, et cetera. If it's part of the EU, then it's all kind of normalized. And I don't know why, but somehow my phone always realizes when I'm in the airport in, um, in Switzerland. Because, you know, it switches over to Swiss. I get a, uh, a message on my phone that says, Um, every megabyte costs one cent. Uh, no, it's 10 cents. Excuse me. Every megabyte, every, I have the screenshot, but like you start to think like, why does LinkedIn app on my phone? Wait, I don't know, like 250 megabytes. Like really? So I'm going to pay, I did work it out. It's like I paid 20 Euro because I'm in Switzerland and my app wants to update. Right. And, and I go to Turkey. It's the same thing that's happened to me there, but I'm sure if you're traveling in Europe and you're not in a hotel, wifi or a coffee shop, wifi, and you'd suddenly update, that's going to actually cost you money. And I'm not getting into the politics of the pricing of IP transit, uh, because we know that's a, a whole nother ball of wax, but still like. For people who are digital nomads who travel a lot, this, this kind of binary that's five megabytes, okay, it costs you 50 cents. All right, I can, I can kind of live with that. Right. And, and so it, if you start thinking about money and the monetary impact that it has, well, it's a relevant, uh, it's a relevant concern in some cases.
+
+And. Yeah, I don't know. That's just my, my like reaction to, oh, well, if you tweet a message and 10 million people see it, you just caused more traffic than downloading your 150 megabyte app. I get it. Um, but the, the counter argument is we can do better. We can find solutions that, um, are actually good for the planet.
+
+Like just because it doesn't save everything, saving a little bit's a good first step.
+
+**Andrew:** yeah we, I work at Descript and we have a very large electron app and I was just so surprised to find out that when we release a new version, it costs us like 2, 000 every time just for people to download our app, which is just like mind blowing. So there, there's lots of money that can be saved everywhere. Um, but that the bundle size that we're talking about here, like the browser that, yeah.
+
+That code does do things. So, uh, like, let's say you have a web browser on your switch. A lot of people might have experienced this where they try to browse the web and then they get to a video and then the video doesn't play. And that's because while they can use a web view, web views aren't browsers and don't have all of the technology that's like bundled into browsers.
+
+So is that like the same of building a Tory app? So like, if I had video needs, would I need to be like, Oh, I need to start a Tory app? Thinking about what video things to bundle into my Tauri app to make all of that work.
+
+**Denjell:** Well, I mean, if you need to use FFmpeg to, uh, you know, transcode something, then you probably need to bundle FFmpeg, right? But generally speaking, on all three platforms, video works fine. Uh, I think on, um, on Windows, it's edge based. The WebView2 is edge based. On Mac, the WKWebView is Safari based. And currently on Linux, we're using WebKit GTK.
+
+And I believe that uses GStreamer under the hood. Uh, so video is fine. I think, um, you know, we, we are running into some rough edges on Linux particularly. Um, but I would, there's one benefit that Tauri has that most websites don't have. Or two benefits that I can think of out of the gate. One is that your local storage, your cookies, your.
+
+IndexedDB is not going to be pruned ever. If you're using the Tauri way to store data inside of the app data folder, it's never going to be pruned. If your system runs out of space, your system runs out of space, but if there's only 25 percent system space left, you're like, you have no guarantee in the browser anymore that the data you think is there is still there.
+
+So you constantly have to refresh it, right? Like, I think it's two weeks right now, is all that Safari's guaranteeing. And the other thing that I think is also quite interesting is that if you look at the way that single page apps have developed, you kind of imagine that people are always routing to a thing, they're single tasking, and With Tauri, it's relatively trivial to have two windows, right?
+
+I mean, I'm not sure how many monitors you have, but there's one on my computer and then there's one right there. And, you know, you can multitask with Tauri apps. I mean, video applications are a perfect example of that.
+
+
+#### [00:22:59] Governance in Tauri
+
+**Andrew:** Um, maybe moving on from the technical a little bit, uh, something that I found really surprising about Tauri is that y'all have a rather robust governance structure for what I see is, you know, a relatively young project. I know you're aren't super young, but it's relatively young in my mind. Uh, and.
+
+**Justin:** When I think about like projects, like say Node. js, for example, it's went through a lot of transitions from being stewarded by an individual company to like having that breakout and become a foundation and all that stuff. It's like, usually it takes a long time in the life of a project to develop such a robust governance structure.
+
+And I was just curious, uh, why you felt necessary, it necessary to set that up and how that came about and how it was working out for you so far.
+
+**Denjell:** You know, I think we consciously took an iterative approach to governance. Um, what I mean by that is, We knew day one that crazy governance and working groups isn't going to be possible because it was just two of us. And then it became five of us, but we were, everybody was still coding and multiple groups.
+
+There's only one group, there's core, right? So, so we started out with core. And I think one of the first wake up calls we got was when a venture capitalist cold called us or cold emailed us. Um, and that was the trigger for phase two of our, um, organization, which was to, um, place the moral stewardship of Tauri within the 
+
+structure of the Commons Conservancy, which is a Dutch foundation that exists. It doesn't have money. It doesn't transfer money. There's zero cash involved, but it does exist to provide a legal framework for a software community to elect board members and also de elect them should they do something wrong. umm And, and I think that, you know, that type of governance was there, not because we expected somebody to flip and try to sell stuff, but just to take that play off the table. Right? Like, Tauri is and always will be an open source project licensed under MIT Apache 2 because there is a foundation behind it making sure that that happens.
+
+Should somebody of us decide to, you know, abuse our administrator rights to the code and then change all the licenses? Well, I mean, first of all, we have checks and balances in place, right? Like, no one person can commit the code. Um. Without resetting the branch protections, et cetera, et cetera, but basically, you know, you have to have someone else sign off on it.
+
+And in that case, it would be a coup d'etat. And if there's a coup d'etat, the community could rise up, evict the board members or challenge the board members to set things right. And, um, you know, that was a lot. I think we were lucky to have seven people who decided they were going to be part of that. And, um, Spinning up governance isn't easy because you always anticipate the lowest common denominator of someone hating what you're doing and trying to, you know, poke holes in your own idea.
+
+You know, so we were constantly playing devil's advocate with ourselves. And what that led to also was a bit of stagnation in the group. And that's when we evolved again. We created, uh, you know, we kept the working group as it was. Anyone can join, etc. But we, we provided a new type, or maybe not type, maybe topology.
+
+Where we have, uh, you know, several different groups in, in our, uh, um, Organization now, who are members of what we call a domain. So, there's the community domain, which deals with like, um, The Discord, the Twitter, the websites, the documentation, right? That kind of outreach group. Then we have an Ops domain, and I mean, we don't have a lot of Ops, because, uh, you know, We The Tauri group is running its website on Netlify, but you know, there's still a couple other services and there's stuff like email that you've got to manage, so we have an ops team.
+
+And then we've, we've got the, uh, the engineering group 
+
+and 
+
+
+
+thought about adding a security group, but decided it wasn't absolutely essential because security is a super group. Um, it reaches everywhere, it touches everything, it knows everything, it maybe knows more than some people. And there's no need to make an additional working group section just for them.
+
+You know, and you know, that's, that's kind of where we are now. Um, I think. And maybe we'll talk about this a little bit later. The, the next step is probably the collaboration with, uh, with Crab Nebula.
+
+**Justin:** I still find this like just hearing you talk about this, it almost sounds like even from the very beginning you were thinking about governance, which maybe I'm not. I don't really have a sample size of this. Right. So I can only go off my intuition, but I feel like most open source projects don't start thinking like, even in the beginning, it was like, Oh, should we think about governance or talk about governance, there are common things like, you know, having a code of conduct, you know, wanting to have some rules around the community that are contributing.
+
+And usually those things come like post it being one or two people working on it. And they're like, okay, you know, something happened or, or we want to head off something happening. Let's like, let's do a little bit more, but y'all have gone really far down this, this path and I find it quite striking, but, uh, I hope that this comes off.
+
+Well, I, I find it really. Uh, congruent with the image that y'all put out of, cause you know, you've also thought a lot about security. You've thought a lot about performance. You thought there's like a lot of details that y'all have been incredibly, incredibly thoughtful about during the process, maybe preemptively.
+
+Uh, where, you know, if I look at a lot of open source, other open source projects until they get to a really large size or not tackling these things in the same way. So I just think it's really interesting. And, uh, I do wonder it was that informed by past experience on other projects that like required this sort of thing,
+
+**Denjell:** When you work with a benevolent dictator for life, um, it can be challenging to have your voice heard. It can be challenging to have transparency. Um, but, At the same time, I've, you know, I've done my 20, 000 hours of community service, uh, working in a variety of types of community groups ranging from scrappy non profits to foundations, uh, and one of the things that I always come back to in volunteerism because open source is about volunteers.
+
+It's really about finding a way for you to make a difference in a world that you care about. And the learning that I gained from all of that time in these various entities was The best way to encourage people to stick around is to make them accountable to each other, make them care about each other and how the others are doing and aware of what's going on.
+
+And what that does is it automatically breaks down silos and it creates bonds that, I mean, that you can actually achieve in the digital world. I think, Lucas, how long was it until we met each other in the real world? Like four years?
+
+**Lucas:** Yeah. 
+
+**Denjell:** That's crazy.
+
+**Andrew:** Yeah, another common theme on the podcast is how open source can connect us. Like Justin and I are a great example. We, we actually met through open source and, uh, same situation. Didn't, didn't know each other for years in real life. Um, so you touched on this a little bit, uh, but Tauri seems to, like, really focus on security.
+
+Like, as you said, it's like a super group across, across everybody. Um, you've gone through a few different security audits. So, uh, can you tell us about, like, what those entailed and, like, some of the things that Tauri does to make sure that your app is secure?
+
+**Lucas:** Yeah. Uh, we think about security a lot. So that's why every major release is audited. We had an external audits for everyone from externally. Oh, what's the 
+
+**Denjell:** name? Radically open security. 
+
+**Lucas:** And also every minor release is also audited by the Krebs Nebula security team. We think that's very important. Uh, so far we've only had minor issues after the stable release.
+
+So that's good. That's why we have this audits.
+
+**Andrew:** What are some of like the, the crazier things that Tauri does to like do security? Like I see like, if you guys mentioned in the docs, there's like no server, there's a bunch of things you do with functions. 
+
+**Denjell:** So, um, you mentioned there's no server. Correct. There is no local host server, uh, which means there's no port. There's no loopback. There's no 127.0.0.1. Um, because, We architected it differently. Yes, you can use a web stack in the front, but ultimately you send a request over a custom protocol and you receive the response over that custom protocol.
+
+It's kind of like if you ripped out the TCP stack of, of, of a server and we're just like talking straight to it. Like, you know, that's kind of a, a way to, to understand what's going on there. Um, so that's the, that's the server. Maybe, maybe Lucas, you've got a couple other. Um, other things up your sleeve, like the isolation pattern. 
+
+**Lucas:** Yeah. We also have had this pattern that we built because of the V1 security audits. So basically to secure all the communication between the front end and the The rest side, we use an iframe to, to intercept all the calls and, and so in let the user check if the messages are valid and see if there's an outsider trying to use the, the backend.
+
+**Justin:** That's pretty interesting.
+
+**Andrew:** yeah. Uh, one thing that seems like I've done a lot of electron dev at this point. Uh, that's a pain to do is communicate between the main process and the renderer process. Uh, like how does Tauri provide an easy way to do that? And then I also saw that on your roadmap, you have a thing like called message channels coming out.
+
+So does that kind of relate also?
+
+
+#### [00:33:43] The Nuances Between Tauri and Electron
+
+**Lucas:** Yeah, we have an IDC, which stands for internal process communication layer. That is exposed by the web view and on V2 is also going to be a lot faster. um Basically, it uses kind of like a local host server, but not really a local host because it's provided by the web view. So it basically, it works like an actor system.
+
+So you pass a message from the front end to the back end and you get a response back. And on the back end, you can find some functions that can be used by the front end. Um, those functions are called commands. And I think it's a lot easier to define those than electron, because we also have. The Rust powers of macros and all that kind of stuff.
+
+So you can check for input elements and have some dependencies injected. So it's easier to implement that kind of stuff.
+
+**Denjell:** I mean, that is, that is maybe one of the interesting parts about the, or the nuance, I guess, between Tauri and Electron in that you're not executing JavaScript on the, uh, the back end, right? You're passing messages and What, what we've done for the entire surface area of the Tuari API is we provide JavaScript for that.
+
+So you can just use some syntactic sugar, basically, and send a message across the boundary from the web view to the, the rust core, have it interpreted there. And then, like Lucas was saying, the response is sent back across a similar channel as. It's basically an object, but there's no function passing, right?
+
+So that, that in and of itself is another, um, elegant security boundary that kind of happened. You know, it was like, oh, oh, nice. 
+
+**Justin:** I'm reminded, I think I've told this story before on the podcast. Uh, so my first. Foyer into any electron app was actually contributing to the Adam editor from GitHub, which is like kind of what electron was built for. And one of the things that I did was I added a GitHub notifications extensions. It was like, I just want a little icon to show me like when I have new Nick.
+
+GitHub notifications. And then I was like, okay, well, I need to get my personal access token and stick it in here. And I was like, how do I like not let everything else read this? And then I couldn't find it in the docs. I couldn't really figure it out. And I like asked the question and issue and they're like, uh, there is no, I was like, what is the security model?
+
+Like, how do I isolate this from other things? It's like. You don't like everything. It's like very permissive. And, you know, it's funny. It's like something that for a long time has been true, both in electron and node is that it's completely expressive and completely permissive. Like you get access to everything all the time.
+
+Uh, granted new versions of node, they have some security levers that you can pull for. But I don't think that those are really well known yet. So, uh, I guess when I was looking into Tauri , that was like a thing that was very striking to me. It reminds me and like, no small way of like this relationship of like Dino doing a very similar thing where it has this like message passing channel. that Uh, for things like when you try to do an FS call and Dino, like you write some JavaScript, it's not like sending an SF thing to V8 is like sending a message through this channel that, you know, lower level rust code can check. It's like, do you have permissions to do this? And if you do, then it will do the FS call itself.
+
+So it's like an abstraction of similar to what you might do on the web. So, uh, I love this model though, or this new future of like. Giving us more expanding, uh, permissions, capabilities, and security features. 
+
+
+#### [00:37:39] The Importance of Security in Open Source Software
+
+**Justin:** Because honestly, I feel like open source in, in particular in like several, like the application frameworks and the web frameworks and stuff that we've done in the last few years is like, security has not always been top of mind.
+
+Um, you know, people try, but it's like, you know, sometimes it's like a non starter and, um, I don't know, definitely a need for this, I think in the ecosystems. Something 
+
+**Denjell:** There's a huge mythology about open source software though, and that is, if you make it open source, somebody somewhere is going to read your code and find your security vulnerabilities, and make a patch, and make a pull request, and inform you about it, you know, in an elegant way, definitely not on Twitter.
+
+But that, like, I really haven't seen that happen so much. Like, sure, some people will disclose over Discord, accidentally not realizing that it's actually a vulnerability, you know, um, but I think that designing from the perspective of security first does have its downsides. You know, one of, one of our clients at Crab Nebula recently told me, yeah, Daniel, you know, we don't need a security audit because you guys did such a great job building a secure platform.
+
+And I'm like, okay, the messaging has to improve somehow because yeah, sure we did, but humans make mistakes. 
+
+**Andrew:** Yeah, you can build a good foundation to a house, but if the windows open, like they're still going to get in.
+
+**Denjell:** Exactly. 
+
+**Andrew:** We've talked about the features that we think are interesting so far, but, uh, are there some features that you guys think are interesting that we haven't called out yet?
+
+**Lucas:** Well, on top of this IPC message system that we built, we also have the allow list, which on v1 is basically a configuration that you can use to set. What kind of APIs you want your front end to have access. So if you don't need to access the file system, you can just block that and not be vulnerable to that attack vector.
+
+And on v2, we are expanding that work. So it's even more configurable for different URLs and different windows. So it would be a lot better for. We're setting up permissions on different different use cases.
+
+**Denjell:** I think one of mine is the updater. Um, one of those success criteria for the V 1. 0 was that we have an updater, right? I think a lot of frameworks that want people to build apps, forget about that. Like they forget about organization. Like they forget about security. They're like, yeah, you can do our thing.
+
+You can do something awesome with this new tech. And it's so great. But. they forget about the fact that if you put an application into the world, at some point you're going to have to update it. And if you expect people to download it again and install it in the right place, I mean, things can go horribly wrong.
+
+And, um, on Windows they do sometimes if you're using, uh, Electron, um, or other systems. And what we ended up building for Tauri. was a bundler and an updater that also uses an additional developer key, a Tauri key, so that the app knows that the update is from the same developer. Um, again, like, experience in the real world of building and shipping apps is, um, I think something that's, that's come back to us over and over again as, a fruitful kind of opportunity.
+
+And I, I love that, that piece. And maybe we'll talk a little bit later about it as well. 
+
+**Andrew:** Yeah, well, having worked on an electron app a lot, like literally our number one complaint is like that update button is in my app too much. Uh, so like the one that you guys have integrated into Tauri , is it like, does it like do background updates or like, like, what's the type of API that it provides that
+
+**Lucas:** Yes. You don't really need the user interaction to to update. It just post the back end for a json file to see what's the latest the latest version and you can download the. New app, uh, on the background and just install it automatically. And the user don't even need to worry about that. 
+
+**Andrew:** so, so does the, the app really just like kind of act as a shell or like, are there some types of updates where I would actually need to like ship a whole new thing?
+
+**Lucas:** Uh, it's actually the entire app that is, but the app itself is quite small. So it's super fast.
+
+**Denjell:** there's a lot of complexity in the actual topology of this. For example, today we were solving a long standing issue about multi tenancy uh, systems such as a Windows server. Where every user is expected to use a Tauri app. However, up until An hour ago or so, um, there was only one installation, which means that if you weren't the owner of that installation, then you couldn't update maybe in some cases it would say fault.
+
+And now, uh, because we got feedback from the community, we recognized, Oh yeah, right. So now on multi tenancy windows systems, the, uh, application will be installed once per user. And then each user has to update and defining, defining the, the update strategy is really up to, up to the engineering team. I mean, there are use cases where you absolutely do not want the user to be updating their system in the background.
+
+If you've got some kind of long running task, like a video render, right? Like that's, that, that's how you get people to walk away. Right. If you, if you. Crash their system because you needed to update. So I think that, uh, we've, we've tried to design it in a way that, um, is configurable, you know, 
+
+**Justin:** something I haven't thought about. So you have to. I guess you have to be concerned with the sidecar process too, during update. So does the updater like have, is there some facility for helping you do that?
+
+**Lucas:** Well, since you actually need to bundle this sidecar together with your application, you are going to update the entire package, no matter what. 
+
+**Justin:** Gotcha. That makes
+
+**Lucas:** That's what, That's how we work right now.
+
+**Justin:** That makes a lot of sense. Yeah.
+
+
+#### [00:44:19] The Birth of Crab Nebula and Its Relationship with Tauri
+
+**Andrew:** Uh, so we've talked a lot about, uh, Tauri , uh, and some of the features and functionality and, and, and project set up, uh, something else that I think, you know, would be great for us to talk about is this company that you formed alongside Tauri called Crab Nebula. Um, so yeah, what is, what is Crab Nebula, uh, and what is your relationship with the company and, and how does it relate to Tauri ?
+
+**Denjell:** Um, because I was talking earlier about the growth of an ecosystem. And one of the things that you will, it's a lot of work to do to get to that. So, if you don't experience it personally, you might hear stories about it, is that people burn out in open source software. A lot of groups encourage people to work in their free time after work, at the weekends, on the holidays. Avoid your family between Christmas and New Year's and code up some stuff, right. And when. You realize that people are actually using your framework. They're making a livelihood on the success of this framework.
+
+It turns you on even, even stronger, right? And we have lost a few people to, to burnout at TAURI. And we saw, we saw it coming again. Um, we knew that it was going to be important to Uh, create a business strategy around the holes that open source leaves and in so doing sustain the maintainers so that they're not working altogether 70 hours a week, right?
+
+And one of the things that you have to realize about open source is that again, coming back to the notion of volunteerism. As a leader in an open source community, you cannot force a volunteer to do work on a specific schedule. First of all, it just doesn't work. Second of all, it's probably morally reprehensible.
+
+And, and thirdly, um, that's how you really burn people out, right? And fourthly, who writes the invoice? You know, because there's also things like, um, sales tax, you know? And then then you get into other sticky situations where people come to the Discord and they ask a question about something ultra complex and they're like, yeah, the code's proprietary. Can't show you. You can make a repro, but it's not the same. And, and at that point as an open source, um, contributor or, you know, maybe you're, you're, you're the discord solutions expert because you love telling people how to fix things. You start to feel like you're being taken advantage of, which might not be the case intentionally.
+
+Um, but if you do this for enough years, you kind of start to see the pattern again. And furthermore, who signs the NDA? Right? Like if, if Fabian Lars signs the NDA, uh, does Lucas have to sign the NDA too before they can, the, the nonprofit, the, the foundation isn't going to sign an NDA, like NDAs exist as a license to sue.
+
+That's all they're there for and the foundation wants nothing to do with that. So we carved out a niche of problems that people were continuously facing and kind of got a twofer. Um, maybe, maybe Lucas, you'd like to, to talk more about how we, uh, actually set up the company.
+
+**Lucas:** Yeah, sure, uh, basically all the The biggest Tauri contributors are Crab Nebula employees. So that's one of the first goals of the company. As Dana said, we wanted to support everyone and not leave Tauri by itself. Because previously everyone had their own jobs and we had to work on Tauri during our evenings.
+
+Uh, I had to do that for at least three, maybe four, four years, and it's a lot to, to have to deal with and you, you, you, you, you, you, you will end up getting a burnout. It's inevitable, I think.
+
+**Andrew:** So, uh, how many people do you guys have working on, like, Tauri and, uh, Crab Nebula full time now?
+
+**Denjell:** The company has 28 full time employees. 
+
+Um, I would say split down like thirds. So one third is focused on research development and maintenance, RDM, uh, which is there so that anybody who has an amazing idea can take some time to flesh it out. And then we would move it into development after the, the, the middle tier of, of product and finance decides that it's something that we want to productify.
+
+**Andrew:** And then, uh, you know, the actual engineering teams, you know, building out the products, uh, doing the dev rel, communicating, documenting, that kind of thing. It's a good amount of people.
+
+**Denjell:** It's, it's the right amount. It was the right amount. I think that we would never have finished Tauri 2. 0 at this pace alongside mobile, uh, without that team being focused, like that's their life energy. That's what they're, that's what they get to do, you know? Um, and without, without product, uh, you know, how How do you How do you keep a timeline together? 
+
+Right? And without DevRel, how do you communicate about it? And without engineers building stuff, how do you do that? And because of, um, the fact that we have extraordinarily talented engineers in the research, development, and maintenance team, when one of the other departments needs help, It's easy for them to just jump in, check out the ticket, figure it out, solve it, and then move on.
+
+So, we have these kind of flexible team sizes that range from 3 to 10, depending on, you know, what's urgent or, uh, where extra special support is needed.
+
+**Justin:** So when y'all created the company, was it initially just mostly consulting? Is that was like, we will help you solve problems with Tauri . Uh, or what was the, what was the sort of goal at first? 
+
+**Denjell:** we knew that we needed about a year to get the first products out. And if you just burn investor money without taking in a little bit, you're missing two opportunities. Um, one opportunity that you're missing is the success of shipping something. Like when a client hires you to do something and you're able to do it and they say, thank you.
+
+That's exactly what we needed. And you did it on ahead of time. Uh, wow. Like that's a great feeling that, um, keeps people motivated. And it also keeps us close to The community because we really only take clients from the Tauri community, and we prefer to do work that's going to go back into the open source community, right?
+
+Like if you find a ticket that's been languishing for two years, and you think it's really important, more important than we thought, because we're working on other stuff that's more core, but you could pick it up and come to us and say, Hey, how long would it take you to actually do this? Right? And You know, because we have the entire core team of Tauri engineers, including Lucas and Amr and Yue and Fabian Lars, and I'm not going to give the entire list, but because they all work at Crab Nebula, we know that our velocity is a five to ten times faster than anybody who's just picking it up or even who's been working with it for a year.
+
+So those are the benefits. You know, from clients who've been with us for, you know, the past six, nine months, all of them are super excited about testing out our new products when we bring them out. And they're the ones who are going to be getting the friends and family access, right? They're the ones who are. We've developed a type of communication with them where we're always honest with each other and we tell each other what's going on and what works, what doesn't. And that kind of early focus group is great when you have the anticipation of product market fit, but you're still looking for those actual details to prove it.
+
+Right. So it, it, in a sense, it was really important for the first year, but in year two of Crab Nebula, which we're in, by the way. We're going to be very, very selective about the, um, the client work that we take on because the products are now, uh, coming onto the market and they need our attention. Um, of course, if my friend Dave Teer is listening and 1Password decides they want to, um, pull the trigger and move to Tauri, you better believe we would be teaming up and, uh, growing the team and making that happen, right?
+
+So, I think It, it was an important step in the first year of the organization and it it does a lot of other things too, like it makes sure that we have healthy finance, we have a healthy finance team, right? We can write invoices. It sounds funny to say, but when you have a global company that, uh, deals with compliance issues in, well, right now.
+
+How many, 13 countries, because that's where we have employees. Um, then, you know, it's, it's something that we're not going to have to look at when we launch the SAS, right? Like, oh, geez, we need to have credit card. Oh, how do we do that? You know, we've, we've already solved these, um, boring problems, but as part of the tactical approach to building a company that's, that wants to be more than a startup.
+
+Right? Do you know what I mean by that? Like, if all your goal, if all of your energy goes into being a great startup, you're going to burn out. Your people are going to be working 60, 70 hours a week. They're going to start hating each other. People are going to be short with each other and screaming because stuff didn't ship on time.
+
+And at Crab Nebula, we're very proud of having a four day work week. We do that because We believe that work expands to fill the time that you give it. And the longer you let me talk, the more I'm going to talk. And it's the same thing with work, right? The fewer meetings that we have, the more time we get to stuff done and you're not pushing stuff off till Friday because you have to do it.
+
+Thursday, but actually release day is Tuesday. Always. It's always going to be Tuesday because Monday you can check everything, make sure it's working out Tuesday. You have your release day, Wednesday, Thursday, you got time to fix stuff. And then, you know, it's just ops there at the weekend, right? And I think that, um, giving people the opportunity to.
+
+recover their energy means they get back on Monday and they're like really excited to be back at work. I know what happens to me and yes that's something a CEO would say. Maybe we should take a poll. 
+
+**Justin:** Oh, again, all good. Uh, so you, you mentioned some products that you're working on and one of the ones that you've announced is the dev tools for Atari. Uh, so could you, could you give us a little brief intro to like what the dev tools will be like and what your plans for it are? 
+
+**Lucas:** Yeah, I can take that one. So, most of the Tor users are web developers, and if you are a web developer, you'll know the browser inspector, or the browser dev tools, which is that little window that has the console, network, services, that kind of stuff. But, when you are, you are building a, Native application.
+
+You don't really have that kind of information for your app itself. So we wanted to build that. And this new app that we built is shipped as a target plugin that, uh, starts a server. A web starts a. WebSocket server on your application that can be accessed by the front end on your browser. And we basically use the tracing crate, which is a crate that most huge library authors are using to send logs and tracing metadata to.
+
+The application writers, and we get all that information in show on the front end. So basically we have the console, which shows all the logs from your application itself. We have a network like type tab, which is showing all the, the blocks of code your app has and how much time IPC message passing is taking that kind of stuff.
+
+And we also have a view to show all the sources that your application has embedded. So you can, so you can check why your app is crashing or what's going on and why some IPC call is taking so much time. That kind of stuff. 
+
+**Andrew:** That's cool, but it begs the question to me, like, so we're using WebViews, do we have access to like browser dev tools? 
+
+**Lucas:** Yes, but that's only for the front end itself, not for the shell or the, the REST site.
+
+**Andrew:** that's that's pretty cool. I definitely have nothing like that in electron land. I just get to look at a whole bunch of logs spewed to my terminal. Uh, so any structure is better. Um, so that that seems like a cool new product, but you also mentioned that you. Uh, this year completed Tauri 2. 0, uh, I didn't see that that had been released yet.
+
+So like, what are some cool features that, uh, you guys built along with that?
+
+**Lucas:** Uh, we are still in alpha, we are actually going through an audit right now, the low level grades are being audited and we are going to start the Tauri audit when the final feature gets released, which is the new allow list. So basically the V2 has a bunch of new features that the community has been requesting a lot, like context menus and JavaScript APIs for tray and window menus and all that kind of stuff, plus deep links, file associations, new APIs for window personalization, that kind of stuff.
+
+But the big new feature is the mobile platform targets. Uh, it will basically be just like the desktop. It will also leverage the system web view on Android and iOS. And we try to be as compatible as possible. So your app, your existing Tor app will just be able to be. Compiled for mobile and you, it should simply work.
+
+Of course, there are some APIs that simply do not exist on mobile, like, like the CLI, but we try to be as compatible as possible. So it's just like dropping and you'll get a mobile app out of your existing app. And we also invested a lot of time on developer experience. So you don't really have to open.
+
+Uh, Xcode or Android Studio, or with your system resources on that, we will bundle the application for you. We start the platform simulator and for you and also run on the existing devices if you want to do 
+
+that 
+
+**Andrew:** That, that mobile feature seems super cool. Like, uh, you, uh, Daniel mentioned PhoneGap or Cordova earlier, and it kind of feels like it, it's come full circle, uh, that like you can now deploy to mobile too. 
+
+**Denjell:** You know, there were some voices in the Telra community, um, who felt like it was a distraction to build mobile, that we would have been better served focusing on, I don't know, achieving parity with all of the electron things or building a new web view or, you know, that kind of stuff. And at the beginning, you know, when the issues were, when that specific issue was raised, I didn't have a great answer for it. But today, looking back, not in hindsight, but in retrospect, what I can confidently say is that the architectural modifications required of us to build mobile have actually fed back into the desktop system itself and made desktop more robust. And that from my perspective is a win. Um, Is, is it going to be as good as capacitor?
+
+I don't like those kind of conversations because we're no longer battling the incumbents. I think that Tauri after five years has shown that it is not only capable of adapting and growing, but also resolving issues that people find. So it's a resilient ecosystem that is here to stay. And at some point, Thank you. Capacitor and Electron are going to start comparing notes with what we're doing and learn from that. And I hope that that's the case. If it's not, what I can tell you is that at Crab Nebula, we spent some time at the beginning thinking we were just going to be the Tauri company, and we realized as time went on, especially in the context of 2.
+
+0, the notion of what a Tauri app was is changing. That idea, oh, a Tauri app, it means it's a web view, and it's using the Tauri core project, and you can use JavaScript, and that's changing um Today, people are using our low level libraries. I mean, just recently, our friends over at Fig. io got acquired by AWS.
+
+And they were building on top of Tauri's deep tech, Tau and Rai. And other projects like, um, Gosh, Dioxys is just to name one, uh, is also using that low level system, but yet we couldn't support them with our bundler and updater that I mentioned earlier, like such an important part of what made Tauri successful is that whole ecosystem play of being able to ship your updates, right?
+
+But we couldn't help our friends at Dioxys. So we literally upstreamed. Tauri's bundler and updater. We created a new project at Crab Nebula. It's again, um, open source, uh, Apache 2 MIT. It's called Cargo Packager. And we did it in a way that not only can people from the Rust ecosystem profit from it, you can use it as a library, you can use it as a crate, you can build a CLI with it. If you can build a CLI with it, you can also package up electron apps. Uh, you can, you can package up, I mean, anything that's a binary that needs to be signed and get icons and all that good stuff can be managed with the, this packager system that we built, because we want the ecosystem to come together.
+
+
+
+**Andrew:** that's all super exciting to me. 
+
+**Justin:** Yeah, I think again, I just want to re reemphasize, I, I appreciate the care of the whole process of like designing Tauri of like setting up the company of doing the governance of thinking about security. Like, all of these things are layer and layer and layer, even like pulling out the updater to be more of a general use thing.
+
+I think that. You know, the project just from how you approach building it is very special. And there is a huge need for tools in the open source space to be able to build more secure, more performance, smaller apps, like whether it's desktop or mobile, which like, it's really hard to just say, Oh yeah, I'm only going to ship a desktop app these days, given that like.
+
+A lot of computing is done on mobile. So like from that perspective, I think the, the business decision of like having Tauri support makes a lot of sense. And, um, you know, we have solutions out there for doing things and, you know, oftentimes we always have to make trade offs and Tauri is going to have to make trade offs too, but, um, Yeah, I think the trade offs that y'all have made are pretty special.
+
+So it's, uh, it's definitely cool to see it develop for sure. I'm very excited for 2. 0 cause, uh, I want to use it. Um, so before we wrap, we usually always ask, uh, a forward facing question and we're trying to, we're trying to figure out like what a good forward facing question for y'all would be. 
+
+
+#### [01:05:23] The Future of Cross-Platform Apps with Tauri
+
+**Justin:** Um, maybe one would be, uh, what is your vision of the future of building cross form? cross platform apps look like and how does Tauri play into that vision
+
+for either of you 
+
+**Lucas:** I don't know. Uh, I have, I I've built some apps in the past and I also, I always had to use two separate tools, one for desktop and one for mobile. And I think with Tauri bit 2 that will change. I think, uh, you will just need to use a single, uh, frontend and Rust codebase to ship to both platforms. I think that will be nice.
+
+Uh, so you don't have to have a, an electron application and a separate capacitor application for all that.
+
+**Denjell:** you know, the week that Tauri 1. 0 was announced last year, um, was also the week that Internet Explorer and Adam Shell were deprecated, or where their deprecation was announced. It wasn't planned like that. Those are just the two big news items from that literal week. And. I like to keep that story in the back of my mind of how not listening to your users, not enabling developers to build cool stuff and to tell you what you think, what they think you should do better is a great way to end up in that graveyard. of no longer relevant. Um, I mean, we could argue that Safari is the new Internet Explorer, and some of my friends will tell you that's the case, but I think the, the, the larger point here is that Tauri, as an organization, is doing work not just for what it needs, but also for taking care of the ecosystem.
+
+Let me give you an example. Um, You probably heard of Servo before, and Servo was this amazing research project from the Mozilla Foundation that was a Rust based browser. And during COVID, the entire team was let go. Which was sad. I think we were looking forward to someday using Servo as a, as a WebView target for Tauri.
+
+Um, maybe that day happens sometime next year. I don't know. But what I can tell you is that by building in a modular way, we've already built tools that other people are using, like Servo did. We're actually maintaining a couple of those, those crates from the, the former servo project because we're using them and no one else was maintaining and someone has to do that.
+
+And I think that. Or my, my hope is that the, the group of people who are getting involved with towering now, the youngsters that Lucas mentioned at the top of the call are of the character to continue. Exploring what's possible and pushing the boundaries of patients by being maintainers and maintaining the code.
+
+Um, for me, I think that's, that's the mission we've set ourselves on. And I think that, um, jumping forward 10 years, if there's still software engineers. Um, There's, there's definitely going to be people who need to think about what it means, what they're doing, and I hope that we can contribute to that. 
+
+**Andrew:** Yeah, I'm rooting for you guys. I love the way that you are structuring it and like you're not just making one big executable like just, just the fact that you like have like Rye, the web view rendering pack crate out there is just so awesome to see. And I hope, hope the project is successful going forward 
+
+for sure 
+
+**Denjell:** Thanks.
+
+**Andrew:** So that wraps it up for the questions we have. Thanks. Thanks for coming on Lucas and Daniel. This is a super interesting conversation. I didn't think we'd go so far into like the company aspect of it and the community aspect of it. But what you guys have built there seems to be a really cool. And, uh, I think you've set yourselves up for success. 
+
+**Denjell:** Thank you. 
+
+**Lucas:** Thank you so much. 
+
+**Justin:** Yeah, to echo what Andrew said, uh, really glad to have y'all on, uh, and, uh, you know, I've got to say, uh, of the, the recent software projects that I've been following, and I'm just a huge fan, Tauri and Dino are, are my number ones, it just, it just so happens that there's, uh, some similar underlying elements in there, but like, uh, I think, you know, I've said it a few times in this episode, but how y'all thought about security, how you thought about your, you know, how you set up the open source, uh, governance structure, how you thought, think about like sustainability with building a company, all of that stuff, just like, you know, definitely screams it's like.
+
+Very methodical intention. Uh, and so many times in open source, we, we, we lose out on that because things just sort of grow organically. There's not sustainable structures around there and it can be harder to, you know, trust the project long term or to like understand what you're going to get or whatever.
+
+So, uh, this conversation has just sort of increased my faith and, and, you know, the, the target project over time, over time. And, you know, I'm really excited to see where y'all go once you build. Uh, I think it's, I think it's going to be awesome. So it was great to have you on. 
+
+**Denjell:** Looking forward to 
+
+coming back. 
+
+​ 
+
+
