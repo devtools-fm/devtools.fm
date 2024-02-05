@@ -1,0 +1,672 @@
+---
+title: Evan Bacon - Expo
+youtube: https://www.youtube.com/watch?v=Hnh5ew0jfKQ
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Evan-Bacon---Expo-e2fcbvn
+tags: technology, mobile, react, react native, expo, react navigation, expo router, web, native, css, metro, bundling, vision os, 
+---
+
+<!-- TAB: SHOW NOTES -->
+
+Today's episode features Evan Bacon, the head of devtools at Expo.
+Expo is a framework for building React Native apps it takes care of a lot of the details so all you have to worry about is writing code.
+Evan is also the author of Expo Router which makes seamlessly manage your app's navigation with file based routing and so much more.
+We also delve in to the topic of React Server Components on React Native and the exciting possibilities of developing for Vision OS.
+
+- https://evanbacon.dev
+- https://twitter.com/Baconbrix
+- https://docs.expo.dev
+- https://github.com/EvanBacon
+- https://docs.expo.dev/router/introduction/
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:34] Deep Dive into Expo Router
+[00:13:02] Ad
+[00:15:16] Building Cross Platform UI
+[00:22:43] Metro: Bundling for Native
+[00:28:49] What's up with CSS?
+[00:35:44] Thoughts on Modern Tools
+[00:41:51] Unpacking Continuous Native Generation and Its Impact
+[00:49:59] Looking to New Platforms
+[00:56:06] Native React Server Components
+[01:09:41] The Future of Cross-Platform Development and React
+[01:09:54] Looking ot the Future
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Evan Bacon:** we built React Navigation to solve a lot of these problems, it was config based, and then last year I created this new navigation solution called Expo Router, which sits on top of React Navigation, but it adds file based routing to your native application, which is really exciting.
+
+It's the first file based router for native app development. The first version was really focused on, like, how is this even possible? Is this reasonable? Can you. You know, pull off really complicated interactions with it.
+
+​ 
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, we're really excited today to have Evan Bacon with us. So Evan, you're well, well known for building and working on Expo. Um, and we're incredibly, incredibly excited to talk about that. But before we dive into talking about Expo, would you like to tell our listeners a little bit more about yourself?
+
+**Ev  * Yeah. Yeah, of course. And thanks for having me on. 
+
+Um, so yeah, I'm Evan Bacon. I'm the developer, uh, the, the manager of dev tools at Expo. I also manage the web platform and our server integration. Uh, before Expo, 
+
+I was working, 
+
+uh, frog design, uh, building apps and websites for, for various, uh, clients and kind of a consultancy type role, which actually led me to finding Expo just because.
+
+Uh, we, we needed to build and prototype really fast and the, the needs just kept growing and growing and React and React Native just really hit a lot of those boxes for us. Um, switched over now, uh, worked on Expo for, uh, I guess going on seven years now, uh, so for, for a while. And then before that I was a Lego master builder when I was, uh, like 13 to 19.
+
+**Andrew:** Yeah. It seems like a fun time in your life. I saw pictures of you with like Stan Lee and all different sorts of stars. 
+
+**Evan Bacon:** Yeah, it is, uh, really exciting. I just really, uh, like working on very big, intricate projects and, um, source, you know, fits that perfectly.
+
+**Justin:** It's like just a continuation, like Lego open source, like native web, mobile integration.
+
+**Evan Bacon:** right. Yeah. Lego is the, the first signs that, that have a problem 
+
+**Justin:** You heard it here, folks. If your kid's really into Legos.
+
+**Evan Bacon:** yeah, keep them away from, from rust. Actually, Objective C was what got me hooked on programming.
+
+So there
+
+was some early signs.
+
+
+#### [00:02:34] Deep Dive into Expo Router
+
+**Justin:** so let's just dig in. Uh, so how would you explain what Expo is to people and why might someone want to use Expo over say, just raw react native?
+
+**Evan Bacon:** Yeah, it's actually a great question. So Expo is a framework for building React Native apps. Uh, and, uh, the target platforms are iOS, Android, and web, and in the same way that React DOM, you don't really write websites directly with React DOM, you, you generally have a framework, uh, or, or even some lower level tooling, which contains maybe like a bundler that can start a, in a CLI that can start a dev server, and maybe some tooling for exporting and hosting, um, um, React Native has similar problems, actually all those same problems, but then it's native development.
+
+So there's a bunch of other problems like upgrading and versioning and code signing and going to the app store. So very similar to web development and Expo is a fantastic framework for doing that. There's a couple of other frameworks as well. So there's a community framework. Microsoft has one that they've been developing.
+
+And then there's Ignite by the Infinite Red folks. So, um, Yeah, uh, it's actually, it's very similar to, um, the web where you have like Next and Remix,
+
+**Justin:** Yeah. I mean, it's interesting now, like if we think about like where React is today. Um, so yeah, sure. Some folks still do just like write raw React, but like the meta frameworks are like a big part of how people write React apps today. And, and it is kind of, I guess, kind of interesting to watch that transition.
+
+Um, You know, and having, so I worked on art C's, uh, react native app. So they had a big rack native app. And the, the, the mobile team is actually who, uh, it went from being a native objective C app to being react native. And they're the ones who like. You know, sort of like advocated for that transition. Um, just so the, the broader team can work on it.
+
+And I, you know, I seen the pain like without, you know, just going raw react native is like, of course, and it's gotten a lot better in the last several years too, but, uh, in some ways, uh, but it can still be, uh, painful. So, um, one of the things, uh, of, of many problems, uh, is, uh, routing, just how you, how you. Uh, figure out which views to render, uh, whether you're embedding them as a, a web view and a, and a native render or whatever.
+
+So, um, could you tell us a little bit more about like how Expo helps with that?
+
+With, uh, routing? yeah, so, 
+
+**Evan Bacon:** navigation on native is, is a really tricky problem. And we've been working on it for a while. Uh, our, our, our biggest effort was this, this suite of libraries called React Navigation. Um, which is the main way that people build, uh, navigation with React Native. And, you know, some of the problems that you face with native navigation that you don't really face on web is that you need, you know, the web, you have like back buttons, you have URLs that you can move around with.
+
+Um, and actually web is kind of moving more in this direction of, of how native routing works where you have like nested routes, for example, like that's a huge one. Um, you know, previously, you would, you just kind of, if you had like maybe a next JS website, you would build like route by route, and then you had maybe like one shared layout element, um, but in native app, you have, uh, tons of shared, uh, uh, elements between things.
+
+So nesting is actually a pretty big part of native navigation that's come to web. Um, so I think it's some cool convergence there, but then you also have, uh, like parallel routes is another big one, you know, on a native apps, you don't have like, um, the ability to create multiple contexts, like effectively multiple tabs.
+
+So tab bars will often fill in a lot of that, that, that purpose. If you think about like Twitter, maybe you're on like the home tab and then you're doing something, but you want to reply with a tweet. So you'll tap over to the search tab, you'll find something and then you'll tap back over to the home tab.
+
+On web, especially like mobile Twitter, actually, uh, if you tap back on that home tab, it will like reset you to the main homepage, whereas on native, it will preserve that stack, uh, memory inside and it will take you to that tweet page and you tap the tab again, then it will pop you back up at home. So 
+
+there's a lot of complexity that I think the web has historically been able to kind of get away without having to add and, um, on native, you, you just need a lot of that.
+
+So. Um, we built React Navigation to solve a lot of these problems, and it was, it was config based, um, and then last year, uh, I created this new navigation solution called Expo Router, um, which sits on top of React Navigation, but it adds file based routing to your native application, which is really exciting.
+
+It's the first file based router for, uh, native app development, and, uh, you know, the first version was really focused on, like, how is this even possible? Is this reasonable? Can you. You know, pull off really complicated interactions with it. Um, and so far, 
+
+yeah, people have had a lot of really, a lot of really good success with 
+
+it.
+
+Um, so it is a nested router. You can do parallel routes with it and then you navigate everything using, um, URLs, uh, which is pretty sweet because. One of the most complicated and important features of a native app is, uh, for, for a lot of native apps, not a silver bullet, uh, but for content driven native apps specifically is universal linking, where, um, You have deep links that can go into the app, but then you connect those deep links with your website.
+
+So you can send some, this is like how things like Twitter and YouTube and basically every major website works where, uh, if I send you a link to, for instance, like a Tik TOK, if you have the Tik TOK app installed, it will open the Tik TOK app, and then it will take you to that content in the app. This is very hard to set up and it's very hard to test, especially like testing is such a pain with this feature because it's not a server, so you don't have like a request and a response.
+
+You just have a request. And then you, you would need to have like some E2E test structure set up to see if the page actually worked. Um, so with Expo Router, because everything is URL driven, you have universal links automatically. Everything always works for everything on every route. And because you use, uh, like route parameters to pass data around, um, the, the state serialized and shared and like publicly accessible, which is great for testing, it's great for, um, sharing.
+
+And in the same way that, like, apps have historically, you know, the apps that have been able to pull off universal links, they pair that with a server rendered or a static rendered website. And then what this gives them is effectively SEO for their native app. Because if you have SEO for your, your web representation of a tweet, you click on that and it takes you to the native version.
+
+You have SEO, so your app, you know, it can be searched and it can be indexed and it can be found. Um, whereas Indie devs, uh, don't have access to that because it's just too difficult to pull off. Uh, so with Expo Router you get all that automatically because you get a website which can be static rendered and then you have a native app, uh, which is universally linked to that website.
+
+So, uh, some, some pretty exciting capabilities are added by, by adding, um, file based routing. 
+
+**Justin:** And we, we just released v3 maybe three hours ago as of recording this. Um, and that adds. Yeah, That was a tricky one. Uh, this adds, uh, API routes. So you have, you know, servers that you can now deploy based on your file based routing system.
+
+Um, improved typed routing. So you, you have like auto complete when you make links and then, um, now it has route based bundle splitting, which is something that we, we just never had before. Um, this is currently disabled on native because we, we want to, we want to add one, one more feature in v4, which will make it like.
+
+Pretty slick to support, um, basically indicating if a route should have the bundle be offline or if it should be online or like how it should revalidate the caching policy for that, that split bundle because native apps, obviously, offline support is very fundamental. Um, so there, the possibilities are really endless and, um, and yeah, so the, the routing and navigation is, is one problem, but, um, by adding the file based router, we were able to.
+
+Unlock and solve a slew of other problems.
+
+**Andrew:** Yeah, it seems like looking at the examples, like it's a very natural fit with the like nested layouts and stuff like it reminds you of remix or reminds you of app router, then all the new stuff that you've brought to expo router makes it like, look so simple, like I know next JS pretty well, I could just switch over to expo router now and probably be pretty productive pretty quickly.
+
+**Evan Bacon:** Yeah, 
+
+which is really exciting. And this also 
+
+ties in heavily with, um, how our web support works. So historically the way we added web support was it was a web version of how native support worked and native support has always been just kind of like. In SPA, right? A client rendered single page application.
+
+You have a one root component that renders everything. Everything's downloaded. Everything's offline. When you start up the app, then all of the code executes to render the application. Um, so the web equivalent of that, uh, would effectively be like create react app, right? It would be, um, everything's offline.
+
+Everything renders all at once. It's all downloaded at once. And that is not a reasonable website for. Um, you know, for many different eras of, of web development. Um, and so by introducing this file based routing system, we're able to, um, really increase the complexity of what's possible on web by simply, you know, improving what you can do on native.
+
+So historically, you know, with native, like you've had SPA, uh, and then you, all your data fetching is all client side data fetching. Um, but now we're able to do. Um, substantially more complicated things, which we have planned for V4. Basically the scope of when I came up with Expo Router was, it's very large.
+
+So we split it into four releases and we just put out V3. We're ready to do the final one, which kind of ties it all together. And it's going to be, I've been sort of, I started working on it a couple of days ago and it's already pretty mind blowing. Um, just like what we'll be able to do on native.
+
+
+#### [00:13:02] Ad
+
+**Andrew:** This week, we'd like to welcome our new sponsor. Without our sponsors, this podcast isn't possible.
+
+Our new sponsor is code crafters. Code crafters is a platform that makes programming challenges for experienced software engineers. If you're looking for a weekend project that takes you to the edge of your programming abilities, you have to check them out. 
+
+They have a bunch of really cool challenges I saw on the website. You can build your own BitTorrent, build your own, get, build your own Docker. All these challenges make you walk through these like popular tools and you get to learn how they're built and how the protocols work. While at the same time, maybe even learning a new programming language, 
+
+they support a host of popular programming languages, such as rust go and JavaScript. And a whole bunch more.
+
+When they signed up to be a sponsor, I made an account and went through their, build your own redis challenge. As the listeners of this podcast know I'm a front end dev. So I didn't really know what Reddis was going into this. But after building it, it surprised me that. I read, this is actually a pretty simple thing. It just a key value store. And then along the way, you have to learn some of the foundational technologies too. 
+
+So when I started, I actually had to read up about TCP. They don't just point you towards a Wikipedia article or some other YouTube videos. They also have really nice learning content that steps you through what, what TCP is, why it was made. And as a web developer, I should probably know that it was, so it was really fun to get to. To learn about that. 
+
+And I'm probably going to continue with the challenge.
+
+Besides the content, even the user experience is targeted towards experienced software developers. For example, instead of trying you to accustom in browser editor code crafters, lets you build everything locally. You can use your own IDE your own terminal. All you have to do is push and they run tests for you. 
+
+To try out code crafters for yourself. Visit codecrafters.io/devtools-fm. At that URL you'll get a discount, but you'll also be supporting the podcast. 
+
+Do you not want to hear these ads anymore? Well, become a member of one of the platforms where we support it. You can head over to Patrion, YouTube, Spotify, or apple podcasts become a member.
+
+If you want to find another way to support the podcast, you can always head over to our merch storage, shop.devtools.fm. There you can grab a cool corduroy hat, like the one I'm wearing right now.
+
+If you want to apply to be a sponsor of dev tools, FM, head over to dev tools.fm/sponsor to apply. And with that, let's get back to the episode.
+
+
+#### [00:15:16] Building Cross Platform UI
+
+**Andrew:** Yeah, uh, I was looking at Expo I think like four or five years ago before you guys shipped web support, and like, for me back then it was kind of like a non starter, I was like, well, I want a web app, and now I have to build this whole second thing, so it seems like you guys have come a really far way. Uh, is it from like the rendering perspective, do I have like just one index or do I have like multiple app indexes, like one for my website and one for my app
+
+**Evan Bacon:** Yeah, so that's actually a fantastic question. Um, the, there's a lot of these kind of cross platform maximalists who, uh, you, you can get a good sense for like, what is the current state of code sharing from following some of these people. And, uh, and some of them are really successful, like, fantastic products.
+
+Fernando Rojo comes to mind. He was just in Forbes 30 Under 30 for his, you know, like, this product BeatGig that he built, which is like an app in a website. It's like an expo app and, uh, uses Next. js to bundle the, the expo components on web. And, um, and right now the, the limit is people will set up monorepos will have kind of like a, an app directory, a shared components directory, which is mostly universal components.
+
+So think like, right, native web and, and expo components, and then they'll have a, um, maybe like a remix or a next JS website, and then that will, you know, have all the routes and re export components. Um, and that is. That is pretty good. It's better than it was a couple years ago, but it is fundamentally that that's a pretty big for like if you think about what goes into setting up your data fetching and how much time you spend on trying to reduce like waterfalls and getting the content to load correctly and authorization, authentication, just the whole flow of orchestrating how your content is presented to users.
+
+Forking at that level is ridiculous. So with Expo Router, what we're it. What we would like to achieve what I'm pretty confident we will achieve by later this year is, um, a system where your data fetching and your rendering patterns can be shared across web and native. And then your components can also be shared.
+
+Um, and I think at that point. The layer of forking, like where things will split between web and native will move up to, um, mostly your layout routes. Like I think the layout routes will be a big one because on native, your tab bar, you know, it's usually, it's this very distinct look and then on web usually have like some sort of very responsive header, maybe it pulls out into like the side drawer.
+
+Um, and then I think people will basically switch at the layout route level, but then the content of the page, you know, like a Twitter feed that can basically already looks the same across web and native. Um, and then there will probably be other places, you know, maybe like aspects of your data fetching will be forked a little bit in behavior, but already it isn't that fork.
+
+If you think about like your server, your server is universal. Um, I think it would actually be neat if you could, in some cases, fork your, um, your server logic, um, for things like maybe server rendering, like if you were to use server render a list. Maybe you would have components inside of that list change based on, um, the platform that made the request to the, the endpoint.
+
+Um, like I think, um, this is kind of a crude example, but like chat GPT, when you use chat GPT on mobile, it has a different prompt than what the web mobile is. It's like you are on mobile, so your response should be like fast and snappy and like easy and like doesn't copy and paste, things like that. Um, so maybe you could scale that concept up to how the components are rendered, like they're smaller, they're faster, or it's like a native device.
+
+So maybe the video is higher definition or something 
+
+like that.
+
+**Justin:** Yeah, it was one of the things that like was pretty eyeopening very on very early on for me when using React Native is the, the sort of like write once run anywhere thing is, is not real, not, not in a, not in a real, like, not in a broad sense, it's like sure React Native web exists and has gotten significantly better than it was.
+
+Um, and you can write a component and share it across platforms. But, um, I think the, the, the value here often is like. That you're working in a familiar technology across platforms. And that alone gives a lot of value versus, you know, trying to share everything. Uh, I'm sure the story is, is much improved, but you know, at Artsy, we had went through some.
+
+Real pain trying to share, share a lot of components. We, we ultimately only had a design system that was shared across, uh, web and mobile, and then eventually they actually split down the design system. So even that got split up. Um, and, and then they were just doing like tokens, like design tokens that we're using.
+
+Um, but yeah, that's a hard problem. It's a hard problem to like, share as much as you can between those platforms.
+
+**Evan Bacon:** Yeah. It's a great observation. I think one way to frame it would be. It's about the flexibility, the freedom to share various different things because your criteria depends, it changes, you know, based on what you're trying to build. So in some cases, um, you know, universal components, whatever, like if it was a very content driven, kind of almost like markdown type app, um, text should look the same across platforms.
+
+Um, but if it's something that's really refined in various ways to like the device, the physical capabilities of the device, then, um, You know, then components become less of a priority to share. And with react native, what was cool was that you could share, uh, react, right? Like the state manager and the component part and what fell into the JSX was, um, not shared.
+
+Um, and I think then react native web came along. Um, to like the, the Twitter website is still built in react native web. And it actually, it came along not to solve sharing code so much as like, um, solving issues with web development at scale that a lot of things, uh, solve in different ways now, like tailwind, for instance, solves a lot of the same styling issues.
+
+Um, like in composition, there's, when you build a website, especially a couple of years ago, um, there was a lot of globals, a lot of like leaking things around and, um, now that's started to get, uh, much tighter and things have become, you know, more component based, more encapsulated without compromising too much on the ergonomics of web development.
+
+Um, Tailwind is I think a great example of that. Um, which is important to note, uh, like, uh, React Native Web is probably not the long term direction of how you should write components that are, like, universal. Um, you know, why, why isn't there, um, like, div that works on iOS and Android? Why, why do you need view that works on web?
+
+So I think with React Native, you should have that flexibility, but I don't think that building a website with React Native means you have to use, um, these components which feel very primitive to the platform. I think You should be able to change. In fact, changing out JSX is probably one of the easiest things to change out in React, in React, in Universal React.
+
+Um, some of the harder things to change out are like the bundler and, um, the, the build pipeline, the navigation, the, the rendering patterns, the things like that are, I think, where, Where Universal React has historically broken down, and these are the problems that we focus on with Expo Router.
+
+
+#### [00:22:43] Metro: Bundling for Native
+
+**Evan Bacon:** since you just mentioned, uh, bundling, uh, we might as well jump into that next, uh, On web, you have lots of different options for bundling, and it seems like you used some of those options in the past in Expo, but a little recently you guys decided to focus just on the Metro Bundler, so, uh, for the people who don't know, what is the Metro Bundler, and then why did you choose it, uh, going forward with the project? 
+
+Yeah. Yeah, it's a really interesting story. So, um, or not depending on you feel about bundlers. Um, Metro is the, the bundler that Meta develops. Um, so it's open 
+
+source and it's written with Flow. It's, um, 
+
+And it solves a lot of problems that Meta has had internally. So, for instance, they use Metro to develop the Facebook app, which uses React Native.
+
+Um, and so there are problems that they face with scale and working across teams and integrating with a monorepo. And so their bundler is, or at least was, um, very, very foreign in its techniques to, like, how everything else worked. And so with, with React Native, it has always used Metro, and switching bundlers, uh, which I've tried many times in the past, is, is very tricky.
+
+Um, and in fundamentally, one of the reasons why it's actually so tricky is because Metro has all these techniques, like, Um, lazy bundling and incremental, everything is very incremental. Like any file at any point can be an entry point to bundling. So you can pass in any file and then it will traverse the tree all the way down and return whatever it needs.
+
+Um, it has very aggressive caching which makes plugins pretty difficult to write. Um, but it makes it very fast. And then it also, uh, means that you can have shared caching. So you can take those cached artifacts, you can bundle them on any machine in any context, and, you know, download them on a different machine and use them.
+
+So this is, uh, like what Airbnb and, and Meta use. So they have a cron job which runs against the code, and then is constantly bundling it, and then they just check out the cached artifacts, um, like live as they're developing on it. Um, 
+
+so 
+
+it has some very interesting techniques. Actually they're, the only bundler which I think is, Kind of similar or I think the one that shares the most similarities to it is the new turbo pack bundler Where from Vercel it has a lot of technology that looks very very familiar to Metas, I guess meta internally they have this bundler called haste and metro takes a lot of inspiration from that I think tour we've also take some nods from there as well, but probably the most important part of metro Uh, for, for us is, um, when I was, you know, coming up with expo router and what I wanted to build, um, one thing that was really important there was.
+
+The ability to bundle server code and client code kind of simultaneously or the ability to orchestrate them very neatly together. Uh, so Metro, you know, it actually, I think it kind of inadvertently built a very, very important, uh, web bundling feature, uh, which is a multidimensional graph. Uh, so this is, uh, when you have a graph which can share a lot of resources between different criteria, different abstract criteria for bundling.
+
+So, um. Metro did this for bundling iOS and Android kind of at the same time simultaneously. Uh, but this can actually be used really well for server and client simultaneously. And when, when you consider, um, you know, like. How server components are bundled, which requires multiple passes, um, looking at the server and the client, creating the manifest, um, being able to combine a multidimensional graph for starting with server and then, you know, spiking off and doing the client and then sharing resources while you're doing that and doing that like many different ways, um, Metro actually be really good for that.
+
+So kind of trying to skate to where the puck was going. We just decided we would, um. Buckle down, and we also knew we'd have to build a ton of bundling features in order to make Expo Router work. Like, Expo Router is primarily a bundler driven project. Um, so, we knew we'd have to build a bunch of things, and we kind of traded, Okay, we'll build bundle splitting, but we'll get the multidimensional graph part kind of for free.
+
+Um, and it's been great. Um, like, when we, when we do incremental bundling, We have incremental bundling as part of Expo Router. Um, it's an experimental feature right now. Um, and we worked with the meta team on this actually, because it was something that they developed for the Facebook app. And when you navigate to different routes at that point, when you navigate to the route, then it will fetch the route in a suspense boundary and download it.
+
+And at that point, we'll start bundling it. So traditional web bundlers, uh, often what they would do is they would bundle the entire thing together and split it up and then send you the pieces, which is what you always need to do in production. It's the most efficient way. Cause you know what all the pieces are.
+
+So you can. You know, bundle split and you can tree shake, um, but in development, it's much faster to just be, be more incremental and lazy about these things, make less assumptions about the final shape.
+
+**Justin:** Especially when you have an app as big as Facebook's.
+
+**Evan Bacon:** Right. Yeah. And actually, uh, I think, uh, module federation in many ways tries to solve many of these same problems like webpacks module federation, where you can work across different teams and you're only bundling the part of the app that you want to work on. So you will like define what that section of the app is.
+
+And with Metro, you can define that by just having, uh, async import boundaries and then the bundler will stop crawling. When it gets to those boundaries, um, so you can, you know, if the structure of your app is such that you have like a team that works on search and a team that works on the feed and a team that works on profiles, then you've kind of naturally created some module federation shape here.
+
+If you combine that with, like, the very complicated caching where you basically are automatically not bundling the search page by never visiting it.
+
+
+#### [00:28:49] What's up with CSS?
+
+**Andrew:** Yeah, it's, it seems like, uh, we're in web. We're trying to build all of those things again. Like what you were saying about like the combined module graph. Um, like literally, I think Tobias came on here and said that same thing when we were talking about turbo pack. So interesting to see the same thing being developed into different areas of the world.
+
+Um, one thing that, uh, stands out to me about expo that I've been going through the docs is you guys seem to have tried to adapt a lot of like web things. Into the native world and one that stood out to me is CSS. Like there is no CSS on the native platform. Uh, how, how did you guys make that work?
+
+And like, what can you do with it? 
+
+**Evan Bacon:** Yeah. So the CSS support in an expo, like the official support is web only. Yeah. Um, and there, there is a way to use it on native. Um, it's, it's kind of a, it's, it's a community project in a way it is developed by like someone on my team. So it's community, but it's just like not kind of part of that, the blessed workflow and the, the logic there is.
+
+If you want to be, if you want to make the universal linking work, which I think is really important that we, we nail, um, for a variety of reasons. Uh, but if you want to make that work, then it needs to be like pretty compelling that people can build websites with Expo Router as well. And, uh, if you're missing like CSS because Native doesn't have it, then that's You know, kind of a no op.
+
+Um, so, there are certain areas where we do kind of temporarily fork away. Or rather, maybe it's not a fork so much as an escape hatch. So there are places where you can escape hatch and add CSS if you so choose. And I think it's important that we have all that. Like right now, uh, we don't have a way to do static generation for native apps, but you can do static, like build time static generation for your website.
+
+Um, we do plan to over time actually add, add build time static generation for native apps. I think we'll have that in a pretty usable state by Q3. Um, but CSS is similar. So we, we do have CSS and there's a project. It's a pretty sweet project called native wind. And what it does, it lets you use tailwind on native.
+
+And this is pretty great because when you use it, um, on web, it just turns off. Like it does nothing. It just like tailwind is just running. So, you know, right out of the box that it's going to be a very efficient, um, like web styling library, and you don't have to worry about like, is this going to hamper my web performance in a place where performance matters a lot?
+
+Um, Uh, the, the way NativeWin works internally is it has a CSS parser and it like literally parses CSS into native styles. But there are a lot of places where CSS doesn't work on native, or at least in the context of React Native. Um, so it's like, you know, a lot of things like cascading, for example, don't work. umm And in declarative styles, so if you pair that CSS to native parsing with tailwind, which actually enforces a lot of the same rules as react native has, then you end up with a system that kind of is CSS on native. Um, so kind of works and doesn't work like we could maybe add native CSS, but we would need like some different extension, like something that indicates that it's, it doesn't actually cascade, um, which is a very important part of the CSS.
+
+extension. Um, and then native one's also kind of cool because one issue we have with static rendering is, um, like in react native, there aren't any, there's really no declarative responsive styles. If you have flex one, which indicates that it should be flexible. Um, but you don't have media queries. the way you would do these is you would add a hook that's like use window dimensions, and then you would check the window dimensions and change the styles based on.
+
+You know, some, some dynamic hook, uh, but you, you obviously can't use that with static rendering because you'll, you'll get a hydration error. You need some way to declare what the styling looks like at various different break points. Um, so native wind gives you a way to basically do that declaration on web.
+
+And then, you know, uh, behind the scenes kind of polyfill it in this. You know, crazy. It's actually very cool, the native wind source, because it's crazy way, um, where it will based on where you add the class names, uh, kind of intercept the style and inject the hooks so that the, the hooks do exist and you still have like the, the rules of react.
+
+Um, but they, they only exist whenever you use them. It's the same with animations and it's the same with appearance, like light mode, dark mode. So it is pretty, pretty snappy, pretty shnazzy. And I think it's a, it's a good primitive. Like people will probably build a lot of things on it. Like we see people build, you know, like ShadCN type libraries and they build it on top of the native and primitive.
+
+I'd say, you know, you've built like a really good open source library is if it, um, supports other projects as well. If people can like build on top of it. It's really one of the things that's defined a lot of React success is that you, you just get going and build React Native on top of it. And so on and so forth.
+
+There's your legos yeah exactly Yeah, its a it's a,
+
+good Lego.
+
+yeah, yeah. No, it is. It is.
+
+**Andrew:** Yeah, it's, it's interesting to hear that because on the last episode we recorded, we had Christopher shadow on and he was like, oh, yeah, we, we meant to do CSS, uh, but nobody ever asked for it. So we never did it. And here we are 
+
+**Evan Bacon:** Uh, yeah, people, people definitely ask for more styles in React Native and Yoga. Um, uh, we, we're working on adding more native styles to Yoga. Um, it's just, it's tricky because Yoga is very, very popular, even outside scope of React Native component kit. And, um, if you look at like any of the top Google apps in the app store, like if you go to the licenses, Yoga will be in there, like it's everywhere.
+
+So adding and changing the default styling is pretty tricky. the ultimate form of changing the tires on the moving bus, so
+
+**Justin:** Yeah, for sure. Yoga is such a cool project. Uh, there's a react render to the terminal, like a two E app,
+
+uh, that I was using
+
+for a little while back and it uses yoga and I was just like, this is, it's pretty cool
+
+**Evan Bacon:** Yeah. 
+
+there 
+
+is a project by Vincent Reamer, uh, which is pretty sweet. It's called React Native DOM, which is kind of like React, uh, React Native Web. But it runs Yoga in a web worker. So it's actually very similar to what Satori does, where Satori also runs Yoga and WebWorker in order to do the, the, the layouts.
+
+Um, and what Vincent was able to do with this was create these like wild animations where you would like resize things because it was doing all of the layout calculations separately and you could like animate things based on those, those animation layouts. So umm yeah, Yoga is a cool project.
+
+
+#### [00:35:44] Thoughts on Modern Tools
+
+**Justin:** So what, while we're on the topic of, uh, these tools that bridge web and native, something that we were talking about before the, we started the call was, um, Sort of this state of native tooling used in the web. I'm curious, like what sorts of things that Expo is built on. And then just to talk more about.
+
+Tooling in general. Like, so there's a big push to rewrite a lot of things in rust. We've had the, the biome folks on before. Uh, we've had other folks, uh, who are rewriting things in rust. Uh, we had Charlie Marsh who's working on, uh, uh, rust tooling for Python. Um, I'm curious about, you know, both like what Expo is sort of like doing internally and your posture on this and like what you think about it in general.
+
+Yeah, uh, yeah, so we were talking a little bit before this about 
+
+Rust, um, and I mentioned that, uh, Expo with, uh, our flavor of Metro uses Lightning CSS for the CSS parsing, which is, you know, super fast, Lightning fast, even. Devin is an extremely talented engineer. Um, I highly recommend people check that library out.
+
+You're probably already using it. I think everyone's moved over to Lightning now, um, in some capacity. And, um, we, we use Babel still for a number of transpolations. Um, we lean really heavily on our, our caching and the bundler to, and then we also have, we, we actually, uh, Metro is very similar to Jest, like the, a lot of the components that make up Metro are very similar to the components that make up Jest.
+
+And so the, the Jest worker is, uh, used in Metro, uh, to create the multi threading mechanism. And, um, yeah, we're, we're, so we're able to offset a lot of the, the AST improvements. I've, I've tried adding SWC support to React Native and it, it didn't move the needle too much. Like, uh, it was, it's a bit faster.
+
+It wasn't, wasn't substantially faster. Um, and then when you introduce Babel, cause generally what you want to do is have some AST parsing for, uh, modules which don't change, like your node modules. And then you use Babel for your application code so that users have like an expressive and, you know, uh, easier API for, for transforming their own code.
+
+Um, and once you introduce that, then the savings kind of net back out to, to not be super positive. Um, then on the other side of the coin, there's Bun. Bun's amazing. I love Bun. Uh, Jared Sumner is a legend. And if you use Bun, it makes all your JavaScript faster. Um, I guess, uh, another native tool that comes to mind is Static Hermes, which was released, uh, or it was announced kind of earlier this, I guess, last year.
+
+Um, and for people who aren't familiar, Static Hermes is, um, Hermes is the engine that we use in React Native. Um, it supports bytecode, so you can Do all of your evaluation ahead of time, um, which actually creates a really interesting problem for react native, where you could have like a 20 megabyte JavaScript bundle and it just starts up in like under a second because all the evaluation is done at build time.
+
+Um, and static Hermes pushes that even further where it combines a type language with the compilation and by using the types. Inside of, so I think the main thing that they built against this flow, but presumably you'd also be able to use TypeScript, uh, you could actually generate machine code from that JavaScript.
+
+And so this is something we'll be using with React Native in the future, where, um, you know, part of your app could be compiled to machine code from JavaScript. And then you could just write native code directly with the JavaScript. The performance would be, would be amazing. So, um, I wish maybe more people in the JavaScript community went, went that direction of like using.
+
+The types in TypeScript, because TypeScript's a pretty easy sell for a lot of people. And then getting some native, native performance out of that.
+
+Yeah, I have seen like, uh, compiled awasm versions of TypeScript, um, and some interesting things just like you can kind of do a limited subset and get some really powerful stuff out of it. But then again, uh, medicine engineering team is, is, is pretty wild. They're able to pull a lot of this stuff off. I wonder if any of the, the stuff from static Hermes came out of, you know, I don't remember, do you remember this project that metal was working on a few years ago that like did ahead of time execution of JavaScript to like simplify stuff like it was called, um, uh, for you, Andrew, do you know what I'm talking about is like run is a project for meta that like ran JavaScript ahead of time to 
+
+like, uh, 
+
+optimise. 
+
+**Andrew :** Pre pre construct 
+
+pre something. Prepack, 
+
+**Justin:** Yeah. 
+
+I wonder if any of the research from prepack went into the static Hermes or if they're taking a very different approach there.
+
+**Evan Bacon:** yeah. Um, That's an interesting question. 
+
+You definitely see a lot of, um, like meta ideas, just kind of fundamentally different from other ideas, of. Sometimes trickling out into the space, like with Metro, all of the node modules are transpiled like application code. Um, and then they just rely on caching to solve that.
+
+And I think one of the main drivers of that is that they don't really use node modules as much. They use like, like the haste module resolution. And so all the code is basically treated as application code anyways. Um, and yeah, like you see varying degrees of that influence in other tooling.
+
+**Justin:** Yeah. I think regardless of what it is, you know, it's, it can take a lot of work on any platform to make performant code and you can definitely make non performant code regardless of what language that you write it in. 
+
+**Evan Bacon:** For our, uh, config reading, we use shoecrase. Have you guys heard of shoecrase? Yeah, fantastic. Um, it's just like a fork of Babel. So it's, it's written in like TypeScript or something. And it's, uh, super performant for like, if you're trying to transpile a couple of files, it's like one of the fastest options you can find.
+
+Like faster than basically anything else in the market.
+
+interesting. Yeah. All, well javascript
+
+**Andrew:** always been on JavaScript. 
+
+
+#### [00:41:51] Unpacking Continuous Native Generation and Its Impact
+
+**Andrew:** Um, but speaking of things that aren't quite JavaScript, uh, I saw something called continuous native generation. You got a few blog posts about it and it's called out in the docs. So what is that and why would I use it? 
+
+**Evan Bacon:** Yeah, it's a, another great question. Continuous native generation is. Uh, it's a process and like a, a workflow, it's an idea, it stands for, or the, uh, the abbreviated is just CNG and, um, there can be different implementations of CNG. Uh, so our implementation of CNG is, uh, Expo Prebuild. And this is, you can think of it like a bundler for native code and native projects.
+
+So based on the, the, the, the code inside of your, you know, some configuration. That when run with a command will generate the iOS and the Android or whatever platform folders, which will have a native runtime inside of it. And this is actually one of our most popular projects. Um, and it's kind of foundational to how Expo works now.
+
+Um, so for instance, if you. Have a camera library installed, like Expo camera, react native camera. Then when you run the, the continuous native generation command, it will know, okay, like this library indicates that it needs this camera permission added, and maybe it needs this like extra dependency added and these, these file changes.
+
+And then it will like take all those instructions from all the packages and use those to generate the project, which solves a lot of really fundamental issues with react native, like the, the biggest issue. Historically has always been upgrading and probably what like most people have done since the beginning of right.
+
+Native is just at some point, give up, create a new project and copy their code into that new project and then run it again. And it's actually like, surprisingly worked out very well for a lot of people. And C and G is kind of like a, a democratized and organized version of that process that you're just always running.
+
+And we find that this also works really nicely. Yeah, absolutely. Um, especially over time with your project getting larger and larger because when you want to uninstall a project and it has all these extra dependencies, you create these orphaned processes, these orphaned references, um, where maybe you add that camera permission, but maybe you add some other camera library, which also has a camera permission and they're like, there'll be overlap and then you just won't remember to remove everything.
+
+With CNG, all that goes away because you nuke everything and the only thing that can ever be added is the code that currently exists in your project. And so what this allows you to do is, uh, just focus on building a, a JavaScript app most of the time. And then you spend other time thinking about, um, writing config plugins.
+
+Which, you know, will generally take like some serialized representation of a native file and then interact with other plugins. And, um, what's great about that is that the config plugins can be unit tested. So if you think about like a native library that has a, you know, like 50 setup steps or any native library has 50 setup steps, it's like, um, with a config plugin, you can be continuously testing and, you know, just testing those setup steps and ensure that they always work.
+
+Um, and that was like the basic premise. Now it's actually been pushed even further. So people use CNG to build. Really outside the scope of what react native is normally used for. Someone sent me a DM this morning, which was, uh, they they've been using a bunch of config plugins that I just make in my spare time.
+
+Uh, and one adds like Apple settings, like settings to your, your app in the Apple settings app, uh, home screen widgets, none of that had like quick actions. And. Outside of widgets, the other two are pretty useless features, but, uh, Apple does reward you if you use a lot of their features, like they will, you know, like, they, they scan these things statically, um, and then they, they generally, uh, no one really knows what goes on inside of Apple, but, um, they, they, there are posts which say, like, if you want to be recommended for like the editorial posts that show up in the front, then using more of their features will get you, um, shown there.
+
+So the problem with these features is that when they aren't super useful, adding them, uh, increases. The complexity of your project, which, you know, slows down the build and then, you know, makes it harder to work on features that actually do matter, or it makes it harder to upgrade your app. So a config plugins, it's really easy to add, remove.
+
+And then when you add features like this, it doesn't increase the complexity of your project. Um, because it's just like, it's represented as JSON. So, um, yeah, it's a, it's a really fantastic piece of technology. Um, and we, yeah, we're really excited about how well it's worked. Um, when, when we wrote it, we, we were not sure if it would, we had no idea that it would be, that it would work this well.
+
+Um, so it's, it's awesome. And in many ways, it's what's allowed things like explore router to exist because by eliminating how much time you have to spend thinking about like, you know, the code signing and the native build and all of this, like upgrading problems, then you just think about, uh, actually building your app with JavaScript, at which point you start thinking about it almost like a website.
+
+You're like, how can I really do the most with what's in this JavaScript? And so we, we made config plugins, rolled it out maybe like two years ago. And then a little bit later, we were like, all right, it's time to do expo router. Like we can focus on really making universal app development, uh, an incredible experience.
+
+**Justin:** That's huge That's huge. 
+
+**Evan Bacon:** Yeah. It's, it's a really important piece of this puzzle. Um, so I highly recommend people use it if they have, if they're using React Native and haven't moved over to it
+
+yet. 
+
+**Andrew:** is that essentially what makes it possible for like me as a person developing on Expo to never open Xcode? 
+
+**Evan Bacon:** Um, that's part of it. Yeah. So the other part is EAS build, which is our cloud build service. Um, the EAS build has two pieces. One is the cloud build service and one is the authenticate like the, the code signing part. Um, and the code signing part, uh, also kind of integrates with our CNG implementation a little bit.
+
+So it can like look at if you have a widget and if you have an app, and if you're using, you know, like paid services, like merchant IDs, and then it will synchronize all of those with Apple. Cause if those aren't synchronized by the time you make your build, then you, it'll fail. And, um, so yeah, we, we added the, the authentication, which is pretty sweet because then as your app scales and you add more complexity, the code signing scales with it automatically.
+
+And then EAS build, you can build in the cloud. And then if you have a team. You can, you know, like provision the app for that team code, sign it for different devices, re sign it for different devices without having to rebuild it and then download it. Those pieces altogether create a flow where you technically could work without Xcode or Android Studio.
+
+A lot of people, um, had pretty good success with that. Um, if you want like the more advanced cases, um, then you're going to want to like dig in and use Xcode, Android Studio regardless um You know, there's this kind of misconception that React Native is for easier development. Um, But in reality, it's, it's for more powerful development done easier.
+
+Very similar to react, like you don't, when you learn web development, I mean, like my baby sister's learning web development. I don't tell her to like, I'm like, yeah, you will learn react. And she like goes, she's like, where do I find react? And I was like, actually, let's, let's set you up with like some HTML, CSS stuff, and you're like, you learn some of the basics and then you add on react.
+
+And it's like, now you can, um, you know, I think, uh, as the bar moves higher and higher over time, it's like, in order to feel some sense of like satisfaction with what you're developing. You need to be able to have more powerful tools. Like, I think it's, it's not super satisfying if nowadays, like at the end of the day, you have like a blue screen.
+
+Um, but if at the end of the day you feel like some buttons and a list and like images, then it's, it's a bit better. So, um, yeah, React Native is, is, you know, the way we think about it as we develop it is that it is for these more intense use cases and like, how can you, um, really blow past the, the simple stuff.
+
+Very easily the stuff that users expect to be there and then focus primarily on delivering, you know, like this exceptional experience.
+
+
+#### [00:49:59] Looking to New Platforms
+
+**Justin:** Yeah. Um, let's talk a little bit about, um, writing code on different platforms other than just like an iPhone. So there, there are these other React Native platforms, like, so React Native Vision, um, you know, the, the potential to, to write code for, you know, Apple's new VR, AR, uh, products. Um, have you, have you. Explored did those at all?
+
+**Evan Bacon:** Yeah. Did you guys No you guys buy a vision pro? 
+
+**Andrew:** 4, 500 after tax is a little, little too pricey to be an early bird on this one. I think. 
+
+**Evan Bacon:** Yeah. 
+
+Yeah. It's, it's expensive.
+
+**Andrew:** What about you? 
+
+**Evan Bacon:** yeah, I mean, my, my reasoning there was kind of like every, like every dollar I currently have has come from the fact that at some point in my life, I got my hands on one of these native devices. and built native apps for it. So probably it would be a reasonable purchase.
+
+Um, but even then I couldn't lie to myself. It was, it was 
+
+a mistake. This is, this is not gonna, but, uh, yeah, I didn't feel like it would be cool to have Expo support on on vision. So I got it for that purpose. 
+
+**Andrew :** have does Expo plan to like expand to any of those other platforms? Cause I know there's like, there's react native windows, react native Mac. Like there might even be a react native watch. I don't, I don't know. 
+
+**Evan Bacon:** Yeah. Um, so you're like with, with Expo, it is a native library for a native app, right? It's whereas maybe something like Cordova is. Kind of like you're in a whole new world of web views inside of apps. Um, so with Expo, you can write as much Swift and as much Kotlin as you'd like for your respective platforms.
+
+And you can add Expo wherever you, wherever you need inside of that. Um, so if you have an Expo app, you can today, you know, just pop in there and add a Vision OS target. And write the Vision part in Swift if you, if you'd like. Um, our primary focus is on, This, this mobile development story, you know, mobile development, or sorry, mobile, uh, compute makes up like half of the internet consumption.
+
+And, uh, I think it's, it's just really important that this problem is solved because it is incredibly difficult to make native apps. Um, and it just really shouldn't be like that. People have a lot to say and making apps is a really, really important way to say things for a lot of people. Um, With the Apple devices, they all use these like M chips, they're like M1, M2, M3, and those, those all can support, uh, cross platform kind of in a watered down capacity, like it's not baked out yet, but if you were to think about the time it would take us and the complexity in order to like add native platforms without the M chip, then, uh, I think by that time, The M chip cross platform would be about so basically Apple is kind of going in the UWP, like the windows direction, um, where you can write an apple app once and it runs on different apple, um, products.
+
+So, right now, you can run in a react native app on vision. It runs, I think, is like a supported on vision. Uh, or support like an iPad, like not optimized for vision app. And then there's this react native vision fork, which has like a thousand lines of code in it, uh, which enables the ability to have it run like as a proper vision OS app.
+
+Um, but if you want access to any of those primitives, that's kind of the benefit of react native, right? Like vision OS came out with these new primitives. Like here's this button, which is crazy blurry and has like this wild shimmer effect on it. Um. If you were using like Cordova, you would have to kind of re implement that in CSS.
+
+Um, and with React Native, you, you just make a binding to the underlying native button that Apple released. So it's, it's pretty, um, it's pretty optimized for switching platforms. Our, our focus at Expo though is primarily on, um, on, on mobile devices. And I think, um, the, the main device class that we don't support is Windows.
+
+My native windows, um, if we had that, then I think that touches, uh, basically every platform because you could currently deploy your, um, your Expo iOS app to Mac with M1 devices.
+
+**Justin:** Have you seen the work that the Arc browser team is doing? They're 
+
+like
+
+trying to port, 
+
+**Evan Bacon:** Arc browser with Swift 
+
+Yeah. Yeah. 
+
+seen 
+
+that. Um,
+
+
+
+**Justin:** yeah, like, Swift windows. 
+
+**Evan Bacon:** I was like, wild. another one of these whole new world things like Expo can be thought of kind of like Netflix. You know, it's like, there's a really, you know, refined version for these individual platforms. Um, at no point is Expo like shoehorning. It's theme into a different plot.
+
+Like there, there are different paradigms which work cross platform, like react. Um, and those, um, are the, where things are universal, but in terms of like changing the language, uh, it's tricky, you know, like JavaScript runs on all these devices, uh, arm chips have like special concessions for running JavaScript.
+
+And, um, and, and yeah, so, uh, we, we do. Really respect the native platforms that we develop for and the native developers for these platforms, like edX, but we're all native developers. Um, and we, we care very deeply about the platform. So we want the experience that you get to be as native as possible. Um, like universal linking is a native feature and it feels your app feels super native when you can.
+
+Deep link and it instantly goes there. A lot of apps when you universally link, um, like Twitter, a lot of people experience this where you like open it and then you'll kind of see it just sitting there loading and then maybe it will load in and you'll see it forgot about the link. You have to like, swipe back and tap on it and then it remembers it.
+
+And that's because like the, you know, the orchestration of like data fetching has interrupted the routing. And these are problems that, uh, when you kind of frame them like that, they sound like things that have existed on web that were, you know, solved in some. It's a meaningful way, um, but yeah, in the same way that React binds to the web and it's a true website, React Native binds to Native and 
+
+needs to be a true Native app. 
+
+
+#### [00:56:06] Native React Server Components
+
+**Andrew:** So recently there's been some new things in the react world. Uh, that being react server components. When we had, uh, Nate from Tamagui he had a visceral reaction to server components. He's like, uh, mobile apps are local first apps, and that's the way they should be. Uh, React server components don't make sense in that paradigm.
+
+Is your take the same, or do you think differently?
+
+**Evan Bacon:** Um, yeah, I don't think, uh, so in regards to React uh, React server components, specifically on Native, um, yeah, I don't think that server components are, Like diametrically opposed to offline support. I actually think that they play, uh, play into offline pretty well. Uh, if you think about like, uh, how. Ace reading a certain or react server components work is, um, each server component is rendered at build time.
+
+And then it, the components will indicate what they're caching and revalidation, uh, should be. So like, when should it update from the server, but by default, they are made at build time and shipped. Effectively, what could be offline. Um, so if you built an app that truly was fully offline, which is very few apps, by the way, in, in the apps that are offline are generally apps that Apple will consume, you know, like pull into their ecosystem and, uh, you know, Sherlock.
+
+Um, so in the cases where you do have content that is online. It does make sense to have, um, the, or it could make sense to have the rendering be closer to the data. Um, And this ties in really nicely with OTA, like OTA is probably one of the leading reasons that people, you go for React Native, um, is this ability to send code that orchestrates the native code that's already on the device over the air, um, so if you think about the native code that you actually ship, that's like the browser, and the JavaScript is kind of like the webpage, um, but it's, you know, highly refined for that browser, and offline is actually really interesting in that context 
+
+because, um, Like offline on web, you can use service workers and service workers are just so fundamentally, um, difficult to use that it's almost dangerous to use them, right?
+
+Like if they cache too aggressively, then you can't send a bug fix and you'll get contacts and support and people will be like, Hey, why is my URL not update? Um, and, and then, you know, like, okay, clear your browser cache. Uh, with a native app, you could effectively have the same service worker API because, um, if you had that issue where things were cached too aggressively, you could just push a new binary through the store and it will nuke the cache.
+
+Like, you have that mechanism. On web, the equivalent would be if you could push a website update, which updated Chrome and, you know, like, obviously it's not a thing. Uh, so I do think that we have some, some levers to pull to make offline work. Um, really nicely and, um, and I, I just don't think service, uh, server components really break any of that.
+
+I think server components are actually gonna be really fantastic, um, on react native. So I, I built, I think it was maybe the first public prototype of server components. I have a video on it. Um, and it was the kind of context was that someone was like, it can't be done. like, Oh, it's, you can't do it.
+
+Um, and I've, I've dug into that a lot more recently. And the results have just been fantastic, like, uh, incredible. Uh, the things that you can do with server components on native, um, these are gonna be things like static generation, right? Uh, if you think about like the, the RSC file format, uh, a lot of this actually works better for native than it does for web.
+
+Because, you know, on, on web, people always have these questions like how, where does the HTML come from? And the answer is like you have this extra renderer that sits on top of the RSC renderer that takes the RSC and turns that into HTML. Um, so RSC can kind of be thought of as like native HTML. Um, and if, if the browser just supported loading RSC directly, you wouldn't need the HTML.
+
+Um, so if you think about like the native app as being the browser, if it could, you could make it however you want, you could make it load RSC files directly. Um, and then you could create, you know, things where maybe the U. I. shows up before the JavaScript is loaded. Um, or you could, you know, compute complex, um, components at build time or on the server, uh, right now we have really no mechanism, uh, to do build time, static generation for native apps.
+
+So if you have, you know, gradients and, you know, complex, uh, things where props are, you know, being computed in at runtime, um. You just always pay that cost, even if they never change. A good example would probably be Markdown. You know, Markdown has lots of rules, like if it's the first H1, then the padding needs to be larger than if it's the second H1, and all those rules just run on the user's device when they load up the, the MDF, or the, the Markdown or something.
+
+Um, with server components, you could compile all of those rules out, unless they change, in which case you could compile them. Um, maybe in a separate thread on the same device. Maybe you could compile them in the server. Um, so I think a lot of the problems that people have had have maybe come from, um, a particular implementation of server components.
+
+Rather than server components themselves, um, the, I mean, they are, it has been extremely difficult to implement. They, there's like no documentation, very, even though I talked to people who work on meta, work at meta on React, like every day, um, it's still very tricky, uh, to figure out how a lot of this works, um, you know, there's crazy nested opinions everywhere that kind of span between, um, React and the particular implementation.
+
+Uh, that currently exists, like one that I just encountered yesterday was, um, the error that you get, like, I didn't realize you couldn't use, uh, class components with, uh, server components, like class components can't be server components, had no idea. Um, it makes sense, but I just, I'd never seen that written anywhere and I've read a lot about them.
+
+Um. And, uh, the error that you get is really confusing. And, uh, apparently the way that you want to balance that error out with, like, the useStateError, because the useStateError is pretty good. It's like, you can't use useState here because it doesn't exist. Um, the way to balance it out is that you have, like, an AST pass.
+
+And the AST will just look and see, like, it will match if you're extending a class component in a React server environment. And then it should throw a similar error. So you have, like, this kind of weird asymmetrical, um, interface. But all this is like the implementation and, um, the, the errors. And, uh, I think in terms of the UX, like what the, the user will experience.
+
+And then when it's really refined, what the developer will experience is going to be just incredible. Like it's going to be, it's so many new tools in your tool belt. Um, and that's just the tip of the iceberg. Um, it, it, it's really, I can't state enough how excited I am for this technology. Um, and I, I don't think it's going to really get in the way of offline first.
+
+I do think that offline first, you know, like one way that you could think of offline first is kind of like optimistic UI. And right, like before you make some network requests, do something locally and then update. Um, I do think that the particular implementation of server components that most people have seen is very, like everything goes to the server first heavy.
+
+Um, it doesn't have to be like that. Even the server navigation in RSC doesn't. It seems like it doesn't have to be like, it doesn't, it seems kind of optimal for the web where you are always online, but what if you just had like one giant root server component and that represented all of your routes and then you did what was effectively like client side navigation throughout that server?
+
+Like, I don't see why that isn't possible and why you couldn't cut out all of the, the, um, the, the server interactions if you wanted to. Um, I, I, I can see how people got to though, based on what they have currently seen
+
+**Justin:** Yeah, I think this is one of those interesting technologies. So, I mean, we talked to Christopher in the last episode. It reminds me a little bit of like JSX when people were talking about JSX and React and, and it's like, you know, there's a lot of like, people are like, what is this? Why are you doing this?
+
+Whatever. And there were like some fundamentally good principles there. It's just like actually co location of UI is, is a really powerful concept that enables composition in a way that you really couldn't do before. And, and I think. The challenge with RSCs, I'm sure that there's, you know, there are a lot of great ideas here, but it's also.
+
+Complex to communicate. Uh, cause you had said something, uh, just now, this is like, Oh, well, you know, fundamentally react server components are built on the server. And, uh, I mean built, you know, they're, they're built at build time or they're generated 
+
+at 
+
+build time. And 
+
+**Evan Bacon:** at a different computer than your computer, like, 
+
+yeah. yeah. And, and I think that.
+
+Like the name is a little bit of a misnomer in some cases. were like, considering it's like, Oh, it's running on a server. And it was like, yes, but, and then, yeah, I don't know. it'd be interesting to see how it evolves and like the language changes and obviously documentation and different implementations and stuff will go a long, long way. yeah, I always call them, uh, serial components. Like, it just makes so much more sense to me. Um, I just say server components. Like, I had to, like, retrain myself before I talk about them publicly, but when I think about them, it's a serial components because the, um, Yeah, I think it's both the serialization of your components, but then also I think fundamentally one thing that's a little, uh, I'm not so sure about in server components because I've said a lot of positive things, but one thing I'm not sure is that opting into reactivity, uh, with a client boundary, so like the default is server components and then you say, okay, this component is interactive and it has, you know, state, Um, and I think that's a little weird for react to be something that you, you opt into.
+
+Um, it would feel like you kind of opt out of reactivity with React. And then I, I also think there's some weirdness around, um, you know, like HMR, like it's, it's not as intuitive as when everything is a client component because you have fast refresh, which, you know, updates the component and then it, you know, changes the state within the component.
+
+But with the server component, it's like, what, what should refresh? Um. The basic, you know, the root component, when that changes, that should refresh. It's pretty obvious, but the root component does come from what is effectively like a server action. It is a, uh, an API route that runs in a react server environment and it returns RSC, um, however, other server actions within your app that return.
+
+RSC should the, should those update, like should later in your app, should the request be remade and then the component come down and like re trigger when you update the JSX inside of a server action? Um, it's hard to say. So I think ergonomically there are some, some tricky bits in there. Um, but for as low level as I am when I'm writing Expo, it's very exciting for me.
+
+Um, the, the ideas and the potential. And I also think that, uh, in many ways, I think server components are more interesting for Native than they could ever possibly be for web. Um, like I think a lot of the stigma comes from people who are like, okay, well everything already can be rendered on the server and there already is a static representation and we already have data fetching and we already can do build time, static generation.
+
+But you can't do any of those things on native in a reasonable way. Um, and so to be able to all of a sudden do all of them is, it's pretty game changing. Um, like if you just like go onto Google and you just search like server driven UI, you're going to see like how Lyft does it, how Uber does it and how Shopify does it.
+
+And like everyone has their own implementation of this at a certain level. It's, it's such a complicated and important feature. And I think in the same way that. React native, where if you wanted reactivity, you would kind of pay the cost of all this extra complexity in order to get reactivity on native.
+
+Um, a lot of that has kind of gone away over time, and now you have reactivity just built into the native platform in many ways. Um, with like Swift ui, it's like they've copied so much React. Um, but if you want server driven ui, I think React native is the perfect place for that because you have your native ui, you have, you know, your swift elements, your lin elements, whatever you want.
+
+Um, and you bind that to a primitive, which then exposes it to the server. So in this case, that would be JSX. And then that JSX, um, You can now, um, basically orchestrate, I want these native components to mount and I want like the instructions for those to be generated at build time, but I don't want to like go out of my way to say these are generated at build time.
+
+I just want to, I want the compiler to magically know that these should be generated at build time. And these parts that are, you know, data driven, I want those to update and I want those to update on the server and I want those to update on the server in the context of an iOS or an Android app. Um, and I want them to be versioned as well.
+
+So a lot of, uh, really important, just native problems from a frameworkless perspective, I think are solved with server components. So, um, yeah, I think it's going to be game changing. It's gonna be huge. whole new world. Very exciting 
+
+
+#### [01:09:41] The Future of Cross-Platform Development and React
+
+**Andrew:** yeah, that, that leads into our last question pretty well, uh, on the podcast, we always like to ask like a future facing question of the field that the person is currently involved in. 
+
+**Evan Bacon:** So, uh, right after I said new world.
+
+
+#### [01:09:54] Looking ot the Future
+
+**Andrew:** so what, like, what do you think the future of cross platform development and react is? Like, I've seen a lot of react fatigue on the internet lately.
+
+Do you think react is going to go away? 
+
+**Evan Bacon:** Um, uh, well, I think the future, uh, will look like server components. Um, and I think, I mean, I, I, I, a lot of my feelings are kind of tied up in this, this server component thought and an expert router. I think expert router is gonna be really important. Um, it's already proven to be very important. And, you know, I have people come to me all the time, like consultancies, agencies, and that.
+
+They're like, when can we just use like one. Um, like there's a lot of people who have kind of sold, um, customers on, Hey, if we just swap from framework list to react native, then you get it. And then they've enjoyed the benefits of being on the single. And now they're like, how can we do that for another platform?
+
+Um, so we, we already kind of have the, um, we have like the acquisition there. You just need the, to deliver on the actual framework and make it good. Um, in terms of react fatigue, I think people are just maybe tired of like particular implementations of react. Yeah. Yeah. Um, you know, there's a big shift, big change.
+
+I'm super excited for React Forget. I think React Forget is going to be fantastic. I'm so excited for it. Um, I hope my hopes aren't too high for that. Um, but, they probably are. But I, like, yeah, memos are just not my favorite thing. I don't think I've ever really written a memo correctly. Um, I learn new things about them all the time.
+
+It's just, I'm excited to not have to deal with them. Uh, and I think a lot of people. Saw that potential early on and then they implemented that in different frameworks because they were able to move a bit faster And so people are like, well, you can get all of those from over here And I just don't think there's enough dialogue around forget So I think whenever meta decides to release that that'll be really important.
+
+Like I remember when server components came out I was at next comp and I just remember thinking like and saying like if they had instead ushered out forget, like people would be pretty hyped because react was already kind of teetering on being pretty complicated. And there was all these other solutions that were more reactive and, and they were like, actually, let's get like really complicated with it.
+
+Uh, so I think forget brings it down a bunch of pegs. I do think that there are elements of server components that simplify, um, not react, but like framework implementations of react, but you don't have to think about, is this SSG or SSR too much? You just think about like, how frequently does this update?
+
+Um, you know, like I think, uh, I think mixing will, will be really exciting there. So like mixing, some parts are built statically and other parts are built on the server as opposed to like route by route. Um, and then I, it's hard to say which way things will go with the vision, like Vision Pro, if that will like be important.
+
+Apple's been collecting patents for Vision Pro for like, like the first one was like 17 years ago, and they have over like 5, 000 patents. I think they said when they announced it, um, so there's definitely a lot of parts to VR that, um, are important and other people just have not been allowed to use because they are legally not allowed to do anything with them for like 17 years.
+
+Um, these have been collected up. So there is a chance that. That computing is in a pretty good state and we just don't know because we haven't, no one has been allowed to try different stuff. Um, and if that comes out and it does do well, then, you know, maybe, maybe that dips into the, um, the desktop space a little bit.
+
+Um, a lot of, I think web usage, like the majority of web usage comes from desktop, right? Like on, on native devices, um, I think it's close to like 90 percent of internet usage comes from a native app, right? As opposed to a mobile web browser. And so the majority of the influence of the web, uh, comes from desktop based devices.
+
+And if vision, if, if Apple really throttles the web on vision, similar to what they've done on iOS, and it kind of takes some of the place of like your desktop stationary computing, you know, so you can get those bigger monitors and you can get these gestures and stuff. I think if that happens, then maybe we will see more like.
+
+Then it wouldn't really be. I don't think native mobile so much as maybe like native desktop, like that's where the, the app sector falls there. So I think that could be kind of interesting. Um, Or none of that happen at all because it's expensive and like who use it. Um, but yeah, mostly I'm excited for forget and react native server components and expo router.
+
+I think those are going to be like three killer pieces of technology. Um, and I don't think people are going to get too burnt out on react. I do think Astro is fantastic though. Have you guys used Astro? Yeah, it's awesome. Um, yeah, like there are, there's different types of websites and you know, there's web apps and websites and.
+
+Uh, Astro really kills it with the, the website space where you want like static content. It's really hard to compete with that. In a lot of ways, I think you do pay the cost of React being this like universal mechanism, uh, when you build a website and a lot of times it's like, you don't actually have to pay that cost.
+
+You could just build a, you know, some static thing with Astro and. It's pretty slick and easy. And that's not to say that React could never be as easy as Astro is, but I think the same thing that people think with Expo, where it's like Expo maybe, um, would struggle to be the best in each platform because it's trying to be really good at multiple platforms.
+
+Um, I think that also applies to React. Now, I don't think it's like a huge deal, but I do think that with React having, you know, like, um, opinions about the event system and various opinions about, um, scoping reactivity. Um, those do. You know, cause it to maybe move at a slower rate. Also, I think just the success of it makes it move at a slower rate.
+
+So, um, yeah, I don't know. Like, uh, I think Astro will keep doing really great and really excited for that. Um, but you know, there's, that's just websites. Like, uh, one thing that really excites me about native development is just the fact that you get to think in like, in terms of first principles. So, you gotta think about like, you know, is this the best possible thing that the device that I'm holding in my hand is capable of doing?
+
+And, um, with web, you're, you know, you're limited by browser vendors and specifications, which are fantastic for various types of innovation. You know, like, uh, when you buy the vision pro, um, it was just like, it was on the front of my mind. Uh, one thing that you need to do is that you, they measure your head, like the size and shape of your head so that it's fit correctly.
+
+Um, and in order to do that, they, they send you like a web link and then that web link opens an app clip and then that app clip. Um, has, you know, the access to the high fidelity cameras on the front of your iPhone. And from there, you can scan your face and then they know the, you know, like which size, uh, vision to give you, which size headband.
+
+Um, and I just think that it's fantastic that if you're a native developer, you can think in first principles. Um, okay, we have these devices, um, we need to minimize the amount of complaints and like returns that people might do. Um, it's like, how can we solve this? For the most amount of people. And, um, if you're limited by browser vendors, if you're limited by app stores, then these things get in the way and you can't just build the best possible thing.
+
+And if you can't build the best possible thing and it's like, I don't know, maybe it's not as exciting and you're probably not going to work as hard on it. Yeah. Uh, it's a, it's an exciting space to be in, I'm, uh, really grateful to be able to work in in 
+
+app development. 
+
+**Andrew:** Yeah, I'm, I'm, I'm real excited about the future to RSC. It seems like a great innovation and react forget can't come soon enough. Like, uh, I don't want to write use callback ever again, or even have to think about what callbacks are doing. Um, but Yeah. thanks for coming on the episode. Uh, this was a lot of fun.
+
+Uh, learned a lot about Expo. I didn't know and where it's gone in the last few years and, uh, I'm excited to see what you guys put out. 
+
+**Evan Bacon:** Yeah. Thanks. Yeah. You should give it a try. It's a, it's a 
+
+good time. 
+
+**Justin:** Yeah, Evan. Uh, again, congratulations on v3 launch. We'll be eagerly looking forward to v4. Uh, I wish you all the best with that.
