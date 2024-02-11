@@ -91,7 +91,7 @@ export default function Episodes() {
               <H3>1st - ($500)</H3>
               <Ul>
                 <li>
-                  60 second ad slot at the beginning of each bi-weekly episode
+                  60 second ad slot at the beginning of each weekly episode
                   released during the partnership period
                 </li>
                 <li>
@@ -115,7 +115,7 @@ export default function Episodes() {
               <H3>2nd - ($300)</H3>
               <Ul>
                 <li>
-                  30 second ad slot at the midpoint of each bi-weekly episode
+                  30 second ad slot at the midpoint of each weekly episode
                   released during the partnership period
                 </li>
                 <li>
