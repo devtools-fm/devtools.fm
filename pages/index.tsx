@@ -90,7 +90,7 @@ export default function Home({ latestEpisode }: HomeProps) {
 
               <div className="flex items-center gap-4 mb-2">
                 <a
-                  href="https://www.raycast.com"
+                  href="https://codecrafters.io/devtools-fm"
                   className="h-20 w-20 flex-shrink-0 flex items-center justify-center"
                 >
                   <img
@@ -101,8 +101,10 @@ export default function Home({ latestEpisode }: HomeProps) {
                 <div>
                   <P>
                     This podcast is sponsored by{" "}
-                    <Link href="https://www.raycast.com">CodeCrafters</Link>.
-                    CodeCrafters is a platform for deepening your programming
+                    <Link href="https://codecrafters.io/devtools-fm">
+                      CodeCrafters
+                    </Link>
+                    . CodeCrafters is a platform for deepening your programming
                     skills through rebuilding real-world software. Build your
                     own version of Git, Bittorrent, Redis and more.
                   </P>
