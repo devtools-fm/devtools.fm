@@ -12,6 +12,19 @@ import { Input } from "components/input";
 import { Button } from "components/button";
 import { useIsClient } from "utils/useIsClient";
 
+const pastSponsors = [
+  {
+    name: "CodeCrafters",
+    url: "https://codecrafters.io",
+    logo: "https://codecrafters.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.e38048e3.png&w=48&q=75",
+  },
+  {
+    name: "Raycast",
+    url: "https://raycast.com",
+    logo: "https://raycastapp.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F9dab15c5-70d8-4f0d-a8b1-604b0b85912b%2Fraycast-logo-256.png?table=block&id=ce1ccf83-06b1-4ac8-b8d4-7b3276bf34e0&spaceId=50d13040-8e7c-4990-aed4-0844f62c7aa2&width=250&userId=&cache=v2",
+  },
+];
+
 export default function Episodes() {
   const isClient = useIsClient();
   const tags = (
@@ -72,6 +85,31 @@ export default function Episodes() {
                 </li>
                 <li>2nd - 30 second ad slot mid episode</li>
               </Ul>
+
+              <div className="text-sm mt-8 mb-2">Past sponsors:</div>
+
+              <ul className="flex gap-6 my-6">
+                {pastSponsors.map((sponsor) => (
+                  <li key={sponsor.name}>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={sponsor.url}
+                      className="flex flex-col gap-2 items-center"
+                    >
+                      <img
+                        src={sponsor.logo}
+                        alt={sponsor.name}
+                        className="h-12 w-12"
+                      />
+                      <span className="text-xs text-gray-400">
+                        {sponsor.name}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
               <P>
                 We're willing to collaborate with you on the contents of the
                 placement or use pre-provided material so long as it fits with
