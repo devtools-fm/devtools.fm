@@ -26,7 +26,7 @@ export const justin = {
 
 export const andrew = {
   description:
-    "A front-end dev with a passion for ergonomic developer tools, buttery smooth UX, and open source..",
+    "A front-end dev with a passion for ergonomic developer tools, buttery smooth UX, and open source.",
   twitter: "https://twitter.com/hipstersmoothie",
   github: "https://github.com/hipstersmoothie",
   location: "San Diego, CA",
