@@ -1,0 +1,545 @@
+---
+title: Glauber Costa - Forking SQLite and Building a Distributed Database with Turso
+youtube: https://www.youtube.com/watch?v=5wZPUIhJUBk
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Glauber-Costa---Forking-SQLite-and-Building-a-Distributed-Database-with-Turso-e2g0njh
+tags: tech, sqlite, databases, open source, distributed systems, cloud computing, serverless, linux, kernel, replication, turso, libsql, glauber costa
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Glauber Costa, CEO and founder of Turso, a service for distributing and using multiple SQLite instances in different regions.
+Glauber has a long history in the software industry, including working on the Linux kernel for many years.
+He shares his experience working on the Linux kernel and how it led him to found Turso. 
+e also discuss the limitations of SQLite and how Turso is solving those problems with their fork libSQL.
+
+- https://twitter.com/glcst
+- https://twitter.com/tursodatabase
+- https://turso.tech/libsql
+- https://turso.tech/
+- https://github.com/glommer
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://rsdoctor.dev
+- https://www.npmjs.com/package/playwright-test-coverage
+
+#### Justin
+
+- https://github.com/ije/md4w
+- https://www.unison.cloud/
+
+#### Glauber
+
+- http://val.town
+- https://github.com/axodotdev/cargo-dist
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:05:02] Developing the Linux Kernal
+[00:08:57] Forking sqlite
+[00:17:22] Ad
+[00:19:59] Community
+[00:34:30] The Role of Turso in Managing libsql Servers
+[00:48:41] The Future of Databases: A Discussion
+[00:53:45] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Glauber:** There was always a limitation of SQLite. The SQLite only works on a single machine because it's just a file.
+
+Now you can have like five, six, seven, 10 thousands of different applications using the database. All of them have their own SQLite files on disk. They're all writing to the SQLite file, but they're all like periodically receiving the changes that the others are making through the sync mechanism.
+
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, really excited today to have Glauber costa on. Glauber is the CEO and founder of Turso, uh, and Turso is a service for both. they have a fork, uh, SQLite and it's a service to distribute, and use multiple SQLite instances, in different regions and really, really interesting product.
+
+We're really excited to talk about it. I'm a huge fan of SQLite in general. and, and it's, it's super exciting, but before we dig in,
+
+would you like to tell our audience a little bit more about yourself?
+
+**Glauber:** absolutely. So, first of all, thank you guys for having me. Like, we had a couple of scheduling issues. So it's great to finally be here. I, uh, as Justin said, like, my name is Galbraith Costa. Uh, I've been. Working in the software industry for around, uh, 25 years now, and give or take, it's funny because like when I started, the world was also falling down for this thousand and one, uh, things like that.
+
+So, like, everything that's happening now, uh, it's, you know, saw my first rodeo and I just want to leave a message to the younger. Portion of your audience that it's going to be fine like it's good. It's going to take a while and you know, it's not beautiful in the meantime, but it's going to be fine. But like a back back in the early 2000, uh, you know, the world was very different.
+
+Software is very different and I took a, I took an interest in the Linux kernel. Uh, so I started, uh, that that's how my journey, my career started. I started contributing to the Linux kernel, uh, just, you know, I was in school and I liked it and why not? So let's, let's just do it. and I think around 2004, uh, then I was hired by Red Hat, uh, five or something like that, my memory is a bit fuzzy on that, but around that time I, I started working for Red Hat.
+
+So I started doing that professionally. Uh, and I spent around, uh, uh, up almost until 2013, uh, in the Linux kernal. So I worked with a variety of things with, uh, containers, with memory management, with, uh, the X 86, uh, boot sequence and, and stuff like that. That's where I met my co-founder. By the way, my co-founder was also in the Linux Kernel backup.
+
+Uh, and we joined a startup, uh, in 2013. I joined as employee number three, Pekka joined as employee number four. Uh, the startup was doing something that didn't work, uh, at all. Like, so we went through this experience of like, uh, we spent two years doing something, nobody cares, uh, also like a deep tech and et cetera.
+
+So it's not something that you can iterate that easily. I don't have to choose, like nobody cares. And then the company pivoted to a database called Scylla. Which is a database in the NoSQL space for like high performance, very large data sets in the petabyte scale. And again, this is how Pekka and I got exposed to databases.
+
+And, we spent together eight years, doing that in late 2021, almost 2022, we decided to found this company. much like our previous company, our first product also quite didn't work. but, but we've. Thankfully, I think in part because we had this experience. Thankfully, we found that out a lot sooner than, than, than, than two years.
+
+Uh, and our product was using SQLite. So we were using SQLite in, in the product. And this is something super fun about like how startups work, et cetera. Sometimes it gets you the idea, like the stuff that you become. By accident. I mean, I had no intention of, uh, especially like after eight years of ceiling.
+
+I love him. Like the database market is a hard market, man. I was like, I don't want to do this. In fact, when we started the company, I said, Becca, what are we going to do? I can say everything but a database. Okay. Let's, you know, do whatever you want, but let's not start a database company. And here we are, , uh, you know, which we go, because we were using sql Light.
+
+And then, uh, , we, we, , we hit into a bunch of stuff that we didn't like, uh uh, uh, you know, we can go into more details later. and then we published this fork of SQlite as part of our previous product to say, Hey, like, I just, uh, not as part of the product because of the product didn't carry for SQL light, the fork was all hidden, but we're like, let's be good community members.
+
+And, you know, let's do our community job here. That's the way to play open source. So we put this fork out and lo and behold, 5 days later, we have like 1500 GitHub stars. So we started noticing. Okay. So there, you know, there's. , Becca, we're going to become a database company and here we are. 
+
+
+#### [00:05:02] Developing the Linux Kernal
+
+**Andrew:** Yeah, you've certainly chosen some hard problems to spend your career on. Linux kernel development straight out of college. Uh, but I have to ask one question about that. Have you ever personally been chewed out by Linus? Like, I know that's like a dream for many, a developer.
+
+**Glauber:** by the way, this guy that's on the news right now, Steve Rosted, great friend of mine, he's a great guy and it's a little bit unfair. I mean, I just, uh, I actually has a, uh, I found the web, uh, post and he's a great friend of mine because when I started my career, as I said, a very young junior guy. He was way more experienced.
+
+He was working at Red Hat, so he took me as a mentor of sorts. So like, uh, we still talk not as often, but you know, every now and then, uh, this, it's a little bit unfair that he was put under fire. Like, and, and he explains his reasoning that post, I recommend if you know, Google just like, I think it was on the register.
+
+So Steve Rosser, Linus, et cetera, uh, you'll find it, uh, you know, just that, but not by Linus. Uh, all, all my, all my interactions with, with Linus were very friendly. Uh, and this is something a lot of people don't realize about Linus. Linus is not always like that. Uh, and even back then, I mean, they claim it's better and et cetera.
+
+But actually, the normal baseline Linux is not like that at all. It's just that the Linux kernel is such a high volume thing, uh, that this happens very often. But I think I always walk the line well. What did happen though is like, and this is like a, you might have heard that like, I've heard this phrase once.
+
+I mean, it's absolutely true. Every startup becomes, acquires the personality of the founders. This is 100 percent true. Uh, and it's not true only for startups. The Linux kernel had lots of people adopted this very aggressive stance. Because of Linus, because this was his personality. So I was flamed a lot by other people, but, but I didn't have, uh, the, one, one, one time in particular, it was a very, very bad experience.
+
+Uh, it was likely one of the things that led me to the decision of just, uh, when I got this offer, uh, to do something else, I just said, maybe I should give it a try, because it was a very unpleasant experience. Uh, and that was with the maintainer of the networking stack, which is, was a stack that I was not very familiar with.
+
+So I started doing some work there on behalf of like the memory management subsystem. I did not know him well. I did not know him, how he operated. I did not know the codes. I started doing a lot of stupid stuff. Uh, and, and I got, you know, just, uh, I've got, uh, that, uh, times three. Uh, but not from Linus.
+
+Linus was always, uh, very kind to me. Every time I had to interact with him.
+
+**Justin:** Well, it's great that it was kind to you. Yeah. The, the, the messaging around that ecosystem has always been interesting because, you know, he does have those famous blowups,
+
+**Glauber:** but again, I had many friends. I had many friends that were flagged by, by Linux. And like, uh, this, that happened with Steve was, uh, I, I think I just got lucky as I said, cause I never interacted too much with, with the subsystems that Linus, Was more active at, uh, so every time I had to interact with him, both in person and over the mailing list, it was very kind, but I had a, you know, every single week there was somebody a red hat, uh, that I consider like a very good personal friend, uh, it was always, always a rite of passage.
+
+I didn't have that. And I, and I was flamed by other people as well. So it was a, it was a very unfortunate, but a very true reality of the Linux kernel. I don't know how things are today. Uh, but, uh, I know there are very good people in Linux, in the Linux kernel that don't behave like that at all. Uh, uh, Andrew Morton is one of them.
+
+Uh, Andrew Morton at the time was, uh, pretty much like the second person in command of, of, of the Linux kernel. He, I never seen that guy behave like that. Uh, and Jens Eksbo, it's, it's the person behind IOU Ring, which is one of the coolest things in Linux in these days. He's like the softest person you, you can imagine as well.
+
+So, so not everybody is like that. But it's fairly common,
+
+
+#### [00:08:57] Forking sqlite
+
+**Justin:** Well, let's switch over and talk about SQLite a little bit. So SQLite is, is a really famous database is most widely used database in the world, probably. Uh, and it's one of the things that it's famous for is both, it has a small team and it's open source, but it's not open contribution. So it's like, you can see it, but you can't touch it. 
+
+**Glauber:** Well, more or less, you can touch it, which we did. Because there is no like, just to clarify, because there are licenses that will be like this, you cannot modify the software, etc. SQLite actually has no license. They're public domain, so they, they cannot legally, uh, and, and the public domain thing is interesting because one of the things like SQLite has no dependencies, libsql has some dependencies.
+
+And, and one of the reasons that they claim is exactly this. Like we want all the code should be in the public domain. So it can never, we're never going to be like, uh, touching dependency. So the code is public domain. Uh, we can, we can touch it. But it's just that your code is never making it back to SQLite, right?
+
+Just, uh, you can, you can touch it and this is your fork. That's, that's what we did, uh, but, but it's not part of SQLite. They're just, they're just not interested.
+
+**Justin:** Could you talk a little bit more about the fork lib SQL and why you made it?
+
+**Glauber:** as I mentioned, like we were. Uh, we were using SQLite in our, in our previous, now previous product. And we were interested. So the, the intuition that we had at the time is still, is still with us with tourists, it's like, again, we were not a database company, but we were doing like the data replication and data at the edge, and we were trying to do a bunch of stuff like that.
+
+And we knew that, uh, SQLite was a, was a part of the puzzle because SQLite is very cheap to run. In fact, when it's not running, it's free because it's not like a normal database that is just a file, right? So it's not like a normal database that it's always needs to be running, taking connections and et cetera.
+
+And we knew that we could, we could do data replication of SQLite. So technically we kind of knew how to do it. We said like, this is super easy. Uh, you just hook in here and in there. Like, so we, we actually have those hooks in our fork. Uh, then you write the replication algorithm and plug it in here. So we had the mental map of like, how do we do data replication of SQLite?
+
+Uh, and the problem that we're tackling at the time is exactly this problem. Like, uh, if you're running code at the edge in like 20 regions, uh, it's fairly slow from some of those regions to get you to the main database. So that was the problem at the time. Uh, again, in the context of our previous product that we were trying to tackle.
+
+And we found a bunch of people that were trying to do replication of SQlite. Like, so we, we found first and foremost, I mean okay, we're not the only ones trying to do it. so we found like dqlite by canonical, we find like light from flight io, the Ben Johnson is, is heading today. and, and, and SQLite for example.
+
+The, the way they solved this problem was very similar. Now they have, they have stronger consistency guarantees. So we didn't want the full solution. But we will be fine by the way, we could have just used that, but, uh, uh, they, they had a bunch of hooks in, in SQLite, and they tried to contribute those hooks back, uh, and they've got the usual, bye, go away, we're not interested, like, uh, take, you know, take our path back home, we want SQLite to be this thing here, and, and LightFS is just not an architecture that we wanted to, to, to do, because like, uh, because you cannot change SQLite, They are essentially a distributed file system.
+
+and, and there were a lot of problems, uh, for us and a lot of technical reasons why we did not want to manage. A distributed file system, chief amongst them is that how are you going to run this on, on Cloudflare workers and the edge things that we were pushing forward, right? Uh, so look, uh, one day, like, uh, Pekka and I were chatting and I say, you know what, man, just, uh, our first idea is like, we should just rewrite this whole thing.
+
+Like, just, let's just rewrite SQLite and Zig, uh, make something like that is compatible with the file format, compatible with the language and. we can use some of the code and hopefully, you know, Zig will allow for, for us to get C code fairly easily. Let's just do it. But then we started thinking and we started, you know, and we were like, Oh, look, we're not doing this for the goodness of our hearts.
+
+we're running a company, uh, and we have a product that is doing okay, but not that well. I mean, the growth wasn't there. It's like, it's not like we can spend like a year and a half just rewriting SQLite, uh, on the side while doing this. I mean, it's not going to work. so the second idea that we, on this iteration is, okay.
+
+So. So instead of rewriting it, what if we just fork it, right? Because then, then, then you are like compatible from day one and you have a product from day one. You just make the changes that you want and, and go from there. So we, this idea started to become more and more, uh, exciting for us. But here's the thing, given our experience with Linux, the first thing is that we were just absolutely not afraid to fork SQLite.
+
+Because I think lots of people have this thing about, Hey, SQLite is this holy piece of software. and it's a fairly small code base. Uh, it's just C, like there's, there's nothing magical there. and, and, and again, we, we had this example of a community project that had people from all over pushing this project in different directions.
+
+from Linux and say, Hey, this is what we will, you know, in an ideal world. This is what we would like SQLite to be. Uh, so we figured like that, that if we were to maintain a fork that was like SQLite plus this technical SQLite plus replication, there were many forks of SQLite like that, there were like a. I found later a guy that was doing like SQLite with encryption and then like SQLite with this.
+
+If you go look for forks of SQLite, you'll find many because again, the code is public domain. So you'll find SQLite plus this. I think what we realize is that this is not the way to play. The way to play is that we're going to first create a community. So we're going to announce a fork of SQLite that is just like the fork of SQLite for whoever wants to build anything with this.
+
+and then on that fork, uh, we're going to, uh, we're going to, Uh, do our stuff like we don't have to do stuff for other people, but if you, we can message and signal that, hey, if you want to try stuff and you know, and you're also frustrated, you can come with us and, and you can do stuff with libsql. Uh, so, uh, we were flamed on hacker news.
+
+Uh, and, and then again, like people that did not know, uh, I worked in Linux for 10 years, maybe thought that I was somehow affected by that, but I was like. Yeah, whatever. Uh, but we were flamed a lot on Hacker News. One point specifically, because when we announced the fork, we didn't write any code, like we, we, we said, what is the minimum?
+
+We, we thought this very thoroughly. What is the minimum amount of code that you have to write to validate the idea that this fork is a good idea? And we understood that, you know, the minimum amount of code is zero. You don't write code because we are attacking community problems. So you don't write code to attack a community problem.
+
+and actually, if you do, it may be counterproductive because you will become in the eyes of many. The SQLite plus this, which is what we do not want. So we wrote no code. Uh, we just changed the license. Like we added a license, which you can do because the previous code is public domain. So we added a license.
+
+Uh, we wrote a code of conduct because SQLite famously or famously has a joke code of conduct that is an actual joke. Uh, uh, so it's a, it's a refusal to have a code of conduct. So they put a joke in there instead. and, and we put a manifesto out saying, hey, look, we're not going to, we're going to have a MIT license.
+
+We started with Apache, but then we changed to MIT. Uh, we're going to have this MIT license. We're not going to have the same policy as SQLite of like no dependencies. We will take dependencies whenever needed. Uh, we will keep the file format the same, but we reserve the right to change other things. This is where we, things that we might want to change.
+
+This is things that we don't intend to change. Uh, and this is libsql. Now come and, come and build with us. and this happened in October. as I said, October 2022. Uh, this got like 1500 stars in five days. which was more than what our previous product had after a year of, of developing. Uh, and then said, damn, we're a database company now.
+
+So it, it, it's not that simple. I mean, it, it still took us a month or so to kind of say, come on, are we doing it? Is that what we need to do? But it became clearer and clearer that, uh, that that's what we needed to do. 
+
+
+#### [00:17:22] Ad
+
+**Andrew:** Now we'd like to thank our sponsor for this week code crafters Without our sponsors, this podcast wouldn't be possible.
+
+Code crafters makes programming challenges for experienced software engineers. 
+
+If you're looking for a weekend project that takes you to the edge of your programming abilities, you have to check them out.
+
+They've got a bunch of really fun challenges, such as build your own BitTorrent. Build your own, get, build your own Docker.
+
+And so many more.
+
+They have the challenges and a bunch of different popular programming languages. I'm using JavaScript.
+
+If you ask me, it is a great way to build your skills and it's way better than just grinding all leak code. You get to dive into the inner workings of popular dev tools and at the same time, become a better programmer in your own domain.
+
+I've been working through the build your own get challenge using JavaScript. 
+
+And it's been a lot of fun. I've learned about the binary format of get. And fun things such as the head is just a file. It's just a file that has a reference or a shot in it. So that's, I've always wondered. How do you get into to a detached head state? Well, your head file just has something in it that isn't on a branch. 
+
+Really interesting. 
+
+One other cool thing about doing these exercises, especially the get one is I can just look in the, get files to see the format for things like I just wrote the get commit tree command and to do that, I just looked in my get objects folder. My dot get folder has now become a thing that I kind of understand and can reason about pretty easily.
+
+Besides that the user experience is also wonderful. You don't really do anything on their website. You go read a prom, they may link you to some docs. But mainly you're just in your code editor trying to figure out the format and the tool that you're implementing. 
+
+To try out code crafters for yourself. Visit code crafters.io/dev tools. Dash F app. There you'll get a 40% discount. And you'll also be supporting the podcast. We hope you check them out.
+
+If you're looking for another way to support the podcast, you can head over to shop.dev tools.fm. Over the past few days, we've released some pretty cool pieces of swag with more to come. This week, new on the store is an anti dev tools. Dev tools club. Hoodie. I think this, this message is really funny because most of the people we talked to kind of fall into that they're against another dev tool. 
+
+So go drive to this new tech tool that fixes all those problems. So I think that sentiment is very, very near and dear to our hearts here at dev tools, FM.
+
+Do you want to sponsor the podcast yourself? I head over to dev tools.fm/sponsor to apply. And if you want all the latest dev tools, news weekly, and a little bit of recap about our episode, head over to mail.dev tools.fm to subscribe to the newsletter. And with that, let's get back to the podcast.
+
+
+#### [00:19:59] Community
+
+**Andrew:** So were you guys successful in that? Like, did you foster a community and like, have other people contributed to LibSQL other than, uh, people that work at Turso?
+
+**Glauber:** so we have, depends. Uh, I, I think not. Because my benchmark is Linux, right? And so I wanted like 10 companies building products on libsql and that did not happen, at least yet. Now, it also took a long time with Linux, but we do have on GitHub, like more than 60 contributors, uh, today that they're contributing to a variety of aspects of libsql, the server mode, the drivers, et cetera.
+
+Uh, so we do have a very, a very healthy community of contributors. So again, I, I think I had very high, given how, how. uh Central SQLite is for a lot of things. I think my dream scenario did not come to play, but I'm here again. This is just because my bar was was was very, very high and but, um, we, I think, by and large, we were very successful with that.
+
+We have, as I said, on the core project itself. Not to mention the language SDKs and the core product itself. We have, I think, around 60 contributors today.
+
+**Andrew:** That's, that's awesome. So you gotta start somewhere and it's infinitely better than what you're competing with of, of zero. 
+
+Absolutely. So 60, 60 people is like 20 people more than, 20 times more than SQLite. SQLite, I think, has three people working on the project.Yeah. So I'm a front end developer and I got to admit, I have not used SQLite all that much. So I don't really know like the properties of it that make it like a nice technology to use. So for people like me in our audience, could you like kind of go over those? And then after that, like I saw that, like what you guys have done with LibSQL has like kind of unlocked some cool new use cases, like a running a database per user.
+
+So could you walk us through some of the cool things that LibSQL unlocks too?
+
+**Glauber:** this was actually already, the database per user was already a fairly common pattern with SQLite. And I will get to the cool things about SQLite in a moment, but just to touch on this point. Our architecture didn't quite allow that when we launched the Turso server. And it's really like, Turso is essentially, you can think of Turso as not a database.
+
+And again, I always try to fool myself and to say that I'm not running a database company. So you can think of turso as a web server, so you send HTTP requests to that. But in that, in that web server, like there's a SQLite file there and that SQLite file gets replicated. Uh, technically it's a libsql file, but again, the file itself is sqlite.
+
+Uh, and then we have the replication hooks and algorithms and et cetera. And there are some files related to replication. Uh, so, so it's a, it's a web server. You connect over HTTP, it works from anywhere. It works from Cloudflare workers. It works from Vercel. Edge and whatnot. So the first version of the server and the server is also a part of the libsql project.
+
+This is all open source. It's not that we have the fork. And then like the server is also part of the libsql project. It comes with when, when you go and compile libsql, you would have both the library database and the server. Um, our initial architecture, the server was serving one SQLite file. So the server goes on a VM and the VM had one SQLite file.
+
+And then we offer for free, like three databases for, for people to get started. So, but people came ask us, people came and ask us many times, okay, since you're based on SQLite, why can't you give me 10, 000 databases? Why can't you give me this many databases? Because this is already a pattern that's fairly common with SQLite.
+
+So we did the work. To change the web server should now be multi tenant so that you can route requests to, you know, you now can create all of those files and then it can route requests to the right file, right? So we've done that work and then we unlock this, this use case. But it is, I just want to highlight that it is a use case that.
+
+People came and asked us for, because it's a very common pattern of SQLite. Now, talking about the good things about SQLite, why? Because SQLite, uh, at the end of the day is just a file. There's, so creating a database in SQLite is just a file. You only pay for stuff you use, because again, think about it. If you, if you write like a Node.
+
+js application. SQLite is just a library that you put inside your application. So the existence of that file in the file system does not consume any resources except, of course, for, for the disk space. If the database is never queried, your Node. js application never spends any compute cycles on that. So it is already a pattern that because of that, like people, So again, it's very easy to work within a serverless environment with SQLite.
+
+Because again, it has those, it has this property already. Like you're, you have to write a serverless. It's a serverless server, which is oxymoron to an extent, uh, as, as we did, right? But once you have this server running, it's a serverless architecture. The databases, like there's no code start or anything like that.
+
+The databases that are, are not being used. Now we, we do have code starts for your group of databases. If you don't use any database, we shut you down, but you want to create 500 databases. Uh, you know, the database they're not using boom, when, when, when a request comes to the database, you route to the database.
+
+So fully serverless, right? The no code starts. Uh, it's a very good architecture. Uh, SQLite is, and because of that, SQLite has been traditionally used in like mobile devices, low power devices, industrial controllers. So he uses like. an iota of memory. It's an incredibly efficient database. So again, it allowed us to put a plan out.
+
+Our free tier offers you like nine gigabytes, 10 billion rows read per month, etc. It's like crazy numbers that people keep. And I can tell like our cost to run our entire free tier and our cloud costs are like 3, 000 a month. Uh, at the moment, which is like nothing, right? Just so we can run this, uh, and, and we, we, we already have more revenue, uh, on the paid plan than that.
+
+So, so I mean, it's just a, it's a very cheap, uh, database to run. Now, not that we are profitable as a company because you have to pay people and that's the expensive part, but like the, the, the cloud view for database companies are usually like the super expensive part, but not for us. So, so it's super, super cheap to run.
+
+It's incredibly fast, uh, and when you don't use it over the network, which is how SQLite is traditionally used, uh, the database responds in microseconds, so you can, you don't have to be afraid of like n plus one. And turso has a mode where you, you, you, you read from a local file and then turso does the work of keeping that file in sync.
+
+So, so that exists, right? So you, you can take advantage of that property of SQLite as well. So it's an incredibly fast database. Uh, even, even over HTTP, like usually through some response, uh, if you're coming from a close enough region, and then again, replicating because of the same thing, you've created a replica.
+
+You're not really creating anything until you use it, right? Uh, you replicate, uh, our basic planning, three regions. So for free, you can have a database in three regions of the world. This is like unheard of. Uh, and. Usually you're talking about like 10 to 20 milliseconds for requests from Cloudflare workers from Brazil, et cetera.
+
+So it's fast. Even, uh, at that, uh, it's faster if, if you talk into a local file, this is like. Zero latency. My, I mean, Mike, uh, node JS is, uh, doesn't even have an API as far as I know, to measure latency in microseconds. Like one millisecond is bundles, but, uh, but it's just a super fast, cheap to run memory efficient, uh, and he has this property.
+
+That lends itself to a serverless architecture very easily, right? That is at the end of the day, at some level, this is just a file.
+
+**Justin:** Yeah, it's really, really fascinating. So cool. Uh, if someone had, let's say someone has an application and they are using SQLite already. Uh, and maybe they first want to migrate to using libsql. You, you mentioned earlier that one of the goals of the project is to keep the file format consistent. So from that perspective, there's nothing that has to happen to change on disk, but what other work has to happen to do the migration?
+
+I'm assuming they have to use like a different SDK or different
+
+driver 
+
+**Glauber:** You have to use it. So you have to use a different SDK. And I think a lot of people don't realize that. People ask us, but aren't you compatible with SQLite? But if you write a database, if you write a database, there's a clone or a fork or whatever of Postgres. The database is over the network. So you can keep your code the same as long as you keep the wire protocol the same, right?
+
+Because the database is on the other side with sql light. This is actually impossible because the database is the SDK, like replacing. The database means replacing the SDK. Like there's nothing else that you can do, right? So to, to, to replace, uh, and, and this is where, this is one of the weak points I think of, of, of at least, I'm not concerned about that in, like in, in two years from now.
+
+Uh, but because we have limited bandwidth, uh, we can't have SDKs for all languages. Uh, so, so, uh, we have it, we, we focus a lot on four languages, which is, uh, TypeScript slash JavaScript, Rust, Go, and Python. Uh, but we see a lot of people asking for like, uh, C sharp, uh, C sharp is incredibly asked for. I think that people probably do a lot of IOT with that.
+
+Uh, don't quote me on that, but I think that's where we get this pool from. Uh, people ask a lot for PHP, people ask a lot for, for Ruby. Uh, so again, we don't have those, those SDKs and we hope to get to them, uh, this year, in fact, the C sharp one, there is a community contributor doing it. Uh, that is getting the, so we, we, we started to see, which for me is just the music to my ears, like the community itself stepping up and say, Hey, look, I mean, those are the drivers, uh, for, for those other languages, uh, which is super cool, but you have to change the SDK because SQLite itself is the SDK, like SQLite is a library, so there's no way to use it without changing the SDK, uh, and some SDKs have a little, a couple of words, uh, especially in the TypeScript universe, uh, because they just make the assumption That because SQLite doesn't go over the network and then things just take a couple of microseconds, better SQLite, for example, is asynchronous.
+
+Driver, right? So because they make this assumption, they're like, this will never block because this is a synchronous driver. and if you're using just the libsql fork as a library, that can still hold true. So that's fine. But when you're using libsql over HTTP, like you talk to the libsql server, then this is not true because now this request that on SQLite was a microsecond.
+
+now this takes 20 milliseconds, so sync doesn't work very well. So there are a couple of warts in, in there, uh, in the sense that like a, uh, if you're coming from an synchronous, uh, you might have to just adapt your functions to be asynchronous, uh, and, and things like that. But by and large, you change the SDK.
+
+**Justin:** What are the benefits of just using lib SQL over SQL lite without the Turso integration and replication?
+
+Like, what does it add besides just replication? Is there any other things that people might be interested in as a good reason to switch to lib SQL over, over just using regular SQL lite?
+
+**Glauber:** So the vast majority of the code that we wrote is around SQLite that is in the server in the replication and et cetera. And as I said, because that's the part that we want. Um, what that means is that SQLite itself changes very little. Most of the time, we just like adding a couple of hooks. Uh, and, and, and again, those hooks will be trivial to contribute to SQLite, but it is what it is.
+
+Uh, and we, we, we add a couple of hooks. And then we, we call those hooks from our Rust code in the server, for example. So like, the vast majority of the code is, is, doesn't change the way SQLite behaves. Now, there are a couple of things. So, so I would say that the, the, the Delta is, is very little, which by the way, is great for testing. Because SQLite infamously has, or famously in this case. People talk a lot about how they're very thoroughly tested. They have 100 percent code coverage and et cetera, but you may not know that the test suit is actually proprietary. The test suit is not in the public domain. It's things you don't know. So we can't just fork it and like use their test suit because you, you can't just, they won't give it to you.
+
+Um, so, uh, which I, you know, I think is a shame, but, um, we, so we write our own tests, but nothing like SQLite has. But we still have this thing that, like, as a principle, we should avoid making, like, very heavy changes. Uh, on the database on, on the core SQLite, when we do, we're very careful. Uh, and then we write a lot of tests about the things that we are changing and, and, and et cetera.
+
+I think the most significant change that we did on the core level is the fact that SQLite is very bad at changing schemas for columns. So for example, if you have a column that is not, that is marked as not new. But now you have, you want to allow it to be new, or you want to change two columns at the same time.
+
+SQLite doesn't allow any of that. So again, you can change, you can change schema, but you can add columns, you can remove columns, etc. But changing a, changing a column, changing the type, changing the new, uh, property and making something a foreign key or, uh, those are all things that you cannot do in SQLite and lots of people complain about it.
+
+Lots of our users complained about it. Uh, so we, we, uh, enough that we decided that, okay, it's worth changing this. Uh, so we changed that. and and then we have a couple of other changes that I think they're so niche and specific that I won't even mention because it would took me, it would take me a long time to even explain what it is we have again.
+
+We have very small changes. One of them is in the row ID mechanism of SQLite and, you know, so some small stuff like that, but I think the major one is that schema changes in DeepSQL are much better than in SQLite. Our schema evolution capability is better than SQLite. So you might want to change. Just because of that, right?
+
+Just, I don't care about HTTP. I don't care about replication, but this could be a factor for people to change.
+
+
+#### [00:34:30] The Role of Turso in Managing libsql Servers
+
+**Andrew:** Cool. So we've gone over lib SQL in a lot of detail now. I think everybody knows the stage is set, but we've kind of glossed over what Turso is. So could you explain to us, like, in concrete details, what Turso is and how it uses the edge to make all of this happen? And then maybe how, like, The multiple locations work.
+
+**Glauber:** So, first of all, if I was starting this today, libsql would not be called libsql. It would just be called thrso because like, uh, it's, uh, this, this distinction doesn't help us. We're not the only ones you have like Vercel, Next. js, et cetera. Like, so there are many companies that, but every time a company can have like the same name for everything is a lot better for awareness is better for a lot of stuff, but once more, as I told the story, like it wasn't something that we planned, right.
+
+Just, uh, something that kind of happened. So we, we, we, we ended up in this situation, but. uh I mentioned before that libsql itself has a server mode, right? So, so in that server mode, uh, you can spin up a server and then you can replicate it to another server that you run, which is a replica of the first server.
+
+So this is all part of the libsql project. It's all there. Uh, and what that allows you to do is that the libsql drivers themselves now can talk to either a file. This is my favorite part. When you're developing, uh, you just do say URL column file and you're developing there on a file. That's it, nothing.
+
+But then when you wanna push it, when you want to use the server, you change the URL to HCP and everything else works as long as you're using your SDK. Right? So it's an experience of like developing to production that I think is unmatched. Uh, so again, but the server is part of the SQL project. It's not something that is unique to tourism.
+
+What Turso is, is then like a managed server, a managed service that hosts that server for you. And then we're going to do things like security and backups and the usual stuff on managed service, like setting up certificates and then you can, oh, encryption in transit and all this kind of stuff. So you could essentially think that this is a managed service of the libsql server.
+
+Then we have the plans, the pricing, like it's a productized version. Uh, off libsql server, but if you want to run the libsql server yourself, you can some people do like we have people in our discord community that keep asking questions. So we know they do, you know, they're running it. It's doable. It's possible.
+
+But through so is, uh, through so is, uh, you know, our, our product and our service based on that the replication is again, present in libsql server, but it's essentially allows you to replicate. You have a primary server. So all the databases now that we support like 10, 000 databases and again, 10, 000 databases is a Turso limitation, given the machines where you would put you on on the scalar plan, we're going to have a higher plans in the future where you can up this limit.
+
+We already have customers running much more than that, but that will require like enterprise plans, right? Uh, but the 10, 000 number is a limitation of the size of the VM we give. For people on the 29 a month plan, Leap SQL has no such limitation. You can just create, you know, a billion databases or, or, or not like a, however many you can fit in your, in your file system.
+
+Uh, but yeah, replication is like that. So all of those databases, they share a same primary location. Uh, and then you select like a couple of replicas that they want to put anywhere. If you want on the SDK, you can replicate, as I mentioned, inside your own server. You can do that as well. You can replicate inside your mobile device.
+
+You don't have to, you don't have to be, uh, uh, attached to our infrastructure to replicate, which I think is a fairly unique feature. I don't know of any other database company that does it. Like I can not only I can offer your application, but I can offer your application wherever you want in your AWS server on your mobile device on your IOT controller, like the sky's the limit, just replicate the database there.
+
+And Thruso does the work of keeping, keeping it in sync, right? So just, uh, that's the service that we run.
+
+**Justin:** So you had a blog post about this. Uh, I think the, it was called like embedded replicas. Uh, so. Yeah, Embedded Replicas is the name of the 
+
+**Glauber:** feature. 
+
+**Justin:** Gotcha. Gotcha. Gotcha. So could you tell us a little bit more about like the mechanics, like where, how, how does that work? 
+
+**Glauber:** Yeah. So like, uh, uh, we're evolving this a little bit based on community feedback, but the way, the way I said before is, is the following, you have a URL when you create your client and the URL can be a file, uh, or it can be an HTTP request or an HTTP address. if you put an HTTP, uh, URL in there. Uh, you're connecting to Turso over HTTP or libsql server that you run somewhere.
+
+if you put a file, you're talking to a local file, usually for Turso, and this is for Turso, the way it's configured, not only you have a URL, but you also have a token for authentication. Again, for libsql server, you probably, you may not use the token or, or you may, if you set up your own infrastructure for, uh, authentication, uh, so you're going to have those two parameters.
+
+URL and uh, uh, token. So you can add a third parameter now, which is sync URL. So when you, when you add this third parameter, which is a sync, URL, your URL becomes a file again, right? So now you're saying, Hey, I'm, I'm, I'm using this file, and the sync URL is the URL from which I'm going to, I'm gonna sink. So what happens is that every time you write.
+
+This right doesn't finish until you sync the whole thing back so you can always read your own rights. So you're reading locally the experience that if you are the only client, let's say you're doing this for performance reasons, and you are the only client. The experience is just this you just. Use the database like, the, the sync mechanism, uh, exchange is deltas.
+
+So you only have to ex, you know, you don't have to always be downloading the, the whole database. again, and, and we can only do this because of the hooks that we have in, in, in the SQL light Knowledge SQL code to allow for that, right? So you, you are always receiving the new changes to the database. So if, if your, if your server dies.
+
+And it comes back again in the initial sync, you're going to receive the full database. But then after that, you just like keep reading and writing and et cetera. And then you have a sync function, which is something that we're actually hiding, because a lot of a lot of our users ask for that. You have a sync function that you can call in a background thread, uh, or, or in, in specific points.
+
+And that sync essentially says, Okay. Give me, give me the changes since the last sync. And what that does is that like, now you don't have to be the only writer. Like you can have four or five different machines. There was always a limitation of SQLite. The SQLite only works on a single machine because it's just a file.
+
+Now you can have like five, six, seven, 10 thousands of different applications using the database. All of them have their own SQLite files on disk. They're all writing to the SQLite file, but they're all like periodically receiving the changes that the others are making through the sync mechanism. And the change that we're making now is that people just found too hard to, you know, spin up a background thread.
+
+So we're adding to the constructor essentially something that says periodic sync. They just say one second or 500 milliseconds or whatever. And then we do this work for you. Uh, and then every second, every 500 milliseconds, every whatever you set in there, we go to this turso server. So your code is just like reads and writes.
+
+**Justin:** The SQLite code doesn't change. But you now have a database that is local, but it's kept in sync with, uh, with a remote, uh, master point, That's really cool. I can see a lot of like local first use cases for this. Uh, that's a, that's a term that's getting tossed around a lot these days,
+
+**Glauber:** local first is usually talking about, like, replicating parts of the data set. Like we, we don't have, now you can architecture it in such a way, because again, if you can create 10, 000 databases, you can split the data set in 10, 000 pieces and replicate.
+
+But one of the things that you can do, like inside Turso, the server, when you're using the server, that all the servers are fully replicated. So you create 10, 000 databases on a primary, when you create another region on Turso, all of those 10, 000 databases are going to be replicated in that region. But when you're doing embedded replicas, you don't have that restriction.
+
+You can replicate only the databases you want. So you can have, for example, you can do some local first on that if you split the data in a sensible way. Or you can have a SAAS product with 10, 000 users that has a mobile device. And then inside that mobile device, you replicate just the database for that user, right?
+
+So you don't have to replicate the databases in a pack. So it allows you to play with those architectures that are things that, you know, I'm very excited about that. I don't see, I don't think we see a lot of usage on mobile yet. I think a lot of our users are still on the web and serverless because that's where we started.
+
+But that's a use case I like a lot. I mean, just put the, get your 10, 000 customers, separate them in different databases. And the database for that customer is likely not that big. It's like a couple of megabytes or. So you replicate the database inside the mobile device off that one user.
+
+**Andrew:** so you guys have essentially built one huge distributed database. That seems like a super hard problem. Like distributed systems in general are very hard problems. Probably some of the hardest in computer science. Uh, what are some of the challenges you guys have come across while, while building this huge distributed database system
+
+**Glauber:** So our, one of the things that, um, helps us is that our consistency model and our replication model is fairly simple. Uh, where like Scilla as a contrast was a More traditional distributed system in that sense. They had like multi master and, and, um, you can write from anywhere. Like those things are fairly hard.
+
+They require eventual consistency. So you always have those issues. Like, did you get the message? You didn't get the message. Like, what do we do? Tourists are still a distributed system in that sense, but it's way simpler than what I think the audience will have in mind when you just say, you know, bona fide.
+
+distributed system. The reason for that is that again, thanks to our replication hooks, uh, the replication hooks exist in the SQLite write ahead log. so the write ahead log is essentially the stream of changes of SQLite and that stream of changes is order. So we always have order, uh, because we, we, we, there's always a primary.
+
+So, you know, the, they already simplify things a lot. There is always a primary. So the primary is the center of truth because the source of truth and the primary pushes. The updates to the clients, uh, even if they arrive in a different order, because we are streaming the right ahead log, there is a sequence number on this right ahead log.
+
+So everybody receives and everybody sees everything in the same order. Uh, now, of course, there are disadvantages of this model. The reason the reason people reach out for distributed systems is to have like a sometimes. Uh, five nines availability because that notes can die at any time. Uh, but this is not how we run through.
+
+So, because first of all, uh, we don't put at least for now, uh, we may do it in for the future in the future, but we don't put, uh, different customers we do in the same VMs, right? So when you deploy something to Turso, you have your own VMs. Now in the VM, uh, as I said, if you don't use any database at all. Uh, that those VMs will still scale to zero, uh, after, after an hour, they come back automatically, uh, and sometimes that doesn't work.
+
+So this, this is a challenge, uh, which is why we're considering the, in the future, just putting the frontier users all in, then, then it becomes more of a distributed systems problem. Uh, but like, there is no one big Turso machine that is like this distributed system. The way it works is again, very traditional.
+
+Uh, you have your own VMs. Justin will have his VMs, you and Andrew are going to have your own VMs, they're separate. If your VMs die or have a problem, Justin's not affected. Right, so that happens a lot, like one customer is down for whatever reason. It's not like the whole system is down. And then the replication is fairly straightforward.
+
+It's all like it's something with a primary, everything's in order. So we don't have a lot of the distributed, you know, the traditional hell on earth distributed systems problems with Turso. Which is why we could, you know, essentially the private beta of Turso was done in two months. But obviously the private beta, we evolved a lot since then, like it has nothing to do, like, but, but it was very important for, especially coming from a failed product to validate as soon as possible.
+
+Okay. Is this the thing? Because if it's not, we need to find the other thing like quickly. Right. And fortunately it was, we got like 500 signups for the private beta in, in, in a couple of weeks with a landing page up. Uh, so we, we ungated for not all 500 actually ended up using it, but we, we could gauge interest from, from that.
+
+Uh, but, but again, it, it, we can move that fast, much faster than I think other distributed database companies, because our architecture is fairly simple. Uh, and it's a trade off that I think people came to expect from SQLite. They will expect that we're going to be offering a simpler solution. But that's way cheaper, way faster, way easier, uh, easier to reason about than a fully distributed system.
+
+So the same trade offs the SQLite has. At the file level, we like to think that we're bringing the same trade offs to, to, to the, the server, right? Just that, yes, it is simpler. Yes. And, and, you know, we're the first ones to say, but you gain something with that simplicity. We can push features faster. The system is easier to reason about and et cetera.
+
+**Justin:** That's awesome. Uh, yeah, this has been, this has been really cool. Turso is such an interesting technology and, and lib, lib SQL seems like honestly necessary and I'm glad that it exists because I mean, you know, SQLite is such a, is such an enormously useful, beneficial to humanity technology and it's nice that I hope that the community does rally around this as the place to make, you know, changes if, if, you know, they can't be contributed back.
+
+
+#### [00:48:41] The Future of Databases: A Discussion
+
+**Justin:** Um, So one, one thing that we like to do, uh, before we move on to two tips is just ask a future facing question. And we try to tailor this to each guest. but I mean, being that you've worked in databases and you're continuing to work in databases, what do you think the future of databases is?
+
+**Glauber:** so I actually wrote an article about that the other day. I think the future of databases will have less NoSQL. And more SQL, uh, obviously not everybody agrees with me, but, uh, I think a lot of the waves that are making SQLite, like, and, and Postgres is the clear leader on, on that. So, like, uh, I think the community by and large has abandoned a lot of the mid tier NoSQL solutions and Postgres is the real winner.
+
+Like, we're trying to get our share of that pie. That's what we're trying to do. Uh, to some extent with turso, LibSQL, but so far, I mean, like the market share for Postgres, uh, seems to be, uh, a lot bigger. So I think Postgres will be dominant, in that sense. and again, my reasoning for that is, is, uh, again, there's an article that I'm happy to share with the, with the whole story.
+
+but I think a lot of people reach out to things like Mongo in 2010. Just because you kind of have to scale out to run any pet shop store, right? Just the machines became so much more powerful that today, like you can, you can scale Postgres vertically and have like an uncanny amount of users. Uh, and in fact, you can have this uncanny amount of users.
+
+Even with SQLite, which is why we're betting, but Postgres is still more powerful. So I think a lot of the, like the high horsepower use cases that had to use NoSQL even five years ago can be done with SQL today with just Postgres one instance, that's fine. So I think we're going to see a lot more than that.
+
+NoSQL in that sense uh becomes confined to the specialty databases. So there's a lot of like specialty databases that quote unquote, like standard developers, uh, they're just doing like stuff on the web, probably don't even know about, uh, again, if your life is all over on the web, but there are a lot of databases, uh, they're becoming more, uh, common now with like vector databases, vector database is an example of a specialty database.
+
+Uh, but you have like, you have time series, you have a column stores, you have like a, so I mean, those specialty databases, I think will continue to exist and continue to thrive because time series, for example, by exploiting the pattern that your data is a time series, you can be so much more. efficient than, than storing this at SQL and you don't need the query capabilities of SQL because your data doesn't have relations in any way.
+
+Uh, so, so, so I think that, you know, just that it's, it's borderline almost subjectively wrong to, to reach for SQL for that. Uh, and Scylla is one such example, like the kind of use cases that you would run with Scylla. You're just not going to run with Postgres. It's just not the same thing. So I think those specialty databases will continue to thrive.
+
+Uh, the middle of the market, uh, which is, uh, essentially like the web developers, the mobile developers, the SaaS apps, you know, the day to day kind of stuff will be essentially partitioned between SQLite, Postgres, and MySQL. I don't think that we will ever see a fourth, uh, kind of SQL. Uh, and what I, what I keep thinking, what I, what I think lots of people will keep trying to create new query models.
+
+Uh, one example is SurrealDB. Uh, there is also, uh, there is also another one that I think is fairly interesting, I think called EdgeDB. Uh, but I think all of those databases will ultimately fail. Uh, and, and in, in, in a sense, I think like, uh, Mongo was almost a happy accident because they were at the right place at the right time.
+
+I think the default for databases is to fail. And again, just because there's so much pull around SQL that it's just hard to, to break from this ecosystem. So I think all of those databases that are trying to do like not SQL before developers, like for normal day to day developers who absolutely fail, uh, and it doesn't, and again, this is not a statement about how elegant the query language is, how nice, how those things just.
+
+Don't win, uh, usually, uh, and, and again, no SQL, no SQL that, that is no SQL for specialty purposes will continue to exist and thrive. Uh, and, and I don't see, we'll have, I don't think we'll ever see a new implementation of SQL. Uh, it's, it's, it's going to be Postgres, MySQL and, and SQLite forever. And, and the new companies are always, are all going to be like this in a different form.
+
+So if you look at the companies today in the database space, like, uh, PlanetScale, Neon, Turso, SuperBase, Nile, like, they're all this in a different form. Like, they're all, they're Postgres, they're MySQL, they're SQLite, but they're, but in a different form. So I think this is the future, uh, of, of database companies, databases in general.
+
+And it could be wrong, but, uh, that, that's how I view it.
+
+**Justin:** Sounds right to me.
+
+
+#### [00:53:45] Tooltips
+
+**Andrew:** and with that, let's move on to tool .
+
+**Glauber:** My first tool tip of the week is RS doctor. It's from the team who does RS pack and it's a like tool suite to help you analyze web pack and RS pack bundles. Uh, there's currently a lot of. Very, very old, like, decrepit projects that do this for web pack and none of them have ever really delivered on the promise of, like, truly being able to, like, debug my bundles easily.
+
+**Andrew:** And I'm just super excited to see the RS pack team. Try to tackle this. Cause like. The, this is a huge missing tool in the front end developers tool set. And, uh, like I literally just want a tool that I can go to a file and be like, Hey, why are you in my bundle? And there currently doesn't exist a tool that does that very well at all.
+
+So I'm hoping they can work towards that. But if you've been looking for a way to like find duplicate packages, see what's actually in your bundle and help debug that a little bit, I definitely give RS doctor, uh, a look.
+
+**Justin:** More Rust JS tooling. That's cool. Well Let's talk about some Zig tooling. Uh, so I found this today. It's a MD4W and it is a library, a Markdown library written in Zig that essentially allows you to stream HTML from, uh, Markdown parsing. So it like parses Markdown and then opens up a stream and you can just stream HTML really, really interesting library.
+
+So this is. By, I actually, uh, shared another tool tip by the same dev last week, the, the esm, uh, run, uh, tool or whatever. So this is the same person behind, uh, esm, uh, esm sh the, the, the, uh, CDN or whatever. They're making a ton of great tools, uh, but this one's really cool and it compiles to Wasm, so if you want to include it in any JavaScript runtime you can.
+
+So yeah, really cool.
+
+**Andrew:** Yes, it's super cool that they include a WASM part of it that you can run it in a browser, and it seems pretty small for a WASM thing.
+
+**Glauber:** By the way, shameless plug, SQLite compiles to the browser as well. And we've been taking advantage of that and not as much as I wanted. But there is a, uh, we, we, there's a blog post coming up where we're going to go into more details where you can just run libsql and stack blitz. Right? So you just have this database one day, I hope that we get to the point that speaking to like local first and I hope we get to the point that we can just ship the database to the browser for you.
+
+But, you know, the browser has its own complications to do like replication files and etc. We're not there yet. But the WASM stuff is super interesting. It's a, it's a, it's a, technology that needs to 
+
+exist. 
+
+**Justin:** There was definitely a developer who, who did, uh, SQLite and was, um, before the, the official project was kicking off the, the, the developer of actual budget, um, was his name, uh, James James Long's yeah, yeah, something like that. Uh, that was a really interesting project because he, he did SQLite and Wasm and then he used a indexed DB for the like backend store of like where it actually persisted or whatever.
+
+And he had some like performance numbers or whatever said actually using it like this is faster than just using indexed DB directly. And I was like, what, 
+
+I guess just cause you're writing the, the, the pages or the chunks or whatever, 
+
+and
+
+**Andrew:** that project is absurd sequel from James Longster. 
+
+Yeah. next up we have Val.Town,
+
+**Glauber:** Yeah, so this is my tool tip for for today. uh Look, I'm not a JavaScript developer as we discussed in the beginning. I couldn't be further from that. I keep not understanding some stuff in this ecosystem. Maybe I'm the problem. Maybe JavaScript is the problem. I'll leave that up to the reader or listener. But, uh.
+
+I've been chatting with Steve for a while. Full disclosure, they do use turso. Uh, so I mean, there's just, uh, that's how I came to know what they're doing. But like, even for me, who am not a JavaScript developer, I could get some JavaScript done in, in Valtown. Uh, and, and I wrote a blog post about it because I love the way they position as well, which is essentially what if GitHub Gists could run.
+
+So for me, like that, that don't know any of the ecosystem, like, look, I don't know JavaScript, but I can look up a bunch of functions and like the code itself is easy to write. So you essentially write something like it's a GitHub gist. Uh, and, and it runs like that. You don't need anything. You don't need any deployment.
+
+You don't need any infrastructure. Like, uh, and it comes with a bunch of APIs that are, uh, pre baked into the product. One of them is a SQLite API. So every user of the Valtown platform has a SQLite database. Assigned to you automatically, uh, you sign up for the server. You get a SQLite database. You can do whatever you want with that.
+
+That database is powered by turso, which again, how it came to, to, to get you on the product, but super interesting. I mean, I, I, I, I actually, I'm running a discord bot. Uh, inside the company to manage some of the miscommunications that we were having before we run our company on select and our community on discord, which I guess it's a becoming a normal thing these days.
+
+So I wrote a very simple bot to pass a couple of key messages back and forth again, without knowing any JavaScript. Uh, I just look it up and, you know, no deployment hassle, no, nothing just works. Uh, and again, you can, you can have SQLite, you can have, uh, object store, you can have email just like integrated in the platform.
+
+So like writing code is a, it's an absolute breeze. Definitely recommend people checking it out.
+
+**Justin:** Yeah, we had, uh, we had Steve Krause on in an earlier episode and, uh, uh, meet up with Steve occasionally in New York. Yeah. It's a, it's a great product. They're an awesome team and they ship really, really fast. So they're doing a lot of really cool stuff. 
+
+**Glauber:** Okay. My next tool tip, uh, was something I've, I've literally been playing around with today. Uh, here at Descript, I've done a lot of end to end testing. Like we now have almost like 600 end to end tests, which is a lot more than zero when I started. But recently we started thinking about code coverage because like now a large part of our app is only touched by end to end tests and it was surprisingly easy to get going.
+
+**Andrew:** There's this npm package playwright test coverage that like helps you with some of the instrumentation. You basically just plop it in for your at playwright slash test import and get your test and expect from there. And then if you set up a Istanbul in your Babel config, it basically just works. And like, within like 30, 40 minutes, I had like a full test coverage report for everything that's touched.
+
+So it was like pretty easy to set up. And like, now it's just like. It's so awesome to see like the, the fruits of our labor and see how many lines we've actually covered with these hundreds of tests.
+
+**Justin:** That's wild. So how does it map URLs to files? 
+
+**Andrew:** yeah, you just do the normal like Babel Istanbul plugin. It does its instrumenting with its counters and I haven't actually looked into what this does yet, but I think I think it just uses probably some playwright APIs like before and after the test to start something. So. Pretty cool. Like not, not much 
+
+work either.
+
+**Justin:** That's fun. That's awesome. Well, speaking of guests that we've had on the podcast, uh, we had run our, uh, back a ways back, uh, who talked about Unison, which is a really cool programming language and they have just today released Unison cloud, which is their cloud service. Um, so I, I love to talk about Unison. I think it's like the future of programming.
+
+It's like very, it's a very interesting language. Um, but yeah, they, they, they launched a cloud service. Really, really easy deployments kind of fun properties that Unison provides. So it's like very easy to do service to service communication. A lot of interesting stuff here. Also the launch page is beautiful.
+
+It's like, it's, it's so well designed. It's gorgeous. Uh, so really excited for them to launch that. Uh, really cool to see more stuff in this space. I'm happy to see anybody who adds a solution that's makes, makes it easier to deploy services. 
+
+**Andrew:** Yeah. It really shows all the features that they have to like the service to service call is just being a function call is so cool. The deployments. Uh, like I love the platform. I hope to see it grow.
+
+**Justin:** Yeah. I love how they're like their deployments are also just a function call. It's like, here's how you deploy your code. It's just like, send this thing to the server. And it's like, what? So fun.
+
+**Andrew:** Okay. Our last tool
+
+tip 
+
+**Glauber:** so CargoDist is my other tooltip, and CargoDist is a godsend tool for Rust developers. So again, this is a language that I'm a lot more familiar with. One of the things I absolutely hate about Rust, uh, you know, I guess hate's a strong word, but I think Go in particular does a lot better, uh, is the process of publishing.
+
+A gold binary is almost perfect. Like a go is self-contained file to just a binary, just copy the binary. It works everywhere. There's no such thing as like dependency and et cetera. Uh, rust had a, a bunch of ideas that this is the way to go, but they, the, it's just not there. I mean, the implementation is just not there.
+
+Uh, shipping rust binaries is very hard, uh, is very, is very difficult in comparison with go. That's part of the reason, by the way, why our CLI on Turso is Go, not Rust. Um, maybe it would be Rust if I knew CargoDist back then. So, I mean, CargoDist is a tool that actually Makes that process actually work. Uh, so cargo disc can generate a, a, a simple shippable binary, uh, in, in rust, which is for me, like revolutionary, uh, stuff.
+
+Image of rust never could do well before. Uh, the way they do it is extremely interesting. Like they have some zig build step that, uh, for the rust binaries, uh, super cool stuff. Uh, and not only that. Uh, CargoDist itself for you automatically generates like Brute apps, install scripts, uh, and, and all of that.
+
+Uh, so again, not only they, they, they build the self contained binary, but they build the whole infrastructure for you to publish your packages. Uh, and we've been using it, uh, in libsql. So libsql is built with CargoDist. And after we started building libsql with CargoDist, oh my God, our lives became so much easier because before that it's like, go get a runner for.
+
+Windows and go get a runner for Mac OS, et cetera, and another one. Now we now we need to build like the actual library. Um, for Linux, uh, ARM 64 and now Linux AMD 64. So we didn't support a lot of those targets because we just didn't have the bandwidth. Uh, maintaining the install scripts was, uh, very painful.
+
+Uh, and again, the final binary for the server or for the CLI just not shippable. It's just, uh, you have to go through brew and, and this is, this is just a complete change. So if you are doing Rust, definitely recommend check out CargoDisk. Uh, this is how I will always be building my, uh, my Rust projects from, from now on.
+
+Uh, absolutely fantastic tool. 
+
+**Justin:** That's really awesome. That's so interesting. I have one crate that I've published and I wanted to publish CLI tool once. And it was too hard. I gave up. 
+
+**Glauber:** Oh yeah. And I mean, if you're publishing to crates is, it is no problem because like crates, crates, it's just, it's it's fine. Like if you want to publish anything that it's like a binary or a server or something, take a look at this. I mean, this is, this is, uh, better than 
+
+sliced bread. 
+
+**Andrew:** That looks really cool. Um, well that wraps it up for tool tips this week. Thanks for coming on Glauber. This was a lot of fun. A lot of very, very cool product that you're making and it's awesome that you forked lib SQL and like are now fostering a community around it. So thanks again for coming on.
+
+**Glauber:** It's absolutely my pleasure guys. Uh, 
+
+see you 
+
+next time. See you around.
+
+**Justin:** Yeah. So fun having you. Appreciate it. 
+
