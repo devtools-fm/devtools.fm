@@ -1,0 +1,618 @@
+---
+title: Robert Balicki - Isograph, Relay, and the Future of Data Fetching in React
+youtube: https://www.youtube.com/watch?v=hXuACmQJQTg
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Robert-Balicki---Isograph--Relay--and-the-Future-of-Data-Fetching-in-React-e2g9298
+tags: react, relay, isograph, graphql, data fetching, react server components, frontend, web development, tooling, browser, webassembly, rust, pinterest, facebook, meta, backend, javascript, performance, optimization, devtools, developer tools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week, we have Robert Balicki on the show to talk about Isograph, a new data fetching framework for React.
+Robert has worked on the Relay team at Meta (formerly Facebook) and is currently at Pinterest helping them adopt Relay.
+We talk about the differences between Isograph and Relay, the future of data fetching and web development, and the journey to make Isograph production ready.
+Could Isograph be the future of data fetching in React? Listen to find out!
+
+- https://twitter.com/isographlabs
+- https://www.youtube.com/watch?v=SkxAOgkaiSw
+- https://isograph.dev/blog/2024/02/15/isograph-0.1.0/
+- https://twitter.com/StatisticsFTW
+- https://www.robertbalicki.com/
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/facebook/react-strict-dom
+- https://www.npmjs.com/package/safetest
+
+#### Justin
+
+- https://josh-project.github.io/josh/intro.html
+- https://nodedojo.gumroad.com/l/dojobin
+
+#### Robert
+
+- https://kinesis-ergo.com/shop/advantage2/
+- https://folivora.ai/
+- https://karabiner-elements.pqrs.org/
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction to Isograph
+[00:02:50] Deep Dive into Relay
+[00:12:19] Ad
+[00:15:06] Introduction to Isograph's Functionality
+[00:21:25] Fetching UI and Data
+[00:32:23] How does it work
+[00:37:59] Thoughts on React Server Components
+[00:43:02] The Journey to Make Isograph Production Ready
+[00:49:13] The Future of Data Fetching and Web Development
+[00:55:46] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction to Isograph
+
+**Robert:** tooling, I think is the big thing that's going to really set Isograph apart.
+
+you can imagine a world in which you open graphical, which is the sort of the IDE Explorer for GraphQL, where you can see a bunch of fields. You can see like on the user, we have a name and an email. It would be really nice. If you could open this up and see that on the user, we also have a user avatar component and on the blog posts, we have the blog post display and blog post title 
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey, everyone. we're really excited to have Robert Balicki on today. So Robert is working on this tool called ISO graph. Uh, we're really, really interested and excited in digging that. But before we do, uh, Robert, has worked on the relay team at Meta formerly and is at Pinterest now also working on helping them adopt relay.
+
+is there anything else you'd like to tell our audience, Robert?
+
+**Robert:** I mean, I think that's, uh, honestly like the, the, the gist of, um, why you should be interested in isograph is because I also worked on a very similar framework. Um, but. I guess if you take a step back, like I've been trying to work on similar things that are similar to isograph for quite a long time. So before this, I, uh, my side project was smithy, which is a framework.
+
+**Andrew:** In which you write rust and it compiles to WebAssembly to build a browser based apps before that at a previous job. I had like, uh, spent time working on a configuration driven framework for going through a wizard D flows and stuff. So, um, somehow or other, I end up. working on the same set of problems. Well, it's, it's fun, fun to see your ideas grow through that. So starting at your time at Facebook or Meta, as we call it now, uh, you said that you were on the React data team. Uh, what does that mean? And like, what are some of the interesting things that you did with data and React?
+
+**Robert:** yeah, um, so the react data team is sort of the actual or the formal name for the team that worked on relay. And I think the thinking behind that was that relay, well, that one we worked on relay, but also we worked on the problem space of loading data in react, which. As you know, React is very much a UI library, but over time, it's moved more and more into the, we also care about loading data space.
+
+Um, so, not everything we worked on was strictly Relay related, but a lot of it was tied very closely to Relay. Or, a lot of the stuff that we worked on, um, we first tried it out in Relay. But yeah, it's just, it's a name of the team.
+
+**Andrew:** Cool. 
+
+
+#### [00:02:50] Deep Dive into Relay
+
+**Andrew:** So for people who don't know, uh, kind of including me, uh, what is Relay and why would I want to use that sort of framework for my React app? Why is, why is use effects not enough?
+
+**Robert:** okay. Basically, the gist is that if you are given a screen from a designer, it's really easy to break it up into components. And we as, like, web developers sort of naturally do that. But then It gets extremely complicated the moment you need to start loading data and thinking about loading states and especially thinking about mutations and things like that.
+
+So, on the one hand, you could architect your app such that every component fetched its own data. So, like, every component just loads some data with useEffect. And that actually has a lot of advantages. Like, on the one hand, you don't need to worry about any other component. It's really easy to look at the component in front of you and just reason about it.
+
+It looks correct. We're good. On the other hand, you run into a lot of pitfalls. Like one, now all the components are fetching their own data, so there's no deduplication. So your backend is doing more work than necessary. Secondly, if you have an outer component, it will Make its network request. That network request will complete before an inner component's network request starts.
+
+So you end up architecting in a lot of network waterfalls and therefore showing the data that the user cares about much later than they, than you could otherwise show it to them. and like sort of lastly, like the loading states that you show to the user are more ad hoc. They depend on where you broke your app into subcomponents rather than what's best for the user. So the alternative you could think about is writing a single network request for a given page. So for the homepage, we need, you know, a list of posts for each post, we need a name, blah, blah, blah. And that's actually great because you make a single network request. There's one loading state. That's a pretty good default.
+
+And then everything renders. But the problem is it's brittle. You come back to this screen. A couple months later, things have changed, you modify some component and like, let's say it no longer uses the Instagram URL field. And you go to the query declaration and you think, can I remove this Instagram URL field from this query declaration?
+
+And the answer is that it's actually really unclear, because there might be another component that is using that data. Another component might use that data, but not sort of directly, well, not through the, not in a way that's tracked by the type system. So for example, through JSON. stringify or object.
+
+keys, or somebody else might land a component at the same time that starts to use that Instagram URL field. So At this point in time, you as a developer are faced with a choice, right? Do you try to improve the app's performance by, you know, 0. 001 percent by removing that Instagram URL field at the risk of breaking production?
+
+And most people look at that and say, no, you know, I can see Andrew shaking his head. No. So yes, exactly. so the, the long term situation in that, uh, the long term outcome is that apps get slower and slower. You now have hundreds of fields that nobody knows why they're there. And, um, you know, it's just too much work to keep an app performing.
+
+So relay relay steps into this space by allowing you to declare the data that you need. At the component level. So you're some post component might say, I need the name. I need the body of the post and blah, blah, blah. And a compiler step takes all of the components that are rendered on a given screen and concatenates them essentially into a single query.
+
+And so when you navigate to the homepage, you make a single request for all the data, that all the components on that page might need. And nothing more and nothing less. And that's really nice because one, it's really easy to look at one file and reason about it. Like if the Instagram URL field is no longer used by this component, you can remove it because if another component needs that field, it will have selected it.
+
+So it will nonetheless show up in the query. And in addition to making just that single network request for the entire page, what it also does is Generates a data structure for each component that says, like, when I'm rendering this post component, I just want the name and body and whatever else we select, whatever else we specifically selected, meaning that. If another component that's sort of at the same, like next to it selects, maybe the blogs or the post author, that first component won't receive that author field unless it actually selected that. So that's also really nice because it means that changes to one component, even at runtime, can't change the data that another component receives.
+
+So you have like tremendous stability with apps built with Relay and in particular that stability. Enables people who are developers who are looking at individual components to move fast and just make the changes that they need to make without worrying that anything else will break as a result. Um, yeah, that's, that's sort of the gist of relay.
+
+It does a lot more than that, but like the fundamental, like that, that is the value prop of relay is like. Once you have more than the number of developers that can all fit in a single room together or something like that, at some point in time, you want everybody to be able to move independently, uh, and not have to communicate and coordinate and slow stuff down.
+
+**Justin:** I think it's worth mentioning something we haven't chatted about yet, which is GraphQL. So Relay is a client for GraphQL, uh, a very opinionated client, client and GraphQL is, you know, 
+
+**Justin:** came out of meta as well there origin GraphQL. 
+
+**Justin:** So relay being sort of internal tool that they were using, uh, well, I mean, it is open source, but being the tool that they were using to, to interface with GraphQL, it was interesting how the community was like trying to solve similar problems in different ways and doing them a little bit awkwardly, you know, so this, uh, This like over fetching or under fetching problem that, that Robert you just mentioned, whereas like in relay, you the components just declare the data they need and then a single GraphQL query gets built up at like build time or whatever and you're, you know, not worried about over fetching or under fetching.
+
+That will still a problem in other GraphQL clients in the community is like, you know, people would just like, oh, I have a top level GraphQL query. Or, oh, I'm making a GraphQL query in every component and maybe I have like some smart caching that I rely on, but. It was still an issue. So when I was working at artsy, my previous life, uh, we use relay exactly for this reason and the mobile team is the team that actually led it up because it's like, okay, GraphQL is interesting.
+
+We have these performance concerns. This is the kind of, uh, you know, environment we want to know. We want to know deterministically the kinds of queries that we're making so we can do some performance optimizations and stuff. So, it was really good for that. but Robert leading 
+
+**Justin:** to another question. So there was Apollo, 
+
+**Justin:** which, you know, a lot of people, uh, have used if they've used GraphQL, the Apollo GraphQL client, um, seemed to be really popular for a while. I don't actually know what the, the state, the status quo and the JavaScript ecosystem is, but relay being sort of an opinionated client interfacing with GraphQL didn't get quite as much adoption as, you know, some of the looser clients.
+
+Cause it. Has more constraints, but, uh, how do you feel about like how it's adoption has been and just generally, like, do you think it's like, I mean, have you seen it growing the usage in the community? Um, how's it, how's it going for relay?
+
+**Robert:** Yeah, as a completely unbiased, uh, observant of this phenomenon, I definitely think that it, people should be adopting Relay more than other clients because Relay gives you, data masking, And other features that just, just weren't present in other clients. And basically as you scale and as you grow, you're going to start reinventing the things that really gives you out of the box.
+
+so on the other hand, Over time, other clients, uh, like in particular, Apollo has started to adopt a lot or started to learn a lot of the lessons of relay, which is great. Like the point here is that we build good web apps, not that we specifically use relay, even though that would make me happy. but so I think that the appreciation for relay has seeped through the community, at least among the, the folks that, have done their research and have, you know, have, uh, have done that.
+
+So, I don't know. I think that Relay could have done a better job of being more, um, approachable and easily adoptable. over time we eliminated many of the specific requirements. like in particular the globally unique ID requirement is not actually a requirement in Relay, but I think that that, uh, That perception persists and could we have done a better job of advertising things could we have done a better job of working with the community to, uh, integrate with routers and, you know, there's a few other things that like we could have done better.
+
+but I think, ultimately, like, It's to Apollo's credit that they built something that's really, really easily adoptable and like good on them for being one of the largest companies in the, in the GraphQL ecosystem. Um, yeah. So, and I'm also really happy to see that there are giving, uh, starting to give users, the ability to have sort of data masking and a few of the other features as well.
+
+**Andrew:** Cool. 
+
+
+#### [00:12:19] Ad
+
+**Andrew:** Now we'd like to take a break to thank our sponsors. This week, we're sponsored by code crafters. Code crafters makes programming challenges for experienced software engineers. If you're looking for a weekend project that takes you to the edge of your programming abilities. You got to check them out. They have a whole bunch of really interesting challenges that really push your skills as a programmer. 
+
+They have things like build your own BitTorrent, build your own, get, build your own Docker and so on. You can go through the challenges in many popular programming languages, including Rusko and JavaScript. I'm using JavaScript. If you asked me it's way better than just going through leak code and trying to build your skills that way. You actually get to dive deep into the inner workings of a popular dev tool while at the same time becoming better at the language that you're writing it in. 
+
+I've personally been going through the build your own get challenge. And as I go further and further, it gets harder and harder and it wasn't easy to start out with. Today. I learned two pretty cool things while continuing the challenge. One is that your branch pointers are just like your head in that. They're just a file with a hash in it. Nothing more, nothing less. I was also introduced to a more advanced get concept pack files. Get uses pack files to pack together a bunch of get objects, so it can easily transmit them around. 
+
+I learned about them because I'm trying to implement the next command in the get sub module clone. And that's got a whole bunch of different considerations around it, and it might take me a few weeks to complete this one. 
+
+Besides the content, even the user experience is targeted towards software developers. For example, you don't build any of this on their website. Their website really just serves as a host for a light set of instructions. And to point you towards some learning resources where all the magic really happens is in your IDE. 
+
+When you push, they run all the tests that they have, and you get a very quick feedback loop. 
+
+To try out code crafters for yourself. Visit code crafters.io/dev tools. Dash FM. If you go to that link, you'll get 40% off the price and you'll help out the podcast a little bit too, in the process. But don't worry. 
+
+There's a whole bunch of other ways you can support the podcast. 
+
+One way to do that is to become a paid member on one of the platforms that we offer it on. With that you won't have to listen to any of these ads ever again, and you'll even get the episodes a little bit earlier than everybody else.
+
+And if you don't want to move to one of those platforms, feel free to go to shop.dev tools.fm, or you have a whole bunch of really cool merchant that you might want to check out anything from our logo on a bunch of things to we've been experimenting with some not logo based design. 
+
+The last thing I released there is our anti dev tools, dev tools merge. We have a sweater. Uh, tie shirt. And a normal team.
+
+If you're interested in sponsoring dev tools, FM head over to dev tools.fm/sponsor to apply. And with that, let's get back to the episode. 
+
+
+#### [00:15:06] Introduction to Isograph's Functionality
+
+**Andrew:** So moving on to what you're currently working on, you've started a new project called Isograph. So what is Isograph and how is it different than like other solutions like Relay?
+
+. So the best way to compare it to relay is Relay with hopefully a better developer experience. Um, hopefully more easily adoptable and so on and so forth. But the big difference between Relay and Isograph or sort of the big structural difference is that in Relay, sort of the unit of composition is, are fragments.
+
+**Robert:** So you might say that I have a homepage query with a. blog post fragment in it. And the blog post fragment has like a blog post header fragment. Now really gives you data masking, which is to say in a properly structured app, only a single function ever reads a single fragment. So the blog post header fragment will only be read out by the blog post header component.
+
+And. I look at that and I think, man, we're asking the user to do a lot here. Um, one, the parent component has to spread a fragment and we have to decide on a globally unique name for the fragment. That doesn't matter. It doesn't show up. No, no user actually sees that. So we just have to make an arbitrary decision.
+
+Secondly, we have to make an arbitrary decision about what prop name, what we named the prop. That is the fragment reference that we passed down to the child. Thirdly, we have to both spread the fragment and import the JavaScript for the child component if we're doing one, but not the other. Our app is necessarily broken.
+
+Fourthly, in the child component, we have to read the fragment and there's nothing else we can do with the fragment. Why are we making that an explicit separate step? And sort of lastly, why is it even possible to pass this fragment reference to any other component? No other component can do anything with it.
+
+So, um, I love that I'm seeing Justin nod along here. I think that that's, that's a sign that you've used Relay.
+
+**Justin:** I can't tell you how many times I had to pair with people because they were like, I'm getting this error. And it was always a, an error related to data masking. And it's like, I don't know what I've done. And it was one of these steps that they messed up always. And, and, and like. Probably maybe like 50, 60 times over my three years at artsy, where I had to have that same pairing session of like, Nope, it's just one of these little things that you've like left out or not done right.
+
+Or, you know, whatever.
+
+**Robert:** Yeah. I think you're 100 percent correct. Like it's, we've done this a bunch. So it's like, it's second nature to us, but like, if you're new to GraphQL or introducing relay or GraphQL to a code base, or you're doing like 200 times, like this, this stuff adds up. Um, so the whole point of isograph is to lean in on the fact that, uh, A, only a single function will ever read a single fragment.
+
+So, let's just associate those statically, like at compile time, and see where we can go from there. So, if I'm imagining a blog post component, I would like to just write a component that receives some data. So with Isograph, what you do is you write a fragment, Well, essentially you, you, you write a fragment and it passes some data to some component and you just do the stuff that you need with that data.
+
+so you don't have to read it. It just receives the data. And secondly, if I'm using a subcomponent because, or because of course these are, uh, composable units, I don't want to pass a fragment reference import, blah, blah, blah. I just want to receive the result of that fragment being passed to that function.
+
+So. Most of what we're going to be doing and talking about our components, but it could be anything. It could be a full name field. That is the concatenation, the first and last name, but whatever it is, if I select that, I just want the result of that. so that's, Isograph, Isograph is basically all of those steps removed from relay, but with a lot of similarities to relay under the hood.
+
+so in particular, it means that. You have, if you imagine an app that's structured this way, you have a single connection to the React app at the root. Um, so maybe like a connection to your router eventually, but right now it's just like you have to load the query. Um, a lot of these things are in, in progress.
+
+And from then on, you render or you, you get your outermost component. or rather. Isograph field and that field selects a bunch of other fields which are all components and it's just sort of like client fields all the way down each of them eventually bottoms out at server fields, which is to say fields that are part of the GraphQL schema.
+
+So if I'm doing this, like fetch at the root one single fetch, does that mean like as my app grows and I fetch more data? Does like my initial load time get longer? Cause I have this, I have no experience in any of the technologies. You're actually, that's a great question. And the answer is yes, right now, um, with GraphQL and also with early versions of Relay probably, um, before the at defer directive. Was there, uh, what you would be doing would be bloating that root query. And so that means that your query is as slow as the slowest field.
+
+So the way relay solves this is with this at deferred directive, which, or actually GraphQL in general solves. This is with this app deferred directive, which essentially lets you mark a fragment as. It can be sent as a follow up payload. So you might imagine that the most expensive thing is like, I don't know, the blog name.
+
+That's a really weird example to use, but like the blog name is expensive. So you defer that, and anything that, and that specific fragment will suspend while its data is not present. But the, everything around it will not. So if you wrap that component in a suspense boundary, um, you'll be able to get the fast performance for the rest of the app, but you also get to control sort of where the loading states are and, and think about your app sort of more holistically, um, in terms of providing the best UX.
+
+That is something that Isograph needs to support as well, and it will eventually support it. So, um, so yes, I plan on doing the exact same thing.
+
+
+#### [00:21:25] Fetching UI and Data
+
+**Justin:** This is, this is a blast of the past for me. Cause I remember, I mean, dealing with all of these issues at artsy and, and sort of, uh, I worked in the time when like defer was sort of like getting. Kind of getting implemented. And we're kind of going through this like transition of trying to figure out some of these things.
+
+So this is like really interesting. Speaking of blast of the past, one of the things I wanted to ask about. so I think it was like in 2019, there was an F8 talk about the new facebook. com and there was some really features that were relaying GraphQL features there that was like hinted at that wasn't in the open source version of relay.
+
+So, uh, Facebook was actually doing. Like this crazy data fetching. So you could like define your like data requirement and it would figure out what UI needed to be bundled with that. So it was like, you declare your data requirement and then like, it's somehow figured out like what you needed to render for the page.
+
+That was obviously it's more than relay, right? It takes, it takes more infrastructure than that. I was curious if that's a thing that you have. If that's like something you have in 
+
+**Justin:** mind for Isograph or if that's 
+
+**Justin:** an orthogonal problem, um, maybe we're getting a little bit off in the weeds, but that was always such a cool feature to me.
+
+**Robert:** It's like the ultimate, like I declare what data I want and then like the UI comes along with it or whatever, Yeah, that's so that actually, so that's called relay 3d data driven dependencies, and it doesn't actually require that much server, uh, support on the server, essentially, all you are doing is saying, if a, if a field is of a given type, then fetch this JavaScript. So your server needs to, um, know how to give you, um, A JavaScript file and sort of bundle a JavaScript file.
+
+And I'm not a backend engineer, but I think that is doable in a lot of, in a lot of cases. Um, so that's the gist of, of what's required. So yeah, it's actually, it's, it's an amazing feature because on the one hand, like you imagine like a, a news feed, you have a video player, you have a post, a poll player, you have a text-based poll.
+
+Uh, so text, text-based post. Okay, so you have many types. Of posts on the newsfeed, but on any given at any given for any given user, you're only going to see a small subset of those types. And so the fact that you can say, like, only if I've encountered a video player post, do I actually fetch the JavaScript, which may be very large for the video player.
+
+is amazing because it helps you scale sort of to many different variations and now you don't have to push back when a product says, let's have this little tweak. You can say, yeah, sure. That's actually a zero cost thing to have this, you know, alternative version that's only used for 0. 01 percent of, of users, um, or of posts.
+
+So. That is not orthogonal. That is actually 100 percent something that Isograph, I'm not going to say gives you out of the box, because it clearly isn't there now. Um, but, what is Relay3D giving you? It's giving you a given fragment and the JavaScript that reads that fragment. In a nice package, but with admittedly a bit of boilerplate to make it all work.
+
+And Isograph also gives you the fragment and the JavaScript together as one sort of field. And so 100%, I think that some of the really cool things about Isograph. And I love that you brought the conversation here are that. This, um, this abstraction of client fields is what I'm calling them. Um, but suggestions, uh, open to suggestions for how to name that better.
+
+Um, is that client fields unifies a bunch of different things. So for example, um, just components on the front end, like, like we talked about 3d, um, a deferred fragment is essentially. You know, both of those should be deferred together. It like really makes a lot of sense to think of those as like, sorry, the.
+
+The JavaScript for the fragment, the fragment and the JavaScript that reads that fragment should both be deferred. That's probably a best practice, but it's not something that happens out of the box and you have to do two separate steps. Um, and so 3d can both do, um, can both give you the render for a given type, but it can also.
+
+Not give you the JavaScript if that field is null. So that's another thing that basically is a client field. Um, and you can sort of imagine, so now you can execute, if you execute this in advance, you're basically, uh, and you don't ever send down the JavaScript to the front end. We've. We've also now just rediscovered regular old GraphQL resolvers.
+
+And if you do send down the JavaScript to the front end, but execute things in advance, execute. When I say in advance, I mean on the server. Well now it kind of starts to look like react server components or server side generated whatever the other one is. Um, yeah, so like it sort of unifies all of these different concepts and I think that that like, that really makes me think that actually this is an important.
+
+building block that GraphQL on the front end should have. And that makes me optimistic that over time, this, that Isograph is going to be a good, good framework for folks to use.
+
+**Justin:** yeah, no, I'm sure people. If you haven't used GraphQL, this might sound really in the weeds, but the, the sort of primitives that we're talking about here really unlock some important performance optimizations. Uh, so the thing is, is like when we're rendering a large app, like, you know, especially like facebook.
+
+com, but like if you're rendering a large and potentially dynamic app, uh, you have a few not great choices and how you serve payloads. Like you can do. Per route bundle splitting, which is a thing. Uh, but if you have like a, uh, you know, an app like Facebook, which is mostly just a single sort of a single real page that is very dynamic and has a bunch of different data that could show up sometime and you're wanting to get it really fast.
+
+You have to be very, like, prestigious about what you send down the wire. It's like you want to send as minimal as possible, both in terms of data and in terms of you. I, and that is a really, really hard thing to do. so if you're to the scale where you can't just do the naive thing and just like send everything down, it becomes really complicated really quickly.
+
+And The interesting thing is, is like, from what I'm hearing about, like what ISO graph could potentially provide and what relay provides in conjunction to Facebook infrastructure and their setup is like, you get this amazing sort of performance profile out of the box of just like getting the minimal amount of data and JavaScript to, to render these views as possible.
+
+And, um, If you, Robert can bring that to, you know, other people's infrastructure, uh, that's a huge, huge performance unlock. And, you know, one of the things that gets me excited about this space is like anytime we can take something that is like incredibly technically complicated to achieve, but make it.
+
+Really, really simple for people to use. We unlock these really interesting use cases where people can do, you know, reimagine kind of how they build apps and get these like great performance benefits out of it. So that's kind of, I'm really excited about it.
+
+**Robert:** Same. I think honestly, like, okay. So one of the things that jumps out is like, I don't want there to be really large requirements for adopting Isograph. So you imagine, so one of the things, one of the examples of how I would like to do that. Um, again, defer does not actually work in Isograph, but. Defer, it just says, it just means load this data later.
+
+It doesn't necessarily, it shouldn't necessarily mean that the server sends the deferred payload later if necessary, or, you know, during the original request, it should be, you should be able to write the same application. And if your server supports defer. It's done in the traditional way. And if it does not, then when you render that component or when that network request comes back at whatever, um, we make a followup request that says this deferred data, I mean, we just make another request at that point in time.
+
+We probably have to wait until the network request comes back because we need to know the path to the, to the thing. But like all of that should be doable with the, um, uh, with the framework and. Actually, that's one, that's one specific example of why I think Isograph, um, may have a long term DevEx advantage over Relay, which is that Relay is very much prioritizes only enabling the best possible performance and like, God bless them.
+
+That is an amazing thing. That's how, that's how you make Facebook perform it. But if you're. another company that doesn't have defer support, like you shouldn't be left high and dry. You should be given a strictly subpar experience that is also better than not having anything at all. Um, so yeah, I think that's just another example of how, like, we can, we really, really improve upon, um, the state of the art right now.
+
+**Justin:** I love that. The other thing that I love about that is there are a lot of different GraphQL server implementations out there that, you know, implement parts of the spec to varying degrees. And this can be a real pain point and a blocker to adoption in certain cases where, you know, a framework relies on this very specific or a GraphQL client relies on this very specific behavior from a GraphQL server.
+
+And if, if you're. Server doesn't support that because maybe you're a little bit out of date, or like, maybe just the language that you're running just doesn't have full compatibility with the spec, then you're SOL. And I love that this gives you the on ramp to say. Okay. You know, in this case, it's like, it's not that my, uh, my big query is, is as slow as my slowest fill.
+
+It's just that the, the data that I've said should be async is just a little bit slower in loading async, right? So you still get the sort of quick first render and maybe the dynamic components are a little bit slower without the, you know, fully spec compliant server, which is huge. I think that's a, that's an incredible, that's an incredible DX win for sure.
+
+**Robert:** And you can, of course, do that in user land right now. Like, um, your, your homepage query doesn't need to be as slow as the slowest field. If you just have. A nested, lazy loaded query, for whatever component is slow to load, but framework support really helps here because conceivably that sub query and the parent query should, uh, are probably fetching redundant fields.
+
+And so you're not getting deduplication with the user lands of the solution. So like there is a better framework support really is, is key here.
+
+
+#### [00:32:23] How does it work
+
+**Andrew:** Cool. So we've talked about a lot, a lot about the concepts and like the wins, uh, compared to Relay, but, uh, how does it actually work? Like what, what things do I have to compose and use to get this experience?
+
+**Robert:** so the way. The coding experience of using Isograph is you run a compiler, it runs in watch mode. When it encounters, isoliterals, um, so isoliterals can be of two types. One is a field, which defines a field, like in this case, user. userAvatar is a field. and, or it defines entry points. So when it encounters a field, it will generate A file that file is used by the runtime to read out just the subfields that that field uses.
+
+I'm gonna use the word field a lot. I'm sorry, it generates a file that will do like the reading and it also generates a type, um, for both the data that's passed in and also for. I mean, basically the return value of that function is the type for components that read that field. and so these guys, like, these generated files are used by the runtime to essentially read out the data that's required by a single component and to pass that data to that component and then sort of start at the leaves and you work your way up and you eventually, um, call or pass the results to the topmost component and.
+
+Secondly, when you define entry points, um, the compiler will, for every entry point, it will generate a query that, a query text that will fetch all of the files, all of the fields that are accessible from that, um, from that root. And what's actually kind of nice about this is that any, well, in the long term, any field should be usable as a root, like there's no, there's not this arbitrary distinction between queries, which have fragments, but like, we don't really talk about that and fragments, which are the selections of data.
+
+But, um, so, like, I think there's a little bit of a cleaner model here as well. Um, so. You generate a query text and you generate an another object that writes that network request back into the store. and then when the topmost component renders, currently there's only only do fetching during render, but like eventually all of the other patterns will be supported.
+
+Um, when that component renders, it makes a network request and this will give you a component. And when that component renders, it will suspend while that data is missing. Then when the data comes back, that component will re render. And this time the data will be there, or the fields will be there, and it will Be past the fields that it needs and you render the entire app.
+
+**Andrew:** Sweet. So it's like that the compiler and the Babel plugin work together to do that process.
+
+**Robert:** Yeah. So right now, uh, the Babel plugin is slightly separate. So TypeScript, well, the Babel plugin transforms these ISO literals, which they are just, there's just a function. There's an identity function. It's really a dummy function. and it transforms that ISO literal for an entry point. To the default export of that generated file for that entry point.
+
+So you are able to use an ISO literal, which sort of declare tells the compiler to generate this file as if it was the file. and so that's, that's the exact same behavior that the relay Babel plugin have. And we're currently working on a SWC. Yeah. I think SWC. Yeah. We're also working on SWC. Apparently that's the new hotness.
+
+**Justin:** So it's not just Babbel. Isn't the relay team rewriting their compiler or rewrote their compiler in Rust? That was a thing
+
+that was happening. 
+
+**Robert:** yes, that is when I, that is actually when I joined the team. So, yeah. Um, actually there's kind of a funny story behind that. Uh, which is that when I joined Meta, I really wanted to join a team using Rust. And so I looked on our internal Wiki, found all the teams based in New York, uh, that were using Rust. I talked to them.
+
+They said, no, we don't have any headcount. So I was sad. I was thinking I'm going to have to join it. Team that uses C++ and like I've never written C++ I was like, whatever. I'll do it. Um, and I was looking on our internal, uh, GitHub tool fabricator and like just looking at the diffs that touched rust files that were landing.
+
+Um, and looking at the authors. And seeing where they sat. And then I found an, I found somebody who was like a hundred feet away from me. I go sit down next to him. I'm like, hi, I'm going to join your team. And then he's like, you should probably talk to my boss. And long story short, that's how I ended up on the 
+
+relay team. 
+
+**Justin:** That's amazing. That's amazing. I was really excited when the relay team started moving to New York, and 
+
+**Justin:** then I left artsy and did not 
+
+**Justin:** use Relay or GraphQL. So I've been in Rust land for the last, you know, several years. 
+
+**Robert:** Well, you can adopt relay 
+
+**Justin:** indeed. 
+
+indeed.
+
+so we've, we've talked about Isograph a lot, uh, and it sounds like a really, really cool tool. So you said you're working at Pinterest. Uh, are you using Isograph at Pinterest or do you have plans to use it at Pinterest? 
+
+**Robert:** We are adopting Relay, and I think that Isograph will get to the point within the next six months, a year or something, where it is a legitimate choice for companies to adopt. Um, and in particular, in theory, Pinterest would be a great, uh, adoptee, or a great customer of Isograph, because I think a lot of the Benefits will accrue to large companies with many developers working on, you know, components individually.
+
+So, um, I do hope to sort of sort of push for that. But, uh. Not I haven't done so yet. 
+
+
+#### [00:37:59] Thoughts on React Server Components
+
+**Andrew:** So, uh, the big topic in react land over the past few months have has been react server components. It seems like react server components plus, uh, isograph could yield some like interesting results. So have you thought about react server components at all? I, you mentioned them a little bit earlier, but, uh, how might they, they might intermingle?
+
+**Robert:** yeah, absolutely. so I think of react server components and I'm not an expert in this and I think that the field is rapidly changing. So I do hope to be disproven in a lot of what I'm about to say. I think of react server components as sort of pre rendering a top layer. So you might imagine that the blog trying to think of a good example for this, uh, the user profile component might be pre rendered with react server components.
+
+And we just send down, um, sort of essentially the JSX or the HTML or whatever, um, but it might just happen to be that you have. And then you have another component, which is, so we just said user profile and maybe. second user profile who doesn't really matter why. Both of those are server rendered, but it might be that the, or rendered with React server components, but it might just be that in this specific case, calculating the user's full name is the expensive step.
+
+And that's done by both of them. So the way I imagine React server components is that they're capable of. Pre calculating sort of the top layer, which is that the profile components, but not necessarily, they don't have the expressivity to say that actually what you want to do is pre calculate the full name and send that down.
+
+And then both of the JavaScript components, the, uh, for the profile photos or for the profiles actually use that pre calculated value. So I sort of imagine that like a web app. Is like multiple trees. Like there's this, there's one tree, which is your component tree or your Dom tree or whatever, and then there's this orthogonal data tree where they sort of reach into this, like, um, I guess a, a dag or something or other of, uh, of dependencies and like many of these components.
+
+Might select the same dependency and each of those is a Reasonable thing to say maybe that should be rendered on the server and in particular you can sort of imagine like at least Probably like eight ish Requirements, which is like just two cubed one is whether or not the field is calculated on the server Um, one is whether it's calculated on the front end, which implies that the dependencies are sent down to the front end and therefore that you get sort of real time updates.
+
+And the third of the twos, is whether there's a subscription set up on the backend to the value of that field. So maybe not all eight of these possibilities make a lot of sense, but you can imagine a server component where you just get the value once a server or a server rendered component where we also set up a subscription.
+
+And whenever it changes, we tell the front end, a server rendered component that's also rendered on the front end that is reactive on the front end and so on and so forth. Um, so I sort of imagined that Isograph and in particular client fields are a slightly more versatile building block than react server components.
+
+Um, but again, super excited about the technology and I like, I don't think that there's any reason that. There's no structural reason why what I just said can't be incorporated into React server components. and so I do hope that, like, the random niche use cases that I care about are handled. but I totally understand why they are not the highest priority of, you know, whoever is working on React server components right now.
+
+**Justin:** Yeah, there's, there's a lot of really interesting questions about. Integrations and how existing tools in the ecosystem fit and with React server components. And I don't know, there's a lot of things I hadn't, I hadn't even really thought about like GraphQL or like relay context about being split over, you know, server components and client components and what that'll look like.
+
+There's some interesting questions there. 
+
+**Andrew:** Yeah, I think it's been a challenge. I've, I've seen tweets from Lenz, uh, L E N Z, uh, who's on the Apollo team, and it seems like he's had quite a rough time with React server components in, in Apollo.
+
+**Justin:** Yeah, I mean, because it's like GraphQL, I mean, GraphQL did work with server side rendering, but it's like a different, you know, it's a different model when you're doing SSR, I think, versus it's the, the interleaving of client and server that is. Interesting and challenging. So I'm sure that there will be something very novel and beautiful that will fall out of it.
+
+But, uh, as is been the case in a lot of the GraphQL tooling, it will probably take some churn and some pain and, you know, we'll be fiendishly complicated under the hood, but end up giving users a nice experience, which is, you know, the fun part. 
+
+Speaking of fiendishly complicated. 
+
+
+#### [00:43:02] The Journey to Make Isograph Production Ready
+
+**Justin:** Uh, so, uh, you, you said that, uh, ISO graph isn't ready for Pinterest to use right now.
+
+Um, but it would be nice to do that. Um, so what is the work that you need to do to get ISO graph ready for production? 
+
+**Robert:** alright, how much time do you have? So, the backlog is long. Relay is a very complicated framework, and I would like to achieve Roughly feature parity with all of the things that are in relay. and that is a lot. So everything from, uh, granular re rendering to, I guess, defer support to subscriptions, all this kind of stuff is not necessarily, uh, present or to local data updates, all of these are not present in, uh, Isograph, but.
+
+The fact that Isograph is a entirely new framework with no users prevents us in an opportunity because it means that I can sort of take a step back and say like, hey, knowing everything I know now about how, knowing everything we know now, like how would we have redone Relay, or how would we have built Relay to begin with?
+
+So hopefully I will get through those and it will be a better, A better thing. There's that there is more the syntax for ISO literals is not entirely complete and I'm still sort of working through some of the kinks. So, for example, if you are going through, uh, going from a. An interface to a concrete type.
+
+Like how does, how does that look? and so on. And there's a lot of stuff on, on tooling, which I'll get back to. , and I think the, the last thing that I think is, sort of the big thing I want to achieve is that right now, Isograph is a framework for building React apps that are powered by GraphQL data.
+
+And obviously React is in JavaScript. All three of these things, JavaScript, GraphQL, and React, I think of as implementation details, and I've. Sort of, kind of, sort of tried to structure the compiler in a way that like there's a bit of a distinction between GraphQL and, um, and the compiler itself. I don't want to overstate how much I did that.
+
+That's definitely something I need to go back and do more of, because in the interest of time, I cut a lot of corners. but the actual CodeGen part, uh, what are we generating? We're generating, uh, basically JSON objects that import. A function that is exported from another file like that is certainly doable in other, uh, languages, uh, maybe it won't be exactly the same, but like, there's no reason that Isograph can't work with, uh, Kotlin or with, uh, Swift.
+
+So I want to also achieve that and. GraphQL. This is also something that's not being exposed to the user right now. It's an implementation detail. Like, it's just how we end up communicating with the back end and GraphQL has really great advantages. In particular, it sort of has built in, um, composability of fragments to queries.
+
+Right? But. Somebody should write that for SQL and the moment that that exists. And actually I have some, some plans on how to do that, which is going through GraphQL and then using something like GraphAst, which is a super, super cool thing, um, to generate SQL. So like, there should be no reason that you are required to use GraphQL if you're using Isograph.
+
+Um, and sort of lastly, uh, you sort of can imagine like right now we're generating a GraphQL query, but like. What we're really doing is saying like execute this chunk of code on the server and this chunk of code on the client kind of sounds like server components, which are just executing arbitrary code on the server and then sending the results down to the client.
+
+I also imagine a world where Isograph lets you sort of do whatever you want. But also gives you some sort of static discoverability that like, Hey, this list of posts also executes this code for each post or something like that. or like this homepage has like a list of posts and a footer and a header.
+
+not exactly sure how that would all work out, but like that, that's sort of another thing that I want, want to achieve. That's not. Strictly speaking, I snuck that in there. That's not a, a blocker to being usable in production. but I still just want to say that, but tooling tooling, I think is the big thing that's going to really set Isograph apart.
+
+you can imagine a world in which you open graphical, which is the sort of the IDE Explorer for GraphQL, where you can see a bunch of fields. You can see like on the user, we have a name and an email. It would be really nice. If you could open this up and see that on the user, we also have a user avatar component and on the blog posts, we have the blog post display and blog post title and blah, blah, blah.
+
+And that's really nice because. One place to look at that is GraphiQL and other places with a VS Code extension. It would be really nice if you're on the user and it just autosuggests like hey, we already have an existing user avatar component. You don't need to implement the fourth or fifth version, work slightly differently than all the others and nobody really wants to unify them. It just having that kind of discoverability for these, um, for these fields will be, or I guess for the client fields will be I think super huge. So those are all things that I would like to achieve. 
+
+**Justin:** It sounds like you need a team. 
+
+**Robert:** I would like people to help out. Yes, there right now, uh, there's basically two of us, me and, and Edmondo that are doing a bunch of great work on here, but like I've had individual contributions from other people in the community and those are just like, those make me so excited and so happy. Um, but yeah, I do want to make Isograph something that's like a project that's really fun to work on where people can make a sort of really ground breaking.
+
+Breaking changes now, if they want to participate, I'm happy to provide whatever, you know, level of support or freedom that people want. Um, a lot of the things that, you know, I've discussed, like they're, they're not there. So they, they need to be there. So if you want to make a huge impact on a project that I think is.
+
+Pushing the boundaries of what's possible with web development and eventually with app development. Like, I think honestly, now is the best time to get involved in Isograph. Um, yeah, before all the fun stuff is done, which is not going to happen for years, but like do it now. 
+
+
+#### [00:49:13] The Future of Data Fetching and Web Development
+
+**Justin:** Cool. Well, uh, before we transition the tooltips, we always like to ask a guest a future facing question. and as we've talked, I've sort of reflected on this a little bit more, um, and I'm going to like build up to this question. So. APIs have taken a few evolutions over the years, you know, we had just RPC calls and then there was SOAP and then we had REST and then, you know, GraphQL come along and it gave us a lot of new abilities, but.
+
+Came with its own trade offs and drawbacks. And one of the things that I've seen, you know, working directly with relay and Apollo and a lot of the GraphQL tooling is that there's a lot of client complexity that ends up, you know, being built into these tools because like GraphQL has its own trade offs and its own ways of doing things.
+
+And this is going to happen no matter the technology. so. What do you think is the future of data fetching? Uh, especially on the web, is it, you know, an improvement on GraphQL and clients like ISO graph, or is it, you know, tools like ISO graph, just directly running, you know, code on the server with react server components or something like that, and there being no GraphQL like layer, what do you, what do you think that future looks like?
+
+**Robert:** I think that the direction that many of these components, sorry, many of these frameworks are going is. One of convergence, which is that I think the final form for many of these things is a bundler. So you can imagine building a bundle for a given route. Or you can take a step further and say, building a bundle for a given route at a given state, like, you know, is the, you know, which sub tab is open or something like that.
+
+Um, I think GraphQL or rather the isograph language is going to be a really good way. To do that, because as in the longterm, I want to be able to allow you to encode more of the app states. In the, like the ultimate query that you are essentially bundling for. but I think that the ultimate direction, like the, sort of the trade off is like, how much do you know at bundle time, the more, you know, at bundle time, the more optimizations you can do, you can say like, we're not rendering this tab, so don't fetch it's JavaScript or it's, or it's data.
+
+Um, and ultimately I think that the more statically analyzable your language is. so sort of like the more restricted the language is, the easier that is to do that comes with a trade off, which is like, you can't always express everything that your app is doing. And so the escape hatch is maybe overfetching, um, which is like fetching for tabs that are not open or maybe fetching, uh, on the client.
+
+so like lazy, lazy loading the data for a given tab if it's opened. and so I think that the direction I would like to see. Us go as a community is stronger bundlers where the language that we were using to express the state of our app is more capable of expressing the states that our clients can be in.
+
+And I think that the, maybe this is not feasible. Maybe I would like a, I think the, one of the best architectures that I don't know anything, anybody's doing this, maybe like Phoenix live view is kind of similar to this is you have a session. That session has some state, which is the state of your app. And whenever that state change and based on that state.
+
+You know, all the fields that the app could potentially be using. And whenever that state changes from, uh, from the client, you now send down different fields. And secondly, whenever those fields, because all of this is calculated on the server, whenever those fields change in the database, we also just like.
+
+Pipe those to the front end so you sort of have like every client has a session, a long lived session on the back end that tells you exactly what data you need on the front end and sort of real time syncs it to the front end. So this is something kind of similar to, um, is it notion that does that? Um, Linear linear linear.
+
+so it's kind of sounds pretty similar to linear. but I'm imagining that it's, uh, well but I'm imagining it's like based on something like some sort of like, uh, algebraic data type that you just like maintain on on the server. Um, and okay, I guess those are two kind of unrelated points with my third one here is that I think that is What you're bundling for should not just be a state of the app.
+
+It should also be, um, it should be anything. So for example, you might imagine a world in which you have a user profile component, which uses a user avatar. And if you're bundling for mobile, then the avatar that we actually receive is the 16 pixel by 16 pixel version. But on desktop, it's like the 32 by 32 pixel version.
+
+And from the perspective of the user profile component. What you actually receive for the user avatar. As long as it, uh, conforms to its contract, which is to say the types line up, you should, you should just not care what you receive. And so the bundler should be in a position to say like, Hey, for this circumstance, I want give different, different concrete, uh, fields or like values for these fields.
+
+And it's not just mobile and desktop. It also could be for unit tests. Um, unit testing, a relay component is a kind of a weird situation, but like really. What I would like is that the user profile component receives an avatar and. What kind of avatar do I receive? I don't know. Just like, give me a dummy one for a unit test.
+
+And like, I should be able to just say that. so I, I think that all of that, like, I think bundlers are going to be the, the most important thing, um, most important abstraction going forward. And I think that in the longterm, Isograph is a bundler. and this is something I didn't realize until, um. GraphQL, um, Alec Azi, I don't actually know how to pronounce his last name, uh, I believe suggested that, um, in a question.
+
+And I like it just like turned on a light bulb. I was like, yes, this is, that's exactly right. Like what a, what is the correct amount of data for a given page? It's like whatever you would bundle if you were statically rendering that page. Like, yeah. Routers and bundles, they're the same thing.
+
+
+#### [00:55:46] Tooltips
+
+. now, let's move on to tool tips So my first tool tip of the day is a project that came out just today. It's called react strict Dom. So what this, uh, this project is, I think I haven't read too much, uh, is a way that you can use a strict Dom and react native, and it kind of brings over a lot of the like features that the Dom has.
+
+**Andrew:** And from my reading on Twitter. Tomagui, one of the libraries that we've had on to talk about, uh, they've actually, they actually do a lot of this stuff in their like styling layers. So they like implement stuff like the cascade and like hover and press stuff. So it just seems like that's becoming more official now.
+
+And it's really exciting to see kind of. The convergence of the two platforms, uh, being able to write a strict subset of react and get like good rendering on both native and web is really cool. And I'm excited to see where they go with this. And I also do find it interesting that, style X is like bundled into this.
+
+So we're kind of seeing like the. The release of some of these like storied Facebook technologies, like, Oh, they have their own great styling library that works everywhere. Well, now we see it and we, now we see a cool use case where it actually makes a lot of sense.
+
+**Justin:** Pretty interesting. It'll be C it'll be cool to see how the ecosystem reacts and what, how people start using it. 
+
+**Andrew:** Yeah. For what I'm seeing on Twitter, like, uh, all, all the react native people are like, this is awesome. This is an inflection point. So it's, uh, it's interesting to see. I also saw another comment that was like. For react native, they're basically just building a browser. Like they have her Hermes, which is like the JavaScript execution engine that now they're rebuilding the Dom.
+
+Like they're just shipping a browser.
+
+**Justin:** That's so funny. I hadn't thought about that, but that's kind of true.
+
+**Robert:** yeah, it's kind of amazing the amount of Uh awesome technology that's come out of facebook. Um, just The the ambition of a lot of it is is so crazy 
+
+**Justin:** Yeah. 
+
+**Andrew:** Uh, next up we have Josh, just one single history. 
+
+**Justin:** Yeah. So, um, if you've ever worked in a really big Git monorepo, you know, it's not necessarily always the easiest thing. Uh, I'm looking at you Raycast extension repo. So, you know, it can take a really, really long time to clone. They can be kind of hard to work with. I mean, there are people, there are companies who build tooling around Git to try to like scale it out, but like Git. is not necessarily designed for these really, really huge use cases. So Josh is this tool that I actually saw on Hacker News, I guess today or yesterday. Um, and it does this really fancy stuff under the hood to essentially do like this kind of pseudo history rewriting, uh, so that you can kind of have a.
+
+What is, uh, like a, a partial clone of a mono repo in a different repo, and it like, keeps them in sync, but it's not actually a true clone. So, uh, it, it kind of like interleaves the history appropriately and does a lot of magic under the hood to make it, like, feel like it's all one big repo. But when you're working with, you know, one package out of the mono repo or, uh, it, you know, feels like a standalone get, uh, repo. So it's, uh. It's pretty magic. I'm looking at it, you know, intensely because I'm going to be working on a project soon that has a big monorepo. And I'm just like thinking about like, Hmm, how can this be used? 
+
+**Andrew:** Calls back to our first episode. We, we started with monorepos and we're still here. Yeah. Uh, next up we have the kinesis advantage 2 
+
+**Robert:** Uh, so this is a keyboard. I, it took me over a month to really get used to using it. So, and I can't live without it. Now I have four copies of them. One at like my parents house, for example, for when I visit and stuff like that. And it is just, it is just awesome. I love it. Customize the heck out of it. And I, it solved my, um, issues with my wrist, like almost immediately.
+
+**Andrew:** And the one thing I would recommend with it, um, besides my other tool tips, which we'll get to is to tape a magic, uh, mouse with a double sided tape, sort of in the middle here. It looks ugly as heck, That looks
+
+hilarious. 
+
+**Justin:** That's amazing. That's amazing. 
+
+**Robert:** but it works. Yeah. Um, so. I'm lazy both when it comes to passing down fragment references, but also when it comes 
+
+to moving my wrists. 
+
+**Andrew:** Yeah, I've seen these keyboards a lot, but I have not been able to bring myself to be part of like the split keyboard layer crowd. It's just a level of programming. I can't 
+
+get to yet. 
+
+**Justin:** Oh, you'll get there. You'll get there. 
+
+**Andrew:** Yeah, hopefully the risks hold up. 
+
+**Justin:** Yeah. I love those.
+
+**Robert:** There's a new Kinesis that came out, um, which is like actually split into two parts. And like, if I was just starting now, I would go whole hog on, on that one. Um, I'm 
+
+sort of, it was too early though. 
+
+**Andrew:** Yeah, I've just been spending my days hunting pecking so I'm preparing for the Apple vision. Cool. So my next tool tip is a library from Netflix actually called safe test. Basically what it is, is. It looks like they didn't like playwright test and we're like, okay, let's just implement a test runner, but, uh, combine jest in playwright and kind of get like an enzyme experience.
+
+So, what I mean by that is with normal playwright, you can visit pages, uh, with jest, obviously you're working in the JSDOM area, uh, and with enzyme, you can like render individual components with safe test. You can actually do that too. So you write a test that looks a lot like a playwright. Test test, uh, but, uh, instead of using like page dot go to and visiting a app that's running somewhere, you can actually just render a component just like you do in an enzyme test and interact with it.
+
+So, like, that's a, that's a super cool feature. And the fact that it actually runs in a browser is also awesome. Like if you've used Jest, you're, you're not testing in a browser. So like, in my mind, like Jest unit tests on your React components really are just not re they're not really tests. It's just a lot of extra work.
+
+But something like this gets past the not doing something real. Cause it is doing something real. It's rendering inside of a browser. So if you've been looking for something to like, you've wanted to use Playwright, but you don't like their test runner and you need it for a few more of these things, it looks.
+
+Pretty cool. And then they have some like, uh, advanced stuff. Like, uh, when I was building out Descripts, uh, and the end testing library, one of the things that I found is that snapshot testing works very oddly in Playwright because you're in CI, you're running on a Linux machine, uh, in a Linux based Chrome.
+
+Locally, I'm running on a MacBook with a Mac based Chrome. That means the screenshots might actually be different because they're using different lower level libraries. Uh, they've actually included a way for you to just spin it all up in a docker container locally and be able to get those, uh, matching snapshots.
+
+Uh, it's, it's something I thought about when implementing ours, but it was just like too much work to be like, okay, now we run everything in the docker container. But if it's just a feature of my testing library, that's something I'd probably use. So if you're looking for that, go check it out. Safe test. 
+
+**Justin:** That's pretty cool. Has an enzyme been like deprecated for a long 
+
+time 
+
+now? Let's not use Enzyme. 
+
+**Andrew:** It, it has, yeah, and you, you, you could argue that unit test plus react testing library gets you, gets you kind of there, but it just, in my experience, it doesn't make sense that we're rendering 
+
+components, not on a webpage, uh, and there's a cool for that. 
+
+**Justin:** Yeah, I agree. JSDOM is a brilliant technology, uh, but, uh, has its drawbacks for sure. 
+
+**Andrew:** Next 
+
+up, we have the dojo bin generator.
+
+**Justin:** All right. I'm a nerd. I love everything about this. Uh, so this like hits so many like dopamine buttons for me. Uh, so the dojo bin generator is this script that runs in Blender. It uses this feature of Blender. Blender is a, a 3d, uh, editing engine. Um, so you can do games and move like. 3d animations or whatever, uh, really, really great tool by the way.
+
+Blender is another tool to that's been open source for a long time. It's fantastic. So if you've ever been interested in 3d graphics, like definitely check Blender out. Um, so this project uses a feature in Blender, uh, called geometry nodes, which is there. Um, it's kind of a way to do procedural generation with these like flow chart or these like node, like visual node, uh, editing interface or whatever.
+
+So this. Uh, project gives you the ability to generate little bins for your, like a drawer. So it's like an organization system and it's, it's procedural. So you can like customize it's like, Oh, how tall should the bins be? How many bins should there be? Like, what is the like ratio of, you know, sizes that this you take up or whatever.
+
+It's phenomenal. So if you're an organization freak and you like 3d printing and you like 3d, like. I don't know, whatever. This is like really, really cool project. And I absolutely love it And the visualization is so good. It's so good. 
+
+**Andrew:** This is easily one of the nerdiest project you've ever shared, Justin. 
+
+**Justin:** I, yeah, I'm here. You know, I do what I can, 
+
+my community service. 
+
+**Robert:** it looks like a living Mondrian painting. I'm so, 
+
+yeah, enthralled by this.
+
+**Justin:** I could just watch the animation all day. Honestly, it's just so good. I kind of wish like I opened my drawer and it had like this metaphysical, like it's always changing. Like that'd be 
+
+just nice. 
+
+**Andrew:** Apple vision, that's 
+
+all I'm saying. 
+
+**Justin:** I hear You 
+
+**Andrew:** You can pay 
+
+3, 500 for that experience. Okay. Up next, we have better touch tool. 
+
+**Robert:** Oh, yeah. So I am a huge fan of better touch tool. I automate the heck out of my computer with this. So I do. I have keyboard shortcuts set up to like move windows around to different parts of the page, um, to like disconnect and reconnect my headphones because, you know, with Bluetooth, it always connects to my iPhone instead of to the computer or vice versa, um, to open different apps and, and things like that.
+
+Um, I just like find it super, super helpful. Actually. One of the best things that I do with better touch tool is not actually a real keyboard shortcut, but it is to disable command Q in a bunch of different apps. Um, 
+
+cause I almost never actually want to quit 
+
+Chrome. 
+
+**Andrew:** Yeah, I've been bitten by that one so many times. Whoever decided to put the W, er, make W close the window and Q quit, like, why? It's the worst UX.
+
+Yeah, and then real quickly, that other tooltip was 
+
+Karabiner 
+
+elements. 
+
+**Robert:** Yes. And this does, um, some of the low level remappings that I do. So I, uh, do all the usual stuff like caps lock is escape, um, and if it's held it's command or control I think. Um, and like I have left shift to be open paren, right shift close paren. Um, Same with the, you know, sort of the command keys by themselves, their curly brackets and stuff like that.
+
+Um, I remap the numbers to be their inverses, like the shift inverse. Um, yeah, I just find it super helpful. I think that there's some sort of Karabiner or project that gives you a much better developer experience for writing the Jason file that, that does the remapping. Cause like one of the problems with it is that if you. screw something up and I'm just like editing it in Vim. Like I often don't have a valid JSON object at the end of some, you know, some stream of edits. Like it just, it just breaks. Um, so there's some, there's some project I remember reading about it that like lets uh, use some like other maybe like OCaml ish syntax to Make these, um, key bindings. Uh, but yeah, I do a lot of the key bindings using 
+
+that. 
+
+**Andrew:** It must be so fun to watch someone else use your keyboard. The combination of, like, the split remappings. 
+
+**Robert:** Yeah, I, I give up. I have a special, um, a special profile, which is like, turn everything off. And I just like open the laptop and say, you 
+
+**Justin:** Yeah, that's amazing. 
+
+**Andrew:** Well, that's it for tool tips this week. Thanks coming on Robert. Uh, you've educated me a lot about, uh, about relay and all of the problems that it solves and all of the things you're going to fix with isograph. So thanks for talking about
+
+Yeah. Thank you so much for having me. This was like such a, this was a really fun time. 
+
+**Justin:** Yeah. Robert, I appreciate you coming on and I'm really excited about what you're working on. Uh, I experienced both the power and the pain of relay as it is, and I have deep, deep respect for the relay team and all the tooling that they're building. I think this unlocks really, really powerful capabilities in the ecosystem.
+
+And I'm super excited to see any tool in the space that can potentially add more to that. And. And you know, especially if it makes it easier. So really excited to see what you're working on and yeah, just hope it goes really well and, you know, 
+
+improves the ecosystem. 
+
+So 
+
+thanks. 
+
+**Robert:** Thank you. Yeah, I love that you were nodding along like that. It's just like, it really reinforces that, um, that this 
+
+is 
+
+hopefully solving an 
+
+actual person's problem. 
+
+**Justin:** The solid two years of my life would have been better had I, uh, had I had this slightly different tools, although I will say again, for the Relo team, they've done a lot of work in improving user experience and everything. So definitely if you're looking for a GraphQL client library, 
+
+check out 
+
+Relo. It's 
+
+cool. 
+
+**Robert:** Yeah, I think Relay is certainly best in class at the moment, and I would wholeheartedly recommend it to basically anyone. You might think that, like, you need a certain number of, uh, engineers, but it's like, how many engineers do you need to use Git? Really, the answer is one, you 
+
+know, same things for Relay. 
