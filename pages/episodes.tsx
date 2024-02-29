@@ -11,6 +11,7 @@ import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { EpisodeRow } from "components/EpisodeRow";
 import { useIsClient } from "utils/useIsClient";
+import { LinkShieldList } from "../components/LinkShieldList";
 
 interface EpisodesProps {
   episodes: ProcessedMdx[];
@@ -39,11 +40,13 @@ export default function Episodes({ episodes }: EpisodesProps) {
           <Logo />
         </h1>
 
-        <p className="text-lg text-center">
+        <p className="text-lg text-center mb-8">
           A podcast about{" "}
           <ColoredText color="purple">developer tools</ColoredText> and the{" "}
           <ColoredText color="blue">people</ColoredText> who make them.
         </p>
+
+        <LinkShieldList limit={6} />
       </div>
 
       <Browser>
