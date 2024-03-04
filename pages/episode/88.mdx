@@ -1,0 +1,426 @@
+---
+title: Herrington Darkholme - AST Grep, Searching Code with Code
+youtube: https://www.youtube.com/watch?v=zd2XTm5If_o
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Herrington-Darkholme---AST-Grep--Searching-Code-with-Code-e2gjk7h
+tags: ast, grep, code, search, javascript, rust, vue, compiler, tree-sitter, yaml, rules, testing, plugins, vscode, webassembly
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Herrington Darkholme, the creator of AST Grep.
+AST Grep is a code search tool that uses the abstract syntax tree (AST) of your code to find patterns.
+We talk about the genesis of AST Grep, the efficiency of AST Grep in code searching, the challenge of expressing complex patterns, the versatility of YAML for rule expression, testing and evolving rules with AST Grep, and expanding AST Grep with SDKs and VS Code integration.
+You should definitely check out AST Grep if you're looking for a powerful code search tool!
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!  
+Episode sponsored By RunMe (https://runme.dev)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:06] The Genesis of AST Grep
+[00:06:58] Ad
+[00:08:22] Exploring the Efficiency of AST Grep in Code Searching
+[00:26:04] Ad 2
+[00:26:35] The Challenge of Expressing Complex Patterns
+[00:28:22] The Versatility of YAML for Rule Expression
+[00:30:25] Testing and Evolving Rules with AST Grep
+[00:34:40] Expanding AST Grep with SDKs and VS Code Integration
+[00:43:39] The Future of AST Grep: WebAssembly, VS Code, and Beyond
+
+<!-- TAB: TRANSCRIPT -->
+
+
+#### [00:00:00] Introduction
+
+**Herrington:** most of the time you want to say you want to find only the code part, but it is really, really hard to do that in grep, almost impossible, I would say. 
+
+AST Grep is, has another approach. Because we are searching code, code can be parsed, into syntax tree. Then why don't we just use code to search code? 
+
+​ 
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Harrington Darkholm on today. So Harrington is the creator of ASTGrep, which is one of my favorite tools. I'm using it a lot recently. so we're really excited to dig into that. before we get started though, Harrington, would you like to tell our listeners a little bit more about yourself?
+
+Yeah, sure. Uh, first, thank you, Justin, for your kind words. Uh, yeah, I'm very honored to be here. And,DevTools. fm is one of the favorite podcasts. And, uh, Hi, I'm Harrington. 
+
+
+#### [00:01:06] The Genesis of AST Grep
+
+**Justin:** I'm the creator of AST Grep. And previously, I'm also a team member of Vue team. And, uh, actually I have created a Rust based Vue compiler.
+
+And, uh, based on that, I got some inspiration of, uh, manipulating AST. And that's the birth of AST Grep.
+
+Cool. Yeah. I saw that you had written, uh, or were working on a Rust compiler for view, which is like, uh, it seems like such a fun project and it was like very in vogue to like write rest compilers or frameworks for a little while, so tell us more, a little bit more about that, like how did that start?
+
+**Herrington:** yeah, uh, re implemented Vue template compiler in Rust is very fun. Yeah, so, and, uh, originally Vue, uh, Vue's template compiler is based on something like, uh, the htm5 project. Implemented in JavaScript. So, that part of code is not, uh, I would say not that slow, but definitely that will give you some, uh, we can give some performance boost to that.
+
+and actually there's a lot of optimization we can do, do for the, for the policy and transpire, uh, for example. Well, uh, one thing I do in the, in the view compiler is, , say, Because we are parsing a lot large strings and we need to, uh, extract some, Atom or some class names from that template, right?
+
+But that will usually, come with some string allocation. So string allocation, if you are familiar with the native language development, that means I will ask the operating system, Oh, I need some memory. And asking memory is pretty slow and actually if you have, we have a lot of strings in the template and asking memory will be quite frequent.
+
+So there is a trick in the native development that we can somehow, uh, skip that allocation. So, uh, in Vue compiler, I do that not based on something like a string interning or, uh, uh, uh, Adam, which is used in SWC compiler, if you are, you are, uh, familiar with this field. But instead, I just reuse the string from the input. Yeah, so, say I have a class name called, uh, Hello World, and I will not, say, copy that string into the memory, but instead I will store the offset of that string. Yeah, so, by doing that, I don't need to maintain any memory, and that will just be, uh, two numbers. So that will be crazy fast.
+
+**Justin:** This reminds me a little bit of the conversation that we had with Jared, the creator of bun, because
+
+it's like one
+
+of the things that he talked a lot about is like how, how much string parsing was like pretty
+
+key to performance.
+
+**Andrew:** Yeah. It was surprising from our conversation. I was thinking about that too, uh, that he was like, yeah. And then I got to like text encoder and then like just doing that sped up. Uh, React SSR by just like 10, 20 times. 
+
+**Herrington:** Yeah,
+
+**Andrew:** yeah, crazy. The things that are hidden in a native code that we're just kind of like in JavaScript land, not even aware of.
+
+**Herrington:** Yeah. Because JavaScript engine, uh, like V8 has done a lot, tons of string optimization for you. So, uh, in my eyes, uh, string, JavaScript string is just a string. Oh, it's atomic, it's mutable. But in JavaScript engine's eye, wow, there's a ton of string variation.
+
+**Andrew:** so did, uh, the, your view compiler project, like make it to view or did the project go in a different direction? 
+
+**Herrington:** actually, it goes,
+
+uh, to a different direction. one thing cannot be easily done as parsing the script or the style. so in Vue, we have something called a script set, a setup script. So basically, if you, say, you declare some variable in Vue's script section, And this Vue compiler will extract them out, and this information or this variable is, available in the template part.
+
+Uh, but this is compiler based optimization. yeah. So, so, Replant Vue requires analyzing some scripts, or JavaScript, so that will involve some AST walking or something like that. Yeah. And, uh, back then, when the Rust compiler just, uh, started, the only, uh, JavaScript part in Rust land is SWC. But SWC is, uh, a little bit too heavy to use.
+
+actually, the Vue compilers, the script parsing is pretty easy. It's just like, oh, just give me some, some, uh, script, and I will Uh, analyze the declaration and then I will do some, uh, say like some patching stuff, like, uh, okay, change this declaration to export or a module dot export. But that's pretty hard, uh, to do in SWC.
+
+SWC is, uh, it's a very good project, but to use that requires a lot of learning and, uh, yeah, and a lot of source code reading. So I would prefer to use something, um, more lightweight. So AST is just a tree, right? It's like the DOM tree, it's just, yeah, yeah, that's the best analogy I want to use. So they are both trees, so I can just, given an AST, I can think it is a root and I find some DOM nodes. And jQuery, I started to use it, it's about 10 years or more than 10 years ago. I really liked it, I still like jQuery and I'm still very fond of jQuery. So you can just find some, say, CSS selector, give it some selector, give it to the, okay. I want to find some AST nodes. So can you get back a list of a node for me?
+
+So that's is the starting point of AST Grep. Okay. I can make the, AST parsing just as simple as using jQuery. Well, that will be very cool.
+
+
+#### [00:06:58] Ad
+
+**Andrew:** We'd love to thank our sponsor for the week code crafters without our sponsors. This podcast, wouldn't be possible. 
+
+Code crafters makes programming challenges for experienced software engineers. If you're looking for a weekend project or let's be serious, a multi weekend project that takes you to the edge of your programming capabilities.
+
+Things like build your own bit torrent, build your own. Get I've been going through the build your own challenge. And let me tell you, it is challenging. It takes me back to my days in college, where I had to care about hex and binary and be able to debug those things. What I've been currently trying to conquer is the clone challenge. I get clone does a whole lot of stuff. I've gotten past the like negotiation for what things I want. 
+
+Now I've gone on to PAC file parsing and just doing stuff with it. I still have to implement Delta resolution, but I think I can do it. While we still have them as a sponsor. 
+
+I'm determined. 
+
+Besides the content, even these are experiences targeted towards experienced software engineers. For example, instead of typing stuff into an online code editor that they use, you just do it all from your computer, use the ID you want, or a text editor and a command line, and you're off to the races. 
+
+It's trout code crafters for yourself. 
+
+Visit code crafters.io/dev tools. Dash FM. There you'll get 40% off and you'll also be supporting the podcast.
+
+And with that, let's get back to the episode.
+
+
+#### [00:08:22] Exploring the Efficiency of AST Grep in Code Searching
+
+**Justin:** Yeah, I mean, I think that there's something like, so we want to get into like what AST grep is and why you would use it and how it came about and everything. But I think I, so I actually worked on a project. So there was a, there's a project called TS query, um, by the same guy who did, um, better. I don't remember Andrew, if we talked about that tool in the past, but.
+
+**Andrew:** we've talked about it a lot.
+
+**Justin:** Yeah. Yeah. So there was a, there was a project that was exactly this. It was like, it was like CSS style, uh, selectors for TypeScript,
+
+AST nodes,
+
+uh, which is really cool. And I had written a CLI project to be able to do that in CLI. But the problem that, that I always had with that is like. For our listeners who don't know what an AST is, it's an abstract syntax tree.
+
+It's the way that code gets represented in a data structure when it's parsed. when you're using a selector based library like that, you have to sort of know the names. Of the AST nodes. So there are projects like AST Explorer, which is a web app where you can put some source code in and it will parse it and show you the AST.
+
+And you can sort of use that to figure out like, okay, what should my selector be? But that was always the really hard thing. Um, is like, you have to have all this knowledge about what the AST like is, like what the nodes names are and the AST can change between versions. Uh, of a, like, you know, TypeScript version, TypeScript compiler versions or whatever.
+
+So that's actually what led me into tools like AST Grep. so why don't you give us a little bit of explanation of like, what is AST Grep and, you know, how did it, how did it come about? Why did you, why
+
+did you build it? 
+
+**Herrington:** yeah. So a AST GREP is a tool. It has a crappy in its name. So you can just think about it as grep. Um, I assume that many of our listener have already used the grep. So grep is a tool that you can search some text and, uh, you invoke the grep and the grep who will find all these. Text file and find some matched text for you. But one thing is that grep does not understand your code. So if you say you, you grep something like uh Hello World, that Hello World can be an identifier. So it's actually a part of code or it can be in a comment. Or it can be in a string, but most of the time you want to say you want to, uh, find only the code part, like, an identifier name or a method name. But it is really, really hard to do that in grep, almost impossible, I would say. And the similar thing, yeah, and you can also think of some similar things, like, okay, uh, given this function name, can you find all its, where I've called it? Okay, uh, that will be easy in your Uh, text editor because you have IDE or language server.
+
+So language server will find those, uh, method reference for you. But language server only support limited use. So if you are finding some, uh, find a method, a method call, okay, that will be okay. But you, if you want to find something like, okay, given this This method call, I only want to find, uh, where the argument is string literal, um, to map it to a more real world case, it will be, okay, I have a secret file, which is a set password, but in the code base, I don't want to set password by using the string literal.
+
+That will be a security issue. So I want to find all the set password call with string as its first argument. Yeah. But that will be very hard, uh, for, for either grep or a text, uh, text editor or that we server. So ast grep is something like between the grep and the LSP, it know it knows your code better than the grep.
+
+It is not see, it is like, uh, a text. It's not a string with some character, uh, a sequence of character. It is a tree. It's like Justin has, uh, already said. It's a tree. Uh, all your code is in, uh, encoding syntax tree. So you have a, a tree root, which is programmed, and then you have a method call node, tree node.
+
+And in the method tree call node, you have, uh, say, uh, a method name and its argument. So all your ast grep is like grep. And you can find your code, uh, based on the tree node. And the one, and the one, uh, interesting thing is that, uh, searching a tree is hard. Because you have to specify, okay, what tree will look like.
+
+And that means you need to, at least, to construct something, uh, something like binary tree by your hand. If you have any experience with, say, uh, decoding, you know, construct this test case, trick test case is very hard. Because you have a, you have a node and, oh, okay, the first node is, uh, Uh, is the root node, and the second is its first, uh, uh, first sibling, or its first child, or it's very hard.
+
+But AST Grep is, has, uh, another, uh, approach. So, because we are searching code, right? So code is, uh, is already, can be parsed by, into syntax tree. Then why don't we just use code to search code? So that's the, that's the birth of its, uh, its, uh, pattern. ast pattern. So ast pattern is like a, is, it's just like a, a piece of code.
+
+It's a code fragment, but you can somehow, um, replace or something can be dynamic just like, uh, the regular expression dot, so dot can match anything. Right. And, uh, in ast grep, uh, we are not using that, but we are using something like, uh, uh, a meta variable. So it's a, it's an identifier that can match any syntax node.
+
+So by this way, uh, we can use the code to search code. And that code query is, is, uh, like tree. And it actually understand your code.
+
+**Justin:** yeah, that's, that's super cool. Like Justin said, like any AST experience I've had, I just go to AST Explorer and I'm like, okay, this is, this is hell. Like I have to translate that into code and like, it just adds so much complexity, but the idea of just being able to like. Write code and then match that code is super cool.
+
+**Andrew:** So like, is the way it works that like you kind of like take my input search string and then like make an AST out of that and then like match parts of the tree.
+
+**Herrington:** Yes! Yes, exactly. Exactly. Yeah, so AST Grep is based on TreeSetter. So TreeSetter is a project, uh, uh, invented in GitHub. So GitHub is the, it's the place where we store all of our code. So it, uh, GitHub also has a lot of, uh, A different code, uh, uh, uh, sorry, a different language. Say, say, uh, Java, JavaScript, Python C.
+
+So, Treesitter also supports a lot, a wide range of verbs. Language and using the tree setter, we can say, uh, parse the search query into AST and based on that AST, I will inspect, okay, is this tree node has, uh, some special syntax, like, uh, like the meta variable if yes, okay, I will translate it to a pattern. So, okay.
+
+This pattern can match anything. So keep on. And if that's a, it is not, it's just a, say, uh. An ordinary syntax thing now. Okay. I will also translate it to a pattern node that match exactly of that syntax. So in this case, everything can be matched against a tree.
+
+**Justin:** Yeah, the thing that I really love about this. So in practice, what it like looks like is, oh, you're searching for a function. You just like, write the function name in parentheses. And if there's 1 parameter, you just do like, what is the syntax like dollar and
+
+then like, whatever. yeah,
+
+whatever the, the, the placeholder would be for that.
+
+And if there's multiple variables or multiple arguments to the function, you have a special or special thing that you can do there. But like, Matches pretty exactly to what you expect. And you don't have to know about the, like, you don't have to think about the AST or the nodes or whatever. So it feels a lot like it does feel a lot like using grep, but without all the, you know, reg X pattern matching and all the other, the other weird string stuff that you have to do.
+
+**Herrington:** yeah, yeah. Especially when you're, uh, calling something like call, uh, method call or function call. So you have to match the parentheses. Oh, that will be a lot of regex, and, uh,
+
+and also
+
+search query is designed like code. So, People can use that without consulting to AST, uh, Grep Playground or AST Explorer.
+
+So that will be a, a great use case for, uh, daily command line you use.
+
+**Andrew:** Yeah, one thing we haven't mentioned about like, how the search syntax is nice is that, uh, since you're grepping the AST whitespace doesn't matter. Like, uh, in a lot of your examples, you have like console logs that are strewn all over the place. And, uh, if you want to do that with Find and replace in your editor.
+
+It would just be like, you'd have to write some pretty tough regexes to get there. Uh, but it leads me to the question, like, if you are doing that, like, do you like save formatting at all? Like if I'm, uh, grepping for a console log and it happens to be split out across four or five lines, is that structure kind of preserved?
+
+**Herrington:** yes, you know, for the search path, yes, uh, a single, a single pattern can span multiple lines. But that will be a little bit tricky when you're using the replace. So suppose we have a console log and, uh, um, the argument is, uh, one level indented, uh, compared to, to its console log. So when we replace that, that will be very, very tricky.
+
+And, uh, if you, uh, so the, the AST Grep replacement algorithm is, uh, indentation sensitive. So if the argument, as we have say, has indented the one level, then if you use that in the replacement string. It will also be one level indented. Yeah, so in that case, uh, say for, for most of case, it will be, uh, so if you have a search query that's a spam multiple line, okay, then you have to also use, make the replacement query spam multiple lines.
+
+Yeah, that's a little bit inconvenient because usually you will have just one query and then That's all the same, uh, uh, I choose to, to still preserve the indentation because for, for those indentation sensitive language like Python, that's indentation is very, very important. And most of the case, if I say I keep the indentation, uh, that will provide a better result.
+
+say I'm. I'm finding some function declaration, and okay, I find this function declaration, but I want to say, uh, in JavaScript, I want to change the function declaration into a arrow function. So, keeping that indentation of the function body will be, uh, very helpful.
+
+**Justin:** Yeah, for sure. I mean, it is, there are a lot of interesting trade offs here because it's like JavaScript, you know, and, and languages that aren't white space sensitive or a lot more flexible. And like you're saying that Python for sure, it would be, you know, you could end up with some errors. So it is, but it does still seem like a worthwhile trade off just because it still does make reasoning about what you're changing a lot simpler.
+
+
+
+**Herrington:** so, uh, one recommendation is to use as graph, uh, with your formatter. So, uh, usually that the workflow will be okay, first I change the, the code. Okay. And either using the command line or using the, the batch processing, something like that. And then followed by that, uh, rewrite a format run, like prettier or go FMT is recommended.
+
+**Justin:** Yeah, this is a pretty common strategy for when you're doing code mods too. Right? So in the past, I would, I would write like JS code shift scripts and, you know, have to crawl through the AST and transform things. And usually things were not well formatted on the other side. And it's just like you. pipe the output through prettier.
+
+And it was like, fine. so on the topic of, uh, JS code shift, so there's, you know, this concept of code mods, which are programs that X that the alter programs, uh, for, uh, for AST grep, you actually have this notion of a rule which can go through and do things like apply rewrites. So it can like. Do a search pattern and apply rewrite.
+
+So essentially modify your code. Can you talk a little bit more about rules and how you use them?
+
+**Herrington:** Oh yeah, of course. So, we have already talked the pattern. So pattern is, convenient to suite, construct to find a code, but usually it is not powerful enough. Uh, say if I want to write a pattern uh, that is, uh. Say, uh, function call. So what if there is a comment between the function name and the parenthesis?
+
+So usually that will be, uh, be hard to write a pattern for that. Because, okay, I both want to write, uh, uh, say, uh, meta variable for the function name, but I cannot write a meta variable for the comment, because that will not parse you, uh, by the By the tree sitter.
+
+So, uh, an ASTM tree rule is something that, uh, combine the expressiveness of a rule system and between, uh, the convenience of a pattern. So, say, uh, for the. For the example, we just talk about, Oh, you want to find a function call, but that will be a comment between that. So you can write something like that.
+
+Uh, first you have a AS node kind, so you have to look at up in the, in the AS explorer. So, okay. It's a function call. But then you can also have a, right. Something I could see, CSS selector like that. Okay. I also want this function call. Has a child of a comment. So combine these two rules, we can, uh, precisely locate some, uh, precisely locate some, some, you know, that is not expressible with pattern. And, uh, Based on that rule, we can also use, uh, compose very complex rewrite. some part of the, uh, some part of the, the rule will be match, will be matched into a meta variable. That meta variable can be used in the fixed string. And a fixed string is also, a string, but it can contain some metavariable.
+
+The metavariable is a, a match k, uh, is a match group, like a, a regular expression that matches some syntax node. So by using the rule, metavariable, and the fixed string, we can do a pretty complex, uh, code rewrite.
+
+**Justin:** So this is really getting into the code mod use case, right? Because traditionally you, so some people might write rules or whatever with just red. Regex, right? So regex, try to find this pattern. My code is going to have false positives because it's going to match on a comment somewhere or something, which is typically why we don't do that.
+
+Or just like using raw grep. And then the, the code mod situation where you're using something like JS code shift, you're writing programmatic code. And it's programmatic because you have to find things with all these relationships. It's like, I want to function with this signature that has this thing in the body.
+
+And then I want to do some rewrite rule to it. So, so you're saying for, for the rules, you can sort of express them as like, Oh, I have this pattern and maybe a composed patterns, like multiple patterns that are together. And then you can use that as collection of information to, to form some pretty complex rewrites.
+
+**Herrington:** Yeah, so AST Grep's true system, or pattern system, I would, I would just call it, it's progressive. So it's a scale from a simple usage, like a search and replace with its pattern. But it can progress or scale to a more complex situation. Like you want to find some Uh, specific node that's inside another, specific, uh, syntax, syntax node.
+
+Like, okay, I want to find, uh, set password call inside, uh, say, and Insecure function, or you know, it's insecure core context, so that can, cannot be easily expressed about by, by pattern. Or if I want to express that pattern, you, I will usually introduce a lot of, uh, syntax for that pattern code.
+
+So user will have to learn both the host language, like JavaScript, and also the pattern syntax. So that's the one thing I want to avoid.
+
+
+#### [00:26:04] Ad 2
+
+We'd like to thank our second sponsor for the week runme.dev.
+
+When it comes to cloud infra, we live in a fractured and complicated world. It's 2024 and we're still storing op docs in wikis and relying on a bunch of scripts and mark down in fractured repose. Run me wants to put ops docs in your repo, along with the rest of your code. With run me you can empower your whole team to be in charge of your infra with simple notebooks. Create mission control dashboards, interactive external docs, or even operational runbooks. To get started head over to runme.dev. .
+
+
+#### [00:26:35] The Challenge of Expressing Complex Patterns
+
+**Andrew:** So one, one type of lint rule that I write a lot is, uh, like parent child relationship stuff. So like in React, it's like, oh, you can't use this component inside of this other component. Or like in Hooks, you can't use these browser APIs in like certain situations. So do rules allow me to like start linting for that type of stuff?
+
+**Herrington:** Oh, kind of. So as long as this, uh, thing, if you are having a, a special hook in the browser code, as long as that browser code can be identified in AST in the same file. That can can be can be fine. Say if you have a say you are in a Let me think I say you are you right using Next. js, right? And you have some server API that you don't want to be caught in the client code So if that say that file has a used client directive At the top of your file, then it is a, it's definitely is a browser file.
+
+Then using the AST, I can say, okay, first I want to find the server API call and then, and it should be inside a file with a use client directed. So that the rule is. Uh, perfectly expressible in AST Grep, but there will be something, uh, more difficult, like, okay, uh, this file is sometimes using being server and sometimes using client because it's a common utility tool.
+
+Uh, so finding these use cases will be a lot harder. And that should actually understand every language and every semantic of your, both the library. Also your, your framework and your language, that will be a lot harder.
+
+**Andrew:** Yeah.
+
+
+#### [00:28:22] The Versatility of YAML for Rule Expression
+
+**Justin:** So talking about the rules a little bit more, so rules are expressed, uh, in a yaml file.
+
+yeah 
+
+so why did you go for a, like a configuration file over like a code base approach like JS code shift has?
+
+**Herrington:** Yeah. I, I can talk about, about that. first I think using a script language or general purpose language is definitely better than yaml. Uh, yaml is, its, uh. At most time, it's sweet. 80 percent of the time, it's sweet, but the 20 percent of the time, it will 
+
+make you, oh, no. Yeah, you, we all know the Norway problem or other weird YAML stuff.
+
+Uh, YAML is readable and learnable, but it is hard. And, it does not. offer the expressiveness of general language, uh, purpose language. Uh, general purpose language, uh, choosing one that is, uh, suitable for scripting is hard. say if I want to, uh, I want to support, uh, JavaScript as our, uh, ASTGREP's first, uh, first class citizen, then I will, uh, every ASTGREP user will have to integrate JavaScript in their workflow.
+
+Uh, that will be easy for JavaScript or, or a web developer because everyone uses JavaScript, but for Golang non developer or Java developer, that will not be the case. And using a new language for them is hard. But YAML, on the other hand, is more like a configuration file. Okay, that's another new language.
+
+And you can use it with your text editor uh and it's probably already inside your code base. So Introducing, uh, YAML will be much easier for, uh, for, for, uh, more diverse developers.
+
+**Justin:** so you've built, you've also, you've built a lot of things. And one of the things you've also built is tests for these, uh, YAML defined rules. 
+
+
+#### [00:30:25] Testing and Evolving Rules with AST Grep
+
+**Andrew:** So can, can you walk us through like how the testing works?
+
+**Herrington:** Oh, yeah, of course. So, uh, authoring a rule is hard. It's really hard. Especially if you, uh, if you are, authoring, one time or one, uh, pattern, that will be easy. You can complete it in seconds, but writing a, a significant, uh, or a serious rule that can handle a lot of age case, that will be very hard.
+
+so ESLint has a special, uh, ESLint rule test, and also other, other Uh, tools like jsCodeShift or, or, or semgrep or, or other things will also have a test utility to test your rule and all those H cases. That should also be convenient in ASGraph. So ASGraph has a test, uh, a test folder or test, uh, test folder that can store all your test case valid or invalid.
+
+Uh, and also it will produce a snapshot if the code is invalid, what kind of, uh, say, error or what kind of match will your rule, uh, produce for this invalid code. So, in this way, um, Evolving your rule or distributing your rule will be more convenient, and the rule also will be more confident when shaping this rule.
+
+Because I say I have a, I have an edge case, like, Oh, I want to match all function declaration in JavaScript. Okay. I write a function expression, function, uh, arrow function, function declaration, but later I find, okay, I forget to handle this method declaration. So using this rule, rule, uh, rule tester will help you to evolve your, your rule.
+
+**Andrew:** So I, I love how like the CLI is like, looks so easy to set up. It has like a, like a very, very nice experience where it's like, Oh, where do you want to set things up? How do you want to set it up? So getting off the ground is very easy. And it seems like it's like you've built kind of like a general purpose linting tool and one hallmark of linting tools is plugins and extensions.
+
+So have you thought about like what it looks like to bring other like rules that are defined outside of the repo in so like, say, I wanted to like recreate, uh, reacts, uh, hooks rules plugin. Yeah, could, could I potentially publish that and have people use that in their AST grep projects?
+
+**Herrington:** yes, because everything in AST Grep has a file based, or the only thing you need to set up is the route configuration file called sg config, the YAML. And, uh, whatever rule you want to use can be just a folder in your, in your, in your repository. So you can use, say, uh, if it's a GitHub repo, you can just clone it.
+
+As a, say, a submodule of your Git project. Or it can also be published on NPM. So you can install that. And you find that code, find that rules in node modules. So I have not decided. I didn't want, I don't want it to build a, a root, a root registration for AST GREP. But instead, uh, I want it to, to follow the host language.
+
+If you are using JavaScript, okay, use NPM. If you are using, say, Python, use PIP. Or if you're You feel unfortunate you are using something like a, a hodecode, or like a CPP, or you cannot do that. Okay, you can still rely on the old, venerable git stub module. So this way, it, it takes a little opinion on how you distribute your rules.
+
+**Justin:** that makes a lot of sense. I can see a lot. I can see similarities in the patterns that you've already discussed. And like, you want people who are writing rules in a language to be able to think about their language and not have to think about, like, other languages. So it makes sense that the integrate this, um.
+
+This approach. 
+
+
+#### [00:34:40] Expanding AST Grep with SDKs and VS Code Integration
+
+**Justin:** Uh, one of the thing I wanted to ask about is you also have some SDKs, um, that you've written so far. So there's, there's at least one for JavaScript and one for Python. Um, and looking through those, they look like they're sort of just read only, um, SDKs at the moment. I'm not sure exactly what the extent of the SDK is.
+
+So what, uh, can you explain a little bit, uh, about the SDKs and maybe what their limitations are or what they're kind of designed 
+
+for?
+
+**Herrington:** Yeah, so, um, AST GREP is a progressive tool. Uh, it's like Vue, it's a progressive framework. So, pattern and rule can handle most of your time, uh, most of your case. But you will still have some, um, you know, customized scenario, and then you need something as imperative. That's very, you want to build a very complex rule that cannot be expressed by YAML, or some, something like the CSS selector.
+
+Then that's the, Uh, that's the use case for SDK and, one thing that, uh, if you want to have a more powerful things or more, uh, complicated, you want to have a, a powerful tool to handle complicated scenario, you have to say, pay some performance cost, um, by performance cost, I mean, for rules, AS grep rules, uh, it can natively run on multiple threads.
+
+Because, uh, AST Grep is written in Rust. So, it does not, uh, it is not like JavaScript that, uh, that is a single threaded. Rust can, exploit multiple threads natively. So, running rules will be much faster. Because they're, all of, all of these, uh, rule execution is, uh, As a machine code, so SDK will be slower because, you have to pass this code to the virtual machine and these virtual machines usually do not have multiple threads, like JavaScript is a single thread and the Python, In old Python, it is a GIL, but I know it, but in old Python, you have GIL. Um, however, uh, SDK is much more flexible. Uh, say, uh, let me give you an example. So suppose you want to find, a function call with five, uh, with five or more arguments, but these five or more arguments should follow. Say, should this be, uh, should have some special rules for, for the, uh, to be matched. Like, okay, these five arguments, out of four should be Boolean.
+
+So, uh, that will be very confusing. So for this very specialized, uh, or customized, uh, scenario, using a rule, using a YAML based rule will be very verbose. If ever possible to express this, uh, Scenario also, sometimes you want to want to to understand your code better. So just we have said, oh, okay.
+
+It's grab rule at the moment cannot analyze, cross file, uh, cross file symbols or cross file file. But using the SDK, you can first, uh, resolve this file, from your end. So, because you are writing JavaScript, you must know JavaScript better than a script. Okay, so, you can first, uh, do something, uh, Uh, do some file resolution things and, uh, give, give this, uh, resolved file to a script that will be much more powerful.
+
+**Andrew:** Yeah, it's, it's probably out of scope, but it would be really cool if there was like some way to like connect the ASTs because like, as you said, like, maybe I have a helper function
+
+that uses
+
+like window and I can't use that in like certain scenarios. It'd be super cool to be like, Oh, yeah, this AST kind of just like plugs in right there.
+
+**Herrington:** Oh, yeah. Yeah. That will be very powerful. I think that will be out of the scope of all my projects.
+
+**Andrew:** Okay, so you're working on some other tools you have VS code extension in the works. Can you tell us what it does and what you plan to make it do?
+
+**Herrington:** Oh yeah. So at the moment the a AST Grep vs code has too main functionality or too much more, uh, two main feature. The first one, AST Grep is, uh, has an, language server. So if you have a AST Grep config, it will set up the linter for you. So you will see, okay, you set up the rules and then open your editor.
+
+Okay, the editor will, report issues for you. So that's the LSP part. But there is, uh, also another feature is, search and replace. So, um, Most of, uh, my users, are not, uh, are not living in the common line. They are not living in the terminal. But instead, they live in VS Code. So, you have a VS Code extension that can take your pattern and define it in your code.
+
+It will be very convenient. And more importantly, If you want, do some replacement that is, uh, that will, that should, uh, that needs to take the, some matching group in your, in your search. That will be very hard to use in, with a regular expression. You have to know the, uh, matching group, something like that.
+
+But in AST Grep, that's a meta variable. You can simply use that in, in your replacement string. So that's will be very convenient. So that's the, so as rapid vs code will have these, these two main features and, for the search and replace power, I'm still doing that. Uh, that that is a lot of work.
+
+That's truly a lot and I, I'm really amazed with the VS code ui. So all the UI details. It's really nice and very pleasant. If you look at the, say, look at the file match. So every file will have it, uh, it's a search match, but if you scroll a little bit, uh, about, uh, scroll a little bit, the scroll list or result list, you will see some box, uh, box shadow from that file item while that's really subtle, but also really, uh, Good eye candy.
+
+**Justin:** Yeah, they've got some good UI, UX going on
+
+there. 
+
+**Herrington:** Yes, 
+
+**Andrew:** yeah,
+
+I've, I've been learning the,
+
+that a little bit of box shadow can go a really long way to make your UI just really look good.
+
+**Justin:** The, the VS code extension is going to be awesome though. I'm, I'm super excited about it. I had been messing around with the, the, the versions you have released now that just has to search in it and it's, it's, it's good. It's really good.
+
+Um,
+
+yeah, I, I think that like, this is the kind of thing that. Is, is a good inroad for people is like they pull this in and it's just like a really great way to, you know, search your code base and actually find the code that you're looking for, which is, you know, harder than it should be sometimes.
+
+And then I think that it's a really interesting on ramp to then like doing things like writing rules, because in a lot of ways I see this as, you know, Andrew, you, you'd mentioned like linters earlier. You know, whether it's a code mod or a lint rule or whatever, AST grep is, is such a simpler tool for like expressing those things.
+
+Cause you are kind of thinking very similar to the language that you're, you know, trying to write the thing for, which is like very much not the case. If you're trying to write a lint rule or something like I have to relearn the syntax trees every time I go back there and like write a lint rule for something.
+
+It's like, there's a reeducation process every time. So this will be, this will be really good.
+
+**Herrington:** Yeah, personally, I work across a lot of different languages. So in my day job, I use JavaScript, TypeScript, and also Golang. sometimes Python. And in my spare time, in my hobby time, it's Rust, uh, and Python. So walk across this language,and first, not all languages have a decent linter tool, or decent, codemod tool.
+
+And second, every codemod tool has its own unique, uh, has its own unique design for that language. So you usually pick up, uh, A new Codemod tool will require, uh, learn both the new language and the, the, the new tool. But ASGrep, at least, want to unify these language, uh, difference. So at least you learn one AST Grep tool and, uh, that concept, uh, concept of AST and, AST rule matching will be similar across different languages.
+
+**Justin:** so you already have a pretty full featured tool and you're expanding into like tools for your tool, as we just talked about, but what, what do you have planned for, uh, for the future? What features do you want to bring to AST Grep?
+
+
+#### [00:43:39] The Future of AST Grep: WebAssembly, VS Code, and Beyond
+
+**Herrington:** oh, yeah. So a lot of the user has asked me, pretty many times that, oh, can I have it, use the AST Grep in my own project? Oh, it will have a web playground. And I also want to build a Playground like AST Grep. Can you help me there? Uh, so Wasm, a WebAssembly, is a big thing for, for users. And, uh, especially, uh, for, say, for older nodes or for some, uh, older Linux system, Wasm is very useful.
+
+Since I cannot compile a lot of cellular power on these system using, uh, a wasm be very, very helped so, wasm is the a big thing. And the other thing is, uh, is still the VS code extension. So. Because Vs. Uh, using CRI requires some learning. You, you have to read, deduct, okay, I have this common argument and also the common line has its own grammar.
+
+You have to learn that. but using VS code, you just look at that logo and click on that. You see the input and other things. Oh, that will be very intuitive for user to learn. So vscode the also The next big thing and finally, there may be some, uh, some more customized rules. So, at the moment, you can only choose a YAML based rule or a full fledged SDK.
+
+But, I'm thinking about doing something, uh, between. That you can build some, uh, your own rules. Using wasm, but that's a wasm rule can also be reduced on the yaml file. So uh once you write You have your wasm ready and also you you also you can use it in your yaml rule That will preserve the declarative, uh, uh, declarative nature of the YAML rule, but still preserve the expressiveness of, uh, imperative programming.
+
+**Justin:** That is really cool. That's a, that's a cool approach. Uh, you know, I had not thought about wasm as a good, uh, build target for like older platforms, platforms that might not like, you know, support other things. But that's a, that's an interesting perspective. Um, So we always ask a future facing question at the end of our episodes.
+
+And, and one that I think would be interesting to ask you, you're doing a lot of in your free time, at least you're doing a lot of tooling and rust. Um, do you think rust is the future of web based tooling? Uh, we've talked about some of the places where it like works well and like some of the places where it's hard, like with the Vue, Vue compiler.
+
+So
+
+what, what do you think the future
+
+is there?
+
+**Herrington:** Yeah, uh, that's my disclaimer, that's my own opinion, uh, that's not to represent anything else. So, for tooling, yes, Rust is the future of web based tooling. because Rust is fast. It does not have a garbage collector. And not having garbage collector is a very good, uh, uh, trait. It's a very good feature that you can, uh, Bridge rust with V eight. So, uh, using V eight objects in rust is like, uh, using a smart pointer in rust. So you just have the, because V eight export some, uh, it's, uh, it's Smart Pointer or GCT, which is Smart pointer that manage the hip and the JavaScript object. So if you are using that in rust, that will be very easy. but if you are using something like, uh.
+
+A language with runtime for Yaml Go is very, very fast, but using Go with JavaScript engine will incur some overhead because you have to take care of a garbage collector, uh, both in JavaScript and that garbage collector in Go. That is also okay, but it just requires some more modification for the runtime engine. And, uh, another thing is not only Rust, the language itself, but also its, uh, ecosystem. Uh, one thing I want to praise, and one thing I'm always praising is NaPi, napi. ris. It has really great API design. And the, the JavaScript language is nice. Actually, NaPi. rs is one of the best breathing tools I have ever seen and ever used.
+
+Brooklyn is the best of type.
+
+**Justin:** Yeah. The, the Na'vi project is so. It's, it's pretty amazing. Uh,
+
+the, having, having good, good bridges, uh, between languages is so, so important. And that project 
+
+**Herrington:** Yeah. Because, uh, before NLP. js, um, if I want to use, I say, I want to use CPP to bridge my node, um, my native code and with the Node. js runtime, that will be a lot of code. First, I need to grab something like isolate environment. A lot of things, I cannot tell the difference now. Yeah, but you need to grab them and use a lot of ceremony to set them up.
+
+To do a simple thing like 1 plus 2 equals 3. But with Nuppy, you can just like, uh, using a declaration that decorates your address function. And everything. Runs, uh, under the hood, and you just write a 1 plus 2 equals 3. That will be about five lines of raw code. Very easy.
+
+**Justin:** Yeah. Yeah, it's, it's great. Those, those integrations are super powerful. And I think that. We're seeing a lot of like really powerful tooling that's coming out because we have things like not be in. And I will say I'm always a shill for Dino. I think Dino is like native for us to integration. It's so nice.
+
+So
+
+better,
+
+better interfaces are good.
+
+**Andrew:** Well, that's it for what we got for questions. Thanks for coming on the podcast, Harrington. This was a really fun conversation and the tool you've built is, is super cool. Like I I've already shared it to, to my work and people have gone like, wow, that's something I already needed. So, uh, you've definitely made a tool that I think a lot of people are going to like, so I hope it catches on.
+
+**Herrington:** Yeah, and glad you have me here. Thank you.
+
+**Justin:** Yeah. Yeah. Just to repeat, Andrew, like so glad that you came on and I mean, AST grep I mean, I use it all the time. I really use it all the time. I love it. It's, it's a cool tool, so I appreciate it.
+
+**Herrington:** Thank you. thank you. I appreciate it. ​ 
+
+
