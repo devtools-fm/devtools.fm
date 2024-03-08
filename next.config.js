@@ -5,6 +5,10 @@ module.exports = withEsmCss({
   async redirects() {
     return [
       {
+        source: "/docs",
+        destination: "https://github.com/devtools-fm/devtools.fm/discussions",
+      },
+      {
         source: "/",
         basePath: false,
         permanent: false,
