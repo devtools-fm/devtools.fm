@@ -7,6 +7,7 @@ module.exports = withEsmCss({
       {
         source: "/docs",
         destination: "https://github.com/devtools-fm/devtools.fm/discussions",
+        permanent: true,
       },
       {
         source: "/",
