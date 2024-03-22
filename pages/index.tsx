@@ -49,7 +49,7 @@ export default function Home({ latestEpisode }: HomeProps) {
       </div>
 
       <div className="mb-6">
-        <LinkShieldList limit={6} />
+        <LinkShieldList limit={7} />
       </div>
 
       <div className="mb-6 flex justify-center">

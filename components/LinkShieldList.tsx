@@ -38,6 +38,11 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
     href: "https://anchor.fm/s/dd6922b4/podcast/rss",
     text: "RSS Feed",
   },
+  {
+    src: "/platform-logos/discord.png",
+    href: "https://discord.gg/Pr7dTPAXaB",
+    text: "Discord",
+  },
 
   {
     src: "/platform-logos/overcast.svg",
@@ -93,7 +98,7 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
 
 export function LinkShieldList({ limit }: { limit?: number }) {
   return (
-    <ul className="flex flex-wrap gap-4 justify-center max-w-sm mx-auto">
+    <ul className="flex flex-wrap gap-4 justify-center max-w-[30rem] mx-auto">
       {PODCAST_LINKS.slice(0, limit || PODCAST_LINKS.length).map((link) => (
         <li key={link.href}>
           <a
