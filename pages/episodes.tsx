@@ -84,8 +84,6 @@ export async function getStaticProps() {
     )
   );
 
-  console.log(data);
-
   return {
     props: {
       episodes: data.sort((a, b) => Number(b.number) - Number(a.number)),
