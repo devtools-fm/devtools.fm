@@ -75,9 +75,16 @@ export async function getStaticProps() {
 
   const data = await Promise.all(
     episodes.map((episode) =>
-      processMdx(path.join(process.cwd(), "pages/episode", episode), {})
+      processMdx(
+        path.join(process.cwd(), "pages/episode", episode),
+        {},
+        false,
+        false
+      )
     )
   );
+
+  console.log(data);
 
   return {
     props: {
