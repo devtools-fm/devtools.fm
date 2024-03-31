@@ -1,0 +1,436 @@
+---
+title: Dan Abramov - Bluesky, Core React Team, RSC, Strict Dom, and the more!
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Dan-Abramov---Bluesky--Core-React-Team--RSC--Strict-Dom--and-the-more-e2hq6ur
+youtube: https://www.youtube.com/watch?v=Ehjw-Cw_OeY
+tags: react, bluesky, core team, RSC, strict dom, server components, react forget, react compiler
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Dan Abramov, a core team member of React.
+We talk about his latest work on Bluesky, a decentralized social network.
+We also go into many react topics, including the history of server components, the new React compiler, and the future of React.
+
+- https://twitter.com/dan_abramov2
+- https://danabra.mov/
+- https://overreacted.io/
+- https://bsky.app/
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!  
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:26] From Facebook to Blue Sky
+[00:17:44] Ad
+[00:19:30] React Strict DOM
+[00:29:07] React Team Diaspora
+[00:36:05] The Evolution of React and Server Components
+[00:51:45] Looking Ahead: The Future of React and Compiler Insights
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Dan:** when React was released, people were like, what is this thing with this like XML syntax and, uh, like the benefits of the component approach were not really clear. People were talking about like, Oh, it doesn't separate the concerns. I want my. model separately from my controller and my view and so on.
+
+And I think like the component model has pretty much won, uh, like you can see it in all native frameworks,
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co host, Justin.
+
+**justin:** Hey everyone, uh, we're really excited to be joined by Dan Abramov today. So Dan, you might know as, uh, a former or still current member of the core React team. Uh, he used to be at Meta and now he's at Blue Sky. Dan, we are super excited to have you on. We've wanted to talk to you for a long time and this is great.
+
+before we dive in and start talking about what you're working on, would you like to tell our audience a little bit more about yourself?
+
+**Dan:** Sure. Thank you. Uh, hi, my name is Dan. Super excited to be here. Thank you for inviting me. So a little bit about myself. Well, I, I guess like I work as, yeah, you already kind of recapped my software career. So I, I worked on React, like on, uh, on the React itself, uh, on the React team for I think eight years.
+
+so that's, that's how most people who. so I also co created Redux, but I'm not involved with it anymore. Uh, it's like a state management library. Um, then I worked on React for a while and now I, so then I, when I was working on React, I, uh, I worked at Meta, um, which was previously known as Facebook.
+
+And now I work at Blue Sky, which is a different company. so I'm not, I'm still technically like I am on the React team. I'm slightly less involved right now just because I use React as a product right now, so we're like a blue sky rebel then. Um, an app with, uh, React for web and the React Native. So I'm, I've never built anything with React Native before.
+
+So that, that was quite an experience, uh, kind of ramping up and learning it. so I was, I was pretty busy, but I, I started sending sample requests to React again, in my spare time. So yeah, I'm kind of trying to get back into shape a little bit. 
+
+
+#### [00:02:26] From Facebook to Blue Sky
+
+**Andrew:** So before we dig into like a react, I want to ask you a few questions about blue sky. So for our listeners who might not know what blue sky is, what is it? And then once you explain it, how is it different than other federated social media that we have?
+
+**Dan:** yeah, so Bluesky is a, um, a social network, an open social network. Um, so, and it is, it is built on a, so there's like an underlying technology, uh, called ethproto, uh, at protocol um, and the idea is that the blue sky is kind of a proof of concept of an app. Built using this technology. So we're kind of developing both the application and the protocol at the same time.
+
+And they kind of, uh, you know, they kind of help us, uh, like inform each other, each other's design. but the, the current scope of the blue sky application, you can think of it as being very similar to Twitter pretty intentionally. So it is, you know, it is an, uh, like a micro blogging app where you can follow people, you can post, uh, you can see what others are posting.
+
+there are feeds, uh, there are lists and, you know, the kind of features you can expect. I actually, like, we're missing a bunch of features that people expect. So, uh, we don't have any, any private, like, DMs, uh, stuff like this yet. we don't even have, uh, GIFs yet. So this is something we'll need to add. but the, the big difference.
+
+in the approach is that it is designed, uh, to not be controlled by one company. So this is like a core design principle. And, uh, that, that is also like when I speak, uh, like it's built on this protocol is like this protocol is what enables it. And one way to think about it is the idea is to have a user experience that feels as you would expect from a centralized app.
+
+So, uh, you wouldn't like, we want different actors, like, you know, different people or companies to be able to run any part of the service that they want. So, uh, we've recently opened up or like piloting opening up hosting. So, you know, just like on the web, like different companies can host your website, uh, like different companies or even, you know, any like hobby developer would be able to host their own data on their own servers.
+
+we already have, uh, third party feeds. So all feeds that you can see in the app, uh, like, I think we run a couple, but, you can create third party algorithmic feeds, that, you know, can apply like machine learning or any algorithms or, Like one of my favorite ones is called quiet posters that highlights, uh, posts by people who don't post much, but who, you know, you don't, you don't want to lose, uh, their posts, like in the firehose of what everybody's posting.
+
+So these are like all pieces of the, like, we're extending that to moderation soon. So people will be able to run. Third party moderation services and subscribe to them and label things and subscribe to labels and that that will let you like further kind of customize your experience on the app. But the idea is just like to take, you know, the feature set that people associate with, uh, social media.
+
+but then make it distributed so that different companies and people can run different parts of it. But then in a way that is actually seamless from the consumption point of view. So when I'm looking at the blue sky thread, I don't actually know, like some of the posts may be coming from different servers and like hosted by different people, but then.
+
+I don't really, you know, like, like the information about who liked what is getting aggregated from multiple places. But then as a user, I don't really think about this because it feels the same as like using a centralized app. And that's, I think that's really the big idea. And then, uh, with the protocol, it's again, like I said, like BlueSky is like an app.
+
+that's using this protocol and kind of proving it out. But the big idea with the protocol is really to allow building many different social apps, using the same infrastructure that can kind of, you know, like you can have your following graph, and use it, you know, you could build like a dating app, that uses the, uh, you know, the following the graph from blue sky, for example.
+
+So it's, it's also about, you know, like the platforms kind of started closing down in 2010s because they want to show ads and you can't control what clients show what ads, whereas we're kind of pursuing this approach of like everything is open, uh, the data is open, you can subscribe to a stream of like all the data in the network and, uh, like do, do something with it because it's all public.
+
+so it's, it's an interesting experiment. We'll see if it works out, but so far, so far we have 5 million users and we recently opened up for like public registration, it used to be invite only. 
+
+**Andrew:** I love how open it is. I've, I got on a blue sky really early and it was really awesome to see how many people are just being creative with it. Uh, since like, unlike Twitter where the API is like super locked down and even just like getting a thread of tweets is a challenge that you basically can't accomplish with the API, uh, on blue sky, it's all open.
+
+And so like I built a. A like tree view for threads so I could see like the full thread and be able to follow the conversations easier. And I even built my own feed for just web developers. So it's super cool how you can like mix and match all these things.
+
+**Dan:** nice. I didn't realize that you played with that. Super cool.
+
+**justin:** Yeah, one of the questions that I had was, uh, what, what sort of brought you from meta to blue sky as a company? I mean, both social, you know, networking companies, but very different like perspectives on it. 
+
+**Dan:** I think, like, when I was at Meta, I was really, you know, I was really working on React. I didn't really work on the product stuff. Almost all except, uh, like a couple of small, um, kind of side quests. Um, but I think, and, and I, I wasn't actually planning to work at the company, so I was thinking like after, like I wanted to leave Meta for a while just because, you know, I was getting tired of doing the same thing and I wanted to try something new.
+
+And I was thinking maybe I would do consulting or some kind of like independent development or I don't know, become a YouTuber or podcast host. I don't know how sustainable that is. but I, yeah. And so I was thinking that maybe I would, you know, I would just, when I finished like all the projects that were hanging like for a couple of years, I would just quit them and just have like a sabbatical.
+
+And then BlueSky started like popping up on my Twitter timeline and people started talking about it. And it just seemed like an intersection of things that appeal to me. in like first, you know, they're using the React. So they're using Expo because like we're using Expo. Uh, so it, it, it uses React both on the web and on native.
+
+And I kind of, you know, You know, I do think it's a very powerful way to build applications where you can share a lot of the code, but then you can also fork specific pieces by platform so that you kind of conform to the platform mediums. And I think like that, that's kind of the promise of React Native is like being able, uh, to deliver like a really native feeling experience on all platforms.
+
+That's like not compromised. I think React Native falls short of that vision in some places just for Some practical reasons of, uh, you know, like, like lack of synchronous calls in some places, like some API bindings are like not very good yet. Some like lists are not very good yet. So there are places where it's like not ideal.
+
+And I wanted to get a sense of, you know, what does it actually feel like to use those tools? And also, um, so that I can complain about them. Right. Because like, I, I do have like pretty direct access to like, both like the React core team and React Native team, and. I thought it's a good idea for me to kind of like, just step in the shoes of like an application developer and actually like, you know, get, get a sense of like, what does it feel like to create a new, um, application with react today.
+
+And so that was one of the motivations is just the doc food react and improve react like from the other kind of consuming perspective and like see which pain points, I will run into. another reason is I, I really love Twitter as a product and I think like it's, it's probably one of my favorite products.
+
+I'm, I'm really addicted to it. Uh, and I think I was like, I was, you know, I, I always felt like it's sad that it's getting like more and more closed because, uh, like I made a lot of good connections there. I know there's so much information, uh, there that's, Like, at the best, you know, when Twitter is at its best, it kind of acts as like this, like, people collider.
+
+So there's like some kind of serendipity that occurs on Twitter that, uh, brings people who would otherwise like, they're not in the same social circle, but then maybe they share like the same tastes and jokes or like the same interests. And somehow they collide each other into each other and like form these mini communities that are kind of loosely defined as compared to like something Reddit where communities are very kind of reified in like given names.
+
+And so I think I liked this serendipity and I think it's a shame that you couldn't build like more apps on top of it and that like Twitter kind of made it harder and harder with time. And also just the fact that like somebody could buy it and completely, you know, kind of change the product strategy, uh, like kill features like circles.
+
+Uh, it, it just. You know, I'm not super excited about Twitter's new direction. And also there's, you know, there's, there was always like a lack of transparency, like, like for example, like my account, like I actually made a new account on Twitter because my account got shadow banned and I didn't even believe like shadow banning was a thing, but apparently it just doesn't show up in 4U anymore.
+
+And so my account, like my new account with like 10K followers, uh, or, or like, even when it had like 1K followers, it had more engagement than account with like 300K. And I couldn't even, there was no way to debug it. Like it's, it's completely like a black box and there's only one algorithm, so like people can't try a different one.
+
+So this idea of like. Open social, it, it made a lot of sense to me that of course, like, of course this like social is as important as like, you know, maybe not as important as water, but like, it is very important to modern kind of digital communications. And I think like we should be treating it as, as public goods and there should be like standards similar to like DNS and you know, like all the things we rely on to have open web, uh, like, I think like that should also be baked into social.
+
+So that was another reason is like, I, I would just use this product and I want more products to be built this way. And then the third thing that really made it appeal to me was just the, I think the, kind of the culture of, um, I think it just reminded me of the React team. Uh, it's, it's like this idea of, you know, the protocol proves out the product, the product.
+
+Kind of gives feedback to the protocol. Like it's, it's this blend of like researching and pragmatic shipping and these things kind of informing each other. Uh, that, that kind of feels reminiscent of like how we think about things on the React team. And this idea of like composable social, so like different parts can be run by different actors, but they combine into something that feels cohesive, like that also, you know, like React as an ecosystem.
+
+Like they're just like. it's the same kind of structure where you want to find the right composition primitives and then let the ecosystem do its thing. and yeah, and just this like focus on it's, it's, Like finding the right boundaries so that it's composable, but the experience feels cohesive, unlike, you know, like on some other platforms that are decentralized, the decentralization is very much like in your face, like you, you choose like a server and then it becomes like a part of your username.
+
+Like, we don't really want that because, you know, like we wanted to be able to like move between servers without disrupting the experience. So I think like some of the philosophical approach of. Making things composable, but then making them feel very cohesive is like resonated with me. So it just feels like, you know, I, I want to try to explore this.
+
+**Andrew:** Yeah, I agree with you wholeheartedly on Twitter. I don't think I'd be where I'm at in my career without it and large thanks to you, honestly, like me being able to read your thoughts on Twitter and see how you think about React has helped me immensely. So I definitely see the value in it. Blue sky is just like completely different than the other platforms, though the first feature that blew my mind was user names.
+
+It seems like a weird thing to blow your mind, but just being able to say like, okay, I own a website. I am my website now. It just makes it so much simpler. And I'm so surprised that other social networks haven't copied it.
+
+**Dan:** Yeah. So this, this is a kind of a cool feature that you can use your domain, like any domain that you own, you can use it as a username. And actually when, when you register, we just give you like a sub domain. of, of the, uh, just, just the subdomain of our main domain, but you can change it to your own. Uh, and you can later like change your handle to something else and it still gets updated.
+
+So because of like a mechanism that's kind of similar to DNS. So it's, it's, it's very interesting how, you know, there's like kind of technical choices of how to make Uh, you know, how to make the experience more natural and more open.
+
+**justin:** Yeah, I think a lot of the usability things you've talked about have been considerations and things that are talked about in the Mastodon community because it's like Mastodon was sort of the promise of the, this open, you know, protocol driven open social network and, and, um, they've done a lot of great work and, and, um, the feedback I'm about to say is not disparaging of any of the work that they've done, but like, The UX just has a lot of paper cuts.
+
+Uh, you know, you, you had mentioned BlueSky like intentionally not tying a username to a server, which is very much the case in Mastodon. And you know, Interacting with someone cross servers has a lot of friction. And, and so the, the, the awareness of the server that you're on is like very top of mind. And, you know, maybe this is like the reification kind of like Reddit and like the communities are kind of grouped together.
+
+And then there's a little bit of extra effort to sort of like, uh, do this, uh, cross cutting conversations or whatever, but it does like, yeah, it feels like we need like a open Twitter, like replacement. So blue sky is very exciting in that regard.
+
+
+#### [00:17:44] Ad
+
+**Andrew:** We'd like to thank our sponsor for the week code crafters. Code crafters makes programming challenges for experienced software engineers. If you're looking for a weekend project that takes you to the edge of your programming abilities. And really puts you right back in that seat in college, where you're figuring out binary formats, you got to check them out. They have a bunch of really cool challenges to help build your skills while also building. Popular open source developer tools. 
+
+So they have things like build your own, get, build your own Docker. Uh, build your own SQL light. The cool thing about this is you can go through these challenges in any programming language that you want. They have things like rust go and JavaScript. 
+
+But In my opinion, if you're not experienced with that programming language, you should try to stick to what's. You know what you know, because these challenges. Are actually pretty challenging. 
+
+I've personally gone through a bunch of the challenges now. But this week I started to try the SQL Lite challenge and boy, once again, and I'm surprised at the complexity of it. Uh, most of these modern tools are fueled by a file that has a binary format that you have to learn to reason about its mechanics. 
+
+It's much different than just console logging and object in JavaScript. 
+
+Besides the content, even these are experiences targeted towards experienced software developers. For example, you don't code in their website, you code in your ID and your terminal. And all you have to do is push up to code crafters and they run the tests and they tell you if you're passed. 
+
+Pretty cool. If you asked me.
+
+It's trout code crafters for yourself. Visit code crafters.io/dev tools. Dash FM. There you'll get a 40% discount and you'll also be helping out the podcast a little bit. 
+
+If you want to find another way to help the podcast out, you can become a member. I wanted the channels that we provide it. Uh, or you can head over to our shop@shop.dev tools.fm. And by some of our March.
+
+And with that, let's get back to the episode.
+
+
+#### [00:19:30] React Strict DOM
+
+**Andrew:** Cool. Now that we've talked about what, what you've moved on to, let's start talking about a little bit more about react. A lot of cool things have been happening in the community lately. Uh, one that I think is kind of top of mind since you're working on react native right now is react strict Dom. So can you explain to us what react strict Dom is and what it could mean for the future of building cross platform apps and react?
+
+**Dan:** So React strict DOM is an experimental project released by Meta. So, uh, Meta is using it, in some places in their code base, but, uh, you know, it is still experimental. So, um, maybe don't use it in production yet if you don't want to get burned. Um, but essentially it's, um, it's another attempt at thinking, you know, what it could look like if we.
+
+like traditionally with React Native, you use different primitives. So you kind of use the same programming model as on the web. Like, you know, you have components, you have state, you have effects, like all that kind of stuff. Um, but then the actual, like, underlying low level components are different. So, like, on the web you have divs and spans and, like, buttons and paragraphs and sections and whatever.
+
+That's And then on the, on native side, React Native has, uh, its own layer that is, uh, Um, that like tries to map pretty closely to the underlying platform primitives. And like, I mean, it, it wraps them. So, you know, if you have like an input that's, uh, that wraps either like, uh, UI text to you, or I don't, I don't remember what it's called on iOS, but it just wraps these like native components from either platform.
+
+And so React Native has view text, uh, text, uh, text input. So there's a bunch of those primitives. Um, and they're really pretty close to the web ones. It's just like the names are different and some behaviors are different. And, uh, in many cases you could actually run components like you could think of it.
+
+You know, it seems like I could run something that would run on either side. It's just like, we're able to run the same code, like on iOS and Android, and then split by platform for some platform specific pieces, it just feels like web could be a part of this too, but because the primitives are different, like there was no way to do that.
+
+And so there was an attempt to do this called React Native for web, which was developed at Twitter, uh, by Nicholas. And, uh, Nicholas Gallaher, and the approach there was to shim the APIs exposed by React Native to work on the web. So, uh, you would render like text input, but on the web, it would become an input tag, or you would render React Native pressable, but it would become a, uh, a button.
+
+So it, you know, it did, uh, like it, it wasn't the bad stream. So it did implement like all the accessibility stuff correctly. It did like map all the properties that were possible to support across platforms. Um, so it, you know, it, it worked fairly well. But it, it feels very alien to web developers because, well, now you're like, you're targeting web, but it just feels like you use this like names that you're not familiar with.
+
+Like, what is view? What is text? Uh, what is pressable? And the documentation for them is worse than documentation for like the underlying web primitives. So it always feels like you're kind of like not quite using, you know, the, the abstractions that like you already know. And I think at the time the hope was that maybe, um, the React Native abstractions are like better thought out or like more constrained.
+
+Uh, but I think like, you know, In longer term, the web has actually caught up in a lot of ways and like both, like the DOM has gotten better and, uh, there are new tools, like, you know, new APIs, like intersection observer or resize observer. There's just like a bunch of web APIs that are actually pretty good.
+
+And now it feels like it's React Native API surface area that's kind of behind. And so the thinking with React Strict DOM is what if we could kind of flip it the other way around and what if we could write using the, uh, the web primitives, uh, or like author our code using, you know, spans and buttons and inputs and like, uh, just like HTML tag names, um, But, but the React Native would, instead of, instead of like having a shim on the web that implements React Native API, what if we could do it the other way around and we could shim React Native to implement these web APIs and actually like in a bunch of cases, what if we could just build them into React Native?
+
+So that's kind of like the longer term plan is for example, like something like intersection observer, resize observer, like that's just being added to React Native itself. And so then you can kind of think of React Native as a. Almost, you know, kind of like a renderer for web platform primitives, uh, but more constrained because it doesn't try to, you know, implement all the stuff that a browser can do.
+
+And again, skiller features, of course, being able to drop real native controls there, even like third party ones, which is something you can't do with something like, you know, like a web browser or like a web view. Uh, but yeah, this idea of react strict dom is really, this is like a subset of web APIs. That is pretty expressive and that React Native can support well.
+
+And then this lets us make the abstraction on the web really, really thin so that you don't really have any like runtime costs to it. And then on React Native, there is a bit more abstraction, but then with time, it can be built into React Native itself. And then that cost can, can kind of be solved on that side.
+
+Um, so, so, so that's kind of the big idea. Uh, well, you know, we'll see how it develops, but. yeah, it, it should just make it easier to write components that span like all platforms and have like pretty good behavior and you can still fork it by platform where necessary if you need like web specific EDMs or native specific EDMs.
+
+**Andrew:** Yeah, I was looking at the compat table for it and they, they certainly have their work cut out for them. There's a lot of things that they want to implement, but the vision is super cool. I saw, I think the guy who does react native windows and react native Mac. He was excited about it. So it'd be really cool if like all of these platforms were under that one thing and you can basically write apps or components that work on five different platforms at once.
+
+The power there is crazy and no closed system like Apple. 
+
+**Dan:** And I, I think that's a part of it, but I also think even if you don't reuse code, a lot of it is just about, it's, it's really about the authoring experience. and what, like the mental load of. Like previously you had to learn React Native to use React Native. And now it's more like, you just, you just use web APIs and like, not all of them will be supported, but that's fine.
+
+You know, because like, uh, you actually don't need a lot, you know, like you do need like buttons and, you know, all the accessibility stuff and so on, but actually like a lot of stuff that like you would want to use, it's already there. so I think if it is. You can, it's not just you can share code, it's also just, it opens up native development to a broad, to all, basically like web developers will now feel like they can try it without learning a whole new thing because it looks sufficiently similar that you can carry over your existing knowledge there and like have something rendering on the screen.
+
+And I think that that is pretty huge.
+
+**justin:** Yeah, this is always the thing that got me about react native web is that when I first started at this company called artsy, we were sort of thinking about like, oh, well, how can we build a design system and react that can be used across web and native and react native web was one of the things that we looked at.
+
+And, you know, it was like for the, you know, Engineers who had come from native mobile, it's like no matter what they had to do, there was some learning and starting to react, react, right? So if it was like React Native or like the web version of React, whatever, they had to learn something. But for all the people who was like writing, Stuff for the web, definitely moving from writing react for the web to trying to switch over to, um, the, the sort of like react native web was not an easy transition at all.
+
+And especially there's just like, there's all of these caveats with it anyway. Right. So it's like the. The way that it degraded on the web sometimes was like, you know, there's like unexpected bugs and things that you couldn't do and, you know, all these caveats for this, like kind of rich permissive platform when the actual constrained platform, you know, was like, fine.
+
+So I do like this, this inverse, because it's like, you have more control in react native. And it makes a lot more sense for the strict Dom to sort of like target that. Uh, and then on the web, free to be a little bit more expressive if it's needed.
+
+**Dan:** Yeah, I think it's just like, there's like a psychological element of like, I already know that this thing will turn into a button. Why am I using some different API, like higher level API to render it, that also like I have to learn different names, and it ends up rendering the same thing, and sometimes the thing it's rendering is not even right, and I need to figure out why.
+
+Right, so, yeah, I think that's very much like a part of it is. Let's just use the ZPIs directly and like on native, if you're a web developer, you still have to learn something like for native anyway.
+
+
+#### [00:29:07] React Team Diaspora
+
+**justin:** I want to ask a slightly different question in a slightly different direction. We want to get into talking about React server components in a minute, but before we do that, um, So a lot of the, like what I consider the OG React core team has like spread out into different companies. And there are still obviously a lot of folks that met us still continuing to work on react and doing the good work there.
+
+But how do you think that that sort of dispersion of the team has impacted the react project as a whole? Do you think it's been like good for the health of react? Are there trade offs? Like just how do you feel about it?
+
+**Dan:** Yeah, I mean, I think that's, uh, it's definitely been good. I think it's, um, well, like in, in my opinion, we've wanted it for a long time. And, you know, one of the major points of criticism has always been, it's just, you know, it's just a Facebook project. Facebook can do whatever Facebook wants with it. Uh, or like Facebook doesn't prioritize open source.
+
+And. And I think like to some extent, like there was a grain of truth in that, in that, um, like we were able to prioritize some open source work, uh, that was not directly useful to Facebook, but mostly to an extent that, you know, we just did whatever we thought was like the right thing to do, and then we found some way to justify it.
+
+Uh, but like, we never like gold on adoption, like. It, which I think is also good. Like that, you know, that was also like, I think at Facebook is like, whenever I had goals of making React more popular, like the goal was always to make it work well for building apps and to the extent that we can, you know, learn about what people are doing in the open source, we can try to improve it.
+
+Um, but over the years we've kind of ran into, uh, just like the limits of what you can, um, like improve on the client side only. And at Facebook, we always knew that because Facebook is a server driven company, so to speak. It has always been, uh, like React is kind of like a fluke in that sense. React itself is inspired by a server centric component model called XHP, uh, which like existed before React.
+
+most of, like, Facebook's, native apps, work on top of something, uh, called Blocks, which is, like, not open source. used to be called native templates, but it's essentially a way to write XHP on the server for orchestrating native views on the client. So like, uh, you know, you render iOS components, uh, from PHP essentially.
+
+so like we've, we, and you know, what React let us do is like React, allowed us to have very rich client side interactions, but then as we kind of converted more and more of, of our code to react for that reason, it also introduced a lot of complexity in like, uh, caching, state management, navigation and so on, where, uh, the kind of thin client model was actually simpler where you would just have, you know, kind of request response.
+
+model similar to PHP where you don't really think about state, you just think about, you know, you get the URL, you return what that URL should render when you need, you just kind of re render that part. And so, uh, the, the problem was like, as we were adding these kind of features, you know, as we, like, we thought that we're gonna, uh, talk about React server components as well.
+
+Uh, Facebook was actually not the right place to build them out, uh, partially because. Like Facebook stack is pretty weird. Uh, like the way they run JavaScript on the server is not like anything, you know, it, it is like a different JavaScript engine. Uh, it has like a special like connection with PHP, uh, that, that like the way it's designed is pretty unusual.
+
+So it wasn't really, uh, uh, Like, we, we figured out a bunch of solutions for how to extend the react to kind of solve these problems to like a more full stack solution. But Facebook was actually like not in a good place to adopt it at the time. They're getting closer to being able to do that. Uh, but the question was just like, do we?
+
+Um, you know, do we just like sit on these ideas or like on the solutions that we have for like three more years until Facebook catches up and like solves it legacy like tech debt or do we develop them somewhere else? Uh, like where the. Like that, like in a place that's more aligned with how people are actually built in JavaScript apps today that are full stack.
+
+Uh, and so some of the, some of the team went to Vercel because Vercel, uh, agreed to take a bet on react solution and, uh, to actually like rebuild like the entire, you know, like the next year's framework, they rebuilt it from scratch under Sebastian's direction. so, and it was a pretty big bet. So I think like now.
+
+Just coming back to the, you know, the team question. now the team is really driven from both sides. So there's, uh, the majority of the team is at Meta, but the technical leadership is split between Meta, uh, with Joe Savona and, uh, Vercel with Sebastian and Sebastian has led the team before. So it's also like, not, not the new person.
+
+It's just, you know, same person, different company, with like the same goal. And I think in, you know, it's been good in the sense that we're not able to, like the work that he's done on React there was the kind of work that like Meta would not have kind of invested in unless they were also like in a good place to adopt it and they just weren't.
+
+So I think that's, that's actually good. It's like, we, we managed to focus a lot more on like full stack stuff and open source stuff that we couldn't focus on before. Um, And, uh, but there, there are also like, uh, challenges with how do we communicate priorities? How do we kind of collaborate on projects? Uh, how do we like announce things?
+
+How do we develop in the open? Because like, I think like one of the things that has come up is that we, um, you see features at the earlier stage than you would usually see them because usually We kind of docked with them like at Facebook for a couple of years, and then you see them in the final state.
+
+Whereas now you kind of see them from the beginning. And so, you know, we haven't even like figured out how to document them because we haven't had people using them yet. So, like, the process is more open, but I think it feels more messy than it was before and we're still figuring this out. And I'm hoping we can also onboard.
+
+Like, uh, at least like a third company so that this are just two companies. I think that would also like create some, uh, some balance. But for now the, you know, the focus on like actually shipping and I think that's, that's the part, like sometimes we compromise on like maybe the process is not ideal, but we're moving forward.
+
+And I think that's, that's very much the spirit right now.
+
+
+#### [00:36:05] The Evolution of React and Server Components
+
+**Andrew:** Yeah, I've talked to a lot of different people about, uh, react server components in their rollout and my guess was that, uh, a lot of the, the friction was just because of that, where Sebastian is no longer at Facebook and there's no longer a Facebook to test these ideas on and to like flesh them out and we're just kind of seeing that process in the open now.
+
+**Dan:** Yeah. I mean, like a lot of this, like the, you know, like we kind of started work on what became Server Components in 2017. And then the first release that was kind of production ready, you know, we published like an RFC in 2020, but the first release that was like a production ready implementation, in the sense of like, it feels like a 1.
+
+0 is, you know, it's, it's raw, it's like a new paradigm, but it's like a 1. 0 of a new paradigm. That was, I think, 2022. So it's really like a technology that's been kind of developed for like five years. on and off with different iterations and the first half of it did happen at Facebook. Uh, and like the first kind of production, like experiments were at Facebook and we were pretty, you know, we were pretty sure in the paradigm because it, it really combines Like everything we've learned at Facebook.
+
+So it, like, it, it takes inspiration from GraphQL, from Relay, from XHP, uh, from, uh, you know, native templates that became blocks, like our native apps are built with blocks, like we know that server driven UI is like a really convenient paradigm for a lot of cases. So I think like we're, we were pretty confident in the just overall shape of the solution.
+
+But it's just like building out all the actual pieces requires a lot of investment, especially because, um, it also tries to kind of leapfrog current solutions on multiple dimensions at once. And it kind of relies on a next generation bundler and next generation router, like, and, and a few things that like needed to be built and they're still kind of in the process of being built.
+
+So I think it's, it's very much a 1. 0, but I think like in a couple of years, it will. Uh, look, uh, like, I think it will look clear that it's a big step forward.
+
+**Andrew:** Yeah. So we've alluded to them a few times. Now we learned a little bit about the history of them. Uh, you've been going through a lot of like public thinking on like how to explain and how to reason about server components on Twitter. So, uh, what, why, why do you think they've been hard to explain? And what, what explanation have you landed on after all your noodling?
+
+**Dan:** Yeah, I was actually surprised by how hard they are to explain, uh, because I guess like part of it is like I just got so used to the idea that, uh, you know, like we've had like a five years start time. And then some people like people are literally like messaging me like, Oh, I get it now, like, took me, you know, took me a couple of years but like now now I see like where you're coming from.
+
+And I think part of it is also, it's not that, I think it's not complicated, but it's just not what you expect. And I think that that is really the biggest part is like, you expect it to be something different. And it's, um, it's really a matter of like taking several steps back. And then explaining them. So it's like, you have to, you have to unlearn a bunch of stuff before, before it makes sense.
+
+And I think the, maybe it was more kind of palatable at Facebook. Like I don't think it's Facebook. It was controversial. Um, and I think it was palatable there because Facebook itself took a different path from the majority of the, kind of, uh, industry. Um, because. On the server, you know, it's like the same on the server and the client, like on the server, the majority of the industry went with the MVC model where you, you know, like in something like Rails, like you have your models, you have your controllers, the controllers are like handling your requests and, uh, they render like templates that can do some like light massaging of what and so on.
+
+And so it's, it's kind of like route centric, controller centric. model. And that is actually not what Facebook did on the server. So like when Facebook had messy PHP code, you know, one way you could do is like one, one, one way you could solve messy code is like go the MVC route, but Facebook went component route.
+
+So Facebook developed by XHP which is kind of like a type safe, uh, you know, like injection safe version of, uh, you know, rendering tags, like instead of emitting HTML, you. Basically write JSX, like that's, like JSX is to JavaScript is what like XHP is to PHP. Um, so that was like a precursor to JSX. And so the next idea is like, well, if you have these like pieces of, of, uh, of this XHP, you might as well give them names and they become components.
+
+And so Facebook had a component model on the server first. So you would render like a feed component. It would render feed item components, which would could render like comments component and so on. And so Facebook was using components for the server side stuff. And then if you wanted to kind of, uh, you know, refresh a part, uh, like you could refetch like kind of like a partial.
+
+Uh, part, but like this, like interactions got, you know, much harder to express, right? Because like, they need to be, uh, like if you, if you kind of refresh from the server, you blow away the HTML. So it's like, it doesn't retain state, but you know, that, that was like the status quo at the time with the solutions.
+
+But in general, like Facebook had this, was not really, you know, they were not really like an NPC, uh, kind of shop. And. That's, you know, when like React on the client, uh, that's, that's why React made sense on the client at Facebook is like, Oh, it's just XHP on the client. You know, like people understood what it was immediately.
+
+Whereas like an open source, when React was released, people were like, what is this thing with this like XML syntax and, uh, like the benefits of the component approach were not really clear. People were talking about like, Oh, it doesn't separate the concerns. I want my. model separately from my controller and my view and so on.
+
+And I think like the component model has pretty much won, uh, like you can see it in all native frameworks, like Jetpack Compose, new Android API, SwiftUI, new iOS API, it's, it's all components now. and the thing is like that, you know, that happened on the client in open source. So people are. Like, I don't think we see many new MVC architecture kind of frameworks on the client anymore.
+
+Uh, but on the server, I think MVC is still the way to go. And React server components is definitely not that. Right, like React server components is a lot closer to XHP except it's React. And it, it like seamlessly integrates with, with client React. And I think it's just like this being like a very kind of unusual take.
+
+is, is like part of why it was received, uh, maybe not, you know, super friendly at first. Um, as for like the ways to explain it, I've actually found that, I think it's, it's often easier to explain depending if you know where the other person is coming from. Right. So like if, if somebody knows what Astro is, I would say, Oh, this is exactly like Astro, except that Your Astro templates are written in React too.
+
+And so you have this like islands in React. Those are your traditional client components. And then your Astro templates are also written in React and those are called server components, but this is still two separate worlds. And then you have the ability to render, you know, your client component from a server component.
+
+And that's kind of where the boundary is. And then the, you know, the power kind of compared to Astro is like, you can actually refresh. your server tree and that would just like update in place without blowing away the client state because these things are fully integrated, like you can pass new props from the server to the client, um, kind of like as if you could refresh like an astro template on the fly.
+
+And then like, if somebody knows Remix, right? Like that's, that's like a completely different paradigm. Like Remix is, is more like, it has this like loader functions and then react trees, right? Uh, you know, like the page components for, for this loader function. And then if I were explaining the server components to somebody who knows Remix, I might say it's, it's kind of like this, except that you move your page component to another file because we don't make server and client code in the same file.
+
+That's, you know, there, there's like a lot of downsides to that. That makes it difficult to think about what actually happens. So you move your kind of, uh, you know, your component to another file. So you have this loader. And so previously loader could only return data, but what if it could return JSX? So here, instead of loader just returning like the data for your page, it could choose which component to render.
+
+So you don't have to render like one page component. You could actually import any component to render. And what if you could, if this loaders were also composable like components, so like this like loader could render another loader and like all of them can execute on the server in a single pass. They can even be passed as children, uh, to your components and they would resolve before, uh, you know, the, the, the client components would just receive the result of that.
+
+And so you kind of have this, like, again, there's like two planes, kind of two layers, kind of one layer that's more like PHP, one layer that's kind of more like jQuery, and like the first layer executes first and passes information to the other layer. Okay. So like, that's another way you could explain it, or you could really like start the explanation from even just like plain HTML.
+
+And you could imagine like, here's like an HTML tree, then you might want to add some like interactivity on the client side. And like, for example, like be able to render a custom tag, like a counter, but you might also want to be able to, uh, and so that's, this kind of one layer is this like given names to things you can put in it.
+
+And so these are your traditional React components. But you might also want to be able to do kind of templating on the server side where you can like read from the database, you can like read from files and do stuff like this. So it's, it's kind of like a tag that's resolved like on the, from the other side.
+
+And it's really like a two step process where it first, like all the server side stuff renders, it produces a tree that's sent to the client and that's where the client side. stuff runs. So it, it really, like, you, like, I had this post that, like, I wanted to write, but I still haven't written, called, uh, All Roads Lead to RSC.
+
+Like, it kind of, like, if you take a bunch of existing paradigms and you just make them a little bit more composable and, like, solve, like, a few issues, then they all kind of end up looking very similar to this. so I think that's, that's why it's so hard to talk about this. Like, it's like, if you take a bunch of steps back and then you kind of end up with this thing, but you have to unlearn the limitations of the tools you're really kind of familiar with.
+
+It's like a more generic, you know, they kind of start looking like special cases.
+
+**justin:** Yeah, this is something that was always, I feel like this was something that was always going to have to happen or be invented outside of react and, and kind of was already, right? Because we have state sort of that crosses the boundary from server to client and, I mean, in a lot of cases, the UI is a function of that state.
+
+And so you kind of did this, this post that was really good talking about like, you know, that relationship, um, and you definitely have, you know, UI as a function of server state and UI as a function of client state. And we had tried to get there with like server side rendering. And I think that there were like performance things that you just sort of naturally hit upon when you're like re rendering your whole app and doing like your whole rehydration at the front.
+
+And like, you can definitely optimize that, but there is, it always kind of felt like. Okay. There's something missing. And then I think something that I've come to value as I've studied react server components more is that one of the big costs in like rich client applications that we use react for is that, um, You know, you have that API paradigm where you're doing like a lot of server logic and you're trying to communicate down and we see meta frameworks moving closer and closer to trying to like remove that or make it simpler, make it more transparent.
+
+And I always see like react server components is like the logical extreme of that is like you're just using react and you're really thinking a lot less about API and what the shape of it is, is it's, you know, pass down and, um, I think there's like some tremendous power there that, you know, it'll take a little time for people to realize, but like, at some point we're going to get to the point is like, why were we, you know, writing very specific APIs to, you know, pass this data around to build this UI and do in two places.
+
+**Dan:** And this is something that like we're actually dealing with. Like, I think like it's, it's a big pain point. at Blue Sky actually right now because we, you know, we do have a server layer, but it's kind of designed to serve like all the clients. And it's actually a pain because, uh, for a bunch of features, you kind of want to just be able to express a feature as some code on both sides.
+
+And you don't want that boundary to be so firm. Like you want it to be flexible. Like you want to decide, Oh, actually I'm going to move this little bit of logic to the client side. But I'm going to like do this, this little part on the server. And I kind of want you to think of them as like a single thing.
+
+That's like reviewed together, merged together, deployed together. And this pattern is commonly called BFF. So, uh, backend for frontend. Uh, so in this pattern, you kind of write API routes that are, you know, not traditional, like rest end points that try to be like everything for everyone. It's really like, give me the data for the screen.
+
+You know, give me the props for like this, the screen and react server components kind of, it's kind of similar, but it inverts it mentally because instead of thinking of your screen calling an API that gives it data, you kind of think of it as your API rendering your screen. So your API returns, like instead of thinking of it's like, you know, your feed component calls.
+
+Slash API slash feed, it's more like your slash API slash feed returns your feed component and passes the data down by props. And so one, one way to kind of think about it is React server components really defines like the server is like, what can a server do? A server can import a component from the client and pass props to it.
+
+And then what can the client do? The client can like refresh or navigate and like ask the server for like, give me the, you know, give me the JSX tree, give me the component for this other route.
+
+**Andrew:** Yeah, I'm excited to see where it goes. I can think of just so many cool use cases that aren't possible today that the DX in a react server component world would just be a lot better like off or payments, anything like that. 
+
+
+#### [00:51:45] Looking Ahead: The Future of React and Compiler Insights
+
+**Andrew:** It'd be so cool to just drop a component in, uh, but changing topics a little bit.
+
+Uh, one of the. The most exciting new things that's, uh, going to come out soon to me in the React world is the React compiler. Uh, so what is the React compiler and what are your thoughts on it and how it might change how we write React code?
+
+**Dan:** Yeah. So React compiler has been announced as a kind of research project a while ago with the code name React forget, because it lets you forget about writing, uh, use memo, use callback and manual, uh, kind of optimizations. Uh, or at least like the majority of them. So it's, uh, it's developed at Meta. So, you know, like people say, Oh, like Meta is not working on React anymore, but like, yeah, they have like five or more people working full time on, on the compiler project, which primarily benefits, you know, client side React.
+
+Like that's, that's the only thing it targets right now, because for server components, you don't really have re renders. So you don't, uh, you know, you don't have useMemory, useCallback there. But, um, yeah, so it's, uh, the project is a lot closer to shipping now. So Meta is using it, uh, in production. If you read the latest, uh, React labs blog post with just like the latest updates, uh, on the React blog, um, there's a mention that it's now power, like it's, it's deployed on Instagram.
+
+com. Uh, for all pages. So that's a pretty significant milestone. Just, you know, if it's, if it's running on another one page like before, but like everywhere. And the way to think about the compiler is I actually wouldn't think of it per se is like making your react code faster. Although it kind of like, you know, we'll see the numbers like it does, uh, like, uh, We did hear that it beats manual memoization in many cases, but I actually think of it more as a kind of a developer experience thing where, um, so one thing that it does by default is it actually ignores your, like, it gets rid of your use memo and use callback.
+
+Uh, in like when it applies its own compilation, so it doesn't compile to use memo or use callback. It compiles to like a lower level. Um, actually like if you read it's compiled code, it's literally something like if, you know, there, there's like a cache, there's like an array where like per component array where we can store something and it, it reads kind of like if cache color not equal, uh, you know, props color, uh, then, you know, like, and then it's going to close the block of your code that like, uh, re executes some value based on it.
+
+Otherwise, it just gets the previous value of that from, from that cache. So, like, the code it generates is actually pretty understandable. It's, uh, yeah, it just compares the props or intermediate values or state. Like, has this thing changed? If not, we can reuse the, the result of the same code that ran during previous render.
+
+Uh, which is kind of the same that, like, useMem when you use callback do under the hood. Uh, but it's, it's smarter than these things because it can be conditional and it's just like more optimized output. But the interesting thing about it again, is like it actually, before it does this, this kind of pass, it removes your own useMemo and useCallback, which is kind of a proof that you would be able to actually run a code moth to get rid of them because they're not taken into account anyway, and so in a lot of, I think like a lot of the benefit is just.
+
+Uh, like the code just looks a lot cleaner. You can just use plain functions. You can just write things line by line. There's no like memos. Uh, and then like under the hood, it does become this, uh, like highly optimized code that is able to skip, uh, you know, re rendering or even like just re computing, uh, the bars that have not changed.
+
+And really the tricky part with the compiler is just modeling. Like there's a lot of things you can do in JavaScript, but there's Where like, okay, like in react, you don't mutate, uh, like your props state, but you might create like an array and then push into it many times, right? So like when we like cache the result of a computation, we should be careful, for example, not to generate codes that will push into a cache array again.
+
+So we kind of want to group operations that can mutate data together so that, like, the whole result is being cached. And so this is the majority of, like, what the compiler has to deal with and why it took a while to develop. But, like, I've seen the demos. I also know, like, they have, you know, real compiler people working on it.
+
+Uh, so it's, it's definitely very well researched and I'm really excited for when it ships.
+
+**Andrew:** Yeah, I, I see a theme emerging from, uh, the multiple react topics we've talked about and to me, it's all about like, you don't have to know react really like with the compiler. Like, you don't have to care about the hooks. Like, it kind of just goes away and you're back to like, this, like, just JavaScript create components that render things.
+
+React strict Dom's kind of the same thing. It's like, Oh, you, you don't have to learn react native APIs. You just have to like learn this one thing and get good at that. And RSE even it's, uh, it's kind of just like stripping react away. So I'm very interested to see what comes in react 19. Cause I saw a post where it was like, you'll never have to use X, Y, and Z again, and I think it'll be a real good thing for react.
+
+**Dan:** Yeah, I think in general, like our approach is absorbing the complexity, um, that doesn't, you know, that doesn't mean like building like our approach is also different because it doesn't mean building helpers into react. So, um. Like we're not, you know, we're not just like adding a bunch of data fetch and APIs to react, right?
+
+Like it's more about building the right composition primitives so that a bunch of APIs can just like dissolve into thin air because they're, you know, they're no longer relevant. Um, and so in some, in the thing you have to do when you design like this is you have to enable composition. And that's really the hardest part.
+
+Like you have to. design APIs that work in a way that if two people made two components and then they're put together the result still makes sense. And so like it, you know, that has to work for data fetching, that has to work for like compilation and for all of these features. It's really about finding the right composition primitives.
+
+Um, but yeah, like when, you know, when it does work well, it naturally kind of ends up in, uh, like a bunch of your code disappearing and like concepts disappearing, but then there is complexity that we built into React itself, which has to do with coordinating, you know, the pieces that compose and that that's really what React is.
+
+It's really like a fancy coordinator for, uh, kind of maintaining this, you know, like it's like big idea in React is like your UI is, is kind of expressed as a function. of, of like state and data. And I think we've, we've kind of stretched the definition of like, it's kind of like a continuously re executing function, right?
+
+Like there's this like illusion that it's whatever you're looking at the screen, it's always like the most kind of recent result. And there are actually, like, you know, this function is actually broken down into smaller ones, and those are your components. And now, like, we've taken parts of that function to the server, and so that kind of replaces, like, your API routes.
+
+Um, because they're also kind of part of this model. And, like, with the compiler, it's also, like, part of this function will not re execute them necessarily. Uh, but it's, it's really like maintaining this, uh, you know, it's all in the service of this, this same principle that what they see on the screen is what your function returns.
+
+Like you always kind of think of like a given moment, like a now. And so what they see on the screen is like the result of this function for whatever state is now, whatever data is now and removing as much of time and like thinking about time. As possible, like things like, uh, you know, how things get cached or how they get fetched, like as much as we can, uh, just make it a function that, you know, that, that usually helps, uh, get rid of extra concepts.
+
+**justin:** Yeah, it's, it's awesome. I'm, I'm, I'm definitely excited for the future here for sure. Uh, and on that topic, one of the last things that we like to ask everybody who comes on the podcast is some future facing question, and we've covered a lot of future things in React, but, uh, is there anything, uh, upcoming in React or the future of React that you're excited about?
+
+**Dan:** I mean, I'm pretty excited about like all the things that we talked about. Like, I think it's, it's finally, it feels like, like a lot of the things that we for kind of building the foundational pieces for since like 2015 and 2016. They're finally coming into a cohesive picture. And this is something like Sebastian, like is really good at is, um, you know, like, like he does, he does this thing where he kind of makes bets, like optimistic bets that we're going to be able to, uh, like resolve, like unknowns.
+
+Because when, you know, when, when he came up with the idea for hooks, um, like, I, I just remember like the first kind of internal post, like it had this thing, like, we're probably going to need the compiler to make, you know, to, to make the updates like as efficient as they could be, because we are, you know, we are, um, kind of compromising on, like we make the initial render performance better, but we compromise on the ability to optimize updates.
+
+Uh, because like quality checks are foiled, but then also like this approach is what enabled, um, like the approach that Hookstake, which classes didn't do, enabled, uh, better concurrency primitives. And a lot of people were skeptical about concurrency. And this is not something that like, you don't really think about concurrency as, as a developer, but then like, if you use, you know, Next.
+
+js up router, there are this. Um, like the way it works is actually like it's using react concurrency features and essentially that's, that's why you're able to, um, just specify declaratively, like, here's a part of the screen. If it's not ready, show this like glimmer or show this like loading indicator and react kind of starts a render in background.
+
+until we have enough of the stream to show you something meaningful and then we can commit that to the screen. And so this all kind of happens behind the scenes, but it's, it's really like possible because of the way we represent state and the way hooks were designed. And so now we have like the server components, we have the data fetching side of the story that's being filled out.
+
+And so all of these things are kind of like now converging together. So I think, I think that that is. Pretty exciting to me is we see how they all play with each other in like a very, uh, kind of, kind of composable way. Uh, but one thing that's really missing there is animations. So we don't really have a composable story for animations.
+
+Of course, there are libraries like frame or motion that you can use today for animations, and they're comparable in their expressiveness to built in solutions in some other frameworks and libraries. Um, but we were very conscious of, we just, we don't, we don't want to build that into React, because it's not composable enough.
+
+And we actually, like, for every feature we build, like, we want it to be, for example, for animations, we want it to be composable in a way that, um, the person who wrote the component you're animating doesn't need to know. doesn't need to deal with animation APIs. So, like, you should be able to animate components that were not specifically written with animation in mind, uh, just by, like, kind of animating between two states.
+
+Like, if you say, like, uh, set gallery index, gallery index plus one. Uh, like you should be able to start with a version that just renders one gallery item at the time. And later, like at the higher level, without diving into like gallery item component, you should be able to like add an animation that actually like slides the item from the left or from the right and so on.
+
+And so like all these, like all these APIs, they need, they need to compose and, uh, work with each other. And like, Like animations need to work with our data fetching APIs and data loading. There are all these questions like if you, you know, if you're like animating the model, but the model hasn't loaded its code, like the animation should run when it appears, like what happens if like something's animating out, but there's like a state update in the middle, like do we freeze the, that part of the UI so that you don't see like a glitch and so on.
+
+So there are like all these things that you need coordination for. And usually when. People write, you know, like, you can express a lot of this stuff manually by just like fine tuning every interaction and just being very diligent about it. But the goal with react is to enable local reasoning so that you can, like, everybody can focus on the component they write in, but the overall behavior of the system makes sense and like, doesn't get broken every time somebody changes something.
+
+So, I think having like something. With that, you know, with that level of composability and kind of the same design ethos that, uh, like we have in React for animations, I think that that would be like something I'd be excited about. Um, I know the team has been thinking about it and it was like on the back burner after we solve like data fetch and, and a bunch of other things.
+
+So I hope to see, you know, I'm like, I don't know what will happen, but I hope to see some effort like in that direction in the next couple of years. Uh, but we also take pretty long to figure things out. So, you know, five years later, maybe, maybe it'll be very good.
+
+**Andrew:** Yeah, well, we can all hope, uh, well, thanks for coming on the podcast and this was a super fun time. Uh, I know both me and Justin really respect the work that you've done and the communication that you've done. Uh, so thanks again for coming on.
+
+**Dan:** Yeah. Thank you for inviting.
+
+**justin:** Yeah, it was, it was lovely to have you and, you know, again, you've been a huge influence on both me and Andrew, just in our careers, uh, just the work that you've done. Um, so yeah, just thanks for everything. Appreciate it.
+
+**Dan:** Thank you. ​ 
