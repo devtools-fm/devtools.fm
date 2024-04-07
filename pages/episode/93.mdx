@@ -1,0 +1,566 @@
+---
+title: Adam Wathan - Tailwind CSS v4, The Evolution and Technical Journey
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Adam-Wathan---Tailwind-CSS-v4--The-Evolution-and-Technical-Journey-e2i3hu1
+youtube: https://www.youtube.com/watch?v=jOWUnYwBNsA
+tags: technology, css, tailwindcss, web development, design, frontend, dev tools, podcast, adam wathan
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Adam Wathan, the creator of Tailwind CSS. 
+We go into all the changes for Tailwind CSS v4, discussing how they use Rust and Lightning CSS.
+Adam also shares about how they've been monetizing the tool and building out Tailwind Labs.
+We also address some of the heated feedback from the Twitter.
+
+- https://adamwathan.me/
+- https://github.com/adamwathan
+- https://twitter.com/adamwathan
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!  
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:05:21] The Evolution and Technical Journey of Tailwind CSS
+[00:12:43] Ad
+[00:14:19] Tailwind CSS v4
+[00:36:22] Using Lightning CSS
+[00:43:27] Monetizing the Tool
+[00:56:59] Addressing the Twitter Mob
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Adam:** the tricky part of open source sustainability is like not all projects are equally like sustainable capable, if that makes sense. There's a lot of like really important projects that are so buried in the stack that people don't interface with them day to day there's not obvious ways to productize things around them.
+
+But we're lucky because tailwind is like a tool that you use directly every single day. 
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my co host, Justin.
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Hey everyone, we're really excited to be joined today by Adam Wathen. Adam is the creator of the Tailwind CSS framework. Adam, it's really a great pleasure to have you here. Andrew and I have been using Tailwind For, you know, a long time, and it's been pretty influential, not only for our work, but for the community at large, uh, we'd love to dive in and talk about it.
+
+But before we do, would you like to tell our listeners a little bit more about yourself?
+
+**Adam:** Yeah, sure. Um, first, thanks, uh, for the kind words. I'm glad that Tailwind has been kind of a fun and helpful tool for you guys. That's awesome. yeah, I'm Adam. So I, uh, I created Tailwind CSS, uh, originally 2017, I think was when, when the first release came out. Just a software developer who likes to make stuff.
+
+And, uh, so I made Tailwind cause I needed something to style websites with. It kind of happened by accident really. but yeah, released in 2017 originally. And, uh, these days I actually work full time on it. So I've been working full time on Tailwind since, early 2019. And now, we have like a little company around it with a small team of, six people that all work full time on Tailwind and sort of the surrounding, uh, ecosystem.
+
+So that's, that's what keeps me busy these days.
+
+**Andrew:** That's awesome. That's, that sounds pretty successful to launch an open source library and now have six employees centered around it. That's, that's super cool. So for our listeners who might not know what Tailwind is, I'd be surprised if they didn't. Uh, but what is Tailwind and what are the benefits of the approach that it brings to your code?
+
+**Adam:** Yeah. So Tailwind is a, it's a CSS framework, you know, so it's sort of in the same category as a tools like Bootstrap or Foundation or Bulma or Symantec UI. That's kind of the era that I, where I started working on it anyways. I don't know how many people are familiar with all, all those same tools today.
+
+Um, but it's basically a tool designed to help you try to style websites faster than you'd be able to style them if you were just like, you know, writing raw CSS and a style sheet from scratch. Um, the motivation for it really just came from, I was trying to build very custom designs. So, um, my, my friend, Steve, who is my business partner at tailwind labs is a designer, and we'd always be hacking on like little side projects together.
+
+And he'd just be whipping stuff up Figma, and I'd be trying to build it. And with existing CSS frameworks, I felt like. I was always fighting with the tool trying to implement the designs that have been handed over to me. And, but it felt like the only alternative was like open a blank style sheet and Do everything by hand.
+
+And I just like kind of didn't really accept that, that those were the only two options. I felt like there had to be like some way to make it a little bit faster to build stuff that was very custom. Um, so that's sort of where the, the problem at tailwind is sort of designed to solve. So it's a lot more of a low level abstraction over CSS than most other CSS frameworks.
+
+There's no button components, there's no cards, there's no, you know, Tables or any of these other sort of pre styled things. It's just all these little classes that let you take a div and say, I want this to be a flex container, or I want this to set display grid, or I want this text to have an underline, or I want this text to be bold, or I want this to scale by 150%.
+
+Basically, there's a CSS class for just about every CSS property. And you just. Throw tons of these little classes onto the elements to do the things you want. So if you want a blue link, that's 20 pixels and bold with an underline, it's like text, XL space, text, blue, 500 space, underline space. Font bold.
+
+And if you want it to be a different color on hover, you do hover colon text, blue 600. And now it'll be a little bit darker on hover. And if you want it to be bigger on large screens, you do LG colon text to Excel. And now it's bigger on large screens. So every single class just as one little thing. And there's this concept of, we call them variants.
+
+They're kind of like modifiers that you can tack onto the beginning of a class to sort of conditionally. Apply that class based on some conditions. So you don't have a class like text black that automatically becomes light gray on hover. You. And then you have a class like text grade that you say only apply this when hover is active.
+
+So it's a little bit of a different, different way of thinking about it than how you'd often think of CSS, where you might just write a class and then sort of style the different states of that class with tailwind. It's sort of inverted. So you have classes that do one thing, but you can specify when that thing should happen, basically.
+
+yeah, so I don't know. I think we could. I could probably talk about it for hours and hours trying to explain it. It's hard to explain. Visual code stuff in podcast form, but, maybe that's enough of a, an overview to at least, uh, Get started. Sure.
+
+
+#### [00:05:21] The Evolution and Technical Journey of Tailwind CSS
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah, I think. Absolutely. I'm curious about, like, what the technology stack you were working with looked like. When you first started, uh, tell, and because it's like, they're definitely different frameworks give rise to different styles of approaching styling. Um, and I'm curious about like what the ecosystem was at the time that you're
+
+developing it. 
+
+**Adam:** Yeah. So the projects that I was working on when tailwind kind of like fell out of them as a sort of extraction extracted sort of side project. I was building web apps with Larvel as sort of like the back end tool, and I was using view a lot for The, the front end, the front ends were usually a mix of just like server rendered templates with view sort of components sprinkled in.
+
+So I wasn't doing like a fully separated, like API backend with like a SPA front end or anything. It was like a monolithic thing. I'm with a bunch of view components wherever I, wherever I needed them. And I was doing my. I was writing my CSS with less because that's the preprocessor that I always, I always liked.
+
+So tailwind originally started as basically just a bunch of less style sheets with a bunch of custom mixins and stuff like that, that progressively got more and more complicated and hard to sort of maintain and test because less is not really, it was never built to do the sort of horrible things that I was making it do. And, um, and then eventually we sort of, Took a bunch of the same ideas and implemented them, uh, with JavaScript using PostCSS as sort of like the The tool for doing all the CSS manipulation, which was a really nice change because now I could write tests for things and use a real programming language and, and whatever.
+
+So that's kind of where it all, all fell out of.
+
+**Andrew:** Yeah, the, the tail and approach really sings to me in components. Like the one cool thing about JSX was that we're like, okay, let's take our logic and our markup, put them in one file. And then now the, the thing in the room that we're all looking at is CSS. And there was a bunch of CSS and JS solutions that happened.
+
+But in my mind, Tailwind is like the ultimate DX for adding my styles in the same file as my component.
+
+**Adam:** Yeah. Yeah. I think it definitely shines. In this era of very component driven UI development, for sure. I, cause even when like I first built tailwind, I was doing a lot more custom classes for things that I was reusing a lot. So I might have a button and I might have 10 buttons in the same site and I might not make a button component because with Larvel, especially at the time.
+
+It just wasn't kind of the normal way to do it. It's still not the normal way to do those types of abstractions with something like Rails and ERB. People don't create like a template partial for something as small as a button. People are used to just having like a BTN class that they slap on things. So even in the early days of Tailwind, I was doing a lot more of that.
+
+And now I build everything with React. There's just very rarely a situation where I feel like I want to create an abstraction with CSS because it's so cheap to just make a little component for just about anything and encapsulate all the styles there. And you can just use utility classes right there.
+
+And it works great. yeah, so I think, you know, I, I, I'm like really happy with, with the approach, uh, even to this day, but there was like a time where I did kind of wonder if like a CSS and JS approach was actually. better, you know, I think there's a lot of advantages to CSS in JS over, the way that Tailwind works, but there's so many challenges that introduces to, and I know like they did a bunch of changes in react with like, Um, strict mode and stuff like that that made it a lot harder for some of the existing solutions to work and a bunch of stuff ended up sort of becoming like borderline abandoned because it just couldn't work anymore, especially like they introduced like server components that made things like more complicated again for those tools.
+
+I know there's some newer ones out there that, um, that work that way now. And like Facebook has like style X and stuff like that, which is, which is neat. But, Yeah, like the, the nice thing about tailwind has always just been that it's not really like just a JavaScript thing. It just works on anything, you know, it's just a style sheet at the end of the day, which, um, I think has been a, an important sort of guiding principle to like, keep building it in a way where like, you can use it to build a WordPress template, or you can use it to build a react app, you know, um, and that's been, that's been kind of nice.
+
+Cause it feels like we've never really had to. Make big bets on a specific technology or get tied to, to anything. It's just, okay. What we do is we spit out a style sheet, just one big style sheet, not anything fancy, and that's always going to work. And yeah, you know, um, you know, things will, trends will like come and go over time and maybe something will sort of take off and really change things, but it feels very safe to just focus on spitting out style sheets, you know?
+
+Yeah, it feels pretty good. It feels like Especially with the stuff that we added in like the V3 era, where you started to be able to do like arbitrary values and arbitrary variants and stuff like that. It feels really close to like a CSS and JS level of power because you can just like ad hoc, create things on the fly and they just work. So yeah, still working, uh, working really well for us here. At least
+
+**riverside_justin_raw-synced-video-cfr_devtools:** It's really cool to hear kind of like about the evolution and stuff too, though. Cause I was thinking like when you're talking about view, it's like view had single file components where you could have like a styling solution in line. That's really, if mostly useful, if you're writing. Like a full view component and you're really focusing on like, this isn't encapsulated, you know, in the same way.
+
+It's like, I think view being a template still lends itself to being like larger UIs and less composition. Um, but you're. Talking about crossing the boundary with having like Larvel UI and like having that integrated with Vue, it like, even the Vue solution is insufficient, right? Because this is a 
+
+cross sort of boundary.
+
+**Adam:** you need some sort of styling thing that can work across everything. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah, so that I think that sort of like speaks to the reason of, or like one of the core values here, because I think a lot of people get lost and they're like, oh, I'm building React components. And like, why do I want to use this over? Like, you know, all these other things, um, But in a lot of the developer world, that's not necessarily the case, right?
+
+You're hitting across a lot of different technologies, and you need 
+
+something. 
+
+**Adam:** yeah. And it's tempting sometimes to just like go all in on react because that's what we build everything with at this point, you know, uh, for our own work. But, um, it is nice to just like, think about it as like, as close to just think about just, you know, Yeah, I don't know the best way to describe it, but I try to just think of it as like, not too distant from writing CSS by hand, you know, and some of the stuff that we're doing now with like tailwind 4 is trying to make things feel even more CSS y in some ways, like, of course, it's still very much not, there's still like an incredible amount of build tooling and complexity and stuff to generate all the CSS and make everything work.
+
+But trying to just like, not, not abandon the CSS file, you know, and the extension and stuff, um, feels like, it feels like the right bet to me.
+
+
+#### [00:12:43] Ad
+
+**Andrew:** We'd like to thank our sponsor for the week code crafters! Code crafters makes programming challenges for experienced software engineers.
+
+If you're looking for a fun side project, that's guided and helps you level up your programming abilities. You have to check them out. 
+
+They have a bunch of really fun challenges, like build your own. Get, build your own Docker. Build your own BitTorrent. You can even build your own SQL light. 
+
+**Andrew:** They offer a host of different programming languages, things like JavaScript, go and rust. If you ask me, it's way better than grinding on Lee code. Or trying to find some random open source project to contribute to. 
+
+You get to deep dive into the inner workings of these popular dev tools. And at the same time become better at the programming language you're using.
+
+You might've noticed there that I didn't say that my favorite programming language was supported. There's no TypeScript. That doesn't matter because of how code crafters lets you run the challenges. Instead of pointing you to an in-browser IDE experience where they control everything and it's an on rails experience. You actually get to use your own ID, your own terminal. 
+
+So do, do I need them to support TypeScript? No, I just installed the node types and then I'm off to the races. Once you're ready to run your code with code crafters. You just push up to them. There are get remote. They run the tests and show you the results. 
+
+Pretty cool experience. If you asked me. 
+
+To try out code crafters for yourself. Visit code crafters.io/dev tools. Dash FM. There you'll get a 40% discount and you'll also be helping out the podcast a little bit. 
+
+Would you like to sponsor dev tools, FM head over to dev tools, FM slash sponsor to apply. And with that, let's get back to the episode.
+
+
+#### [00:14:19] Tailwind CSS v4
+
+**Andrew:** so you, you recently came out with v4. It's been in development for a really long time. I was scanning through the changelog and it's, it's a big changelog. There's a lot to absorb there. So can you give us the high level on like what's changed 
+
+**Adam:** Yeah, sure. Yeah. So we released like the first alpha last week, um, it's, it's sort of been like a project where. It's been, just sort of slowly coming together, like in the back of our minds with little prototypes and little things here and there for about two years, and then like we get an edit, a new repo, like right after Christmas holidays.
+
+And that was like the beginning of it for real. So it took us about two months to go from zero to like the new, the first alpha, just piecing together all these like. Proof of concept things that we've done over the last couple of years and sort of solidifying like what we wanted to do with it and having like a clear vision for it.
+
+so I think like there's a couple of big pieces, like one big piece is that we're trying to make it really, really, really, really fast and really bulletproof and really light. Um, so we started with a brand new code base and, uh, rewrote the entire thing with literally zero dependencies. So, um, originally Tailwind was very much coupled to like PostCSS.
+
+So we would use PostCSS to parse the CSS, all the PostCSS APIs to manipulate it. We'd use PostCSS as like AST structure and create PostCSS nodes and insert them and stuff like that. Now we do not do any of that. We wrote our own CSS parser that only parses the parts of the CSS that we actually need, and it's twice as fast as post CSS for our needs, which is nice.
+
+we wrote all of our own code to manipulate that AST, designed our own data structures based on the stuff that we need to do where we can hang tailwind specific metadata off things and stuff like that, and, just really focused Just trying to model the problem like really, really well. And that would have been hard to do in the existing code base.
+
+There's a lot of features that tailwind like didn't have originally. And you add features over time and no matter how hard you try things, just kind of feel bolted on, you know, it's hard to just go in there and rip everything apart and read structured the sort of core of it. So that's what we kind of did.
+
+This time around and try to get all the abstractions right based on everything we've learned about what the tool needs to do over the last like seven years or whatever. Um, so, yeah, a lot of it was like an internal rewrite for our own satisfaction in a lot of ways to make it like more maintainable and because it would be fun.
+
+Honestly, like we do a lot just for fun. Um, but I'm really proud of how that part turned out. Uh, but also just making it really fast has been. A fun challenge. We rewrote parts of it in Rust, not as much as I thought we would. but a couple really clear lead split off of all chunks. So, like, the main thing that we do in rust in tail and four is all the work to, like, look at, say, like a JSX file and find the tokens in it that might be class names.
+
+So, in javascript, we had to do that with just regular expressions. That's the only thing in javascript that's fast when it comes to doing that stuff, but it's a nightmare. and really hard to maintain. Uh, in Rust, we're able to write like a byte level parser. So we can just like iterate over every byte in the file with like a state machine that we manage.
+
+That's like, Oh, we just saw a quote. This might be the start of a new class. Oh, there was a space. So that's the end of the class. And we just kind of build all this stuff up with all these rules in memory. It's really easy to follow and maintain and incredibly fast because it's like native code. And the other nice thing is that.
+
+Type of work is like very parallelizable and node is single threaded. So we can only do, um, stuff in a single thread and node, but in rust, we can use all the cores on your machine. So the way that it works now is like the rust part is what looks at your project and tries to find all of the files that might have classes in them.
+
+And then we throw all those classes, like into like a thread pool or all those files into like a thread pool, basically that distributes the work across your whole machine. And every kind of file can now get like parsed. Uh, in a separate worker, basically, like on a separate thread, obviously, it's not every file on a separate thread, but it'll split them up as much as as much as possible.
+
+So if you got eight cores on your machine, it's going to theoretically be eight times faster than it would have been if we did it on a single core, plus like another order of magnitude faster, because it's written in native code instead of in JavaScript. And it's like such just like raw. You know, just basic ass computer stuff, just ripping through a text file.
+
+You know what I mean? So it can, it can be a lot faster and I'm really a little level language like that. So that was the only thing that we really did in Rust was like extracting all the class names. And then Tailwind itself is this like really pure engine now that basically receives a string of CSS, which is your.
+
+Input CSS file. And I can talk about why that's important for 10. 1. 4 next. Uh, but then it just receives like a big array of all the class names that were found in the file. Um, and then it spits out CSS at the end of the day and everything it does inside of that is zero dependency, which is really cool. so. Then the other big change is how we do configuration. So historically, we've had this javascript file. And that's where you've defined, like, your color palette, the fonts that you're using, uh, registered any, like, third party plugins. Uh, historically, it's also been where you specified, like, okay, these are the paths to all my JSX files or view templates or whatever.
+
+So Tailwind knows, like, where to look to look for class names. And in V4, we had this like fairly bold idea of trying to like, do all of that in a CSS file instead of in a JavaScript file, because historically you've, you've had to have a CSS file. And a JavaScript file until when you'd have like the JavaScript file that has like all your colors and stuff like that.
+
+And then you have a CSS file where you have your at tailwind base, your at tailwind components, your at tailwind utilities, plus any other stuff that you might want to put in there. And we'd often get questions from people that would be asking things like. How do I add a custom font in Tailwind? Where's the spot in the config file for adding a custom font?
+
+And it's a reasonable question because it feels like that's your configuration file, but like the correct answer is you don't. You do that in your CSS file. Like there's a font face rule. That's how you define custom fonts. But I think For people, that sort of thing has felt like they were like doing something wrong.
+
+Like it feels like for whatever reason, intuitively, you're supposed to keep everything in this like one centralized configuration file. Um, but that's not how we use Tailwind, you know, but I understand how like the system that we've designed sort of like sends that message, you know, and the same thing for questions like, how do I change the default font on the HTML?
+
+element. Well, I would open a CSS file and I'd write HTML space, open curly brace, font, family, colon, whatever. Um, but people just feel like they're doing something wrong when, when they do that. And then even, even worse is if you want to do like, uh, if you need to declare like custom properties, cause you want to make your site like themable or something, you define all those colors in the CSS file.
+
+And then, but then you define like the color palette that consumes them in your JavaScript file. And that feels weird too. Cause you've got things like split up. Um, and then because we wanted to write a lot of tailwind and rust, and we didn't end up doing that, like I said, the only thing that we did was parsing the template files, everything else is still in JavaScript, um, but it seemed.
+
+Like interesting to me, if I felt like if we want to do it in rust, we can't really have JavaScript extension points. Now, obviously, like we're going to make things backwards compatible. So we would have wanted to figure that out either way. But in my mind, I was just thinking, imagine tailwind didn't exist before, and we were doing it from scratch.
+
+If we wanted to do it in rust, there's no way we can like evaluate your JavaScript configuration file in rust. But if we have like a static configuration format, we can like maybe JSON or something like that. but the CSS idea was really interesting because we can definitely parse CSS. In, in JavaScript and, um, you know, configuring color palettes and stuff also feels like a really natural thing to do in CSS.
+
+We already have like custom properties in CSS, you know, every time you open a modern website and look at dev tools, you often see like their whole color palette down there in the bottom corner. And it looks, you know, it just feels really cool. So, yeah, so we just thought, you know what, let's like, see how much of this configuration we can do.
+
+In CSS, because if we can have people like define their color palettes, their specify, like what fonts they want to use for different things, then putting like the font family rules or the font face rules right next to that declaration is going to feel like very natural. It's not going to feel like they're doing something wrong. Um, so that ended up being like the other big thing that we we've done for tailwind 4 is is. The current alpha version doesn't even support a JavaScript configuration file. We are going to figure that out before we do like a stable release for backwards compatibility. But right now the only way to configure it is in CSS.
+
+So instead of having at tailwind base, at tailwind components, at tailwind utilities, you just do like at import tailwind CSS, which is like another way that we're trying to make it feel less. Like custom syntax and try to like use as much native feeling stuff as possible. Um, that's only possible now because of some, some modern CSS features, which, which we can also talk about.
+
+Uh, but you just import tailwind CSS at the top of your file. So it just feels like you're. Importing tailwind as a framework. It doesn't feel like you're configuring anything. And then you have this thing called like an at theme rule. So this is custom, um, but I didn't see any other way to do it. And inside this at theme thing, which is, it's kind of like an at media or app font face or whatever.
+
+You define a bunch of custom properties like dash, dash color, dash red, dash 100, and then you specify the hex code for a 200 specified hex. So you can specify your color palette. You can specify. Um, what fonts you're using, you can specify your spacing scale, you can specify, um, your transition timing functions, any of your sort of design tokens, you know, the sort of like theme bowl parts of a project, I'll get to find there and then tailwind.
+
+Parses that and uses all those values internally to decide like what classes should be available, just like it did with the JavaScript configuration file. So defining color red 100 means there's going to be a text read 100 class, a BG read 100 class, a fill read 100 class, stuff like that. So that was like the biggest, the biggest.
+
+Change conceptually. Um, so we did this big rewrite. We made everything really fast and we kind of tried to simplify the developer experience instead of having a javascript file where you do a bunch of stuff and a CSS file where you do a bunch of stuff. It's just a CSS file and I think that's going to open up a lot of opportunities for us to simplify it.
+
+Other stuff in the future. And, I guess like the other big thing, which didn't really necessitate a rewrite, but I think is good, good motivation for calling it like a V4 is we're really trying to embrace some modern CSS features that, didn't exist when Delwin first came out. So one example is like CSS layers.
+
+So Tailwind has always had like, not always, but for a long time it's had like at layer utilities, at layer components for like adding custom CSS and making sure they go into the right sort of spot in your CSS file. We actually added that before it became part of CSS, and I didn't even know that that was something they're working on in CSS and then they added it in CSS and now we have like a conflicting custom thing with CSS, but it's actually fine because the CSS one is way more powerful.
+
+Um, but does the same sort of thing. You sort of can, it lets you create these sort of buckets where you can put styles and you don't have to worry about writing all your CSS in the right order anymore because in CSS historically, like the last defined rule sort of wins as long as it has the same specificity as the thing you're comparing it to.
+
+But with layers, you can say, okay, I've got a base layer, I've got a components layer, I've got a utilities layer, and at the bottom of the file, I can still add something to the base layer. I don't have to like go to the top of the file. Okay. Um, to do it, which is, is really nice if you have multiple CSS files for whatever reason in, in a project, but it's also nice because now we don't have to have any concept of layers as a native thing in tailwind.
+
+We just. Dump things at the regular native CSS layers. we also are taking advantage of features like color mix, which is a new CSS color function, um, that lets you, uh, just like mix two colors in different ways. And the main thing we use it for is for adjusting the opacity of colors. So historically, like, like tailwinds always had these utilities, like text red 500 slash 50, and that would be red 500 at 50 percent opacity.
+
+And the way we've had to implement that historically, um, well, the, the challenge with that approach is under the hood. That's always been like an RGBA call, right? And so we would just slot in the opacity in the alpha spot, but there's a lot of things that that won't work for. So. CSS has this like current color keyword, right?
+
+That'll let you make something match the text color of an element. You can't just like change the opacity of current color. You can't slot that into like an RGB call, but color mix can take current color as an argument and adjust the opacity of it. It can take like a CSS variable as an argument and adjust the opacity of it.
+
+So it simplifies a lot of the stuff that we had to do and makes things, things more powerful. Um, we're using this new at property thing in CSS, which, which lets you sort of like take any custom properties that you're using and actually declare them up front with the type that they are. And. whether they inherit through the cascade and what the initial value should be if it hasn't been set, which is really cool because it lets, it basically lets custom properties, um, be animatable.
+
+So the way tailwind implements like background gradients, for example, is we set like a variable for the initial gradient color, a variable for the middle gradient color and a variable for the final gradient color. And we spit those out into like a linear gradient function call. But because those are just like regular CSS variables and the browser has no idea what value you might put in it, if you try to transition between two background gradients, it just, it doesn't work.
+
+It's just like a hard stop. It's because it doesn't know that you're transitioning between two color values. Uh, but with app property, we can say, okay, this is a color. It will always be a color, no matter what. So when the browser tries to animate between it, it knows how to interpolate from one value to another, because it actually knows Knows the type of the variable.
+
+So now in tail one four, you can have like animated background gradients, which you couldn't do in tail one three, and you couldn't even do in CSS period until we had support for this app property stuff. Um, so yeah, like that's kind of like the big picture. Overview of every, everything that we're doing.
+
+Like one, we wanted to rewrite it, make it faster because making things fast is fun and because we were just kind of like the code base had just gotten to a point where it just wasn't fun to work on anymore. It just felt like. It felt like this crufty thing we weren't really proud of. So this thing like tailwind for better or for worse is like my life's work up to this point, you know what I mean?
+
+So I want to be proud of it. Um, so we, we rewrote it, made it faster. Did the CSS configuration thing. And then we're just like trying to lean on a bunch of these, like really modern CSS features to sort of improve the experience. Those are kind of the big three sort of pieces that have gone into what we've done so far.
+
+**riverside_justin_raw-synced-video-cfr_devtools:** That's a, that's, that's, you've done a ton of work. That's really awesome to hear. 
+
+**Andrew:** first I want to ask why not more in Rust? It seems like you wanted to write a lot of things in Rust up front, but ended up really subjugating it to a very specific part of the tool
+
+**Adam:** yeah. A couple of reasons. I think the first reason is anytime you put something into Rust, it's really hard to make it extensible because it gets compiled down to like a binary. You can't like a load a Rust plugin from a Rust, uh, package, you know, once it's compiled and you'll see this problem in a lot of other places, like, um, for example, like, like TurboPack, which is like the new bundler that Vercel is working on.
+
+If there's anything that they want it to be able to do from like a plugin perspective, they just have to like compile it in and ship it to everyone. So they want like SaaS support, they compile it in, you can't like add it from user land at runtime, you know, and I'm sure there's probably convoluted ways to do it with limitations and stuff, but it's all very complicated.
+
+And, um, there's a lot of constraints around it, even if you can do it. And we, we have like a very big community of tailwind plugins and stuff already. They're all written in JavaScript. So I don't want to like unnecessarily leave all that stuff behind. If, if we don't have to, plus we sort of like initially had this idea for, you know, I, initially we were.
+
+Just thinking about it as like the JavaScript config file, it took a long time for the CSS configuration thing to not feel like this crazy idea. And it's, it's funny because when we actually released the alpha, I expected the response to be like, this is the stupidest thing I've ever seen. Generally, people are like, this makes so much sense that like, this feels so much more approachable.
+
+This feels simpler, whatever, which was, which was nice to see. Um, but yeah, the extensibility, um, was a big part of it for sure. Like probably, probably the biggest part, honestly. and then I think like the other element is the, the tool chain and distributing things and all that stuff. It is way more complicated in.
+
+Rust than it is with JavaScript. Just getting our GitHub actions, CI stuff right, um, to even compile everything and distribute everything has been, you know, a lot of work. Now we've done that work at this point. So yeah, I guess like it wouldn't be that hard to add more stuff, but the barrier to entry for rust is a lot higher.
+
+So the getting people that contribute and stuff is, is harder. And the other element is just like, if we can make the parts that, that The core of it fast enough in JavaScript, then why not? Because it's just like. It's a lot faster to author, you know? And, yeah, it's like insanely fast. What we've, what we've done to this point, like the most expensive parts are, are in for us already.
+
+For sure. I think there, there is more things we could push to it. And that's not like off the table. What's been nice has been to kind of just like build the new thing with JavaScript, and we've been very thoughtful about like, decoupling different pieces of it from each other and trying to make sure that we identify like, okay, this is like a function that does this thing that doesn't need knowledge of everything else.
+
+Like let's carve it out to somewhere where if we wanted to port this part to Rust, like we can, because it's very clear what like the boundaries around it are. So I could definitely see a future where we do, um, do more of that, but it's, uh, it needs, You need to do a lot of benchmarking and stuff too, because it's very rarely intuitive what the cost of sort of bridging between like JavaScript and Rust is.
+
+So if you're calling like a Rust function, like 5, 000 times, which could happen if you're like, until when the tightest loop is basically looping over all the potential classes and finding out what the CSS is for those classes. And in a big project that can be like 12, 000. possible strings. If you're going from node to rust 12, 000 times, like the overhead of that communication is going to be like slower than just doing all of it in JavaScript.
+
+And then even if you send all of it over at once, and all of it Back sometimes just like the size of like the payload that you're sharing also like impacts the performance. And I still have, do not have a good mental model or I'm like, what's going to be fast and what's going to be slow. So it's all like trial and error and comparing things.
+
+Um, but yeah, right now I think we're pretty happy with the, the way things are, are split up. I'm sure we'll experiment with. With trying to push some other things. To rust if only for curiosity's sake, um, but there's no obvious bottleneck right now, um, which has been very satisfying.
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah, that's, that's awesome. I mean, I think the thing that you're talking about, the, the translation cross between Rust and JavaScript is the thing, same thing we've heard over and over again in the WASM ecosystem. It's like serialization is more costly than you might consider.
+
+**Adam:** And there's ways to like, there's zero cost ways to share things, but like it's easy to like accidentally type one character that throws all that away and causes it to be like serialized, you know, and I, I, I'm not an expert, you know, I don't know a ton about it. There's something like. Typed arrays or something in JavaScript and buffers, I think can be shared, uh, back and forth with no cost, but I need, I I'm curious to get a lot deeper into it because I, I feel like I'm blind with this stuff still.
+
+I feel like fully trial and error and it's not, it's not as flying at all. I hate that feeling of not like being able to predict things. Like to me, that's like this really bad sign that you just don't understand what you're even doing very well. Um, It's not satisfying to for things to be trial and error.
+
+So, yeah, try trying to build a better mental model of it. Um, but it's been an adventure for sure. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** it seems like a common enough problem that we'll probably see some better 
+
+tools and better abstractions coming up around that area. 
+
+**Adam:** Even just a good blog post would be helpful. 
+
+
+#### [00:36:22] Using Lightning CSS
+
+**Andrew:** so you, you mentioned lightning CSS, but it seems like you're doing a lot of like the heavy lifting for CSS yourselves and rust. Uh, what part of, what part of the 
+
+build process are you using lightning for? 
+
+**Adam:** yeah. So we explored a bunch of different ways of using it. Originally, we were thinking, okay, lightning has plug in API's that you can use to basically Parse the CSS with lightning and then use its APIs to sort of do all your manipulation. Um, but we realized that that wasn't going to be the right fit for us because we have a lot of web based.
+
+Stuff that uses tailwind where we need to run tailwind in the browser. So for example, we have our like tailwind playground, and we also have this like CDN script that lets you like generate tailwind stuff at runtime, which it's, it's mostly, it's not really meant for production, but it's a good way for like people who aren't.
+
+Comfortable with JavaScript tool chains and stuff like that to like try tailwind and just like an HTML file that they're editing using a CDN. It feels like a nice way to just let people play with it and get hooked and then figure out like how to set it up for real. But if we were going to use, if we were going to make lightning, like a hard requirement for all that stuff, the playground would have to ship like 10 megabytes of JavaScript.
+
+The CDN would be like an incredible amount of JavaScript. Cause you got to compile the rust binary down to Wasm and send that to Over the wire and it's just, it's just really big and we really wanted to find like a way to avoid that. And then on top of that, we also just kind of realized that like the things we cared about using lightning for were all kind of just post processing type steps.
+
+So what we use it for now is we just kind of run everything through it at the end to flatten out a bunch of nesting to. Um, sort of like transpile some super modern CSS syntax. If people want to use like, okay, LCH colors or something that can get like compiled down to, um, formats that are better supported by browsers and stuff.
+
+I think it'll compile down like custom media queries and some other really modern stuff too. Um, and then just like the minification, like it's, it's really good at minifying stuff. but, but it's tricky because. It totally makes sense for us to use it in like our CLI tool. When someone's using our CLI to actually spit out the final CSS file.
+
+But if you're integrating with a tool like V to our next JS or something, they like have CSS minification built in production steps already. So we don't really need it for that, but it does do a better job. The main thing is like flattening the nesting, because one of like the core architectural changes in.
+
+Tailwind 4 is we rely on CSS nesting to implement like almost every tricky feature under the hood and how Tailwind works. So like a key example is if you think about a class like hover underline, right? That just applies an underline on hover. Um, the way that we actually implement that in Tailwind 4 is we, We see that class name.
+
+We see hover colon underline, and maybe it's like MD colon hover colon underline. Right. So the first thing we do is we split all the variants off of the beginning. So we just have underline and then we run underline through the engine to get like the CSS for that. So now you're going to have, it's going to keep the class name that came through.
+
+So the class name is still going to be MD hover underline, but the rules inside of it is just going to be like text decoration underline or whatever it is. Right. And then we take the variants and we say. Apply this variant to this, um, CSS and what each variant does. All it does is insert like a wrapper inside of it that wraps the contents with like another nested selector.
+
+So hover is going to add ampersand colon hover. Inside so you've got so it doesn't actually append hover to the end of the selector. It just like inserts a nested rule inside and relies on like the ampersand and CSS nesting to put it in the right spot and then the same thing for the media query. Okay.
+
+That's just going to dump that inside. So you get this like deeply nested. Um, thing where like each layer of nesting represents one of the variants that you added to the beginning and in V3, we had to sort of like manipulate the selector and do all this stuff ourselves in this really error prone, complicated way.
+
+And in V4, it's just like, wrap it again, wrap it again, wrap it again, wrap it again, give it to lightning comes out flat, you know, um, so it's really like nesting has been like a core, a very core, uh, thing. Feature that we just rely on for drastically simplifying things. Same with like the add apply feature in tailwind.
+
+If you're familiar with that, where, you know, you can have like a custom class and you can say, add, apply, underline inside of it. All we do for add apply is we replace each add apply with a nested rule that just has like the ampersand. And then the contents of the class that you're applying and then pass it over to lightning and nesting takes care of all of it for us.
+
+Um, so that was like a huge unlock, honestly, in the simplicity of the framework was realizing how much we could lean on CSS nesting to compose all these things together. So that's the big thing that we use lightning for because, um, the CSS is actually a lot bigger. If you don't flatten the nesting, like nesting makes things smaller.
+
+When you have a lot of declarations inside of something, but if when it's just one CSS property, like what tailwind spits out without lightning might be like six layers of nesting and then one CSS property, you know, that would be like two, three lines of code instead of like You know, 12 lines of code, if you just flatten the nesting. Um, but the other cool thing is that for our CDN build and for like the playground, we actually can just not use lightning and the browser supports nesting. So it still works, you know? So if you're using like even a development build of Tailwind, cause we don't run lightning on the, uh, On the development builds and you look in dev tools, you'll see a lot of nested stuff happening.
+
+And then in the production builds, the nesting gets, gets flattened to make things smaller. So that's like the biggest thing that we're, we're using, uh, lightning for right now. Just today, actually, we removed lightning from Tailwind CSS core because we did have it in core that was like the only dependency.
+
+And then we've moved it to be a dependency of our different bundler plugins instead. So like the CLI has lightning and as a dependency and it uses core to generate the CSS, then process it with lightning. Our PostCSS plugin does the same thing. Our Vite plugin does the same thing. Um, so yeah, so now Tailwind is truly zero dependency and we can just like ship it in the browser.
+
+Really, really. Simply it's zero dependency, but no IO either. It's like the other hard constraint that we had to have. If we want it to be easy to put in the browser, like we run V3 in the browser, but there's so much patching node modules and like stuff to make sure that like. Fs read file sync calls don't happen and all sorts of stuff like that.
+
+Uh, but this one has been like designed from the ground up to have this like browser friendly core, uh, which is really cool. 
+
+
+#### [00:43:27] Monetizing the Tool
+
+**riverside_justin_raw-synced-video-cfr_devtools:** That's awesome. I mean, it's really, it's really awesome to hear about the evolution of the project. And, um, it's also cool to hear about how you're sort of leveraging nesting and other things. I'd had the thought of like, yeah, well, browsers are supporting nesting now, right? That's like a, that's the thing that we can use.
+
+So, but it is, uh, it's cool to use lightning in an optimization in that way. Um, I would like to shift gears a little bit and talk about Tailwind, the company Tailwind Labs. Um, so we've talked to a lot of open source developers who are trying to make their projects sustainable. And open source sustainability is this common thing.
+
+And it's a hard thing to do to like work full time on open source and still pay your bills. And, um, You're very much a success story of like what that looks like. So how have you been able to make, to work on till one for so long and to make it 
+
+sustainable 
+
+for you and your 
+
+team? 
+
+**Adam:** Yeah. So I think to preface everything. I think the tricky part of open source sustainability is like not all projects are equally like sustainable capable, if that makes sense. There's a lot of like really important projects that are so buried in the stack that people don't interface with them day to day that there's like not a lot of Incentive or motivation to like support them in some way or or there's not obvious ways to productize things around them.
+
+But we're lucky because tailwind is like a tool that you use directly every single day. It's a front end tool. There's all sorts of precedent for how people, um, Um, Kind of make money around stuff like this. Like bootstraps had an official theme store for a long time. Theme forest is like a massively profitable, successful business.
+
+People have sold website templates, like. For decades on the internet, you know what I mean? Um, so we're kind of just lucky in the sense that the thing that we happen to build had like a lot of Existing just like people have sort of like trodden the path already for how to sell things around it online, you know um, so Sort of the background really though is like steve and I Um, we wrote this book, we're factoring UI together back in like 2018, which is like a book about, um, like design for developers.
+
+And we did a lot of work for like about two years leading up to the release of that book to really like build Steve's audience and build a lot of like authority and reputation around the topic. And, um, then when we released the book, it just did like phenomenally, phenomenally well, like outrageously well.
+
+Well, I, it shocks me to this day. Like, I think, I think it did 400, 000 on the first day. Um, and it's done like, I dunno, let's see out of curiosity, lifetime. It's done 4 million in revenue for just a book that me and Steve wrote and sold online as a PDF, right? So we released that in December, 2018. And that became like how we funded the development of Tailwind after that.
+
+So all of 2019, me and Steve were kind of like working on different ideas around Tailwind stuff, and that's what became like Tailwind UI, which is our. Kind of like the commercial branch of the tailwind CSS stuff. So it started out as just like a product with this giant directory of like styled website components and examples.
+
+So like hero sections for marketing sites, pricing sections, like feature sections, buttons and forms, and basically anything that we could think of, like different UI patterns, um, me and Steve would sit down and brainstorm different layouts and ideas. He would kind of. Design high fidelity things, and I'd build them and then we'd throw them together and put it out as part of tailwind UI.
+
+And so we released that in February, end of February, 2020. And that did really, really well too. Um, same type of launch that we had with refactoring UI, which was like quite, quite wild. And, um, yeah, so then, then after that came out, you know, it just kind of felt like, man, There's a lot to do. There's a lot of GitHub issues to solve.
+
+There's a lot of new things we wanna do product wise. There's a lot of maintenance that's gotta be done on Tailwind. We have a lot of ideas for new tailwind related stuff that just didn't exist yet. Um, why don't we try and like find a couple people to help us? So, uh, we hired like three people over the course of all of 2020. And, um, yeah, that, that's kind of like how it all started. And things just kind of only grew from there. So like every year, Tailwind UI has done better than it did the year before. Like we're always adding like new. Designs and stuff like that in 2022, mid 2022, we launched like templates, which we didn't have before.
+
+So they're like full next JS website templates, uh, built with Tailwind and React. So that was kind of like, so now there's like two sides of it. There's like all these component examples and then there's like full website templates. Um. And that's kind of like all, all we've, all we've done, you know, we just like, we, we released that stuff.
+
+We made sure to, it was really discoverable from the tail and CSS documentation, and then we just kind of split our time between sort of improving the open source projects and making sure that we're still adding, you know, useful. Commercial content for, for customers. And that's very, um, yeah, it's, it's just like, they just feed off each other really well.
+
+Like, interestingly, I find like. The best things we can ever do for business is actually like big open source releases. So like when tailwind three came out, that was a big lift in revenue, even though it was just a free open source thing, you know, which is good because that's what I like working on the most to me.
+
+Like the commercial stuff is like a necessary evil is like two negative, I think, cause it's, it's. Fulfilling and fun to work on too. But generally I, I just want to work on like the tools, you know, like that's what I get the most excited about. So to be able to like, we're really fortunate in that. Working on the tools is good for business.
+
+Cause I think the trap that you fall into, it's not even really a trap, but like what happens a lot with people trying to make open source stuff sustainable is trying to get some sort of product in place to pay the bills. So you can work on open source is like. Really demanding of your time and hard to grow and, you know, starting any business, you know, it's hard and it takes a lot of work.
+
+It takes like, you know, More hours than you want it to take and there's not a lot of time left over for open source stuff after that You know like what you need is you what people are looking for when they want to build like a sustainable open source thing That's funded by like some separate product is what product can I imagine that's going to take like 15 hours a week of my time So I can spend 25 hours a week On open source and what you're really asking is like what business can I start that's going to pay me like a full time salary but I only have to work like 15 hours a week because that's like really what you're saying and when you realize that it's like man that that's like That's going to be hard to, to figure out.
+
+So, um, yeah, I wish I, I wish I had like good advice on what people can do to be more successful at making the open source stuff sustainable. I think we're just really fortunate that we happen to be in building the type of tool that lends itself well to like a commercial component, you know, I think web frameworks are another one where people have had success, like, because Hosting is sort of like a clear business model, but building like a cloud, like hosting service.
+
+That's like, that's a lot of work. That doesn't leave you that much time to work on, um, on the open source framework itself, you know what I mean? But for us, um, anything that we do with the templates and stuff drives a lot of improvements to Tailwind. That's where all the good ideas for new Tailwind features come from.
+
+And Steve's designed something. I try to build it and building it is too hard. You know, how can I make this easier? We find some cool thing to add to Tailwind or, you know, or whatever. So it's, it's, it's a good symbiotic, relationship. but yeah, that's, that's kind of how, how our business business works.
+
+It's nothing too crazy. It's pretty straightforward. Very lucky that it works at all. And yeah, I definitely don't take it for granted. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah. That's sort of a rare set up there because you have an open source tool that's providing value to the community, which plays as marketing to a product that is, you know, People know about because of the open source tool, but also, you know, a lot of times in adoption, it's like you have to, people have to learn like, okay, what is your product?
+
+How do I use it? Or whatever. But their learning is already, they're using till one, you know, and they've been using till one and then it's like, well, you already know it. We're just going to give you some prepackaged stuff. So it 
+
+is 
+
+a, that's a nice model. 
+
+**Adam:** Yeah. And I think the 
+
+other thing that helped was to your point of like, you know, it's a really Like we had to like get Tailwind going, you know, and we were just really lucky that I had a lot of time to spend on it already. So I went like full time, full time on Tailwind in 2019, but even when I released it in 2017, I was already working for myself, um, creating like eBooks and courses.
+
+Like I left my job in 2016 after I released a book on like functional programming for PHP developers that, um, Um, was more successful than I expected. And I thought, Oh, this is fun. Like, this is awesome. I'm making my own money. So yeah, I was creating, like, I did like a test driven development course. I did like a view course and.
+
+Those were kind of done in these like big sprints and then filling all the gaps was like working on Tailwind CSS stuff and being able to create, do live streams and create content and, and stuff like that to really sort of get the word out there and make the docs really good and, and stuff like that.
+
+So, yeah, a lot of factors played into it for sure. Like, I don't think Tailwind ever would have gotten as popular as it did if I didn't have the time to really invest in it. Um throughout those years and then we didn't try to really like Commercialize it until three years after it was released um Yeah, so yeah, I don't know that but yeah, that's the story, you know 
+
+**Andrew:** Yeah, it's a good story though. Like I, you're marketing for refactoring UI. It hit me like I bought the book. Uh, I, I can.
+
+Like a lot of my UI knowledge is like just around spacing comes from reading that book and being like, Oh yeah, I should just like the, the, the key takeaway I took was add as much space as you can until it looks silly 
+
+and then dial it back 
+
+and then you have a good, good design.
+
+**Adam:** And take it away, yeah, yeah, Yeah. 
+
+yeah, 
+
+I mean I I wrote that book for me really, you know So I think that's why it resonated because I was So desperate to get good at design because i'm not a designer But I had access to a great designer and I just like really put every decision he made under the microscope and try to figure out like, how can I.
+
+Make this a math formula, you know, and not an art, you know, 
+
+and then figure out how to like, share that with other people before I forget that it wasn't obvious to me, you know, because I think that's sort of a key thing with, with, with teaching in general, I, I think like, it's hard to teach things that, you know, really, really well, but you'll do a much better job of connecting with people.
+
+If you're teaching things that like just clicked for you, because you know, exactly. um What the gap is that like that person needs help crossing. It's not like some really distant memory. Like I remember working with Steve, we'd be like, one of the biggest like Twitter tips we ever had was about like offsetting your box shadows.
+
+Um, so that like the shadow pokes out of the bottom instead of all the way around, like an element. And, uh, you know, when I noticed that in Steve's designs, I was like, dude, like, Oh, you always do this. And this is the reason that this looks good. Like we should make a little tip out of this and tweet it.
+
+And he was just like, Everybody knows this. This is like the most obvious thing ever. If we share this, like, no, everyone's just going to laugh at us. And I was like, dude, I'm telling you, people don't know this. Like I didn't know this, you know, and then you share it and people are like, wow, this is like, oh my goodness.
+
+I can't believe I didn't realize this before. This is like, makes such a big difference and everything. And, uh, yeah, so we were, I think, you know, that it's been an awesome partnership in that sense, because I've sort of been able to act as like the, uh, The oblivious non designer and Steve is like got all this artistic just intuition and instinct and that's been practiced for years and years and years, you know, and just noticing the things and translating them, uh, into language that is going to resonate with other people like me and, uh, Yeah, you know, um, it's Yeah, it did really well people seem like really happy with it I'm always shocked to go on like goodreads and see that it's got like Thousands of ratings and stuff on goodreads or whatever.
+
+It's like pretty maybe not thousands can't be thousands That seems like a lot but uh just to even feel like my name is on something on goodreads at all kind of just feels wild and that there's so much uh, positive, yeah, literally 1729 ratings like that's crazy, man 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** it. is good though.
+
+
+#### [00:56:59] Addressing the Twitter Mob
+
+**Andrew:** So with, uh, with any technology that gets big as big as Tailwind, there's bound to be some people who don't like the technology. Uh, so why do you think people have such a reaction to it? Because like, honestly, this past year, my whole Twitter has just been like arguments about Tailwind for some reason. Uh, and do you think any of their arguments 
+
+ring true?
+
+**Adam:** Yeah. I mean, I, I think there's multiple elements to it. I think the first one that everyone will agree on is it just, it looks disgusting. You know, when you see it for the first time, it's, it just seems like clearly a bad idea. It's like these super long file, like super long lines, everything like looks like a mess.
+
+Um, it's so just goes against everything that We've sort of been taught about keeping presentational concerns out of your markup and stuff like that. It just, it feels like so counter to like what are generally considered best practices that it's hard to even like give it a chance. So I think, I think there's that element to it, but I do think a lot of people get over that.
+
+If they just like try it out a bit and try to build something with it. Um, and that was the same as me. Like Tailwind wasn't the first, uh, kind of utility kind of focused CSS kind of library. There was Atomic CSS was like the very first one, which was way ahead of its time, because that basically did what Tailwind does from the beginning, where it looks at your HTML files and figures out what CSS to generate dynamically based on what you're doing.
+
+Um, but it had an even more unapologetic syntax than Tailwind. I think it was just like very cryptic, like BG bracket, you know, uh, hash text code, whatever. Like it, it, it very much was not friendly looking. And I'm like, I can totally stomach that now. Tailwind looks like that in a lot of ways now, but I think like the leap that you have to make from like clean HTML to what they wanted you to do was like a lot, you know, And that's not to say that it was wrong, but it's just like, I can understand why they got the backlash that they did too, because they were asking people to go really far.
+
+Tachyons is like another library. That was very similar to, to tailwind also with a much more terse sort of cryptic syntax that I think probably hurt the adoption, um, tailwind. We tried to use a very like sort of bootstrap inspired naming approach. We try to make things feel a lot more approachable.
+
+Which meant the HTML is actually even more verbose and messy looking because each class, like in tachyons, a class name is usually like three letters or something, whereas in tailwind, you can have like quite long class names, and then you might have 20 of them on a line. Um, but I think, I think that's like a big reason.
+
+There's a lot of people who just haven't tried it, who just like, see it and think this is horrible. but a good portion of those people do get over that if they try it. Not everybody, and I think that's fine. I think people are allowed to just like doing things different ways, you know? I think like the other piece of it is the maybe slightly more controversial, but I think I can phrase it in a way that doesn't really seem controversial, but there are like a lot of people who are just passionate about CSS as a language, you know, who just really just love it and like writing it and like what they can do with, crafting their selectors and stuff like that.
+
+And I think for people like that, Tailwind is basically like throwing out this piece of what they like doing on the web, you know, which I totally can empathize with and respect. If you just like, are passionate about writing CSS, then you're probably never going to really like Tailwind, you know. So I think that is like a a big It's not, it's not as big of a group, but there, there's, there are a lot of people who just really like CSS and want to write CSS no matter what.
+
+Um, so I think that's like another source of sort of like the, the negativity towards it. Um, at the end of the day, I've sort of just come to like, accept that anything that's sufficiently well known will, you know, Have people who like it and people who don't like, you can't think of anything. That's not like that.
+
+You know, Apple has like the biggest super fans on earth. And then it also has people who hate it. More than anything in the world, Tesla is like the same thing, you know, there's like huge super fans And then there's people who think it's the worst thing in the world. I ever everything sufficiently successful has Detractors and I think that's just what it is and that's fine and people don't have to like any everything Yeah, I think like when it comes to like Is there things that like I agree with people on about like things that are not ideal with Tailwind? I don't know that that there is because I think like the main complaints are like we shouldn't mix Presentation and markup now i'm like I fully disagree with that at this point.
+
+I feel like My html is my ui, you know like when I've never in my life worked on a project where I could go from You One design to like a drastically different design by just like editing the CSS. I know like the CSS, like Zen garden website exists, but I consider that almost like. 
+
+An art project than like a real thing.
+
+The reality is it's impossible to avoid adding like an extra div once in a while to get something to do the thing that you need to do, like you just, it can't be avoided for a lot of situations. So if there's a div that exists in the markup purely for the design, your markup is coupled to the design, you know, like game over.
+
+Um, and then if you look at like. How so many other like programming, like UI programming paradigms work. It's, it's not even a consideration to separate these things. Like the, in like Swift or WinForms or any of these things, like if you have a button and you want to like change the color of the button, like you change the color on the button.
+
+You don't go to like some other file that like. Somehow identifies buttons and styles them like you would in CSS, you know, like in, I remember when I was doing like visual basic stuff, like I just like literally right click the button and bring up a little property plant panel and like set the color of the button, you know, you wouldn't, they weren't decoupled.
+
+They were like the same thing. So. And so in HTML for it to feel like, yes, I'm typing like angle bracket button and creating a button element, but I'm not allowed to put anything presentational about this button here. That just feels like so divorced from the way every other UI programming paradigm works that it can't be that bad of an idea.
+
+To do, and I think like the other piece that I think people don't often like put together is that argument about like separating like your presentational stuff from your markup is very much the same as the whole like, um, unobtrusive JavaScript thing that like we used to do back in the day where like you'd attach behavior to a button, uh, In a way that kept the HTML document pure, you know, you'd query for the button and add like a click event handler to it, but then like react and all this stuff came along and it's all just like actually on click on a button.
+
+Great idea, you know, and that's like the same way that things worked in visual basic and everything like that. You just attach things directly to things that you want to do. So to me, that's like the same thing if it's okay to put like a. On click on a button. It's probably okay to put a background color on a button too.
+
+Now, I don't think there's that many people writing react who make that argument against tailwind to be fair. I think most people who recognize that, like, think that's totally fine. I think the argument there is usually like, this is messy. There's too much crap in my markup. I don't want to see all these classes.
+
+But yeah, like there are things that I don't think are perfect about tailwind, but they're not things that any people who dislike tailwind bring up, you know, I would say, like, to me, like the thing. that I find to be the biggest weakness or flaw that I haven't figured out how to solve in Tailwind is that you don't have control over, um, the order of that your styles are applied in.
+
+So in like a style sheet, you can just like write things in the order that you want them to be in. So say you have like an input and on hover, you want the border to change to like a slightly Border color. And then on focus, you want it to be like blue or something. You'd make sure to define like the hover state before the focus state.
+
+So that when it's focused, the focus state takes precedence over the hover state. And tailwind, there's no way to like change that behavior on a per element basis. We have to sort of internally decide, okay, we think focus is more important than hover. So if you have a hover, State and a focus state on the element with tailwind focus wins.
+
+And that's the sort of thing that I kind of feel like, man, I wish we could defer control of that to the end user somehow, because you can in CSS and you can't really in tailwind the solution to that in tailwind is to basically until in four, at least the way that, well, I'll explain two ways until in three, the way that you'd do it is you'd say like hover BG black focus BG red, right.
+
+But if you wanted it to be, um, black, While focused on hover, you'd have to say like hover BG black focus BG red hover focus BG black to sort of like re specify like if it's hovered and focus. I'm being explicit about the state that I want, not just letting like the order of them win. And I think that's pretty much it.
+
+Good. We had that. We have that escape hatch, but it's still in CSS. You just put them in the right order. Like that seems nicer. Uh, in V4, we have like support for the not pseudo class now. So instead of saying like hover BG black focus, BG red hover focus, BG black, you'd say hover BG black focus, not hover BG red.
+
+And that way. The focus day wouldn't trigger, um, if it was focused and hovered, but that's still like an annoying thing in my mind versus being able to just like declare, um, the, the order of things to me, that is like the biggest sort of like the, the worst part about tailwind and like hilariously, like no one talks to me about that.
+
+I think like, I think I'm only like intimately aware of it because of like how much work we spend. In core, like getting the sorting right and trying to make it as intuitive as possible and making it fast to, you know, um, but no one really complains about it. So I think we've done a pretty good job making like the default behavior intuitive, but that is like a.
+
+Bit of power that you lose and that's unsatisfying to me, you know, um, but that's not the sort of thing that anyone else complains about. That's the sort of thing. Someone who likes to win for probably complain about not the sort of thing that someone who doesn't like it would complain about. Um, I don't know.
+
+Is there any criticism that you guys have heard that you'd be curious to get like a, an opinion on 
+
+**Andrew:** I think you addressed all the ones I know about, uh, the, the only one you didn't is, like, how it relates to, like, compression and, like, over the wire and tree shaking and all that, like, I, I can't, I can't see the argument for, like, oh, we have a lot of stuff in our markup, the markup might be sent multiple times, uh, that could 
+
+increase bundle sizes. 
+
+**Adam:** yeah, that's a valid concern. Um, the markup compresses extremely well because there's so many repeated tokens. so if you do like real tests, you'll see it's rarely, um, significant. And yeah, so I don't tend to worry about that part, but lately I have been thinking more about the JavaScript bundle size because, um, the. Strings in JavaScript don't compress like you can't minify strings because they need to come out the same on the other side. So if you have long class lists in a JavaScript bundle, because you're building like a react app, um, it can go and change like every component name to like a single letter and every function call to like some cryptic crap that's really small, but the strings like they can't be.
+
+Reduced in size, they will get compressed really well with like GZIP or broadly like compression, but the actual JavaScript file can't be made smaller, which means it's going to take longer for the browser to parse the JavaScript, uh, and stuff like that, too. So that's something I have been thinking about a bit lately.
+
+I haven't done any testing on it. Um, but it is. You know an example of something where like having lots of strings in your bundle could be bad So i'm curious to like experiment with it and hopefully discover that it's actually fine, you know But uh, it is something i'm curious to see i'm not sure like what you could do Differently to solve that because even with something like, um, a CSS and JS solution where you have like a CSS prop and you have like all your CSS properties, an object property is still a string.
+
+It still can't be compressed. So that's still going to have to be untouched. So, um, it's probably kind of a common thing that you're going to have to deal with anywhere. But it is an interesting thing to be aware of because you can like dramatically decrease the bundle size by like. Finding a way for the string to just like appear once.
+
+So if you have like a string that's repeated often and you can just put it into a variable, well, now the string only appears once in the variable name can be compressed. Like, this is like something we've been thinking a lot about with like tailwind internals as we've been trying to, like, make sure it's like suitable for the browser. We actually like do a lot to avoid duplicating strings to keep the bundle size as small as possible stuff. That's like, not even helpful from like a readability perspective. But just because we want to keep the bundle as small as possible. So, you know, if we're declaring like, you know, all of the like display properties, uh, So have like a flex class is display flex.
+
+Grid is display grid. Well, now, like the word display appears every single time. So that's the sort of thing where we're like, wrap it up in a loop to make sure display only like happens once, even though it's like, not any more readable. But because like, you're trying to really limit the number of strings in the bundle size, it can be helpful to, to do.
+
+So, um, yeah, I don't know. I, I'm interested to do like some testing around that. Like, it hasn't. It's been a problem for us and in practice, or it's not something I've heard anyone complain about with like real evidence, but it's, it's Make sense, you know, that it would make sense to test. for that reason, like I tend to like, not go on too hard about like, like tailwind makes your CSS files really small, right.
+
+But like the HTML is bigger. So, you know, uh, at what point does that like outweigh the benefits of that? And so I don't really think of like the file size of tailwind as being like the main benefit. I think the idea that the CSS file doesn't grow forever. Is like an, is a nice benefit that like it did historically, the way I used to write CSS, like every new page that I added meant the CSS file got bigger, no matter what, you know what I mean?
+
+Um, but now your CSS software grows as sort of like a logarithmic rate where it eventually flattens out as you're using fewer and fewer, like new classes to build things over time. So it's nice that those are sort of like decoupled at least because yeah, there's so many sites that you go to that have.
+
+You know, been online for a long time that there's this like sweet spot of a website that's like really popular, but not like Facebook popular, where they have like a team dedicated to keeping the assets as small as possible. And those are the sites that have like six megabytes, CSS files, you know? Um, so yeah, I, I, I don't know.
+
+Um, it's definitely something I'm curious to like, dig into and bench and 
+
+benchmark more. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah. I suspect that it's like probably small potatoes compared to all the other low hanging fruit that people have, you know, and it's like when you're down to the point where it's like the last problem that I really need to do is 
+
+optimize my 
+
+string sizes. You're in a good spot. 
+
+Usually I bet. 
+
+**Adam:** that's true. That like, I always have to remind 
+
+myself, like. Okay, like your JavaScript bundle is like 70 kilobytes bigger than you want it to be like delete an image from your website, you know, you've just saved yourself like all that space and more, you know, so I think it's, it's important to like, not have like horse blinders on and like looking at these things in isolation.
+
+And remember, like, um, it's a, it's a small percentage of the overall, um, bandwidth that you're using when you send stuff over. But, but I do think like the JavaScript parse time considerations are valid, especially in the sites that we build these days that are like very often very 
+
+client driven. You want the time to interaction to be like fast.
+
+So, um, yeah, I'm curious to benchmark it and find out for sure. But, uh, so far hasn't been a problem in practice. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** so that's all we got for questions. Uh, thanks for coming on the podcast, Adam. This was a really cool dive into like what tailing is and has become. And I think it was probably a lot more technical than a lot of people would have thought at the 
+
+**Andrew:** top of the episode. So thanks for coming on. 
+
+**Adam:** Cool. 
+
+Yeah, 
+
+no, 
+
+thanks for having
+
+me. I really appreciate it. 
+
+**riverside_justin_raw-synced-video-cfr_devtools:** Yeah, uh, yeah, thanks for coming on, Adam. I love this deep dive into Tel Wan, and it is such a fascinating technology, I think, in general, and, you know, I really appreciate the craft the continual craft over 
+
+time that you all put into it. So, Yeah. thanks for coming on. 
