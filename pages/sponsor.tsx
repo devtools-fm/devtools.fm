@@ -126,7 +126,7 @@ export default function Episodes() {
               </P>
 
               <H2>Offerings</H2>
-              <H3>1st - ($500)</H3>
+              <H3>1st - ($600)</H3>
               <Ul>
                 <li>
                   60 second ad slot at the beginning of each weekly episode
