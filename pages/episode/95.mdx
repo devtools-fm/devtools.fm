@@ -1,0 +1,607 @@
+---
+title: Johannes Schickling - Prisma, Effect and the rise of Local First Development
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Johannes-Schickling---Prisma--Effect-and-the-rise-of-Local-First-Development-e2imkfd
+youtube: https://www.youtube.com/watch?v=DvLq8GguZ9Q
+tags: technology, local first, prisma, effect, react, typescript, javascript, performance, tooling, productivity, dev tools, podcast
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Johannes Schickling, the founder and former CEO of Prisma.
+We talk about what he's been up to in the last few years and what he envisions for the future of software development.
+He is a contributor to the Effect library which is a new way to write asynchronous code in TypeScript.
+We also talk about the rise of local first development, how it's changing the way we build software, and how he's using it to build his new app Overtone.
+
+- https://twitter.com/schickling?lang=en
+- http://effect.website
+- https://overtone.pro/
+- https://www.localfirst.fm/
+- https://www.prisma.io/
+- https://riffle.systems/
+
+Episode sponsored By CodeCrafters (https://codecrafters.io/devtoolsfm) 40% Discount!
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- https://github.com/rossjrw/pr-preview-action
+- https://typedoc.org/
+- https://github.com/PetoiCamp/OpenCat
+
+#### Justin
+
+- https://unstorage.unjs.io/
+- https://github.com/OnedocLabs/react-print-pdf
+
+#### Johannes
+
+- Nix - https://nixos.org
+- Attest - https://github.com/arktypeio/arktype/tree/2.0/ark/attest#cli + https://ui.perfetto.dev/
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Intro
+[00:03:17] Prisma
+[00:07:22] Diving Deep into Effect: A New Paradigm for TypeScript
+[00:13:15] Ad 
+[00:25:55] How to start using Effect
+[00:30:25] Utilizing Generators
+[00:38:14] Embracing Local First Development: Overtone and Beyond
+[00:48:47] Challenges and Solutions in Local First Development
+[00:53:54] React Insights: State Management and Performance Optimization
+[01:02:48] The Future of Local First Development and Final Thoughts
+[01:06:42] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Intro
+
+**Johannes:** I think we've actually said it depends too little over the last decade where we've just used like the traditional web server side hammer for everything and this is where like some app web apps feel the way they do.
+
+I don't think we should now overreact and rebuild everything with local first. I think we should in the cases where it matters, build apps with local first. I think for many apps, it can totally make sense.
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone. we're really excited to have Johannes Schickling on. so Johannes, you, uh, also have a podcast, which is the local first fm. I'm big fan of that and excited to see that grow. you also have worked on a lot of really interesting things. you helped found Prisma several years ago. you're working on a local first app called Overtone. love to hear more about that. And then you're doing some DX work on effect. Love to hear all about that. But before we dive in, could you tell our listeners a little bit more about yourself?
+
+**Johannes:** Yeah. Thank you so much for having me on the podcast. Um, I've been a big fan of this podcast for, for quite a while. And also the two of you have helped me start the local first FM podcast. So thank you so much. Um, yeah, super excited to be here. I think over the past couple of years, I really tried to find a way back to my roots, which is building applications.
+
+I have found myself always like in this perpetual cycle of like building apps. then being frustrated about like some aspects of building those apps and then building dev tools to make my own life and other people's lives easier. And, um, so that's, I've been going through like that big cycle with Prisma a couple of years ago, where I was just frustrated working with databases when it comes to building apps.
+
+Like so many things I've just become so much nicer with React and Docker and all of the nice things that came, came about back then serverless. But working with databases was just, was still pretty annoying in my, uh, my opinion, and particularly now that we had TypeScript back then, back then TypeScript wasn't really as popular as it is today, but I jumped on it early and I realized, okay, from a database we get.
+
+Stuff back all the time, but it's always any, um, so I tried to make my own life easier back then and that led to Prisma and in 2020, I had a nice opportunity to take a sabbatical and, uh, use that time to also get my own hands dirty again. to start working on some different app ideas. And, I've decided to keep going and that's chapter.
+
+And right now I'm kind of like living my sort of poorly amorous work life where I put my nose into a couple of different projects at the same time. And so that has led to me working on Overtone, the, the mute local first music app, which is. Also working on like some state data stack that can be used for local first apps.
+
+And I've also found out about effect quite a while ago. And so I'm also trying to have a positive impact there and involved in a few other projects. And so that gives me a really nice holistic perspective on app development in 2024.
+
+
+#### [00:03:17] Prisma
+
+**Justin:** Yeah, that's exciting. You've, you're definitely, uh, got a lot of balls in the air. so when you were working on Prisma, did it start off as just like, I'm building an open source tool to solve a pain point that I'm having, and then it evolved into a company? Or did you go into it? Like, no, I'm going to build a company around this problem.
+
+Like, what was your thinking when you first approached it?
+
+**Johannes:** Yeah, I think that's a great question and I would actually encourage more first time founders to think more critically about separating out, the technology and, uh, the problem you're trying to solve as well as like, is the best way to do that as a company or not. so back in, I think end of 2015, early 2016, I was just, um, I just had, uh, sold my, my previous company, which was like, uh, Uh, VR app, like we tried to build like a Instagram for VR, uh, way back then when like VR was like very, very early.
+
+This was like when you had like Google Cardboards and so on. And I was still annoyed with like how much time it took to build the, the non essential parts for the app, like the backend, et cetera. I tried out like Firebase and pars, et cetera. And I liked the velocity, but it was just so limited. That I felt, okay, there had to be a better way to build apps more quickly.
+
+And GraphQL just came out and serverless just came out and I tried to combine those pieces and that led to a thing that was called Graphcool back then. Uh, kind of like a pun on GraphQL. And so that's what we went with for the first couple of years, but then we also realized, okay, people love this to build MVPs, but not really to build production grade apps.
+
+And that has then over time, uh, led to a pivot to Prisma where we, uh, focused a bit more of the scope on just the, the database tooling and leaving the, the rest of the backend bits to the actual app developers think that was the right call, even though people see, um, seem to really liked GraphQL and we put a lot of love into it, but that was the right thing to do for us to be more focused.
+
+And, uh, yeah, the entire thing, uh, grew then also from a initial project that was bootstrapped to having raised some VC money for it. And, uh, I'm still on the board of Prisma, but the folks there are now still doing the day to day work. but I'm, I'm excited about it.
+
+**Justin:** Before we move on to talk about effect. One question that's just like really interesting to me is what, when did you sort of decide that to take a sabbatical is like, what was that kind of point for you? I mean, I had went through sort of a big burnout phase during the pandemic and quit my job and went to recurse center and sort of, that was my sabbatical, but like, what's your, what was your story there?
+
+**Johannes:** Yeah, I mean, uh, Uh, of course. Yeah. Uh, I was, uh, the, the founder and CEO and like led the company there for like close to five years. And if you've, uh, founded your own startup and particularly when raising VC money, et cetera, like there is, it's just nonstop. Those would be, I don't want to get into like the, the, the work hours, but, uh, it was a lot and it didn't really leave time for, for anything else.
+
+And, um, at some point just like while walking home, uh, in the nights, I was kind of like thinking back. Oh, like my, my life was like, had quite a, quite a lot more facets in the past. Like it was DJing, I was doing skateboarding, was doing all sorts of other stuff. And at that point, my life was really just like reduced to, to just Prisma, which fulfilled me quite a lot.
+
+But I also did miss those other pieces. And, um, I also just wanted to like have a bit more balance again for other parts of my life. And so that was always there in the background, but there was no opportunity yet to do that. And then in 2020, we just hired, um, some more senior leadership folks. And this was the first time where I could really take a step back without everything falling apart.
+
+And, uh, I could take that opportunity and I'm very grateful for it.
+
+**Justin:** Nice. Awesome.
+
+
+#### [00:07:22] Diving Deep into Effect: A New Paradigm for TypeScript
+
+**Andrew:** Cool. So, uh, with, with that behind us, the rest of the episode, we'll talk about the things that you are building since leaving your leadership position. Uh, the first thing is this effect library. So I tried to look over the docs. It's pretty complicated. It's a much different style of, uh, programming than I'm used to doing at least. So could you explain to us and our audience what effect is and why I might want to use it?
+
+**Johannes:** yeah, totally. Maybe the, the best motivation for, for me is like why I even like was looking for something like effect and was then ultimately finding it. So, um, while Prisma, I just saw like many, many TypeScript apps being built by Tons of different engineering teams, et cetera. And like, we tried to make some aspects of that better with Prisma, but there was still like so many other problems that I just saw in like every production app.
+
+And, uh, and I'm sure like you've experienced those problems also yourself quite a lot, whether it's like error handling, whatever it really means to build a production grade app. A lot of it is error handling, but it's also about making your app faster. Uh, if you want to do. run, if you want to run code concurrently, sure you can do promised at all.
+
+But what if one of those things goes wrong? Like, how do you, like, do you just let everything explode? Or if you like do a lot of stuff and then maybe in your, in your front end app, you, you, um, send off like 50 fetch requests and you navigate to a different side, do you still want those 50 fetch requests to happen in the background?
+
+So you want to actually cancel them with a board controller and all like doing the right thing is not easy in TypeScript. And that has always bothered me. And, doing the right thing is a lot easier in other program languages, such as like Rust or Golang. They had sort of the benefit of having seen like other program languages, maybe get it wrong or right and be inspired or like try to draw some lessons from that.
+
+But, TypeScript and JavaScript is kind of stuck with the past design decisions. And I tried to, uh, really explore, okay, maybe I should, uh, reinvest my energy into, uh, going all in on Rust. And I did like some, some Haskell in the past, et cetera. So I knew there were better ways, or Swift was also, uh, really nice in the past.
+
+But, uh, I ultimately came back to, okay. JavaScript is just here to stay. We probably gonna go to space at some point with, with JavaScript. So, um, maybe we can bring some of those learnings into TypeScript. And this is where I basically, uh, was, uh, arriving at like some, or I had found some really nice patterns in other programming languages, and I was looking for folks who try to already apply them in JavaScript.
+
+In TypeScript, and so that has initially led me a bit more towards functional programming, but even though those are the right ideas, I don't think, uh, we can't expect like the entire TypeScript world to just convert to functional programmers. However, um I do think in sort of like a Trojan horse way, it can be done.
+
+And I think the best example for that is like React and Redux, et cetera. Those are just like all functional programming paradigms. But, uh, we're, you're, you're not like very loud about like, Oh, React is functional programming, but. But you rather use those patterns. You try to make them really nice and simple to understand, and then you make the right thing easy.
+
+And so that has led me to, uh, to find this, um, this TypeScript ecosystem called Effect, which had so many of those great ideas and packaged them nicely for TypeScript. So it's still quite a bit to, uh, to get into initially, but I think the learning curve is getting a lot better. And so now with that motivation for like.
+
+Effect helping you to build production grade TypeScript apps. Uh, you can think a bit about it, like a standard library for TypeScript that helps you with building production grade TypeScript apps. So in the same ways, like React has made building front end apps a lot better by giving you solid primitives, such as components and hooks, et cetera.
+
+Uh, effect kind of gives you the same thing. But almost like for the complimentary part to react, like wherever you build, like a, wherever you have an async function, wherever like an error might be thrown, et cetera. So it gives you those better primitives that you can build your app around. And, uh, that has helped me a ton and I've been using it for every app I've been building since.
+
+**Justin:** just for clarity's sake, what, what, what's your actual affiliation with the fact because you, you weren't the creator of the library, right? You're just like helping out, um, with
+
+the DX or what's 
+
+**Johannes:** Yeah, exactly. So, uh, I found out about this project like in 2020 and, I was really, this was a big decision for me. So should I like bet my time investment into this like TypeScript ecosystem that seems really expansive, but very few people have heard about it. And so I got in touch with, uh, person behind it, Michael Analdi, who's like a brilliant engineer from, from Italy.
+
+And so step by step, I got to know him better, got to know the project better and became friends with him. And over time, I just found myself spending a lot of time on it. And eventually, uh, Michael was also like quitting his job and putting more time into effect. And so this is where like in a small capacity.
+
+I've started to help out and now there's a company behind it, which does pay me on a part time basis where I'm trying to help out a bit. Uh, so we've just put together the first effect conference where I've given the keynote. I'm just trying to like with some limited time, try to have a positive impact on the effect ecosystem and by making it easier to understand.
+
+And so the website is like a first big step there.
+
+
+#### [00:13:15] Ad 
+
+**Andrew:** We'd like to thank our sponsor for the week code crafters. Code crafters makes programming challenges for experienced software engineers. If you're looking for a weekend project that takes you to the edge of your programming abilities. And really puts you right back in that seat in college, where you're figuring out binary formats, you got to check them out. They have a bunch of really cool challenges to help build your skills while also building. Popular open source developer tools. 
+
+So they have things like build your own, get, build your own Docker. Uh, build your own SQL light. The cool thing about this is you can go through these challenges in any programming language that you want. They have things like rust go and JavaScript. 
+
+But In my opinion, if you're not experienced with that programming language, you should try to stick to what's. You know what you know, because these challenges. Are actually pretty challenging. 
+
+I've personally gone through a bunch of the challenges now. But this week I started to try the SQL Lite challenge and boy, once again, and I'm surprised at the complexity of it. Uh, most of these modern tools are fueled by a file that has a binary format that you have to learn to reason about its mechanics. 
+
+It's much different than just console logging and object in JavaScript. 
+
+Besides the content, even these are experiences targeted towards experienced software developers. For example, you don't code in their website, you code in your ID and your terminal. And all you have to do is push up to code crafters and they run the tests and they tell you if you're passed. 
+
+Pretty cool. If you asked me.
+
+It's trout code crafters for yourself. Visit code crafters.io/dev tools. Dash FM. There you'll get a 40% discount and you'll also be helping out the podcast a little bit. 
+
+If you want to find another way to help the podcast out, you can become a member. I wanted the channels that we provide it. Uh, or you can head over to our shop@shop.dev tools.fm. And by some of our March.
+
+And with that, let's get back to the episode.
+
+So what, what, what is it? All of that sounds great, but like, uh, what are like some of the primitives that effect gives you to like make all of this possible and make all of this easy?
+
+**Johannes:** Yeah. so. Effect gives you a set of primitives and we could go into them like in sequence, but we don't have enough time because it's really like the same ways. If you think about it like the, the Rust ecosystem or the, the Rust standard library, there's so much good stuff there. So you should really put your eyes on the, the stuff that's relevant for your use case and for the app you're trying to build.
+
+But I can cover on a, uh, I can touch on a couple of components or like primitives that are very common for most apps. So I think the, the most common one, uh, is called an effect. That's also where the name comes from, but that's also based on, some academic research that happened over like the last couple of years, maybe decades, uh, around the, the ideas of an effect system.
+
+a very lightweight version is also seen in react itself where you have use effect. but that's a very, very lightweight version of it. But, um, what you can already see in react use effect is that it can run some code that can do some unpredictable stuff, but you also get a callback. That gets called when you unmount the component.
+
+So that already shows like shed some light on some aspects of, um, where effect goes further compared to, let's say a promise or an async function. A promise, you basically just say like, okay, that's happening now. But the ship has sailed and you have no further control over it. so you have no way to really interrupt the thing unless you use an abort controller, which is like really annoying to, to work with.
+
+or you can basically, you can't really tell the, the, the promise further to like pause for a moment or like resume it later. Um, you have no, uh, knowledge about on a type safe level, for example, what might go wrong with a promise. So think about like an effect, like a, like basically like a, uh, Superman version of a promise that is just much more thoughtfully designed.
+
+that you can, um, that you can retry. If it fails, you know, which kind of, on a typesafe level, you know what it can fail with. You can interrupt it. You can suspend it. You can resume it. and, given that it's more of like a description of your function, you can also retry if it has gone wrong. Uh, you can think much more easily about it in terms of concurrency.
+
+So it's like quite, um, Like low level more about like, uh, how you would rethink of how language treats some execution parts a bit differently, or in the same ways, like react also has an implementation detail of like the fiber system, which makes all of the good stuff happen. Right. Um, effect also has like a, a fiber system to run all of that.
+
+but what you get is then once you're. rewire your brain a little bit to think in terms of effects, similar how you've rewired your brain in the past to think about React components. Then it unlocks all of that good stuff like composability, testability, much better type safety, making it much easier to build like fast code, et cetera.
+
+So yeah, to come back to your question, effects are the most common primitive, but there's lots of other ones that are really useful for it. For example, streams, which you might know from like RxJS, um, effect has a full replacement for that. Uh, what's really nice about that is like with RxJS either use the RxJS hammer for everything, even though for things that don't want to be streams.
+
+But, uh, I think that also can have some downsides. In effect, you really have like a very, Nicely fitting primitive for each situation that you're in where the API is the same, etc. And you don't have to bend over backwards to use your favorite tool in a setup. That's really not, uh, useful. And so that's what makes it really nice.
+
+**Justin:** I have a lot of feelings. Um, so I mean, I, I ran into the problems that effect is sort of built for like really early on. And I've done a lot of work across a bunch of different programming languages. Rust is something I've been working on really heavily for the last several years. so, and I've complained about this on Twitter.
+
+So like the, the lack of like a proper enum or a variant type or whatever is something that, that really. Bothers me in TypeScript. So TypeScript has an enum, but like in languages that have first class support for enums, they, they give really good, uh, like pattern matching usually with that, you know, that like helps you.
+
+And usually when you're constructing an error, it's like you have these like explicit tagged error cases and you can sort of, you know, go through and match against different failure modes and do some interactivity. And like effect gives you that. but there's this layer of complexity that gets like late, like added on top, because I see it as sort of almost fixing some of the failures of the language itself.
+
+Like the language doesn't do certain things. Well, so I mean, just like an example is like promises and async await. So if you like await a promise and you don't, and it. Could potentially throw and you don't handle that by wrapping it a try statement, then that could throw, you know, that can make your calling function throw and you might not want that to happen, but it's so it's like easy to do the thing that will work, but hard to do the thing that, you know, to do proper error checking and I can see effects being there, but I guess I'm struggling with this is like. I was going through the docs and, you know, a lot of these things that given if we had just like a better language, um, not that I'm hating on TypeScript cause I really like it, but like, you know, I think of like descript or Gleam now, like these more proper functional languages that actually give you like Rust type monads and like things that you can use for error handling or whatever.
+
+How do you, how do you sort of balance? Like the complexity that you're solving with the complexity that you have to implement and add, um, to sort of do these things when it's, you know, some of the problems that you're fixing are kind of language deficiencies or like just not deficiencies, but like things that TypeScript can't do because of some of its constraints.
+
+**Johannes:** Yeah, so I think you're, you're touching on a couple of really good points. And, uh, I was really at that fork in the road where I was thinking, hmm, maybe I should like pick one of those programmable languages. Are they going to take over the world? No, but I'm smart enough. I can learn them. But then I also realized like, I'm not working on stuff.
+
+Just by myself, I collaborate with others and there's a lot to be said just for a powerful ecosystem. And I think that the two big ones there, um, right now I think are, Rust and I think most importantly JavaScript and TypeScript. Uh, and it's just so much optimization work that's going into browsers and other JavaScript runtimes.
+
+And, uh, for me ultimately came down to that and. Rust, you still need to deal with memory management. And for most apps, that is really like a, a tall, uh, or, uh, that, that I'm not willing to pay for, for most apps. And, now it's about like the bringing those right patterns to TypeScript. And turns out that TypeScript is.
+
+Just magnificently, um, flexible and, uh, an ergonomic, if you just impose the right patterns on top of it. And so one thing that we're doing with effect is basically, uh, ignore some of the syntactical affordances that, uh, TypeScript has, um, and just, uh, embrace a couple of other patterns. So very importantly, um, instead of trying to do try catch.
+
+For your error handling, we rather treat errors as results. and so that's a common pattern in Go or in Rust that instead of just like throwing somewhere, we basically don't throw. but we just say like, okay, this is. Not as we expected, and then instead of just returning the expected result of the respect expected value, we just return like a tuple or like a, um, or like an ADT or something like that.
+
+so that's what, or like an enum, um, what you've alluded to. And so that you can perfectly do already in TypeScript. And once you follow those patterns, uh, your code actually becomes, you need to rewire your brain a little bit, but then your code becomes a lot simpler. And, uh, you no longer need that try catch that gives you type safety basically automatically.
+
+And effect has basically just picked up this pattern and makes it really, really nice to work with that. one of the coolest things about the effect type Um, specifically is like, think about it like a promise where a promise has one type generic, uh, that's the result value of it, but an effect has the same, but it has two extra type generics as well.
+
+The second, so the first one is for the normal result value. Let's say you have like a Uh, a thing that returns you a user in the success case. So it's like an effect over a user, but the second argument, the second type parameter could, for example, be like a, a user auth error. So that's for errors. those are the errors, you know, that could happen that you want further up in your app.
+
+You want to kind of check or possibly like errors that can happen on the, uh, on the backend that you even want to send over to the front end, um, and deal with there. So that's super useful. And then there's a third type parameter, which is for the context. So, so think about that as React context, where like somewhere as you compose your components, uh, very much outside, you say like, okay, here's like, I have like those config values or in a backend context, you might say like, this is where I have my database connection and you don't want to strut it carefully through each, um, Arguments for all the function calls.
+
+So you can just have a context. And the stuff deeper in your program says like, Oh, I need a database connection. And then as you compose your code, uh, as you reach the top, um, and you want to run your program, now effect will tell you, Oh, you can't run the program yet. You first need to provide that database connection.
+
+And that makes it so powerful, that composability, since that's not just, it can't just, uh, make sure that you provide a database connection. itself can also make sure to like initialize the database connection when the program ends, it closes the database connection. So it handles so many of those like production grade problems that are really hard with normal TypeScript and makes those really 
+
+easy. 
+
+
+#### [00:25:55] How to start using Effect
+
+**Andrew:** these concepts feel like I'm going to leave this episode and it's going to be like the X state episode or one of those episodes where I'm like, Oh, I got to sit with this and like really come to terms with it. So when I'm building programs in effect, do I have to like, Go bottom up. Like, do I have to start with like my most primitive values and be like, okay, this can return a value.
+
+This can return an error and then work my way up into an effect program. Or can I go the opposite way to where I'm like, okay, I have a lot of code already and I just want to start utilizing effect where it can start making my life easier and work my way down.
+
+**Johannes:** I love that question. Uh, that's fantastic. I think that basically speaks to how incrementally can effect be adopted. And I want to contrast that to, uh, adopting a different program language, which typically is like all or nothing, big bang migration. And with effect, you can very much, very incrementally adopted.
+
+So you can, uh, You can adopt it in a single file, in a single line, uh, and you can also, like, if you think about your big program as a tree. Uh, you can do it at the leaves, you can do it at sub nodes, you can do it at the root, um, you could do it in multiple places at the same time. So there's very smooth interop between like effect code and non effect code, much easier than, uh, with like React.
+
+There is typically, uh, like, React wants to be everything. And once you have like a non React thing and a component gets kind of, uh, fiddly. But, um, with effect is like, you can go from a promise into an effect, from an effect into a promise or like non asynchronous code very, very easily. So you can adopt it wherever you see most fit.
+
+I do think that one of the best ways to adopt effect is by not building net new. Code, which you can also do, but I do think effect is really nice to adopt, uh, as you want to refactor your code to make something better. So maybe you have your code, it works mostly, but you know, like, Oh, damn it. I really need, we need better error handling here.
+
+And so you have a couple of throws, whatever. So you rewrite that code with effect. It will have the same or less lines of code, but, um, afterwards you have your async await signature, you get rid of that and you have the effect equivalent, but now you also have type safety for your errors or, um, like, yeah, whatever use case you have.
+
+Uh, refactoring is a great way to already have a before and after that can be rewarding and you can get there very quickly. another huge point, uh, that, uh, effect provides, which I think is just getting a bit more mindshare is observability. So I think most JavaScript developers, uh, are maybe not quite familiar with the term observability.
+
+And once they sort of learn about it, they think, Oh, that's like my console log, right? So the idea is basically what is going to know what is going on with my program. As I maybe run it locally, or as I run it in production, when you run it locally, either the app just like works as intended and hopefully it really does.
+
+But if you want to rather look into it, like what has happened, maybe you start adding a ton of logs, into the execution, but that can get out of hand very, very quickly. And so it turns out there's a much better approach to this. And that's broadly, summarized on the, the, this term of like observability where you don't just have logs.
+
+You do have logs, but you also have metrics and you have, most importantly, in my opinion, you have traces and those traces, uh, give you a very visual representation of what is going on in your program. And so that's something that's very normal in Rust or in Golang and other program languages. In JavaScript, I think it's, um, more, it's, it's done less often, but more and more people do realize, okay, we really need this, but instrumenting your code to be observable.
+
+Um, for example, with a, um, technology standard called open telemetry is really, really tricky. And that's another thing that effect gives you out of the box effect has like built in tracing support for like every part of your program. Um, and that's another superpower you just get for 
+
+free. 
+
+
+#### [00:30:25] Utilizing Generators
+
+**Justin:** Yeah, uh, observability instrumentation is a challenge. Um, and I mean, it's, it's a challenge in part because it's like easy to miss stuff if you're manually instrumenting it. So I could see how, if you're doing your side effects with effect and that gave you instrumentation out of the box where that could be very, very valuable. One more question on this topic before we move on and start talking local first, one of the things that I noticed is going through the docs is there are two different patterns of using effects. So one of the, I mean, one of the big values of effect, the effects library is that you can compose like multiple effects together and sort of this larger chain. There's larger effect. and you can either use this pipe function, which if anybody's used something like Ramda, Uh, JS or like some other functional programming library, these pipe functions like chain or compose a series of functions, or in this case, effects together, or. In effects case, you can use a generator and the docs kind of like, you can kind of select, you know, choose your own adventure.
+
+And then at some point, like the, it sort of, sort of starts defaulting to generators and just curious about like why those two different approaches and, I mean, do you have thoughts on, you know, which one is more preferable and, you know, why and et cetera.
+
+**Johannes:** Yeah, um, so effect had its beginnings very much in the functional programming community, where you do try to, uh, express everything sort of like those pipes. Over time, we realized that, um, We, there is no reason why we shouldn't try to make effect more accessible to non functional programmers. And so we tried, that has gone a couple of, couple of chapters and we've renamed a ton of stuff that was previously like.
+
+Very functional programming heavy to leave that entirely behind. So if there's like some, uh, residue that feels very much like functional programming, that's a bug. And we, we want to address that, uh, in the same way as like react, uh, people shouldn't be afraid of like adopting react because they feel like, Oh, but like, I don't want functional programming.
+
+so, and that's syntax in terms of, um, pipes and generators. That is maybe still like the most visible aspect of it, uh, but it has, um, so that's a bit of the, the historic context. However, more looking forward, The idea of like using a generator here is very similar to async await. So I'm not sure, uh, when most listeners have really started to go deep on JavaScript and TypeScript back when I started, there was like, uh, callbacks was the only way I could write, uh, asynchronous JavaScript.
+
+And, uh, it turns out that's still the fastest way to write JavaScript, um, for like nitty gritty details we don't need to go into now, but at some point promises became a thing, generators became a thing, and then also async await became a thing. And I think right now, most people use async await because it gives you quite a lot of convenience.
+
+Um, except from the pieces that we've talked about with try catch, et cetera. but the mental model, I think, for async await is really nice that you basically, uh, you can just write some code and you know, like, okay, that thing is asynchronous. So I await it. And that that's really nice. Um, and generators basically give you the same mental model, the way how effect has started implementing it.
+
+So instead of like asking someone. To, uh, think about everything is like as a functional programmer, that's possible. And if someone wants to do that, go for it. But the power of effect is that you don't need to know that you can just write your code pretty much like you did before with where you've used async await.
+
+You just now use generators for that. we even considered to have like our own, like. JSX like equivalent when react started, there was like a similar problem where they try to make it easier to use, um, to, to write react apps. And so they made back then the controversial decision to create JSX to just like have a better DSL for, for that programming environment.
+
+And so we considered doing that as well. But we didn't want to, we're, we're not Facebook. We don't have like the same sort of resources and, uh, and like, we can't just go to the TypeScript team and say like, Hey, here's like the DSL we'd want you to ship to everyone. So we try to just like embed that into TypeScript as it is today.
+
+And that's where generators are actually super powerful. And, um, this, the type inference capabilities of generators are just incredible. And I think they're heavily underused. And actually I'm seeing it more and more being used now. So I think generators might have quite a bit of a comeback over the next couple of years, but this gives you basically the same mental model as async await, but with better type inference.
+
+So if anywhere in your generator code, you are running an effect that could throw or that could fail with a user auth error. Um, then the effect that is like the, the generator body, like your async function body now infers, not just like, Oh, this returns a user, but automatically infers like, Oh, that could have a database error or that could have a user error.
+
+Um, and that is just something that this unlocks. So you don't need to change the way, how you think about building your app. If you write. Write a lot of like async await await code before you can literally like just search replace that to the effect generator and it should just work.
+
+**Andrew:** Interesting that, uh, I, I, I definitely need to sit with it, but I feel like I'm starting to understand. So like the underscore basically gives you programmatic access to kind of to like the pipe that's happening. Like, can I look at those as like the same thing, basically?
+
+**Johannes:** Yeah. So if, uh, the listeners want to like look at the website or the docs, the, um, The generator, um, has generators and TypeScript to have, or JavaScript have like a little bit of a cumbersome syntax, but you're getting used to it quite quickly and the way how you then the equivalent of an await with generators is a yield.
+
+There is like the underscore that you referenced here, that is technically not necessary to run the code, but that is unfortunately still necessary for the type inference to work. And so this is hopefully at some point we can just drop it. Uh, there is a PR open to the TypeScript repo, which would make that happen.
+
+But that right now is just like, we call it an adapter, but it's really just like a wrapper. and that also gives you pipe, uh, pipeline abilities. Uh, there is like another case where pipes can be quite useful is like, for example, for error handling. and, uh, so there's like, you can sort of have a hybrid way of writing it.
+
+And after you've done it like once or twice, uh, it starts feeling natural very quickly. Yeah. But, uh, yeah, I wouldn't expect listeners to walk away from this podcast. They're like, Oh my gosh, like I know everything about effect. And now I just naturally write my, my apps in effect. Hopefully you, uh, you become curious about it, that you learn it like in some small steps become a little bit more, um, yeah, comfortable writing in that style.
+
+But I think most people really who are getting started, uh, become comfortable writing in this way after like a day or so. 
+
+**Andrew:** Cool. 
+
+
+#### [00:38:14] Embracing Local First Development: Overtone and Beyond
+
+**Andrew:** So switching gears, uh, the other thing you've been focused on a lot is Local First. You have a new podcast called Local First FM, and you also have a conference that you're throwing in May. So, uh, congratulations for that. That seems like a pretty cool big step. So, uh, what aspects of local first dev get you excited?
+
+**Johannes:** And like, what are some cool local first apps you can point to as like, Oh, that, that's something to shoot for. Heh heh. So, I mean, turns out all of us are probably using ton of local first apps already on a daily basis. If you're in the Apple ecosystem, most Apple apps are actually local first. This is why I pull out like the Apple notes app, uh, by default, it's like someone tells me something interesting. I don't trust Notion to open quickly enough or like to still remember my data later, if I'm like in an elevator or something, but the Apple notes app, I can pull out and like immediately write down a note.
+
+And this is going to be there. And the reason why it's so fast and reliable is because that's local first software. And also another, um, a couple of other apps that are, I think are by now much more popular, whether it's being linear app or something like superhuman, et cetera. They're, they're all like.
+
+Local 1st inspired local 1st, uh, the term came out of a research lab called Incan switch. Um, and I'm friends with some folks there for quite a couple, a couple of years by now. For example, Peter Van Hardenberg, he's also been an advisor. to Prisma in the past. And so, uh, this is where I got some closer looks on the evolution of local first as it's been brewing.
+
+And, uh, then the paper or the essay was released in 2019. And this also was just the right time for my sabbatical to take a closer look at that. And, uh, this took a little bit of time, but then it really all started to click for me. And, uh, it made so much sense that this was like, Maybe a bit more of a radical change, but, uh, really a change that addresses so many problems that we have both in terms of building apps, but also that we as software consumers, but also software creators, where we've just like fallen down like one path that is not necessarily in the best interest of the user.
+
+app developers, not in the best interest of consumers, and sometimes also in not in the best interest of, um, of companies. And so a lot of, a lot of the software we build and use right now, is like heavily skewed to satisfy, the, the needs of an AWS, but not necessarily of the, the other participants. 
+
+**Justin:** So you're working on a program called Overtone, which is a local first app. Could you tell us a little bit about that?
+
+**Johannes:** Yeah, so, uh, Overtone was the, the desire to build Overtone has really thrown me down the, the rabbit hole of myself building local first software and really discovering for myself, like the, the different principles. so. For the listeners who probably have no idea what Overtone is, um, with Overtone, I'm trying to build a new kind of music app, maybe more specifically a new kind of music client.
+
+Um, I'm, I love that we have like in some aspects of software, we have like very rich, uh, freedom to, to choose like our favorite tools. so whether that like, I think the best example for that are email clients, you can have your email server wherever you want, whether it's Google mail for most people, but if you want to, you can host your own etc.
+
+And so you can choose wherever you want to have your emails. And you can choose your favorite client. I think in the past it was even more common to have different clients for different things. But for example, I'm also using a chat app called Beeper or a chat client where I can add like Twitter and Facebook Messenger and WhatsApp and Signal all within one app.
+
+And it's always bothered me that, um, music for me is like as scattered across different platforms. I have a ton of music on YouTube. I have a ton of music on Spotify and Bandcamp. Some of my own music on Dropbox and I have like tons of tabs open or like tons of different apps for that. It's always, always bothered me.
+
+Why do I have like all of those, um, different apps? Some of them are really not that great. And I was like longing for having a unified experience around that as I have with an email client. So that led me to, after punting on this idea for, for quite a while to eventually think, um, once again in my life, how hard could it be and starting to work on that.
+
+But then it also dawned on me, okay, The, um, how would I even build that? I don't want to compete directly with Spotify. I want to have a client that integrates with those different platforms, but I didn't want to have, uh, like if that app is successful, I didn't want to have by default that to be a VC style backed company.
+
+So one direct implication of that is that I wanted to have it be as little dependent on the cloud as possible on my own cloud as possible. And that really made me interested in local first and, uh, where it could connect the dots a little bit more. So I want to build Overtone in a way where I don't run any of my own servers, where you just have a very capable client.
+
+And that client connects to, uh, wherever your, um, your music lives. So that connects to Spotify, that connects to Bandcamp, to YouTube, to your Dropbox, et cetera. And that's how our software worked for many, many years. And there's nothing wrong with that. In fact, it just makes for better and faster software in many cases.
+
+And so that was a reason why I combined that those ambitions for this, uh, this music app. With, um, seeing that as a good excuse to get really deep on local first software. And so the ideas for, for this year is, um, with one major caveat, uh, with local first, you try to have like all of your data locally. I can't just suck down the entire Spotify catalog to have that locally.
+
+But what I can do is like, I can make the music metadata that is relevant for you. I can make that available for you. So like for your playlist, for the artists you follow, et cetera, and turns out for really using the app, the metadata is like all you need. And then you can stream, um, music. If you have internet connectivity or you can pre download tracks, if the platform allows that, or if it's music that's coming from your own Dropbox, et cetera, I can also make that available offline, but besides that, It can work fully offline.
+
+And that's also like, I think local first is sometimes confused with the term offline first. It's really a lot more than offline first. Offline first is an aspect of it. But, uh, a lot of people think about offline first as like, Oh, like I have my app. Maybe it's an XJS app. I want to make it offline first.
+
+I'll just slap a lot of caching on top of it and then fingers crossed that it works. But that really starts, uh, to, to break, uh, to break down very quickly. Where it's like, what about doing write in the meanwhile? Well, I guess we can do optimistic writes, but what if you go online, et cetera? So you really can't like retrofit something like, uh, offline first on top.
+
+And this is where local first goes one step further. So it's like, Hey, we don't just have offline first, but we also want those apps to be collaborative. That's another big thing that I think the cloud unlocks and that we really take, um, as table stakes by now. So for example, uh, descript is, uh, collaborative by default and, um, making apps work offline and collaborative is from a technological perspective, actually a very similar problem.
+
+And, uh, this is where local first goes way beyond offline first, and also has a couple of more ideals that ideally users should also own their data that if apps are being built this way, uh, it can actually help with the longevity of software. It's kind of funny that, um, like software that was built for MS DOS, uh, are like that era that software still reliably works today.
+
+But, um, I think Google just. Uh, shut down like Google podcasts or like, I, I'm still nostalgic about Google reader, et cetera, like all of that software where like, they've poured like millions into the, into building this or Google inbox, all of those tools, like we can no longer use. Um, if there, and that's because like by default, like it can be turned off.
+
+That means like the, the service, the cloud is turned off, but you can't turn off like the, uh, MS DOS software from back in the days that worked very reliably. And so with local first, if you just flip that around a bit, if you, uh, change the, uh, responsibility of the cloud for rather enhancing your software as opposed to for being the absolute foundation, uh, I think that There's a lot of interesting implications from that right now.
+
+Like most web apps are really like more like the, the mighty browser try to do at some point. There's like some server rendered stuff and you might just as well have like a remote rendered screen that you're using. And like, It's the, the app after your, the server goes down or you lose your connectivity.
+
+The app is like as useless as like a remote rendered video of the app. Whereas with local first is like the app is useful by default always. And it's just enhanced your connectivity that you have, like. we're online, we can in real time collaborate, um, or like I'm online, I can back up my stuff, I can pull down new stuff, but it's kind of, um, weird that we're just so accepting and used to software not working when we don't have perfect connectivity.
+
+And, uh, just flipping that, that's a major aspect of local first.
+
+
+#### [00:48:47] Challenges and Solutions in Local First Development
+
+**Justin:** Yeah, um, you, you've covered a lot here and like local versus is a really exciting, uh, technology and it seems like it's getting a groundswell, especially right now. Um, But I mean, some of these problems are not easy problems to solve. I mean, it's talking about like, okay, you want things, you want like a rich client experience.
+
+You want it to sink most of the time. It's like local first, not local only. So it's like sinking to some cloud services, sinking to other clients. um non trivial problems. Uh, so just in your own experience of doing this implementation, what are some of the challenges that you've faced when trying to build local first apps?
+
+**Johannes:** Yeah, so I will say that there's like, you can look at those problems from two different perspectives. I think there's the perspective of like, like a couple of years ago when I started or today of like, what are the problems that still exist today? Um, and a lot of those will not exist in like a couple of years from now.
+
+They will be like very smooth, similar to how it's easy, uh, right now to build an nextjs app and deploy it in Brazil. Uh, you don't quite get the same experience with, um, local first apps right now, just because there is no well trodden path yet. There's no rails for local first yet. But those things are being created.
+
+And then there, the second aspect to those problems is like, what are just like inherent problems that need to be solved that are just inherent to that architecture. And, um, I'm very bullish on the letter. I actually think that local first has the potential to really, um, just like eliminate a whole category of problems that we are right now needing to deal with.
+
+Um, a lot of it are distributed systems problems. Um, I think this is like a bit of like the, the elephant in the room for most web apps are distributed system problems, but no one is talking about them. And very few engineers have the background to even acknowledge, uh, that, that those are the problems that we are fighting a lot of like caching, et cetera, kind of like sometimes red herrings and really, uh, should be thought about differently from like a architecture that fits the app's use case.
+
+Well. And, uh, this is where I think local first can be a really interesting starting point that avoids a ton of accidental complexity. And right now we're just like building tools and systems that help fight complexity, but while we're just introducing more accidental complexity, and this is where I think local first can really.
+
+massively reduce the overall complexity by eliminating accidental complexity. So that, that was like a, a whole bunch of like more abstract thoughts on this, but more practically, um, right now there's actually a couple of really interesting stacks already to start build your own local first apps. Um, I think there is, we'll have to see in a couple of years from now, which ones of those will be the bigger winners and which ones remain a bit more niche.
+
+But I think there's a couple of really interesting options already. So, um, I will, uh, call out a few, for example. So there is like RepliCache, uh, by a company called Rosicorp. I think they have a pretty mature offering by now that allows you to build like a syncing based system already. Um, there is also a company called Electric, which I'm helping out.
+
+So, um, what's interesting about them is, uh, that they build everything on top of Postgres. So if you already have an existing Postgres server, and you built one, two, three, Let's say like add a local first app to your stack or enhance your app to be more local first, then they make that really easy. Uh, if you want to keep using that, um, that SQLite database, uh, that, that Postgres database, um, and for example, use SQLite on the, the client.
+
+Um, I'm already teasing SQLite. There's like also a lot of SQLite, uh, based options, whether it's like Torso, which brings SQLite more to the edge and possibly to the client. I don't think that's has like a ready made option yet for local first. But it's pointing a bit in this direction. So I think there's already quite a couple of really interesting options that you should shop around a little bit and see what feels best for your app use case.
+
+Um, and the cool thing about local first is like that building your first app can really be done, like it can be as quick as with Firebase. It's just that you need to pioneer a little bit for taking it into production. And, uh, one last one I'll also shout out is automerge by the folks at IncanSwitch, which is like probably the most mature CRDT implementation right now.
+
+And CRDTs, we probably don't have enough time to really go into that right now, but that's the most meaningful foundation to build those data synchronization frameworks.
+
+**Andrew:** Yeah. Well, lots of exciting stuff happening right now in the space for sure. 
+
+
+#### [00:53:54] React Insights: State Management and Performance Optimization
+
+**Andrew:** Um, so from our conversation, it, it seems like you've typically been like more on the back end of things in your career, but with your Overtone app, you are, uh, doing full stack. So you're doing everything from the front end to the back end.
+
+Uh, and with that, you've been using react a lot. And, uh, you told me before the interview that you might have some interesting things to say about react and have a unique perspective. So what is that perspective?
+
+**Johannes:** So hopefully not overselling here, but maybe a different perspective than a lot of React developers that I've noticed over, over time. So, uh, I think one thing that I've already seen for Overtone and also like the, I'm building a, um, state management thing for Overtone. Think about it like a bit like Redux or MobX, but, uh, with local first in mind, and it's actually based on SQLite.
+
+And one of the, this has a couple of like strong opinions, how it started. And I think those opinions are now also, uh, seem to be also adopted by a few other more forward looking, uh, technological systems. So, um, one of it is that you, uh, try to pull out your state outside of React. And I think this is where, like, some people are like very confused about that.
+
+Obviously we should have like all of our state in react use state. That's what, what it's for now. Um, but I'm coming to the conclusion that is actually a lot easier. To move your state as much as possible outside of react. And just in some cases where you really never need that state, uh, to be not in react, you, you keep it there, but by default, keep your state outside, have it be managed outside and have it be managed similar to like, uh, a DAG.
+
+Um, and I think that's also, uh, kind of similar to, uh, what people do with signals and this is where. By not solving some problems, you solve a, you sidestep a lot of really nasty React problems where you try to synchronize state with React use state and like it causes re renders, et cetera. That's another.
+
+Accidental distributed systems in a single thread in the, in your main thread, in your, in your web app. And just by like handling all of that state outside of react, letting react do less, you'll get a simpler app. You get a faster app with less re renders overall. So I think that's like one take I have is like do less in React, move state management outside of React when possible.
+
+And that's what I'm exploring for Overtone as part of a project called LiveStore. which was previously, um, uh, developed with a friend of mine, Jeffrey Litt as a MIT PhD project under the name called Riffle. Um, we can also put it in the show notes and, uh, that was sort of like a really interesting research project that brought the idea of like, Hey, SQLite can now run in the browser through in WASM.
+
+Uh, could we take a step, could we go a step further here and replace something like MobX or Redux with a reactive SQLite based state management system, and, uh, that has been like one of the most foundational technologies that I'm using for Overturn that without that, that wouldn't be possible. And like one really nice benefit of that as well, given that all of your state now lives outside.
+
+It can, and like lives inside of SQLite, uh, you can also very easily, uh, persist all of that data. And that gives you like some aspects of software that I think we've kind of forgotten how nice that is. If you're like using your, your finder, um, like on, on MacOS, uh, like if you come back to it, it's still like, has the same window open, the same scroll position, the same thing selected.
+
+But if you're going to like any sort of web app. And you just like reload, it has forgotten everything about your app. So this is another benefit that you get by moving the state of your app outside, handle that separately and, uh, use a more powerful state management system for that. So, uh, that is one thing.
+
+and that as a, as a sort of like consequence means there's like two reactivity systems now for your front end app. One is a React view reactivity system. And the other is your stage reactivity system. And now you need to bind those together. Sounds like more work, but it's actually makes everything a lot easier.
+
+So that's take number one, move your state, uh, outside of react. Uh, and that makes things better. The other is like, try to keep your re renders under control. I did like a react, uh, Twitter poll about this a while back where I thought like, okay, the, the answer is going to be very clear. Most people are going to care as much about re renders as me, uh, since otherwise, how would you find like a problem in your react app if something doesn't go right?
+
+Turns out the majority just like, doesn't give a damn about React re renders at all. And that was really confusing to me. Um, since like, if you can't understand how your React app is working, if everything is going well, if you're, and like just by initially rendering your app. Uh, by initially loading your app and your app is already re rendered 20 times and you move your mouse a bit and it has done another 15 re renders.
+
+Uh, and that's like, if everything is going well, but if you now have like a problem somewhere and then it's really like looking for the needle in the haystack here. So this was my, my other ones. Like, uh, if we. Are more minded about re renders, then everything gets a lot easier. However, with React over the last couple of years, moving more towards like server side rendering and React suspense, uh, this has become a lot harder.
+
+And, uh, this is something that's also, uh, I keep wondering, okay, how long should I still use React, uh, or rather moves towards something like solid. Um, as this is where React makes building high performance client side apps much, much harder over time, in my experience, by shifting those trade offs by letting React also run on the server.
+
+And, um, this is where if you actually want to have it simpler, move that, let React just do less, move that state management outside of React. And, uh, like that also reduces the number of re renders significantly. The, the, by definition, almost like when React should re render is when your state changes. And if you have better control over your state, uh, then you can also have much better control of like how React is re rendering.
+
+And the last one I will say is, um, also on the distributed systems aspect in React apps, we were so used to like async await in our React apps, or whether that's hidden in a hook, we have a loading state. Now, again, you have a distributed systems in your front end app, and now you need to coordinate that that leads to loading spinners, etc.
+
+So if you can. Um, use a synchronous state management system locally, uh, where you just can sidestep all of those loading spinners, makes your app faster, makes your app simpler, and that's another key aspect 
+
+of Riffle. 
+
+**Andrew:** Yeah, I think the, the performance point isn't really felt if you're like a medium size app and lower, but like, for example, on Descript, like, we might not have felt those performance woes until like recently, but now that we have this, like, super complex app with a lot of state, like, those re renders bite us really hard, like, uh, For example, when you hover over our script, that was causing a rerender because it updates the state to say what thing is hovered so other things can highlight. And just like, it's so easy to like just fall into a very big pit of failure where it's like everything just starts to feel bad.
+
+**Johannes:** Exactly. And like getting out there is like, it's not easy if you, if you've made 
+
+the wrong assumptions. 
+
+**Justin:** Yeah, I mean, a lot of this is to it's like after the transition to hooks, um, You've had to do a lot more manual memoization and like kind of understanding, Oh, there's all these like foot guns. It's like, you didn't add this thing and this, this dependency in this array. And now it like causes an unintentional re render or whatever.
+
+And I mean, you know, that's hard. Maybe React forget or the React compiler will help in some of this and give, make it a little bit easier to get some performance out of the box. But yeah, I mean, it's, Definitely a challenge. 
+
+
+#### [01:02:48] The Future of Local First Development and Final Thoughts
+
+**Justin:** Um, so before we move to tooltips, we always like to ask one future facing question of our guests.
+
+Uh, and so given that you're sort of really steeped in the local first world, um, do you think local first is going to be kind of, Become more of the future of like how we develop apps where it's like, there's going to be more of a trend of like moving towards local first is kind of a de facto approach.
+
+Or do you think server side apps or the traditional sort of app architecture will still reign supreme for, you know, years to come? 
+
+**Johannes:** as like the, the most popular answer in computer science, it depends and I think rightly so, and I think we've actually said it depends too little, uh, over the last decade where we've just used like the traditional web server side hammer for everything and this is where like some app web apps feel the way they do.
+
+I don't think we should now overreact and rebuild everything with local first. I think we should in the cases where it matters, um, build apps with local first. I think for many apps, it can totally make sense. And I think what will speak most credibly to the local first. The, uh, the potential of local first and why it's worth it is that I think the already the best apps, the favorite apps we're using on a daily basis, whether it's something like linear or superhuman or some of those Apple apps, they're all local first already.
+
+And if you're now a founder or like a product creator and you're thinking about like, okay, I do value. High performance, or I do value speed might not even be that you want your app to work offline, but, uh, if you want your app to be collaborative, if you want your app to be fast, then the easiest way to do that is by building it in a local first way.
+
+And I think that will just naturally lead people to doing that. Um, if you want to build a MVP very, very quickly, that you like ship on Vercel, uh, for like a little SaaS thing. I think that's also totally fair. I think it's just really cool that we have another way to build apps, uh, that can also become like a viable path and a viable alternative.
+
+And I think then we'll just, hopefully we'll see a similar investment into tools that we've seen, like in the traditional cloud oriented way, also with local first and app developers have more choice. 
+
+**Andrew:** Yeah, it's exciting to see the apps that have gone local first have been just like wildly popular, like obsidian and linear, like that, that type of experience is like a novel experience. And I hope I see more, more apps move in that direction. 
+
+**Justin:** 
+
+**Johannes:** Yeah, and I think that the thing I'm most excited about is like, I think we'll hit a threshold at some point where it's going to be much easier for app developers to build apps this way compared to the, the way how we do it right 
+
+now. 
+
+**Andrew:** it was a, that was a big thing of the linear development experience is like the, the product engineers who are working on the front end of it. They just like write to a local data store and they don't think about the API, the API connection at all. They just like have these models and they write to the models and that does what it needs to do with the API. And that, you know, I think we have seen over time, this, this collapse of like Previously, we'd always had to build APIs for everything, right? Oh, we have to have an API for app or whatever. And there's a lot of complexity that goes in that communication layer, going back to your distributed systems. And now it's like collapsing down and down and down.
+
+**Justin:** It's like, we want to focus on this little tiny thing that we're doing. And we only want to think about this. 
+
+**Johannes:** Exactly. And this is really like, if I had, uh, two weeks of time before, and I would spend one week on working on Overtone on the server and one week on the front end. Now I can spend two weeks working on the front end. That's what users use. And there's like no catch here. So this is, it's really, uh, it's less work that you need to do. 
+
+
+#### [01:06:42] Tooltips
+
+**Andrew:** Cool. With that, let's move on to tool 
+
+tips.
+
+**Johannes:** So my first tool tip of the week is a TypeScript documentation generator. These have been around for a while, uh, and I haven't really used them all that much cause they produce really ugly docs. And I like my docs to be a little more focused. Uh, but for the thing I'm developing, it has a very like very large complex API that I want documented both in code and on a website. Uh, and what's really cool about type doc, it's your normal, like give it, give it, uh, an index somewhere and it'll go, go and show you all the exports and all the methods. The thing that I really like about it is the point that it's extensible. Uh, a lot of the times with these things, it's like you, you can generate a thing and then you get what you get and there's like no recourse to make it better. But with their plugins, you have basically full control over what's generated. And with a plugin, you can be like, okay, uh, a signature for a function was, was declared. Here's an event handler for that. I can get the type. And then if I want to, I can go resolve the type in a more. Like a better way for consumers to take it in.
+
+**Andrew:** So one example of that is there's a Zod plugin, uh, with the Zod plugin, instead of getting like Zod dot infer with a type. And it's this like generic thing. It'll actually go and get you the real type. The thing that is like the resulting type. The thing that you would want to see as like a consumer of the app. And like, uh, For, for my use case, I've been able to make it do whatever I want, which has not been the case with a lot of other TypeScript documentation generators. So if you're looking for something like this, really cool. 
+
+So like you can go from zero to, uh, type doc generated website and literally like five minutes. So if you, if you wanted a tool like this, definitely go check it out. 
+
+**Johannes:** That is super cool. Uh, I didn't plan to bring it up, but, uh, I was going quite deep on that rabbit hole also at the beginning of my sabbatical where I was, um, uh, where TypeDoc wasn't as far along back then. And so, and it also, um, was annoying for me that the burden is on the app. On the library developer, library maintainer to set up type doc and do all of that, as opposed to in Rust or Go, where you just have canonical docs automatically generated.
+
+And so I wanted to bring that paradigm to TypeScript and I was working for a while on this project called Paca. Where you can basically just go to Packet. dev, like put in like your NPM package name and you get automatically like reference stocks generated. Turns out that's a really hard problem. And I had to basically, with a friend had to kind of re implement parts of the TypeScript compiler to really understand all the parts of TypeScript.
+
+Uh, so we got. Somewhat far with it, but never really launched. Uh, so it's, it's some, somewhere in the, in the past of like my, my interesting projects I worked on 
+
+in the 
+
+past. 
+
+**Andrew:** Yeah, I think it would be hard to do like a tool like that. That's like generates good docs for everything. Cause like I said, like sometimes you might have a gen a generic thing that makes no sense and you kind of have to like manipulate a little bit into a better thing. Uh, lots of power there, but also some hard edges for sure. 
+
+**Johannes:** Oh yeah. That's what killed the project eventually. 
+
+**Andrew:** So next up we have unstorage. 
+
+**Justin:** So, uh, key value stores are, are really important. Um, you know, they underline relational databases and you pretty much anytime you're working on a project, you find the need for a key value store. I really love like Dino's key value store, but you can't use it everywhere. And I've been sort of on the hunt for like, I want a pretty adaptable KV solution where I can just like use it in any context.
+
+Um, You know, there are like a few specific things that I want. And, you know, there are a lot of KV service providers out there. So you've like CloudFlare has a KV solution. Dino has a KV solution, et cetera, et cetera. Anyway, so I saw a tweet, uh, this week that introduced me to this project called unstorage.
+
+Uh, it's part of the unjs, uh, project. You know, broader umbrella. And it's a sort of generic wrapper around a KV interface that can persist to a bunch of different targets. so you could have something that's like potentially going in local storage and going to like Dino KV or like Cloudflare KV or something like that. Um, Yeah. It's just really interesting. There's like, one of the things that I like that you can do is you can specify like, Oh, this key is persisted here with this technology and like other keys are persisted somewhere else. So you can like compose different stores into a single interface, which is really cool. Um, I think that this is like. Probably something that, you know, a lot of folks who are doing local first could benefit from because you could do sort of local, uh, local storage and some aspects and then remote storage and others, and the, the transportation or the, the API is, is kind of seamless in between them.
+
+So really cool technology. I'm excited to explore it more.
+
+**Andrew:** Yeah. Seems useful. Next up we have Nix.
+
+**Johannes:** All right. so. My pick is Nix. I think this was probably already picked by a few previous guests, at least I hope so. It's a bit of an acquired taste. I've been hearing about it for quite a while in the past, and I've always like thought, okay, well, at some point I'll, I'll learn it. And, uh, since it is quite, um, quite a bit to, to get into, but it's very, very powerful once you've learned it.
+
+And so the, the tipping point for me when I started to, to get into it is like, where I, if you might read me was start just starting to grow and grow and grow of like, Oh, brew install this, brew install that. And like, make sure that you have like this specific version of like GCC for this project or the more like native.
+
+Uh, tool chains you needed for a project, whether it's like for a, uh, like a native script or like for Tauri or wherever you build, like wherever you need something that goes beyond PMPM install. Uh, this is where I just was tired of like that it worked on my machine, but not for someone else. And I didn't want to tell them like, Oh, just like develop in Docker.
+
+And, uh, the, the best thing that really solves that is Nix, where you can think about it like, like a package JSON that instead of like installing a package that's then available for your project, you can install like Node. js itself or Golang or like whatever you need or Watchman or whatever you really need for your project.
+
+You can just put like into one, uh, flake. nix file. And then, uh, if you combine it with a thing called direnv, which just sources your environment variables, et cetera, when you cd into a directory, then like everything is just there. So I don't even have brew installed anymore on my Mac. And the cool thing is like that thing.
+
+Works across operating systems. Well, at least, uh, on Unix based operating systems, so on Mac and Linux, et cetera. And, um, that's just like, once you got into it, it's phenomenal and you started using it for everything. And I'm even going as far as also provisioning. My like my Mac and like other machines with us, I'm using this for running a smart home system on Raspberry Pi using this for my MacBook.
+
+I'm using this for a development server. Uh, I know for example, that, uh, Mitchell Hashimoto is also using that for all of his stuff set up. So I think more people should take the leap, learn a little bit about it. It's gotten a lot better, uh, to get started with. And, uh, then you don't need Bruin anymore.
+
+You don't need like crazy Python hacks to get something to work. And, uh, like once you rewire your brain, it's really 
+
+nice. 
+
+**Andrew:** That's, that's super cool. So like for, for me and my MPM terms, it's like, instead of installing everything globally, I'm just installing it like locally to the folder that I'm working in.
+
+**Johannes:** Exactly.
+
+**Justin:** Nice. 
+
+**Andrew:** I can see how that is very useful. I hate setting up global tools on my system. 
+
+**Johannes:** Also like the same analogy holds, like, let's say you need to run like a one off task for preparing a video. You can then just write Nix Shell FFmpeg. And even if though, if you don't have FFmpeg on your machine, you can just It's then just available in your shell and you can use it. And afterwards you can forget about it again. 
+
+**Andrew:** Okay. My next thing that I'm sharing came up on my feed this morning and it is wild. Uh, a dude while he was in college made a mini, uh, spot bot, like, you know, those, uh, big four legged robots that can walk around. He made one with like an Arduino and a raspberry pie. And, uh, it's, it started out as like a build your own little project, but now they've, uh, Created ones that you can buy so they have one that's like a little cat and one that it's like a little dog and it just looks absolutely wild to see something that was like the bleeding edge of technology, not just a few years ago, reduced to something that I can like hold in my hand and my mind just goes wild with like the possibilities to make this fun.
+
+Like, I wouldn't want to load, uh, an LLM onto the big one, but onto the small one, it might be cute and not seem like the world's ending. So, uh, if you want a very fun weekend project and have ever wanted one of those. Four legged robots. I would go check check this one out. It's called open cat. 
+
+**Johannes:** That's amazing. I love 
+
+the internet.
+
+**Justin:** I actually own one of 
+
+these. oh you do ? I do. 
+
+Yeah. The, the wooden cat kit. 
+
+**Andrew:** Nice. I I don't know what I would program mine to do, but it looks like it would be a fun thing to program
+
+**Justin:** You have to assemble it and everything, so it's a fun little project. 
+
+**Andrew:** up next we have react print PDF 
+
+**Justin:** Yeah. So I, uh, I, this came across my feed and Twitter this week too. so there's a, there's a company behind this. So there's a company called one doc. Who's essentially building a, uh, a mechanism for, for generating documents like PDFs, so think like invoices or, you know, Whatever, uh, in that way. and so they're using, uh, they're using react to do it. I've seen a lot of other really cool react compiled, uh, libraries, you know, I think of like react ink, like letting you run react in the terminal. But this, um, React print PDF seems really novel. Uh, so for DevTools, we have to generate, uh, invoices for sponsors from time to time.
+
+I have a little CLI app that does that for me, but it would be interesting to be able to do it in React because you can do, you know, a lot of customization with your own, you know, branding and, you know, make it really generative and then make it something that like, You know, web developers can, could sort of understand.
+
+Cause Lord knows PDF is not the most graceful format. Um, so a pretty cool, pretty cool library. Uh, I'm not sure how, um, tied it is to their commercial service. Um, how much you can do yourself, but definitely something to keep an eye on. 
+
+**Andrew:** Yeah, it's cool to see companies that are like, like resend where they're like, here's this open source library that does react for X. And then here's our platform that makes it easy to deliver to everybody. Super cool. And one of the super powers of react that like, I feel like people outside the react ecosystem don't quite, quite grok.
+
+Cause it's like, you're, you're not just learning to write web apps. You're learning to just write apps. And then you can, your apps can be anywhere, which is such a cool idea. Then last up, we have the combo of, uh, at test and perfecto UI. 
+
+**Johannes:** Alright, so a little anecdote on that, uh, the beginning of this week, I noticed that my VS code has become really, really slow when I'm typing, when I'm typing a TypeScript file and notice that this like over time just really degraded where the autocomplete, Would initially be instant. And then over time would just like become like half a second, one second.
+
+And I think it was at a time at a point where it's like, it took like eight seconds or so, and it was like, absolutely not bearable to work with us anymore. So I had to figure out like, Hey, what is going on? And so. I'm used to this kind of thing typically when running your app and your app is slow and like you start looking into performance profiles, et cetera, and you realize, okay, this is the bottleneck and you make it faster.
+
+But now I'm basically trying to do that for, for VS code, but more specifically, I'm needing to do this now for TypeScript since the TypeScript LSP is running that. So, um, a friend of mine who's working on that thing called Archetype, which is like an alternative to Zod, et cetera, really interesting to look into, but as part of this project, he's been building this thing called a test and a test is basically like a, a type setup, uh, like a testing setup, uh, but for your types where you can check like, Hey, um, is the type correct and how, and also on the performance level, what Of the types that you can see like, okay, for that's type to infer correctly, this is doing like so much work, like instantiations, et cetera.
+
+So, and that project also comes with a CLI, which you can point at a folder of TypeScript files. And it spits you out a trace JSON file. That is basically a performance benchmark for your given TypeScript project that you can now throw into, um, the, this other, this Perfetto, uh, UI, which, uh, you can basically just upload a, um, a JSON trace file there, and then you get sort of like a Google Chrome chart where you can look into what is going, what is And, uh, this is where you then can like.
+
+Uh, step by step figure out like, okay, this file specifically at this line, uh, I'm inferring this type and turns out I found some things that I would have never expected that literally took TypeScript, like three seconds to infer. And I had a few of those. And, uh, in this case I could just slap an any on it and, uh, and it was fast again.
+
+And so whenever you feel frustrated with like, why is TypeScript getting slower and slower in VS code? Uh, those are some interesting tools to look 
+
+into. 
+
+**Andrew:** Yeah, that's, that's super cool. Uh, while developing design systems, I've run into this problem a lot because you polymorphic component and then TypeScript's just like, uh, that's, that's too much for me. Uh, so having having a tool that can point me to where that slowness is actually coming from is huge. 
+
+**Johannes:** Yeah. Shout out to David from archetype for showing me all of this. Very useful. 
+
+**Justin:** Yeah, that's awesome. 
+
+**Andrew:** Cool.
+
+And that wraps it up for this week's Tool Tips and this week's episode. Uh, thanks for coming on, uh, Johannes. This was a lot of fun. Uh, we covered a lot of ground here and you're, you seem to be doing some pretty cool work right now.
+
+
+
+**Johannes:** thank you so much for having me. This was a
+
+ton of fun. 
+
+**Justin:** Yeah, it's a really fun to have an episode crossover. I was just like listening to one of your episodes earlier. So that's like, uh, but yeah, I mean, really love your podcast too. So keep up the good work there. And yeah, thanks for coming on. 
