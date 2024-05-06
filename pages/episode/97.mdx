@@ -1,0 +1,548 @@
+---
+title: Scott Chacon - GitHub, GitButler and changing the face of version control
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Scott-Chacon---GitHub--GitButler-and-changing-the-face-of-version-control-e2j8tlt
+youtube: https://www.youtube.com/watch?v=I-D6zChu3YI
+tags: technology, git, github, gitbutler, version control, rust, javascript, ai, developer tools, podcast, software development, programming
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Scott Chacon, a co founder of GitHub, about his new product GitButler.
+We talk about the history of GitHub and how GitButler is changing what user centric version control is.
+We also talk about the future of version control and how AI is changing the way we work.
+
+- https://scottchacon.com/
+- https://github.com/schacon
+- https://twitter.com/chacon?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor
+- https://www.linkedin.com/in/schacon/?originalSubdomain=de
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Intro
+[00:03:14] The Evolution and Impact of GitHub on Development
+[00:10:06] Ad
+[00:11:46] Building on Top of Git
+[00:24:47] Email Collaboration
+[00:26:05] Rethinking Git Workflows with Git Butler
+[00:35:50] Exploring Virtual Branches and Integration Challenges
+[00:43:16] Navigating Team Workflows and Compatibility with Git CLI
+[00:48:19] AI's Role in Version Control and Future Prospects
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Intro
+
+**Scott:** if GitHub had decided, let's write our own version control system, right, and, and it was, like, if we had the taste that kind of went into the tools that we did and, and sort of, you know, usability and, and, Going to first principles and thinking about what are we really trying to do with this set of tools, right?
+
+Like, what would GitHub possibly have created? 
+
+**Andrew:** Hello, welcome to the DevTools FM podcast, this podcast about developer tools and the people who make them. I'm 
+
+Andrew and this is my co host, Justin.
+
+**Justin:** Hey eyeryone, uh, today we're really excited to introduce, uh, Scott Chacon. so Scott is a co founder of GitHub. Uh, you also co founded Chatterbug and now you are working on a product called Git Butler, which I am super excited about Scott. Thank you so much for joining us. Uh, before we start talking about the things that you've worked on, would you like to tell our listeners a little bit more about yourself?
+
+**Scott:** That's a pretty good overview of places that I've worked there. Yeah, no, I live in, uh, in Berlin as well. So, um, I used to live in the Bay Area, but, but so, you know, a lot of my, my, I do, I have done a little bit of, uh, angel investing through a company called scene. Um, and so, but, but yeah, at the end of the day, I'm, I'm, I'm, I'm a startup guy.
+
+So I think I'm, I'm going to be working at startups until I'm kicked the bucket at some point.
+
+**Justin:** That's cool. Is Chatterbug still running? Uh, I wasn't sure what the exact status of
+
+**Scott:** Yeah, so, so chatterbug, you know, we raised, we kind of did the, the, the, you know, when you raise money in sort of a VC setting, you can either kind of go big or go home. The, it didn't really get to the point where we could raise another round, but it, you know. It didn't. It didn't like I had personally invested a lot of money into it.
+
+And you know, we had raised kind of too much for it to be able to exit, really. Um, and so we kind of spun it down. It was profitable, right? Like if there was almost nobody working at it. So we kind of spun it down like it's still running. It runs by. It's essentially just runs by itself and, you know, make some profit.
+
+And so, um, one of the guys that used to T. J. That they used to work at Chatterbug sort of took it over and just runs it. essentially by himself. Um, so there's still tons and tons of people that are learning languages and, and, you know, using chatterbug on a daily basis. Um, but I'm, I decided that, you know, I should probably spend my time working on something else.
+
+**Justin:** Nice. Yeah, that, that makes me think of, uh, Muse, uh, Adam Wiggins, uh, most recent project they had to, a similar sort of thing is just like realizing it's like, okay, to get the sort of like size of audience that we want, uh, we're not really going to be able to reach that with this. So they did the same thing and like spun it down to like a small minimal.
+
+I think there's a solo person who's like sort of maintaining the project and moving it forward now.
+
+**Scott:** Yeah, actually, it's funny. I just talked to Adam about that. Um, he lives in Berlin as well. Like we're, we kind of have similar journeys. and we just had, had a meeting the other day. He's coming out to the conference that we're putting on, um, call it the merge. Um, in Berlin in a couple months. Um, and so I'll be talking to him about about some of that stuff, too, which which I'm looking forward to.
+
+**Justin:** Yeah, that was great. Cool. 
+
+
+#### [00:03:14] The Evolution and Impact of GitHub on Development
+
+**Justin:** So let's maybe dive right into it. Uh, so, GitHub has been obviously very tremendously influential and impactful on the development industry at large. I mean, it's hard to think about like pre GitHub days and how gnarly, just centralized source control, like having some place to go to download code.
+
+Uh, was, but, uh, so how did the idea for GitHub start? And, uh, did you ever think it was going to be as big as it is today?
+
+**Scott:** Yeah, I mean, the it's funny now I've been, you know, now that I'm back and working on developer tools, I've been I've been speaking at some conferences again about version control or sort of software development and and I'm realizing I've been out of, you know, I've been working in this language learning thing for seven years now.
+
+Before that, like since I left GitHub and now there's a whole generation of software developers who have never used anything other than getting GitHub. Like they, you know, they never use subversion. They never, they learn Git in college. Right. And, and, um, it's such a, such a strange, like, this just wasn't my mentality.
+
+Like when I first started, you know, working on GitHub, I was going around trying to teach people, like trying to convince them you should use Git because it's better than subversion. And here's why, right. Or better than Perforce. And here's why, and look at how cool branching is and And now, like, it's almost the opposite of trying to, trying to be like, it doesn't have to be like this, right?
+
+Like, there, there was a time when there were options and there were pluses, pluses and minuses. Um, but yeah, I mean, essentially it started because, because, um, Git was coming up. I mean, there was this whole era, you know, I'm sure you guys probably remember this where everybody was using subversion and open source for the most part, or CVS, right?
+
+If you just didn't want to take the leap, because it wasn't really a big enough difference for you. Or you're in a corporate environment, you'd be using Perforce, or you'd be using clear, clear, clear case, or, you know, whatever. Um, And then, and then this, this explosion of these, these cool distributive version control systems all came out kind of at the same time, right?
+
+There was like Bizarre and Mercurial and Darks and, and Git and, and at the time like none of us really knew what was going to win. We are, I think everybody was kind of trying them out if you were kind of on the edge, right? And you were like, okay, let's, let's, let's. See if this is a little bit cooler, right, or a little bit better for what I'm trying to do, um, and the open source and, you know, in my world, the Ruby world, like we all kind of moved to get, but that wasn't true for everybody, right?
+
+Like some, some communities went down the mercurial route or whatever. And there was a lot of kind of competition between these, these groups. And I find that so interesting. It was so much fun, right? To, to, to be in that world. Um, but there was no good hosting solutions at the time. And, and, and so, you know, my friends, uh, Chris and PJ and Tom, like we knew each other from Ruby meetups in San Francisco and, and Tom and Chris started working on, on GitHub and, and kind of, you know, I knew Git really well.
+
+I had written a book on Git because I'd learned it for something else I was doing. And, and so, you know, I like to document stuff and, and try to help the next comes behind me. Um, that's just something fun for me to do. And, and, and so, you know, we kind of got together because I actually really knew Git very well and they just liked Git a lot and kind of wanted to, you know, make a host that was better than, you know, some guy in Lithuania or whatever that, that had like repo.
+
+org. cz or what, you know, whatever the, the host, the only hosting solution was at the time. So, um, so yeah, that's kind of how it, it, it was, Scratch your own itch type thing, um, in the early days. And, and, uh, and I love the idea of, of sort of working in developer tools. And so, so that's, that's how it got started.
+
+And, and to answer your last question, um, I, you know, very provably none of us thought it would be a big deal. Uh, we even talked to VCs in the early days and, and they were telling us, you know, the total market cap of all of this type of developer tooling would be like a hundred million dollars. Right. And, and, and I think get up, we sold get up for 7 billion dollars.
+
+Like it's, it was completely ridiculous, right? They, they clearly didn't, none of us knew what, what this could be. Um, and, and, and we were all surprised by it. And most of my time at GitHub, I think was taken up by, by us trying to handle steering a rocket ship that, that, you know, kind of took off much faster than, than any of us expected.
+
+And, and there's a hell of a time, but, but definitely not expected.
+
+**Andrew:** so, uh, in the early days, I thought that the, you wrote the Git book, uh, after, uh, you guys found a GitHub, but you wrote it before, so can you tell us about, like, why you did that and some of the fun things you learned along the way while writing 
+
+**Scott:** Yeah. So actually it's a little, a little confusing. I wrote a book Um, I actually worked on the git community book, which was kind of the documentation that was around the git community at the time. I helped augment that. Um, and then I wrote from scratch, uh, a peep code PDF. Um, if you guys remember peep code, um, that, that you can still find online.
+
+It was open sourced after, after peep code was acquired. Um, uh, and, um, And then I started work on, Apress approached me about the Pro Git book. And so the, the, the real sort of publisher that, that, you know, the, the Git that you, or the Git book that you would read on, on gitsem. com right now. Um, that's, that's Creative Commons dual licensed.
+
+And, and so I've started that after I started working at GitHub. I was there for about a year, probably before I started that project. Um, and so, But, uh, but yeah, so I've written a lot, a lot of stuff on Git. The, the, before that was the, the, the peep code one though. So, so I'd, I'd, I'd been, I, I have no, no end of interest in documenting and talking about Git apparently. Um, but yeah, to, for, for, to go back to your other question, like what, what you learn, right? I think anytime that you write a book, you learn mostly what you don't know, right? Like I was pretty good at Git and I knew Git really well. And I could, I can, you know, describe the sort of object Database and stuff like that.
+
+There's tons of stuff that I didn't know, right? Like I never really used sub modules professionally, or I never done like subtree merging, or there was all this stuff that it could do and I knew it could do it and I knew theoretically that it was capable of doing it. And then I'd have to kind of teach my, I'd have to give myself, you know, like a challenge, right.
+
+And see if I could solve it and then see if I could document the solution to it and then help somebody else. And I always felt very kind of crappy about those parts. Parts of the book because it's like I've never really used, you know, I try constantly now to talk to people that have different workflows and try to get an idea of, you know, I kind of want to sit over their shoulder and be like, what, how do you use this?
+
+And what is frustrating about it? And what is good about it? Right? Like, we'll wind up talking about Get by there at some point, but that's a lot of what I'm trying to do with that as well as is be like, I know what my workflow is like, I know how I use these tools and I know kind of some of the design stuff, but like, you know, there's so much you don't know.
+
+If you try to write a comprehensive book about something about anything, and it's very humbling.
+
+
+#### [00:10:06] Ad
+
+**Andrew:** We'd like to thank this week's episode sponsor clerk. If you've been on Twitter by now, everybody knows you don't want to roll your own off. And clerk helps you do that with so many different cool options. 
+
+Clerk provides full stack integrations for authentication that makes setting up authentication in your new app. Super easy 
+
+they support a whole host of different acronyms for authorization. They have MFA SSO magical links. SMS. So many different ways to log in. And you don't have to worry about it.
+
+One thing that a lot of people don't think about when they're setting up a company. Is doing all of these more enterprisey auth things. 
+
+At starting your business, you might not care. You'll just go with simple email and user password, but as you integrate more business to business, it becomes more and more important that you have these different types of authentication and you don't want to hit those roadblocks and then be stumped for months. You want to be able to deliver on these. Mission critical features super easilY. 
+
+One of the selling points for front-end developers is clerk offers a whole bunch of different prebuilt UI components. That you can use to just drop into your app and get going. They also offer components for user profiles and organizations. 
+
+The best part about clerk is they have an awesome free tier. They offer up to 10,000 monthly active users. They offer everything you need to authenticate and manage your users, freeing you to build the app that you want to instead of having to deal with authentication. 
+
+Would you like to not hear these ads anymore? Become a member on one of the many platforms we offer memberships on with it, you'll get ad free content and you'll get it a little bit earlier than everybody else. 
+
+And if you want to find another way to support the podcast, head over to shop.dev tools.fm, or you can grab some merch. And with that, let's get back to the episode.
+
+
+#### [00:11:46] Building on Top of Git
+
+**Andrew:** Yeah, our past sponsor code crafters has this course where you build your own get from like scratch and like so many different things that I built during that course just kind of blew my mind. The first being that get started without being a version control system and was really kind of like this lower level set of utilities you were supposed to build your own version control system on.
+
+So like when I learned that I was like, Oh, I. I see Git Butler was just like, the idea there was just like calling to be made.
+
+**Scott:** Yeah, yeah. Actually, it's surprising that fewer version control systems have really done that right. Like there's nothing that kind of has get as the object database or the transport mechanism, right of just saying here's how to get trees from A to B, which is Like you said, this is this is if you look at the first commit in Git, right, you can compile that C code and you can you can write stuff that's still generally readable by Git now.
+
+And the the commands are a little obtuse, but it still does essentially what Git does, right? Um, and, and, um, There wasn't, you know, essentially like the one guy, uh, uh, I forget what his name is, uh, started writing some Perl scripts, you know, to kind of automate some of this. And then that just kind of got turned into the, the, the porcelain stuff, right.
+
+And, and, but it hasn't really been modified that much since then. And more and more, more incredibly to me, nobody's come out with a GUI that doesn't just wrap all those commands, right. That That comes up with some completely different way of doing it and just writes that database out, which is completely doable, right?
+
+Which is mostly what we're doing. It's easier now with us because we're using Libby too, right? There's some libraries and stuff. You don't have to fork exec out everything, but, um, but yeah, I mean, it's, it's, it's all, yeah, it's all a database and then tools on top of it. And you don't have to use those tools in order to use that database.
+
+Right. But, but, but it hasn't really been done a lot since then. 
+
+**Justin:** This is really interesting how like, I mean, Obviously get has won the, the sort of decentralized source control wars. Um, and you know, it brings a lot of like incredible power to the developer and it's been a great tool, but it feels like of the tools in our tool chain that we rely on so much, it kind of shows it's like, there are definitely some words that like people are more and more aware of.
+
+And especially if you have like younger engineers, this is like, as you mentioned earlier, this is all they know. And they get into that and they're like. Oh God, I messed up. What do I do? Like you teach them about like reflog or something, you know? And there's like, there's a lot of overhead to just the workflow, uh, and, and the UX that's there.
+
+I remember having conversations with some colleagues a little bit earlier in my career, and they were like really diehard on Mercurial because they thought that the, there's just UX of Mercurial, like how you interact with Mercurial was a better experience, like the kind of commands that you had. Um, and.
+
+Even more recently when I was at Oxide, there's people talking about the, there's this tool called JJ, which is a, another, yeah, yeah, exactly. A
+
+jujitsu being 
+
+**Scott:** I if you know, if you're listening to this podcast, and you're interested in in version control tools, I would definitely say check out jujitsu because it's it's, in my opinion, the most interesting other than get Butler, obviously, but it's the most interesting thing. going on in let's say command line, uh, version control tools, right?
+
+Because they've, they have kind of done this right there. They, they do have get as this backend, um, that they're, that they're writing objects into. And so it is compatible fully with you. When you push it to get up, you can't tell that you're using something that's not good. Right. Um, but they do, the user interface is much, much different, just the whole approach to how they put patches together and how they do commits, right?
+
+Like you have to relearn stuff for them. A little bit. Um, but it's totally fascinating, right? Like, like you just say, I want a new workspace. And that essentially commits the last one, right? And there's no index. It's just you're working directories, kind of what your next commit is going to look like. And it's a slightly different shift, but it very, it changes the way that you approach your work in a very interesting manner, right?
+
+Where, you know, it's essentially a much better rebasing tool, right? Like, like rebasing is so powerful, but it's such a pain to use. And, and they've really been like, what can we, how can we get what is interesting about rebasing, but make it very, very easy to use, um, and really encourage that, that style of workflow.
+
+And, and actually, it's funny just today, actually this week, I've been, I've been working a lot on trying to get a lot of those things into Git Butler and, and allow you to work in that, in that manner, right? Like opening up a commit five commits back and taking the file. Or a hunk out of, out of a file you committed there and dragging it three commits up and, and having it automatically rebase everything so that it looks like you're just kind of moving changes around your commits, right?
+
+And, and letting you kind of do this, this patch centric sort of workflow. Um, but yeah, there's, I, the, you know, to answer or to, to go back to your point, right? There's, there are, really interesting things that you can do in, in, you know, what we're all trying to do, which is really put together a group of changes that is, you know, documented so that if you look at it later, you understand why those changes were done together or reviewable, right?
+
+Um, by, by whatever review system that you're using and, and kind of, Combining them into commits is a nice is it can be a nice way of doing it. Um, but yeah, I, I, I, jujitsu is very exciting to me. And, and, you know, even, even the other one, like, I just had beers with the material, the guys who took over material development, um, recently, and, and, uh, the guy, I forget what his name is, um, that does Pujol, which is sort of the darks 2.
+
+0, um, you know, theory of patches thing, and, and they're all passionate about, you know, version control tools, right? And there's, there's a small set of us nerds, version control nerds that, that, you know, to sit down and have beers and kind of argue over what, you know, style is, is better is really fascinating.
+
+But at the end of the day, developers just want to do their work and, and kind of have it be as easy as possible and be able to communicate that and transfer that as easily as possible. And none of the tools are really very focused on that. And, and I think it could be very different. 
+
+**Justin:** I want to move on to talk about get Butler, but before we do I have one question for you about github and its legacy. So the the pull request model, um, there's, you know, something that I contribute to to github is it's kind of Changed how a lot of people think about contributing to a git code base you know specifically through github, but There is this one thing that i've heard repeatedly.
+
+Uh, You About the sort of side effects of how pull requests work. So, um, you create a pull request or you've have a branch and then you create a pull request from that branch and you've got a lot of code committed and then people come in and review it. So it's like, there's almost this encouraged to like review later in the process.
+
+Um, And the other thing is it's like, this is just, you know, a part of get. And, and again, I think this is a tee off our conversation with get Butler, but like pull requests tend to get larger over time, like bigger, because it's like harder to break those things down. I've heard a lot of people wishing there were things like stacked PRs.
+
+Like you could do that easier. Um, and I mean, I feel like a lot of this is, you know, Just derived from the primitives of the pull request, you know, that legacy of like how GitHub introduced, how we merge changes into a code base. Can you think about like, or can you talk about like how y'all are thinking about that originally and how you're thinking on it has maybe evolved over time and like where we're
+
+landed out with that, 
+
+**Scott:** Yeah. I mean, Originally, you know, we were, uh, you know, in the early, early days, the pull request was just an email that, that said, here's how to run the Git pull command locally so that you can fetch, you know, a branch down and merge it into your, into whatever branch that you're in. And so it would just be an email that said, run this command line thing.
+
+And then that, that will pull this reference and merge it and you can test it. And if you like it, you can push it back to yours. Right. And so it didn't really have this interface and it didn't have this, this sort of unified. Diff, um, that the pull request interface has now, um, which, which I think is kind of part of what the problem set is of how people have changed because in the early days, you know, pull request is was really just an easier way of sending a series of patches, right?
+
+But you could still sort of rebase your stuff or sort of squash work together or something. And, and kind of work on a series of patches. Like, if you think about the mailing list, right, or how you would communicate over a mailing list, um, even with Git today, if you come, if you want to contribute to Git or to Linux kernel or something and use Git to do this, a lot of the early tools were developed to send series of, of patches over email.
+
+And so every commit message is the email body, right? And then, and then it sort of has this diff that's, that's associated with it that you can, you can pull into an inbox, pull out of an inbox and apply and stuff. But like everybody's thinking about commits as. You send it to the mailing list, and it's just a thread of like three emails, right?
+
+And they're, they're, they're reviewed as commits, not as a unified diff of all of the commits in the branch, sort of squashed into, into, you know, squashing it, squashed out. And so how GitHub evolved was trying to make that process easier and like more, more, Because it's very hard to send patches over email if you've ever tried to do it without fucking it up It's incredibly difficult to do right if you're if you're not just living out of inbox all the time, right?
+
+And so so, you know If you use gmail and you want to contribute a patch to get like it's it's very hard to do Properly without getting yelled at and so we wanted to make that accessible because it was really it was we wanted to make it Usable for people and to collaborate and in open source and stuff And so so in making it easy what we did was You know, make it so that if you, if somebody gives you a, you know, some review and you want to fix a bug.
+
+What's easiest is to fix the bug and then you do a new commit because now you don't have to learn, not everybody has to learn how to be a rebase master, right, which, which you otherwise have to, you have to be very, very good at sort of all of that, that rebasing type, you know, interactive rebasing and stopping and amending something and squashing and all that.
+
+And we wanted to not have that be a barrier, right? You could just use Git for everything that it's really good at. And, and for, for collaboration, who cares, right? Like just add the thing that fixes it, but it breaks blame and it breaks a lot of stuff. And it, it makes, it makes review really difficult because we didn't do review it on a per commit basis, right?
+
+We're doing it on this unified diff basis. And so I think there's, you know, there's sort of pluses and minuses to that, to that process. I, I think that there is space for some sort of review system that is more patch based. Like, what Stackdiffs really try to do is bring back this, this concept of reviewing on a commit basis.
+
+And the way that they do it is by, you know, throwing a branch, throwing several branch pointers into, uh, you know, a branch. So essentially every commit has its own branch, right? And then they're all kind of based on each other so that you can review them. But really, you know, you just want to review kind of one commit at a time or be good at, you know, have everybody be good at rebasing.
+
+So, so, you know, I think that there's something in between that we, I think the, the, the future, like what would be really nice is some combination of these things, right? Where you can, you can have something online, it can have a nice review process, it can be on a per commit basis. I think stack diffs is just a way of, Of getting around how, what GitHub's interface is rather than that's really how you want to, to review stuff.
+
+Right. Um, so, but in, you know, and at the end of the day, what you really want is, do you want the reviewers job to be easier than, than your, like, if your tools are easy, you really want the reviewers job to be easy. Cause you don't want them to come into some massive, you know, unified diff. Um, and, and, you know, there's issues with that as well, like everything's in alphabetical order, right, like all, like, if you want to test a file and, or you want to review a file and then the test that test that file and they're at complete opposite ends, right, of, of the unified diff, it's really, it's really frustrating, like, you kind of want more of a story of here's what happened and, and so, you know, sending patches, having a nice patch series and sending to a mailing list kind of gives you that story in a, in a more reviewable way, I think.
+
+But, but GitHub, it's difficult to do that way, right? Um, so you have Graphite or you have, you know, Fabricator, you have these tools that, that kind of help do both, right? Um, be in the GitHub world, but, but also do review in a way that's a little bit more approachable for, for larger sets or for if you want a linear history or something.
+
+Um, But yeah, I don't know if I've really answered your question rather than thrown on a bit, but like, I, I, I think there's still room in the world for a much, much better review system if we have tools that help make rebasing easier. Like, if you're using Jiu Jitsu and that, that is everybody's using that or, or if you're using, you know, hopefully Git Butler kind of makes that easier at some point.
+
+And, and you're more worried about what is my. patch series look like and you have review tools that are good at reviewing those types of, you know, things that are rebased a lot. Um, like force pushing to get up branches is a pain for everybody, right? Like, like, so you have to have some, something that kind of helps mitigate that.
+
+Um, but, but if you do, if the tools make that easy and if the review sort of has, I think, splitting up review into commits or, or, Being able to tell more of a story with your, with your history, uh, would be a much, much better way of, of collaborating. 
+
+
+#### [00:24:47] Email Collaboration
+
+**Andrew:** Yeah, I am so surprised that anything got done back in the email patch days. Like I, like, I've very much grown up in the, like, get basically only, like I used a little bit of perforce when I was an intern, but like doing that over email just seems like an impossible task to me.
+
+**Scott:** Yeah, it's fascinating. It's fascinating to look at that, at that. Like, you know, I've been trying to kind of learn, like I said, what people's workflows are, and that's, it's a really interesting workflow, right? It's very different than, than sort of the GitHub workflow, um, and it has pluses and minuses, but like some of the, you know, it's, it's interesting to see, you know, v10 of a series or something, right?
+
+Where, where you can see the previous versions and the previous comments and what was addressed and, and, you know, sort of, it gives you this nice story. And, and it's, again, this one sort of. Email per commit. So you can just look at the ones that you're interested in. If you want just I'm you know, I'm the front end of I'm just going to look at the front end commit or whatever.
+
+Right? And it's specifically documented and I and you can kind of inline comment in the patch, right? Like it's it's really it's a really it has power that that, that you lose with using GitHub PRs. Um, and again, it's much harder to use, right? So, so you have to have this high bar for everyone to, to come in on it, which, which is not necessarily a good thing either, right?
+
+So, um, but, but yeah, some, some middle ground I think would be, would be interesting in the future.
+
+**Andrew:** 
+
+
+#### [00:26:05] Rethinking Git Workflows with Git Butler
+
+**Andrew:** So now that we've talked about all, all things get inversion control, uh, you have a new app, a new thing built on top of get called get Butler. So could you explain to us what get Butler is and how it makes the get workflow better?
+
+**Scott:** Yeah. So, so when I left Chatterbug and we were thinking about what to do, I, I, I really kind of got into this version control quite obviously, I have a lot of opinions on it, I'm very interested in it, um, you know, my background is all, is all sort of in Git and GitHub, um, and I thought it would be interesting to try to, like, if GitHub had decided, let's write our own version control system, right, and, and it was, like, if we had the taste that kind of went into the tools that we did and, and sort of, you know, usability and, and, Going to first principles and thinking about what are we really trying to do with this set of tools, right?
+
+Like, what would GitHub possibly have created? Like, what would a client that, that, because, GitHub's always kind of pushed that off to the open source community and said, and then, you know, they contribute to it, and Microsoft contributes to it. to it a lot today, um, but not really in a user interface way, right?
+
+We're not, there's no tearing it down and saying, let's, let's pretend like we owned this whole sphere, right? And, and what, what could be possible there? And I found that question really, really interesting of just challenging myself of what preconceptions do I have about version control that are based on Git because I've been using it for 15 years now, right?
+
+Um, and I, I hardly remember how to use anything else. So, um, so it was kind of a fun mental exercise. And, and so, um, We started this company and started building tools and went off in one complete direction that we've essentially totally abandoned and found something that that sticks a lot. We were trying.
+
+I was trying to do the first. Sorry if I go off a little little thing here, but I what I was the first thing that we were going around was I wanted a version control system that that doesn't lose my work, right? That like, you can lose your work and get, you can mess up stuff and, and, but. I was trying to think of other systems that do version control types of things, right?
+
+And I, I thought a lot about Google Docs and, and how Google Docs does version control but in a massively different way than, than Git does. And, and started thinking about like what are the, what are the advantages and disadvantages of that, right? There's, you can't fork it and go in a different direction and, and there's no forking it.
+
+But on the other hand, there's no merging and there's no losing work and there's no committing, right? Like it just constantly is changing. Looking at what you're doing and it's saving versions and you can always go back to stuff. So, so there's interesting aspects of that. And, and I thought it would be nice if Git just had some, you know, daemon in the background that was saving CRDTs of your work all the time.
+
+So you never lose anything, right? And just synchronizing it to the cloud somewhere. So you can just move over to another computer and, and turn on the client and you get your working directory that you had over there, right? Like you don't have, you don't have to commit in order to, to push something over the wire.
+
+Um, And I, I found that really, and we built that out and we built a little timeline where you can go back and see what, you know, what, what, and we found it, it just wasn't very useful, right? Like, like, it's useful if you lose work, but you lose work, what, like once a month, right? And it really sucks. But, but, you know, we, we, we wanted something that was more daily practical.
+
+And so we started looking at branches and tearing that down and being like, what do we really use branches for? Branches for and so right now what mostly get Butler does is branch management. Um, and, and because we came up with this idea of virtual branches of saying, you know, if I'm working on something and I see a bug, like right now, and get get can only have one context at a time.
+
+And so you have to, you know, everybody's done this a million times, right? Like you're working on some feature and you're really deep into it. And you see some something you want to fix, like documentation or bug or something small. And you're like, I can either stash everything I have, right or do a work in progress, commit or whatever.
+
+Right. Start a new branch, fix the thing, push it up, try to get it integrated, cherry pick it in, whatever, right? Like, it becomes kind of this, this, this issue and it's annoying all the time. And so what most people do is they'll, they'll just fix it. in that branch, right? And be like, it'll probably get integrated when this branch get, I'm sure it's fine, right?
+
+Like, even though it's, it's orthogonal, you, you put it in, in one context because it's easy. It's, you have to essentially be in one context at a time. And I was trying to figure out why that was, right? There's no particular reason. It's only because of the design of, of the index in the head, right? That, that get can only really be on one branch at a time.
+
+There's no reason that you couldn't. Say for every entry in the index, say, this goes to branch A and this goes to branch B, right? Or, or whatever. And so that's essentially what we do. is we run a git diff between sort of this upstream version, so origin master, origin main, or whatever you're, you're, you want to eventually integrate into.
+
+Um, and then it diffs your working directory and says, here's all the punks that I see that are different. Here's everything I see that are, that's not integrated. So by definition, this is a branch, right? And you don't have to create it and you don't have to name it. It just, it's kind of like anonymous branching.
+
+gives you a context, and then if you want a hunk to be in another branch, you just sort of drag it in the GUI over into another lane and it says, okay, that's a branch. And then when you commit it, it just essentially takes, you know, the, the base that you have and applies all the patches that are bookmarked for that and creates a tree and creates a commit and pushes it off to GitHub and, and, and just kind of keeps them separate, right?
+
+So you can keep committing and working in multiple contexts at the same time. And, and we just sort of the smart index kind of keeps them all. In memory separated and tries to remember what what goes where so that the next commit it it writes a tree out as though that was the only thing there right so that when you review it and when you merge it and the nice thing is you're kind of doing the opposite you're starting with a working direct let's say you do a whole bunch of work and then you you you take them and you you take all your work and you drag it into three different branches and commit them and push them the nice thing is you know that they all merge cleanly because you essentially started out with the merge product and then you you extracted them clean.
+
+Into into separate branches, right? So once they're all merged, the tree is going to look like whatever the working directory you started with when you when you extracted, um, And so that's kind of nice, right? Because, because, and, and, you know, we can, you can take in other people's remote branches and sort of apply them as, as virtual branches that sit alongside the work you're doing and say, okay, these things, this is what would happen if get actually does like the, if you look at get maintenance or something like junior will do this will or Linux kernel, they'll merge in like, 10 branches into one big octopus merge, right?
+
+And then try out everything and then unroll it again, right? Because they want to see if they all kind of work together. Um, but it's, it's too much of a pain for most people to do. And so most people don't do that even though Git is fine with that, right? Um, but you, not everybody wants to roll back stuff or have these merge products that are, that are all over their code base or whatever.
+
+So, so people tend not to do it, but it's, it's totally doable. And, and so, yeah, so we, we made this GUI. We, I thought it'd be nice to start with a GUI and try to figure out, is there a way of. You know, making a drag and drop type thing that can be a very powerful tool for for managing information, but but every GUI that's been built on Git just does stuff that Git does and just kind of fork execs out stuff.
+
+And so usually it's faster to just write it on the command line if you know what to do, right? Um, and so we wanted to be like, is there ways of, like, you can't have multiple branches in Git, so like simultaneously applied. And so we were like, let's, let's do a GUI and you can just drag a hunk over, right? I don't have to list them out and do a number and say, move it to this branch or whatever.
+
+You can just drag stuff. And so, so yeah, we started building that on, uh, in Tori. So now I'm a Rust developer, which is, you know, pretty cool. I should never be let anywhere near a systems language, but I do do a lot of rust work now. Um, but, uh, but it's been, it's been super, super interesting to, to, to build out just sort of this vision of, of how would I want, you know, branches to work.
+
+And, and it is quite complex, right? In how we're actually building these trees and applying patches and figuring out commutation, all this stuff. But, you know, we need to make it look very easy. And, and, and so that's, it's, it's a really fun challenge. Very much the same, right? Like I think everything strive for simplicity and make it as easy as possible to do what you want to do in the background.
+
+It can be incredibly complicated. Um, and I find those really, really fun projects. 
+
+**Justin:** Yeah. That's awesome. There's a lot to unpack there. Um, to, to go back to, to where you started, uh, sort of like the first thing you explored, uh, I do want to give a shout out to the ink and switch team, Adam Wiggins and co they're, they're working on this project called patchwork, which is like a universal source control for everything.
+
+They're kind of just trying to figure out like, what are universal source control patterns? Like, if you're just like trying to integrate. You know, source control type workflows into your app. Like how would you do that? And they have a really interesting, uh, research. Paper that they're working on for that.
+
+I'll, I'll link that in the show notes. Um, this, this idea of virtual branches though, when I first saw get Butler, I seen this, this idea of virtual branches and it clicked with me immediately because I actually like. Branches are kind of my bane and get, uh, because the thing is I am doing work and I don't care what branch I'm in when I'm doing the work.
+
+I really, I really don't care. I don't want to think about it. Like I'm doing things and I know that like I need certain things to be in certain PRs. And the big problem is, and I've had this over my career is. For me to give the kind of experience that I need a reviewer to have. I have to do a lot of work ongoing throughout my workflow to be very rigorous about what things I put and I, you know, I make.
+
+Like very gratuitous uses of stashes. I I've stashed everything all the time and it's not great. I don't like it. I don't enjoy it. Most of the time I really, it's just like, it's a frustrating experience, but I do it to try to give the best experience for developers or for people reviewing. And even still, I end up with PRS with like too many associated changes and like too much stuff.
+
+So when I saw Git Butler and like what you're doing, I was like, I get it immediately. I was like, yes, yes, this is exactly the thing I want. 
+
+
+#### [00:35:50] Exploring Virtual Branches and Integration Challenges
+
+**Justin:** I was like, I'm just working. I've got a list of changes. Let me like put these in a different branches and then push them up and do different PRS. So I think it's, it's a fantastic idea.
+
+Um, What are some of the challenges that you've had in integrating these virtual branches so far? Like what is, what is the big, like struggles you had with it?
+
+**Scott:** Yeah, I mean, the biggest thing is, is we, um, you know, we've had, I don't know, 15, 000 people sign up. So maybe 20, 25, 000 people download and try it out at some point. Um, and. That means that there's like 25, 000 different repository sizes and workflows and edge cases of Git and things like that, that, you know, and, and we, there's a lot of privacy involved.
+
+We don't want to have access to, to any of your data that we don't need. And so we're kind of flying blind a lot of times when people are like, it's slow and it's like, well, there's 10, 100 reasons, 10, 100, There's, there's so many reasons that that could be, right? Can you tell me a little bit more about your code base or, but are there large files?
+
+Are they untracked is, you know, what's the index size? Like how many files do you have total? Like, do you have a sparse checkout? Do you have, you know, do you have sub modules? Do you have some, you know, there's so many different, is it on windows or Linux or Mac? Like what file system, you know, like, like it can be any of these things that, that, that could be slow stats or it could be, you know, whatever. Windows specifically is a pain in the ass, but, um, but, you know, so, so, and it's in Rust, right, like the backend, all the backend stuff is in Rust, and so, you know, we're trying to figure out, like, is our file system watcher running out of inodes, or, you know, there's, there's just so many things when you have, when it was just us, it was very stable, like we were all dogfooding it, but we all have the same, you know, workflow and we all have the same, uh, code base, right?
+
+And so when it, when it, I think that's, that's always the hard part, right? Is, is trying to make sure that it runs for everybody, that it runs fast for everybody. Like Git is fast and Git has been around forever and Git is incredibly stable. And so, um, and Git has lots of little things that they've tried over time, right?
+
+Are there Git notes or they're, you know, replacements or something like there's so many of these things. Um, and we, Does a GPG sign right when you commit or you know, there's just all of these different configuration options and stuff that people kind of expect us to honor and it's very hard to do all of those out of the gate um So all of the I mean edge cases are the are the problem right and and we've been working for months since since we got some some. attention and a lot of people really started using it of trying to fix all of the, we've essentially done very little feature work in a long time that isn't related to debugging.
+
+Um, but, but, um, you know, God, man, the number of ways that a git client can authenticate with a server is Endless like this ssh and hdp and tokens and auth headers and oh my god Yeah, it's just all the different ways. You can like you can unlock an ssh key like, you know thumb drives or like Yeah, anyways, so um So yeah, that's, it's been super fun.
+
+Uh, but you know, you start with this thing and you're like, you get it to work and you're so excited, but then scaling it is, is always the rub. 
+
+**Justin:** Yeah, for sure.
+
+**Andrew:** So, uh, virtual branches seem to be like the main feature that you guys have tackled so far, but your docs mentions one other feature, the timeline. So what is the timeline and how would I use it in my project?
+
+**Scott:** Yeah. So we, we, that was the thing I was talking about before, where we, we started out with this thing that was a file system watcher and, and every time it sees, uh, uh, an I know change, right? Like it would see what that file looked like. Now it create a CRDT, it store that. And so we'd have. Sort of, and then every half an hour, hour, sort of flush a, a, sort of a keyframe of what the project looked like.
+
+So, you could technically go back to any time anything was flushed to disk, and, and we could recreate anything, since, since you started watching the project. And the project still does that, actually, if you, if you want to, you can kind of go into our docs and find out where the data is, and you can go through and you can find, there's, there's documentation on how to recreate any of those files.
+
+But we don't, we don't show it in the interface anymore because it was, we felt it was a little bit distracting and we wanted to focus on getting this thing right and we were going to bring it back. I think the way that that's going to come back is more of a, an undo log. Um, so that's kind of one of the things that we're working on right now is just every time you do any major thing, drag a hunk to another lane or do a commit or, you know, pull in a branch or unapply a branch or whatever, that we just kind of.
+
+Build up a history, an undo log, and you can look at it and just go back to this point, right, and it just puts everything back, which is really nice because then you can mess around with stuff, right, and it's kind of hard to lose anything, feel a little bit more confident. Um, so, so yeah, we'll, we'll, we'll bring that back relatively soon, but I think it's going to come back not as this very complicated timeline that, that we found we weren't even using very much, but more as a, you know, I want to, I want to undo the commit that I just did.
+
+Right. And, and just have a quick, Control Z or whatever, which, which is hard. It's actually one of the things that people Google a lot for and get is how do I undo this thing that I did, right? And so just having this very explicit, I can just go back to what everything looked like 10 minutes ago and hit the thing and it's all, it's all back, right?
+
+Um, and that just goes onto the top of the stack so that you can undo that if you want to, right? Like I find that, that very interesting. And it's kind of interesting that that's also a rare feature in version control systems is version controlling the control, right? Um, So, so I think that's, that's how that's going to look.
+
+The other thing that we've been working on, like I said, is this more jujitsu type thing. So I think we make it relatively easy to do orthogonal work, um, in like parallel work. Um, but dependent work is still very Git like, right? Like you, you can undo the last commit with a button, but can you undo the third commit back?
+
+Right. And, and sort of end up rebasing the rest, or can you insert a blank commit and then drag some stuff into that, but it's three commits down or something like that. So, yeah. Um, so I'm working on that. Like I think horizontal and vertical sort of management of work, right? Like there's work that is dependent on each other that you want to be able to manipulate your sort of commit stack and your patches like your patch manipulation.
+
+And then there's, there's orthogonal work where this is not, this is just not related, right? It doesn't matter what order these branches are merged in and it shouldn't matter what order they're merged in that, that I know they all work together and I can, the review process can go in any order. And it doesn't matter when it's integrated, um, I'll just kind of keep it in here until I see it upstream and then it just disappears from my board, right?
+
+Um, but I think that's a lot of the, the thing, like you were talking about, like, you don't want to, you don't want to worry about like, I want to take out stuff you don't want to worry about. Like, I don't want to have to name a branch when I create the branch, right? I like this. I like this material idea of anonymous branches of just being like, I'm just going to work on a different context and then I'll name it when I name it, when I know what to name it, right?
+
+Or I'll write my commit message over time. I can start with a blank. Commit and write the commit message and then, you know, write the code and then like append it, like squash it into the commit like that would be a nice way of doing like I don't have to wait until this very specific moment when I want to codify my work and now I need my whole commit message, right?
+
+I find that's a nice thing about jiu jitsu is that you can kind of amend it over time and work on it as a document almost as you're working on the code. Um, and I think that's a much, much more interesting way of working than what we've kind of all been putting up with for a decade, right? 
+
+
+#### [00:43:16] Navigating Team Workflows and Compatibility with Git CLI
+
+**Justin:** I want to talk about like team workflows a little bit. So, I mean, source control is one of these things, like pretty much like any other developer tool where people have a lot of opinions and some people feel very strongly about their opinions. Yeah, this is like them versus them versus Emacs kind of like flame wars.
+
+Uh, you know, there are definitely going to be people on teams that are not going to want to adopt your tool. Like even if you get like a lot of people on that team are like, yeah, we like to use get Butler. We're all using it. And then you're going to be some people like, no, I will not. You will pry the get CLI from my cold dead hands. How do you, uh, ensure that like teams can continue to work together? Like, does it still integrate with GitHub? Like how, how does the, the, the overall team workflow happens when like some people use it? And some people don't.
+
+**Scott:** Yeah, I mean, that's, it's a great question. It's one of the first things that I did. One of my co founder, Kareel, he started a version control team. system from scratch, right? And I think the reason that that didn't work is this problem. And actually GitHub had this problem too, this sort of greenfield problem.
+
+You need the whole company to move off of Perforce and move on to Git, right? And it was constantly, like all of the, the, I'd go into companies and do Git training and stuff, and it'd always be some small team, some greenfield, and then it kind of spread within the company, right? But it has to go team by team.
+
+The whole team needs to use it. And that's, that's a horrible way of, of trying to get into, to break into a market, right? Um, So we designed this from the offset, the outset to be like, it doesn't matter, right? You can be the only one on the team using it, and it's writing the same commits that anybody else is.
+
+Nobody can tell that, that this is what you're doing. Um, you push it to GitHub, you can't tell the difference, right? Like, like it's using lib bit to, its writing. It's writing. Commit, commit exactly the same way anything else does. Um. And so I think that's, that's very important. What becomes interesting is when we get, want to get into more team based workflows, right?
+
+Start, start reinventing some of the review stuff or having our own hosted review stuff that's sort of pre, pre GitHub, right? Or, or something like that. Um, be able to review work before you've committed it, right? Um, or before you've pushed it, right? Um, like, I think that the pre commit review would be really a valuable thing to be the, but like some of the things that really.
+
+are interesting to me that are completely unsolved are things like, um, like merge conflicts, right? Like people have, it's not common, right? Like, I mean, it's common, but it's not, what do you get merge conflicts? Once a week, once a month, like once a day, maybe like if you're really on a busy team, that's hitting the same files a lot.
+
+Um, and a lot of times they're, they're simple. Sometimes they're, you know, if you're working on your, if you have, if you merge a lot, then, then they tend to be less. If you're working on a feature branch for a month, right, then you're going to conflict all over the place. But, but what's interesting about merge conflicts is in a team dynamic.
+
+Um, like in centralized version control systems, you don't really have them, right? Because things lock. But in decentralized version control systems, that's the one of the disadvantages. But, but you have the advantage of just being able to have this nice clean context. But, but when you do, it's so interesting to me because it's always, there's no communication, right?
+
+They're very decentralized. Like even on GitHub, you don't, the branches don't know about each other. The PRs don't know about each other. Like you can't, You could kind of test them all and say, this branch actually, you know, wants to merge at some point in this branch once a month, but they conflict with each other.
+
+So this is going to be race condition now, right? Like, like, whichever one and the weird part is, whichever one hits the merge button first wins, right? Like, 100%. They have 0 percent of the work. And the second person to hit that button has 100 percent of the integration work. There's no, there's no way of solving that.
+
+And so one of the things I really want to tackle. At some point is, is having this, you know, if you're using Git Butler, that the clients can communicate with each other, right? And start saying, hey, this branch you're working on, this, this, this doesn't merge cleanly with this other person's work in progress.
+
+Neither of you have committed anything, but I can see already that you're, you're working on the same file, right? And you should probably start talking about that now, rather than three days from now when it's going to be a problem for one of you. Right. Whichever one's slowest. Um, and, and so, so there are interesting things of taking some centralized concepts and trying to be like, what was nicer about this in some way?
+
+And can we kind of backport this into centralized version control systems by helping them communicate a little bit, right? Um, um, or, or even being able to, to work on conflicts, uh, you know, in a team manner, like it'd be kind of nice for us both to see the conflicts as they're, evolving and maybe comment on them and maybe say how should we approach this right and have some chat about it or something like that like that's actually very difficult to do especially if it's pre commit right so um but even if it's committed like you have to pull it down and do the merge and see the thing and then kind of reference it in slack or whatever like how do you even talk about merge conflicts with somebody right so there's there's tons of stuff like that that i think that there's a lot of of room for improvement in how we work uh together on source code and and just really hasn't been addressed a lot 
+
+**Andrew:** 
+
+
+#### [00:48:19] AI's Role in Version Control and Future Prospects
+
+**Andrew:** so we, we live in an age of AI. Do you think AI will help with merge conflicts in the future? I see that you've been sprinkling like AI throughout the product.
+
+**Scott:** Yeah, I mean AI is so interesting, right? Like, I, I, I'm curious what you guys find AI useful for. I, I find it useful for a lot of stuff. Like, I, I, but very specific things. Like, I don't, I have a hard time imagining in the near future that I'm going to have a pull request description and then some AI is going to solve it for me, right?
+
+And be like, here's the, the changes to the 10 files that need to be changed in order for this to work. The way that you want it to maybe, but like, I haven't seen anything close to that, right? Like I have a hard time getting it to write a section of a function, like really the way that I want it to, right?
+
+Um, but, but you know, working in rust for the first time, it's actually super helpful of being able to write a comment and be like, I have this, you know, sort of hash map and I need to turn it into like a vector of, of, you know, strings that are formatted in this specific way. Like, 
+
+Um, there's, I know there's fold and map and shit in here somewhere, but like, and then, you know, AI will kind of come in and be like, like this. And it's like, yeah, pretty close. Right. And you just kind of see what the compile errors are and fix one or two things. But like, like, I, I find it useful for almost the replacement of documentation in lots of cases.
+
+Um, and so, you know, we're using it for that. If you don't, cause this happens a lot, right. You, you don't, Part of it is because you have to write your commit message at the end, but a lot of people don't like writing useful commit messages, right? Descriptive commit messages. And so you're like, fix some stuff and you commit it and you push it because you need to commit it in order to push it, right?
+
+And GitHub sort of squashes a lot of commits down into one unified diff, so nobody really reads the commit messages for the most part on GitHub workflow anyways. And so you don't really run into them until you blame something. But, but, um, so what we. What we added was just a button that says, write my commit message for me, right?
+
+And it just sends all the diffs out and comes back, and they're fantastic. If you're not trying to explain why you did something, and you're just trying to say, here's a one liner, what happened in this patch? Um, it's very good. Right. It can, it can be incredibly descriptive, um, in a, in a, in a good way. Um, and, and we also use it for writing branch names, like, like we, you do an anonymous branch and then you work for a while and we see enough work and we can, you can set on a toggle and we'll send it out to open AI and come back with a five word name or whatever.
+
+It's like, this is what this branch is doing. Right. And you can rename it, but like, it's kind of nice to just have the system kind of automatically being like, this is, Clearly what you're working on, right? Like this is, you know, if you, if you want to stash this branch, like here's how to find it again.
+
+It's the description for it. So, um, so I, I, you know, we're, we're sprinkling it in to answer your original question. I, I think that AI tooling could be incredibly useful for certain types of merge conflicts. Um, you can use them right now for, I've been doing some experience with this of just sending merge conflicts to, to open AI or to Anthropic or whatever, and saying, how would you solve this?
+
+Right. And it, it can do it sometimes some, some types of, of like, especially, you know, you add one class into, you know, Tailwind, you know, descript, like it's in the middle of the thing or whatever, and you're like, where even is this? Like, you have to go into WordDiff or whatever to see what happened here and there.
+
+Um, A. I. Tools are L. L. M. S. Are quite good at being like this is clearly what happened and how to merge it together. Um, what I'm kind of interested in is something like get ups data set where, you know, they have, they have, if you look at get any merge conflict that's ever happened in any project. in history of Git, um, you can recreate, right?
+
+Because the parents have, you have the original parents and you can run it through the same algorithm that they would have originally run through and said, this is almost certainly what the merge conflict looked like. And you have the resolution in the merge parent, right? Uh, and so, or the merge object itself.
+
+And so, uh, Like you, there's a database of, of hundreds of millions of merge conflicts and what the resolutions are in every possible language, right? That are all open source. And so I think training something specifically like a small model to, to do just that, um, could be incredibly powerful, right? It could be a very, very good, uh, sort of specific model, not instead of a general model, but, um, But I haven't, you know, I don't really have the resources to do that yet.
+
+Um, but, but I, I definitely see a future where, where there is a lot more help with merge conflicts or at least giving you the starting point of kind of, you know, what happened and where you might want to look, right? Um, I think for really big, gnarly merges, it, it might be difficult, but, but certainly for small stuff, you know, you can take that off your plate. 
+
+**Justin:** Yeah, I'm generally skeptical of, of AI for merge conflicts. And, and one of the big reasons why I say that is that. There's been a lot of merge conflicts that I've had to do that. I haven't had enough context as a person to resolve those. And I've had to get other people involved specifically the other person working on the other side of this and like, talk about intent and talk through it's like, okay, what of this do we want to keep?
+
+We both change something in a similar direction and now we have decisions to make, and it's not like, Oh, we just accept this and accept this and it's fine. It's like, no, actually there's not, now there's more work to do and we've got to You know, reconcile and do other stuff. We, uh, had Aggie, uh, we had Maggie Hamilton on the podcast recently.
+
+And, and she's like, uh, she's sort of takes a stance generally against, uh, generative AI, unless it's for like summarization. And I think like the summarization use case, especially get Butler, I think is like. Actually really good. I did appreciate the like auto names, uh, branches and auto commit name or auto commit generation.
+
+Cause like for a lot of people, it's just the seed of like, okay, what do I even write in this like empty text box? And if you just give them something, that's usually enough to like, inspire them to like, Add more. So I think that's good. The other thing that I think is really interesting here is translating intent into action, uh, when maybe you don't know exactly how to do the thing that you want to do.
+
+And, and, you know, I think especially. This is especially true of like UIs that require very specific interactions to accomplish a task. I was doing some product research and using retool to try to build things. And I was like, Oh, how do I do this thing that I know how to do in their UI? And, you know, sometimes it's just like, if you just had a, like a text box, it was like, look, this is the thing I want to do, like do it for me, like show me how to, you know, 
+
+do this. 
+
+**Scott:** Yeah. Actually. By far the most valuable thing that I've used AI for probably recently is in hex. Um, the, it's like a data hex dot tech I think is, is this, uh, like Jupyter notebook type, type deal. And it, it writes Python, you know, pandas code for me, right? Because I, I, I never remember, I don't do it enough to really remember like, off the top of my head, like, how do I manipulate this, this pandas, you know, data frame into, into sort of the thing and then turn it into a graph that I, you know, that I want to, that I want to use, but I know how to explain that.
+
+Right. And so I can be like, I'm trying to take this, this data frame and turn it into this, like, you know, change this field to filter it into this, whatever. And it's like, no problem. And, and it works right. Like, Like, almost 100 percent of the time, it is mind blowing how much time I've saved trying to go through Panda's documentation and figure out how to do something specific, right?
+
+Or find some, some examples, um, or write some SQL for me sometimes. So I'm, I'm relatively good at SQL. I, you know, I'm old enough that I actually had to write a lot of stuff directly in SQL and not AROL or whatever, um, you know, in my early days. And so I can do a lot of, a lot of SQL stuff, but even then there's some, You know, there's some, some difficult things to, to kind of wrap your head around and if you tell it, okay, I want a cohort table, like cohort stuff is a little bit difficult to do sometimes, you know, given, uh, uh, anyways, but like, it'll help you write all that stuff.
+
+So that, that type of thing, I think, you know, we've been thinking about it. For, for things like, like, uh, absorb, uh, classification. So, you know, if you have a three or four commits and then you go in and you, you edit, you, you know, you fix things that came up in review across 10 files or something, it's kind of nice.
+
+It would be really nice to hit a button that says, figure out. what file or which of these commits each changed hunk should theoretically go into, right? So that I don't have to be like, okay, this goes here and this goes here, right? AI is probably pretty good at that of being like, this is similar to these files, or this is historically committed with what these two files are historically of changes together, or they're similar, you know, it's obviously a test for this thing, right?
+
+Um, and, and can kind of stick it where, based on the commit message and based on the, the file contents and the changes say this most likely is classified to go into this commit, right? Um, so there's that type of, but all of it is, it's all, you know, most of the stuff that we're thinking of is saving you a couple of minutes at a time.
+
+It's not, you know, it's not saving you hours at a time or something, but, but it's reducing friction, you know, in a way that, that you don't want to, you know, you want to work on the code. You don't want to work on, Whatever you don't want to work on, right? 
+
+**Justin:** I do think that there's this interesting idea that there's like a new paradigm of API where You know, we build GUI products to, you know, give a very specific type of workflow to the user and to sort of direct them and guide them into doing specific actions that we translate down into, you know, machine operations that are like more complex or prepackaged or something.
+
+And, and, you know, a lot of times it was like, Give an API to our products. So it's like, Oh, well you can't necessarily do this in your UI. We just haven't prioritized or it's like not there yet. Like we have these APIs, you know, user rest API, you can do this thing. there's a lot of non technical people are like not technical enough or don't have enough time or don't care enough to do the thing, but there's this interesting idea of like having, This internal API that's there that an LLM can just like integrate and use.
+
+And it's like, Oh, well, you want to do this thing? Yeah. I can do this thing for you. And it's like internally do this stuff without them having to like make a bunch of API calls or whatever. I think this is like, uh, interesting use case for the future
+
+of like AI integration into our
+
+products. 
+
+**Scott:** yeah, there's There's, you know, in the version control world, the other, the other interesting thing that we've been looking at and trying to figure out, you know, what do we, if we had to go from first principles on a, on a tool set, a lot of the archaeology tools and get, um, I think, uh, haven't been, you know, it would be interesting to rethink them.
+
+Right. And I think a P or a, I can possibly play a big part in that. Like, you know, Explain this function to me right or or something like that right where it could go through all of the commits that that modified that like when it was moved from this file to this file when it was restructured take out whitespace changes like you know you can do get blame dash you know capital c three times dash l range whatever like if you know how to do that.
+
+Do all that. And then you get the last one and then they're like walking back through, okay, tell me the story about, or, you know, even having access to Slack conversations or, or, you know, engineering, you know, Congress or GitHub issues or whatever, like, what's all the context around this. Tell me, tell me, you know, what is the story of this, of this function, right?
+
+So, because I want to edit it and I don't know why it doesn't work the way that we want, or, or I don't want to not break something right. Like, was there century stuff involved in the last time this was, you know, edited or whatever, I don't know, like, like, It's interesting to think about what we use some of some of our version tool tools to answer and if they're actually good at answering those questions or if they're the only tool we have to answer those questions.
+
+And so we're fine with whatever we're given, right? But I think I could be really good at that of being able to do these more free form questions about about your code or about the history or about what you're trying to do or about who to talk to about something right? And so I'm excited about that.
+
+But we know we kind of have to we're tackling like one. One section of the world of version control tools, uh, of what Git does for us at a time. And, and, and it's interesting at every point to be like, is there anything that, that AI can be good at? Right. That, that, that otherwise seems like a slog, but that's what I find people find the most valuable, right.
+
+Is like, it can be cute or whatever. And, and, and, you know, there's, there's some applications that you'll use it and it's like, wow, it's interesting. It can do this, but it's not really. It's not really helping me that much, right? It's just kind of interesting. Um, and there's other stuff that's super interesting.
+
+Like I, I really love how, how much less I have to dig through documentation sites with, you know, crappy search index indices. Um, when instead I can just ask chat GPT, how would you do this? Right. Um, and, and a lot of times, or even just like I said, write the comment in the code and have co pilot be like, you know, Is it this?
+
+Right? And it's like, close. It's very close, right? And it's kind of like what you said, it's not, it's not that I'm, I'm using the, the, you know, Git Butler AI commit message thing to write my commit message, but sometimes I'm just using it to remind myself what I did, right? Because it gives me a nice summary.
+
+And it's like, Oh, yeah, Though that is largely what I, but I'll put my own flavor into it, right? Or, or my own insight, right? But, but it kind of helps me not have to go through 50 diffs, right? And be like, what was I doing here? 
+
+**Andrew:** Yeah, excited to see what else you guys do with AI in the future, but wrapping up the conversation here, we usually like to ask a future facing question of our guests. And for you, I think the question is obvious. What do you think the future of version control is and the future of sharing code?
+
+**Scott:** Yeah, boy, that's a really great question. I, I, you know, I don't even know if this is a good answer to this. My, my question actually about this that I'm most concerned about is where software development gets done in what timeframe? Um, because there are, tools like Codespaces or, or, you know, Gitpod or something like that, where, um, there's kind of a bet in taking software development into the cloud, right?
+
+And having our laptops be thin clients, right? And, and we're all kind of, you know, we don't have to, I don't have to have a 3, 000 Mac or whatever to, to, to get stuff done. Um, I can, I can have a Chromebook, right? But like, I feel like that promise has been around for a while. And every time that I've tried to do it, even though I'm very excited about it, I've found it very, very difficult.
+
+Very frustrating, very difficult, and it depends on the type of software development that you're doing as well, right? And I think the proliferation of all of these technologies that people do use and love and stuff makes it even harder because it has to work well for sort of all of them, right? And so I'm and we're building a desktop app.
+
+So we're kind of betting on people are still developing on the desktop, right? Like it doesn't, if everybody moves to code spaces, it's going to be a little bit difficult to move our, our tool set there. Um, but I, I, I'm curious, right? Like, I, I feel like this has been a constant. Possibility. It's just been very difficult to do.
+
+Um, and, and yeah, I'm, I'm, I'm fascinated with, with what the future of software development is going to be. And AI changes a lot of this as well, right? Like, is it going to get good enough where, where I can say, here's what I want. And it can, it can write a hundred thousand versions of it and test all of them and give me the three that, that, you know, seem to work the best, right.
+
+Which is not what it does right now, but what it theoretically could do, right. It is very paralyzed, parallelizable. And or, you know, do we have different programming languages that are good at what AI is good at, right? Like AI is writing, they're writing software in frameworks and languages that were designed for human beings and have sort of the, you know, like, it has all of the things that human beings are bad at designed into it, right?
+
+To kind of be better at. And so, you know, and it's trained on that and it can regurgitate that. But like, you know, you could theoretically design a programming languages that that was much better at what a, you know, what a LLM is good at producing and massively testing in parallel, right? Like human beings can't do that.
+
+And so nothing's designed for that. Um, so I'm, you know, I, I, you know, I think, I think that we're in a really interesting space where none of us really have a good idea and we kind of, you know, year to year, month to month kind of have to figure out what could be possible in a year or five years. but I think at the end of the day, what's really important about our jobs, about software development is.
+
+Is having taste in in you know what the end user has right and and so like we want to I'm making I'm trying to make tools to make that process easier to get out of your brain and and and do but you know just like You can build great software in React, even though I hate it. You can build great software in Svelte.
+
+You can build great software in Ruby, even though lots of people hate it, right? Like there's, you can, you can have these, these wars, but it doesn't, in the end of the day, you know, Scala or whatever you choose, who gives a shit, right? Like, like it, what matters is, is this good? So does this solve somebody's problem?
+
+And so I think like that AI will be a good way of, you know, Generating software, but you have to have a good idea, right? You have to have good taste on what what what that needs to do for people for human beings And I think that's going to be difficult to to get out of the process, which is exciting to me
+
+**Andrew:** The future is fuzzy, but we'll get there. Uh, so, uh, that wraps it up for our questions this episode. Thanks for coming on, Scott. This was a super interesting conversation about the history of Git and GitHub and what you're doing with Git Butler. So thanks for coming on 
+
+**Scott:** Yeah, thank you for having 
+
+me. It's been great. 
+
+**Justin:** Yeah, uh, thanks, Scott. I, you know, really enjoy get Butler a lot. It's been really fun to work with. I'm not working. I'm not using it as much right now because I'm just started, uh, start up with a friend of mine and, uh, we're using sub modules a ton, like more than I've ever used sub modules. So when you have sub module support, you let me know and I'll get back 
+
+on the track. 
+
+**Scott:** We haven't started to tackle that. That's a beast. We've, we've, we just wrote in a thing. We got so many problems. We just wrote in a thing that's like, if you see to get
+
+modules, just stop 
+
+working. 
+
+**Justin:** Yeah, I know. I know. Cause it like suddenly didn't work for me anymore. I was like, wait, what happened anyway? Uh, yeah, but it's fantastic work. I'm really excited about the future of what you're doing there. I think it's very needed in the space. 
+
+So thanks for 
+
+working on it 
+
+**Scott:** Can I, can I plug something 
+
+as well? 
+
+**Justin:** Yeah, please.
+
+**Scott:** Yeah. So, so we're, like I mentioned at the beginning of this, we're, um, we're putting on a developer. So there's a lot of things I've been learning doing a new developer tools company. Um, and so I've talked to a bunch of people that have been in the space a lot about, you know, how do you do marketing now, right?
+
+And it's been 10 years since, since I, or how do you open source a project in a, in a nice way or engage the community or whatever, right? Like, um, and so, um, I decided it would be kind of fun. Like the other staff has been like, okay, I've been talking at all these conferences. So we decided to put on our own conference to just do this.
+
+So it's not like you get other conferences, just us organizing a bunch of interesting people that are doing stuff in the developer experience, uh, and developer tools world. Um, and it's in Berlin in, uh, June 13th and 14th, uh, I believe, um, and you can go to merge. berlin. Um, if you are interested in coming or talking to me about any of this stuff, obviously I'll be there.
+
+Um, it's going to be a super great time. So if you're in Europe and you want to, or you want an excuse to go to Berlin, uh, please come and join. And, and, you know, we have people from actually Adam Wiggins who we talked about before speaking at the conference and, um, a bunch of people from HashiCorp and from Microsoft and GitHub and everything.
+
+So, uh, yeah, it'll be a great time. Please join us. Uh, and that's that's my plug. 
+
+**Andrew:** ​
