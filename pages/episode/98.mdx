@@ -1,0 +1,578 @@
+---
+title: Ryan Dahl - Node.js, Deno
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Ryan-Dahl---Node--Deno--and-JSR-The-Modern-JavaScript-Registry-e2jisbq
+youtube: https://www.youtube.com/watch?v=BfXgV5s9Ki4
+tags: technology, nodejs, deno, javascript, programming, web development
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Ryan Dahl, the creator of Node.js and Deno. We talk about the history of Node.js, the creation of Deno, and the future of JavaScript.
+
+
+- https://tinyclouds.org/
+- https://x.com/rough__sea
+- https://deno.com/
+
+Episode sponsored by Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+<!-- Paste sections -->
+
+## [00:00:22] Intro
+## [00:01:34] From Node to Deno
+## [00:06:50] Deno vs. Node: Philosophies, Features, and Ecosystem
+## [00:17:31] JSR: A New Javascript Registry
+## [00:32:59] The Evolution of JavaScript Runtimes and the Role of WinterCG
+## [00:36:49] Deno Deploy: Simplifying Cloud Functions and State Management
+## [00:44:01] Sub Hosting and the Future of Serverless Computing
+
+<!-- TAB: TRANSCRIPT -->
+
+## [00:00:22] Intro
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This podcast is about developer tools and the people who make them. I'm Andrew, and this is my cohost, Justin.
+
+**Justin:** hey everyone, we are really, really excited today to have Ryan Dahl joining us. Ryan is the creator of Node. js and now Deno. Ryan, we've been a big fan of your work for a long time. We've had a lot of really good guests come on the podcast and we've been really honored to talk to people who's affected our careers, but it's, it's no, uh, you know, it's no small thing to, to Talk about the influence that node in particular has had, especially on Andrew and my own career and so many other people in this space.
+
+So, it's really an honor to have you on, uh, before we start talking about the work that you've done, would you like to tell our listeners a little bit more about yourself?
+
+**Ryan:** I am living in New York city. I, have, have a daughter who's, who's two years old. Um, and I've been working on this, 
+
+this, uh, Deno project slash 
+
+company, which is, is kind of a V2 of node as, as, as I see it, for the last couple of years, and having a lot of fun with it.
+
+**Justin:** that's awesome. Um, so maybe we can just start at the top. 
+
+
+## [00:01:34] From Node to Deno
+
+**Justin:** Let's just talk about node a little bit. Uh, so. Where did node start? And when you're like first working on it, did you ever think it was going to get as big as it is today?
+
+**Ryan:** Uh, I mean, no, not at all. Uh, I, I mean, it's, I think I've, I've been continually, uh, shocked at how it keeps growing and growing and growing. I mean, you know, in year one, I thought it was amazingly popular and in year two, it, it seemed even more amazingly popular, but I think it wasn't until 2015 or so that it really became kind of mainstream and in developer circles.
+
+And by then I had stopped working on the project, but. Uh, you know, in, in 2012, it was like very clear that this thing was, was going to be a big deal. Um, and, uh, gosh, I, I, I am just, uh, happy to have been in the right place at the right time and, and kind of got, gotten lucky to have worked on, uh, something so impactful.
+
+**Andrew:** So the, the life of Node has been long and has been plagued with a little bit of drama, but I think we're mostly past that drama in the current times. But what do you think of the current direction of Node? 
+
+**Ryan:** I mean, it's, it's being used by millions of people. I think, I think nodes like a lot of software that reaches that level of adoption is, is going to be around forever. Uh, the Apache web server will be around forever. the Linux kernel will be around forever. Uh, I, I, I think it's, it's inevitable that that node will be, there for a very long time, but, 
+
+inherent in.
+
+My Deno project is, uh, you know, uh, a, uh, observation that, things could be better in, in the JavaScript world. And, uh, I, I, I think that node is, uh, tied down by its, its large adoption and, and in many ways can't innovate as, as, Urgently, as, as I think is, is necessary and in a language like JavaScript, where JavaScript is, is much larger 
+
+than, than node.
+
+It is, 
+
+it is kind of the, the lingua franca of, of programming languages. Uh, and I think, you know, being tied to the web browser and the web browser being tied so deeply to humanity has a long future ahead of it. And I think there's, there's still work to be done to, to, uh, make that ecosystem, robust and, and, uh, fun.
+
+**Justin:** Yeah, absolutely. maybe for our listeners who are kind of new to the space, could you talk a little bit about, we'll just like 
+
+**Justin:** focus on Deno now, can 
+
+**Justin:** you talk a little bit like 
+
+**Justin:** about what Deno is and why 
+
+**Justin:** somebody may use it and then after that, maybe contrast it a little bit to node. Yeah.
+
+**Ryan:** Deno is, uh, so I, 
+
+both Deno and Node are built on top of V8, which is the JavaScript runtime from Chrome. Uh, I think of them kind of like Linux distributions, right? You have, you have Debian, you have Red Hat, they're, they're both, Linux kernel, uh, distributions. Node and, 
+
+Uh, Deno and Cloudflare 
+
+workers for that matter are different distributions 
+
+of V8.
+
+Uh, Deno is taking a couple of different perspectives than Node. So first, first of all, it's much more modern. So it is, uh, Obviously can execute JavaScript, but it has a heavy emphasis on on TypeScript and ECMAScript modules. In fact, you know, really discourages you from using common JS. Uh, it has a, uh, secure by default philosophy.
+
+Uh, javascript itself has a lot of security features, and in node, we plugged all sorts of holes in it to access the file system and, uh, you know, generally interact with your operating system. That's what makes node useful, right? You can open socket connections, uh, In you can do those 
+
+things in Deno too, but 
+
+you have to kind of give give the runtime permission to do those things much like the web browser needs permission to access your webcam.
+
+Um, the APIs in Deno are more. In line with browsers. So, you know, for example, in, in node, this has been corrected in recent releases of node, but, you know, early on, there was no fetch in JavaScript. There was, there was no HTP client. Uh, and so, you know, I, I invented one, uh, and subsequently the fetch API was standardized and, and, uh, put into browsers.
+
+
+
+and, Uh, Deno uses that, 
+
+uses web streams, uses web crypto uses, you know, uses Web g, web GPU, um, you know, really, really strives to keep the delta between browser APIs and server side APIs as small as possible. Intrinsically, it is a 
+
+different system. Deno is not a 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** web browser. It's it is for interacting with file systems and TCP sockets and all sorts of stuff that you can't do in web browsers.
+
+And so there, there's always going to be a gap, but I think it's, um, the future of JavaScript will always be browser JavaScript. And so I think it's really important to keep that gap as narrow as possible. Um, yeah. 
+
+
+## [00:06:50] Deno vs. Node: Philosophies, Features, and Ecosystem
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** And, 
+
+**Ryan:** you know, Deno, I guess, 
+
+has a little bit of a different philosophy when it comes to what the runtime provides.
+
+Node tries to be as small as possible, has a small core. At least that, uh, in my day was the philosophy. I think things have changed in recent years. uh, but that has created kind of a complex, I guess. ecosystem of tooling that people need to choose. So you need to decide what linter you're going to run and what code formatter you're going to use and what build, build tool, what bundler you're going to use.
+
+And the list just goes on and on. Uh, you know, people get very familiar with this if you're working in node for, for a long time and you know that you use prettier and you use ESLint and you kind of know what the right choices are. Uh, but if you walk away from node for a couple of years or or if you're new to the system and come back, it's it's just this bewildering array of random words that you have to learn in order to just set up your 
+
+project and Deno takes the 
+
+philosophy that this is actually part of this is what the runtime provides.
+
+It provides a full tool chain. For developing JavaScript and TypeScript. And so it has a lender built in, it has a code formatter built in, like it, it is opinionated in how you develop stuff. It, you know, it has a, uh, a language server and LSP built in. So, so that you get code completion and VS code and it does all of the, you know, all of this is, is kind of meant to work together and, and, uh, a really tight way so that, uh, you as a.
+
+Programmers sitting down to, to use Deno should, it should just magically all work. Like there's, there's very little that you have to know ahead of time when you, when you kind of sit down and, and use Deno. And, and I think that overall gives, uh, the vibe of simplicity.
+
+**Andrew:** Yeah, it had been a while since I went back to the Deno website and I was just surprised by the utter like so many services in like built in things that you offer. Like I hadn't seen the linter. I hadn't seen the formatter. You have a test runner now and you have all these like back end services. So it's like it really is completing that vision of like a one stop shop.
+
+**Justin:** I think it's, it's, you know, it's very timely too, because I mean, I go back to your early decision of like making node small core. And I think that was like, that was the right decision at the time because the linters and all the tools and stuff just didn't exist. You're building node and like, you know, if you would have built all that, baked all that stuff into node at that time, well, a node would have been a lot slower to evolve and be.
+
+I mean, frankly, you would have made probably a lot of wrong decisions because one of the things that a lot of people have complained about in the last several years, I don't hear it as much these days, but like, especially, you know, 2015, that time range is like. JavaScript churn. It's like, Oh, everything's happening.
+
+Like all these libraries are getting built and then deprecated. And, but I think the thing to acknowledge there is the sort of rapid learning that the whole industry was going through in this space, like JavaScript, the language and the tooling and everything evolved so, so, so quickly, and so many lessons were able to be learned.
+
+And I think the small core part of node, like really enabled that, uh, Sort of just like community learning. And where we're at now is like, things are actually much more stable. We have a relatively better understanding of like what kinds of tools to expect and everything. And I am just so excited that you've had the opportunity to sort of revamp this idea because like now after all the learning we've done, you're like packaging this up in a nice little product.
+
+And, um, it's, it's pretty fantastic. I think it's like very well timed for sure.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Good, thanks. Yeah, I, I think I agree with you. Yeah, you know, when, uh, you know, in the 1st year of node, there wasn't even a way to distribute packages, right? This, this was largely invented by Isaac Schlueter, uh, and we built this, this NPM system, which, uh, Yeah, I mean, it's it's it's kind of hard to think back to 15 years ago, but I mean, there was a time when like, none of this was worked out at all.
+
+Um, and now we, we kind of have the chance to go back and, um, yes, you know, maybe, maybe an analogy or a way that I like to program is, is like, Fast and sloppy first pass and then rewrite and then rewrite and often like the first sloppy pass will be like a bash script or a javascript sort of thing. And as you kind of understand the problem that 
+
+**Ryan:** you're solving it, it you know, it 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** gets set into stone and, you know, maybe you're porting stuff into rust, you're kind of defining the structures and yeah, I think at this point in 2024.
+
+Uh, we have a pretty good idea of of the job is we have a much more intelligent, uh, uh, detailed idea of, of what the JavaScript ecosystem needs and the various components of it. Um, and yeah, hopefully, hopefully, you know, can deliver on it. I think there is is also a danger of. Going too far. Uh, and, and, uh, you know, you, you can kind of overstep, you know, when you're, when you decide to have, have a big core, like you, you can definitely kind of overstep your bounds and, uh, step into areas where things are still in flux.
+
+Um, you know, we have a 
+
+**Ryan:** project at Deno called fresh, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** which is a web framework. Um, it's 
+
+**Ryan:** not part of Deno itself. So, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** you know, it's, uh, I think, uh, You know, right for right for this, this area, but you know, I, I wouldn't want to make the claim that fresh is the way that you develop websites. I, I think there is still rapid iteration happening in the web framework space.
+
+I expect that to continue for many years to come. Fresh is one attempt at this, you know, one, one way of, of, uh, of doing that. But, uh, Yeah, I, you know, I, I would not want to, to, for example, try to define for everybody how web frameworks work. That's, that's very unclear still.
+
+**Justin:** Yeah, absolutely. So Deno itself has 
+
+went through a lot of changes and it's life cycle. So I remember, you know, you're sort of the, the first talk that you gave sort of 
+
+**Justin:** introducing Deno, or, or really 
+
+**Justin:** talking about like the, um, the things that you regretted about node and then the things that you would like think about 
+
+**Justin:** differently and Deno, and some 
+
+**Justin:** of those even original things have changed a little bit.
+
+So can you talk about like the 
+
+**Justin:** evolution of Deno as a project?
+
+**Ryan:** Yeah, Deno started as really just a demo for a conference. Uh, this, this 10 things I regret about node, uh, talking, you know, it's, it's extremely primitive. It was written in go, uh, it did have TypeScript built in. I think that one of the main ideas in it was. The security feature was, was there from, from the beginning.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Um, but there was also, uh, some kind of questionable ideas about how, uh, the rut, the native part talked to the JavaScript part. That was kind of a big part. I'm not sure if I talked about it in that, in that, uh, uh, talk, but, uh, what I was thinking about a lot and, and what I've, I've thought about for a long time is just kind of how the.
+
+The native part interacts with JavaScript and kind of how you do that, that boundary crossing, uh, uh, because that that ends up being kind of a lot of what these, these run times are dealing with, um, since then, a lot has changed. It's written in Rust that happens, you know, a month after, after that talk or so we, we switched away from, from go.
+
+Uh, so it's, it's one of the largest Rust projects actually now, um, it's, uh, still has security, still has TypeScript. Those are key, key parts of it. Um, but, uh, the. The relationship to the existing NPM and node ecosystem has changed quite a bit. I think originally I was just like, let's just, you know, blaze a new trail here and, and see, see how this works.
+
+Um, uh, that's, uh, it's interesting for, for a demo, but you know, once you start talking to, to real users who are playing around with it, you realize that like, oh, they have this NPM module that does, you know, whatever. It's the AWS SDK and. It's inconceivable that everybody is going to rewrite like every patent, you know, there's just, there's so much infrastructure in, in the NPM and, and node world that it just, it becomes a really infeasible to, to kind of start a completely independent ecosystem.
+
+So, uh, over the last, let's say two years or so, we've been putting a lot of work into. Compatibility with, with, uh, NPM. And, uh, these 
+
+**Ryan:** days, uh, Deno has, uh, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** most, uh, it's kind of hard to quantify actually, but most of the note built in node API is implemented. So the like node, node colon FS, like you can just import that and use that.
+
+And, and that's, that's, uh, deeply 
+
+**Ryan:** baked into Deno. You can 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** also just import, uh. NPM packages and and because most NPM packages are are written in common JS with with require although you can't use require as a 
+
+**Ryan:** top level Deno user we we 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** kind of prevent you from from doing that uh we you can't actually 
+
+**Ryan:** you know Deno does have 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** an implementation of common JS because it needs to support all of these these NPM modules uh this has been a really long journey because the the long tail of uh Uh, compatibility is, is hard.
+
+Um, but we, we continue to, to hammer away 
+
+**Ryan:** at it and Deno is getting 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** better and better at it every day. Um, you know, sometimes it seems like it's going to go on forever, but I mean, these days, you know, can run next JS, it can run most web frameworks and we're working 
+
+**Ryan:** towards a, uh, Deno to release 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** where we make this really explicit and are just like, You know, you can you can 
+
+**Ryan:** essentially use Deno in all of 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** your existing node projects.
+
+It doesn't matter if they have, you know, an API, uh, native extensions. It doesn't matter if they have common JS and PM dependencies. It doesn't matter if it's a package Jason project that has nothing 
+
+**Ryan:** to do with Deno. It doesn't 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** matter if it's using private registries or if it's using NPM workspaces. It all just 
+
+**Ryan:** works in Deno.
+
+Um, and, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** uh, yeah, we're, we're, we're, we're pretty close to that. That's, that's just a couple of months away.
+
+
+## [00:17:31] JSR: A New Javascript Registry
+
+**Andrew:** Sweet. Uh, so, so you've been doing, uh, some new things in the package registry space. Uh, you guys came out with a thing called JSR. So what is JSR? How is it different than NPM? And like, what sort of restrictions does it put in place to make JSR different than NPM?
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Yeah, J. J. S. R. stands for javascript registry. Uh, and it is a new registry kind of like like N. P. M. Uh, and you know, it's important to differentiate this from from yarn or P. N. P. M. which are package managers that still talk to the same N. P. M. registry. J. S. R. is really a new storage location, a new distribution marketplace for, for, uh, for javascript and typescript code.
+
+J. S. R. Is, uh, N. P. M. Just has had many years of no developments right since since the get hub acquisition. It's really not moving very much. Uh, N. P. M. Is, of course, very old at this point, and it's built around this common J. S. Module system rather than the more modern and standard ECMAScript modules. The majority of packages on, on, uh, Uh, NPM are common JS and these days, um, you know, JavaScript has a module system.
+
+**Ryan:** It's called ESM and actually most, most modern JavaScript code is written in TypeScript. I consider TypeScript kind of. V2 of JavaScript and there's proposals in flight to even make that more, uh, standardized with types as comments. So I expect in the coming years that browsers would, will probably be able to interpret TypeScript directly.
+
+Um, we think it's important that you. Are able to distribute the code that you write and when somebody is pulling in a library from you and they click, uh, you know, go to definition on on some method that you've provided that you get directly into the source code that that was written for 
+
+for that method um That is essentially 
+
+impossible in, in, uh, in NPM or is, or is very convoluted. Let's let's call it because NPM is, is kind of built for common JS first development, so it requires, uh, a bit of, um, uh, research and somersaulting to, to figure out how you take your TypeScript code and actually just package it up and distribute it.
+
+And NPM, uh, it's, it's, uh, it's quite a headache for, for quite, quite a lot of people and, uh, JSR is, is essentially sidestepping all of this, you know, the, the philosophy is that you publish your, your TypeScript directly, uh, and we will take care of the rest, uh, JSR is, uh, not, um, blind to the network effects of NPM, um, so your JSR packages are allowed to depend on NPM packages, And JSR also acts as an MPM registry itself.
+
+There's mpm do jsr, DO io, which is literally an NPM registry. So you can pull JSR packages into, say, your web framework, um, or you can set JS R as an upstream of your private registry. So it, it, it is really meant to be backwards compatible with. With NPM, but it's, it's giving a new modern place for people to distribute code and JSR is really trying to level up the ecosystem, encouraging best practices.
+
+Uh, so it has a number of features to that effect. For example, it has a pub score mechanism, uh, which we stole from darts pub dot dev that essentially gives you a higher score. If you. Uh, do best practices. Obviously, we don't want to be super strict. We want to encourage people to publish whatever it's it's annoying when when systems are, you know, when warnings are actually errors.
+
+Sometimes you just want to publish, but we want to push you in the right direction. Right? So so you get a higher score if you provide documentation for all of your exported symbols. You get a higher score if, uh, if you have, uh, certain, uh, uh, security mechanisms, which I should probably talk about the, the kind of, uh, SIG store.
+
+We have, we have a attestation Providence, uh, security system where, where we can actually, uh, Kind of cryptographically check that, uh, packages were published by certain authors, uh, via via GitHub actions. So you get a higher score if you have that enabled. Um, so, yeah, generally, we're, you know, we have kind of an opinionated stance, which is, you know, publish in TypeScript, publish, uh, publish in JavaScript if you want, of course.
+
+Um, but don't, don't worry about kind of the build step of this. You know, you, you should be publishing the code that you write and you should not worry about anything else. Uh, you know, let, let JSR take care of the distributing on NPM problem. Uh, so, you know, JSR will, will essentially compile this, this down to, uh, to JavaScript for you, strip out your types, it will create your DTS files, it will, uh, it will distribute an optimal NPM package.
+
+For you that you can kind of distribute to your users. We don't expect, uh, everybody to switch to JSR all at once. Um, yeah, furthermore, JSR is really intended to not be node first. Uh, you know, NPM is, is, of course, the node package manager, um, JSR. You know, it's built in a, in a time where there are multiple server side run times where there is, uh, browsers to think about and, you know, different, just lots of different tooling that that is using javascript.
+
+And I think we, we kind of need a, a common town square that that is, uh, runtime agnostic, um, is, uh. Uh, not a 
+
+product of, of Deno, although 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** we, we built it, um, it, it, it is open source and, and it's intends to be, uh, openly managed, um, you know, surprisingly like the NPM registry isn't, isn't even open source. So, you know, we, we are really intending this as a public service and, uh, essentially want to, want to put it into the public domain once, once we kind of find a, uh, Uh, staff of, uh, you know, some, some people that, that, uh, that are sufficiently, uh, motivated to, to kind of, uh, moderate and keep it, it nice.
+
+Uh, we, we, we hope that, that this can, uh, uh, really serve to, to, yeah, as, as I said, level, level up the, what, what the JavaScript ecosystem is doing.
+
+**Andrew:** You're shipping TypeScript, but like JSR itself is like doing a transpilation using TSC. Is there any like Do I have to worry about TS configs? Oh, interesting. Not using TSC. 
+
+So with, when I'm using TS configs, normally I have like libraries and targets and all of that. How does like JSR help me with that and make me not worry about it? 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Yeah, you, you don't, you don't need to have any sort of TS config there, there is essentially like a recommended way. You know, we, our, our philosophy is like, don't choose your own compiler options. Like we, we, we want a TypeScript that, that is shareable amongst multiple libraries and we prefer that everybody has the same TypeScript config.
+
+Uh, it's, it's kind of a. Anti pattern, actually, that everybody is kind of choosing their own flavor of TypeScript. There should be one language, and JSR encourages you to do that. Like, you do not configure TypeScript at all.
+
+**Justin:** That's awesome. Yeah, it does take away. Hopefully a lot of headache because configuration can take forever. Um, I actually have two questions about JSR. So one, um, uh, one of the things that I really like about what JSR does is it shows compatibility for different platforms, uh, for different runtimes, you know, so it's like, Oh, well this, yeah, this can run on these browsers or this can run, you know, You know, 
+
+**Justin:** obviously on Deno or CloudFlare 
+
+**Justin:** workers or something.
+
+What is the bar for listing? When do you decide to list another JavaScript runtime? Um, and what does that process like is one
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** That is completely up to the maintainer of the package. So, it's just a Boolean setting in the package configuration on the website. You just say This, you know, this supports cloudflare. We don't test that. We don't police that in any way. Um, it's just, it's just a notice to people. It's just, hey, fyi, uh, you know, you can search by the runtime that you're interested in.
+
+So if you're, you know, looking for cloudflare worker compatible modules, you can, you can search by that. But, uh, yeah, we, we can't verify that or, or, uh, check that in any way, but nevertheless, I think it's, it's kind of a nice, a nice little piece of information to have as, as kind of top order metadata for packages.
+
+**Justin:** For sure. And then, uh, the sort of last question on the topic. So before JSR, uh, 
+
+**Justin:** there was a Deno. land slash X um so, uh, that was sort of a. Kind of a light registry, if you will, um, for publishing some scripts. So what is the sort of fate of X? Is that going to be rolled into JSR? Will it be deprecated? Like what's the relationship there?
+
+**Ryan:** Yeah, so, uh, DDenohas, you know, uh, famously kind of started with with this, uh, very interesting module system that, uh, where everything is a URL, uh, that there there is no package manager, uh, that that's, uh, because this is is what is specified in in ESM modules. Uh, in in the standard. So you can actually pull in URLs in in browser.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Yes. Um, this has, um, frankly, not worked out particularly greatly. I mean, it's it's kind of nice to be able to link to to random codes. Uh, it's it's really nice for kind of one off scripts. Um, but for like larger projects, you kind of wants, uh, defined packages. You know, first of all, Yeah. You really, you really want the server that you're fetching the data from the source code from to remain online.
+
+And what we found is that, like, essentially, uh, You know, other than a few kind of defined, uh, places, uh, for example, get 
+
+**Ryan:** hub or Deno Deno dot land 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** or, uh, S. M. dot S. H. Uh, the reliability of various U. R. L. S. was, was pretty bad. And so you, you start having this. Ecosystem of, of modules that link to random websites.
+
+Croc, crux dot land was, was something that somebody set up and then these things go down and because those are in the module graph that affects dependencies and it just overall creates not a great picture and I'm, I'm sure there's all sorts of people rolling their eyes saying like, well, I could have told you that from, from the get go.
+
+Um, I, you know, I, uh, you know, obviously that, that was apparent from, from the outset. But, uh, Uh, it's kind of nice to push on ideas and and see how far you see how far that can take you. Another problem with the U. R. L. S. H. E. P. specifiers as as a module system is that it has no versioning so obviously you can put the version in the U.
+
+R. L. 
+
+**Ryan:** itself. But Deno would not 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** have any idea of what that version is. And so being able to do a module deduplication across a tree of modules where, you know, maybe you depend on some, some package, uh, that has, um, Let's say you depend on the standard library HTTP package version, uh, 0. 1. 2. Um, but elsewhere in your dependency graph, uh, you're depending on the standard library HTTP module version, uh, 0.
+
+1. 3. Um, they're almost the exact same thing. They're just a patch release different from each other, but that code will get in because, uh, we're only looking at URL specifiers, HTTP URL specifiers. 
+
+**Ryan:** All right. Deno has no just 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** treats them at abstractly as as two different modules rather than the same module.
+
+Slightly different that that could probably be duplicated. Um, so yeah, you end up having more code in your dependency tree than than necessary. Um, so, uh, 
+
+**Ryan:** You know, Deno, of course, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** will continue to support HEP 
+
+**Ryan:** modules and Deno Land slash 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** X will continue to be there indefinitely. But JSR is really kind of the next 
+
+**Ryan:** iteration of Deno Land slash 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** X.
+
+All of our, you know, over years, like, we've kind of dwelled on this and thought about it. Like, well, maybe we should just encourage people to publish to NPM. Maybe we should, uh, you know, make a new 
+
+**Ryan:** version of Deno land slash 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** X. And ultimately after thinking, you know, just dwelling on this for forever, just, uh, decided that, that we really needed to create JSR that, that, uh, that JavaScript demanded it.
+
+And, um, yeah, I, I, I really encourage people to try it out. I think you will be delightfully surprised at, at like how, how nice JSR is. It is, is absolutely delightful to use. And there, there's a lot of thought in every little detail of, of that system.
+
+**Andrew:** Yeah, it's cool that you guys are adding new features like the documentation stuff is, is really cool. But even besides that, just having a registry that's ESM only is, is huge because like we're 10 years into the transition to ESM and there is literally no end in sight. Like, I, I still hesitate to, to refactor some projects to ESM just cause like the tooling and the complexity behind it is still such a high wall.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** It's it's yeah, it really necessitates a heart like it's we're trying to make the switch not a hard switch, but it really requires kind of a new a new place. Um, I think I think a place like a registry should be open source. I think it should be community managed. Uh, it, you know, it, it. I, I think, uh, GitHub and Microsoft are great stewards of, of the NPM registry, but, uh, it's just a weird that it's not open.
+
+So like these, there's, there's a lot, there's, there are millions of people developing with JavaScript and, and, uh, like we, we just kind of need robust foundations for this and we need to look to the future and JavaScript, uh, will be here with us. Five, 10, 20 years from now. And so, you know, JSR it's, it's obviously in its infancy, but, uh, hopefully we'll kind of provide a, uh, a safe place for, for people to, to kind of build the, the kind of next, next ecosystem of JavaScript.
+
+**Justin:** 
+
+
+## [00:32:59] The Evolution of JavaScript Runtimes and the Role of WinterCG
+
+**Justin:** so there's, there's a bit of a proliferation of JavaScript runtimes now. So you've talked about, um, I mean, 
+
+**Justin:** obviously Deno and node 
+
+**Justin:** and their spun. We've talked to the Jared Sumner before. There's a Cloudflare workers, their worker D project, and it seems to be like more and more of these recently.
+
+There's been an effort called winter CG to sort of what I understand to try to. Unify some of the runtimes. Uh, do you know much about that 
+
+**Justin:** effort? And as Deno involved 
+
+**Justin:** at all in the sort of project, they're
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Oh yeah. I mean, we're, we are a founding member along with, with cloudflare. So, uh, uh, Luca, uh, one of one of the Deno people is, is, uh, pretty deeply involved in, in winter CG. Um, so, uh, yes, we're, we're involved there. Uh, you know, when, when I think it's a, a, uh, a good goal and a good forum for, for different runtimes to, to talk about stuff, um, uh, it's, You know, maybe people, people imagine that it's more, it's more than than it is right now.
+
+I mean, it's, it's pretty technical. It's, it's not necessarily, uh, complete in, in terms of defining exactly what's, uh, what a common server side, uh, JavaScript, uh, code is, is, is necessarily going to look like. It's, it's, it's basically saying, Hey, you know, These things are, these web APIs are going to work this way.
+
+And, you know, maybe there's, there's some argument here that, you know, works slightly differently in server side than, than, uh, than, uh, than it does in the browser. Um, but it, yeah, it's, at least at the current time, it's, it's pretty minimal actually. What, what's, what, uh, WinterCG has, has proposed.
+
+**Andrew:** So is there any like standard that has been decided upon? Like is request response model in there or anything like that?
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Oh yeah, yeah, it, it, it totally is. Um, it's just, uh, Yeah, it's, it's things that you would expect, right? Uh, so it ends like, like a lot of standards work, which I, you know, uh, applaud the people who participate in, in these things, but I myself find incredibly boring. Uh, it's, it's, uh, you know, it's, it's, uh, uh, It's good to do these, these sort of things, but you know, it is, it is really just, just kind of, uh, shading in the Venn diagram of browser and server side stuff and, and just, just kind of clarifying, uh, in a lot of technical areas, what, what, what the request object is doing and how that streams and, and that sort of stuff um you know, I think the big thing 
+
+would be to define a, uh, web server API. And I, I think, you know, there's, there's a couple of, of, uh, attempts at, at kind of what, uh, you know, how, how do you, how do you specify, how do you program a web server in, in JavaScript, right? Do you, do you import a node colon HDP? Uh, do you.
+
+Export default object that has a fetch method. Do 
+
+**Ryan:** you call Deno dot serve 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** and give, give a call back, right? There's, there's all these different APIs and, um, uh, you know, I think CloudFlare has been, been really great with, I actually really, really appreciate the, the export default. I'm not sure if you guys know what I'm talking about, but the export default, uh, object fetch, uh, model that, that CloudFlare has, I think is, is pretty, uh, Uh, runtime agnostic, uh, and, uh, something that we're actually adding support for, uh, to, to, you know, in, in the latest release, um, we, we participate, we are a founding member.
+
+Um, but, uh, and I think, you know, maybe, maybe over the coming years where this, this, uh, uh, community group will turn into an actual, uh, specification and, and kind of, uh, uh, trend further along in this direction.
+
+**Andrew:** 
+
+
+## [00:36:49] Deno Deploy: Simplifying Cloud Functions and State Management
+
+**Justin:** one of the things that I'm really 
+
+**Justin:** excited about Deno, I mean, 
+
+**Justin:** there's, there's so much that I'm excited about, but we've already talked about sort of the transition from a small core to, you know, an inclusive tool, a runtime that provides all the tools you need to be very productive. Um, I think that that's extremely powerful, and there's always the sort of next step to this is like, okay, now I want to build applications in this.
+
+Where do I deploy it? And how do I handle that? Um, and I think building you have, you have a 
+
+**Justin:** service called Deno deploy, which 
+
+**Justin:** is a simple way to 
+
+**Justin:** deploy, um, Deno functions 
+
+**Justin:** to the cloud. I'd love if you could talk a little bit more about that service and what the kind of motivation behind building it was.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Yeah. I, I, um, There's a through line through all, all of my work, uh, from, from nodes to, to 
+
+**Ryan:** Deno, to Deno deploy to, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** to JSR, which is, I like scripting languages. I, you know, my, I, myself obviously use scripting language is, uh, but you know, I, I'm more of a C plus plus programmer, more, more of a, more of a rust programmer, actually.
+
+I, so there is, what's nice about scripting languages is that it. Allows you to eliminate as much of the boilerplate as possible, right? You, you can, you know, almost in English, uh, program stuff. And that's just not the case in lower level languages. So I, uh, appreciate and JavaScript, you know, maybe it's not the best scripting language on earth, but it's the most popular one.
+
+And therefore, kind of the place to put effort into. And so, cool. I really see scripting languages as a way to remove boilerplate. And so all, all of this work is about just trying to get to the core of the idea so that people can just program what it is they're thinking and just remove everything else, because I mean, you're, you're in a scripting language, right?
+
+Like I, like if you're in C plus plus, then that's probably not the goal. The goal is, is to make it as fast as possible. Right. Uh, but, but if you're in scripting language that you want to, you know, Uh, have your you want to be as terse as possible. And so that is what node has, you know, 15 years ago was trying to do.
+
+**Ryan:** That's what Deno is trying 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** to do. That's what J. S. R. Is trying to do where you just you just publish the typescript that you write, and 
+
+**Ryan:** that's what Deno deploy is 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** is trying to do too. Uh, but in in kind of the cloud hosting sense, so you really just focus on your business logic, your three lines of JavaScript.
+
+And then you give it to us and we take care of everything else, right? You, you put that into a playground or you put that into a GitHub repo and 
+
+**Ryan:** attach the Deno deploy GitHub 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** app. And then, you know, on, on every commit, you can create a new subdomain for you and, and it's kind of, uh, uh, run your, your code in a serverless fashion.
+
+Um, I. You know, I, I, uh, don't think I'm alone when, when I say that serverless is the future of cloud computing. Um, and I, you know, I think there's, there's going to be, I think we're far from the end state of, of what serverless ultimately looks like. Uh, and I think there's going to be different serverless platforms for different use cases, right?
+
+There's going to be Wasm ones, there's going to be Lambda. Of course, there's, there's going to be all sorts of things, but, um, cool. I think there, there, there will be a place for the most boilerplate free, uh, uh, serverless system too. And, and that is what, you know, deploy is trying to give you optimal, you know, close to optimal, uh, fast enough.
+
+Uh, but you know, most importantly, as simple as, as humanly possible.
+
+**Andrew:** Yeah. So it seems like Deno deploy also comes with like a lot of other services like KV, Q's, Kron, are there any other stuff that you guys plan to add?
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** so, yeah, we're, you know, basically, uh, a lot of this stuff I consider experimental ideas about how we can make programming, uh, very easy and obviously one of the, you can make compute the compute side of serverless really simple, but obviously a big part of building any, uh, website or web service is managing states, setting up a database, which, uh.
+
+thinking about that, how, you know, how that state is replicated across the world, uh, you know, how consistent that state is, that, that ends up being like quite a lot of the activity. And, uh, KB is, uh, a very simple, but very, um, You know, has has kind of the nice features that you want for for pretty complex state.
+
+You know, I think for for, uh, many use cases, you will still need a relational database, but there are there are are quite quite a few use cases that you can get away with with kind of a simple key value store, consistent, replicated. Uh, super low latency, uh, atomic transactions, uh, has, has super nice features, uh, all built on top of foundation DB, but 
+
+**Ryan:** exposed into InDeno through, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** through a JavaScript API can like literally store JavaScript objects and behind the scenes does a V8 serialization.
+
+So, you know, you can natively store JavaScript to date objects. And, uh, the, like everything else, you know, the, the feeling that you get when you use this is just. Holy crap. This is this is really simple to use. Like literally nothing has to be set up. It just works. And suddenly you can you can, uh, have state, uh, similarly for cron jobs like you 
+
+**Ryan:** just called Deno dot cron 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** and give a call back.
+
+And this this thing is, uh, Is set up and will get triggered on on a on a certain interval. Um, there's another feature called queues. Uh, that that is kind of the SQS type type feature or or GCP cloud tasks type type feature that that allows you to kind of queue up background work. I call all of these things kind of cloud primitives that we're experimenting with kind of adding on to, you know, deploy, you know, essentially, uh, exploring how simple can we make this?
+
+And is it can any of these things actually serve as A robust foundation for, uh, many people to build web applications and and HDP services services in in general. Uh, and yeah, I consider all of these things kind of under development and, uh, yeah, obviously these are these are. Commercial projects. So, you know, kind of have, have an angle of, of, you know, figuring out how to build the business as well.
+
+**Justin:** One of the things that I really like is you have a feature called sub hosting. Um, so. So hosting is not necessarily unique. Uh, CloudFlare, uh, workers has a, um, I think they call it workers for platforms or something. So it's the ability for customers to write their own Lambda executions using a platform and run them.
+
+Uh, You know, uh, as a part of your product. So, so sub hosting is a service where you can essentially. Have an API that just like upload scripts and then runs them and, and, you know, deploy. 
+
+
+## [00:44:01] Sub Hosting and the Future of Serverless Computing
+
+**Justin:** Can you talk a little bit more about sub hosting? Um, and I I'm just like, I'm curious. One of the, one of the best things that I like about sub hosting is that you just make it open to everyone.
+
+Which I love and CloudFlare workers for our workers for platforms. This may change in the future, but at present moment, it's enterprise only. You have to have an enterprise contract to be able to sign up for it. So I'm curious to just to hear more about your positioning and the thoughts around it.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Yeah. Uh, sub hosting is a product that came out of a partnership with Netlify. So Netlify has a, uh, product called Netlify edge functions. That is Deno deploy under the hood. That's, that's using our serverless infrastructure. Um, we, we essentially turned this into, into a product or kind of in the, in the process still of, of turning this into a product.
+
+Uh, iterating on it. Uh, and that's, uh, kind of exposing that platform to, to anybody. And, and yeah, as you mentioned, like you can, you can sign up for free and, and, uh, and try this out without, without really talking to us at all.The 
+
+**Ryan:** difference between Deno Deploy and Deno Sub Hosting 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** is simply how many tenants 
+
+**Ryan:** you have.
+
+Deno Deploy is meant for a single tenant. You are publishing your own website. You know, maybe you have 10 of those websites or so. Sub Hosting is meant for a system where you yourself have users. Many, many users and and you're you're worried about running untrusted code on behalf of of your users. Um, and this this is kind of comes up, uh, in two different settings.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** One is kind of hosting services like. Netlify, where they, they themselves are, are essentially reselling, hosting, or, you know, reselling this, this as, as kind of a hosting service, um, that's, that's pretty obvious. Obviously, people want, uh, edge functions and, and that's nice. Um, but this also comes up in, um, uh, kind of, let's call them more advanced SaaS companies where you are building.
+
+Uh, a product that needs some configuration and you, you probably start, start with, with kind of just a settings pain and in your, in your SAS, but, uh, as you grow and grow, you, you realize like, oh, we, we, we really need a way for people to build kind of custom integrations or kind of custom. Custom program, various parts of this.
+
+Um, and naturally you're like, well, let's do this in JavaScript. That that seems like a good solution. And you know, maybe you're you're kind of like, oh, maybe maybe you start with webhooks. You're like, oh, okay. Let's say you're off to zero and you you have some authentication service and You want to allow people to kind of trigger a callback on, on some, some action user logged in, right.
+
+And, and, uh, execute some, some logic based on that. So you can have kind of a web hook, uh, set up for, for this. Um, that's fine, but you know, what that means is that your customers now have to go spin up like an EC2 instance somewhere and keep that running and kind of handle those web hooks. When. Often it's, it's pretty low traffic, you know, it's, it's essentially, it's a lot of setup for, for what often is, is like a hundred lines of JavaScript.
+
+And so you kind of, the, the next iteration of this is, is the, the SAS company is like, well, can't we just have a text area in our website where people can just put the JavaScript in, into our product itself. And we will worry about the web hook and, and 
+
+**Ryan:** managing of this um And yeah, I think 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** that's that's a good idea.
+
+But suddenly you're like, okay, but now we are executing untrusted code on behalf of, you know, potentially many thousands of users. And we have a real security concern here. And so what, you know, Originally seems like an easy idea, uh, turns out to be pretty complicated, right? Kind of at, at, at first glance, you're like, yeah, we could do that.
+
+Um, and certainly you can, uh, but, but you know, the question is, is can you, can you do that longterm and how much is that costing you? Um, and so yeah, some, some posting is, is kind of geared towards these two, um, Two use cases that individual developers or, uh, kind of. Single tenant companies are not really going to encounter.
+
+**Andrew:** Yeah, it's, it's cool to see the through line in, uh, Deno of just like simplicity and getting out of the way of the developer and making these like powerful features really easy to access. 
+
+**Justin:** it
+
+definitely does. It definitely does. And the whole, just the openness of the project is, is huge too. I mean, I, I mean, really just all around it. So you're talking about KV a little bit earlier, your, your key value store. One of the things that I love is like the KV protocol is open source.
+
+And then like somebody had like, you know, built bridges for that. It was like, Oh, you can use the like KV like interface and other places. And, you know, just stuff like that. I see that all 
+
+**Justin:** across the Deno. Ecosystem 
+
+**Justin:** where people are taking these, like you start off and you build this thing and they're, they're using it in these like surprising and novel ways.
+
+And it just seems to foster a really, really healthy and really, um, just very innovative ecosystem. And it's exciting to see.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** I really believe in open source. So node was MIT licensed. Deno is MIT licensed. You know, that is like very, very free. It's it's like, you can take this software and fork it and build commercial stuff on it. And I will have nothing to say about that. I think that is inspiring. You know, in some ways like super crazy, uh, because like software is, is very expensive to develop.
+
+Uh, but uh, it does create, uh, I mean, it, it just, it takes on a life of its own right? Like node, node just, just kind of created a whole industry and, and in some ways, and, and it is, is, uh, I, I think attributable to, to kind of the very openness of, of the licensing. Uh, and obviously there's, there's many other parts to that that, that come into it.
+
+Um. I, I, I think it's an open question of how to build open source companies. Um, and I, you know, we, we are certainly taking a stab at it 
+
+**Ryan:** with, with Deno. Uh, uh, 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** my philosophy is, is kind of. Let's, let's create as much, much stuff in the open as, as possible. And, uh, you know, people, people will use that and that that's going to afford opportunities to provide them with commercial services.
+
+And, you know, we'll, we'll kind of strategically make things, uh, proprietary. Uh, this, this whole foundation DB KB backends, um, You know, the protocols open the, the foundation DB backend is, is, is 
+
+**Ryan:** proprietary or Deno deploy itself 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** is, is, is proprietary. So not everything is, is open source, but you know, we, we really do try to try to participate and code in the open.
+
+And hopefully, you know, even if, even if our company fails in the end, this is all, uh, you know, not, not a commercial success, uh, obviously I hope it, it is, but, um, Uh, we will leave around a legacy of, of, uh, infrastructure that, that people can continue to build on. So, uh, you know, I, I go to sleep easy at night, knowing, knowing, hoping that that's, uh, you know, we're, we're still kind of helping humanity.
+
+**Justin:** Awesome. Uh, so one more question to go out on, uh, we always ask our guests a forward facing question and given that you've worked on node and you've 
+
+**Justin:** worked on Deno, you've you're, 
+
+**Justin:** you're really, really deep in both just JavaScript in general and the runtime space. Um, what do you feel like the future is for both JavaScript and JavaScript runtimes?
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Um, so I, I, I think narrowing the gap to browsers is, is, is pretty clear. I, I think, you know, a lot of my answers are going to be the things that I'm developing, right? I, I, I think, uh, I. I think there is, JSR might, might seem very, very new to, to, to many people listening. But, um, uh, just, just trust me when I say that, that there's been a lot, a lot of thought put into this and that it is, it is very nice.
+
+Um, I, I, I, I would really encourage people to, to take a look at that. I, I do think that this is the future of JavaScript runtimes. It might take a couple of years for it to, to kind of reach, reach maturity, but Uh, I think there is kind of a new, a new town square. Um, I think, uh, we were talking about, uh, Deno deploy and serverless.
+
+I think serverless is a big part of the future for JavaScript runtimes. I think focus on cold start time is going to be important. I think, uh, you know, figuring out how they interoperate with each other. We touched on 
+
+**Ryan:** winter CG, um, uh Yeah, I think 
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** that that we will continue to see a future where the cloud is dominated by JavaScript for business logic.
+
+And I think it's important to figure out how to, uh, Stay true to the ideals of scripting languages, uh, which is to get all of the crap out of the way and allow people to just program their business logic and, and kind of take care of everything else. And so I think that dovetails with serverless ideals, uh, quite heavily.
+
+**Andrew:** awesome. Well, uh, that wraps it up for our questions on this episode. Thanks for coming on. This was a really fun, uh, John into node into Deno and to see where it's all going. So thanks for coming on and talking about it.
+
+**riverside_ryan_dahl_raw-synced-video-cfr_devtools:** Absolutely. Thank you for having me.
+
+**Justin:** Yeah. Thanks again, Ryan. Um, I, again, can't praise Deno enough for folks listening who haven't tried it. Uh, you should definitely check it out and go to Deno not land, download it. It's really easy to get started with everything out of the box. Uh, definitely recommend you give it a go if you haven't already. 
+
+
