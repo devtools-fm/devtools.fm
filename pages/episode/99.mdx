@@ -1,0 +1,572 @@
+---
+title: José Valim - Elixir, Erlang, Phoenix, Livebook
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Jos-Valim---Elixir--Erlang--Phoenix--Livebook-e2jrtql
+youtube: https://www.youtube.com/watch?v=KIrLxaM_ipk
+tags: Elixir, Erlang, Phoenix, Livebook, technology, programming, functional programming, web development, coding, software development
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're delighted to have José Valim on the podcast.
+José is the author of Elixir, the programming language build on the Erlang VM.
+Elixir provides a functional programming language with metaprogramming and built-in support for concurrency and distributed computing.
+Livebook is a web-based interactive programming environment for Elixir and it flexes what the Phoenix framework can do.
+
+- https://twitter.com/josevalim
+- https://elixir-lang.org/
+- https://www.phoenixframework.org/
+- https://livebook.dev/
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:15] The Origins of Elixir
+[00:10:19] Ad
+[00:12:18] Elixir's: Powered by Erlang
+[00:22:34] Elixir's Strengths
+[00:33:34] Phoenix
+[00:41:23] Exploring Elixir's Versatility Beyond Web
+[00:45:10] Livebook
+[00:57:01] The Future of Elixir: Types and Beyond
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**José** the goal is that you're going to be more productive because you're going to worry about fewer things.
+
+the client and the server, they keep connected and exchanging information all the time. And it works really well with the Elixir model. So like building real time applications, interactive, it's really straightforward.
+
+**Andrew:** Hello, welcome to DevTools FM, a podcast about developer tools and the people who make them. I'm Andrew and this is my cohost, Justin.
+
+**Justin** Hello everyone. We're really excited today to have Jose Valim on the podcast. So Jose, you are the author, creator of Elixir, the programming language, uh, and I am Extremely excited to talk to you. Uh, I've been a big fan of the work that you've been doing on Elixir and just the amazing things that have been coming out of the Elixir ecosystem.
+
+Uh, so before we dive in and start talking more about that, would you like to tell our listeners a little bit more about yourself?
+
+**José** Hi, everyone. Thanks for having me. Yeah, I am, uh, Joseph Valim. I am a Brazilian, uh, living in Poland. And I have been working on Elixir at this point. Well, Elixir changed at the beginning, um, a bit, but all together, uh, 13 years, which is a lot of time.
+
+
+#### [00:01:15] The Origins of Elixir
+
+**Andrew:** So before we start talking about Elixir, we have to start talking about another big programming language. Uh, Elixir is based on a thing called the Erlang VM. Uh, to be honest, I'm a front end developer and I have no clue what that is. So what is the Erlang 
+
+**José** I will tell a little bit, uh, like how Elixir came to be, because I think that's probably something we'll talk about in a way, and that's going to answer the question. Uh, it can be a really long story. I'll try to, to summarize it, but, but about like 2000, you know, like today multi core is really, it's commonplace everywhere.
+
+Like your, your wristwatch has four cores, you know, everything that we do is every, everything that we use, like has a multi core. Machines with several cores and, but it was not always like that. So back in 2006, 2007 was when I personally started hearing a, like this idea of, Oh, a dual core machine. Right.
+
+And, um, And it turns out that, you know, a lot of the programming languages that we used back then, and we still use today, they are not really ready to use all the cores of your machine efficiently, right? Usually what you do is that you can start like separate, like separate programs to use the cores, but some programming languages not really make it easy for one program to use all the cores in the machine.
+
+sometimes I like to, to say like as a comparison, like that's equivalent of going, uh, to, to the, like to the market, to the market, to the grocery store, see that there is one checkout lane that is going faster. And you cannot change lanes, right? Because the other core is going faster and faster. We're like, you're stuck, right?
+
+And, uh, that's a lot of the software that we are writing today. And that's what I was doing back then. And I was like, wait, if this concurrency thing is going to become the future, which it did become, I was like, I want to find, there's probably a programming language or a two way platform. I didn't know really that can leverage all the cores of our machine efficiently.
+
+Efficiently. So I started looking, uh, looking, looking, looking, and eventually I found, I like to say, like, in this journey, there were like two things that really changed how I approach software, how I write software. The first one is, uh, it was, when I found functional programming and functional programming can mean different things to a bunch of different people.
+
+But to me, like the really big deal about functional programming was immutable data structures, right? So today, like, you know, um, in, in JavaScript, for example, if you have an array, you can go and like remove an element from the array, right? And it changes that thing in Elixir and other functional programming languages.
+
+you don't do that, right? What you do is that if you have a list or an array and you want to remove an element, it returns an array, or at least a new array, a new list without that element. The, the original one is still there. And, uh, and this has a bunch of implications. I think the two relevant ones that is worth talking about, uh, is that one is that a lot of the issues that we have in concurrency with concurrency programming languages, because when you have multiple cores, you have like two things running at the same time.
+
+So what happens if they try to change the same place in memory? Like what happens if both of them try to delete the same thing in the data structure, right? And then things can go wrong, things like you can get a segmentation fault. And so programming languages, and that's where all the complexity comes from.
+
+And programming languages try to solve this in 
+
+**José:** different ways but If you cannot 
+
+**José** remove the thing, if you cannot change things in memory, a bunch of the problems, they just disappear. They're not there. And that, and that was what I fell in love with at the time. That was the idea. I was like, oh, so concurrency in those programming languages is going to be much easier.
+
+And, but to me today, It's like, um, when I think about immutability, I actually think that when you're writing code that you, you cannot like, you're not sending a raise that other people are changing it. Your code is much clearer, right? Because they're not like, Oh, I am passing this object to this method.
+
+And then that method changes the object. And it's not clear that it's changing the object because it's all doing things behind the scenes. But the functional programming. puts you into a mindset that everything that a function or a method needs, you give it as input and everything that it needs to change, it's given as an output.
+
+And the software, consequently, it's much clearer, right? So, um, So yeah, so that was kind of the first point. I was like dysfunctional programming, mainly like immutable data structures idea is great. Uh, for me, it really, you know, like today when I go back and I, and I have to, and I have to, uh, to work on the language where things are immutable by default.
+
+It's like, I feel like I'm getting crazy. I like not crazy. Like I feel like I'm paranoid because I'm calling a method. I was like, what is this going to do? You know, it's like, It's like, uh, I don't trust, I don't trust anything. I need to be double checking everything. Um, but anyway, so that was first part of the story, right?
+
+But then there are like a lot of functional programming languages. Okay. Uh, you know, Scala, Clojure, Haskell, Erlang, right? And then why the Erlang programming language and the Erlang virtual machine. So when you say Erlang, it can mean a couple of things. It can mean, the programming language. Okay. And it can mean a virtual machine, like we have the Java language and the Java virtual machine.
+
+Uh, it can mean like the AirLinks and the library, right? And for me, the, the, really the thing about AirLink, because again, if we go back to 2008, 2009,
+
+all programming languages 
+
+**José** that were,
+
+Coming out, they were talking about concurrency. Closure had like, uh, first class permitted sort concurrency. Go as well, right?
+
+Like Swift, everything. Swift came a bit later, but everything at the time, they were all talking about concurrency. And the beautiful thing about Erlang is that they were talking about concurrency, but Erlang Uh, and Ling, by the way, was created in the eighties. It's 
+
+**José:** pretty much erlang and, and, 
+
+**José** and, and, and me.
+
+We are pretty much about the same 
+
+**José:** age. Um, so erlang was also 
+
+**José** talking about concurrency, but what happens, for example, imagine that you're writing some software and you want that software to use all the cores in your machine. You're going to use concurrency. That's what we're talking about, right? But if that software.
+
+If one machine is not enough for you to run that software, what do you need to do? You need to have two machines. And now you need to figure out the way of those two machines to coordinate together to do that work, right? And maybe that's a moment where everyone say, Oh, I'm going to bring Redis or Kafka or RabbitMQ, right?
+
+But Erlang, they actually solve the concurrency and they solve the distribution. The next challenge, right? Like how to make machines talk to each other. It's all part of the programming language, the virtual machine, and they solve those problems. So when I look at that, I was like, wait, so everybody's talking about concurrency, but Erlang solved that problem, concurrency, like two or three decades ago.
+
+But not only they solved that problem two or three decades ago, they solved the next problem, which is distribution. Right? So for me, it was mind blowing. Right? I was like, this is fantastic. I was, you know, love at first sight. I was immediately convinced like this is what I want to, to like the software that I write.
+
+I feel it's going to be much simpler. Um, and we can talk about all the characteristics and benefits that we get from that. But I was like, that's the place I want to be. And so the, so answering, like, that's how I found the Erlang virtual machine. And that's pretty much what it means to me, but answering more directly.
+
+So Erlang, uh, it's a programming language and a virtual machine created by Ericsson, which is a telecommunication company. And that's why they solved all those problems, right? Because in the eighties, they were building telephone switches. Right. And if you think about the web today, yeah, it's telephone switches.
+
+It's a bunch of things connected and exchanging data all the time. That's why they solve those things. Because the problems we face today as web developers, they had to solve that three decades ago. Right. So, uh, yeah. And they built it for telecommunication and, um, yeah. And, uh, today we are using it for web.
+
+**Justin** It's a really awesome story. And it, I mean, Erling is pretty amazing that, you know, they had built all of that. Sort of technology way back in the eighties, you know, so ahead of time for what folks were doing at that time. 
+
+
+#### [00:10:19] Ad
+
+**Andrew:** We'd like to thank our sponsor for this week clerk. Clerk is a company that offers complete user management. Out of the box and we'll help you improve your developer velocity. 
+
+Auth is one of those things that at first it seems like it might be easy You just add an email, you add a password, but it's something that snowballs over time. There's so many different things you might want to implement. You might want multifactor authentication. You might want single sign-on you might want an easier to wait a log-in with magic links. there's just so many different ways you could implement it. That isn't even scratching the surface of all the things you need to do to make your user system good. 
+
+You'll want things like password breach detection. User profiles. The ability to detect bots. So you aren't overpaying and you know, who is actually using your product. 
+
+Luckily clerk is here with a full user management solution. That'll help get authentication into your app. Very, very quickly.\ 
+
+one of the cool things about clerk is they come with a bunch of prebuilt UI components. 
+
+So you don't have to worry about many of the details when integrating auth into your app, you don't have to learn their API APIs. For the most part, all you have to do is use their pre-configured components and you'll have things like sign-in. Sign up. User profiles and organizations right out of the box. They have a whole bunch of helpful SDKs.
+
+That'll help you integrate into modern frameworks and into whatever language you choose. They're even coming out with things that make it easier to use the front end components. They have a new project in beta called clerk elements, which is all of the nice authentication bits, but headless just like Radix so you can style them. 
+
+However you want to fit right into your app. 
+
+But one of the best parts about clerk is how lenient their free tier is You get up to 10,000 monthly active users and you'll never pay for a user on their first day. With clerk, you have everything you need to authenticate and manage your users, freeing you to focus on building. If you want to learn more about clerk, head over to clerk.com. 
+
+Are you tired of hearing these ads? Well become a member of one of the various channels that we support And you never have to hear these ads again. And with that, let's get back to it.
+
+
+#### [00:12:18] Elixir's: Powered by Erlang
+
+**Justin** Um, could you talk a little bit about like, so there, I mean, the next part of the story is like, you discover Erlang, you're like, Oh, this is great.
+
+There's some things missing or some things that I don't like. I want to do something like slightly different and build on the legacy here. 
+
+**Justin:** but When you discover 
+
+**Justin** Erlang, you could have just like, Oh, well, there's this program in language Erlang that has all these great properties. I can just use this for all the things that I'm building.
+
+Why did you not take that tack and instead decide, Oh, something else needs to be built on top of this? What was the sort of progression from discovering Erlang to saying, Oh, something like Elixir needs to exist.
+
+**José** Yeah. So for me, there were two things at, at, uh, at the time and actually at the beginning I felt some things were missing, but it was not clear to me what was missing because, uh, I, so far as if I don't have a formal computer science background. And my previous experiences, they have been, uh, mostly with, uh, object oriented languages before.
+
+So like I was changing the paradigm I was programming. I felt things were missing and I did not know what they were. So like, and so I was like, Oh, I want to try a couple of things. So like, uh, my first implementation of Elixir and this is still there in GitHub. Uh, it's part of the story. It's like my first prototype was actually adding an object oriented language, uh, that was immutable, but on top of the Erlang virtual machine.
+
+And things felt clunky. I was not happy with, so it was really like a prototype. I was not happy, uh, with where that led me, but eventually I was able to, to figure out like what I was really missing. And for me at, at the time was, uh, we were really missing. Something that was equivalent to, different languages call it different things.
+
+So, uh, some programming languages like Go is going to call it interfaces, Java as well. So I was missing like that kind of mechanism to extend data types. Uh, that was one of them. And the other one, which I think is the bigger one, is that I was missing a mechanism for metaprogramming. And then, so it was really a big journey for me just to feel like, ah, something doesn't feel right.
+
+Like, I feel, I feel like I need something to be able to express myself better and then figuring out what that actually is. And then after I figure out what that is, like, oh, what is the best way of implementing these features in the Erlang virtual machine, right? So for example, the metaprogramming model that we, we have, uh, in Elixir.
+
+is, uh, so there is, I know that metaprogramming can be a, um,
+
+can be a tricky topic. People may have strong opinions and I really like, I don't know who, uh, said this, but, uh, they said, uh, a programming language have at least one of those two bugs. Or they have metaprogramming or they don't have metaprogramming, right?
+
+Which I think kind of like summarizes the, the divided opinions of the topic. But yeah, but so for example, the Elixir metaprogramming system is like, it's nothing happening at runtime. It's very stable at runtime. The metaprogramming all happens at compile time. So it's kind of restricted. It's like, Oh, we don't want the, after you compile your code, we don't want things to be changing dynamically.
+
+Right? So, so there was like this process of discovery. And I still think that, and there were many things that we added to Elixir as, as, uh, as we were working on the language because we were able to, to trail ahead. Erlang evolves like conservatively. And I think that's for, uh, a. A really good reason. It's something that we can talk about later, like, you know, how most of the top, most of like programming languages and frameworks, they like evolve so fast, right?
+
+There are frameworks that are, you know, like five years old or less, and they are already on version 10, 11, right? And those are major versions. In theory, when you have a new major version, it means whatever you wrote in the past may not break. And that's. too fast, too crazy, right? And Erlang is like, it's very conservative, which I think it's great.
+
+So there are things that we add in Elixir, like being UTF 8 by default. having things in the extended library that is UTF 8 focused on tooling, uh, that later it went back and now is part of Verilink as well. Um, so there was a lot of that happening and today the two major differences are still those two.
+
+It's a metaprogramming model and it is, uh, a mechanism for like a For polymorphism for interfaces where it can extend data types.
+
+And I just want you to do a parenthesis that like, this is, um, like this is very abstract in the conversation when I'm saying like, Oh, it's metaprogramming. And, uh, it's like polymorphism. I feel like for 
+
+**José:** people who are actually. don't haven't heard about 
+
+**José** Elixir, right?
+
+And they want to try it out. The things that are going to make them excited, like, Oh, this feature in Elixir is great, pattern matching is great. Immutable data structures is great. Concurrency is great. Like all those features, they all 
+
+**José:** come from erlang, right? So, 
+
+**José** uh, Right. So at some point, like people are like, well, when I started talking about elixir, I, I did not go much to airline events and conferences and people ask me why they're like the airline developers.
+
+They already have the best part of elixir, right? It doesn't, it doesn't. Make a lot of sense for me to talk about it, right? So I really want to bring this to other communities, right? So, yeah, so, you know, when, when you listen to this and you want to give Elixir a try on the idea of build on those ideas on what you can build with it, like the kind of systems, web applications, machine learning, whatever, all the things that you see there and like they are inherited from Erlang.
+
+Nice. Nice. It's still, you know, you're talking about not having a traditional CS background. I think like that jump from like, Oh, here, I found the system that I like, but it's like, not quite good enough. I'm going to make my entirely own new language on top of this. It's like a, it's a big leap. Uh, it's, it's interesting.
+
+**Justin** Like how had you had experience with like, Building programming languages before, had you like taken four years? And like, how was that like journey?
+
+**José** yeah, zero experience. I remember when I said, Oh, I want to give it a try. I bought a couple of things online, uh, to try. I also bought like the, the famous like compiler book with the one with the dragon in the cover that people, I believe still do today for like compiler classes and so on. But I would, I, Probably all together, I've read like 30, 40 pages because I would start reading it and then I would have ideas and then I would go to the computer and try them out.
+
+So, uh, so, and that's usually how I, I learn 
+
+**José:** stuff. I am a Impatient learner, 
+
+**José** uh, like very, very impatient, very, you know, uh, disorderly or something like that. You know, like just going, trying to get as much information as possible and somehow try to, to deal with that. And, and yeah, and, and I, but I also have to say that.
+
+You know, they are programming languages and they are programming languages in the sense that, uh, I've created a programming language that runs on top of an existing, uh, virtual machine, right? So, uh, what I need to do is that I target, uh, a high level code representation. Uh, I didn't have to implement a garbage collector.
+
+I did not like, I leverage everything that Erlang has. I'm really leveraging, Everything the Erlang virtual machine gives and, uh, a lot of the Erlang compiler is actually implemented in Erlang. So I could look at that and learn from that as well. So I had, so I, my job was much easier than a lot of.
+
+Programming language alters, you know, that have to, even if you're using like LLVM today, you are starting at a much lower level. Right. And, uh, and yeah, I could, I am at a relatively high level. And also like the early virtual machine is like very opinionated on what you can do and what you cannot do. Um, so because the other thing about like.
+
+creating our programming language, which I also, I always found very hard and I still find hard today, which is there are so many decisions that you can, you can make. Right. And it's not like, you know, it's not like you can go and, and, Pick like whatever you want and put it together. And it's going to be good.
+
+Like those things they need to compose, they need, you know, you cannot have things like clashing with each other. I feel like in a way it's kind of like a, of a, it's like a Jenga game, right? Like if you take one piece, actually, you know, the thing can fall apart. So, um, So there are a lot of decisions, really many decisions, uh, in there.
+
+And again, 
+
+**José:** because the erlang virtual machine 
+
+**José** is opinionated, there were a bunch of things that I would look at them and I was like, Oh, this is awesome. But like, there's no way I can implement these 
+
+**José:** efficiently in the erlang virtual machine, 
+
+**José** or it doesn't make sense. So I could. rule it out and not worry about exploring that particular path or design decision.
+
+So, so yeah, it was, it was like, uh, you know, uh, it was a fun process altogether. And, uh, You know, I've learned a lot, a lot, a lot, but I still think like, uh, I had a lot of help, you know, like standing in the shoulder of giants and all those things. Uh, really I had a lot of help from, from Airlink and, and the ecosystem that was there since the beginning.
+
+**Andrew:** Yeah, it helps being built on a system that's been there for like 20 years and just proven out in a much different field. It's so cool that like it was built for telecommunications and like you're just using it in a wildly different domain. Super cool to see.
+
+
+#### [00:22:34] Elixir's Strengths
+
+**José** so, what sort of problems do you think Elixir is well suited to solve? And when shouldn't you use it?Yeah. Uh, so It changed a lot, actually, uh, it changed a lot. What Elixir was good at. And, um, so originally, so I came, I came from the Ruby and Rails community. And I, I knew, I knew that it, Elixir would eventually be used for web stuff. Just because that was my background. People who followed me, they came.
+
+They, they came from that background and uh, today Elixir has like a very compelling, uh, web stack. We literally with features that you don't find anywhere. Right. So, um, so I'll, I'll expand on this a little bit. So we have like the Phoenix web framework and there are a lot of things and with time Phoenix gained a lot of property.
+
+So one of the things like we're saying, Oh, in their lane. Uh, well, imagine that, for example, you, you do a deploy to production, right? And one of the features that you want to have is like, uh, imagine you're building still example, but like a social network or whatever, right? But you want to have a feature like, well, when somebody joins, when you're from your friend joins, you want to show a notification in the system, right?
+
+You want to show notification to your friends, like, Hey, you know, your friend just joined, like do something, right? Like any kind of real time feature. If you take any. Web application, the way that they have to implement that is like, oh, uh, you know, so because they may be, they may join on different machines, you need to bring like a queue system or something in the database or whatever.
+
+Right. And then you need to send the messages right to that thing, collect, figure out. So in, in Elixir and Phoenix, it just works because distribution is part of Erlang. So I can just send the message to whoever that thing, the person is in the node, and it's going to receive it. And we can, We can show up and, and the message shows up and this removes a lot of complexity.
+
+And this is something that we always talk about Elixir, how it reduces operational complexity, because your deployment at the end of the day is still most likely going to be your Elixir code and a database, right? You don't need to bring, you don't need to pay for SQS system. You don't need to, to, to bring queues, uh, something that is, that we.
+
+And this applies, like, this is just one example. There is one problem that is, uh, very hard, for example, which is presence. You want to know who is connected to your application right now. This is one of those things where you think, like, is simple, but it's actually, it's a distributed system problem. And it's, it, it's actually complex to solve the problem because, well, imagine that they're like, Oh, I'm going to track, like, you have different machines.
+
+in your web application that people are connected to, right? And they're like, Oh, uh, I'm just going, I don't know. I'm going to write to the database, right? Which person are connected. But what if one machine crashes? Who is going to reap the people who are connected to that machine and say that they are no longer available?
+
+So these, those are complex problems. And Phoenix comes with presence out of the box. And there is like, No other framework that comes with presence out of the box. Nothing gives that to you, right? Uh, there was something very funny, like, um, and then, and then you can, and you think about those things in general, like, you know, you think about, uh, you think about users when you are modeling like a web application elixir, you really think about the users.
+
+As like an entity running in a cluster and they can all just talk to each other. And that's part of the language and allows you to build systems in a way that is very interesting. That was like a recent amount, uh, announcement from CloudFlare. They were announcing like a new feature related to their web sockets, edge stuff.
+
+Do I say like, you know, the ability to build systems where users are connected and exchange and exchanging messages in real time was only available to, Multimillion dollar corporations. And now CloudFlare is making this available for everybody. It's like, no, like you can just use Elixir. It's there. It's open source.
+
+It's free. It just works. Um, something else that we recently announced, it's all building on top of Erlang really, that Phoenix, uh, recently announced was, uh, Was flame. I don't know if you heard when it came out, but so imagine. So one of the things that people want to do is like, uh, it's lambdas, right?
+
+Imagine that you have, like, you want to use like, uh, AWS lambda, right? And the idea is that that it can scale based on the things, but, uh, Like, if you want to do something like generating, uh, thumbnails for a video, right? There's a lot of process involved that because your application is to receive the upload, and then you get the upload, you put on S3, and then you trigger the Lambda.
+
+Uh, S3 is going to send a message, trigger the Lambda, and then you get a service that generates the thumbnail, right? And then puts the thumbnail back on S3. So you can show the user, like the, the thumbnails being generated as upload happens. There's a bunch of complexity. in those things, right? But, uh, what the flame project that's part of Phoenix that was just recently announced, uh, what you can do is that, uh, if you need to generate, and the thing is that those things, they are hard to scale because, uh, imagine that you have your regular web application and you're like, well, what if I don't use?
+
+Amazon Lambda. What if I just, when the user upload the video, I start running FFM PEG on that web server, right? And generate it on the nails. But the issue with that is that well, FM PEG is going to IMP is going to require other hardware restrictions, other users of CPU, and that's going to make it harder for you to scale that particular web worker.
+
+Right. So that's usually the way people would go. Okay. I'm going to put in the Lambda and scale that thing separately. And the thing that you can do with Flame and Elixir is just, is well, um, when you do the upload, you will start a copy, which you can do very cheaply on the fly or in Kubernetes, you start a copy of your application and because Erlang everything is distributed, you're like, Hey.
+
+Here is, here is the video as the user's uploading. You're sending parts of the video to another node that is running FFmpeg, doing the screenshots and send it back to you. And that's it. It's the same application. You're not, you're not like, Oh, I have to create a separate Lambda project that I do a deploy elsewhere that I have to figure out how I'm going to test it.
+
+If you test it right. Like there's so much, there's so much infrastructure and complexity that we kind of like, just. Opt in to it by default, and if you look back, this complexity all comes from the fact that the software that we write today, the platforms that we use today, you're writing code that cannot communicate between them.
+
+between machines, right? And all the deploy, all the systems that we run in production, it uses multiple machines, but the platforms that we use to write software does not allow for those machines to communicate out of the box. So we are trapped into this thing. And then every time we have this problem, You are bringing like specific solutions to solve those things while you can have something general that is going to allow you to solve all those problems like PubSub, uh, sending messages, real time presence, elastic scale, right?
+
+Based again on abstractions that exist for like three, four decades, you know? So I, I got, I got derailed here, but I think the point is like Elixir is in Phoenix. They are. Excellent for building web applications, right? And again, it's it's not because of elixir. It's really because of Erlang. And, uh, And it's going to give a lot of tools for you to have a simple system, right?
+
+It's operational simplicity. What you would have to pay three or four other services, right? To build those things, right? And bring message queue and different types of databases. All those things, you just, you need Elixir and your database and you're happy, you're done, right? That's, that's what you're going to deploy.
+
+So, and of course there are other things that, uh, you expect from a web framework, you know, like, oh, ways to talk to your database, a ORM, and I'm doing air quotes here because There are no objects in Elixir, so we cannot have a object relational mapper, but we have things close to that, a component system, all those things are there as well.
+
+But for me, like the, the fascinating thing is how the Elixir community was able to get this Erlang thing that I fell in love with and just bring all those ideas for building web applications and really building something that you really can't replicate. All the features together, you can't replicate anywhere else.
+
+**Justin** You covered a lot of ground there, uh, and we'll like break some of that down. So we're going to talk more about Phoenix, uh, in a, in a second, which is the, the sort of web framework for, for Elixir. So you're talking about, um, sort of like problems like presence, uh, like, you know, sending messages. So this, this is really just based on Erlang's ability to like run nodes on two different machines and Erlang like knows how to connect those and like knows how to pass messages.
+
+Just sort of as a natural function of how it works, you don't have to do anything special other than just like, I guess, a little bit of configuration the, to like tell it the IP addresses or something, some network configuration or something, I'm assuming,
+
+**José** Yeah, there is a library, which is called libcluster, for example, or there's like dns, but there are a bunch of different libraries, which is like, Oh, cause if you're using Kubernetes, Kubernetes know where the nodes are. So we have a library that is just like, Hey, Kubernetes, tell me where the nodes are. You ping Kubernetes every 60 seconds and then you connect the nodes and it just works.
+
+You don't have to do anything else. You just install the library.
+
+**Justin** right. But I assume that there's like more basic machinery because obviously Erlang existed long, long, long before Kubernetes, and you still had the like networking capabilities of, of, of Erlang. So. Elixir sort of builds on all that gives you those base capabilities of what Erlang provides and then, you know, sort of expands out into more of the, uh, web world and gives you, uh, like with where Phoenix exists and some of the things around the ecosystem that start adding.
+
+Layers on top of that. Um, maybe we should just jump in and talk about Phoenix next. I do, I have some other questions about the Elixir language itself, and maybe we can like drop those down, especially like some of the improvements that you are making to Elixir right now
+
+**José** Yeah. And, and the, and the question was like, what Elixir is good for, and I talked only about one thing, so we should definitely come back to it, 
+
+
+#### [00:33:34] Phoenix
+
+**Justin** Yeah. Let's talk a little bit about Phoenix. Uh, so, uh, like I said, Phoenix, Phoenix is a, a, a web framework or a web web framework to Elixir. I guess my best way of describing it is like, I think of Phoenix is to Elixir as Rails is to Ruby. Do you think that's a good characterization?
+
+**José** I think, I think, I think it's a good characterization or Jungle is to Python. I think those are good characterization, but I feel, I feel what can be missing this characterization is exactly that, uh, Elixir in Ruby or Elixir in Python. Yeah. Yeah. Yeah. They are very different things, right? Exactly because of everything that we're talking about.
+
+So, but if you think that Rails is trying to leverage the best features in Ruby, right? And Django is trying to leverage the best features in Python, Phoenix is definitely trying to leverage the best features in Elixir Erlang. So yeah.
+
+**Justin** So we've talked about, uh, some of the properties, uh, that are laying and Elixir being built on our lane gives Phoenix.
+
+So earlier we talked about presence and we talked about flame, which is the new Lambda, uh, sort of framework that that's, that's kind of built on this infrastructure. What other features does Phoenix use leverage from the Erlang Elixir ecosystem that is unique to kind of like. Uh, to Phoenix.
+
+**José** Yeah. I feel so there, there is, um, and, uh, and this, I can also speak about this for, For hours, but I'll try to, I'll try to summarize it. Uh, Phoenix, um, also got a lot of attention because of a project called Phoenix Live View. And there are many ways you can describe Phoenix Live View, but the idea is. Uh, you know, how can you build rich and interactive applications without writing JavaScript?
+
+And the sense of without writing JavaScript can mean different things. Sometimes people take it like negatively, like, Oh, but I don't want to write JavaScript. Like, I'm fine with writing JavaScript, right? But some people are like, Hey, I don't have to write JavaScript. But I feel that one of the things that you have to, I mean, and today when LiveView started, which I think was four years ago, Four or five years ago, that was quite polemic.
+
+But today we are starting to see and live view was kind of the pioneer here in starting to move the conversations like, well, maybe not every app should be an SPA kind of thing. And maybe the server should be taking, uh, like more responsibility. So even like react. When they announced, like, uh, the server side components kind of thing, one of the things they mentioned as influence to the server side aspect was Phoenix LiveView, right?
+
+So, but the idea is that, well, you know, uh, you have the client and you have the server, and we have been, uh, Uh, moving control to the client mostly is like, Oh, everything's going to be in the client. But what if we move control to the server, right? And have the server guiding how users are going to use the application.
+
+And of course, there's a bunch of nuance and discussions that we can do it there. But that's how I would summarize LiveView. I think the benefit with LiveView is that as a team, for example, you're not like, People working on the front end and then the back end. There's, there is a Chris Granger. He has a, like a very good quote in the sense that, uh, they were, they had a React front end and they were using Phoenix with GraphQL, I believe.
+
+Uh, and it's always this split work. You have to work a little bit on React or you will split your team. Like you have people that only do the front end and people do the back end. And then you have to figure out the, the. the communication patterns and complexities that may arise from that. Sometimes it works great, sometimes it doesn't, right?
+
+And then if you say, look, I can go all in on one side or the other, it allows you to, to simplify a lot of those aspects. It's like, okay, I'm just going to write Elixir code Phoenix. That's going to be the main driver of the, uh, Of how I build my web application and, and, and again, like there is a lot we can talk about this because I think ultimately, like the, the reason why I like live view is because you can't get necessarily rid of the server, right?
+
+Like the server is where the authorization authentication logic has to be right. So I think our default should be, I'm going to have things on the server because that's not something I can. Uh, give up on, right? And, uh, and then, uh, if I need things that are more, you know, I also don't want to go to the server.
+
+Like, for example, imagine that I click a button and it expands something. If, if I'm doing like animations and things like that, if that's being driven by the server that introduces latency. So, of course, in those cases, I want to use the client. Uh, but I, for me, like the server needs to be the default. And, and it goes back to.
+
+To the fact that, you know, I started doing web in 2004. So it has been 20 years and like, it got way more complex from when I started. And some of this complexity is justified, right? Like when, when I started Git was not a thing, right? So, but now today everybody needs to learn Git and for a good reason, right?
+
+I think it's like, it's justified complexity. Maybe there is alternatives to Git that could be simpler, but it's justified complexity. But I think also like. Today when we are building a web application, we're asking people like, oh, you have to be really good at the front end. You have to be really good at the server.
+
+You have to be really good at the database. And I think what we have started exploring on those, uh, on the last decade is exactly what we're doing. Well, what if I don't have to be good at all those three things because it's really too much, we are asking too much, right? So you, people are trying to simplify.
+
+It's like, well, so for example, uh, there's like super base, for example, which is great because it tells people like, Hey, you want to focus on the client, focus on the client, and I'm going to. Take care of like this order part for you. I want you to take care from the database in which they care about, uh, authentication and so on.
+
+And things like view is like, well, you know, what if you focus on the server? So it's being server centric, super based like database centric. And then I have things that are SBA centric, client centric. Um, yeah, so it's our answer there. And, uh, and yeah, and the goal is that you're going to be more productive because you're going to worry about fewer things.
+
+Uh, the client and the server, they keep connected and exchanging information all the time. Right. And, and it works really well with the Elixir model. I said, like, imagine if each user. That you have in your, in your web applications, like an entity in a cluster, they can all communicate with each other, right?
+
+That's exactly what LiveView allows you to do. So like building real time applications, interactive, it's, it's really straightforward. It's an elegant model that synchronizes the client, the server, and so on.
+
+**Andrew:** Yeah, the theme I see is that like, uh, transfer protocols just are friction and a lot of modern computing is trying to get rid of those transfer protocols. So like, uh, it's kind of a meme on the podcast, but we talk about unison a lot and unison is very much in that same genre of like, give me a thing.
+
+Don't care about how it's connected, but have all these powerful features at the same time.
+
+**José** Yeah, I think, I think that's a per, I think, I think that perfectly summarizes it, right? Because like, you know, going between those things, client, server, and database, we are, getting from one thing, translating to the other, and then translating to the other. And across all those translation layers, there's complexity overhead and so on and so on.
+
+
+
+
+#### [00:41:23] Exploring Elixir's Versatility Beyond Web
+
+**Andrew:** so you've recently been working a lot on a project called live book. Uh, what is it and how does it connect to Phoenix live view?
+
+**José** So, uh, great question. So we, we started talking about, you know, what Elixir is good for. And then we talked a lot about web and how there is a lot of operational simplicity and innovation being driven from the Elixir community. Um, And, and before we get to Livebook, there are like other things that Elixir is good for.
+
+So, uh, so I said, I knew it was going to be good for web. And the first surprise I say that I got is, uh, is when Elixir started being used for building, uh, high end embedded software. Because, uh, we didn't talk about this, but there's this whole other aspect of Erlang, which is how to build like fault tolerant and, uh, and resilient software.
+
+Because again, if you're building telecommunication switches, you are, you really hope those things are not going to fail, right? Uh, it's, it's literally infrastructure, right? Those things cannot fail. Um, And, um, and, and, and then, you know, they got those ideas on how you build fault tolerant software in their link and use that for building embedded software.
+
+Because embedded software is actually quite tricky, right? Because you are going, somebody is going to take to their home and then Wi Fi can be spotty stuff. It doesn't, doesn't work on Bluetooth and you don't want like, Oh, if Bluetooth is failing, you don't want the whole. your whole hardware embedded thing to, um, to fail, right?
+
+So that was something that came and Elixir is being used that. We also have like tools for like event data processing, because again, it's just moving data around, goes back to telecommunication. And about three, four years ago, we started a, an effort to bring Elixir To, to machine learning. Okay. And it was, it was a, uh, coincidence of events, uh, and people, uh, it started because people are like, you know, like we started focusing really strongly on machine learning and AI just before like one year AI be one, one year before the whole AI thing really exploded.
+
+Right? And, um, but what you can do today is that you can get. a subset of Elixir and compile it to the GPU, which to me, it's like, I mean, I've, I've been doing this for like three years and I'm still like, I still can get tired, you know, like, uh, I'll say like you can compile a subset of elixir to the GPU, right.
+
+And run machine learning models. Uh, and that started like three years ago on an afford to, uh, to bring Elixir to, uh, uh, to a new domain, right? And it's all built on top of the metaprogramming things that I was talking about the beginning, right? So it goes back, you know, what are the things I felt essential to Elixir?
+
+And today we are reaping the benefits of that. So we started, so we have like, uh, So for those people who are familiar with, like, the whole machine learning and data ecosystem in Python, we have like, uh, equivalent to NumPy. We have equivalent to Polars. So all those libraries, we have equivalents in Elixir.
+
+They're not one to one translations. That's something that, because remember, like, at the very beginning, I said, like, when I wanted to, when I started using Erlang, my first idea was to bring objects, So I was kind of doing a one to one translation. So whenever we, like I'm, I'm working with somebody on bringing Elixir to a new domain, I'm always like very aware of that.
+
+Like, let's not do a one to one translation, right? Let's really think about how we can bring these idea or those tools in a way that leverage. 
+
+
+#### [00:45:10] Livebook
+
+**José** Everything that the platform has so, but yeah, so we build this whole ecosystem and if Python developers, they are familiar with this with Jupyter notebooks.
+
+So it's like, uh, uh, notebooks is, it's a literate programming environment where you can write like documentation and code at the same time, think of people who have not used Jupyter. Notebooks. Think about it like your terminal, like, uh, your programming, uh, terminal, like your JavaScript shell or whatever, uh, or the console, but that, but also with documentation and a bunch of features should make that a rich programming environment.
+
+And that's what Livebook is. So, and so, and the reason why Livebook exists is because, so we started working on machine learning and then we're like, Oh, what are the things that Python developers have for doing machine learning tasks. And one of the things that they have Jupyter notebooks, the Jupyter notebooks, they're really famous, they're really popular, right?
+
+They're used, uh, they're used extensively. And they're like, well, we And sometimes when I look at a problem, I need to decide, well, is this something we should own? Like, should we try to solve the problems ourselves? Or should we Build on top of what exists there. So, for example, when we compile like elixir to the GPU, I am using existing existing compilers provided by Google and Facebook, which is also what the Python community uses, because I am 100 percent sure I am not writing a GPU compiler, right?
+
+There's like, there's zero chance that I'm doing that project and there's zero chance even if I did, I would be able to compete, right? So when it came to notebooks, I was like, well, notebooks, they're really like. Web applications. And there is one thing that I have been talking, you know, that Alex here is really good for web.
+
+And then I felt if we try to have our own take on what should be notebooks as a literate program environment, I think, uh, it's going to lead to, to a bunch of new ideas and new solutions. It's going to be an interesting space to explore. So I started working on Livebook and I think, and I think it's like, uh, uh, Yeah.
+
+It's, it's a really exciting tool. So if you're listening to the show, like I want to give Elixir a try, you can do it for live book. I have, I have given a recent presentation, which is called, Oh, I don't remember. Uh, I don't remember the title exactly, but it's about introducing Elixir for live book. And it shows a bunch of the features that we were talking about.
+
+Right. And this presentation is like 40 minutes. The first 20 minutes I talk, I give an introduction to Elixir. I talk about concurrency distribution. And in the remaining 20 minutes, like I literally live code in 20 minutes, uh, using features in Livebook and features in Elixir, I live code a web application that has distributed machine learning features.
+
+So I'm running like machine learning models implemented in Elixir. And that's running in a cluster because again, like if we go back, Oh, how things they actually, I'm going to repeat myself, but it's fine. Like, imagine that like you are, you know, you're building our startup today and it has like machine learning features, you have your own models that you need to run, right?
+
+Again, you have your front, you have your backend that is receiving that web requests, doesn't matter if you're using SBA doesn't or like live view, but you have something that is. dealing with the requests. But if you have a machine learning model, the way that you scale that's going to be different.
+
+Those machines, they may need GPUs, right? And different requirements. And again, if you're doing, if you're working in other environments, why do you need to do, Oh, you need to go, you need to create a separate repository, something to communicate between your server and the machine learning model and figure out all of that, right?
+
+And in Elixir, it just works. Like I have a machine. running, uh, receiving the requests. It can talk to a machine running GPU and the model in a cluster. It all just works. And then the demo builds that. So, so Livebook became really like this tool where you can explore Elixir and learn more. We have this idea also of like smart cells, which allow you to swap to solve like some particular tasks in a, uh, In a very efficient way and learn more about the language.
+
+So, yeah, it's, it's meant to be like a fun environment to learn Elixir, but also be productive.
+
+**Justin** One of the things that I really love, uh, you're talking about the embedded use case of Elixir. So there's a project called nerves, which is, uh, Elixir running in embedded environments. Uh, I've, I've went to the nerves meetup a few times. Cause that's a really fascinating, uh, area for me. And there's a nerves live book.
+
+So it's like, you can run Elixir embedded on like a Raspberry Pi and have like a Jupyter notebook style thing. And you can actually write code to control like the GPIO pins, like an illiterate programming environment, like in, in this sort of notebook. And I was like, It was just like a, such a fascinating culmination of all these features coming together where it's like, Oh, it's distributed to this other node.
+
+And it's rendering this, you know, notebook with like live view and like, it's all very interactive and you're like controlling actual hardware. And I don't know, I think the first time I went through that demo. It like really blew my mind. Cause I was thinking back to my, my degree is in computer engineering.
+
+And when I was doing my first embedded projects, it was like C and I would like recompile everything and like read through data sheets. And it's like, Oh, am I writing to the is like, is this pin high? Is it pulled lows? Like, what should I, what should the signal be? It's like, do I, you know, do all that stuff.
+
+And the feedback loop was always really cool. Slow and like having all this stuff come together. And this is like, Oh yeah, I'll just like, try it out in this little smart cell or whatever. It's just like, it's mind blowing. That's really cool.
+
+**José** Yeah. And, and I, for me, like the thing that I find fascinating, fascinating about is, is that. Um, it's like we, we did live book with a specific, like, when we started, it was like, we're thinking, Oh, machine learning, right? Like, this is, this is what we're thinking about, like machine learning data and exactly like when, when Frank, who is the person, one of the developers for nerves, when he saw live book, he was like, Oh, this is perfect because exactly because of that, now I can teach people nerves.
+
+And remove this whole, like, and shorten the, the feedback loop so much because now they have this environment that they can run in on the device. Right. And do all these kinds of things. And it's all like, again, it's like all the ecosystem, like building on top of each other, right. We build on top of Erlang and you asked, I did an answer.
+
+What is the relationship between LiveView and LiveBook? Uh, it's just that, uh, LiveBook is implemented. With live view, but that's it. It's, it doesn't have another relationship. Uh, I told, uh, Chris McCord, the creator of Phoenix, like when we're thinking about how to name the project, the project, I was like, I really liked the name live book.
+
+And I think like, uh, I can think of two things that I had the name first. Usually that's not what happens, but I had the name for like live book. And I had like two ideas. One was to be. A book to teach live view that was dynamic because, you know, so like I could build live views and build interfaces, like, and I will teach people how to do that, but it was like a live environment, because if you want to teach something live, like live view, you need a live environment.
+
+And, um, And Yeah. And the other one was this notebook platform that was, that is collaborative and, uh, and, and all the things that Live book is today. And then it, it, I, I never wrote the book, uh, the, the interactive book. I probably never will. So if somebody's listening to this, I'm like, I want to steal that idea.
+
+You have my full permission to do that. Oh, I can't, I can't, I can't pick a favorite child. Uh, uh. Yeah, it's, um, I feel, but yeah, what I can say is that I feel like Elixir is in a very, I've hinted to this, but Elixir is in a very comfortable space because really the hard work is being done by Erlang, right? Uh, so I, I've, and the Erlang team is fascinating.
+
+Every time I talk to them, I have a really great time and they are solving the, the, the, the hard problems. So they introduced a JIT like, uh, three or four years ago. And then like at the initial version, like, Oh, Alex, your code is now like 40 to 50 percent faster. And I didn't have to do anything. I just leveraged from this.
+
+So I feel like my main responsibility. It's really to, to, to motivate everybody to like, to try out and build those things and build nerves and like support them. Like, Hey, how, how can I, how can I help? And it says like, is the language are, are our tools limiting you somehow? Right. And kind of like, try to, if they ask my feedback, I usually, I usually don't go like giving, you know, feedback. I'm solid. I'm solicited feedback, but it has my feedbacks, like how things can connect together. I, I do. Right. But I feel like that's my main, that's my main role, right. Because I am in a very comfortable and somewhat privileged position where, yeah, I can leverage, uh, the hard work of a lot of people. And, uh, and then I try to guide them.
+
+So, yeah, so for me, like, I like to say when this question comes up, I, I usually say like nerves is one of my examples in the sense I really like nerves because it was the first time I was surprised, you know, it was like, I knew Elixir was going to be good for web and then somebody came up with this nerves thing.
+
+And then I was like, Oh my God, this is amazing. And the reason I love it's because. If you ask me, so sometimes people ask me like, Oh, why do you think should be like the last thing about Elixir? And I'm like, don't ask me, right? Like if you ask me, Elixir would be used only for web because that's what my background was, you know?
+
+So like ask the community, right? Like that, that should really be like, Everybody should have the voice and feel supported in building their stuff. Uh, so NURBS was fantastic because I still remember it was like a, it was, I've, I've got to hear about NURBS at an airline event because I think at the time we did not even have Elixir events yet.
+
+And, and I saw it was like a box. They're like, this is running Elixir and this is actually running in ships, right? It was, I saw it first time I heard about NURBS was with an actual product that was. Ship to ships. Right. So, um, and that was like, I was like, uh, that was fantastic. But yeah, like today I talked, we talked about then, uh, Alex is good for data processing.
+
+We talk about machine learning. Alex also has like also really good frameworks for doing. audio and video and media streaming in general. So yeah, I, you know, I'm excited about all those things because, um, they're all, it's all people ideas and doing things that I never thought would be possible. And that's exciting.
+
+**Justin** Yeah, that's awesome. I mean, I really have loved to see the Elixir ecosystem grow. And it's one of those things where I always come back to it. It's like, I haven't really done a lot professionally in Elixir, but it's always come back to this, like, this is the one thing that I want to work at at some point, because I feel like once you get in the ecosystem, there's like, you know, so much rich area to explore.
+
+
+#### [00:57:01] The Future of Elixir: Types and Beyond
+
+**Justin** Um, I want to talk about one, one last topic before we start wrapping up. so. Andrew and I both have a lot of front end experience. So we've been in the JavaScript ecosystem a long time. Um, and I've got some, some Ruby experience among other languages. And, you know, from the time when you developed Elixir to begin with, Dynamic typing was sort of like at its, at its, what I think of it's at its peak.
+
+Like a lot of people were making scripting languages that were like dynamically typed. And it's like, we want to be fast. We want to iterate. And then over the coming, you know, decade. Type systems sort of became a little bit more mainstream and people started talking about them like, or had renewed conversations about them.
+
+And then we had things like TypeScript coming out. Uh, we had like a lot of other like focus on strongly type languages. So. Uh, I, I know that there's an ongoing project to think about, like, what types look like in Elixir. And then there's also this other language called Gleam, uh, which also builds on the Erlang, uh, VM, which is a, um, a strongly typed language.
+
+So could you talk a little bit about, about how you're thinking about. Types in the elixir ecosystem and maybe what your plans are there. 
+
+**José** yeah, this is, so how I'm going to get started in here. So today I was thinking about doing a, uh, a tweet, which was pretty much going to be something like I have, I still have to order my thoughts because I, I partially feel that everybody who is like, Super excited about types are wrong and everybody who is like, you know, so not excited at all about types.
+
+They're also wrong. Uh, and, and something like, so this whole thing started because types in the elixir, right? Exactly. Because if, if I went to. Like, literally in Elixir events, if I ask people, like before my presentation or my presentations, like, oh, you know, what do you think is the most important thing that Elixir should have, like types, at some point, like as the language evolves.
+
+So at the beginning, it was like code for matter. Then it like better deployment. So we worked on those things with the help of the community. And then at some point it became like really clear. The answer was types, right? But the thing is that what types mean, right? It's not, it's not the same for, for everybody, right?
+
+It's like, they're, they're going to mean different things. And I've talked a lot about this and trying to understand what people are actually expecting from it. So for example, you mentioned TypeScript, but TypeScript is
+
+Types for TypeScript is about, uh, developer experience in terms of IDs, right? Like, um, I believe, I don't remember exactly what they said, but they said, look, sometimes we're thinking about a feature, but if that feature means that now the feedback the user gets when they're using their ID is going to be 500 milliseconds, then, um, It's not worthy for us, right?
+
+So they are prioritizing that particular aspect of types. And the other thing is that Elixir is a dynamic language, but it's nowhere as dynamic as JavaScript or Ruby or Python. I like to say that Elixir is an assertive language because usually you know what are the structures that you're working on.
+
+You know you have a list. You know, uh, you know, like, Because when you, when you're using Ruby, JavaScript, or Python, you write a lot of like something dot method, right? And what is that something, right? You don't know what is that something. It can be anything, right? If you're not using TypeScript, just JavaScript.
+
+It can be anything, right? And that's actually a property of those languages, some of them called duck typing. Like, that's very intentional design. In Elixir, we don't have that. When you have a data structure, you usually put, you know, pass it through very specific modules and you know what you're working on.
+
+So when you, when you have a list and you want to change it, I'm going to call something the list module. So Elixir is quite more assertive. Uh, and this is important. We'll come back to this later. So a lot of the experience that people think like, Oh, uh, I would like to get this experience from IDEs. We don't actually need types in Elixir to have those things.
+
+We can just, uh, work on the IDEs. It just happens that IDEs, they are complex, right? It's like, you know, uh, the programming languages that have like the best IDEs, uh, usually they are like really large corporations working on those really well funded projects. So, So, so there are a lot of feelings about this, right?
+
+And, uh, and, and, and I think like some time and then I hear things like, Oh, uh, I hear people saying like, Oh, if I have types, I have to write fewer tests. And then, and then to be like, that makes like. I don't want to say zero sense, but it makes 1 percent sense. For me, it's like, if I have types, I'm, I, you have to write like fewer bad tests, right?
+
+Because like, oh, you can get rid of the bad tests, but they are usually not tests I would write in the first place. So especially in terms of Elixir being assertive. So, So there was a lot of like trying to understand. And then, and then there are people who are like, um, uh, who are like, Oh, I don't need, I don't need types because I have like a hundred percent test coverage.
+
+Right. And then I'm like, no, like, like, no, like that's not the same thing. Like, so for a starter, uh, the types meant to give you feedback much quicker than running your whole tests to it. Right. So just in that, but there are many ways that you can. Uh, that you can get a hundred percent coverage and still have bugs in your code, right?
+
+In the same way that you can also have types and have bugs in your code, right? So the example I like to give, like, imagine that, uh, you take the end operator in JavaScript, the ampersand percent, right? The type of that thing can be, oh, it's like, oh, I think, or let's take a simpler one, like, uh, uh, just a, a.
+
+Boolean and operator. It just deals with Boolean. Most programming languages, the type for this thing is going to be, it receives a Boolean. It receives another boolean and returns another boolean, right? So like, great! I wrote types for this thing, right? Well, an implementation of this signature that is going to be successful is like, get a random true and a random false.
+
+The type system is going to be like a hundred percent type with that. You're going to get like a hundred percent coverage if you call that thing. But the implementation is completely wrong, right? It's like, so, so I feel like a lot of the things that we need to talk about. And that's like, when I said putting my thoughts in order is because.
+
+We tend to say like, oh, types are good or types are bad, but we don't talk about at what. Right. They're good for what they're bad for what, like which particular things. And like, if you tell me, oh, like types, they're going to prevent bugs. And like, Which kind of bugs, right? Like, you know, so Rust, I think is a great example because Rust actually has, look, the Rust type system is going to 100 percent prevent you from bugs, like dangling, like accessing something after you deallocate, like there are a bunch of bugs that like, it's actually guaranteed.
+
+And we can talk about those, but you know, Elixir is a memory garbage collector, so. Adding Rust type system to Elixir is not going to make any sense because that's not the kind of bugs that we need, we need to find. Right. So, so like long story short, like there is, I think, I think there is, we need to do a lot more and I mean like not Elixir, we in general, we need to do a lot more soul searching on what type actually means to us and get out of this, like, sometimes get very easily heated conversation that there is like no space, uh, in, in nuance there.
+
+Right. And a lot of my work in bringing a type system to Elixir is, um, Is answering, like, trying to understand what is the answer to that question, right? What does it actually mean when we have a type system in Elixir? What do we actually want to, to get from it? Because it also goes back, like, so, uh, a lot of people, they, they, they say like, Oh, there's this discussion between like dynamic and, and, And statically and static programming.
+
+Right. And it's not like the pendulum has swung, right. Uh, a little bit for time. Right. And, and I like to see it kind of a way of like the challenge between. expressiveness and kind of correctness. That's like, that's the trade offs that, uh, we want to think about there because, because the thing is like, um, programming languages that have a type system, a static type system, they restrict the kind of software that you write, right?
+
+Like there's some time, like you write a software, like this would make, Total sense. But is like, nah fam, I really, I really can't understand this. So you have to rewrite it, figure it out. But this, this is not going to fly, right? So it needs to, it's, it's rejecting a program where you say like, this would make sense, but the type system cannot understand it.
+
+And it limits idioms, right? Of what you can do and what you can express. But then you have like dynamic languages, right? That is like, Oh, we don't have that. And you actually have a lot more expressiveness. Right. And, and the thing about adding a type system to an existing dynamic language is as well, if we're adding a type system, then you have to limit what you can do.
+
+But if I get Elixir or any other existing programming language, and I limit what it does, how much can I limit until it's still Elixir? Right? What if I limit so much of what the programming language can do that it doesn't feel I am like writing Elixir anymore? Right? And we have, and so I think that's going to happen when, if Elixir has types, which I'm not sure is going to happen, but if Elixir has types, the, some of the language idioms, they are going to change.
+
+I'm 100 percent sure. Right? But then we need to, we need to evaluate, we need to ask ourselves, like, is this new idiom better or worse? Like, is the types pushing me to do that because, uh, my software is going to actually be better, right? Or am I just rewriting this thing and being less expressive because, uh, Um, because the type system is not letting me, right?
+
+And, and for some, in some cases, it's fine. That's a trade off like that people do. So, uh, Go is, is, is one example where like, look, I actually want the type. I actually want by design the type system to limit the kind of software that people write because I want software to be simple. I believe Go or Gleam is similar, right?
+
+It's like, well, the type system is there to, to simplify the kind of things, right? And that, and that's something that you need to consider, right? Like people talked a lot about Go, how some people, they were not really pleased with the trade offs they made in the type system and in the language because they felt it was constrained them too much.
+
+And some other people, uh, Uh, they were like, they were happy. They're like, this is my sweet spot. Like I don't mind being verbose in some places. I don't mind not having this feature if it means it's, it's, this is what you get. Right. So that's part of this balance between, you know, expressiveness, simplicity and correctness.
+
+Right. And for us, the challenge is, you know, we have an existing language that we are bringing types, how much that is going to change and, uh, how, how we can integrate that and feel that at the end of the day, developers, they, they feel they are writing Elixir. They're not writing like a subset of Elixir that is limited and does not allow them to express X, Y, and Z.
+
+Because what I usually say at events, like, and the reason why I don't, I don't want to constrain Elixir is because I am actually very happy with the subset that we got. I'm actually very happy with the features that we have in the language and the things that we can express. And again, this is not me saying like, Oh, I did such an awesome job, right?
+
+Because as I said, many times, like. 95 percent of the features, they just came from Erlang, right? I'm super happy with that, right? So I don't want to restrict that. And just one last thing is like, I don't know if you, um, I don't know how, if that's still true, but, uh, Wikipedia had, uh, articles in simple English, which was like a variant of English that was meant to like simpler, right?
+
+Removing a bunch of expressions. And the curious thing is that. Most, most of those articles, like if you would get a paragraph and translate from one to the other, the simpler paragraph, the simple English, it actually, most of the times they ended up being more verbose, right? Because you lose the ability to express certain things and now you have to take a more verbose route.
+
+And I think that's an analogy that also maps to two programming languages, right? And, and that's, and that's the trade off that we have been doing, right? Like, uh, at the beginning type systems, they were. Uh, they were restricted. They could not express a lot, but as the type system evolved and we could express more code, people who are using dynamic language because they felt stuck, they were like, Oh, now static typing is much better and allows me to express those things, right?
+
+And I think, uh, And I think eventually, maybe actually, uh, we'll find like a perfect spot or maybe not, but it's it, it's this scale, right? And, and, uh, that's the, that's the juggling I am working on. And, uh, we have been, we published the paper, uh, like developing new theories, new ideas of how, um, how they interfacing between a type system and a dynamic language.
+
+Right? So we have been working really hard in trying to answer those questions. And the next Elixir version, which is going to come out in a month or two, is going to be the first version that has these, has the seeds of the type system already into the compiler. So what I want to do now, being very specific was being like very theoretic and like exploratory in the, in the previous comment.
+
+So being very specific, uh, so again, in Elixir code, we are like assertive. We usually do pattern matching. We know the shapes. So what I want to do is that I want to use all the information that exists in the program, your program today already and feed that into the type system. Um, And help you find the bugs in your code without you having to change a single line of code.
+
+It is as if we had inference, but it's not really full blown inference. But that's the idea I want to do, or what we want to do. Because I think that's great because it allows us to Uh, experimenting the type system without doing changes to the language surface, which is important because maybe things can still go wrong, but maybe you're not happy with the type system at the end.
+
+So it's important for us to have a way to experiment without, uh, pushing churn for users. And, uh, and it will allow us to improve the error messages to assess performance. And then if we're happy with that, we will at some point effectively add types to the language and you'll be able to have type annotations and so on.
+
+So yeah, that's, we can probably go deeper, but, uh, and you may have questions, but that's like my general thoughts on types and why we are exploring this. And, uh, yeah,
+
+**Justin** it'd be really interesting to see where y'all land out on that. I mean, I see a parallel to this, to going back to the start of our conversation of like, you know, why build on Erlang it's like, well, immutability is actually really nice. Functional programming is actually really nice. There's a confidence that you're given that this function is not going to mutate the thing that I passed to it.
+
+In JavaScript, you have like functions can, can just mutate the objects like out from under you. And there's like some like standard JavaScript functions that some of them mutate and some of them don't. And you're like, got to know which one does which. And I think that there's some like surface level types of like, I have the confidence of like, I know that I'm passing the right thing to this, or I know that it's returning the right thing.
+
+Or, you know, it's like the, the sort of. Like immunity, immutability gives you that confidence that there won't be a mutation of your thing. It's like, likewise, you have like some, you know, at least at the functional, the function boundary that you have some guarantee that the, the thing that you're passing is actually what's expected or, you know, you haven't done any, another thing like, Oh, uh, I typoed an atom, which has happened to me.
+
+Um, Really interested to see what comes from that.
+
+**José** Yeah, and there's just one, when you, one last thing that came to my head, uh, when you said, oh, going back to Erlang at the beginning is that Erlang is also dynamically typed, right? And when you ask the creator, when you ask the creators of Erlang, like why Erlang is dynamically typed, it was because For them, it would not have helped them at the time to build the systems that they want to build to build those telephone switches because, because the thing is like, you know, um, if you're building a distributed system or a telephone switch that can be deployed in the middle of nowhere, like all kinds of things can fail, right?
+
+You can have, uh, hardware failures. You can have like, uh, connectivity failures, right? There are all kinds of things that can go wrong. And they felt that was more important for to them, uh, to not try to prevent all the failures because you can't do that. Right. But instead to write a system that when something goes wrong, it can recover from the failure.
+
+Right. So it's something that we did not, I just mentioned it when talking about nerves and embedded, but it's this whole other aspect of Verilink is how, how you build systems in a way that they can self heal when something goes wrong, it can restart and go back to a working, uh, uh, uh, to a working state.
+
+And, um, and, and what makes me excited about things like, you know, types coming to Elixir and things like Gleam is actually because we are starting to see the first languages that have both, that has a type system and the benefits of the type system. But it's still, if something goes wrong, because again, things can still go wrong.
+
+It has this whole idea of how to, to, to heal itself.
+
+**Andrew:** Cool. So the type system seems like it'll be quite a mountain of work, uh, to decide on all of that. Uh, but do you have anything else planned for Elixir?
+
+**José** not really. I, I'm, I am deeply involved on the, on the type system work and also A lot of what is happening with machine learning and live book. That's like, uh, most of my time. So, and I, I believe it's indeed going to be, uh, most of my time for the next like three to five years.
+
+I was just to say that I wanted to retire at 40, but, uh, I don't think that's happening. I don't think that's happening. So yeah, I'll have to postpone that for definitely a couple of years.
+
+**Andrew:** well, that wraps it up for the questions that we have. Thanks for coming on the podcast. This was a super interesting conversation about the history of Elixir and how it's like built on Erlang and all that fun stuff. So thanks for coming on the podcast.
+
+**José** Yeah. Thanks for having me.
+
+**Justin** Yeah, it was, it was great talking to you. I I've, you know, been a big fan of your work for a long time. I think Elixir is a fantastic language and part of a fantastic, fantastic ecosystem for folks who haven't checked it out. You should definitely check it out. You should definitely try it. It's a, that's pretty amazing.
+
+So thanks. Thanks Jose for coming on.
+
+**José** Thank you. 
