@@ -1,0 +1,446 @@
+---
+title: Solomon Hykes - Docker, Dagger, and the Future of DevOps
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Solomon-Hykes---Docker--Dagger--and-the-Future-of-DevOps-e2k4ujm
+youtube: https://www.youtube.com/watch?v=UVED44sb7zg
+tags: technology, podcast, coding, docker, programming, devops, continuous integration, typescript, go, bash, python
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Solomon Hykes, the creator of Docker and co founder of Dagger.
+We talk about the history of Docker and how it has impacted the development community.
+Then we dive into Dagger and how it's simplifying CI pipelines with code.
+We also talk about the future of DevOps and AI integration.
+
+- https://twitter.com/solomonstre
+- https://dagger.io/
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:45] The Early Days of Docker
+[00:08:35] Impact of Docker on the Ecosystem
+[00:10:33] Ad
+[00:12:07] Monetizing Open Source Projects
+[00:18:19] The Importance of Brand and Trademark
+[00:22:48] How Dagger Simplifies CI Pipelines
+[00:30:41] From Docker to Dagger: The Journey
+[00:35:07] Exploring Dagger Modules
+[00:39:33] Dagger Cloud: Features and Benefits
+[00:46:59] Future of DevOps and AI Integration
+[00:51:22] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+#### Introduction
+
+**Solomon:** ~~There's too many windows open. me just close a bunch of them. Uh,~~
+
+**Andrew:** ~~Oh, just a second. Someone knocked at my door. Sorry.~~
+
+**Solomon:** ~~Perfect timing.~~
+
+**Justin:** ~~Yeah, yeah, yeah. Good timing. Just start.~~
+
+**Solomon:** ~~Where are you, where are you based?~~
+
+**Justin:** ~~Uh, I'm in Brooklyn and, uh, Andrew's in the Bay area.~~
+
+**Solomon:** ~~Oh, cool. And you're, you're going to Berlin soon, I heard.~~
+
+**Justin:** ~~Yeah. Yeah. I'm going to Berlin for the local first conf. Um, it's a thing like, uh, the Incan switch folks are putting on and a few other people, I don't know, it should be really fun. I'm really excited about it. We're, uh, we're trying to get, uh, it's about, um, Well, it's about local first software. So Incan switch had, uh, if you're not familiar, are you familiar with Incan switch?~~
+
+**Solomon:** ~~Uh, the name is so, super familiar, but I, I can't place it.~~
+
+**Justin:** ~~Yeah. Well, they're like a UX, like a HCI research lab. Uh, and they wrote this essay called, um, local first computing, which is about software that by default doesn't require a server and then like gracefully syncs. Uh, anyway, so this is a conference like just for that. So it'd be fun.~~
+
+**Solomon:** ~~Oh, I see. It's in the context of web software, like that, that otherwise would not be local first. Got~~
+
+**Justin:** ~~Yeah. Yeah. Yeah.~~
+
+**Andrew:** ~~So I'm ready to go now. We'll, we'll start. ~~[00:00:00] 
+
+**Solomon:** Docker build is ~~a, ~~a simple front end to this hidden technology called ~~bill ~~kit. Turns out bill kit itself is way more powerful than what you can express in a Docker file.
+
+Any program that you can express as a set of nodes that are running in parallel and sending data to each other, BuildKit can run that.
+
+It turns out that's a perfect fit for builds, but also a perfect fit for your entire pipeline. Build, deploy, test, and all the stuff in between. 
+
+​ 
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin. 
+
+**Justin:** Hey Everyonee we're really excited, really honored to have Solomon hikes on with us. So Solomon, you were the co founder of Docker or back in the day, it was doc cloud dot cloud, ~~uh, ~~until up until like what it was renamed in like 2013, I think.~~ Uh, ~~and then since 2019, you've been working on a platform called dagger, ~~uh, ~~dagger.
+
+io, ~~uh, ~~you [00:01:00] founded that. Yeah, we founded that in 2019. ~~Um, we're ~~really excited to have you on. This is, ~~uh, ~~such an honor. I mean, obviously ~~the, ~~the stuff that you've worked on ~~as ~~has influenced a lot of how we do modern software development, which is really exciting before we dig further into that, could you tell our listeners a little bit more about yourself?
+
+**Solomon:** Sure. Yeah. Um, well, thanks for having me. Um, I love talking about DevTools and, uh, with people who, uh, enjoy them. So. Um, yeah, well, I'm, I'm, my name's Solomon. I, you covered, you know, my, my two main projects. Um, ~~I, ~~I grew up in France, went to school there, ~~uh, ~~learned programming there, and, um, at some point, uh, left to, uh, live in, um, in Silicon Valley.
+
+
+#### The Early Days of Docker
+
+**Solomon:** And the motivation for me leaving was my first project, dot cloud, which later became, uh, docker. Um, and I just could not find, um, any funding for it in, in France, mostly because of my own inexperience. And I got lucky, I got into Y [00:02:00] Combinator. Uh, honestly, on a misunderstanding, like they weren't sure what I was building either, but they just liked. ~~The, ~~the passion and, uh, the confidence and the fact that we were just cranking out a lot of code, you know, and, uh, they gave us a 17, 000 check, um, and told us we had to move to the Bay Area and, uh, and we did, and, um, that kind of changed everything for us going through YC changed a lot for us and, um, And yeah, it just kind of set us on the trajectory that leads to today,
+
+**Justin:** Nice. ~~Nice. How was that? ~~How was that experience? So what year was it when you went through YC? Was that around 2008, 2009,
+
+**Solomon:** 2010. Yep.
+
+**Justin:** ~~2010? Um, what was the, ~~what was the experience like at the time?
+
+**Solomon:** Well, it was much smaller than today. You know, I think it was 30 startups, something like that. And, um, ~~it was, ~~it was, I mean, we were complete outsiders, right? So for me, it was my first contact with the startup world ~~um ~~you know, and so everything was new. Everything was a learning experience. It is [00:03:00] so, I have super intense. A lot of emulation, you know, meeting a lot of really smart founders working on, uh, cool problems. It's just sort of, ~~um,~~ yeah, just put us in overdrive, you know, like, Oh, wow. We got to get our stuff together here, you know? Um, yeah, so it was a, it was a transformational time for me. Uh, yeah, it was, I'm not sure how else to describe it, you know, a transformation.
+
+**Justin:** Yeah. So when you first created Docker, what ~~was ~~the problems that you were trying to solve?
+
+**Solomon:** ~~Uh,~~ well, you know, I think it started first as scratching my own itch ~~as a, ~~as a systems engineer and, um, you know, systems nerds ~~and, ~~and following a gut feeling that it was just a ~~cool, ~~cool technology and cool set of problems to attack it. Um, and it just sort of blind confidence that maybe others out there in the world have.
+
+Relevant problems that maybe I could help solve, you know, but I just wasn't experienced enough to know for sure what [00:04:00] the industry needed, you know. Because I was, you know, I, ~~I had, ~~had a job, but not for very long, you know, ~~I was not, ~~I was not seasoned. So it wasn't the situation where, ~~you know, I, ~~I solved the same problem for 20 years and then I designed the solution because I worked at Google or whatever.
+
+And we, we built it and now the world needs to benefit from it. And it was more like, you know, ~~work and ~~worked in his backwater. ~~Uh, ~~of the industry ~~and, ~~and, um, I just thought it was cool. This concept that you could automate the deployment of not just one server, but many servers, and just sort of deploy code across all those servers and manage their states, ~~uh, ~~at a larger scale, you know, that shift from thinking of the individual computer as the platform to a whole bunch of computers, ~~you know, ~~As the platform, I just thought that was really cool.
+
+And I just wanted to make tools that did that, you know, uh, and it was very closely following the niche universe of, [00:05:00] uh, configuration management tools, you know, um, at the time, the tools that existed were called CF engine. There was this ~~experimental one called ~~experimental tool called IS conf, infrastructure something something Puppet was pretty new, Chef didn't exist yet, you know, so that was sort of a, the itch I was scratching, you know, and then of course this container tech that I thought was just so fascinating.
+
+That was also very new in Linux. Um, so yeah, not a very coherent or structured insights. About a business problem that needed to be solved, you know,
+
+**Andrew:** Well, ~~it's, ~~it's fun to chase those things that, ~~uh, ~~we just find interesting. But ~~what, ~~what I find really interesting is ~~how, ~~how much Docker has become a standard. Like my first interaction with Docker was not in my day job. It was in, ~~uh, ~~my home life where I have certain pieces of software that I like to run on my own home network and ~~the bet, ~~the best way to run them has been through Docker.
+
+So like you've created a technology that's so ubiquitous, even ~~like ~~non developers use it. So what do you [00:06:00] think, ~~uh, ~~set the project up for that type of success? 
+
+**Solomon:** ~~uh, yeah, I think, Um,~~
+
+I think we were touching on something important, you know, like ~~that, that, ~~that feeling that you probably got like, oh, I can encapsulate all this work and all this messiness into something. That it can come back to you later and it's still there, you know, it's my thing. It kind of gives you almost like, ~~um, ~~solid ground to build on, you know?
+
+Otherwise, you're just sort of, you're doing things, but you have no guarantee that there's ~~all, ~~any permanence to what you're doing, you know? You may have to do it all over again tomorrow. And I remember even, you know, at the very beginning as a super junior, ~~that had ~~that feeling like I want a home base, you know, ~~and, um, ~~and so just chasing that as a North star, I think ~~was, was.~~
+
+~~Um, it, it, ~~it set us up for success, even though it took a long time because ~~we were, you know, ~~we were chasing something important. And then honestly, it was a combination of that and just, ~~uh, ~~rapid iteration and just throwing stuff at the wall again and again and again, just pure tinkering, ~~you know, ~~just pure hacking.
+
+And then combined with talking to users, like actually caring what [00:07:00] people think. ~~And, ~~and how they're using it and what they say, and then just, uh, you know, surviving and persevering long enough for any of that stuff to matter, because it was a really long and painful journey of, you know, rejection and mostly just, ~~um, ~~um, what's worse than rejection ~~with, ~~you know, like, ~~uh, ~~indifference, you know, like, oh, no one, no one, probably no one cares, but every once in a while you run into one person who cares.
+
+And they give you just enough feedback to get you to keep you going, you know, and then you just do that for 10 years and that's it, that's the recipe to success. We just, you know, it just, we did it for a long time, you know, like really singular obsession, uh, on this, this general direction plus extreme flexibility ~~and, ~~and rapid iteration and everything else just for a long time.
+
+More longer, I think than most people would, would tolerate.
+
+**Justin:** Yeah. ~~It, ~~it's fascinating to look at in hindsight. ~~Um, ~~just because to me, the transition from like the pre Docker world to the Docker world feels [00:08:00] similar to like building everything from source versus ~~like ~~just installing a binary, you know, it's like, it is a whole different thing of, you know, ~~I, ~~when I started my career, I remember one of the first things that I'd do is like, Oh, you need to ~~like, ~~Set up this lamp server, but have it make it have the same configuration as this other lamp server.
+
+And it's like, okay, so I ~~like ~~need to dig through and find all these files and install the same software. ~~And like, um, ~~and then even when ~~like. ~~You mentioned Puppet and ~~like ~~Ansible and, ~~you know, ~~these ~~like ~~scripting automation tools are coming out. It was still like, Oh, let's like hope the state of these servers ends up the same.
+
+~~Um, ~~so ~~it's, ~~it's been a huge thing. 
+
+
+#### Impact of Docker on the Ecosystem
+
+**Justin:** Um, what do you think is the most, uh, ~~the, ~~the sort of largest impact that the Docker project has had on the ecosystem?
+
+**Solomon:** ~~Um, well, well, I think, ~~I think it captured the potential, the raw potential ~~of this, ~~of this collection of low level technologies, you know, Linux containers are one, but ~~it's, it's, ~~it's the combination of Linux containers, copy on write file systems, and a few others like that. that. ~~That, that, ~~just sort of converged [00:09:00] and, ~~and, um, ~~you know, created a new standard for application delivery.
+
+~~So, ~~so I think those were technologies that were considered to be the realm of the physical machines, right? The server may be virtualized, but you know, still fundamentally machine, you know, so the realm of. Systems administrators, you know, and later to be called infrastructure people, SREs, you know, although that terminology didn't exist when we started, but, um, I think the key impact that Docker had was to take all that and package it in a way that.
+
+It had an impact on the application side, how software developers package their work, their artifacts, you know? Uh, and so before that you would have the equivalent in the Java world, you would have, you know, the jar or the war or whatever, um, you'd have the executable and windows. ~~Um,~~ but yeah, ~~it created an, um, ~~it created an application artifact that as a developer you could produce. And ~~that, you know, that, ~~that artifact could be run. By this new nascent platform that is the cloud, [00:10:00] basically, right. That was sort of, it opened the way to the cloud itself. All the, you know, the, these many, many servers just lumped together as this blob of compute and storage to use that as a platform, ~~as a, as a, ~~as a computer, you know, it didn't do it on its own.
+
+It's not like Docker shipped. And ~~that was now ~~that was a thing, but ~~it, it ~~it unlocked that possibility, you know, ~~of, ~~of programming the cloud. You know, I guess now you call it cloud native. Um, but yeah, I think that was the key thing to be a bridge between the world of the machine and the, and the world, but the world of the server and the world of the application, ~~I think, ~~
+
+
+#### Ad
+
+**Andrew:** We'd like to thank our sponsor this week, Clerk. Clerk offers complete user management out of the box to make you build apps quicker. Stop focusing on adding auth to your app and just build the app you want to build. Clerk supports things like multifactor auth, SSO, magic links, ~~SMS bot detect, ~~SMS messages, bot detection, the list goes on.
+
+They have a bunch of features that make adding users as an entity to your application a whole lot easier.
+
+Whether it's all the pre built components that they offer that [00:11:00] allow you to integrate Auth super, super quick, or the SDKs that let you implement it yourself, they've got your back. One of the things that's usually really a pain to set up with authentication is all the social logins.
+
+You go to their website and you're like, okay, I want to add Google as an authentication provider. 
+
+Good luck reading the docs they're confusing. The SDKs are all over the place, but with Clerk, it's just a click of a button. Super cool. Saves you a lot of work. 
+
+Another cool thing about Clerk is that they have an amazing free tier. They offer up to 10, 000 monthly active users. That's a lot of users and you likely don't have that many, so it's a great place to start. If you want to learn more about Clerk, head over to Clerk. com to check them out. Or you can go listen to episode 75 where we have a chat with one of the co founders, Braden. It's a really good episode. Gives you a lot of insight into what they are as a business and where they came from.
+
+If you're tired of hearing these ads, become a member on one of the many channels that we offer that on. With that, you'll get the episodes a little bit earlier than everybody else without ads. And you'll help out the podcast a [00:12:00] lot. If you don't want to do that, we also sell some merch. Head over to shop. devtools. fm to see what we have. With that, let's get back to the episode.
+
+
+#### Monetizing Open Source Projects
+
+**Andrew:** so Docker, uh, is an open source project and monetizing open source projects is something that's hard to do. Uh, what did you learn about open source monetization through working on Docker? ~~Yeah,~~
+
+**Solomon:** well, um, I think what I learned from it is different from a lot of, uh, outside observers learn from it. In other words, I feel like sometimes the wrong lessons have been learned from the Docker story. I think the main lesson I hear that I think is the wrong lesson is that, um, Hey, if you give away too much for free, then you won't be able to monetize, you know, but that can be true.
+
+But in the case of Docker, I don't think that was the problem. You know, I think if I had to do it all over again, everything that Docker open sourced, I still would open source and everything that Docker gave away for free. I would still give, give away for [00:13:00] free. Uh, and most of the case, most of the time, those two are the same thing in our case.
+
+Uh, the only exception being Docker for Mac, Docker for Windows and the desktop editions, um, you know, Docker's never had to change its licensing ever. ~~That, that, that's never a thing we had to deal with. Um, ~~So I don't think that's a lesson like, Oh, well, the reason Docker struggled to be a successful business for a long time is that, you know, you just gave away too much for free because if we hadn't open sourced the engine and the CLI, then we wouldn't have gotten the growth that created the opportunity to monetize in the first place.
+
+Right. Um, I think one big lesson for me is you very clear and, uh, intentional about. The basic rules that govern, um, your business and your community and the relationship between them, you know, the rules can be anything you want, but it's, it's always better to think about it up front and, and [00:14:00] set clear rules and just, just be upfront and transparent.
+
+Um, and if you don't know, it's, ~~it'd ~~be upfront about the things you don't know. We don't know how we're going to make money, you know, it's better to say it, you know, uh, and then. As much as humanly possible, not change the rules later is, is really good in our case, we didn't change the rules, but we were, we weren't clear, you know, and, and, and the reason we weren't clear is, um, you know, the, the, my priority at least was for everyone to love us, you know, I just, that, that was, um, my, my overriding motivation was validation for my peers. And, and which we, we got a lot of, you know, we got a lot of love from the community, a lot of, a lot of people telling us they love Docker, they love using it, they love contributing to it. And I think we became kind of addicted to it, to being, you know, to, to always unicorns and rainbows all the time, every, you know, like, uh, you [00:15:00] know, in the Lego movies, like everything is awesome, you know, and it was basically like that for a good year after we launched, after we launched Docker, right.
+
+So we were five years in. And then we pivot to Docker and we launched Docker and then everybody loves it. ~~Um,~~ and for the first year it was like that. And then what happened is we started getting, uh, some criticism and, and for me, criticism is, is, you know, it's a, it's a signal of something to fix, right?
+
+Like, Oh, someone didn't like it. So we got to fix ~~it, you know, and then what happened is we just got a lot of ~~it. You know, at ~~exponential, ~~exponential growth of the, of, of your product and ~~your, ~~your community, at some point you, you matter too much to not get haters, to not get criticism and a wide variety of it.
+
+So what happens is you have a mix of unhappy users that are hitting bugs or they're missing features or they're frustrated by the docs or whatever. So that's just normal. It's just going to grow with adoption and that stuff, you just have to aim to zero, right? You have to try and fix it and you prioritize it.
+
+And then you have another category of criticism, which is really, it's [00:16:00] not users that are unhappy. It's, um, people that are affected by your success and they're unhappy about it either because they're competitors and they're feeling threatened or they're by their colleagues of users. And now they're forced to use it, or they're forced to integrate with it, or they're forced to just deal with your existence, and they didn't ask for any of it, and they're just, you know, you're imposing on their, their life, and that's frustrating, uh, or, and sometimes you just challenge, um, their view of the world, right?
+
+Like this is how you deploy stuff. And now there's this new thing. I got to learn it. And it just goes against everything. ~~I, I, ~~I believe. And so you're never going to make all of those people happy, right? It's just not possible. It's not a realistic thing to aim for, but, uh, we just lumped all of that feedback, that fire hose of negative feedback, ~~all, ~~all together, you see what I mean?
+
+And then we just tried to address it. And that led us to make all sorts of stupid decisions, you know? Um, so I guess ~~the, the, ~~the [00:17:00] important part ~~that ~~the takeaway is. Especially as they start to monetize and competition comes into the picture and, uh, to just really store the buckets of feedback from the market between people who actually use your products in the community.
+
+People who actually are customers or potential customer if you're a commercial offering and then everybody else, basically I say, ignore everybody else, you know, they're going to say what they're going to say, but you got to find a way to tune it out. Otherwise you're not going to be able to serve your users and customers and then bad things will happen. But that's the main one. Just keep ~~that, ~~that communication channel clean and maintain it. You know, so you can deal with the valid, valid negative feedback, uh, and address it.
+
+**Justin:** Yeah, I think that's a big one probably is like, uh, it's, it's interesting just to hear about the. How the dynamics change as you grow, because it's like, you have a very different customer relationship in the beginning and then yeah, that's definitely interesting. I think also like, you know, human dynamics or power [00:18:00] dynamics, it's like.
+
+Kind of is the thing that we always have to deal with. And then when you sort of like a massive, big position in the market, then you have like, arguably like some level of like power in the market. And it's like, you, you have to face, you know, things like you're saying, like these, these criticisms of people who's like, don't want to deal with you, but Hey, you're there, you know?
+
+
+#### The Importance of Brand and Trademark
+
+**Solomon:** Also, I think another one is, um, to think very early about brand and trademark. I think in the world of open source, you know, the intersection of open source and business these days, there's a lot of drama and a lot of debates. And I think a lot of it centers on IP, you know, ~~your, ~~the license of your code and ~~who's allowed to, you know, ~~who's allowed to do what with it.
+
+And I personally have always felt you should really just. Stick to the basics there, ~~you know, ~~to me, ~~you, if, ~~if you're open source, you just set everything up so that your codes can be real open source, ~~you know, ~~like use a proper OSI approval license and just make sure ~~your, ~~your business goals align with [00:19:00] that. And then ~~once you're, ~~once that's set up, ~~then ~~just sort of don't touch it, ~~you know, ~~and ~~then ~~if you ever have to touch it, that's a failure mode. That means you screwed up somewhere. And that's my opinion. That's how we're setting it up. ~~Um, ~~but on the other hand, ~~so ~~I feel like people worry too much about license and not enough about trademark.
+
+Anything has to do with the use of your name and your brand in any business, any product, whether it's open source or not, that's just so incredibly important to control ~~and, ~~and nurture because your brand is, ~~uh, it's not something that, you know, it's, it's, It's ~~basically ~~what, it's ~~a little space in other people's brain that's attached to your name or your logo, ~~you know, ~~and in the beginning it ~~does ~~no brand equity, right?
+
+No one knows who you are. But then over time, each brain that's exposed to your brand, to your name, your logo, they develop sort of associations, right? They attach it to feelings and opinions and facts, and that grows over time and it's very hard to change. You know, it takes a lot of effort. For example, if it's a negative connotation.
+
+Like, Oh, I, I call these people and they were jerks. You know, it takes a [00:20:00] long time to fix that. Um, and so just really important to kind of assert control early, because if it's broken, it's really hard to fix later. Uh, so in the context of open source that a lot of times that comes. That's that, that, um, ends up being affected by things like redistribution of your software under your, your, your name.
+
+Right. So it's, so in our case, I'm talking about dagger. Um, but it's really what we're doing there is directly the result of the lessons we learned from Docker. We're super IP, basically any code we open source. We can't promise you it will be open source forever because we can't, we don't know what will happen in the future, but we, you know, we have no intention to change the license.
+
+We've created a business that can thrive with that. The license being very, very open. Uh, and then use of our name. We're. We're very restrictive, uh, in a way that's fair, but that, that, you know, [00:21:00] we'll, sometimes we'll go against the grain of, uh, accepted best practices that are considered standard. Like we don't actually love distros packaging our software, you know, like the Dagger, the fact that there's a package called Dagger in random distributions downstream from us, Linux distributions, homebrew, et cetera.
+
+We don't consider that to be a good thing. Um, because sometimes ~~the, the, ~~those downstream repackagers will modify your software with good intentions, but that ends up creating a user experience that we don't control. And maybe the user experience that comes from that repackaged version is within the bounds of what we consider to be okay, but that could change later.
+
+And when it does. Guess who's going to be on the hook for it. It's not going to go under that distro is bucket and they're in the user's brain. Like, Oh, I had a bad experience ~~with, ~~with, you know, Red Hat today. No, they're going to say, I had a bad experience with dagger today. It just happens that it's because they install the Red Hats version and [00:22:00] that's just a random example.
+
+So anything that's related to the control of our name and our brand, we're pursuing aggressively. ~~And I, ~~and I think, ~~um, ~~open source. Developers, especially commercial ones, I think are, are being too permissive ~~and ~~how they allow downstream packers to use their trademark. And they're doing it, ~~I think, ~~out of ignorance and inexperience and just sort of the inertia of how it's been done.
+
+But I think there's, you know, I'm advocating for, and I think there will be a sort of a, a readjustment, ~~you know, ~~ironically, we follow the Red Hat model, so ~~we, ~~our trademark policy is basically ~~Red, ~~Red Hat's trademark policy. ~~You know, ~~which is basically code is open. Trademark is not
+
+**Andrew:** that makes a lot of sense. And also makes a lot of sense why like earlier projects wouldn't think about something like that. Um, but switching gears a little bit, you mentioned it there. 
+
+
+#### How Dagger Simplifies CI Pipelines
+
+**Andrew:** Uh, you have a new thing that you've been working on for a while now called Dagger. So what is it and why would I want to use it?
+
+**Solomon:** ~~sure. ~~Yeah. I guess I've been doing things out of order. So ~~dagger ~~dagger is, ~~uh, ~~my second startup. ~~And, and I, I, um, ~~I started it with, ~~uh, ~~my two co founders, Sam [00:23:00] Alba and Andrea Lazzari, they were the earliest employees at Docker, right? ~~And ~~so we ~~were ~~kind of brought the band back together. ~~Um, ~~and dagger is. A tool that lets you simplify your CI scripts, ~~uh, ~~by turning them into code. ~~So every, ~~every software project has those messy scripts and YAML files that ~~sort of ~~orchestrate the various tasks you want to automate ~~and ~~when shipping your application, you know, build, test, release, et ~~cetera, ~~to try to mash it all together in a cohesive pipeline. ~~And. ~~Almost always it's a mess and, ~~uh, ~~it's sort of a mess that, ~~you know, ~~Is fine, good enough until it's not, ~~you know, ~~your team grows, your project grows, and then the complexity of the scripts just kind of grow, grow, grow.
+
+~~And, um, it just, ~~at some point you pay the price for that. It becomes too slow, too unreliable, impossible to change. ~~You know, ~~the person who wrote the scripts leaves and no one understands how it works. So those pipelines end up being a problem for a lot of these teams. ~~And so ~~Dagger, ~~um, ~~gives you an engine with a clean API and [00:24:00] SDKs to call these APIs and languages that you know, like Python, Go, TypeScript.
+
+And you take those messy scripts and YAML files and you turn them into these little functions. It's just a little bit of code written in the language you know, that expressed the logic of your build or the logic of your deployment in a very simple way. And then Dagger will package up, you know, load that code and package it up and just kind of run it in a very clean and efficient way.
+
+So it's, it's like ~~a, ~~a cleanup job, you know? ~~Um, and the, ~~and the killer feature of Dagger is it's not all or nothing. You don't have to. over. You can just pick one area of your pipeline that's messy and painful and you daggerize it. That's the term we use. You know, so you take maybe 300 lines of bash 20 lines of what Python or go, and then you just make that change to your repo.
+
+And things are a little simpler, a little faster. No one else even has to know, you know, and then you just kind of continue from there. Um, yeah, that's, that's what [00:25:00] we do.
+
+**Justin:** So is this intended to be like ran inside of traditional CI? So it's like, let's say you're working with like circle CI or get hub actions or, you know, et cetera, et cetera, et cetera. Is it like you use those and they call like daggers engine and does some stuff or are you providing your own CI service?
+
+**Solomon:** So ~~it's, it, it runs. It runs in most existing CI environments and it runs locally. So it's, ~~it's the, this little layer on top that, um, that lets you run the same thing locally and in CI that's actually the, usually the first, the hook, you know, ~~the, ~~the, one of the most painful problems you have if you're in charge of, CI in a project is what we call push and pray.
+
+You know, you want to change something in the pipeline. Yeah. You know what I'm talking about? You make a change and then you commit and you push and then you make a little prayer, please work. And then it doesn't cause you forgot a space or something. And because you're pushing, what you're doing is you're first, you're pushing because it's not code.
+
+It all comes from the fact that it's not code because it's not code [00:26:00] calling, you know, standard open APIs. It's actually, it's a DSL, right? It's a, it's a proprietary quasi code thing. Usually YAML, but you know, Jenkins is another example. It's just a mess of configuration and scripting that you can only run on that CI server. So it's kind of this black box. Uh, and you have to push to it and wait, and it's a much better model. If you, if, if dagger, if you get an API that's powerful enough that you can write the code that calls that API, it's much cleaner to just write that code and then run the code the way you run any other code, uh, meaning wherever the hell you want, you know, on your laptop, on the CI server, whatever.
+
+So that's our model. Once you've daggerized a piece of your pipeline, ~~you ~~It runs the same locally and on your favorite CI environment. And then over time, the configuration for that CI, you know, kind of shrinks. Because more and more of it [00:27:00] basically just becomes call this dagger function, you know, there's a dagger CLI and you type dagger call something and it just does it.
+
+**Andrew:** Yeah, I recently got on a new team at work called client platform and I've spent months just in those problems and it is so not fun, like the, the feedback loop for push and pray is just so bad, like, I'm currently looking at our thousand line long deploy YAML and testing this and finding bugs in it is just so, so bad.
+
+And I love that you can run things locally too. ~~How does, ~~how does that work? So like, as Justin said, ~~is that like, what, ~~is there like a Docker container somewhere that's ~~like ~~running the commands in it? Like, how do I get the same environment locally that would be there in CI?
+
+**Solomon:** Yeah. So, ~~so the, um, ~~the reason this problem hasn't been solved yet is that ~~you actually have to, ~~it's deceivingly simple when you describe the problem to solve it. Once and for all, you have to actually go all the way to ~~the, the, ~~the bottom of the stack and you have to build [00:28:00] like a completely new execution engine so that you can have an API on top of that engine.
+
+That's powerful enough that the code you write is useful, right? And the starting point for that ~~is, ~~is containers. So you're a hundred percent, right? Containers are involved. Uh, everything that happens in the dagger engine, it's containers under the hood. Uh, but it's not a bunch of Docker commands either. You could say the Dagger engine basically. Embeds its own container engine. It's an alternative to Docker in that way. Um, it's actually based on another technology out of the Docker called build kit ~~is actually, ~~there's a sort of a evolutionary tree in the Docker tech stack where you have the original Docker engine, ~~you know, ~~Docker run.
+
+And on top of that, you have Docker compose that sort of extra, ~~you know, You know, ~~convenience on top of that. And then there's Docker build and Docker build itself runs a bunch of containers to do its work. ~~Right. ~~But the way Docker build [00:29:00] runs its containers is completely different from how Docker run does it.
+
+And, uh, ~~the, the, ~~the core technology underlying Docker build is this super powerful, ~~um, ~~component, this tech called build kit. Um, and. So Docker build ~~is a, ~~is a simple front end to this hidden technology called ~~bill ~~kit. Turns out ~~bill ~~kit itself is way more powerful than what you can express in a Docker file.
+
+It's basically almost like an OS, like a special operating system that runs, uh, that. And DAGs as in, you know, graphs, nodes, and arrows. So any program that you can express as a set of nodes that are running in parallel and sending data to each other, ~~um, ~~where each node can be its own little container, BuildKit can run that.
+
+It turns out that's a perfect fit for builds, right? Which is why BuildKit exists, but also a perfect fit for your entire pipeline. You know, build, deploy, test, and all the stuff in between. So it turns out all that's a DAG, you know, it's a graph, right? There's boxes and arrows. [00:30:00] So we're basically starting from that core tech and generalizing.
+
+And so just to summarize it, so Dagger engine is a container based DAG execution engine with an API slapped on top of it. So when you're writing that 20 line of code to say, Oh, here's how my build should work. I want you to pull this image and copy this file and run this command. It's a simple little function that's basically compiles down to this super powerful execution graph that Dagger will translate to containers.
+
+And it does that basically all on its own. So ~~it's, it's, ~~you just need the Dagger CLI and, and that's it. ~~Uh, ~~you need a system that's capable of running containers and that's it.
+
+
+#### From Docker to Dagger: The Journey
+
+**Justin:** So it sounds like there was definitely progression from your work at Docker and the sort of like technical investments that you're making and the problems that you're solving there to like what you're doing at Dagger. What was the sort of realizations that you had that actually led you to starting Dagger?
+
+**Solomon:** You know, ~~it was, ~~it was very similar [00:31:00] to Docker, meaning it was very incremental. Um, ~~the, ~~the big difference is how we started, you know, ~~the, ~~the way Docker started, it was just me following this hunch as a completely inexperienced. ~~Um, ~~tinker, right. The second time it was a deliberate project. ~~Um, ~~to work together, you know, there was a specific group of people that just wanted to work together again.
+
+So me, Sam, Andrea, we just wanted to do something together again, and we had this approach that if we put together the right team with the right team culture and the right way to work, um, we'll just eventually find the perfect problem to solve and we'll crush it. And so we actually, at the very beginning, we didn't even specifically set out to solve any specific problem.
+
+We just said, ~~this is. ~~This is who we want to work with, and this is how we want to work together. And, you know, it boils down to, we should move fast and, you know, iterate like crazy, listen to users always, and then make sure we're happy and having a good time the whole time, because otherwise we won't [00:32:00] stick to it long enough, you know?
+
+So a lot of mushy feeling stuff around how do you go to work in the morning and it doesn't feel like a job. Um, but eventually ~~that, ~~that led us to attract other people that like to, ~~you know, ~~build product in the way that we do. They like to move fast ~~and ~~the way we do. And ~~they, they, ~~they just value the human relationship, you know, and they just like having, it's like a crew, you know, ~~on a, on a, ~~on a fun pirate ship ~~and ~~a pirate movie, you know, ~~um, ~~probably not like a real pirate crew that would be probably, that's probably not as fun, but you know what I mean?
+
+Like, yeah, like, it feels like a fun adventure and we're going to, ~~you know, yeah. ~~Build cool stuff together. And then, so the result of that is we just ~~pranked ~~out prototypes and talked to users to, you know, I can't tell you how many people we talked to and got feedback from and just iterated. ~~And ~~I think ~~the dagger, ~~the dagger we launched in 2020, I think 2021, ~~I think ~~that was, Prototype number 60, something each prototype being a completely independent thing that we cranked out and ~~work that we ~~showed to people, ~~you know, ~~it was just ~~like ~~this insane iteration.
+
+So it was just a very iterative process following a very [00:33:00] simple formula. And then it just, the result is sort of ~~a. You know, um, ~~a pain radar, you just end up sort of following people's pain based on what they describe to you, see patterns and then you just throw possible solutions at them and you just kind of zero in on the right solution to the right problem in a very organic way.
+
+It just takes a long time um but yeah, that's I mean, that's it. We didn't have some grand. Insight in the beginning, we had some hunches, you know, but, um, honestly, I was surprised to what extent everyone told us their pipelines were broken. Cause I kind of assumed coming out of Docker that it was mostly sold, you know, like we, we did Docker and then the Docker ecosystem did every possible variation of doc container based CI and CD that you can imagine.
+
+You got Kubernetes, you got. A gazillion tools on top of communities. Like how, how could this possibly not be sold yet? There's just so many tools, you know, and then that was just kind of our assumption and then we got pulled [00:34:00] into it because everyone was telling us. No, it is not solved. It is very painful still. Yeah. I don't know. It seems like it's painful for you, Andrew.
+
+**Andrew:** ~~Uh,~~ yeah, ~~it has, ~~it has been, it's just like, ~~it's, ~~it's so slow. You got to learn bash, like the even simple things like, uh, you say you can run functions in your CLI being able to go like, Oh, this tiny part of ~~my, ~~my infra or my YAML, I want to run that or reuse that. In YAML, it just becomes like a headache.
+
+It's like, Oh, now where do I put that? How do I store it in between it? I'm not compiling that anymore. Cause I use TypeScript. I'm not getting errors if that stuff is wrong. So it's just like, it doesn't fit into your workflow. Right. And it just, it feels like not coding where you want to just be coding.
+
+And I love that. The, the CI as code really unlocks that where you can be like, okay, this is just code. Oh, this little thing that you do in four different places. Just make it a function. Like it's just such a natural progression.
+
+**Solomon:** Yeah. ~~I I'm, ~~I'm glad to hear you say that. Also, it [00:35:00] seems like maybe ~~you should, uh, ~~I should show you a demo of dagger and you can tell me what you think.
+
+**Andrew:** I did send it to my team this morning. I was like, Hey, the guys, ~~this, ~~this looks like we might be able to use this. ~~Please.~~ 
+
+
+#### Exploring Dagger Modules
+
+**Andrew:** Uh, so, uh, digging into ~~a little, ~~a few more features of dagger, you guys have modules and you have this whole marketplace of things. So what are the modules? What can you do with them?
+
+And like, maybe what are some of the favorite ones you've seen?
+
+**Solomon:** So yeah, the modules are a feature that ~~we, ~~we launched recently, like a few months ago, ~~uh, ~~and there was sort of ~~the. The last piece, ~~the last missing piece. I mean, ~~we're, we're, ~~we have a lot of features, ~~uh, ~~that we need to ship and there's bugs to fix, et cetera. But the overall architecture of the products. ~~Uh, ~~needed modules to be sort of, ~~you know, the, the, ~~the final shape. ~~Um, ~~and the reason for that is, ~~uh, ~~modules give you cross language reusable components. So up until modules, which are really, ~~you know, ~~cross language modules, ~~you, ~~the way you use Dagger is you picked an SDK. ~~And ~~based on what language you prefer to write code in, and then let's say in your case, that would be TypeScript clearly.
+
+So you pick the TypeScript SDK, and [00:36:00] then you read the docs ~~and you, ~~and you go, great, I can express ~~my, my, ~~my build and my different parts of my pipeline as code. And you do that, and that code calls the Dagger API. And then, ~~uh, you're, ~~while you're coding, you're basically writing a custom TypeScript tool.
+
+Usually a CLI tool, but you could do it ~~from, ~~from a server. Why not? And you're embedding ~~these, these, um, ~~these function calls into your code. So now you're getting the value of, ~~uh, ~~the Dagger API because you're using all these primitives that Dagger gives you, you know, there's a primitive for container operations and there's a primitive for file operations, ~~you know, ~~networking, et cetera.
+
+Um, Okay, so now you're happy you got that going, but now you want to, what happens is, um, you got the team next door and they have a pipeline also, and their pipeline integrates with yours in some way, you know, so maybe they need to call your build to incorporate it to their build, or they need to stand up, um, a test version, you know, an ephemeral [00:37:00] version of your service.
+
+To connect to, to run their integration test or stuff like that. Right. And there's this one problem. They're using a different language than you. Right. They're a data engineering team. So they're writing Python or they're writing go. So now there's all this cool logic they use with dagger, but it's for them.
+
+It's like an, an island. They can't reach it, right? Maybe they could, they could even use dagger themselves or here in their language, but now you have two dagger islands. Right. And so we started getting a lot of demand for bridging those islands basically. So if you wrote ultimate, you know, uh, I don't know what, what do you deploy to in, in, in your project?
+
+**Andrew:** GCP.
+
+**Solomon:** Okay. Like cloud run, something like that.
+
+**Andrew:** Uh, I'm the front end portion. So it's a black box 
+
+to me. 
+
+**Solomon:** Let's say, you know, you wrote TypeScript code and then someone on your team wrote the ultimate GCP deployment, uh, function, right? It's just perfect. It took some trial and error, but it's there. Um, and you want [00:38:00] other teams using Dagger and by extension, Everyone else in the Dagger community to be able to reuse that regardless of what language they're using.
+
+So that's actually a very hard technical problem ~~to you ~~to solve. And it took us a whole year to solve it correctly with the community. Cause we develop everything in the open. We're in discord all day long. You know, obviously we use GitHub. Um, and so now that's what we did. So you can take that same code you wrote and you package it into Dagger function.
+
+~~And you have a, ~~usually you have a bunch of functions that are related. You package those together in a module. And then that module is just code. It's your code on a repo somewhere. And then you say, I wrote it. This is the perfect GCP module. It's at this repo and my GitHub, whatever. And then anyone else can point to it and tell Dagger, I want to load that into the API and you're basically extending.
+
+The dagger API with your own primitives that you created. And now someone else can build on top of those primitives, create their own primitives and so on and so forth. So [00:39:00] it's basically the beginning of a cross language ecosystem of DevOps knowledge that can actually be combined and sort of build on itself, which is really the point of dagger.
+
+We're trying to turn ~~all this, ~~all this fragmented, uh, Byzantine collection of DevOps. Niche knowledge across a gazillion tools and services and, uh, roll it up into a unified software ecosystem.
+
+**Justin:** ~~So let's~~ 
+
+**Solomon:** So that's modules ~~and, ~~and dagger versus the search engine that you can go and find all those cool modules. 
+
+**Justin:** nice, ~~nice.~~ 
+
+
+#### Dagger Cloud: Features and Benefits
+
+**Justin:** So, uh, we've talked ~~about ~~a little bit about the dagger engine when we're talking about like running things locally and ~~you're, you're, ~~you're sort of touching on this ~~like ~~wider ecosystem with the modules and everything. Um, so what other things exist in the dagger ecosystem? And maybe we can kind of talk about like dagger cloud first.
+
+So like, what is the cloud offering ~~and, ~~and how does that fit in? 
+
+**Solomon:** Yeah. And ~~that's, ~~that's a nice connection to your earlier question about open source and monetization. ~~So, so, I mean, ~~the dagger [00:40:00] platform is two parts. Two big parts. ~~There's, there's a, ~~there's an open source engine and then there's a proprietary cloud, you know, Dagger engine is a thing you run on your, like everywhere on your, on your development machine, on your CI server.
+
+It's like a little co processor almost, right? It just runs there and it can just run all these cool functions and run pipelines for you. ~~Uh, ~~and then cloud, Dagger cloud is a centralized service that complements, ~~uh, ~~the Dagger engine with features that can only exist in a centralized place. And so you have a nice symmetry to it, right?
+
+Dagger engine is open source and decentralized. Dagger cloud is proprietary and centralized. ~~Um, ~~and we've made sure that Dagger cloud is optional. Like you can take the engine and run with it and never set up an account in Dagger cloud ever. ~~Uh, ~~you know, of course we'll be sad, but we'll understand and you'll be back.
+
+You know, that's kind of our approach. ~~Um, ~~and so the main feature of Dagger cloud right now is, ~~uh, ~~what we call traces. Basically you hook up your engines to send telemetry to Dagger cloud and Dagger [00:41:00] cloud just collects all that telemetry. And then you log in and it shows you that telemetry in a way that's useful.
+
+Um, it shows you the traces of Dagger functions, calling other Dagger functions, et cetera. Um, it's great for debugging. It's great for collaboration. Um, and it's especially great for, for, um, performance optimizations. You know, one thing I didn't mention in all this is caching, which is one of the killer features of Dagger.
+
+Because everything you run is structured as a DAG, you know, boxes and arrows, each box being ~~one func ~~one Dagger function that's running in a container. Um, ~~the, ~~the, the engine knows all the inputs and outputs of all your functions, right? That's how it can trace the arrows ~~and that, ~~and that DAG, right? And just like in Docker build, each input and output is, uh, checksums and, you know, um, then stored in a cache so that if later you call the same function with the same inputs, Then it's not going to [00:42:00] rerun the function.
+
+It's just going to get the result from the cache. Right. And that speeds everything up dramatically. That's how Docker build had this kind of caching feature that was, I guess now it's just basics, but you know, it was groundbreaking when we shipped it and we're just extending it to everything else. So you get the caching for free um But sometimes, you know, when you're, when you get caching, you know, sometimes you think you should cache, but it doesn't. And you're wondering why, why didn't my function cache? So then you look at the trace. Oh, I see this happened. So, you know, um, so it shows you how long things took, etc. So it's mostly, yeah, you see, it's a good example of an optional companion service.
+
+Like, if you don't have it, well, you'll be missing some useful information. But it's still going to run, you know? So that's the idea of Dagger 
+
+cloud,
+
+**Andrew:** Yeah, it seems pretty useful. ~~A lot of, ~~a lot of pain in GitHub actions being like, okay, how long did this take? When did this happen? Like, how did it all connect in the end? ~~It's like, ~~it's almost impossible to see without like adding extra actions to start logging things and no fun. 
+
+**Solomon:** Yeah. [00:43:00] Yeah, totally. And, and you know, that Dagger cloud is newer than Dagger engine. So it's less mature like Dagger engine. ~~We don't, ~~we don't call it 1. 0 officially. We don't say run in production, but a lot of people do. And honestly, most of the time it's okay because the core tech is ~~deal ~~kit. you know, so, so Dagger, the Dagger engine, mostly just, it sets up the inputs and outputs of Billkit and then it's Billkit actually doing the work and Billkits existed for many years.
+
+~~And I mean, ~~when you call Docker build, you're calling Billkits. So the core is stable. So that's kind of our. Deep mode, you know, ~~we, ~~we reserve the right to say, Oh, look, it's not production ready yet, but you'll probably be fine. You know, like if something breaks, it's going to be in the setup, you know, it's not going to be in the core running of things.
+
+Dagger cloud, ~~you know, needs, ~~needs a lot more polished. So we have a lot more features that ~~are, ~~we're going to add. ~~Of, ~~there's just a lot of, ~~um, ~~missing information in your CI logs. They're just blocks and just spitting logs at you. And so fundamentally the telemetry you're getting from engine is way richer. It's just, ~~it's, ~~it's compared to what you get [00:44:00] from your CI server. It's a goldmine, you know, it knows every like if you have a build, there's the information in there of exactly what was the artifact that you build from, you know, the exact digest of the source code that you built from the exact digest of the base image that you pulled.
+
+You can even go into more detail and break down each system package as its own function call. Like you can go as detailed as you want because it's just code. Right. And then all of that telemetry is available to you. So the bottom line there is the polish of our product. You know, it's still pretty rough, but as the UI gets more and more refined, we're going to be able to give you insights.
+
+That you can't get anywhere else. Right. Cause there's the data just isn't there. So that's, that's something I'm excited about, but it'll take a while to get there.~~ ~~
+
+**Justin:** ~~So it goes, ~~so it goes, are y'all working on anything else that you're excited about that you can share?
+
+**Solomon:** ~~Oh, uh,~~ yeah, honestly, ~~that ~~we ship stuff that I'm excited about ~~that, ~~that even our users sometimes don't know about because ~~they're just, ~~we have [00:45:00] to document it. ~~Um, you know, there's a, well, ~~GPU support is pretty cool. ~~So you can, you can run. You can run, um, ~~Dagger already can do a decent job at running AI workloads.
+
+~~So ~~it turns out a bunch of people, it's almost like a niche community within the Dagger community of people using Dagger to run AI pipelines, ~~you know? Uh, ~~because there's just a lot of crap to set up to use those models. ~~And, um, ~~and Dagger is really good at setting up crap for you in a reliable way, ~~you know, ~~so ~~that's, ~~that's something that's pretty cool.
+
+And, ~~um,~~ even more niche within the niche, one type of AI pipeline that I find really interesting is, ~~um, ~~function calls, ~~you know, ~~LLM function calls. I don't know if that's. Similar to you, but you know that like the model can talk, you talk to the model and the model talks back, but also while that's happening, you can also tell the model, ~~you know, uh, ~~about functions that you have, that the model can call if, ~~if the model ~~wants, and then the model can say, Hey, why don't you call this function, right?
+
+~~And ~~that's becoming more and more an area of focus now, because that's how you get agents, ~~right? Like, you know, ~~an AI that actually interacts with the world. ~~Um, and that's kind of an under. ~~For the level of importance [00:46:00] and the magnitude of use cases that unlocks, that's an area that's generally not well baked yet in the AI world.
+
+And it turns out dagger functions are perfect fit for open AI functions. Um, partly because the way we expose ~~in this, ~~in the API is super easy to scrape and everything has descriptions already. So you can just plug it in. And so we've got people experimenting with. Plugging Dagger functions into a model so that the model can call those functions whenever it wants.
+
+And that's really leaning edge, but it's, I had no clue you could even try that. And it, on the first try, it works pretty well. So, uh, that's something I'm pretty excited about just using Dagger, not just for CI pipelines, but for other types of pipelines and in particular AI pipelines. 
+
+**Justin:** That's really cool. So, one of the last questions that we always ask ~~is a, ~~is a future facing question. Um, so ~~you, you, you've worked, I mean. ~~You've worked on Docker for a long time and you've been going at Dagger for a little while. 
+
+#### Future of DevOps and AI Integration
+
+**Justin:** So [00:47:00] in this sort of like ops space, the DevOps space, ~~if you will, ~~if you like looking forward to the next like five years or so, what do you think the space is going to look like?
+
+What's the future for it?
+
+**Solomon:** Oh, well, it's funny because I was at KubeCon, uh, Europe and Paris, which was a big moment for me because, you know, I grew up in Paris. And so it was fun to see that world, my two worlds collide, you know, and the vibe there was really interesting because, um, This cloud native DevOps space is more mature than it used to be.
+
+So it's, it's not really the hot new thing anymore. Uh, it's more, you know, ~~it's, it's, uh, ~~it's, it's this important thing that everybody needs, but, you know, you just kind of expect it to work. And then if you're really into the DevOps and cloud native space, you're, you know, you're kind of a DevOps cloud native nerd.
+
+You know, it's not the natural hot new thing that, you know, fresh grads will necessarily gravitate to. Uh, cause now there's AI, right? And so it was really interesting. I had really [00:48:00] interesting conversations with, with people there that, you know, just were wondering about that, like what it meant for them, you know, for that community, like, cause ~~it's a, ~~it requires an adjustment, uh, to go from the hot new thing to a necessary thing that should work reliably more than it should just try new cool stuff.
+
+So I personally think it's the perfect opportunity to, um, ~~it's a perfect Opportunity to, to ~~lean in even more because I happen to think that this, this new AI movement and the community around it and the dev ops community need each other enormously. Um, more than either side realizes, I think, because in AI, you have mostly experiments, mostly toys, and eventually you need to productize.
+
+You need to turn that into a useful software product. And that's the very, we're in the very, very beginning of that. And I just think, you know, AI applications are. There's still applications, you know, and they still need a platform. They still need to be shipped and tested and scale [00:49:00] and all of that. Um, with a whole new array of features and capabilities and tools.
+
+So that's basically, ~~that's the, ~~that's the next exciting challenge for the DevOps community for the next 10 years. It's provide a platform for the people who want to build AI apps, you know? Um, so I think it's the opposite of. Okay. From now on, it's just sort of, let's stabilize and just kind of coast.
+
+It's the opposite of that. ~~It's the, it's, ~~it's a massive challenge that the DevOps community is facing, that they need to sort of adapt to this new stack and, and rise to the challenge. So I, you know, ~~that, ~~that, I think that's cool. You know, um, I don't think the solution is, Oh, we got to pivot to AI. You know, the solution is, well, there's new workloads.
+
+Let's, uh, let's actually make sure those workloads work nicely. Let's give them a platform, you know, So that's, that's what I'm excited about. I know everyone talks about AI all the time about the next hot thing, but you got to think about it intelligently, I think, you know,~~ um,~~
+
+**Andrew:** Yeah. Especially in info related [00:50:00] roles. You want a hundred percent uptime. You don't want like, Oh, it works 90 percent of the time. The AI gets it wrong sometimes. ~~Like you, ~~you can't really deal with that.
+
+**Solomon:** yeah, ~~I think, ~~I think, yeah, like the, the architecture, what does it mean to have good infrastructure that's going to change? I think that, you know, there are new best practices ~~are going to, ~~are going to appear. Um, the fact that this chip is sort of the bottleneck for everything right now is really interesting.
+
+You know, the relative importance of I. O. and CPU and GPU and storage. I mean, it's just, ~~I, I, ~~no one has the answer yet. You know, everyone's just kind of figuring it out. Um, ~~I, ~~it seems to open a lot of cool opportunities for startups also, you know, because they used to be, you just ~~go, you ~~go to one cloud provider and you get everything from there.
+
+And why would you ever leave? But now we're seeing some, ~~I'm seeing some, um, ~~product teams. Just kind of stitching together multiple files just to be able to get the access to the GPUs they need, you know, so multi cloud, uh, ~~is, is, ~~is more relevant in that way. At least right now, that might [00:51:00] change again, you know, when GPUs are cheaper again, but an easier to procure.
+
+But the point is, it's like. You know, this, this AI thing just kicked the, the anthill, you know, and we're all running around rebuilding it. That's our chance to rebuild the anthill a little better, you know, like, oh, I didn't really like this part anyway. Let's uh, let's build it better, you know, so Um, yeah, ~~that's ~~that's what gets me 
+
+**Justin:** Cool. Awesome.
+
+
+#### Conclusion and Final Thoughts
+
+**Andrew:** Well, that wraps it up for our questions this week. Thanks for coming on Solomon. This was a really fun conversation going through all of what you did at Docker and how that led to Dagger. So thanks for coming on.
+
+**Solomon:** Oh, thanks. Thanks for having me. ~~It was ~~
+
+it was a blast. 
+
+**Justin:** Yes, Solomon, great to have you. Um, you know, you've done a ton of amazing contributions and really excited to see where you take Dagger. 
