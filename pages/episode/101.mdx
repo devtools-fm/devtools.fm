@@ -1,0 +1,719 @@
+---
+title: Dan Farrelly, Tony Holdstock-Brown - Inngest, Easy Asynchronous Workflows 
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Dan-Farrelly--Tony-Holdstock-Brown---Inngest--Easy-Asynchronous-Workflows-e2kdn98
+youtube: https://www.youtube.com/watch?v=iSgrCnk82Jw
+tags: technology, coding, programming, typescript, javascript, async, workflows, inngest, serverless, cloudflare, cloud functions, state management
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have the co-founders of Inngest, Dan Farrelly and Tony Holdstock-Brown.
+Inngest is an event driven workflow platform that makes it incredibly easy to build asynchronous workflows in your application.
+We talk about the history of Inngest, how it works, and how you can use it to build your own workflows.
+
+- https://www.inngest.com/
+
+### Dan
+
+- https://twitter.com/djfarrelly
+- https://github.com/djfarrelly
+- https://www.linkedin.com/in/djfarrelly/
+
+### Tony
+
+- https://x.com/itstonyhb
+- https://www.linkedin.com/in/tonyhb/
+- https://github.com/tonyhb
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:58] What is Inngest?
+[00:08:07] Ad
+[00:10:05] The Evolution of Developer Tools
+[00:19:10] Building a Platform People Like to Use
+[00:33:53] Serverless and Multi-Tenant Environments
+[00:41:56] Handling Idempotency in Distributed Systems
+[00:52:04] Future Directions and Innovations
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Dan:** people trying to do this on serverless, Like run asynchronous work on serverless and all the platforms really didn't have like great solutions for it. Tony uses this phrase like serverless is the lowest common denominator. If you can build it for serverless, then it can go anywhere. that's really interesting because serverless is stateless by default.
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Dan and Tony on the podcast. So Tony is the CEO of inngest and Dan is the CTO. So excited to have you both here. Big fan of the work that inngest is doing. Um, so yeah, this is really a great opportunity before we dig in and start talking a little bit more about inngest.
+
+Could you tell our audience more about yourselves?
+
+**Dan:** Yeah, sure. Go ahead, Tony. 
+
+**Tony:** Cool. Awesome. Yeah. Uh, my name is Tony, one of the founders of inngest. Um, been coding since I was a kid. Learned how to code [00:01:00] by accident.
+
+You know, when you used to download music when you were like 12 and you download a bunch of things at the
+
+same time and you're like, Oh, this looks cool. Got into like PHP and Java and
+
+whatnot when I was a kid.
+
+Um, and, uh, sort of fell in love with technology. Then, uh,
+
+Spent way too long doing VB6 back in the nineties, amazing stuff. Um, So yeah, super, super, ~~um,~~ involved with programming from a young age and, Uh, really lucky to, to, to have that sort of early, early headstart.
+
+Moved from London to The Bay, 10 years ago.
+
+And, uh, also worked out for, for, for work. So sort of
+
+basically full in on, on, on coding and programming.
+
+**Dan:** Awesome. And yeah, you know, um, I'm Dan the CTO and uh, Tony and I met back when we, when he had a pit stop in New York and so I'm from New York, grew up there, actually fell into programming as a necessity and then was like, this is actually pretty cool. Brought me back to like when I built actually like really crappy websites back [00:02:00] in when I was a kid, uh, just for fun.
+
+And then I was like, Selling things as a business that I started that failed miserably, but it was something else. It was in music. And then, uh, kind of fell into the, to the programming side of things and just loved it. And, you know, met Tony early on in that journey. And then kind of, we made a little round trip, uh, caught up with him several years later and we started this thing together.
+
+But you know, I went on in the meantime to become the CTO at a company called Buffer, which does like social media, uh, scheduling software. And whatnot. So that was really great experience. It kind of teed me up for some of this experience that, uh, that Tony and I have, uh, since, uh, since had together, but That's a little bit about us. 
+
+**Justin:** That's cool. We use buffer, so that's fun. 
+
+**Dan:** Amazing. I hope, I hope, I hope that none of my code is still there at in production, but I'm sure it is. It's one of those things like when you're early enough at a startup, you're like, Oh God. Please, I hope I always told the team to blame all the mistakes on me, all the bugs on me. 
+
+**Andrew:** So let's, let's jump right into it. 
+
+
+#### [00:02:58] What is Inngest?
+
+**Andrew:** Uh, what, where did [00:03:00] like, what we'll start off with what inngest is. So what is inngest and like, where did the idea come from?
+
+**Tony:** ~~Cool. Yeah. Um, idea came from. ~~I used to run engineering at a healthcare company and just to preface, don't go into healthcare. It's amazing. It's really nice. It's super rewarding to help people, but it is so insanely difficult. And I really, really respect all the folks that do it. Um, healthcare is crazy and there's so much that you need to consider.
+
+~~Um,~~ patients are, uh, every patient is unique and you have to build really, really complex workflows in order to make that work. Um, it starts really simple, you know, when a patient does X do Y, but then if you've get things like contraindications and you're, you can't do a particular treatment, you have all of these branches and you have all of this logic that sort of explodes and developers need to code that becomes really challenging and a good way to solve that is, uh, Events in general, you know, cause events are facts about something that's happening in your system or in the real world.
+
+And then you start to layer on all these different things like events and queuing systems and state, and your code becomes a massive mess. [00:04:00] And it turns out that while the underlying infrastructure is really good at dealing with events at scale, um, and SQS has been around since, you know, 2004. Still really, really, really hard.
+
+They only solve the fundamental infrastructure problems. They don't solve the application level problems. So you're left to manage the state flow control, the workflows, how one queue might tie into another queue yourself. And
+
+the code is a huge mess um So really wanted to solve that problem
+
+and make things declarative in a way. So you could say things like, when this happens,
+
+run these
+
+particular steps, wait for this other thing to happen.
+
+For up to 24 hours. And if it doesn't happen,
+
+do X, Y, and Z and the lack of something happening is, it's so hard to do in a system like Kafka. Um, so yeah, it's sort of by necessity because of, uh, because of the challenges building workflows by yourself. 
+
+**Dan:** ~~Yeah. And I guess that like share, Oh, go ahead, Justin.~~
+
+**Justin:** ~~No, please.~~
+
+**Dan:** ~~No,~~ I guess, uh, to share a little bit about like what inngest is, right? Uh, we aim to take all of what Tony just shared [00:05:00] and we bring it into a developer platform. So you have like this kind of batteries included experience, right? Uh, so typically, you know, like typically devs will reach for queues or event streams as kind of it's lower level infrastructure.
+
+Uh, everything is and ends up being like left to you to have to build, right? So all the other, the, the tricky stuff is like, you know, you, you got to build retries, handle job state, like Tony mentioned, uh, scheduling. If you're going to fan things out, uh, you want to maybe have some of your code be able to be interrupted, like pause that, that code while it's running or resume it, depending like programmatically zero, like these long running processes that, uh, You need to, you like, need to build on top of the underlying, like, commodity queues that we have.
+
+We have some amazing things, but it's still just left to you. So these are the basics that you need for Running code reliably and that doesn't then even cover like depending on [00:06:00] what solution that you're building, you're handling concurrency, maybe item potency, maybe you're maybe need to do some throttling.
+
+Maybe you want to rate limited job. Maybe you want to do D bouncing on something. Maybe you're doing batching, right? And that's all that like flow control that you're handling. There also is just kind of like left to you. You know, um, and it always is something bespoke of what you're building on top of that core infrastructure.
+
+So, you know, at the end of the day, it's like, you know, inngest is aiming to be a developer platform that enables developers to ship more reliable back end code faster and easier. So, you know, we started there at that core thing, and then when you come into it, like, actually putting these systems into production is really hard.
+
+So you don't have like nothing, No, no logging out of the box, no observability in any of these like systems, uh, recovery from widespread issues like, you know, you're writing, you're cobbling together custom scripts to kind of like figure that out, [00:07:00] uh, or you're battling dead letter cues or something. So, you know, then you kind of go into the op space.
+
+There's like the whole thing end to end. Is kind of a problem that's full of friction. That's full of developer challenges that honestly, and sadly gets like, tries to get resolved at every company. But if you don't have that domain knowledge, you're going to make mistakes. You're going to skip things. And it just ends up being like trying to reinvent the wheel and do these things.
+
+And a lot of these things are to do it well and to do it reliably pretty hard. So, you know, that's, that's inngest like in a nutshell right there. ~~And I'll. ~~
+
+**Tony:** yeah,
+
+I guess like on top of that, just quickly, it's basically an SDK that you drop into your code. That's it. And then you write a function that says when this event happens, run my function. And you have some steps and each step is a code level transaction that will either work, run, commit, or retry. And then you don't need to worry about events or queues.
+
+So pretty simple, pretty easy to get started. You don't really need to learn [00:08:00] much, but it's also really powerful and it doesn't hide any of the complexity of the things that you need to do if you really want to.
+
+**Justin:** That's really cool. 
+
+
+#### [00:08:07] Ad
+
+**Andrew:** We'd like to take a quick break to thank our sponsor for the week. Clerc.~~ Clerc offers complete user manage. Clerc offers complete user management.~~ Clerc offers complete user management out of the box to help you build apps quicker and to stop worrying about integrating auth into your app.
+
+Auth is a super messy thing. There's crazy amounts of ways you might want to log in. There's multi factor auth, SSO, magic links, social logins. If you're trying to build an enterprise app, you're going to have to worry about all those different types of enterprise auth. ~~Um,~~ and you don't want to do that.
+
+You just want to build your app. And that's what Clerk allows you to do.
+
+Clerk provides everything you need to add Authentication and users to your app with as little hassle as possible. They have a bunch of really cool components that make adding the actual UI to your app really easy and setting up their backend. ~~Just a few clicks this weekend. I, this weekend ~~I was getting one of the websites I use to discover music, ~~uh, ~~back up and running and I had it on next off and something broke and I was tired of it.
+
+~~It's the last time I want to deal with next off again.~~ I wanted something simpler, something that [00:09:00] had more docs, more support, and that's where Clerk stepped in. With Clerk, all I had to do was install their package, and then I was able to integrate and upgrade my app to use just Clerk in the matter of a few hours.
+
+They have a bunch of docs for any type of situation you're in. I have a Next. js app, so they have a bunch of docs on how to best do that with both the pages and the app router, so I really ~~was, ~~had no questions about it. The docs and support that they provide ~~is, ~~is truly unparalleled.
+
+But the best part about Clerk is their pricing. With their free tier, you get up to 10, 000 monthly active users, and you never have to pay for a user's first day.
+
+Head over to clerk. com to check them out. Or you can go listen to episode 75 where we interview one of the co founders, Brayden.
+
+Do you want to not hear these ads anymore? ~~Well, you can become a member on one of the various channels we offer that on.~~ Well, you can become a member on one of the various channels we offer that on. With your membership, you'll get the episodes a little bit earlier and ad podcast. But if you want to find another way to support the podcast, You can head over to shop.
+
+devtools. fm Where you [00:10:00] can buy some merch to help support the podcast. Something like the hat I'm wearing right now. And with that, let's get back to the podcast.
+
+
+#### [00:10:05] The Evolution of Developer Tools
+
+**Justin:** This makes me think of So there's this conversation that's happening a lot on Twitter right now, where people are like, Oh, where's the like rails of the JavaScript world? Or like, look at what we had back in the PHP days. Like, can we go back? And it's like tongue in cheek, obviously, but it makes me think of, you know, Uh, if we think back in the rails and PHP days in particular, when those were like a broad prominence, you would have libraries that would handle like background jobs, you know?
+
+Uh, and you had more like pre like fully packaged solutions and sure. They probably had some operational challenges, uh, and maybe didn't scale as well as like companies needed. But for a lot of the startups theme, especially back in the day, those were kind of the just de facto choices. And then we kind of came into this like.
+
+The great unbundling is kind of what I think about is like where we started moving away from these monolithic like systems and then started Piecing [00:11:00] together a bunch of stuff and, you know, adopting Kubernetes and all these things and our operations get more and more complicated. And now we're starting to see more commoditization of these services as really simple API.
+
+So we're talking to y'all and I think y'all do a really, really great job. Job of, you know, handling these background jobs, uh, and, and a really simple SDK. And we've talked to like clerk who's doing that for like off, uh, we've talked to uni key. Who's doing that for like API keys. There's a lot of companies who are really focusing on like, what is the like core user experience that we can do to just like commoditize this layer.
+
+Can you talk a little bit about like how you thought about. Building this as a company, uh, and why you thought this was the right space and kind of how you think about this, like market movement in
+
+~~general.~~ 
+
+**Tony:** yeah, there's, there's a lot to say. Um, there's so much to say and it's a really good point. There's like a few meta things that I think to observe before going into inngest specifically and, [00:12:00] um, the direction that the industry has been heading in, which is super interesting and like one of the things.
+
+That's an observation seems to be that the table stakes for building a product has got a lot higher, unfortunately, in the last 10 years. And a lot of tools have progressed to make that easier, but it also means that fundamentally the things we need to build as developers have gotten more complex, um, which is frustrating.
+
+Um, and I think, like, to be clear, it's like, totally, totally okay and acceptable to start off, not even, you know, just doing things in line in an API handler. Um, but ultimately it gets to a point where things don't scale, and it's gotten kind of even worse with this should not be an AI podcast, but like, people do a whole bunch of AI and whatnot,
+
+and like, everything has gotten more
+
+complex and you're interacting with a whole bunch of different systems now, which seems table stakes too.
+
+And so firstly, complexity
+
+has sort of exploded, not just in the tools that we use, but the requirements of things that we have to
+
+build, which, which
+
+sucks in some, to a degree. [00:13:00] Um, but it's also fun because it makes our life
+
+more interesting and more challenging as developers. Um, and we want to be solving good problems.
+
+So number one,
+
+there's that. And number two, I think like in terms of, you know, experience and sort of the product direction,
+
+um, why this overall, I think to a degree
+
+as a few things here, firstly. When I used to run engineering teams, um, personally I would always be frustrated that all of these systems would exist, but You wouldn't be able to really, Like use them together.
+
+So, Kafka exists, RabbitMQ exists, SQS exists. And. then you're also
+
+doing stuff like Amplitude and Segment,
+
+and you're doing stuff like, Clavio and Castamario. And your developers are building all of these event driven systems, but you can't really, you know,
+
+Use them to build your
+
+product, um, easily. And if you do, You have to change your entire architecture, which is uh, hugely frustrating.
+
+And I think the way of building these systems has been, uh, underutilized because of the complexity and difficulty,
+
+which is a huge shame. Um, and I think if you could simplify the [00:14:00] way, that people do this and bring it to every developer, then lives would get so much better like just. to be clear, like, it's such a different way of working when you send an event out And, you can have one or more background processes running, see all of the
+
+traces, if it fails, retry automatically.
+
+If you realize you've made a
+
+mistake with sending things you can replay certain events from a given time range instead of having to deal with dead letter queues or, you know, topics And, pointers in a topic and rewinding things and trying to figure that out. Like, think a lot of things have been
+
+tethered to the
+
+infrastructure directly in your application level code has
+
+been. so directly concerned with the infrastructure in
+
+this way of working that it's not the nicest thing to do. And so it's pretty clear that there needs to be an
+
+abstraction, at least in, in,
+
+my mind, over that to make it
+
+really simple for people to build this
+
+stuff. Um, and it seems to be really common, you know, like once you
+
+like buffer, for example, I won't talk too much about it then, you know, that's your thing.
+
+But like, once you do something, you end up needing to [00:15:00] build a series of queues that interact with each other. And as soon as you do that life gets really, really difficult. And so, um, It's super common. It's so common. I think to a degree, as soon as you start building something more complex than the sort of foundational systems that you, that you have to build, you encounter this, these challenges ~~and Uh, ~~
+
+**Dan:** yeah. I think to your point, Justin, it's like, you know, that debate or that conversation is like, really, the take of like, vertical, I'd say, like, frameworks versus maybe more horizontal solutions, right? And that's like, you know, you could use that kind of that pattern or that model to pair it in a lot of different solutions and a lot of different markets, not just our industry.
+
+And you know, you got these vertical frameworks like Laravel, which are wonderful, right? And we've all seen like, I mean, early days, you know, you see, I remember I used to be able to read like the rails book and the example of like how to learn Ruby on rails was build Twitter. So you could build Twitter in this [00:16:00] example, batteries included generators, whatnot.
+
+Um, and that's cool. But like what Tony said with how much, like how the stakes are raised is, you know, what type of software are we building? You know, I know both of y'all work and do very complex software, right? So like really to build something used to be able to come out with something and like kind of, you know, it would be novel.
+
+You could chip it. It'd be cool. But now you need to do something complex, something hard. It's not just another project management app or another crud app. It is complex. So while these vertical stacks can get you very productive and build a lot, you know, your MVP or do things like a lot of things in these really complex products end up becoming You know, more suitable for a specialized solution, right?
+
+Something horizontal. And that's also why inngest is every language. It can go anywhere. We're language agnostic. We're system agnostic. We work on serverless. We work on servers. You can connect different ways. It doesn't matter. Uh, and I think that's [00:17:00] because, you know, you can use something like ActiveJob Uh, and that'll get you somewhere, but it doesn't get you that far, depending on what you're building.
+
+If you're building something complex. So, you know, I think that to that discussion, it's just, it's kind of a funny thing, right? It's just funny thing. It's as developers are going to debate, but, uh, you know, I think it comes down to you have different options and it doesn't mean that you can't mix a vertical Thing with a horizontal solution, right?
+
+Uh, everyone always layers, layers things on and the ability to compose what you know, your application in the way that you need for the software that you're building is extremely important. So, you know, that's how we approach that. And I think, you know, you're, 
+
+you know, there's different paths with it. 
+
+**Tony:** It's also interesting that like last thing you mentioned active job and then the way of working. I think it all makes sense. But like one of the things that we realized in the front end world a while back is just a state sucks. Like state sucks. useState [00:18:00] sucks, producers suck. How do you make all of this work?
+
+And there's the whole signals thing that people are like, Oh, finally reactivity in the browser. That's cool. And state, state sucks in the back end. If you want to do something, you want to schedule something in advance, cool, schedule a job. Then you need to store that job ID, you metadata around that job ID, just in case you need to cancel that in the future.
+
+And if you need to cancel it, you need to add another API handler, load everything, properly cancel, maybe reschedule. And you end up building, you end up building your own system on top of the underlying primitives. That sucks. You shouldn't necessarily have to do that at all. It takes so much time, effort, and it will, it will be buggy, and there's no observability.
+
+That's the hardest thing. I think, like, figuring out what goes wrong in a system like that is extremely challenging. So, I think, uh, it makes sense to start with the infrastructure, and that's what we've been doing for the last 15 years, but it also makes sense to go one step further and solve our problems as developers 
+
+**Dan:** Yeah, and that's really at the end of the day, just like, I mean, developer experience, like developers demand more, there's more demand on them, you [00:19:00] know, we just need to, that's to the point of this podcast, right? It's like developers love their tools, give them better tools, give them better abstractions, you know, that's, that's what, that's what we need to do.
+
+
+#### [00:19:10] Building a Platform People Like to Use
+
+**Andrew:** Yeah, ease of use in DX in these cases is huge because like I, we had the temporal episode like two years ago and I'm like inspired. I'm like, I'm gonna go use this on a personal project. And then no, no, if you've ever tried to do that, it's not a fun time. You have to start different Docker things. You have to know how it works.
+
+Everything works. So just like starting with that type of product seems super hard, but it seems like you guys, uh, with, uh, inngest have really focused on making it get easy to set up easy to use locally. Uh, so can you speak to some of the things that you've done to make the DX good in those cases?
+
+**Dan:** yeah, yeah, I can, I can jump in there. I think one of the key things that was early is like, you know, Tony, Tony and I went through several iterations of, of, of what was, what, what worked for a developer, what made sense, right? You always have to do that with any new [00:20:00] product. And, uh, one of the things that was a major unlock, uh, was our development server or dev server.
+
+So basically what our dev server is, is it's our open source binary. Uh, you run it on your machine. And it runs the entirety of basically inngest on your machine in a single command. So you can just grab the binary or you can MPM and you can MPX it and it spins up and gives you actually a UI. So the UI can allow you to like actually have some visibility into the events happening, the functions, what failed, what are the errors, easily retry, send test events, replay things.
+
+And like that actual, uh, unlock was major because. Mostly people are dealing with that situation. Like you talked about Andrew, which is like any local setup for any of these types of systems is painful. People were like running Kafka on their machine and then running, you know, how many consumers to replicate production.
+
+It becomes cumbersome, right? [00:21:00] Fans start spinning. We upgrade our max, you know, whatever it is. And uh, You know, so we needed to try to make that less painful. Right. And I mean, the feedback loop is pretty bad, depending on the programming language that you're using is like, I have queues running. I have these different, you know, Q calls this Q calls this Q updates this job state.
+
+You're you know, how do you get visibility into that? You're hacking away with it. You're clicking on things. You're stopping containers, starting containers. It should just be as easy as, you know, run a binary and you can run it on your machine. You can drop the binary in CI and run integration tests on if you want.
+
+You should be able to do that. Uh, so that was really the key and the same thing. The other the other half of that's the S. D. K. Okay. And it needed to feel native in each language. Like it needs to feel like I'm just writing TypeScript or JavaScript, or I'm just writing go or Python. Uh, we didn't want to like, have like a new programming model that you might come up with, or might this [00:22:00] different way of, of working with things.
+
+And I think that's really key because developers can like look at a complex thing and instead of thinking about, Oh, this is four cues and one or two database models, and this. S3 bucket for more state. It's just, I can read my code. I can just read it top to bottom and understand what this is doing. And I think that's, what's, what's really key.
+
+And you know, I think where we approach it from the, that dev server and the SDK example, and that's, I think one of the things that resonates with people when they just get it, they're like, when I get the dev server running, it's just, I understand what's happening, right? Like I can see my code running in the way that like traditionally background logic, like you never see it.
+
+Right. And that's what makes it harder. Especially if you've been on the front end or you've been somewhere else, you just can't visualize something that's long running for days or weeks. But if you can put it in the UI, if you can make it interactive, it's a major unlock for devs. 
+
+**Tony:** ~~Yeah.~~ Yeah. There's also a few principles that we really care about. We shouldn't really replace programming [00:23:00] primitives. We shouldn't really do things that are not idiomatic to your language. That sucks. No developer wants to do that. Um, and so making sure that we give you all the power of the systems, but really simply so that you almost only have to learn a few primitives without learning the underlying infrastructure. It's basically the whole goal. Um, so it sounds really cliche. It sounds like business speak, you know, time to value, but genuinely dude, time to value, making sure that it's super easy for people to get set up as quickly as possible is like, is key and, uh, friction sucks across everything that we do in life.
+
+So we should make it easier for developers overall.
+
+**Andrew:** Yeah. I think you guys, uh, take, take the crown from Vite dev server, Vite dev server, uh, where you can like see all the stuff, your guys dev server. When I saw it on the page, I was like, wow, that's the selling point right there. Like, I'm, I want this now, like you could build out this entire infrastructure on your own and you still wouldn't have this like core, super useful piece of technology.
+
+So good, good job there. I'm definitely going to check out guys out because of that.
+
+**Tony:** Thanks. Thanks. That's kind of super kind. ~~Yeah.~~
+
+**Dan:** I think one interesting thing about that is like, you know, that was one of the, you know, there's, there's arguments and conversations about shift left or shift right and whatnot and serverless. I know you've, I've listened to a couple episodes where we talked about that kind of like, you know, Oh, we, we got to test on AWS, right?
+
+Whether, you know, whether using some framework to do that or using the, you know, one of the AWS is frameworks that you can use. Uh, but, yeah. You know, at the end is like the quicker that you can get things going on your local machine and you can control it and not have to pay for compute or whatever resources that you're using, or the delay of feedback loop in that is like, I just want to drop this in CI.
+
+Why can't I? Right? Uh, why can't I just run this locally program against it? Run 10 different services. Like you should be able to do that. So like that is, I don't know, of itself is like the more that you ask of devs, like, Oh, you gotta, you know, you don't have to have an account to start inngest, you can just start running it.
+
+Right. Uh, and I think [00:25:00] that is, is such a key thing to just get people like, like Tony's it's time to value and business speak, but it really is about like developer experience of like, if you get some joy out of it, you're like, Oh, okay, this is easy. I can work. You're any developer with their tools when they get that, like a little bit of, uh, you know, kind of success.
+
+So they understand it like that is a major unlock. And that just kind. of starts feedback into like, okay, I can be productive in this. I can actually do something. I can build something cool with this versus like, I'm battling the system for days or weeks because I've heard this is cool, but I don't get it.
+
+Emma, is it my, is it a skill issue? No, probably it's not. ~~So, Yeah.~~
+
+**Justin:** There's a, there's a big theme that I see here in the like, sort of next generation of what I call like high, like high bar DX companies. Um, and kind of the first spot where this. This sort of pattern really stood out to me was Dino's KV. So it's like, there's so many service, like developer tools, service [00:26:00] providers, that it, they. Kind of operate as a SAAS. You have a portal, you go in, you have to configure things, you know, it's like traditional SAAS sort of set up, even if you have an SDK, it's like, you can't just dive into it and like do something you're always in this other world. And then I was playing around with, you know, KV and it's just like.
+
+It just feels like, Oh, like Dino FS. It just like Dino OpenKV and it just works locally. And, you know, they did all this work to make it like, Oh, you have a SQLite backend if you're doing it locally, but if you're doing it, you know, Dino deploy, we have this whole foundation DB backing and you can at least use the API like transparently, you know, and this is like, it gives you different. Like different guarantees, you know, based on where you're running, but that, that transparency. And I think that, that notion of we're seeing this trend of like, we want to focus less on infrastructure and more on what we're doing. Uh, and then it is going even further. Like what you're already doing is like, we want to focus just on what we're doing and like [00:27:00] less on anything else.
+
+It's like, let me just start with the code and just start where I'm at, do the thing that I'm trying to do. And then I can like upgrade into this larger service and get all these extra capabilities that the business needs. So, um, yeah, I think it's a phenomenal direction and I think like you and recent and Dino, and there's like a few companies that are just like at the pinnacle of this, like developer experience journey, um, which I think is, is hugely important for industry.
+
+**Tony:** it makes sense. Like it's also like really, in some ways you, you, you pointed out something that's really astute and it makes a lot of sense. Some companies really don't want to do anything but focus on their entire product and business. No infrastructure, no mess. And as soon as one team does that, it almost forces all the other teams to do that as well.
+
+Otherwise they move slower. And so, it's almost become non negotiable, in a way. Because if you don't do it and somebody else is doing that, then you move slower than them, and that's not good. And so, [00:28:00] it's almost become a requirement, in a way. Um, which means not only has the table stakes of what we need to build got more complex, the way that we build it has almost had to change to keep up with how fast technology and products have to iterate right now.
+
+So, um, it's super interesting to see. Um, it's so super interesting to observe just like how this works on a, like individual level for developers, but also like a macro level for how we build tools as, as people together, kind of crazy. Yeah. Super interesting.
+
+**Dan:** ~~Yeah. ~~It's like the, you know, we've seen it over decades, uh, where the abstractions continue to improve. Right. We saw like jump, you know, 20 years ago, start with the cloud. Right. And that was like big time at that point. Right. And then we've seen other things. And it generally like the abstractions always kind of move up.
+
+Right. Like, we're not managing Linux servers. In our closet, like we used to, sometimes you can, if you want to go for it, like, that's great. But like Tony [00:29:00] said, things move like there was more software devs. There's more software. There's, you know, like, there's, uh, there's more of a demand on these things of like, how are you, you know, can you get as much done?
+
+Right? And that's where those frameworks like arouse came out. Right? It's like, let's build something that we can be with. you know, a little bit more productive, but then things continue to evolve. Right. And I think that's even where cloud or the promise of serverless, I'll say, uh, kind of came out of, and, you know, in some of those, those situations, it's like, yeah, you kind of have to evolve.
+
+The entire experience has to evolve and software devs are expensive, right? Like I don't want to, I, when I was the CTO of buffer, I didn't want to have my team, like we had. Taking a path off the venture path and we were a profitable company, never going to raise again. So we had to like, I was trying to always improve the productivity of my team so that one they're happy.
+
+All right. Uh, so they're not like banging their head against the wall every day with their development environment. But then also too is like, so they can like [00:30:00] build cool things and build cool things that, and you know, we're. Helpful for our customers. And there was always this like refinement of like, you know, we saw the dev ops kind of like movement happen and whatnot.
+
+So, you know, there's always going to be a push and they're just kind of that wave that you talked about was, is, and is going to continue to evolve over time. And the bar will continue to be pushed, I think. So, you know, does it end? I don't know. You know, we don't know what things look like, but it'll just keep getting, getting kind of like keep ratcheting up and New things will exist, right?
+
+Cause the demand will get higher on all of us. Every engineer. 
+
+**Justin:** Another thing that I wanted to ask about is SDK design. Uh, so in a, in a product like yours, like having a good SDK is paramount because this is your product interface. Um, and it's, it's a tricky thing. Uh, I have a startup in a similar [00:31:00] space doing a slightly different thing, but thinking about what the shape of the interface that you expose, what the SDK looks like is, Paramount.
+
+And I've done a lot of research about like startups in similar spaces as ours, like how they all express that. So I'm curious as like, what was your journey to get to this sort of SDK that y'all have now?
+
+**Tony:** Yeah, that was a bit of a journey. Uh, no, no joke. Um, firstly, some observations. Like we, we also like to just try and learn and as quickly as possible and observe and see what happens and try and find the fundamental facts about what we're building. So we started with, uh, DAGs, DAGs, uh, not WhatsApp for developers writing code, just frankly, not, um, we don't think about code in disseminate.
+
+DAGs and steps, we think about code as procedural logic and that's what we want to write. Um, and then secondly, like one of our main requirements as a team and a company and a product for developers is that we think about what you [00:32:00] are trying to build and the problems that you encounter instead of the fundamental queuing technology.
+
+So how can we make it easy for you to build what you need to build and then we'll handle all of the, all of the stuff that makes that difficult. Um, And that has a few implications, right? You should be able to really easily define functions and say when they should run. You should really, really, really easily be able to say, I want to set concurrency limits for each of my users because I run a multi tenant business and each of my users should be able to run 10 things at once, uh, with a global limit of maybe a hundred.
+
+Has been impossible in every queuing system forever, which is absolutely bananas because multi tenant environments have been here for like, Decades. And so focusing on simplicity is, is, is really important. I think finally, um, before Dan, your thoughts, I suppose, um, we mentioned this before, but we really, really, really do not want to mess with the, um, sort of primitives.
+
+That you [00:33:00] expect from your own language. We want to keep things basically as there's a word for it. That's completely blanking right now. Um, we want to keep things basically as, as, as, as, as ordinary as possible. Um, so we shouldn't be really changing any of the fundamentals of TypeScript. We shouldn't be adding anything crazy.
+
+We shouldn't be changing the way that you write code. We shouldn't be swapping out the way that contexts or your go functions work. Um, you should be able to just use the language as is and make things idiomatic. That's the word on my word. Um, And keeping that is really, really important. So, um, we, we think a lot about what developers are trying to solve instead of what we are trying to solve for them.
+
+And I think that is a really, really, really big mind shift difference because every tool fundamentally can get sidetracked by we are solving this problem instead of our developers are solving this problem and we need to help them do that and that's huge.
+
+**Dan:** ~~Yeah. ~~~~Yeah. I think there's, uh, yeah, a lot, a lot of truth to what Tony shared and the, uh, I'm blanking on, uh, ~~
+
+~~you could edit that part out. ~~
+
+**Tony:** ~~We are both doing that. We are both doing that right now. ~~
+
+~~Sorry. ~~
+
+**Justin:** ~~It's part of the journey. All good.~~
+
+**Dan:** ~~yeah. ~~
+
+**Tony:** ~~Apologies. ~~
+
+**Andrew:** ~~that's fine. We edit the podcast.~~
+
+**Dan:** ~~Yeah. I think ~~
+
+**Andrew:** ~~go ahead.~~
+
+**Dan:** ~~I, you know what I can, I, can I jump in on a point there or so? Yeah.~~~~ ~~I 
+
+
+#### [00:33:53] Serverless and Multi-Tenant Environments
+
+**Dan:** think to follow what, what Tony said, I think what, what is interesting is like, you know, one of the things that we also saw early on in [00:34:00] the journey was the one little like kind of area that was like, kind of like people started speaking loudly and chirping about was we were building was people trying to do this on serverless, like do anything right?
+
+Like run asynchronous work on serverless and all the platforms really didn't have like great solutions for it. Uh, and it kind of is like, you know, Tony uses this phrase like serverless is the lowest common denominator. If, if, if you can build it for serverless, then it can go anywhere. And that's really interesting because serverless is stateless by default.
+
+So inngest functions, the state is held externally. So if your server crashes or your serverless function terminates, uh, the state is stored and we, Resume your code and, uh, resume it from the point of failure. And we kind of get you there with memoization, right? So we take that approach when you define your inngest function, you don't need to worry about that.
+
+What's happening behind it, behind the hood, behind the, uh, under the hood. [00:35:00] But, you know, you can see that our code is open. You can understand how it works. You can understand how the SDK, how it works in the backend as well. So, you know, with that, it's like, you If you want to run on serverless, you need to kind of keep it as simple as possible, right?
+
+You need to just implement it in the language primitives. And that what's cool as a side effect is that like you can run inngest functions, like you can deploy inngest functions to Dino. You can deploy them to Vercel. You can deploy them to a Docker container. Uh, you can use bun, uh, you can use AWS, uh, you know, Lambda.
+
+So it kind of, and even like other runtimes that are, you know, say different Typical node, uh, or, you know, go or whatever, which is like, you know, run it in, uh, in cloudflare workers. It doesn't matter because it's just, it's just job script. Right? And I'm sure you could, we haven't really experimented with it, but I'm sure you can run it in like a lot of other places or use wasm and things like that, which is pretty, pretty fun.
+
+So anywhere that you [00:36:00] can really run it, like, that's the point. So it should be a small enough footprint and that's the person we took with it. But, you know, it doesn't mean. Yeah. That, you know, that there's not other things that we might experiment with in the future, right? That we might do differently, but it's, uh, it's really working for devs and meeting them where they already are because they're already deploying their code of this platform.
+
+We say, keep doing that. Run your inngest functions, wherever they, wherever you want. It doesn't matter. So that's why we also defaulted to like, we invoke things via HTTP and doesn't mean that we'll always invoke via HTTP. We won't, we'll, we'll do it. We'll have other, other methods, but it at least allows you to like have a workload in any cloud.
+
+It doesn't matter and move it wherever you want or run it locally, run it in CI. It doesn't, you know, anything, anything. Anywhere you want to run it is fine. 
+
+**Tony:** Yeah. That's it. I think like, actually, like all of this is a meta point thinking about the principles of what you do when you build your system. And for us, one of the principles is like optionality and [00:37:00] flexibility and making it easy for people to develop and not have to change things, not have to spin up new infra, not have to deploy.
+
+A new set of services be able to change clouds if they want to at any particular point, maximizing for optionality is, uh, is really, really key. And, um, I think it's really helpful to figure out as a. As a developer overall, um, and we talked about like everyone's talked about that for years, you know code reuse Or making sure that things are customizable.
+
+We're thinking about interfaces and like joe armstrong amazing r. i. p Erlang talked about this in in contracts between different systems Being the most important piece like just thinking about yeah optionality and making sure that things are flexible is really key 
+
+**Dan:** We have a, we have a number of folks that are, you know, multi language, right? Which means that, uh, you know, they're polyglot teams, whatever, whatever phrase you want to use there. And they have long running complex processes that might invoke a Python function, right? It might be [00:38:00] TypeScript that is calling a Python function.
+
+So you're, you, we have these teams that can then compose their systems in however they really want. So. It allows people, if that's what they're using to be, you know, have purpose driven, like maybe your your M. L. Team is building with python. That's fine. That's great. You know, they're using certain things that are really great in that, uh, in that ecosystem.
+
+So why not just keep that there right of python inngest function and call it from your javascript code. It'll all just kind of work together. Like you don't need to kind of think about how those two are interacting. And I think that's just kind of interesting also, cause, uh, you know, it just kind of dives into what, what, what Tony just kind of, uh, kind of talks about as well. 
+
+**Andrew:** Yeah, it's, it seems like writing your code in, in this paradigm really changes how you think about writing your backend code. Like, or like, as Tony was saying, we like to write things procedurally, but it seems like if you like took this to his logical conclusion in your code base, you'd be writing lots of [00:39:00] like really modular functions that you like intersperse.
+
+Yeah. So like, uh, what, what patterns do you think the framework stresses? And then also when I was reading through the docs, you guys had a lot on end impotency, uh, like how does that all play into this too? 
+
+**Tony:** maybe I
+
+can take the first one um just in terms of patterns um Cause it's similar to what we've been talking about previously, which is like making sure the SDK solves your problems instead of solves the underlying infrastructure problems. I think one of the things that we try and do is map what happens in your system as closely to code as possible.
+
+Um, an example might be really basic, like, uh, appointment scheduling. When somebody books something, um, run some, run some code in the future to remind them of their appointment, like two hours before their appointment, unless they cancel their appointment. Um, in which case you don't want to send that reminder.
+
+So you can add declarative cancellation, uh, configuration to say, when a cancellation event is received from this user ID or for this appointment ID, automatically cancel the function without running [00:40:00] state. Um, and that sort of stuff is, is, is really, really helpful for figuring out and sort of defining how functions work.
+
+Um, I think that's it. Yeah, largely trying to make things as simple as possible, uh, for the users is, is really key. Um, and that means that you don't necessarily need to learn too many patterns up front. You need to think about what your code is trying to express. And then sort of map that to the primitives that are available.
+
+And you don't really need to learn too many primitives because it's stuff that I think people have already been thinking about for a long time. There are a few, don't get me wrong. Um, if you're doing something extremely high volume and you're sending like thousands of events per second, maybe you want to batch and group things to reduce your costs.
+
+Um, a couple of other users were sending, you know, tens of thousands of things, um, per second, and then introduce batching and the cost just went down by like a thousand. Which is cool. Awesome. Super helpful, but realistically, you, uh, you can just think about what you're trying to build, [00:41:00] how that works on a foundational level, and then start running steps, which are code level transactions, just like a database transaction for code, really.
+
+Um, and you're, and you're good to go. Um, there are some patterns for sure that you get introduced to along the way, um, as you get more advanced. So fan out where one of them can do 10 different things in parallel. Or where one parent function can invoke many child functions, um, or do event coordination to say, I want to check for the presence or absence of these 10 events in the future, totally possible or relatively easy, um, because it's just a line of code, um, getting started should be simple.
+
+I think, um, the tough thing about building developer tools that's relatively abstract is, uh, you can never predict what developers are trying to build. And so trying to make something that handles every case is, is hard. Um, so it comes back to the primitives that's available really. 
+
+
+#### [00:41:56] Handling Idempotency in Distributed Systems
+
+**Tony:** Um, I don't Potancy though.
+
+Don't know. So it's, it's a 
+
+fun 
+
+one. 
+
+**Dan:** Yeah. [00:42:00] Yeah. And you know what, this is a difficult one. So we have a couple ways that you can handle and just to take a step back, uh, item potency. Right? Uh, and however, everyone pronounce it a little differently. You know, devs when they learn it, whatever. Uh, but basically it means like I can run this code as many times as I want, and it will have the same effect, right?
+
+So if you've heard of it, if you've ever used like an upsert or written an upsert, that's basically I'm not going to, uh, create multiple of these. Right. But you need to think about that when you're building systems, right? Well, the systems might trigger multiple events or multiple messages, and you need to be able to handle those things.
+
+So at the basic level, like every developer building systems, especially distributed systems, like has to think about this. But at the basic level, like, you know, we, uh, We do this in our docs and like, as Tony talked about, it's like, you know, we try to give up the patterns or, [00:43:00] or, or share the patterns of like, we don't know what you're building, but here are the things that you can use that resonate with how you think in your head about how you're building the system.
+
+So when building a system. People think about item potency. They want to make sure that something does not execute multiple times, right? So that's the ideal is like the the easiest way to handle item potency is don't run the code again If you don't need to if it has been fulfilled So we offer a couple ways either at the producer level Really, when you're sending the event from your system, from your back end, the user signed up or the order was completed, you can attach an ID onto there and we will dedupe those things and we'll prevent it from running or on the, the consumer side, you can have your function.
+
+If you can't access that code, you can say, you know what, give me these unique keys and let me take this, you know, uh, any data from the payload, any keys that might exist. So any parent, you know, it's basically like every event's just, A J, like, uh, object, Jason object and [00:44:00] Jason object, you can kind of nest, it might have a user ID in there and you might say, Oh, this function should only run once per user ID.
+
+You can just write, you know, event dot data dot user ID and make that your idempotency key. So we just make those things kind of, kind of easy to grab and very modular. So you're like, Hey, it's just a key. You don't need to define it up front. You can define it later. It's the flexibility, right? And those, that same key pattern is what we use to do the multi tenant keys, the multi tenant concurrency that Tony talked about earlier, which is, you know, how do I, how do I make sure that only, that each user does not take up too much resources?
+
+It's just. Run this function and just pass me this, this, whatever key it could be. The user could be an account. It could be a bucket. It could be a tenant, uh, name or some other, other kind of keys. So really like we just provide some of these helpers. And, you know, but we, we have to encourage developers to think about these things, you know, uh, down, like as the writing their code, [00:45:00] because, you know, when you write an inngest function, you know, we've kind of hinted at this, you define your code and you define it into these steps and each step.
+
+Is an atomic unit and each step is invoked and it's retried independently and that state from each step is held by inngest so that we upon failure of a step we can resume it at that point or if your code tells us step dot sleep for three days your function stops running we hold on to that state and we re invoke your function via memoization.
+
+Resume it at the point that you stopped your code from executing. So with that, it's like each step, you still like need to think about it being idempotent or how am I handling idempotency in this, in this situation. So it's a, it's a tricky topic, but, uh, we try to at least offer some of these tools that allow people to maybe work around it or handle this in their own system in the way that they want to.
+
+And that's, I think [00:46:00] what's hard is, is like when you're designing the SDK, it's How do you anticipate the flexibility that someone can write and combine maybe two things together or compose some sort of compound key. So you need to be able to be flexible. So, um, yeah, it's a, it's a, it's a tricky problem and no one really likes like handling it.
+
+So I don't, but, but it's a bear. It's always going to be there. 
+
+**Tony:** Distributed systems are fun, T O D L. Yeah,
+
+**Justin:** uh, I have a broader question and this, this had kind of popped up when y'all were talking about, uh, calling like flows across, uh, language boundaries, like somebody is calling something from Python that was written in JavaScript or vice versa. I've seen, I've worked in multiple companies that have had background jobs and usually there's like some configuration folder that they've stuck somewhere.
+
+It's got a bunch of YAML that are defining these jobs, which, you know, thank [00:47:00] God y'all aren't doing that. Uh, uh, a. I think that I could see that could be tricky, uh, for your approach is that say you have a polyglot team and they're defining a bunch of inngest functions that do things on events. It may be easy for them to lose sight of what will actually happen on an event as more and more of this code gets spread throughout different projects in their code base.
+
+So it's like, Oh, order created event comes in and now a bunch of things are happening. And I don't really know everything that's happening from that. So how do you. Provide users visibility with, you know, what would happen or do you? And, um, yeah. Is there any way that they, they know like what they can call or like what they, you know, what events they can invoke or 
+
+like, you know,
+
+kind of that flow. 
+
+**Tony:** yeah, this is an interesting one, definitely. I think like fundamentally, yes, once you, once you look at events and you sort of build an architecture map, it's totally possible to do that. It really depends [00:48:00] on where you are. In the dev server, you register individual apps and those apps run based off of, uh, based off of events. Some people might have a huge system and they might have Java, Python, TypeScript all running together, and it's unlikely that people will bring up all services when they're working on one individual component. In the cloud, it is certainly possible to say, hey, this event triggers these 20 functions. And this is what you should expect to happen based off of these things happening.
+
+Um, and the dev server, um, possible to, um, it's possible to get that mapping. And we can build an architecture mapping for you. But, uh, it really depends on how far you go and how much you run locally. Um, as, as a developer working on your entire system. Um, so, It's kind of like, that, that is, that is a true problem, um, and a true thing that happens with events, but it's also kind of nice at the same time because events offer this interesting abstraction, um, and they decouple.
+
+Your [00:49:00] code such that when something happens you can just say cool hook into this particular event and run this function And that's super nice Actually, it's super nice and it is good that you end up with this problem of like wow I'm doing so much when this particular thing happens. Awesome Like cool, um, instead of, uh, instead of having to read maybe a 2000 line controller or ABI handler and be like, wow, a lot is happening here and we don't know what that is.
+
+Um, so it, it, it's kind of easier to describe the system in this way. It turns out, um, because you can just say, Hey, show me all the, uh, show me all the subscribers, show me all the functions that are interested in this event and build a mapping. Um, which is, which is super nice. So, um, Yeah, the decoupling is, uh, is, is, is pretty interesting.
+
+I think one interesting aspect of like a multi language polyglot company continues to be types. And this is a almost heated debate amongst everyone and, uh, Thrift is no longer [00:50:00] in the conversation. Yay. Um, but, uh, types, whether it's protobuf, whether it's JSON schema or OpenAPI, whether it's, you know, any of the other things that have been going on. Type safety across multiple different languages is kind of insane and, you know, the PIP for types, super cool. Um, but at the same time, making sure that you, uh, that you do things in a type safe way is, is super important. I think that's, that's probably the, the, the thing that, that, that we end up caring about most, um, in the future because the, the system maps.
+
+Yep. Cool. Totally possible to put these architecture diagrams, but, uh, doing things in a safe way, especially. Yeah. Across versioning of events, um, is really interesting because unfortunately, when you build something great in two months time, the requirements going to change, you end up changing the event payload. That means that things inevitably break, or you need to handle versioning across disparate systems yourself, making sure that that is good before you go to production and that you run CI [00:51:00] and it can fail if any of the events are unexpected is extremely important. Um, and that's a huge challenge, um, in. In, in many systems, um, that, that we, that we 
+
+definitely want to solve.
+
+**Dan:** And one thing that we do have is when you, when you use inngest, you basically can see in a global sense, no matter how many apps you have, whatever language they are, you know, two, one, five, whatever clouds, you can see where they're running and whatnot. You can see the global list of functions and what events they're triggered by.
+
+And then the reverse mapping is possible. So you can see all the events through all the payloads that are coming through and what functions they So the data is there and then we've built in already. a, you know, from day one, we knew that if you're working with events, you should be able to at least have a standard field of where you are, can attach a version, right?
+
+We don't care if you're using SemVer or some date string, doesn't matter, but you can use that. And then you can key off that in different systems, right? And we encourage people to [00:52:00] use, we don't require them, but we encourage them to set these versions~~ because when it comes down to the future~~~~, you know, ~~
+
+**Andrew:** ~~think he really froze.~~
+
+**Tony:** ~~Yeah, I like that you told us to just continue and I'm assuming it gives us separate audio tracks as well, which is pretty cool. Dude, This is such good software. ~~
+
+**Andrew:** ~~Dan doesn't have to reconnect.~~
+
+**Tony:** ~~Yeah, yeah. ~~
+
+**Andrew:** ~~Oh, no, no worries. ~~
+
+**Justin:** ~~No, it's all good. This it happens. This is the whole reason why we use this is like to make it easy. ~~
+
+**Tony:** ~~yeah, yeah. Yeah. ~~
+
+~~yeah, yeah, yeah, yeah, yeah. Yeah. the things that like enables us to make a podcast is like sort of natural as it is is we don't sweat this stuff. It's just like not a big deal. We just ~~
+
+**Justin:** ~~like edit a bunch of stuff in post. We ~~
+
+~~don't like rerecord stuff like what's what's your editing process? Like I could ask you, I, I, I want to learn so much about just how you do your job. We need a podcast for podcast creators. Just like, ~~
+
+**Andrew:** ~~Okay. Dance back. Uh,~~
+
+~~it's ~~
+
+**Justin:** ~~back.~~
+
+**Dan:** ~~Uh,~~
+
+**Justin:** ~~Did you finish your thought? ~~
+
+**Dan:** ~~distracted because there was a power outage and the power just knocked out of the entire building. So,~~
+
+~~uh, of all timing of all timing. I'm sorry.~~
+
+**Justin:** ~~Oh, dang. Oh, shit. Wow. ~~
+
+~~That'll, that'll do ~~
+
+**Dan:** ~~I hope I can't remember where it was. That's okay. I hope it now it says that it was uploading. So hopefully you'll get probably two audio files. I'm sorry. Uh,~~
+
+~~for that. No, no, no, it's fine. It actually ~~
+
+~~Wow. There's reliability. The ~~
+
+**Andrew:** ~~I do that. ~~
+
+~~I do that. I do it behind the ~~
+
+**Justin:** ~~Oh, you do that? ~~
+
+**Dan:** ~~Yeah.~~
+
+**Justin:** ~~Oh, never mind. ~~
+
+**Dan:** ~~Little Mechanical Turk. ~~
+
+**Justin:** ~~Well. ~~
+
+**Andrew:** ~~doesn't do any of the editing.~~
+
+**Tony:** ~~Justin's like it does it for us and andrew's ~~
+
+**Justin:** ~~Andrew. ~~
+
+**Dan:** ~~Sorry about ~~
+
+~~that. ~~
+
+**Justin:** ~~It's true. it's true. ~~
+
+**Andrew:** ~~fine. ~~
+
+**Tony:** ~~so good ~~
+
+**Andrew:** ~~Cool. So, uh, we'll move on to the next question. I think I'll find an edit in there somehow. Um,~~ 
+
+
+#### [00:52:04] Future Directions and Innovations
+
+**Andrew:** so, uh, before we wrap up the podcast, we like to talk about the future a little bit. So what are you guys working on it in Jess? What's next? What do you want to ship? about it, 
+
+**Tony:** ~~Okay. ~~Oh, yeah, I can talk about it for sure. There's there's a ton. There's a ton. Um Fundamentally again, it all comes back to the principles of making developers lives easier. Mm hmm And a lot of the stuff that we want to work on, as cool as the technology is, and it's fun and fascinating, doesn't matter if it's not making developers lives better.
+
+So, a few different things upcoming. Connect, which is an alternative to Serv. Swap out Serv for Connect. Serv's the API for handling inngest functions. Connect will connect to us, and then we'll keep the TCP connection open for low latency, faster caching, um, smarter. Load balancing, because we can handle the orchestration outside and we know how many connect servers you have running, their capacity, [00:53:00] we can do all of the orchestration, um, which is cool.
+
+There's something really, really awesome, um, alongside the observability stack that, that, that's, that's being completely refreshed and our UI is getting so much nicer, um, with, with new designers and folks that have been on board, um, that's super exciting. They also added something to the designs, which is cool.
+
+Uh. So, step. waitForEvent allows you to pause your functions and wait for a new event to come in. And they will completely stop and keep running. Inside that, there is an expression that you can write to say, I only want to run this function if, for example, you create an order and the order is over 500.
+
+Function will stop, event comes in, as soon as it's over 500, the function resumes with that event. That expression is cool, we use expressions everywhere. Inside the UI so that you can search for function runs and events to get information Um, we're also adding look back to wait for events so you can be like Also look back on all the past events from the last hour to solve race conditions, which is amazing and super cool Um, so that's fun and people want that because race conditions are a [00:54:00] thing Um, the observability stuff is just so good though the new designs that our design has been working on.
+
+Um Fantastic and cannot wait because uh, making sure the developers can see what's going on and easily debug super important No one wants a platform to sort of hold them back, especially When they're trying to debug things that's like a high stress environment, you know, and so making that look nicer feel nicer um is going to be so good.
+
+There's some stuff in the background, which we can talk about distributed systems things, but it's more for us and less for our developers. No one will know that we're putting it in place. And 
+
+so, uh, Yeah, I don't know if we want to go into it, but it's really cool.
+
+**Dan:** Yeah, there's a whole underlying like beast behind the system where it's like we run it multi tenant, right? So there's there's like a lot of fun things that we get to learn underneath About the system to make all these things that work, right? so the actual queuing infrastructure underneath that allows you to run them like multi tenant queuing or just [00:55:00] We handle throttling at our level, right?
+
+Rather than you handling it at the worker level, that stuff will just get better, faster, more, you know, kind of more scaling. And, uh, that I think is the fun part of what we're, uh, what we get to do internally in our team. Uh, cause we get to handle the biggest distribution, 
+
+which is great.
+
+**Andrew:** do you guys use inngest to build inngest?
+
+**Dan:** A hundred percent. 
+
+**Tony:** partially. Yes. Yeah. There's a, there's a, there's, there's, there's a lot of our stuff that actually runs like retries, um, sort of replace, um, a bunch of stuff for cancellation, which is just straight up and just functions. Um, A lot of the stuff that you do in the API turns out are just functions. Um, but unfortunately you can't use the queue to build the queue because we needed to build the underlying queuing system.
+
+So we have to build the queuing system regardless. 
+
+And we'll do that for you. 
+
+**Dan:** We, uh, there's, there's a lot of fun. We encourage everyone to dog food, the product right at the company. So engineers pick out things we write. Uh, all sorts of functions that [00:56:00] we can do things like, you know, we shifted off. Like, we don't use intercom. We use inngest and we use, we use recent as our email center.
+
+But basically, like, we build all our flows in that code and we dog food all these different things. Uh, and. That I think is really, really cool. And the more that you can do that, the more that you can understand what the developers, like their, their challenges are or the ergonomics, and you can get frustrated and then try to fix that and channel that.
+
+And that is so important, right? If you don't work on your own product, that's also why we do a support road with every engineer, right? If you, if your engineers are shielded from the actual engineers or the developers that are using your product, they won't know how to make it better. Right. And I think that that.
+
+Like the separation, especially in developer tools, is It is not doing anyone's service. So you need those people close and DevRel or sales is not going to communicate all the frustration perfectly back to the engineering team that can solve those problems. How do you bring them [00:57:00] closer? And that's, you know, doing the support Rota, doing support, uh, in general and the, uh, and dog food.
+
+So it's, it's, it's completely important. So, you know, we always want to find new and fun ways that we can use it and test out our system. So, uh, it's great though. ~~But ~~
+
+~~yeah,~~
+
+**Justin:** ~~Awesome. Is that,~~
+
+**Andrew:** ~~Uh, for, oh, uh, no, that was in the like future, future facing questions. Still up to you for that one. Yeah. ~~
+
+**Justin:** ~~Oh, okay. Cool. Cool. Yeah. Cool. Yeah.~~ So, uh, one of the last things we like to ask to close out is just a directionally future facing question. So, um, I think for this, a good, a good question will be to ask just like about this space in the industry. So we, we talked about that transition from like, you know, these monolithic frameworks in the early, like 2010s or whatever, into the sort of like more cloud world, more serverless world.
+
+And kind of we're here high class DX, really, really high bar for quality and software. We're expecting more, we're expecting to ship more complex features. Where do you think the like next phases of the industry will be like, what are going to be the next important things? And how do you see [00:58:00] yourself playing into that?
+
+If you do it 
+
+all? 
+
+**Tony:** Such a good question. Wow. Um, from a developer point of view, I think it's particularly industry, I think it's particularly interesting how abstractions built and in a way commoditize the underlying things beneath it. So, AWS commoditized infrastructure, very cool, awesome. Also databases, RDS is cool, you know, NEON is cool, PlanetScale is cool, all of these things are amazing.
+
+And now people don't need to worry about the underlying infra. Um, things you mentioned, DinoKV, super cool. You don't need to worry about how you store data. Um, and stuff like us within Jest sort of commoditizes a bunch of underlying infrastructure with regards to queuing events and state so that you can just write code and that in a way means that you don't care about the clouds or the infrastructure or the execution environment because they're stateless, um, which is super cool.
+
+And you can [00:59:00] move from ECS to goop to lambda to cloudflare to. You know, if you wanted to go bare metal, you can, um, if you want to. Uh, and I'm really curious what happens in the future because the trends all point in that direction of people building more and more abstractions. Um, taking it to the extreme, I suspect that as people build better and better DSLs over the top of what we've been doing natively.
+
+Of which there are lots of really, really, really cool examples. Um, it will become easier to compose these systems to a point where it should be a few lines of code will get you so, so far, and that is wild, especially because the, the thing that people talk about nowadays, you know, with like a co pilot being able to write your code for you is kind of wild.
+
+And if you can abstract everything to a few lines of code, what does that mean for the future is a, is a really, really, really interesting thought. And I don't know if anyone can actually predict that. Because it's, it's crazy. So, [01:00:00] uh, yeah. Um, from, from, from the product engineer, from the developer's perspective, I think like things get faster, easier.
+
+Um, and that is awesome across all fronts, back end front end, you know, the signal stuff that we talked about. Amazing. Um, from an engineering point of view, so much is changing as well, fundamentally in terms of like, you know, computational stuff, low level libraries, like the things that people are doing with research right now in terms of how.
+
+To make numbers faster or differentiation faster and uh in ai ml workloads is wild So like there's so many different directions. It's kind of crazy. Um, super cool. Everything is 
+
+fascinating. You learn it all. It's like pokemon 
+
+**Dan:** yeah, I think I'll, I'll add one, one thing there is like, you know, we've seen, I think there's different people approaching it in different ways, but I don't think the developers want to fight with infrastructure, right? And I think there's people clapping back against serverless. That was, we have not seen the final definition [01:01:00] of this, right?
+
+We will continue to see that evolve in ways that might feel more like somewhere in between, right? Like, I just need these resources. I need to define this. This is my capacity, et cetera, uh, to find it in your code. And, you know, we've seen this also, like some people use the approach of like, you know, infrastructure as code or which is.
+
+You know, an improvement, but not quite there. Like there's other layers and then there's framework defined infrastructure as, as you might hear people use that phrase. And. That stuff that that's cool as well. But, you know, there's there's layers and layers that you can go there. We're like, we don't want to be defining.
+
+Yeah, we don't want to be, you know, writing. I want this. I want 3 s 3 buckets. Give me them, you know, so I think those kind of layers, like, just like, you know, You mentioned earlier is like, we'll continue to kind of drive that is, I think, who knows, like the next thing, like, you know, naturally, if you're like, Oh, if we keep just going this way, everything's going to be [01:02:00] no code, but I don't believe that I think we're still going to be writing hard things to solve, solve hard problems.
+
+And, uh, you know, LLMs are cool and stuff, but they're based on language, which is. Like, you know, it is not, uh, complete. So we will see, uh, further things that evolve around there and about how to wrangle these things. And, uh, so, and what other models might exist in the future. So how do you work? In systems, uh, to take, to have determinism about things that are completely like, as the providers say, like are not deterministic.
+
+So there's a, there's a lot of interesting things that will, that will change, I think, with how we build software in the next decade. And, uh, but those problems will be like, those problems will shift, right? It won't be in the infrastructure level at some point, right? It'll be it just keeps moving up. So I think that in the future will be approaching [01:03:00] problems in different ways.
+
+Of course, as we, as we did, you know, we can look back 10 years 
+
+ago and make that 
+
+same statement. 
+
+**Andrew:** I'm saying it right now. UML will finally have its day. ~~going to. ~~
+
+**Tony:** Do you ever see did you ever see any of the brett victor videos like back in the day like worry is he Worry 
+
+dream. Is that his website?
+
+Yeah, and he's got like, the small talk is like a thing and like a great thing from like the 80s, is it? Um, and they've got like this IDE that's super integrated and you can like change variables and see the effects of it as it happens and like.
+
+Dude, all of that stuff is so cool, but I don't know the direction in which we're going in is, uh, It's just like straight up procedural code just as is and low code no code or so hard to so hard to get right As developers, you know, I think we're so entrenched in the way that we work that it's going to be hard to change But that stuff is super cool.
+
+Like he's done so much research 
+
+huge fan. Yeah. What a 
+
+man
+
+**Andrew:** Well, that wraps it up for our questions on this episode. Thanks [01:04:00] for coming on guys. This was a really fun talk into a whole land of cues that I didn't know it existed. Uh, and it looks like you guys have found a really cool solution to that. So thanks for coming on. 
+
+**Tony:** awesome No, thank 
+
+you for having us. Um huge fans again of all you both do so. 
+
+Thank you.
+
+**Dan:** Yeah, thanks, Justin. Thanks, Andrew. 
+
+**Justin:** Yeah. Tony Dan, complete pleasure. Y'all are, y'all are really pushing forward like a lot of DX in this space. And it's, it's great to see not only because like it's needed, this is like kind of an unfortunate area that's like nice to have a good experience around, but also because it's like, we just need to continue to push the DX envelope forward across the industry.
+
+So I love to see y'all as I like shining example and appreciate the work you're doing. 
+
+**Dan:** thank you..
+
+**Tony:** Thank you so 
+
+much 
