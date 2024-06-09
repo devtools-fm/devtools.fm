@@ -3,19 +3,14 @@
 ## Editing
 
 - [ ] Editor Handoff
-- [ ] Andrew Passthrough - Podcast
-  - [ ] clipping session
-  - [ ] stinger
-  - [ ] outro
+- [ ] Andrew Pass
+  - [ ] Generate Chapters
+  - [ ] Generate Clips
+  - [ ] Generate Stinger
+  - [ ] Intro
+  - [ ] Outro
   - [ ] Guest name card
-  - [ ] Add section markers
-  - [ ] Split Free and Paid
-  - [ ] intro
-- [ ] Clip Edits
-  - [ ] Title Clips
-  - [ ] Choose 7 clips
-  - [ ] Edit all down to 1 minute
-  - [ ] Add visuals
+  - [ ] Split Free and Paid (Record Ad)
 
 ## Exports
 
