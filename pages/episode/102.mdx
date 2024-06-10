@@ -1,0 +1,651 @@
+---
+title: Jason Liu - Instructor, Shipping LLMs to Production
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Jason-Liu---Instructor--Shipping-LLMs-to-Production-e2km96b
+youtube: https://www.youtube.com/watch?v=VjJNn5wYZEg
+tags: technology, coding, programming, typescript, llm, ai, prompt engineering, workflows, instructor
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we sit down with Jason Liu, a machine learning expert and the author of the Instructor.
+We talk about what working with LLMs is like, how to ship them to production, and how to make them more accessible to everyone.
+We also talk about the future of prompt engineering and how to make it easier to build better prompts.
+
+- https://x.com/jxnlco
+- https://jxnl.co/
+- https://github.com/jxnl/instructor
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+### Tooltips
+
+#### Andrew
+
+- http://v0.dev
+- https://github.com/ChrisBuilds/terminaltexteffects
+
+#### Justin
+
+- https://github.com/ThousandBirdsInc/chidori
+- https://www.cursorless.org/
+
+#### Jason
+
+- https://betterdictation.com (code JASON20)
+- https://cursor.ai
+- https://one-sec.app/
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:47] The Role of an AI Engineer
+[00:08:20] Evaluating AI Platforms
+[00:10:26] Ad
+[00:17:47] Addressing AI Hallucinations
+[00:24:18] Building Valuable AI Products
+[00:38:59] Cool LLM Projects and Tools
+[00:43:02] Instructor
+[00:47:59] The Future of Prompt Engineering
+[00:51:46] Tooltips
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Jason:** [00:00:00] A good AI product is a product someone will actually think about and use on a regular basis. And I think a great AI product is one where I'm almost a little bit anxious when it's not around anymore, right? I don't really want systems that will try to do my job or do it better than me because I don't believe that can happen. 
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my co host, Justin.
+
+**Justin:** Hey, everyone. Uh, we're really excited to have Jason Liu on with us. Uh, so Jason, uh, you're working as an independent consultant, really focused on AI. Uh, and this is a topic that we've touched on from a lot of different companies, but I'm excited to have someone who's like really focused in this space working on it
+
+~~um,~~ so before we dive in to sort of talk more about like what you're doing in the space and what you're working on, could you just tell our listeners a little bit more about yourself?
+
+**Jason:** Yeah, so I'm Jason. I spent the past, you know, eight, nine years doing machine learning and have really transitioned [00:01:00] through all the different kinds of modality. Like in the beginning, it was very much like classical machine learning. Then it became computer vision and then later recommendation systems.
+
+And now as language models get really popular, I'm kind of applying everything I've learned in sort of deploying these systems, uh, maybe in like 2015, 2016, 2017, but in this new, like. Text modality versus doing things like images and recommendation systems. And really the biggest thing I've noticed is that a lot of the work that we've done with like agents or with rag look very much like classical recommendation systems and classical like chatbot dynamics.
+
+And so it's been really fun to bring some of the old school, uh, work into this new, uh, new paradigm.
+
+**Justin:** Nice. That's awesome. It's interesting to think about how the industry is shifted a lot because it's like, you know, Not too long ago. We were just spending tons and tons of money on like NLP, just natural language processing. Right. I was working for the company that owned food network and we were doing a voice chat system for Amazon Alexa.
+
+And it was like templates. Like you write these like [00:02:00] text templates to match these like loose, uh, Uh, phrases that people could say. And like people had to, you know, say the exact end incantation. And now it's like, you know, with LLMs and things, we've got a lot more loose and how it can apply that. And it's just interesting how, you know, just a little bit of extra research, well, not a little bit, but a lot of extra research has really shifted the dynamic and like how we approach and talk about these things.
+
+**Jason:** it's incredible. I feel like, you know, three, four years ago, I was very dismissive of language model in general, because I thought, okay, this is very hard. We're not going to make any progress. I had to go like, do my real job, make some money, do computer vision. And when Chatgpt came out, I basically just like wrote a letter of apology to all of my friends who were doing NLP research.
+
+And I was like, Hey, look, it works now. Let me go figure out how, how we can, uh, get some value out of this.
+
+**Andrew:** Cool. 
+
+
+#### [00:02:47] The Role of an AI Engineer
+
+**Andrew:** So with that in mind, let's set the stage a little bit. Uh, there's lots of new terms going around and there's even new types of engineers going around. the new hotness is being an AI engineer. So what is an AI engineer exactly?
+
+**Jason:** [00:03:00] Yeah, I think in my mind, one of the biggest things that separate AI engineering from machine learning. Is that the machines are already intelligent, right? There's no more teaching that needs to happen. And so the tools we need to use to leverage the. Um, large language model is a little bit more different, right?
+
+I think, you know, a great AI engineer is actually more capable of like doing more fun and development because now you're actually giving users an interface to these language models, but they still need to be much more quantitative when thinking about things like evaluations, how to test different, uh, language models, and also even have better, like writing skills because we need to then go, go and figure out how to do prompt engineering.
+
+Right. But if you think about the general task of prompt engineering, it's You know, compared to something like data science, it has always been this translation mode, right? And data science, I'm figuring out how do we take a business problem and turning it into some kind of like metrics and evaluations.
+
+In engineering, we take that same business metrics that we care about and then turn them into prompts. And so I think for the most part, [00:04:00] you know, it's very similar to maybe what data science looks like, you know, in like 2015, 2016. 
+
+**Justin:** I've heard some like back and forth on the term prompt engineering online. Some people were like, Hey, yeah, this is like a real field of discipline. Like it's not actually as easy as you might think it may be. And like, it takes a lot of work. And then I've heard it, people be like very dismissive. This is like, reminds me of like, is CSS a programming language or not?
+
+And I don't want to like, you know, bike shed too much, but it's sort of, how do you think about it as a discipline and what are the big problems that people may
+
+**Jason:** ~~I think. ~~So first of all, I definitely think it's real. The more I've worked on it, the more I'm convinced that it's real, but also embarrassed by how we actually get these things to work, right? There's, there's a lot more magic that goes on. And so I think. Definitely in the years to come, you know, prompt engineering will be much more developed, especially as models get smarter.
+
+What might happen is the average prompt can get much simpler. We can't just say, you know, give me a summary, but as these models get smarter, the types of summaries, for example, that we want to get become much [00:05:00] more detailed and nuanced. And you end up having to like bring in, you know, experts to figure out what exactly you want to do.
+
+Right. Just because you can ask for a summary, doesn't mean the summary is easy. Useful or insightful in certain ways. And that kind of applies to almost every type of task in, um, in prompt engineering, right? If I gave it, you know, a million contexts, like 30 pages of financial reports, a better prompt engineer, someone who can describe the outcomes they want, you know, we'll get better results than just asking for a quick summary over, you know, 200 pages of PDFs.
+
+**Andrew:** ~~Um,~~ so there's. Really like I've, I've gone into like trying to code up some of these things myself and usually I'm just met with a lot of Python docs. So like what, what language do you think you should be coding in for this stuff? Does it matter? Or like, do you just need an interface to an LLM and you're off to the races?
+
+**Jason:** ~~Yeah. ~~I think for the most part, anything between TypeScript and Python makes a lot of sense. I think the only reason. Python has an advantage right now is [00:06:00] because the old machine learning community has already been in Python. And so in terms of what kind of tooling that exists by default, you know, it's always been the case that something comes out in Python, they get some more traction and then they slowly build out the JavaScript, the Ruby, the, you know, whatever languages that are out there.
+
+Um, but I think from a community perspective, everything really started from the Python world. yeah, and also in terms of like JavaScript and TypeScript, um, Because a lot of folks end up wanting to build tools that interface with customers and with the front end, you know, I think there you have to make a decision of either having both a Python back end and some React front end, or being able to build that completely in React.
+
+I think there that really comes down to how much of the numerical quantitative side of things you want to interact with. Right. You can have a website using JavaScript, but if you want to do evaluation and testing and, and use some of the libraries that do a lot more like agentic reasoning, they might not exist in JavaScript, uh, right now.
+
+**Justin:** Yeah, that's been something that I've seen in my [00:07:00] experience is like, it's inconsistent of what exists and you get a lot of people just like hacking things together and they'll like do a lot of good research around like, Oh, you're like, I pull this like, you know, chain of thought reasoning, like react implementation or whatever, react the like.
+
+AI version of react, not like the UI version of react. And, uh, you know, it's just like kind of the ecosystem is a little inconsistent. I think, especially in the TypeScript world. but I, I find another challenge on top of this is that, um, you're always interfacing with some service provider. So it's like, you know, obviously people are very, most people are going to be very familiar with open AI and their offerings, but like there's a lot of LLM Platforms out there.
+
+There are a lot of, you know, reasoning tools across the board, whether they be like vision or, you know, voice or, you know, and we have both, you know, LLMs and then just like other generative artifacts or services. So how do you sort of [00:08:00] stay abreast of the offerings that are out there? Like, how do you figure out like, Oh yeah, these LLMs are good for these things.
+
+And then, uh, yeah, is it, is, do you think it's worthwhile to like. Try to get like a, a set of, of these services in your repertoire, or you, should you just like pick one and just like stick with it? And like, what's your advice there?
+
+
+#### [00:08:20] Evaluating AI Platforms
+
+**Jason:** I think it definitely should start with the kind of problem you want to solve first. Right. And so I think for someone who's tinkering, it makes a lot of sense to go try out, you know, Opus, try out Grok, try out OpenAI, but when it actually comes down to building, Products that are solving business solutions.
+
+Really, you end up being limited by like, you know, very fundamental things like rate limits and how much you can spend on a platform, right? Like half the time I'm just harassing my friends at open AI to give my customer like more credits to spend. Um, in terms of the, what the landscape looks like right now, I think there's really three, three interesting players, right?
+
+Anthropic has those long context models like Haiku and Opus that are really good at writing. [00:09:00] Uh, four Oh, with their new multi, like multimodal capabilities in the future, I think will really stand out among, uh, all the language providers. And then a third one that I think is really interesting is grok, where you might have less, less rate limits and more rate limits.
+
+Um, but just by being able to, you know, generate like 3000, 30, 000 tokens a second, the way that you build your product ends up being different just by using the, the, like the token for a second, uh, Velocity. I think after that, you know, playing around with open source and playing around with these other language providers, uh, makes a lot of sense.
+
+But in these production settings, it's really just, you know, I think between like Opus, uh, Thropic and OpenAI right now, and again, like it's more important that you understand what your business problem is, figure out how you can test which one is better and just like run through the suite of tests, uh, rather than trying to like guess which one will perform better or worse.
+
+**Andrew:** So is grok fundamentally different than the other ones? Cause in my mind, it was just like a thing you could switch out for open AI and all the other [00:10:00] things and had around the same properties.
+
+**Jason:** Yeah, so they use, they can host a bunch of different models like Llama3 or Mistral, but I think the unique property with Grok, uh, with the queue is just how fast it is, right? When something is 10 times faster, like 30 times faster, you can, you can build a different kind of application. I think that is something that's very much like worth calling out as a different way of working with these systems.
+
+
+#### [00:10:26] Ad
+
+**Andrew:** We'd like to thank our sponsor for the week, Clerk. Clerk offers user management out of the box to make you build apps quicker. Nobody wants to stay focused on auth, they want to build their actual app. It doesn't matter if some people say it's as easy as adding a user to a table, auth quickly grows out of hand.
+
+With so many different ways to implement auth, like multi factor authentication, SSO, You might even need to implement one of those harder to do enterprise logins if you have an enterprise based business. Or maybe you want to have a bunch of social logins. Setting those up takes time and can be [00:11:00] complicated.
+
+Clerk handles all of that for you without any hassle. 
+
+One cool thing I learned about Clerk this week is their, Never pay for a user's first day program. It might sound a little confusing at first, but let me explain. So, say you just launched an app, it went on Hacker News, and then blew up to the moon.
+
+Since Clerk has user based pricing, you might think, Oh, I'm gonna pay for every single person that just happens to log in to my app for a day, and then I'm gonna have a huge bill at the end of the month. This program, what it does, is if a user signs up, Uses your app, only uses it for one day and then leaves, you never actually pay for them because they're not really one of your customers.
+
+I really like this because it allows you to use the ease of Clerk while also not running up the bill if you happen to go viral. Super cool.
+
+If you want to learn more about Clerk, head over to clerk. com or 75 where we interview one of the co founders, Brayden.
+
+Are you tired of hearing these ads? Become a member on one of the various channels that we [00:12:00] offer it. And if you're not quite up for that, ~~you can support us by, by,~~ you can support us by buying some of our merch. Head over to shop. devtools. fm to see what we got. with that, let's get back to the episode.
+
+So like a lot of these things are like providers right now. And I re I really think the future is like on device. Like, I don't want to have to pay for every single thing. I ask a thing like that is like usage based pricing for. Something I might use in my personal life is not a fun thing. So do you think some of these models could come to the, uh, a local device in the future, or any of them are moving that direction?
+
+Or is just like an LLM, something that's just kind of too big in general to be run, like maybe in like a browser.
+
+**Jason:** Yeah, here, it's really going to be around how specific you want these, uh, certain tasks, right? Like, you can very much imagine, like, a language model that is just in your keyboard that can do better, like, text prediction, right? Or using a small language model to improve how SUI works. Um, I have some bigger opinions on, like, whether or not you can have a smaller model be able [00:13:00] to reason more with a rag that doesn't need to have the knowledge of the world.
+
+Um, but I think everyone kind of recognizes that on device will ultimately be the way to go. And it's just a matter of how we can scale that and its capabilities in order to be actually useful, right? Because I think any language model of any size can probably run on your phone and help you do better like autocorrect and autocompletion.
+
+But, you know, I don't know if like in the near future we're going to have a small model run on your phone that is very like understanding of like medical records or legal documents. We might need some, you know, offloading from that perspective.
+
+**Andrew:** Yeah, so I won't be generating code in my iMessage, uh, reply box.
+
+**Justin:** ~~ Hmm.~~
+
+**Jason:** Maybe some simple code, you know.
+
+**Justin:** Yeah, I think it's interesting to think about, so there's like, uh, there's, I, I suppose like two sides of this. So the, the sort of data that it takes to train the, the models, I'm sure there's like a certain like compression rate that you can't like beat. I'm sure that there's some theoretical maximum for that.
+
+So it's like, oh, you wanna like stuff, all the knowledge of the world in there where [00:14:00] it's probably gonna be a ceiling to like how small that can actually be. Uh. And then, you know, there's also like hardware improvements. It's like making it like dedicated hardware. That's like really, really, really good at like either storing or evaluating these neural networks.
+
+Um, it's all sort of interesting to think about. What do you think is the most important, like area of unlock that we think maybe we'll hit in the next few years? Will it be like just. Continue to improve the models. Like, Oh, now we have like GPT five or will it be like hardware, like better evaluation on, on like smaller machines, what do you think the, the big unlock for the next step is
+
+**Jason:** I think it comes from basically what you said about that compression rate, right? It's like, okay, if we want to compress all the world's knowledge, you know, there is going to be some number of gigabytes this model has to be in order to have that. But I think the more interesting question is, is that actually what we need? Right? So it seems to be the case that as these models get bigger and you give it the world's knowledge, it's able to reason and [00:15:00] read and reply. Well, you can imagine a world where what if I take the. This compressed knowledge of the world and then subtract the world back out and try to only preserve the reasoning aspects, right?
+
+Then you could build a, you could hypothesize that what if I just had a system with like longer context, doesn't have to know everything about the universe, but is able to, you know, correctly, like, you know, take iPhone. There, it's like, this might be a little bit more reasonable. It can just phrase a message.
+
+And if, and if someone asks me a question, it can go search that by understanding that it can use a tool to do search and not have to necessarily remember, you know, every single fact or every single, like, medical condition that they have. Right? You can, you can imagine training a model that is just able to reason, use tools and, and read, but not necessarily remember that, you know, uh, every single thing in the, in the encyclopedia.
+
+**Andrew:** There are a lot of different tools and a lot of different acronyms that come with being an AI engineer there's rag, there's LLMs, there's vector databases, uh, which one [00:16:00] of these things do you think is like an actually important thing to learn?
+
+And what do you think is vaporware?
+
+**Jason:** I would say right now, I mean, I have some opinions here, but I think for the most part, things like RAG and vector databases will definitely be needed, right? But only in conjunction with something like full text search, right? So if you look at how we test things, you know, we have had text search for a very long time, and we've spent a lot of effort and a lot of money making text search really, really good.
+
+And as a result, you know, I think we are already trained to understand something like if we wrote the document, we know how to retrieve it by writing a search query. ~~Um,~~ with something like vector database, it lets you be a little bit fuzzier and search things that are tangentially related. I think if you combine the two, you get a pretty good, uh, uh, Pretty good search system that you can use for either a rag, right?
+
+Which would be basically full fine documents. We give them to a language model and that language model can read that out and then trying to give you an answer, but also just for plain document search, I think in terms of vaporware, like this is a very spicy opinion, but I think things like knowledge graphs, for [00:17:00] example, right?
+
+Uh, I think anything that's not SQL in the long run, it will probably look like vaporware, but that's, I think a pretty hot take.
+
+**Justin:** SQL is a safe bet I think in general, but it, it does, it is an interesting like parallel between like, how do you take. Concrete data structures that are stored and, you know, some uniform way in a relational database or whatever, versus the more fuzzy, sometimes fake world of LLMs, where you have like, you know, relative knowledge that's.
+
+Sort of accumulated over, uh, in a neural network. That's because it's processed a lot of information and like connecting the bridge between those is interesting. Um, I do wonder what the world will look like in a few years, and especially if we can make more progress on correctness, which seems like a big thing.
+
+
+#### [00:17:47] Addressing AI Hallucinations
+
+**Justin:** So maybe this is a good next question is like, how do you think about the hallucination issue with LLMs? And it's like, is there a world in which we're able to wrangle this a little bit more, like get. [00:18:00] Closer to like a correctness threshold or something.
+
+**Jason:** Yeah, I think the way that we'll sort of try to avoid this by is by two things, right? I think one language models try very hard to make the reader happy. And so it will try to lie to satisfy the user. So I think one part will just be making sure that we can like downsample that kind of behavior and be more comfortable with saying like, no, I don't understand. The second thing again, really goes down to this idea that like, because it has knowledge of the world and it tries to be helpful at all costs, it might make things up. But if we train models that have less knowledge and more reasoning, it might get us to a place where we can only give the data that, you know, we wanted to look at, and it will try to reference and cite as much of it as possible to make sure that things are a little bit more grounded.
+
+And in practice, when we do these like fine tuning tasks where, you know, if I have a question, it will make a list of sentences and a list of citations. And then we fine tune it in a way where we say, okay, if every citation must. [00:19:00] validate the statement that you're going to make. We do find better, you know, hallucination reduction rates, right?
+
+But this is only because our hallucination task is very specific. It might just be, I don't want you to write URLs that don't exist. Right. That's a very concrete, measurable way of saying like, yes or no, something is correct. But in the more general case, you know, it's hard to figure out what it actually, what, what does it actually mean to have a hallucination?
+
+And is it always a bug versus, you know, a feature at times? But I think ultimately that might just come down to having different kinds of models with different requirements on, again, like how happy do you want to make the user versus how much knowledge do you have and versus how much do you want to cite and, you know, be able to say no to things.
+
+**Andrew:** It's an interesting property of LLMs where sometimes I have to go, you're wrong. Stop lying. Oh, I'm sorry. I'm sorry. Like,
+
+so it seems seems like a hard problem to solve. But like, I think one of your points there that will be able to, like, factor out the reasoning, like, that seems like kind of a spicy point in [00:20:00] itself.
+
+Just like, is, is there reasoning to this things? Cause like the way I've. Come to think about it. Like, at first I was like, Oh, maybe there is some reasoning, but in my mind now, it's like, LLMs are mostly just like, let's predict the next word. That's most likely. And it's right. Most of the time. So do you actually think we can like factor reasoning out?
+
+**Jason:** I think so. Like we have, we have models that can like, you know, play chess. We have models that can play, go, we have models that can like beat Dota and win at poker. There's definitely some reasoning aspect, right, but I definitely also think that like all this world knowledge is kind of just Because we haven't solved reasoning reasonably like well, like we don't have the data for reasoning, but we just have data about all of humanity umm yeah, I definitely think there is a future where if we can figure out how to remove the the knowledge part We could still have a system that says, Hey, like, I don't really know what kind of libraries exist, but if you give me the documentation for these libraries, I will now write more correct code because I'm never going to like hallucinate [00:21:00] a library that doesn't exist in order to generate code for you.
+
+~~Right.~~
+
+**Andrew:** Yeah. It would be so useful. Cause like when I'm using GPT, like in my code base, it's like, It like, sometimes we have a very complicated model package, like not a, not an LLM model, like a data model package in our repo. And it loves to come up with like just the perfect function. And you're like, that's what I want.
+
+And then you go look and, uh, it doesn't exist.
+
+**Jason:** Yeah. It's like from library import solved my problem. And then I just yeah, exactly. And, you know, there's now a bunch of like open source issues of just users who had hallucinated. methods in someone's library and the maintainers are just like, what the hell guys, this doesn't even exist. Did you even check the code?
+
+**Justin:** That is a fascinating problem though. That's like the second order effects of hallucination of like people taking it seriously and trying to do things or like submitting things as answers or like, you know, unfortunate, like misuses of like, you know, maybe a, If you have like a, a doctor or a lawyer or like someone whose opinion really matters, a civil engineer, [00:22:00] you know, like you want them to be correct.
+
+And if they get lazy and use an LLM, that's a fraught
+
+**Jason:** Yeah, I think there's going to be a lot around how do we build UIs that allow humans to evaluate the correctness of systems, right? Like if the AI system is generating a legal statement, you know, if we ask the human to read the entire legal statement, that might be a very difficult task. But if we can create pairs of just, you know, like examples to show someone evaluating maybe like three or four sentences at a time and referencing some source material.
+
+That might be a task that takes, you know, 30 seconds per label, whereas reading the entire contract might just be like much, much harder. So I think there's going to be a lot more research and figuring out what is the best way of getting feedback from experts that we can use to then, you know, maybe fine tune the model to be better or generally change the way people have to work.
+
+Right. Maybe in the future, there's only like code reviewers, there's no code developers and, you know, that [00:23:00] could be interesting, but, you know, does that mean we're going to be shown multiple versions of a PR and told which one is correct? Or are we going to be evaluating, like, are their only job to be like, be building like unit tests, you know, unsure, but there might be a different way of interacting with how we build things and how we generate data.
+
+**Justin:** kind of speaking of like how we build things. I wanted to ask you a little bit more of a, like, I guess an industry specific question. Uh, you know, it definitely seems like the tech industry, you know, Does tend to go through fads. So we'll have like hype cycles. You know, we had like web three and the pandemic was like a big hype cycle.
+
+And now we have like, obviously AI is a huge hype cycle and we see a lot of companies that are just like sprinkling on, you know, LLMs into their products. It's like, Oh, we're now the blah, blah, blah for AI or like the AI for blah, blah, blah. I'm curious about. How you think about that, especially as you're looking for companies to engage and work opportunities with, I'm sure you have to have some [00:24:00] level of filter, like, does this actually make sense for their business use case?
+
+And you sort of referenced this a few times. So how do you sort through like valuable usages versus like marketing speak in the.
+
+**Jason:** Yeah, I think the biggest thing is. 
+
+
+#### [00:24:18] Building Valuable AI Products
+
+**Jason:** A good AI product is a product someone will actually think about and use on a regular basis. And I think a great AI product is one where I'm almost a little bit anxious when it's not around anymore, right? And the reason, there's really two reasons. I really like AI products that do like blunder minimization.
+
+So I don't like, I don't really want systems that will try to do my job or do it better than me because I don't believe that can happen. But I can know for certain that when I have this AI co pilot around that, you know, there are going to be less mistakes. That's a very simple example. You know, a part that could make you a little bit more anxious is, like, I am pretty, like, dependent on my, like, a good AI note taking app now, right?
+
+With things like Limitless [00:25:00] and with Circleback. If I'm doing a job interview or I am meeting with an investor and I don't have the notes, I think like, Oh, like, let me go invite this just in case, because I might miss something. I might, I might do something else. Right. And this is because again, like in every meeting, I'm so used to it just providing this, this like blunder minimization that, uh, I feel very good about using these products.
+
+The second thing is going to be around, you know, who are you actually selling to? Like, are you selling to a consumer? Are you selling to someone who is just trying to save time versus selling to someone who is using the outputs of these AI systems to make better decisions? Right. I always tell my friends, like, if you sell to someone who's trying to save time, there may be willing to spend like a hundred dollars, like a year tops.
+
+But if you sell to someone who's trying to make decisions, right. Like if you sell it to an investor and by using AI, they can do research faster. Right. Again, minimizing the mistakes means that I can, you know, maybe like source more deals, but ultimately make better decisions. ~~Right. ~~And so those two, I think are the biggest ones, like something to be memorable, [00:26:00] something that makes you a little bit anxious once it like leaves your life and has something that helps you make better decisions and minimize mistakes rather than just saving time.
+
+I think the saving time is kind of the trap right now, which is like, you got to assume that their time is valuable and they even value their time. Right.
+
+**Justin:** Yeah, I've seen some interesting takes on this. So like linear, uh, had came out with a product feature, uh, very specifically for, you know, a particular area of their product. And they were talking about, you know, they're very. Opinionated on how they do product design and it's kind of the best of ways. And they're like, you know, you can use AI as an enhancement for a feature, but it shouldn't be like the sole purpose.
+
+It's like a means to an end. And I thought that they sort of handled it well. And it's just interesting to see how people position themselves. I've seen some companies that like market themselves as AI and you're like. I have no idea how that even like makes any sense at all. Like, what, what are you using?
+
+Like, and then, you know, obviously there's, there are some [00:27:00] that are just like chat, GPT wrappers, they're like, Oh, we'll just like put a UI on front of open AI and, you know, build a, another thing. So it's interesting to, to see the gamut of like how people are experimenting with this and where they're going.
+
+Um, but I think we still have a lot to learn as an industry, uh, for
+
+sure. 
+
+
+
+**Jason:** yeah I but even there, I think a lot of it ends up being like, where's the value actually being derived? Like my favorite example around GPD wrappers is actually job boards, right? Like there's a ton of job boards making a ton of money, but it's really just a wrapper over like a MySQL database, right? Like what you're actually selling is just rows in a database with like, you know, some link to a checkout page.
+
+But because of the way you package it, because of the way you, you know, prepared it, It's very cheap to, you know, pay 300 for a job listing because a recruiter takes 10 percent of their salary, right? So again, because you're selling these decision makers, it's really easy to capture that value, right? You wouldn't think to yourself, okay, well, the database cost me 10 a month, so I should only be [00:28:00] charging like 10 cents per job listing, right?
+
+I think it's the same thing in the AI world where we should be pre pricing on that value rather than just saying, like, we will save some time, etc., etc. Okay.
+
+**Andrew:** Yeah. I like the way you put it of like the anxiety. Like if I think to all of the tools that I like to use that, like. Have AI involved. Like if you took them away from me, yes, I'd be very anxious because like they provide a lot of value to me.
+
+**Jason:** Yeah, like now when I code, I will actually like type something and then pause and then wait for the next completion to happen. And if the completion is slow, I got like, was I unclear? What did I do wrong? Right? Um, and I think you can just, you can tell when that is the case. 
+
+**Andrew:** Yeah. I definitely have that same thing where it's like, Oh no, they're not showing up. I like feel the dread of having to type so much more.
+
+**Jason:** Yeah, exactly.
+
+**Andrew:** ~~I'll take the next question. Uh,~~
+
+**Justin:** ~~Yeah, go for it.~~
+
+**Andrew:** so there's a lot of people building a lot of things with LLMs, but what do you think most people get wrong when they start integrating LLMs into their product? This kind of ties into what we were just talking about.
+
+**Jason:** I think that the simplest [00:29:00] thing, which I think, you know, almost every person I've spoken to has like made this mistake. Is thinking about things like fine tuning a little bit too early and in particular, using the cheapest models first, right? I think what you should be doing is not using the most expensive model you can find to figure out if it's even possible at all.
+
+And once you prove out these concepts, you know, reduce cost, if it actually makes sense to reduce costs, right? You know, it takes maybe a couple of cents to call up an AI, and maybe if you have enough users, that's going to cost a bunch of money, But if you start doing things like fine tuning, now you have to hire like a machine learning, learning engineer.
+
+And now you're worrying about like, where do you get your GPUs? You know, it ends up being kind of a nightmare. And so I had this tweet that went pretty popular a couple of weeks ago that was just like, Hey, like, if you're worried about your LLM costs, I don't think your product is like that valuable. And you should, you should just charge more, like, instead of trying to figure out how to like save, you know, 2 cents on the dollar.
+
+Um, Solve a really valuable problem instead. And so, yeah, I think the biggest mistake is around trying to use these open [00:30:00] models and trying to use fine tuning when you should really be trying to build a product and use the best models you have access to. And that just might be like 4. 0 or Opus.
+
+**Justin:** Yeah.
+
+**Andrew:** It seems odd to me that people like there isn't a, like a nice UI web solution where I can go fine tune models like super easily. Cause like I did some explorations with like image generation and I did my own Laura on top of stable diffusion that like kind of encoded in a certain anime style into it.
+
+And I was actually really surprised at how easy the process was. It was just like hidden in a Google collab notebook. And I had to like put things in Google cloud and it just felt so like janky to me and was like, this is an easy process, but it's like, there's layers of this like FUD of like, Oh, it's a hard thing to do.
+
+And you have to set a lot of things up. So do you think, are there any startups like that? Or do you think there's like room for one?
+
+**Jason:** I mean, there's like OpenAI does it. I think Together and AnySkill also does fine tune models. But I think the difference between, again, it's like, it's [00:31:00] the same as getting a summary and getting a good summary that people would pay for is very different. And so if you think about these examples of like generating images, you know, like generate cartoons, very, very straightforward.
+
+But I have a friend who uses like generative AI to generate fake images of MRIs with tumors in them. And they use that to augment their models to be able to better detect tumors. Right? That ends up being a very specific problem of understanding, like, What are the right knobs I need to figure out to actually build images that can improve my model?
+
+Right? And that just ends up being, like, data preparation and model training. And less about just, like, did I have a folder of 30 pictures that I can just throw into some UI? And I think that's the same thing with fine tuning. It's really easy to fine tune a model. But it's really hard to figure out if that actually has resulted in, you know, a better, better business outcome.
+
+**Justin:** Yeah. It's really interesting. There's, this seems like there's a lot of things to keep in mind when you're trying to add something like this to your product. So what do you think [00:32:00] are the hardest parts of bringing like some AI solution to production?
+
+**Jason:** I think bringing something into production is actually quite simple now because it's all really APIs. The harder part is when you go viral and the product doesn't work or you lose faith in it because it's hallucinating. How do you then debug how to improve these systems, right? I think software engineers really feel like if you have it in production and you've deployed it, it means it works.
+
+~~Right. ~~Right. But really you get in this place where actually when you deploy it, it's like 80%, 80 percent doesn't even mean that you shouldn't have deployed. It's just where you're at and then going from 80 and actually being able to figure out what, what that number means and how you improve that metric.
+
+I think that's, that's mainly the hard part. And that's where I think like most of my advisory work has been is, is it actually after the deployment. It's like, Hey, Jason, like we've deployed the system, we went viral, we have a bunch of users, but now we're losing 20 percent of our users every month because it's not citing things correctly, or it's not able [00:33:00] to actually, you know, generate summaries that are useful for people, right?
+
+Like people are passing in three hour lectures, hoping to get, you know, study notes. And we get seven sentences that say, like, this video is a professor talking about the importance of mathematics in the workplace, you know what I mean? And figuring out how to actually quantify that, those are, end up, those end up being the harder problems.
+
+**Justin:** This is funny because this is very topical with like Google giving search recommendations for like, Oh, you should eat rocks for your health or whatever. And it's just like AI generated bull crap. Right?
+
+**Jason:** But it's like, how would you convert that into like any number or any binary thing that you could say, you know, selects like select star from data where like label greater than 0. 5. Give me all the bad examples. Let's fix that. They can't do it. Right. And so it's really hard to actually go figure out, like, how do you debug that whole process?
+
+**Andrew:** So what, what is the strategy that you suggest to these companies? Cause like testing seems like a hard problem where it's [00:34:00] like in traditional testing, it's like, I have inputs. There are outputs. They should always be this. In most prompts, it's like, how, how do you determine good? Like here at Descript, we have, I think there's like one or two workflows that we have like tests for, where we can be like, oh, this got better.
+
+This got worse. But that doesn't seem like it's the case for most problems.
+
+**Jason:** Yeah. I mean, my solution to this is very much from like my social networks background. Like you would just, you would just, you should just launch the product. Like if Google, for example, I think they should have like launched the product in a much smaller English speaking population. That was not the U S I just launched in New Zealand, run it for like three or four weeks, have a really important like feedback mechanisms, collect that feedback and then figure out what's going on.
+
+But even then I'd like Facebook, for example, when we did that. It would still be the case that if you were able to get a New Zealand and Australia to run these tests, when you then deploy to the U S the Americans are still just like super unhinged. And it's still hard to red team. What exactly like the U S [00:35:00] population will, uh, use with these language models.
+
+Um, but I think that majority is like very much unsolved. And I think that's why they took so long to deploy. And even when they did take so long, they still messed up. So part of me really feels like at this point, you should just. Deploy earlier, mess up quicker, and then just sort of make sure that the team is in place to iterate quickly.
+
+**Justin:** Yeah, that's a really interesting point. Um, there's been a theme. That has happened over that we've covered over the last several episodes. ~~Um, ~~and I think the most prominent like start of this was when we talked to Danny Grant, uh, Jam Dev, uh, talking about like how we just have a higher quality bar for software products these days.
+
+This is like, you know, in the say like 2010s area, it was like MVP. If you're not embarrassed of it, you ship too late, you know, just like get it out, get it out, get it out, get in front of people. And. That seems to be, you know, kind of to your point, um, we're seeing that more [00:36:00] and more with the AI space and my hypothesis on that was largely because everything is moving so fast that people feel like we're going to get left behind if we just try to make this thing perfect.
+
+Um, But there is this tension of like, people expect more from their software. They expect it to be more correct, more beautiful, more capable, like whatever else, and have like less patience for it. So do you think that, that, I don't know, people are going to be fundamentally more patient with like LLM generated things, or like, do you think that this will be an issue?
+
+I'm just kind of curious to like contrast these, uh, areas.
+
+**Jason:** I think it comes down again to sort of selling to the wrong audience, right? It's like, if we sell to these consumers for these like 15$ or like 5$ a month apps. You end up just getting kind of like the cheapest least patient person that wants to like try [00:37:00] something that's to convince themselves they want to save their time.
+
+Whereas I find that when you actually sell to like, you know, bigger, like, for example, when we sell to things like executive coaches and do like, you know, call summaries or consultants, we, we don't ever run into the patient's problem because they just have other things they need to get done. And this is something that they're, they're using to like unlock their productivity.
+
+Whereas like, you know, I think when these higher price point customers end up having issues is around things like quality, right? The consultant can say, Hey, I made 15 phone calls. I know three or four people had to answer to this question and you only pulled out two of them, right? Something is wrong. I don't trust the system anymore.
+
+I think that's when you can then go back in and because you build a very specific product, you can go focus on that and improve it and measure it. Whereas again, when you try to capture everybody. It's really unclear what anybody really wants. And as soon as you do any kind of improvements in the system, you know, you take it for granted basically the next day, right?
+
+It's like day one and you get like, why father than [00:38:00] play day two, you feel like it's too slow, right? I think that's generally how, you know, the average consumer feels.
+
+**Andrew:** Yeah, that, that echoes a sentiment we heard from the creator of MPM, uh, Isaac. He was like, I'd rather sell to one person with a lot of money than 10, 000 people with not very much money. It's a lot easier to keep that one person happy than it is to keep 10, 000 people happy.
+
+**Jason:** Yeah. I mean, cause I think patience is about having other things to do and only busy people have other things to do. And so you get other busy people. They understand that. Like. So, you know, time is money, money is time, and they can sort of make those trade offs and recognize what they're getting out of it, right?
+
+Like it is companies and managers that can recognize, okay, a junior engineer is going to be cheaper, but I'm going to have to delegate more. A senior engineer is going to be much more expensive, but I can kind of tell them what I want. And I know that a couple of weeks from now, things are going to be okay.
+
+Right. And I think like the consumer base hasn't really grasped that fact yet as they're trying out different models.
+
+**Justin:** ~~So Andrew, uh, do you want to finish out the questions for this section or should we, should we transition over?~~
+
+**Andrew:** ~~Let's do that last one really quickly. I'm sure he has interesting things to say about it. Uh,~~ 
+
+
+#### [00:38:59] Cool LLM Projects and Tools
+
+**Andrew:** [00:39:00] so you've mentioned a few cool projects, that meeting note thing that you mentioned. I'm definitely going to check out after this episode seems super useful. But what are some other cool non chat related products slash projects that you have found really cool that, uh, use LLMs?
+
+**Jason:** I think the biggest one would be a cursor. I don't know if anyone, if you guys have tried it out, but I think the way that they've built out a experience that is better than co pilot because they have this like next, next action prediction, uh, has been like very ergonomic. So the idea is that you can just select code, press command K and then give instructions, give instructions, and they can figure out what in the context you need to use to generate better outputs.
+
+And so. So, you know, I will go into 4. 0 to write some code, uh, then enter Opus and help me take that code and turn it into a blog post, right? And then because you can do this very interesting, like, at command, as you're giving these commands, I can add external documentation, I can add other files, [00:40:00] and really have a really very natural way of writing code now, right?
+
+I have, for example, um, my own libraries documentation in cursor. So when I ask it to write better documentation or more documentation, I'll do something that's like at this file dot pi, right? It just like the docs of at instructor dot pi. Right. And that just feels very, very natural. And again, once I don't have that, I get that a little bit of anxiety that I think is really important for these language models.
+
+**Justin:** Yeah, that's, that's really interesting. I think that like, um, It, it is interesting in the way that we're developing new habits around these like tools. Uh, I read a thing about like, uh, the millennial Paul's it's like this reaction where when you're starting to, when like millennials are starting to record themselves, they like pause for a few seconds before the recording starts.
+
+Whereas like Gen Z just like goes straight into it or something. So it's like, I wonder what. What are LLMs going to do to us in this way? [00:41:00] Right. 
+
+What ticks are we going to develop? 
+
+**Jason:** I mean, with the code, with coding now, I basically have that pause. Like, when I go on my friend's computer and I type something, I'll like start the name and I kind of already know what the autocomplete would have given me, but I'm on a different computer and I just look like I'm extra slow. Even the way that I write now, like a lot of my coding is actually using speech to text.
+
+~~Thanks. ~~So I both use speech to text and cursor at the same time. And I'm kind of just very comfortable now with like selecting code, talking a little bit, selecting code, talking a little bit. And, uh, now I definitely can't do that in Vim or on my friend's computer. If I ever had to 
+
+like show them something. 
+
+**Andrew:** Yes, dictation and LLMs go together very well, because it's like, sometimes when you're writing these prompts, you're like, I just, I, I could just code this in less characters. It might take me less keystrokes to do it in the end. But actually talking to my editor seems like a really nice workflow.
+
+**Jason:** It's been, uh, yeah, I've been using it for a year now. It's pretty good. 
+
+**Justin:** I, um, so we have like iPad babies, you know, who just like [00:42:00] come up like with touchscreens now I'm wondering what, like, what are LLM babies going to be like, they just like want to talk to every computer.
+
+**Jason:** I think it's gonna be great because, Mm hmm. LLMs require you to, at least right now, require you to be very specific and intentional in how you describe the requirements of the problems you want to solve. And I definitely think using an LLM has made me like a better manager of junior engineers and being a manager of junior engineers has made me a better prompt engineer. Right, because now you can't really just say like, I'll solve this problem for me. I've got no. Solve this problem for me. This is when you would know, this is when you know you'll be successful. Consider these three qualities as you build the system. Make sure that, like, this piece of code needs to be very well organized because this is going to be something to be open source.
+
+But, for this piece, you know, just do it as quickly as possible. And then you have to reason about whether, like, you want to use Opus or 4. 0. I think there is a bit of a skill and delegation that people are developing because of language models.
+
+**Justin:** Yeah, that's, that's really fun to think about. Um, so let's transition [00:43:00] over and talk about some of the work that you've done. 
+
+
+#### [00:43:02] Instructor
+
+**Justin:** Uh, so you have some open source tools that you've been working on. One is called instructor. Uh, what is instructor and what does that help you with?
+
+**Jason:** Yeah, so instructor is basically types for LLMs. Right now when you post to an API call, you make a request, you send it some list of strings, and you get a string back out. And if you want something that's structured, you kind of hope that it's structured. Maybe you're doing some regular expression to parse out some JSON object.
+
+You know, then you like, you know, JSON loads, and you hope all the keys and values are in there. And, you know, generally what you do is you might use Zod in JavaScript, or you might use Pydantic in Python to validate that object. And then once you have that validation, and you have that guarantee, then you're in a place where you kind of have a type that you can work with.
+
+And that boundary between the API called the language model and the rest of your system is, is, uh, Going to be safe, right? And one of the things we do with that validation is [00:44:00] if anything fails, validation, we have some prompts that can go and re ask the language model and say, Hey, you had these errors.
+
+The date was not formatted correctly. The phone numbers are not formatted correctly. Also, this response doesn't pass some like content moderation rules, regenerate the answer. And so in production settings, you have type safety at runtime. And then because you might want to fine tune models later, you can then fine tune models that say, okay, given the input and these two attempts at getting the right answer, now I want you to give me the answer in a single attempt.
+
+And so for these very specific like Unix like type boundaries, you can then fine tune very small task specific models to do these jobs.
+
+**Justin:** Yeah, it's really cool. It reminds me of a library from, uh, Microsoft called TypeChat. I think that some of the TypeScript team was, uh, responsible for building that.
+
+**Andrew:** So, so how it works is like, it'll get wrong stuff back sometimes and just. Like, re prompt the thing over and over again.
+
+**Jason:** Yeah. So, I mean, [00:45:00] these language models are pretty good now that like. If you can do it in one attempt, it'll usually just work. It's usually, it's like zero or one. Um, And, uh, yeah, they're basically smart enough that you can, you can basically capture any kind of validation error as if it was a regular error.
+
+Like the way that you implement this is no different than how you would just implement a form. Right. So in the same shape of code that has, you know, you register a validator that attaches to some attribute and you say, okay, well, password one and password two has to match. And it must, you know, match.
+
+Some regex, um, you can do that and it basically captures the exception messages and passes them back to language model. But what this means is you can just build more sophisticated validators. And so today it might just be, uh, you know, the list must be greater than 10 items, but tomorrow it might be. The joke must be funny and reference an animal, right?
+
+Because you just might put LLMs in that loop again.
+
+**Justin:** That's really cool. I mean, I think this is like, uh, this kind of tooling is like more of what we need for the [00:46:00] correctness, right? Just like having more confidence that it is doing the things that we want it to do. And especially because if you're feeding it back into some other process in some other system, then it like You know, you want to make sure that that is at least correct. So that's cool.
+
+**Jason:** Yeah, like in the, in the, like, linear case, for example, it, it might make sense to say, okay, given that, given this call transcript, give me the action items as this, like, big markdown file. But that might not be, like, consistently useful. Whereas, if you could generate just the task list that matches the schema of the API call you want to make to linear, and then also assign all these dependencies, Now you can have the structure that is not just a, a linear ticket, but it could be an entire project based on that call. Right? And because you're working with the data structures and because you have this type safety, you know, the code you write ends up being much nicer. Right? If you just ask for JSON, you still have to like parse it and then hope every attribute is correct. And, you know, you still have to make sure that if one ID depends on another ID, that it's assigned correctly, [00:47:00] but the validation kind of captures all of that for you. 
+
+**Andrew:** So does it just work on like the output end or like the input end also? So if I'm asking something and I like, does it like, kind of load into context? Like, it should kind of look like this. And then when it gets it out, it validates that it kind of looks like that.
+
+**Jason:** Yeah, so there's a couple different implementations of how other language models can do this structured output. Sometimes we do something like constrained sampling, where because we know the shape, we can pick the, we can basically say like, given this current state, I know you're not allowed to generate any of these tokens, only generate tokens that are valid.
+
+And so, you know, JSON mode, for example, allows you to do that. But in other tools, in other systems, they have something called tool calling. Which again, you pass in a JSON schema and you get returned an instance of that JSON class, right? But JSON isn't necessarily enough, and so that's where the validations come in to take you to that final step of correctness rather than just structured output.
+
+**Justin:** Nice. That's, that's really cool. ~~Cool. Uh, should we transition over into future questions? Andrew, you want to take the first one?~~
+
+
+#### [00:47:59] The Future of Prompt Engineering
+
+**Andrew:** ~~Um,~~ so, [00:48:00] uh, right now we discussed there's lots of different tools around these things, but as language models get better, do you think we'll need like less of these tools? Like in a future where language models are better, do we have to be not as good at prompt engineering? Uh, does that discipline just kind of disappear if the model's good enough?
+
+**Jason:** Yeah, so, so this is really two things, right? I do think that as the language models get better, we're going to need less tools. This is because right now you need to have the model, like, Generate an answer, reflect on its own answer, correct it, then try again. And so, I think, definitely, that will become simpler.
+
+And in the same sense, Prompt Engineering will be simpler because it's able to reason a lot more about how you do things. Like today, to do a good summary, you might have to say, like, you are an expert, uh, you know, Executive that's reading these notes, generate a meeting summary that is like actionable and has like good references to who is accountable for what things based off of this framework that our company uses to like do meeting [00:49:00] minutes. Uh, you know, return that in Markdown. In the future, you might just say like, this is, this is for me. I am an executive, right? You can definitely believe that, but on the same token, Just because things get easier doesn't mean we do less work. It's often the case that as things get cheaper, we have more demands of the system.
+
+A simple example is, like, the battery on your phone. The battery has been increasing in capacity over the past 10 years, but the battery life has not, because we just keep building more complicated applications. And so I think that's where the trade offs will be. I think that the simple cases will get simpler, but this will allow us to actually do much more sophisticated things in the future, right?
+
+Today, we need to use an agent to, to write an email. Maybe tomorrow the email is done in one shot, but like biology research still needs to have like an agent in the loop. Right. So I think that's kind of where we'll, we'll, uh, meet as language models get, uh, smarter.
+
+**Justin:** That's cool. So if you had, uh, if you could make [00:50:00] one priority decision for all the LLM providers, it's like this feature, I want you all to implement it. What would it be?
+
+**Jason:** This is very biased because I, my answer is structured outputs. Right? Um, and the reason is because I think even if these systems get smarter, the pain really is on like the processing layer, right? Like, there's a reason we don't send things as like untyped JSON. There's no, there's a reason we're not sending CSV files over the internet, right?
+
+We have serialization formats, we have protobufs, because they are more efficient in certain ways. And they're safer in certain ways. I think as we So if we, you know, take the code that we write with language models more seriously, they're going to be, they're going to have a lot more requirements on the safety of these models in terms of just, again, like how many runtime errors are we going to have?
+
+And this is one of these things that will last no matter how smart these models are. Like today we'll want structured because we just want to write code that's not crazy. Like, like if someone made an API [00:51:00] endpoint and the return type was just string, I would be livid, like I would never use that endpoint, right?
+
+I would hope there was like some kind of like open API spec. I'm hoping there's some example JSON that I can look at, and it's because it makes me feel bad about consuming from these endpoints. And so being able to specify these return types in a much more opinionated way, I think is going to be a really big step in just making the adoption of language models for systems higher, right?
+
+Because for chatbots, it makes sense. I send a message in, I send a message out. And now they're struggling with a multimodal because they've realized that, okay, with the text message, I can attach a picture. I can add multiple pictures, multiple captions. It could be a voice memo. And so they're trying to solve that aspect.
+
+But when, when it comes to systems, you know, I kind of want, I could put a buff to descend between systems.
+
+
+#### [00:51:46] Tooltips
+
+**Andrew:** Cool. With that, let's move on to tool tips.~~ Uh, so, Uh, I'm just gonna share my screen, and then, uh, we'll each share a tooltip, and then, like, kinda do it round robin style.~~
+
+**Jason:** ~~Sounds good.~~
+
+**Justin:** ~~Andrew, I did update mine, so you might need to refresh to see it.~~
+
+**Andrew:** ~~Uh, okay. Were they Chidori and~~
+
+**Justin:** ~~Chidori is the one that I updated to,~~
+
+**Andrew:** So my first tool tip of the week is a project that I already shared, uh, but it got better. So I'm going to share it again. Uh, v0. dev is a way to generate [00:52:00] UI just from a prompt. It does really well. Uh, you can iterate on things, but the update I really wanted to share here, which I think is a, an interesting move for Vercel is that it's now build is generate UI with ShadCN slash UI.
+
+Which I think it's just a great story. Just like some kid made a thing that everybody started using. Now it works at Vercel. Now it's like the thing behind, uh, one of their new initiatives. So what ShadCNUI is, it's just a way to generate components into your code base. And now you can combine them. And so stuff you generate from V0.
+
+Well, actually be kind of like somewhat usable code that you can plop down into your react app. And it'll just work. And assuming that you have all the shad CN UI components installed, you can even customize what the output will be. So like the stuff you're seeing in the app now is not really what you might see when you put it in your app.
+
+You're just kind of seeing the structure that it produces instead, which I think is A big step. The next step I want to see, of course, is not just ShadCN. [00:53:00] I want to see this for my design system so that like engineers at my company could come in and generate UI with our design system. I think that would be pretty cool.
+
+**Justin:** I do think it makes a lot of sense to like elevate the level of distraction that it's generating at, because there's like a lot of details when you're thinking about UI, you know, it's just like, Oh, accessibility. And like, I mean, there's just a lot of fine grain details. That's going to be really hard to generate correctly.
+
+So like going up an abstraction layer, let's just have like a solid base that we know is like good, but yeah, more, more support for more frameworks would be interesting.
+
+**Andrew:** Yeah. 
+
+**Jason:** You just got to go reach out to Vercel and their white glove service, and you'll have practice to implement the descript. Design, design a framework. 
+
+**Andrew:** Yeah, at a low, low price of probably way too much money. Okay. Next up we have LLM 
+
+
+#### [00:53:49] Tool Tips: LLM Client and Cursor
+
+**Andrew:** client. 
+
+**Justin:** yeah, so this is a fun one that I found recently. It's a TypeScript library. Um, well. Come back to that in a second. Uh, but it, it like [00:54:00] implements, uh, a lot of different things. So it's got like rag. It's got react, not, not react to UI again, react to the AI picture, chain of thought, function calling. It works over like different providers.
+
+It's got like a relatively. Uh, like simple AI, uh, and it also has like, uh, open telemetry integration if you want to like do tracing for it. So Andrew, if you scroll down, you can kind of see it'll like give some interesting things. So there was something that I didn't know. It's like part of how this is structured is a, um, There's like some research out of Stanford or something about this, like pretty simple syntax of like describing, uh, like questions and responses and types, like very curiously in a prompt.
+
+It reminds me, Andrew, a little bit of Sudoling we talked about a 
+
+while back.~~ Yeah.~~ So it got some of that feel to it. Anyway, it does, it does a lot of stuff. Um, and it's kind of interesting. I was like, I'm using it right now to experiment on building a CLI [00:55:00] agent, just to be able to like describe, Hey, I want you to take action, do these things.
+
+Tell me when this file was created and have it like, give me a list of CLI commands to run, to be able to like do that. Um, You could do that all with just like opening eyes API, if you wanted to do that. But, uh, anyway, it's kind of interesting to explore this library. Um, if anybody is wanting to do some open source contributions, uh, the TypeScript types on this could be greatly improved.
+
+Um, there's some weird build stuff under the hood here. So that's, that's the only, uh, caveat for that, but it's, it's been pretty cool.
+
+**Andrew:** Cool. Next up we have, uh, the combination of cursor, which they got a, a nice new, pretty website. I haven't seen this one yet. Uh, and better dictation. 
+
+**Jason:** Yeah. So like I, uh, I'm, if anyone follows me on Twitter, they kind of know that I've been sort of fighting this like hand injury for the past, like two and a half years. So it's one of the reasons I don't code as much as I used to. And, uh, two of the tools I really use in combination a lot is better dictation that basically uses a on [00:56:00] device language, uh, language model.
+
+So you basically use this like on device, fast English whisper. To, uh, do dictation and then I use cursor to then edit all my code. And so the very simple pattern I do is basically I'll select code command K command L two letters right beside it. And then I'm able to using my voice, uh, generate some, uh, generate some code.
+
+Anyways, this is like a, a tool that like my friend had built for me. And then we ended up. You know, building it out. And so if anyone wants to try it out, you can use JSON 20 to get it for 20 bucks. And, uh, yeah, all it does is it just loads, uh, the Hugging Face model locally on your computer. And, uh, yeah, you get access for it for life.
+
+And so if you use this with, uh, Olamo, you can actually code on a plane. And that is a, that is a crazy feeling that, uh, blew my mind at one time when I 
+
+tried it out. 
+
+**Justin:** ~~Well, yeah.~~
+
+**Andrew:** Yeah. I've been trying to use, like, I kind of got inspired by, uh, Another coder. Who's the guy? Justin, we interviewed him. Scott, Scott Hanselman. [00:57:00] Uh, Scott Hanselman is also very much in the like dictate to code. And then I got home and tried to start dictating with max dictation. Oh my God. How have they not made it better yet?
+
+It's crazy. 
+
+**Jason:** I was using the Magitation for about a year and a half, and it completely changed the way that I spoke. Because I would have to enunciate every single word. Uh, in order for it to do well, but, uh, Whisper, obviously it's, it's a lot faster, but it has its own, uh, funny behavior. 
+
+**Justin:** I don't mean this to be my tool tip, but there's this other project that I've had my eye on, which should be easy to remember. It's called Cursorless. So it's cursorless. org. And it's specifically for coding with your voice. Uh, so yeah, they, they do a lot of really interesting stuff. Uh, around like providing like little visual indicators directly in your IDE to, to like help you jump to different points.
+
+So if you like need to move your cursor around, um, it's a, it's a really [00:58:00] fascinating project. When I was at recurse center, I was doing a little bit of research on, uh, or just like doing a thought experiment is like, what, what would happen if you tried to build a, um, Language for someone who is blind, like just, just build a language for someone who's blind.
+
+And that's like a hard thought experiment. And then like I came to a conference and I actually saw cursor lists. And I mean, obviously you have to be sighted to be able to use this, but, um, for, for people with like hand injuries and stuff, I was like, I think this is, this is pretty interesting. 
+
+**Jason:** Yeah. Like at some point the company I worked for almost suggested I get a typist so I could keep coding. And I realized that it was coding of not just, yeah, coding of not just like editing a single file. Like the thing that ended up driving me crazy. Was, uh, like transitioning through large code bases, right?
+
+Like if, if there was an on call, like it's not one file that has like one typo, it's like, okay, okay. Like look at the error message. Can you online 172, can you jump to that [00:59:00] file? Okay. Can you just double, okay. What's that function name called? Okay. And then can you go back to the original? It gets crazy.
+
+Right. And so that's why I think cursor has like the magic of all the prompts inside. And so. It's able to do that. But this is very cool. I'm definitely going to check it out. Cursorless. 
+
+**Andrew:** ~~Oh, I don't have the good link. ~~
+
+~~I~~
+
+**Justin:** ~~The ~~
+
+**Andrew:** ~~need to go find a, yeah, the better link, the showcase. ~~
+
+**Justin:** ~~There's it's effects showcase there in the table of contents. I think. ~~
+
+**Andrew:** ~~Already got the link in my clipboard. ~~
+
+**Justin:** ~~go. ~~
+
+**Andrew:** Okay, so a coworker shared this this morning on slack, and it is amazing. So this is a CLI library to just do crazy tech stuff. And I have no clue how they're doing it. Like some of the examples they do, I can't even imagine a terminal, like rendering that. So like, if you just go through these, there's like.
+
+A bunch of like, matrixy looking ones. There's one where this, this becomes like a circle out of a galaxy. There's one where all the text on the screen turns into fire. There's just so many cool things that they've done with this library. Uh, and I really want to see some terminals integrated because this seems like the.
+
+The most polished terminal thing I've [01:00:00] ever seen, like sure, like there's that, there's a library where you can generate these like text image type things that some people use, but those, those pale in comparison to what they're doing on this project. So if you ever wanted to make a very pretty CLI with Python, go check out, uh, what's it called?
+
+Effect effects, just 
+
+terminal text effect. Yeah, I highly suggest you go, go look at the website and the show notes. Cause it's a fun scroll through. ~~Okay. I'm done.~~ 
+
+**Jason:** Nice.
+
+**Andrew:** Next up we have Chidori. 
+
+
+#### [01:00:32] Tool Tips: Chidori and One Sec
+
+**Justin:** Yeah. So, um, this is, uh, Chidori is, uh, a framework, uh, by this guy named Colton, who I had met, uh, through a mutual friend, um, and it's an agent framework for LLMs essentially. Uh, so there's a lot of problems in building agent flows. Um, And one of the things you think of is like, say you have this like chain of thought, this reasoning, [01:01:00] and you have like multiple steps that it has to go down.
+
+If it gets to the wrong path or to the wrong conclusion, a lot of times you just have to like restart. It's like, okay, Sorry, that didn't go well. Let's like tweak the original thing and go through all this reasoning again. The really interesting thing about story is it does time travel debugging kind of, but you can like reset to a different point and say, actually, I want to step back a few steps and then retry from this point.
+
+Um, so, uh, Colton's working on this, uh, startup called a thousand birds. It's like thousand birds, not AI. And then I think Chidori is like a part of this, uh, larger ecosystem that he's building out. But it's got a lot of really cool stuff in it. It honestly reminds me a lot of the startup that I'm working on.
+
+Uh, membrane, uh, there are like some parallels and the kinds of work that we're doing, but because this is like really focused on, uh, Agents and LMs. I thought it was a, an interesting thing to share for this one.
+
+**Andrew:** This reminds me of last episode a little bit. Cause like [01:02:00] Dagger almost, I see what he was saying about LLMs and Dagger working really well together, where you could create these big workflows that are basically all cached based on the inputs and outputs. Pretty cool. Uh, last up, we have one sec. 
+
+**Jason:** I mean, if anyone who follows me on Twitter knows, I post a ton. And, uh, that is despite using 1sec. Basically what 1sec does is it just Makes you take like a deep breath before you open any apps. And it really helps manage a lot of distractions when I'm, when I'm building things. And so I have a set to like, every time I open up Twitter, the next time I open up Twitter, it takes like 0.
+
+1 seconds longer to open up the app. And, uh, you know, it's, it's pretty funny, but it actually makes a meaningful difference in my 
+
+productivity. 
+
+**Justin:** Yeah. I'm a fan. 
+
+**Jason:** Oh Yeah. You use them. 
+
+**Justin:** Yeah. Yeah. 
+
+**Andrew:** So, so you use this and we're able to post that many times on Twitter in 
+
+the last year. 
+
+**Jason:** Yeah. 
+
+I just use the laptop. 
+
+**Andrew:** Oh, you just use your laptop. There you go. Can get around any system. 
+
+**Jason:** Exactly. Exactly. Well, [01:03:00] I got like hand issues now, so I just got to make sure I'm not on my phone. 
+
+**Justin:** One sec is a lot better than Apple's like built in sort of screen time, because there's always a way to skip it. And you just like build a habit. It's like, Oh, pop up, skip, you know? And then this like, at least forces you, it still lets you do the thing, but it like forces you to like pause for a few seconds.
+
+And that usually that initial dopamine craving that you get, you like get a chance to realize like, Oh, I'm monkey brain right now. I can like not do 
+
+this. 
+
+**Jason:** Yeah, 
+
+you're just like pressing it really hard.
+
+**Justin:** Yeah, yeah, exactly. 
+
+**Andrew:** Cool. Well, that wraps it up for tool tips and for the episode. Thanks for coming on Jason and teaching us all about, uh, LLMs and how to use them and what all the acronyms mean. So Thanks again for coming on.
+
+**Jason:** Thanks man. That was a blast. 
+
+Thanks for having me. 
+
+**Justin:** Yeah. Thanks, Jason. This has been, this has been really interesting. And, uh, yeah, uh, you're doing a lot of cool work. Uh, we'd love to see it as it develops. 
+
+**Jason:** ~~Yeah, it should be a good time. We just like wrote a bunch of different, uh, blog posts and do a ~~
+
+~~course ~~
+
+~~soon. ~~
+
+**Justin:** ~~Nice. Nice. ~~
