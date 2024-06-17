@@ -1,0 +1,583 @@
+---
+title: Naman Goel - StyleX
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Naman-Goel---StyleX-e2kv5qt
+youtube: https://www.youtube.com/watch?v=34TvzOdkw0I
+tags: technology, react, stylex, css, javascript, webpack, babel, tailwind, atomic styles, stylis, styling, build tools, bundler, flow, typescript, swift, rust
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Naman Goel, the technical lead of StyleX.
+Stylex is a CSS-in-JS used by Facebook to build the styling of Facebook's products.
+We talk about the history of StyleX, how it works, and how it's better than other CSS-in-JS solutions.
+We also talk about how flow is better than TypeScript and why you should be using Swift over Rust.
+
+- https://x.com/naman34
+- https://x.com/stylexjs
+- https://stylexjs.com/
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction 
+[00:01:30] The Evolution of Stylex
+[00:09:00] Ad
+[00:10:58] Atomic Style Challenges
+[00:18:17] Stylex Beyond React
+[00:20:09] Internal Competition and Flexibility of Stylex
+[00:26:42] Caching and Build Optimization
+[00:31:37] Bundler Support and Community Involvement
+[00:34:08] Navigating Webpack Challenges
+[00:39:36] Flow vs. TypeScript
+[00:49:48] The Case for Swift Over Rust
+[01:00:01] Future of Styling and Build Tools
+
+<!-- TAB: TRANSCRIPT -->
+
+**Naman:** [00:00:00] problem is that at scale, when you have thousands of people working on UI and CSS, Some people will break the rules.
+
+They will write complex selectors. They will write descended selectors and global styles and things like that. we would have these problems of specificity wars between styles where you couldn't fix it because the styles would resolve differently depending on how the user navigated on Facebook. That's what we were trying to solve.
+
+​
+
+
+#### [00:00:33] Introduction 
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This? Is a podcast about developer tools and the people who make them. I'm Andrew. And this is my co host, Justin.
+
+**Justin:** hey, everyone. Uh, we're excited to have Naman Goel on the podcast with us today. Uh, so Naman is a engineer at Meta, uh, and he's currently working on Stylex. Uh, and before we dive into that, Naman, thanks for coming on. Would you mind telling our listeners a little bit more about yourself?
+
+**Naman:** Yeah. Uh, hi, I'm [00:01:00] Naman. ~~Uh,~~ I work at Meta. I've been working at Meta for seven years. I started working on Stylex about five years ago, uh, while we started working on a whole new, like, rewrite of facebook. com, which if anybody uses the web still, you've probably seen it. Like we changed the whole look and everything.
+
+I'm, I'm originally from India. I worked in Spain for a year. That might be. An interesting thing. Uh, and, uh, yeah, that's, that's, that's me.
+
+**Justin:** It's cool to talk about this. 
+
+
+#### [00:01:30] The Evolution of Stylex
+
+**Justin:** Uh, so Stylex does have a long history. How do you feel like it's changed, you know, since when the project was started to like, where we are today? 
+
+**Naman:** Sure. Um, so Stylex was created for the facebook. com rewrite originally. Uh, this was around five years ago and actually the first person who worked on it was Sebastian McKenzie, the, the author of Babble. I think he spent like a week on it. He whipped something together. Uh, and it was very bare bones. [00:02:00] The first version didn't even have a compiler.
+
+The very first version was like an actual runtime implementation. And like, I think they maybe spent three days or something. This was before I joined the team. So I'm not completely sure on the timelines, but they very quickly realized that it was not going to fly. It was just too slow for Facebook scale, definitely.
+
+And so they implemented a compiler and it was like, just the most bare minimum compiler you could have. And then Sebastian was about to leave the company at that point, like, uh, Rome Rome tools, which now doesn't exist anymore, but he was about to leave and start that company. And I joined the team. Uh, this was the design system team, as you would call it, we call it the components team.
+
+Um, we built all of the components from the ground up. And so, The way I started working on it wasn't as, Oh, I'm owning this piece of infrastructure. It was more like I'm on a team that builds components and we need style. Like, [00:03:00] like this is what we're building with. And we, I just started hacking on it to like, just fit my needs.
+
+Uh, we needed features to like build components. And so from, from day one, like Stylex has always evolved. informed by our needs as like component, like people building components and also what the product teams who are using our components wanted from it. So that's how it's, it's like, uh, evolved. And to some extent, like there was a small period of time, um, last year when I was about to open source, when I was focusing entirely on StyleX and I was like moved, like I moved teams and then I moved back to the components team actually, because very soon I realized that.
+
+It helps, like not, not having that like direct, uh, interaction with product teams and building components, like takes away some amount of knowledge of like what would be the best design decisions. You tend to start making these like theoretical decisions that may [00:04:00] not work in like real life. And so within a couple of months, I was like, no, I need to like spend at least some time building with it, not just working on statics, a hundred percent.
+
+**Andrew:** So did you, when you guys were initially exploring solutions, did, did you like try a CSS modules or any other things? Like what, what does Stylix do that like necessitated the extra library?
+
+**Naman:** Right. So. Let's start with where we were. So we were using something that pretty much resembles CSS modules. Um, this is, it's a very custom thing that we've had internally, and it's basically just namespaces for class names. So you put a slash inside of class names and the parser ignores it. That's basically how the infra works, but all of the same, uh, ramifications of CSS modules, uh, what come into play.
+
+And. What we ran into was, some for historical reasons and some because of how CSS modules work. have like thousands and thousands and [00:05:00] thousands of components that load on like facebook. com's homepage. And, I don't want to give you an exact number, but it was somewhere between 15 and 45 megabytes of CSS. being loaded for the average user on one page alone. Uh, and that was because, and that was not because, uh, we were just loading everything up front. This was doing the correct thing of, Oh, this component loaded. So we load the CSS for this component. It was doing the right thing as far as CSS modules are concerned, but that was not even the biggest problem.
+
+The biggest problem was actually that. This is probably more a little bit of a historical reason. In today's CSS with like CSS layers and stuff, things could be slightly better. But really the problem is that at scale, when you have thousands of people working on UI and CSS, Some people will break the rules.
+
+They will write complex selectors. They will write, you know, descended [00:06:00] selectors and global styles and things like that. And so there was enough of that that we would have these problems of specificity wars between styles where you couldn't fix it because the styles would resolve differently depending on how the user navigated on Facebook. because whatever you navigate last gets loaded last and then it has the highest risk. So like that was another big problem. So that's what we were trying to solve. And so the very first version of StyleX, like this was from day one, we knew this was what we needed was it always generated atomic styles, which is atomic class names.
+
+Um, and the reason for that was that even though there's like trade offs, um, there's like lots of recent testing that has been done as well, uh, on like what are the trade offs, but the trade offs is basically. If you have a lot of class names per element, there's a small hit that you do take. So when the browser is resolving [00:07:00] styles, if you have like 10 class names per element versus just one class name per element, the 10 class names are slightly slower.
+
+Like you can measure it, but that was nowhere near compared to the amount of CSS we were loading. And just to give you a broad strokes, we are. We are in the area of like 2 300 kilobytes now. So we went from like 15, 30, 45 megabytes to 2 300 kilobytes. Um, and that is all of like all of Facebook. So you can keep navigating and we don't load more for the most part.
+
+There's a handful of exceptions of very weird pages, but the majority of Facebook just works off of that. one single CSS bundle. And yeah, we stuck with that. We, we've changed a lot of the details of how things have, you know, how things are generated. Um, there's like lots of questions of, Hey, do we generate, um, so like internally we like still split, uh, [00:08:00] shorthands, CSS shorthands.
+
+So if you write margin zero, you don't actually get margin zero. You get four different class names for top, bottom, start and end. Um, because. Although that's more class names, again, trade off for Facebook. One, it makes it easier to deal with loading multiple CSS files. ' cause even though open source like we are, like we want one single CSS file all of the time, there are small exceptions internally.
+
+So just having fewer layers of CSS makes it easier, but also it generates a smaller CSS file overall. And so we are, we're experimenting with that. That's something we're experimenting with. We realize that hey, that although that is small, smaller CSS file, it has other trade offs. So the open source actually gives you all three options.
+
+There's different ways you can deal with CSS. Uh, and by default we don't expand shorthands anymore. Uh, there's also lots of other little things like media queries and how to focus active. Lots, lots of details I can go in depth with, but I'll [00:09:00] hold up for now.~~ Yes.~~
+
+
+#### [00:09:00] Ad
+
+**Andrew:** We'd like to thank our sponsor for this week. Clerk. Clerk offers complete user management out of the box. So you can build apps quicker and stop worrying about getting authentication into your app.
+
+Authentication is one of those things that. You think will be easy. You add a few tables to your database and you start tracking users, but then you get hit with an influx of product requests. You might need to add multifactor authentication. You might need to add SSO so you~~ so you can get the, ~~can land those cool enterprise contracts 
+
+With clerk, they handle it all for you.
+
+can easily configure all that. You can even have social logins. It's a breeze to set up. And with their free plan that offers up to 10,000 monthly active users. You're not going to pay for a while.
+
+if you're hit with a sudden viral phenomenon for your website and a bunch of new people sign up and then never use your app again, you don't pay for them. You only actually pay for real users in your app. So that's pretty cool.
+
+week, I want to highlight something that seems like it's pretty unique to clerk. As we've discussed on the show before funding open [00:10:00] source is a hard thing and it's not solved. most cases, people just work for free and put things out for the good of their heart.
+
+week clerk actually did something super cool. hired on Colin. of Zod.
+
+months to work on Zod. They're corporate sponsoring him to make the library better for everybody. I think that's something that's super cool. And we should really see more of it. 
+
+that all of the. clerk gives you so much power with so little effort and they're sponsors of the community. Really makes me think that this is a company that you should trust.
+
+like to add authentication to your app, hassle. Head over to clerk.com to get started.
+
+more about clerk, why they made it and how we got here, you can head over to episode 75, where we interview the co-founder Braden.
+
+way to support the podcast? Become a member on one of the channels we offer it or head over to shop.dev tools.fm to see what we have on sale. keep the podcast going. ~~And we really appreciate it. ~~
+
+
+#### [00:10:58] Atomic Style Challenges
+
+**Justin:** I think one of the hardest things [00:11:00] about atomic styles, which is just like one style property per class, is that Yeah. When you're specifying classes in an HTML element, the order is like. How the styles are specified in the style sheet, not the order in how they're specified in the HTML. And I think this trips people up with tailwind sometimes where they think, Oh, uh, I'm sort of specifying these atomic classes and I expect the one that I wrote first to come first, but it's actually, it's the generated order that really matters and I've gotten into a few issues and like deeming situations where this kind of thing can bite you and I think your, your example of margins of like, sometimes you specify.
+
+Instead of just specifying margin zero, you specify margin, top, bottom, left, right, or whatever. Um, and you know, that way you can like potentially override one of them depending on, you know, where things come in order. But it's like, that gets to be a really like [00:12:00] nuanced and tricky situation.
+
+**Naman:** So actually like when people ask me today, like what is the unique thing about stylex it's the merging of styles more than anything else. Uh, because that has like changes, so I wouldn't call them advantages. So, um, when you, when you use stylex, you're writing styles in objects. And you're writing them outside of the elements in a separate function call.
+
+And some people like that and some people don't like that. And, uh, tailwind is similar. Like, I think like you have to learn the lingo of tailwind and then you get to write everything inline and that's really, really good for prototyping. But like over time, if, if you're like list of styles gets really, really large, then those are, it's like, that's where it like falls down a bit and.
+
+If you want to extract that out into a variable, like Tailwind doesn't make that super easy to do because of how it works. So, there's very, uh, interesting, like, um, technical decisions that Tailwind had to make. Because it's [00:13:00] trying to be a very thin, uh, abstraction layer. It's like basically just generating a CSS file, it doesn't touch your source code.
+
+And that ends up causing a bunch of constraints on what Tailwind can do. You can't just move styles around anywhere you want. Like you have to put them in a very certain pattern so that the, uh, the JIT can detect it since we have a compiler, like we're literally transforming your JavaScript files. We have a much more like, uh, flexibility on what we can do.
+
+So one is like, you can apply as many styles as you want. Um, and we will figure out that you applied this first and this first and this first, and then we will merge all of them at compile time and then only apply what comes last. So you can just follow, like you applied, like my base styles, and then my override styles.
+
+And you don't have to think about your shorthands or media queries or anything. You just be like, this came first, this came last, the last thing wins. Like you don't have to think [00:14:00] any further than that. Uh, and that, uh, as, and as long as all of that is done in the same file, So the compiler can see the file and figure out everything, it will figure out everything and then the runtime cost is the same as tailwind at that point, which is nothing.
+
+You have a single CSS, uh, like you have a single class name string and there's generated styles. Uh, where it gets more interesting is you can actually do this across files. And then you pay a little bit of cost in merging class names at runtime. So we generate some objects of class names, we merge them at, at runtime, but everything is still just as consistent and the cost is super low.
+
+It's like no bigger than, uh, like the, the class names helper we all used to use back in the day. Uh, and I actually did like a thing against tailwind merge. So tailwind also has something similar to like this, like, which is tailwind merge. And Tailwind merge is one, both really [00:15:00] big because it has to encode every single exception in Tailwind.
+
+And it has to deal with like shorthands and stuff like that. Um, but also it's like dealing with strings, not, not with objects. And so it's slower to merge them. It has to like parse strings. And because we have a compiler, we can just generate the fastest thing for you. So we can like pre merge if we wanted to.
+
+We don't currently do that, but we like remove unused styles to some extent. Um, all of that it's, yeah, so with the compiler, like does add a bunch of, like, constraints up at the beginning where, oh, you can't use it in a go, like, if you're writing your server code and go or rust, you can't use tailwind, like, you can't use stylex there, you can use tailwind, but if you are writing JavaScript components, then whatever, now we have a Babel plugin in play, you can do whatever you need.
+
+**Andrew:** ~~So~~
+
+**Justin:** ~~Is it,~~
+
+**Andrew:** ~~Oh, go~~
+
+**Justin:** ~~you're going to ask the same question I was going to ask. So go for it.~~
+
+**Andrew:** So is the compile, that's what the compiler is doing, is it's like looking at the class names and doing all of that merging for you and then creating [00:16:00] some static, static output from that.
+
+**Naman:** Yeah. So basically the compiler. Does as much as it can on a per file basis. So there's, by design, there is no cross file compilation.
+
+**Andrew:** is that a limitation of Babel? Basically? Like, is that why you didn't do it?
+
+**Naman:** To some extent, yes, but that's not why we didn't do it. The why we didn't do it is, uh, so we can cache every file individually. And that is, that is how we keep our build times under control.
+
+~~uh,~~
+
+So, uh, basically we, we transform every single file and then only the files that change are compiled again. And all we have to do is generate the CSS file again, which is take all of the preexisting results, dump them in.
+
+Um, but when I say like it can do as much as it, as it can know is if everything is in the same file, you define the styles, you use them, you can even use them conditionally. So. I wish I could like show you like those stuff. [00:17:00] I'm kind of pretty proud of this one is it generates a bunch of, bitwise operations to choose one of the various options that you could get based on runtime conditions.
+
+So, um, there's, there's a function that merges styles at, at runtime, but if We know the conditions you're depending on and the various results you could get. Up to eight results are pre compiled. So you don't even run the function of merging objects. You just get a bitwise operation that chooses one of up to eight strings.
+
+If it's more than eight strings, the code size gets too large. So we fall back to just merging it at runtime. And if you're merging styles across files, so you're passing styles in as props, or you're just like importing them and using them, Then everything else is done pre hand. You get these objects of class names and the objects are merged at runtime.
+
+So the cost is at, at its peak, like the worst, the worst case scenario is like merging an object, like object data [00:18:00] sign. But, uh, actually it's been super well optimized and there's like a tree of weak maps inside of it. So it's like super well cached. So if you merge the same list of styles a second time, it's basically very good for us.
+
+**Andrew:** yeah. We're using React already, so there's a lot of objects being made. Every render, so.
+
+**Justin:** ~~Um, ~~
+
+
+#### [00:18:17] Stylex Beyond React
+
+**Justin:** speaking of react is, is stylex really only for react at this point? I mean, because like Facebook internally had a lot of like hack components, I guess, before everything was like transitioned into react. So is it stylex just like solely in the react world or is it kind of across the bridge?
+
+**Naman:** It's, it's for any JavaScript component library. So you can use StyleX with, uh, like, uh, Vue or Svelte or SolidJS or Quick. We have examples of those, uh, internally. Uh, they do use it in Hack a little bit, but it's not like, it's not designed for Hack and Hack has these, uh, interop for JavaScript [00:19:00] files. So it's.
+
+It's kind of generating JavaScript files to use it in hack as well. So
+
+
+
+**Naman:** that's how it works, but it's fairly rare. Like, because when we wrote style X, um, that is exactly when we went from having a bunch of hack rendered, uh, stuff to going all in on react, that was, it was a rewrite of Facebook in react. So for the most part, it's for react, at least internally.
+
+**Justin:** ~~Gotcha. ~~
+
+So Facebook is meta is a big organization. Um, big product, big organization. You get, I'm sure you get new technology initiatives that spin up and spin down. So Stylex having existed for a long time. We are relatively long time in the space, right? Because the space has changed a lot. Um, Yeah. Um, Over the years, has there been any internal competition or like internals?
+
+Like, Oh, Hey, maybe here's a different approach that we could take, [00:20:00] uh, or any other frameworks that have been vetted, you know, over style X's life. And sort of how has that played out? I guess
+
+
+#### [00:20:09] Internal Competition and Flexibility of Stylex
+
+**Naman:** So, uh, we didn't get any competition in terms of why don't we use this instead? Like, for the, for the most part, people were like, please open source this. And some people actually created their own, like, implementations of StyleX. ~~Um,~~
+
+**Justin:** ~~keep going. He'll~~
+
+**Naman:** ~~All right. Sorry. Yeah.~~
+
+~~So, yeah.~~
+
+~~Yeah. So basically that was. ~~Yeah. There was no competition in terms of like, nobody was like, we want to use this instead.
+
+Um, there was a lot of weird patterns that came up. So stylex is. Honestly, like in my opinion, it's too, uh, flexible on what you can do with it. So depending on your like style of what you want to do, you can use it in different ways. So just to give you like a couple of examples, one is like people who like the tailwind way of doing things.
+
+They like to define a bunch of utilities in a file. So like [00:21:00] there's certain, uh, parts of Facebook that work like this, where they define like all of the margins that they want to use in their product and all of the paddings they want to use in their product. And they just define them in a single file.
+
+And then all over the place, they just import margins dot small, and then they just use that. And so it feels much more like Tailwind if you use it like that, because it's just all of these values exist. You import and use them. Uh, you don't have to rewrite the styles every time. um Conversely, there's also people who write, uh, the same styles and then use it in like 10 different components. so they need different components for whatever functional reasons, but they should look identical so they can extract that out. So just the way it works, Stylex gives you enough flexibility that people who have like different desires from how they want to architect their code, like it lets them do that.
+
+Um, what. is like the longest running, like thing that people always want, which we still haven't done [00:22:00] is, uh, like nested selectors. Uh, so like, Oh, if the parent is Harvard, then the child should do this type of stuff. Uh, we have a couple of hacks that I will not elaborate on because more people will start using it.
+
+There's a couple of hacks that we've used internally and it's like used in five places. And like, we kind of don't want anyone to do that because it. We also, like, spoke to the people at Microsoft. So, Microsoft has something very similar, which I didn't know about, like, till much later, called Griffle. And they do, like, they have a couple, they made a couple of mistakes.
+
+In my opinion, sorry, where, uh, they, and they are like kind of regretting these decisions where, uh, early on they, they leaned super hard in, uh, in the favor of even more flexibility than what Stylix gives you. And so they have run into 2 problems. They solved 1 of them. 1 of them was compile times. So they let you like import [00:23:00] whatever and just use it wherever.
+
+There wasn't like file level caching that StyleX is designed for. And so they had this problem of like, Oh, our build times are too long. And so they like rewrote the entire infrastructure and how they compile. And I don't know how well that has worked, but I know that helped quite a bit. The other one is even though they also generate atomic styles, their styles got huge, like they reached a megabyte, I think.
+
+And that's because they allow people to just write. arbitrary, uh, selectors. So there's just people writing all sorts of arbitrary selectors. And then, okay, at that point, you can't control the amount of CSS. You're not reusing CSS as much. People started writing, you know, custom class names all over the place. And I have a longstanding RFC on the stylex repo, trying to figure out what's the best way to tackle it. I quite like actually the solution that Tailwind used to have. They still have it, but they added more stuff that I disagree with, but they started with, uh, uh, group and [00:24:00] peer, which is. A very limited amount of what you can do.
+
+And then recently I think they added like, Oh, you can just do child selectors and stuff. And I'm like, no, don't do that. That's, I think that's the biggest mistake Tailwind has ever made is adding support for that.
+
+**Andrew:** yeah, those, those, those, uh, style or class names. Those are just so hard to read. Even when I write them myself, I come back to them and I'm like, uh, I, I should not have wrote them that way. And it really speaks to 1 of the other, like, powers of style X and like. Defining your styles like that is like you have an extra layer of naming.
+
+So it's like my active state, isn't this like three screen long thing. It's like, uh, an entity that I can go look at and can expand and become more complex without giving me more mental burden.
+
+**Naman:** This is actually one of the most controversial decisions about stylics right now is like, people are like, why can't I write my styles as an inline object? And. we have a discussion about it. And I, and, [00:25:00] and my basic takeaway was, yes, it's a little more annoying upfront because you're forced to name everything.
+
+But then when you're reading code, you're like, okay, these are based styles. These are focused styles. These are active styles. And you don't need to know what those styles are every time. And so it actually leads to a better, more maintainable code base. And a lot of people disagree with me on this, but like currently we'll are like escape hatch for that is since it's just a Babel plugin.
+
+You can have a Babel plugin before StyleX. And so there's some community members who've literally created like a new function for StyleX in a separate Babel plugin that lets you write styles in line if you want. And, uh, and I have written a separate Babel plugin that lets you write Tailwind. So, uh, a friend of mine was like, I want to use Tailwind ShadCN, but I also want to use StyleX because I want these features from StyleX, but I want this.
+
+fast prototyping from Tailwind. So you can just compile Tailwind to [00:26:00] StyleX and it just works. It's fine.
+
+**Andrew:** That's awesome.
+
+**Justin:** Yeah, that's a pretty clever solution. And I think that. Uh, you know, the, the nicety of like having a Babel pipeline is that pretty easy to transform nature of it. Uh, and I guess the, the, the profile, uh, I can also see like the profile compilation, um, helping with build times in particular, because, you know, uh, the, the caching part of that would be.
+
+Pretty hard, especially with a code base as big as meta is like, if you're running Babel over the whole thing, every time you would churn a lot of CPU cycles. I imagine. Um, I did have a question about that. 
+
+
+#### [00:26:42] Caching and Build Optimization
+
+**Justin:** So is it, is it really just like per file? And, and. I think part of the question here is like kind of intrinsic to how meta architects like components profile and things, because I think in a lot of like systems that I've seen is you'll [00:27:00] have like a components folder somewhere and you'll have like a set of like small components or say it's like a larger, uh, products.
+
+You'll have like a, you know, a feature directory and then you'll have some components for there and then like some layouts and stuff. And some of those files are Really small. And then sure, there may be some like reuse classes there, but there's not going to be a ton of them. And if you're processing per file, uh, are you just like regenerating the atomic classes uniquely for each file?
+
+Or is it still like a combination of like, sort of like a deterministic way is like, Oh no, we'll have the same, um, class names over the whole set of
+
+the style sheet. 
+
+**Naman:** It's, it's a hundred percent deterministic. So StyleX works entirely based on hashing. So if you write margin zero, it's going to be hashed into a particular class name. And no matter where you use it, it's the same hash. And, uh, if I'm [00:28:00] understanding your question correctly, um, the way it works Let's, let's start with just styles.
+
+Like when we get into variables, things get a little strange. That was something it took a while to solve, but let's just say we're defining styles, styles are defined in style of inside of a stylex. create call. We compile it, we hash every style, we generate class names, and that's what is generated as the output of the JavaScript.
+
+And then as metadata, we generate the CSS that this file wants to. inject into the CSS file. And so the JavaScript transform is completely cashable. The same input will always have the same output. It will never change. Um, the, the meta, like the metadata included, like the generated styles included. So all we have to do when we like change, like, let's say there's like a thousand files and we changed one file.
+
+All we have to do is we regenerate that one file, get the new output from that file. And then we take the old [00:29:00] output from all of the other files and we just generate the CSS file, which is just going through these list of class names, essentially deduping them. It's just merging an object and then outputting the CSS file.
+
+So that part, even if it's like 100, 000 files, which we do have something like that, it doesn't take long. So. Uh, to give you like what we used to have before we put caching in place. Uh, it was not like every build was super slow at in production or whatever, because there was a different level of caching for the whole repo sort of.
+
+But every single time an engineer like opened a dev server to like work, the first time they opened facebook. com in development, Stylix was taking a minute and a half. And so they would be like, okay, let me like open newsfeed and see how long it takes. And everything else is already pretty heavy on Facebook.
+
+It's a big thing and it's booting up hack and stuff. And on top of that, there's another one and a [00:30:00] half minutes of just transforming every single file. And that was not like feasible. And then I did a basic amount of like optimization, just using nodes like workers to like parallelize that, that brought it down to like 30 seconds.
+
+And then, uh, we did caching and now it's like a couple of seconds, like a few seconds. And the, the merging of all styles to generate the CSS file was never more than like two seconds ever. So that's fine. That's, that's not the bottleneck. The bottleneck was just compiling so many files. Um, and now we don't, like we now compile maybe a handful.
+
+**Andrew:** Where, where is that caching happening? Is it like a BabbleCache? Or is it like some like internal Facebook thing?
+
+**Naman:** That's an internal Facebook thing. It's, uh, I forget what it's called, but it's, it's like a Facebook, uh, version of a normal key value, uh, store, like think, think Redis, but not Redis, something else. Um, it's, [00:31:00] it's, it's a simple cache. It can be done even, uh, even in open source. So roll the rollup plugin, uh, if you run it in watch mode does caching.
+
+So it'll only compile files that have changed. And rollup also has an op. I think it's a separate thing where you have to turn it on, but you can have a file system cache for rollup, where it will write everything to a file system. So if you, if you opt into those things, you get the caching even with rollup.
+
+And it's theoretically possible with every bundler, but if you ask me what, what I've been struggling with is making every bundler do good things well. 
+
+
+#### [00:31:37] Bundler Support and Community Involvement
+
+**Andrew:** What bundler have you been struggling with the most?
+
+**Naman:** Webpack hands down 
+
+**Andrew:** why is that?
+
+**Naman:** It's because basically every other bundler has more or less decided that rollup got the api right And and it's very sensible and I remember I wrote the first version of rollup in a day And then I added the caching within another day and webpack. I've probably spent more than a [00:32:00] month on it And it's still the jankiest plugin Um, and actually we actually wrote a whole cli like a separate It uses Watchman and it just watches the whole directory and compiles it.
+
+Uh, simply because Webpack is such a mess and it wasn't working well in Next. js. And so we have a whole CLI. It should come out in the next release. It's not It's not released yet, but it's merged and some community members are like working on better Webpack plugins, so Hopefully we'll solve that but like right now that's probably the worst thing about Stylix that I want to get solved
+
+**Justin:** What is the big impetus? What is the big push to getting, you know, webpack plugins and more community, I guess, bundler support? Uh, I know this is a tension within Meta sometimes of like, you know, focusing on infrastructure that supports product versus like, you know, continuing to push on open source. So what's the sort of like driving factor for that right now?
+
+**Naman:** [00:33:00] Yeah, I mean, there is some conflict there because there's no direct benefit that we will get from a Webpack plugin or any Bundler plugin really. Uh, and so we actually like officially decided not to support every Bundler under the sun. So there's no official Parcel plugin or official RSpart plugin or anything.
+
+Uh, we made like a few and Webpack is just really big because of Next. js, honestly. And storybook is like the other one, like a lot of people use storybook and storybook uses webpack. Um, so it's just blocking a lot of people, honestly. Uh, if everybody was on Vite or, uh, Rollup already, it wouldn't be as much of a problem, but there's a very large number of people who still need webpack to work.
+
+And, uh, if we don't fix it, then like they can't really participate in the community. And so my argument is. that for Stylix to be a successful product, uh, project, [00:34:00] we need people to like use it and contribute back. And if we make webpack work well, then there'll be a bigger community, which eventually helps us.
+
+
+#### [00:34:08] Navigating Webpack Challenges
+
+**Naman:** So it's a, it's a back and forth with, uh, you know, the management, whatever, to explain why it actually makes sense for us to put some time into it. But I think it's fine as long as I'm not like Sinking all my time into it, which if I tried to do too much, I probably would.~~ So ~~
+
+~~Yeah,~~
+
+**Andrew:** I personally am a Webpack user, so I'd love if you, uh, made it work on Webpack. Uh, Webpack, it's a double edged sword. It's like, the plugin system is like, you have access to every part of the car, and you can hook into every part of the car, but that also means you need to know how the car works, which is a very big challenge.
+
+~~Heh~~
+
+**Naman:** And that's the problem because like we have a webpack plugin and it's functional, but every single like framework out there, like storybook uses webpack in a very strange way. And so, if you were doing a vanilla webpack bundle, it works fine, but it's like, oh, [00:35:00] in Next. js, we need all this extra weird stuff, because, uh, like with the app directory, there's actually not one bundle, there's actually three bundles, and now you need to, like, shuffle styles from one bundle to the other bundle, and there's, like, all these piles of hacks that I had to do, and they don't work very well, obviously.
+
+But. So, and the caching breaks and things like that. So the biggest problem with the Webpack is like, it'll work some of the times, but it'll always break caching. Uh, and actually I'm like very hopeful because there's a community member. He built a, uh, Webpack plugin outside and they're like, this works way better.
+
+It works with Next. js, uh, came out last week. I have to like dig into it, test it more, but I'm, I'm hopeful that somebody has finally solved this problem for us. 
+
+**Andrew:** Yeah, I think trying to customize Webpack like, like you are is a hard task. Like we talked to Zach, the guy behind Module Federation, and just for like the last year, every time he talks about Next. js, it is not in a good light. And it's because of like, actually customizing its [00:36:00] Webpack configuration is, is not simple.
+
+**Naman:** Yeah, and I spoke to Tobias actually, like the creator of Webpack, and I have this long, uh, uh, like issue that I wrote from based on my conversation with him. And he suggested, uh, basically inlining the CSS generator from each file because he was like, there's no other clean way. Like what he suggested was hacky as well, because.
+
+He knows that it can, it's too flexible and it can be used in weird ways because what we want is actually fairly simple. We just want a Babel step and just take some metadata and put it together. It's not theoretically super complicated, which is why I was shocked that was so hard to do with Webpack. Uh, and like the other implementations use, uh, like virtual files and virtual file imports.
+
+And. I like resisted that because like I tried that once and that slows everything down a lot because now you have like two extra files that you need [00:37:00] to process. And then you have these CSS files where you started with Jason, you generate CSS, you pass the CSS back into Jason and then you merge it and then you generate CSS again.
+
+And I'm like, it's really wasteful to do that, but that's what most people end up doing with webpack because there's nothing else that works consistently.
+
+**Justin:** Yeah, unfortunately, and I think it's sort of more to your point is this like next JS in particular has really squeezed like every little bit they can out of webpack and to like, bend it to their will. They have done some rather unholy things. That's kind of hard to decouple. So, you know, just. Congrats on getting it to work at all, honestly.
+
+Um, I, I know like having dug into that for a few issues, it's impressive and intimidating and, you know, hot it, yeah. There be drag ons for sure.
+
+**Naman:** It's, it's really hacky. Like, uh, I'm using some like memory object to store data from one [00:38:00] bundle in another, and, you know, throwing promises and like, not like, like letting them resolve so that I can wait for the other bundle. It's, it's, it's a big mess. It's not great. And, uh, I've been working with them.
+
+Like I've been talking to the Next. js team. Um, they added the support for React compiler recently, which is a Babel plugin. And so. I'm hopeful that there's like a new pathway to integrate StylX without opting out of TurboPack and opting out of SWC for everything else, because that wasn't possible before and it's now possible in next 15.
+
+So I'm digging into that just, you know, time. 
+
+**Andrew:** Do you see, do you see the team working on, uh, integrating with SWC or any of the newer a ST tools?
+
+**Naman:** Uh, not in the short term, honestly, there's like very little, uh, benefit in for us to do that. Like we don't use SWC internally. If there was some tooling that supported flow, like if SWC supported flow [00:39:00] syntax, then there would be a reason for us to do it. And, uh, currently, no, uh, I have started it. I have a branch where I've written maybe like three of the files in Rust.
+
+Uh, but like, It's, it's a moving target. So I can't, I can't keep working on the Rust implementation when the JavaScript implementation is changing so often. Um, maybe once it stabilizes, I'll do it in my free time or something. But as like Meta doesn't care about that as a company, like it will give us zero benefit internally.
+
+So not, not yet.
+
+**Justin:** ~~It's kind of an just. Oh, go, go for it.~~
+
+~~Nope. Nope.~~
+
+~~Go. You got, you got ~~
+
+~~it. Go for it~~
+
+**Andrew:** ~~Okay. Um,~~ 
+
+
+#### [00:39:36] Flow vs. TypeScript
+
+**Andrew:** so you mentioned, uh, one of the, well, I guess not so internal, uh, programming languages, Facebook has their flow. Um, you've been tweeting about flow a lot and you seem to think it's better than TypeScript. So can you tell me why you think it's better than TypeScript?
+
+**Naman:** Okay. Let, let me, let me say it's not like better at everything. It's better at safety and correctness. Uh, [00:40:00] it's worse at developer experience. So developer experience falls into, let me cover the things that it's bad at first, because that probably makes sense to everyone. Uh, there's two aspects of developer experience where flow kind of sucks.
+
+Uh, one is just the tooling. So yeah, SWC and, uh, you know, ES build and bun and Dino, they all support TypeScript syntax natively. Now nothing supports flow natively. And so if you're using flow, you need a Babel plugin and then you need a special syntax plugin for Babel. Now, if you want to use all of the newest features and so just setting it up has become worse and worse over time.
+
+So, It used to be better than TypeScript once upon a time, because it was like supported natively in Babel and TypeScript was not, but that has long not been the case anymore. Like TypeScript is way better. If you want to integrate it into a project, like you have to set up way less stuff [00:41:00] today. Uh, VS code plugin for TypeScript way better.
+
+Pretty like the type errors are, I want to say on par, but at least there's some plugins that make TypeScript slightly better, just the community of TypeScripts way better again. Uh, if you're looking for, um, type definition files for TypeScript, there's basically everything and Flow doesn't. That's, so community tooling, Flow's worse, we all know that.
+
+Um, the other one in like how the type system itself works, uh, TypeScript is very, very in favor of just giving you every feature possible. So TypeScript gives you like template string types. Thanks. So people have written parsers in types and goes
+
+insane. 
+
+Uh, and, and it also does, it also makes you write less type definitions.
+
+So in TypeScript, you can just omit the return types of functions always. So. Flow makes you write more types in some of those cases, like flow makes you write [00:42:00] all types for exports in every single file. So developer experience a little bit worse. Now, why is it actually better at its core is because let's start with the original design decision that TypeScript made, which is variance checks.
+
+Now this is gets really nerdy and I don't think a lot of people will understand, but let me ask you a question. Is a cat an animal? 
+
+**Andrew:** Yeah. 
+
+**Naman:** Okay, yes. If a cat is an animal, is an array of cats an array of animals?
+
+**Andrew:** Yeah.
+
+**Justin:** Not Necessarily.
+
+**Naman:** Justin's right there. Exactly. So this is, this is the core conflict between flow and TypeScript. TypeScript decided that most people will say yes, like you did Andrew. And so they just made it so, which is wrong. Okay. And why is it wrong? It's only wrong because JavaScript is because arrays are mutable because if you have an array of animals, you can push on an array of dogs to it.
+
+You can push on an, uh, uh, like you could [00:43:00] push on, uh, You know, not a cat to it, but like, if you start calling an array of cats and area of animals, now suddenly you're allowed to push any animal into it, not just cats and the problem only comes with mutation, not, not reading. And so flow had this feature first and TypeScript also added it later.
+
+There's these read only types. So you have arrays, but you also have read only arrays. So, uh, an array of cats is a read only array of animals. But it's not a mutable array of animals to be fully correct. And so this behavior is done correctly in Flow, where if you try to call it a mutable array of animals, Flow will give you a type error right there.
+
+And TypeScript will tell you nothing. It will just let you do whatever. So you can have an array of cats, call it an array of animals on the next line, and then push a dog into it and you'll get no type error. And so if you don't care about that, then TypeScript is probably fine. A lot of the times. You know, a lot of people think they don't care about that, [00:44:00] but this is why you have these edge cases in TypeScript where things are wrong and you don't know why, because like it's purposely just letting you be slightly wrong some of the times.
+
+And so that's one big reason why flow is better. Uh, the smaller things like the as. Casting like in TypeScript, you can just cast a string to a specific string, which it's not, and it does no checking and flow does like, if you're doing something unsafe and flow, you have to go through the any type first.
+
+That's the only way to do it. TypeScript, you can just do it in random other places. And that feels very scary to me. That might be a little nerdy and be like, most people be like, I don't care about that. Let me give you the very specific. Why don't we have this in TypeScript so far type of features? Like, and if TypeScript added them, they would probably fix 80 percent of my complaints.
+
+There's two features, exact object types and opaque types. Opaque types is easier to understand. I also care about it less because. [00:45:00] TypeScript people use this feature called, uh, unique symbols in TypeScript and they abuse it and they like create these tags and this messy stuff. All of that is just a hack around the fact that there's no opaque types in TypeScript.
+
+Fine, it's a hack, but at least it works. There's no hack to make exact object types in TypeScript. And that is a feature that should be there. And I don't understand why it's not there. And it's so annoying. And there's like a six year old issue on TypeScript where people are like, please add it, please add it, please add it.
+
+They're like, what's the use case? And people keep giving them use cases and they don't understand. And I can give you the simplest use case. I have a component. It takes a style object. The style object can have color or background color, nothing else. TypeScript will always let you pass an extra stuff.
+
+For no reason. And so you have to manually do runtime checks and pluck out just those keys. And you made your runtime slower, just to get around the fact that TypeScript won't let you say nothing [00:46:00] else. And. And Flow made this change like a few years ago. Like Flow didn't always have this feature either.
+
+But it's like a game changer. It's like so useful as a feature. I don't understand why this one feature is not in TypeScript. So that's my biggest reason. Uh, the type system itself is pretty nice. And uh, finally the big thing, this most people don't care about outside of Facebook, is, is it's like way faster at scale.
+
+And it's Faster for two reasons. One, it's written in OCaml, which is a native language, which is also its downfall in many ways, because nobody wants to contribute to it. But, uh, the other reason is some of those like DevEx, you know, losses early on, where you have to write more types out. Let's flow to less work because it made you write, write it out.
+
+So for performance sake, that makes sense. 
+
+**Justin:** Yeah, I mean, it's interesting that you say that, though, because uh, so JSR, The new uh, JavaScript registry from the Dino team [00:47:00] has this thing called like slow types where they're like, oh, like, you know, you know. Doing type inference and stuff is actually really slow if we have to do everything. So we want you to be really explicit, like, you know, type all of your returns, you know, for everything.
+
+And we can like generate better type documentation and stuff for that. So it's like, I think, you know, TypeScript. Really started to be like very flexible and you know, like the structural typing and everything that it did is like, it's not a very sound type system. I guess it's a lot more, it's getting more and more sound as time goes on.
+
+But it's like, it was not very sound in the beginning at all. And I felt that like flow is always more like more concerned with soundness. It's like, we actually want to have like more confidence with types. ~~You know, my honest ~~
+
+**Naman:** Let me, let me give you one other thing that I heard from the static Hermes team. So have you heard of static Hermes? And so, uh, I was on a [00:48:00] flight with the person, Shretan, who like gave a talk about it, like if you've seen the talk showing off static Hermes, that was him. Um, and I was like talking to him and although TypeScript is kind of supported, they are struggling with the lack of exact object types as well.
+
+Because an exact object type can basically be compiled into a struct. uh, in binary code, but an inexact object type, like an open record in functional language terms, like that's an open record that, that has to be compiled into some kind of hash map with like dynamic key lookup. So it's going to be slower and so leave everything else out.
+
+Like it will compile to slower code as well. Like if you don't have exact object types and. I don't know, like, this is, this is one feature where I feel like there's no excuse for Tailwind, uh, for TypeScript not to add it. Uh, it makes sense in every, like, principle that TypeScript has. It's not a correctness thing, it's not a purity thing, it's [00:49:00] just practical, useful feature for end developers.
+
+And this is the one where I don't know why they have such a hard resistance to this feature.
+
+**Justin:** Who knows? I'm sure it's 
+
+some like performance or internal implementation or some like really deep, gnarly, gotcha.
+
+**Andrew:** Yeah,
+
+**Naman:** I, yeah, I think it's some sort of internal implementation thing. Um, because people have done some weird hacks where it sort of works. I've done a hack in stylex, which is I had to write every single key. Uh, like in every single known CSS property. And when you say this is the styles I want, I said everything else to never. And so at least you can't pass other unknown styles. You can only pass unknown styles. So that's something.
+
+
+#### [00:49:48] The Case for Swift Over Rust
+
+**Andrew:** so I know we just talked about flow for a long time, but one more question on languages before we move on to our final question, uh, there is something we haven't talked about that you think [00:50:00] I think is the language we should all be using to write code. What is that language?
+
+**Naman:** I know what you're referring to. So I think you're referring to Swift, which is, I'm not, I'm not going to say that's the language we should all be using to write code instead of JavaScript. JavaScript. It's, I think it's the language we should be using instead of Rust. So, so my take there is not, not all Rust projects.
+
+Let me be clear. So I think Rust is in this place where it's a very, very fast, low level language, which is great for writing kernels and stuff. And it's nice enough that people have started writing products in it. Like there's like UI libraries and stuff like that written in Rust and all of this JavaScript tooling is being written in Rust, SWC, et cetera. And I think those things where, like, if we don't care about 10 percent of a performance hit, then Swift is a better language than Rust because it's easier. [00:51:00] It's like, it's still not garbage collected. There's no garbage collector. But the man, man, manual mem, the Memory management feels automatic. Like you don't have to, it's not a borrow checker by default.
+
+Like you just write styles. Uh, you just write things like you do in JavaScript and they work without a garbage collector because just doing counting. So the compiler like sees when you like take a value and it puts in some calls and it's fine. It's, it gives you like a five, 10 percent hit in total performance, but it's fast enough for most things.
+
+And it looks like JavaScript. It's easier to pick up. And it has all of the other benefits that Rust has. It compiles to WASM, it compiles on all platforms. And this is one of my, like, another, like, secret reason I really want Swift to be, like, a language that's used for JavaScript tooling. Is, uh, it has interop with C So, Rust has interop with C.
+
+So you can use FFI to, like, [00:52:00] You know, use C code and rust and rust code and C, but you can't use c plus plus. And actually like almost no language interrupts with c plus plus. 'cause C plus plus is a mess. And SWIFT does now very recently. And that, that's when I started talking about swift a lot actually is like when they added support for c plus plus interop because, uh, Hermes is written in c plus plus, all of the flow tooling is based on the Hermes parser at this point.
+
+And so my secret aim here is like, Hey, we could create a new tooling based on Swift and that would support flow without writing a new parser. And that's like one of the other reasons. 
+
+**Andrew:** I found it really interesting to learn that the creator of Rust actually works on the Swift team and like has for like the last half decade. So they're, they're almost sister 
+
+languages.
+
+**Naman:** Yes. They, they started around the same time the creator of Rust moved to Swift. Uh, Rust has copied some features [00:53:00] from Swift and Swift is copying features from Rust. They're actually very similar. I just think they're slightly different levels because when I'm like, I, as I said, like I have written some Rust, I've been trying to slowly write an SWC plugin, probably take a year at this pace more than that.
+
+But, um, what like really struck me about it is even though it's not necessarily hard all the time, it feels very tedious in the amount of busy stuff that you have to do in Rust. Compared to Swift or JavaScript. Like you have to constantly unwrap values and constantly clone them. Like you have to do all of this stuff manually where Rust goes super hard and making every single thing that could cost you even like a drop of performance explicit.
+
+Like you must know that you created a copy here. You must know that you incremented a counter here, like every single thing. And Swift is just like automatic and all of those things. It's just like. [00:54:00] It will create copies when you need to, it won't create copies when you don't need to. And so, I feel like Rust is too low level for the kinds of things we're doing with it.
+
+Like, if you're writing a kernel, if you're writing an operating system, yeah, still probably Rust is the better language. Uh, even a browser, like I know that, like Firefox uses a bunch of Rust. Like I'm not going to tell them to switch to Swift. That makes no sense. Rust is the better language there, but like a JavaScript bundler could probably be Swift and be fine.
+
+And, you know, be nicer to write plugins for, especially for JS devs, because Swift looks way more like a JavaScript than Rust does.
+
+**Justin:** Yeah, 
+
+I think it's a, it's an interesting take. Uh, I mean, I'd say broadly, no, no, no, no, no. I wasn't saying that negatively. I mean, I think broadly that I do agree. I do agree with your, your perspective here though, that it's like rust. There is a cost to rust. Uh, I've written a lot of rust over the last few years.
+
+I write a lot of rust every [00:55:00] day. Um, and there is a real cost to it. And especially for like application level things, uh, it can be the right. You know, thing in some cases, you know, like, if you're trying to squeeze out a lot of performance, I think, like, in the case of, like, building games or something like that, that probably make a lot of sense.
+
+Um, and if you decide to do it for other application level things, you do, you are going to pay like that kind of continual cost of, like, it's just going to be, you know. 20 percent harder than it may need to be otherwise. And, and I think there's a lot of languages in this like mid tier, uh, that is like one level of like complexity below, or like, I guess, What level of like difficulty easier than what rust is that give you a lot of a value.
+
+And then, you know, honestly, for a lot of applications, I just feel like there's so much tooling opportunity, you know, of, [00:56:00] of course there's Swift, there's like, go, there's, you know, even traditional things like doing things on the JVM, which, you know, kind of shutter, but like Kotlin is like pretty decent and, you know, yeah, there's just like a, there's a, 
+
+lot of good.
+
+**Naman:** Kotlin is pretty nice. So, so Kotlin I saw, and it looks like Swift. Like they look surprisingly similar. Like they both use funk as the keyword and stuff. Uh, I, I would say that, uh, Kotlin, Go and Swift are in the same area of overall throughput of performance. What sets Swift apart from Kotlin and Go is the garbage collector. So Swift isn't garbage collected. So I think they are suited for different things. So when, when you care about throughput and not consistency, like servers, uh, go and Kotlin. It's great. Uh, if you're doing like UI where like you don't want a GC pause ever. So if it's better and then bundlers, you could go either way.
+
+It would [00:57:00] probably be fine. Um, yeah. And I think, uh, in terms of how it would feel to use it, it's more rusty. Then like Go, like Go feels like there's people who love Go and hate Rust and there's people who love Rust and hate Go, uh, because like Go doesn't have like a rich type system and doesn't have like, um, typed in what, what do you call them?
+
+Like, uh, some types essentially, enums with, enums with data. Um, and Swift has that and Rust has that and Go and Kotlin don't. And so if you get addicted to those kinds of like type system features, then like Swift will still give you all the niceness, which, uh, you know, Rust gives you, but also gives you the downside, which is like, like Rust, Swift has a very slow compile time, uh, itself.
+
+And Go is like super fast at compiling. So. Trade offs, but that's why I said it replaces Rust for this strata of applications. I don't think it replaces Go or [00:58:00] Kotlin for what they are used for. Like the server infrastructure is like really big on the JVM and also Go at this point. And Swift on the server, while like, as a language, it's great even for the server.
+
+It has like every feature you might ever want. For a server app, the ecosystem just isn't there. So maybe in a few years it'll be a good contender, but right now it's a 
+
+smaller ecosystem, uh, hosting is harder, all of that. 
+
+**Justin:** Yeah. They had a Swift for windows came out not too terribly long ago. Right. 
+
+**Naman:** So Swift for Windows has actually been out for a few years, but it used to lag behind the Mac version. So, like, they shipped, uh, I don't know, like, regular expressions, but then it didn't come to Windows until later and stuff.
+
+But then, um, this company, like, the browser company who makes Arc, 
+
+**Justin:** Oh, right. Yeah. yeah, 
+
+**Naman:** yeah, so they built Arc for Windows with Swift.
+
+So they could just take that code from Mac and just [00:59:00] bring it to Windows. And when they did that, they hired one of the people who used to work on Swift for Windows and basically funded his work. And now Swift for Windows is basically on par and it's kept up to date. And they also did a bunch of work to, uh, take the C libraries from Windows, um, for UI and like connected it to Swift.
+
+So they were like, we don't want GC pauses in our app. Like, that's one of the reasons they chose Swift is because C sharp is garbage collected and JavaScript is garbage collected and they're like, all of these UI frameworks on windows are actually garbage collected. We want something that's as fast as possible.
+
+So they took the lower level C stuff and like put it, uh, mapped it with the Swift and That's how they built Arc for windows. 
+
+**Justin:** really awesome. 
+
+**Naman:** So I did a test, like I, I did a test of compiling like a function of 
+
+Swift with BS code on Windows and it worked fine. 
+
+**Justin:** Sweet. I'll have to try it out. 
+
+I haven't played with Swift for a long time. I need to, I need to give it another [01:00:00] go. Um, cool. 
+
+
+#### [01:00:01] Future of Styling and Build Tools
+
+**Justin:** So before we wrap up, we always like to ask a future facing question. Um, so you've spent a good bit of time now working on Stylex. Uh, what do you think is the future of styling? Both maybe where you want to take Stylex, but like, especially in the category of like CSS and JS, like what is the future in this space? 
+
+**Naman:** Okay, this is a going to slightly big answer. There's like three levels to it. Uh, one is, um, short term, I think everything is going to go like build time. I think runtime CSS and JS was a mistake. Um, So, StyleX's build time, uh, yeah, like, it'll be a long tail, people will slowly move off of it, but JS is just always going to have problems.
+
+Um, but like longer, longer term, I think that CSS itself, like as a language, is moving so fast, and there's so much cool stuff that's come out in CSS, [01:01:00] like I could have a whole episode about that. And I think sooner or later, they will solve for that. Tailwind essentially, where, uh, you won't need a tool, like you'll just be able to write inline CSS and be able to write media queries and pseudo selectors inline on an element and have it work.
+
+Like as soon as that comes natively, like we won't need a lot of the tools that we use most of the time. Uh, at that point, I, even something like stylex would become like much, much smaller where I don't think the need for it would go away entirely simply because like merging of styles needs some like manual checking of things, but it could probably become like a really small like helper tool to merge styles.
+
+So that's where I think styling is going on the web. In terms of where like my work is going with stylics as well is react strict DOM. So, React Strict DOM, it's open source, it's still [01:02:00] experimental. Uh, I had a talk at React Conf, where I talked about React Native and React Strict DOM. And, a lot of the design decisions of Stylix were made for that.
+
+Like, how do we make something that's like, not dependent on a CSS engine, in any way, from an API point of view. Um, and so. I think on the style side that we will fill out some of the missing features. We're looking into like the descendant selector stuff. There's like smaller details of like, when you use lots of media queries, can we like find a ways to share them?
+
+Can we find ways to unify them? You know, stuff like small cleanup stuff, nothing specific to point out, but then to bring all of those like concepts to react strict down. Right now, a lot of it is just done at runtime. Uh, on React Strict DOM, because again, it's JavaScript, we don't care. You know, we don't have the same constraints as the web on React Native.
+
+There's no server side rendering [01:03:00] so far. But, uh, It's coming, like we're getting several components on React Native. There was a talk by, uh, Evan Bacon about that. One of the best talks at, uh, React Conf, if you want to see one. And as that comes, as performance is always going to be important, I think over time, we will start doing the same, like, bringing the same concepts to React Native, doing ahead of time compilation for more and more stuff.
+
+And yes, on one side there's like static Hermes and all of that going on, but the same thing applies to the stylex implementation for React Native. So I, I don't know, I know lots of people will be sad, but I think forward looking, there will be more and more compilation, not less. The, we will move some things into the platform and then we find new things to compile instead.
+
+So build. steps are never going away in my opinion. They're here to stay. 
+
+**Justin:** Yep, I agree with that. Yeah, I'm, I'm stoically not no build. 
+
+**Naman:** Yeah. 
+
+**Justin:** ~~Yeah, I mean, uh, ~~
+
+~~Sorry, ~~
+
+**Andrew:** ~~that wraps it up. Oh, go, go for it. ~~
+
+~~no, ~~
+
+**Justin:** ~~Yeah, no, no, that's, that's fine. I'm just like, I'm sorry, I'm like dead on my feet here. So, ~~
+
+**Andrew:** ~~I know.~~
+
+**Justin:** ~~Play some. ~~
+
+**Andrew:** ~~Uh,~~ so that wraps it up for [01:04:00] our questions this week. Thanks for coming on Naman. This was a really fun look into how Facebook views their CSS and how StyleX works. So 
+
+thanks for coming on. 
+
+**Naman:** Oh, thank you for having me. 
+
+It was great talking to you and I love the podcast in 
+
+general. 
+
+**Justin:** Yeah, thanks, Naman. Uh, this is, this is awesome, and I particularly appreciate the conversation about Swift. Uh, definitely more for me to look into there. Uh, yeah good, Uh, good, tip. 
