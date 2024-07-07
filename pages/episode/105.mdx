@@ -1,0 +1,458 @@
+---
+title: James Arthur - ElectricSQL
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/James-Arthur---ElectricSQL-e2loud4
+youtube: https://www.youtube.com/watch?v=EY9zs3z6jCE
+tags: technology, react, localfirst, crdt, postgres, browser, javascript, typescript, databases
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to James Arthur, co-founder ElectricSQL, a local first sync engine for Postgres.
+ElectricSQL wants to make it easy to build local first apps with Postgres.
+Instead of worring about how to sync data between devices, ElectricSQL lets you reason about your database as local and running on your device.
+
+- https://electric-sql.com/
+- https://x.com/thruflo
+- https://hr.linkedin.com/in/thruflo
+
+Episode sponsored By Clerk (https://clerk.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:21] Introduction
+[00:02:12] Local First Conf and Little Elephants Everywhere
+[00:05:06] Understanding ElectricSQL
+[00:10:17] Ad
+[00:12:03] Technical Deep Dive: Partial Replication and Sync Engine
+[00:16:09] Cost Savings and Operational Benefits
+[00:18:51] Implementing ElectricSQL in Production
+[00:31:44] CRDTs and Rich CRDTs Explained
+[00:39:21] PG Lite: Postgres in the Client
+[00:47:48] Future of ElectricSQL and Monetization
+[00:58:01] Conclusion and Final Thoughts
+
+
+<!-- TAB: TRANSCRIPT -->
+
+# Episode 105 - Free
+
+**James:** [00:00:00] with what we do with electric SQL, we're a kind of sync engine technology, like in a way, it's a replacement for the way you do state transfer when you build applications.
+
+So if you use REST APIs or GraphQL, kind of how do you get the data from the front end to the back end?~~ ~~
+​ 
+
+
+#### [00:00:21] Introduction
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, we're really excited to have James Arthur on with us today. So, James, you are the creator, founder, um, brain behind ElectricSQL. Uh, I would love to hear more about what you're working on there. Before we dive into that, would you like to tell our audience a little bit more about yourself?
+
+**James:** Yeah, sure. Um, so yeah, I'm, I'm one of the co founders of ElectricSQL. I think I'm probably, I'm the most generalist on the team, so I'm definitely not the kind of brains. Like we, we co founded the company with some of the [00:01:00] world's top distributed systems researchers, like my co founder Volta. He comes from a whole background of inventing a lot of the core technology that people in our space kind of now use.
+
+My background is I'm a generalist developer. I've done quite a lot of company building stuff. Um, in a way as a developer, I got brought up on distributed systems, like the guy who taught me to code, uh, he was one of the founders of Freenet back in the early days of the kind of distributed web. So I sort of got introduced to this sort of type of world of like distributed database systems quite early.
+
+Um, but then I'm kind of more of like a generalist product guy. And I've done a lot of sort of software development and, you know, Like with what we do with electric SQL, we're a kind of sync engine technology, like in a way, it's a replacement for the way you do state transfer when you build applications.
+
+So if you use REST APIs or GraphQL, kind of how do you get the data from the front end to the back end? And so for me, it's just a generalist software engineer, I've sort of played around with all types of those sort of react relay offline, [00:02:00] how do I do this stuff with fast local writes and sync the data?
+
+So that's my sort of view on this, where it's like, There's a lot of other people on the team who are the sort of smart ones who really solve the core problems to then make what we do possible.
+
+**Justin:** Gotcha. 
+
+
+#### [00:02:12] Local First Conf and Little Elephants Everywhere
+
+**Justin:** I was, um, honored to be in the audience when you gave your talk at the local First Conf conference. ~~Um,~~ and the thing that I really loved about your talk is like your, your storytelling is. And the next one is top notch. Um, could you give a little synopsis of like what you talked about there? ~~Um,~~ and kind of explain like maybe what local first is for the, our audience who haven't heard a lot about it?
+
+**James:** Yeah. Well, Local First Conf, uh, so it was a conference that was organized in Berlin recently, and it brought together a lot of people from around this sort of emerging sector for the first time. And there were some fantastic kind of talks kind of all the way through from people like Martin Kleppmann, Johanna Schinckling, kind of setting the stage for Local First in general.
+
+And then a lot of people who are building some of these platforms like Jazz, Replicash, et cetera. So it's really nice to just sort of talk about [00:03:00] that. My talk was called Little Elephants Everywhere. And it was really talking about how advances in what you can do in the client nowadays are one of the key technical enablers of this new local first patent.
+
+So local first software is called local first. Basically because you write first to a local database and then data syncs in the background. So instead of this sort of pattern where you have to be online to write data and you kind of talk to web service APIs, you have this local experience and then kind of data syncs.
+
+And one of the things that's made that possible is the ability to now store larger amounts of data with proper durability guarantees with decent performance in the client. And so I was talking about WASM and Origin Private File System, but it was called Little Elephants Everywhere because we PG Lite, which is a new lightweight WASM build of Postgres.
+
+So not [00:04:00] only can you do things like run SQLite or DuckDB in the browser nowadays, which are like databases that were designed as embedded databases to run in the client, there's so much you can do in the client that you can now run literally fully featured Postgres and you can run. pretty much anything that you like in the client.
+
+So that's kind of, uh, that, that was the theme of the talk, uh, when it was illustrated by memories of staying in the Dream Heaven guest house in Udaipur in, uh, Rajasthan in India when the lake had dried up. Uh, so I'd gone to just stay there when I was traveling and you go to this, Udaipur is the city where there's this famous lake palace.
+
+It's like in Octopussy, the Bond movie. And so you have this sort of lake in the middle of this amazing Indian city, but it had been so hot that the lake had dried up. And I remember sitting on this terrace overseeing this sort of dried riverbed where you had all these animals just running around, like there were camels fighting, and they had all these elephants, and they just had their, they had babies, and so they were just running around the space.
+
+And so it's baby elephants running [00:05:00] around everywhere, because it's these little lightweight Postgreses that you can now just have inside your application wherever you like.
+
+**Justin:** Nice. That's awesome. Thanks.~~ The connection cut out for us a little bit there then, but, uh, Andrew, do you want to take the next one?~~
+
+
+#### [00:05:06] Understanding ElectricSQL
+
+**Andrew:** ~~Yeah, sure. Um,~~ so you guys are working on a thing called electric SQL. Uh, it's a lot of things. The docs are very long and very detailed. Uh, I commend you on those. They're, they're really well written. Uh, but like, what is electric SQL and like, what would you compare it to?
+
+**James:** Electric SQL, when you boil it down, is a sync engine. So we do active active or bi directional replication to keep data in sync between Postgres, in the cloud, and then small embedded databases in the local device. Um, As a sync engine there, it's not so much like a technology like maybe sort of Debezium, which is used to kind of keep like data centers in sync.
+
+It's more about being able to keep data in sync across that sort of last mile onto your local device, so into your web browser, into a mobile application. And so, In a way, this model [00:06:00] of moving data through background sync instead of sort of data fetching is like a replacement for the way that you have built applications with existing state transfer technologies.
+
+So state transfer has gone from sort of form posts to REST APIs to GraphQL. And in a way, it's a sort of journey from manual imperative data fetching To more optimized systems for kind of declaring data dependencies and then having the system resolve them for you. And local first as a pattern is kind of, in a way, an optimal way of doing that, where your application code just talks to a local embedded database.
+
+And then the database system just deals with the kind of sync in the background and you don't have to do any coding across the network. You're not handling kind of error cases, you're not manually fetching data. And so ElectricSQL is like one system that you can use to do that kind of background sync part of a local first software architecture.
+
+particularly focused on syncing out of [00:07:00] Postgres. So it's kind of relational data with integrity. We do things like partial replication of your Postgres data model. We maintain database integrity. When you do that, we maintain database consistency. So it's like a sort of rigorous sync engine for doing local first on top of Postgres.
+
+**Justin:** That's really awesome. What do you, like, when you're framing this to potential users, what do you talk about the like ideal use case or the, you know, ideal app to leverage electric SQL, what does that look like?~~ There ~~
+
+**James:** I think one of the
+
+things we've seen is if you look at kind of best in class, modern collaborative software, You have systems like Figma, Linear, Superhuman, etc. There is a sort of quality of user experience for those type of applications that has set a bit of a new bar about kind of what kind of software, what good software feels like.
+
+Um, And they're built on local first architecture because they're built on this model of having like a local [00:08:00] embedded database. It makes them feel instant. You have multi user real time collaboration just sort of built into the kind of design of the sync system. Uh, and they're sort of resilient. So the application kind of works no matter what, if you're offline, if you're going through patchy connectivity.
+
+So, In a way, what we see is that the next generation of these types of category defining software or just sort of modern team based collaboration software, you know, you kind of have to, like, if you don't feel like linear, if you feel like Jira, then you just sort of feel old and nobody's going to use your product.
+
+And in these areas where the quality of your user experience is such a key ingredient to attracting users to product growth. Pretty much sort of all types of software, whether it's like SaaS systems, dashboard, business management software, information management software, is going to move to this new paradigm.
+
+And so there are like cap, um, there are application categories which have sort of started earlier with local first, like note taking applications for [00:09:00] privacy reasons, or applications like point of sale or airline software, where you have this sort of clear need to work offline. But what we're trying to do with Electric is much more like a kind of Rails for local first, where it's standard relational models for standard interactive applications that teams would use.
+
+And it's kind of, you know, the majority of standard software. So if you go back 15 years, you'd have built it with Django or Rails and kind of maybe now you build it with like Next. js or kind of whatever you use. But You can kind of take those frameworks today, swap in this local first approach to the state transfer layer, and that is kind of how all kind of good software is going to be built in future.
+
+**Andrew:** So when we were talking to Tomas from linear, uh, I asked him like, you guys have built this great sync engine. Like, is this like a library that you can factor out or something? So would it be fair to say that, uh, Electric SQL is like, we, we took that and made it work for everybody.
+
+**James:** Yeah, very much. I think, you know, Linear is a real sort of pathfinding app in this, and they, [00:10:00] there's a lot of lessons from what they've been able to build and the quality of user experience they've been able to deliver on this Sync Engine architecture. And Electric is very much like, if you want to build Linear for X, we're a platform tool that allows you to do so without having to spend four, six, eight million engineering your own Sync Engine system.
+
+
+#### [00:10:17] Ad
+
+**Andrew:** We'd like to thank our sponsor for the week clerk offers complete user management out of the box So you don't have to worry about authentication and you can start building your app quicker Nobody wants to be focusing on auth or any of those lower level parts your app You want to focus on the money-making features the things that are fun to work on A Isn't one of those things With auth you might have to implement things like multifactor SSO Magic links once you have all that implemented you'll also have to monitor it Because you don't want a bunch of bots joining our website 
+
+Clerk makes adding off to your app as simple as just in some components The great thing about clerk is you don't have to really learn too much about [00:11:00] authentication for the most part You just hook up to their backend sprinkle in some components customize the components If you're really feeling like it And then boom you got off in your app and you can start focusing on the real cool stuff
+
+Quirks a great company and they do things like support the open source community and just the community at large But one of the coolest things they do is their free plan you get up to 10,000 monthly active users and they have an awesome program called don't pay for your customers first day If your app pops off on hacker news and a bunch of people sign up and use the app for 30 seconds you don't pay for any of them until they use your app Again I think that's a really cool move And 
+
+If you want to learn more about clerk Howard, a clerk.com to check him out. Or you can go listen to episode 75, where we have a chat with one of the co-founders Brayden. It's really interesting to hear where they came from and where they plan to take the company. If you're tired of hearing these ads become a member on one of the various channels that we offer it 
+
+With that you'll get that busloads ad-free and a little bit early. If you want to find another way to support the podcast, head over to shop.dev tools.fm. [00:12:00] There, you can check out some of them emerge. And with that, let's get back to the.
+
+
+#### [00:12:03] Technical Deep Dive: Partial Replication and Sync Engine
+
+**Justin:** was something you mentioned early on that was, uh, kind of a technical point, but I kind of would like to talk about it more. This is partial replication. Um, an issue that you can have in local first apps is like depending on how big your usage is, right? So if you have an app that is used across an organization, there could Potentially be a lot of user generated data for that.
+
+And if you're like on a team and you just like, you know, you have a linear like model and you just need your tickets on that team, if you have to wait to download, you know, the 10, 000 other tickets from the rest of the organization before you can see the things that are important to you, that makes a poor experience, even if it's like less network hops.
+
+So kind of, how do y'all think about that? And what does that, what does solving that problem look like? It seems like this is one of the harder problems in the local first space right now.
+
+**James:** Yeah. And there is in a way a kind of There is a trade off between, say, uh, [00:13:00] applications or even web pages where something like server side rendering can give you the fastest path to getting a rendered web page in front of a user. And then you have things on the other hand, which are more like a kind of mobile application where you have quite a large install and then you sort of use the application on an ongoing basis.
+
+So certainly where you've had things like, a heavier WASM database load in the client, and then you're loading a kind of larger data set, and maybe you end up loading kind of 10 to 20 megabytes as a result of the two. That's kind of tended to sort of be seen as mapping more to this sort of web application category as opposed to like kind of instant loading of web pages.
+
+Now, technically, there's no reason why you can't have a combination of kind of fast initial red render, and then sort of sink into data like you can kind of optimize both if you sort of choose to dig into it. One of the interesting things as well is that actually the amount of data that you need. Or that you would be loading from a [00:14:00] relational database to load something like all of Linear for your organizations.
+
+It's still relatively low if you compared it to like the size of a small video that you would load onto a webpage. But what actually has typically happened is because you end up sort of fetching the data through various queries out of a relational database, it's actually, it's relatively slow to load.
+
+And it's often the actual throughput of the data is not bottlenecked by the data size. It tends to be bottled by, bottlenecked by the retrieval technology, how it moves over the wire, how you're applying it into a local data store, reactivity triggers that are run off that, whether you're blocking the thread.
+
+So there is, like, if you're, if you're loading something like 10 megabytes of data on the first load of an application and you have a decent modern internet connection, you shouldn't really be waiting any amount of time at all. So one of the things that we focused on with Electric is getting a very fast initial sync time so that it's actually faster to load data through Electric than it would be to just query the back end database [00:15:00] directly.
+
+So I think, I think, There's a few different approaches to trying to kind of, um, with a local first architecture, you do have this, um, constraint of having to both, say, in some cases, load a database into the client, and then have this sort of initial data load before you can kind of have responsiveness.
+
+You have projects like the Xero project that the RepliCache team are working on now, which is doing some really cool stuff to, um, have like system optimization of which data is loaded first, and which data is sort of kept in the cache on the device. And that's one approach, which I think is really interesting about, um, just trying to be as smart as possible about optimizing that data fetch and what data needs to be in the device before you can kind of render above the fold, etc.
+
+And they're doing some really cool work on optimizing that. But you can also just have things where you can go, it's 10, 20 megabytes. If I actually make that as fast as just downloading the bytes off a CDN, it's actually, you know, the user waits three seconds and it's [00:16:00] there. So there's a couple of different approaches, and that's kind of what we're taking is sort of just really trying to optimize the initial fetch time as a kind of first step.
+
+**Andrew:** Yeah. 
+
+
+#### [00:16:09] Cost Savings and Operational Benefits
+
+**Andrew:** An interesting, like second order effect of that, which you guys mentioned briefly in the docs is like the cost savings that you get. Uh, I find it really interesting that bringing a bunch of your data local and doing those queries locally saves you a whole lot of money.
+
+**James:** It is, it's a bit like caching, you know, forever has always been, uh, kind of Russian doll, right, and the outer model is the most effective. So if you can choose to cache anywhere, cache as close to your users as possible, and like literally caching on their device kind of is the most effective. Um, so And so, yes, if you're running a cloud workload and say, and you're, you're hitting that with either kind of like server requests to render pages or to sort of run compute with local first, you can move the compute execution onto the local device and you take the query workload off of the database.
+
+So you can just run the majority of the, the majority of the database workload instead of sort of interactive sessions kind [00:17:00] of going back and forward and hitting the database. You just define what you want to sync. That's maybe one efficient initial load that can be cached anyway. And then you just have a sort of ongoing replication stream um So like from a cost basis, you can really just eliminate a large portion of your cloud workload. You also just don't need to run so many services. In many cases, you can just get rid of a whole load of stuff that's running as part of your kind of backend services that is often doing things to just sort of ferry data between the frontend and the backend.
+
+So you can eliminate a whole bunch of your backend infrastructure as well as taking the compute and query workload off the cloud. There is another interesting aspect to it, which is that Like a lot of the work that happens in the whole sort of cloud ecosystem is about reliability engineering. So if you're running websites or services at scale, you're trying to hit kind of a high number of nines and keep your service online.
+
+And that's because you need your service online if your application is built on a system which is going over the network [00:18:00] on the interaction path. If your web service is down, the user gets a bad experience. With local first, because it's offline capable, the, the user is interacting with the local data store.
+
+If the backend service is down. The user may not notice, and it doesn't matter so much, certainly for a large proportion of the activity of interacting with the app. So you don't have to engineer such kind of punishing degrees of reliability, and it's like every extra nine on your reliability is another 10x on your operational costs, and so you have a lot of SREs, which are very expensive to run to kind of achieve that.
+
+And local first for a lot of applications, you can just row right back on that, have much more sort of standard models for like, you can have some downtime. You don't need to do zero downtime deploys because your applications don't notice them. So it really reduces that need to engineer such high reliability, which is a lot of the expense of kind of running these sort of current cloud first systems.
+
+~~So what~~
+
+
+#### [00:18:51] Implementing ElectricSQL in Production
+
+**Justin:** I was wondering about like what it looked like to, uh, operate, uh, elections, uh, electric SQL in production. So [00:19:00] let's say you have a traditional, you know, maybe you have a crud app with a Postgres database or, you know, more of a traditional app. Um, and you're using rest or you're using GraphQL or you're using something else and you kind of want to. Lower the sort of operational complexity or, you know, operational causes you're, you're speaking about, and you like want to move towards something like electric SQL. What does it look like to take that journey?
+
+**James:** we tried to do with electric is make it drop Postgres data models. So if you're in a situation where, yeah, say you built out an application where it's built on Postgres, you have some sort of API layer, and then you have a front end code that's talking to that API layer. In order to use Electric, what you have to do is you run a sync service, which we provide.
+
+It's available for self host. It's an Elixir sync service. You run that. Typically kind of close to your database in the cloud, it connects to it over a database URL, and then it provides [00:20:00] a WebSocket based replication protocol to the client. So you then have a client library inside your application, which connects to that replication protocol and embeds a local database.
+
+So typically SQLite, although in some applications, we now also have this pgLiteBuild as an alternative database. And so you basically, Start off by saying I want to opt in part of my Postgres data model, so you might have like a larger data model and say you want to sort of take some part of that data and just replicate a part of it into the local app.
+
+Maybe you want to make part of your application real time, or offline capable, or maybe you've got like high query load and you want to remove the query load for that part of the app. So you can just select, first of all by opting tables in, which tables you want to opt into the sync. And then we have this primitive called a shape, which is how you control partial replication.
+
+So you define shapes, which are like the shape of the data that actually syncs onto the local device. So you define those shapes and then in the client, you just have a, uh, [00:21:00] database client. It's kind of, you can go kind of db. table name, and then you have a Prisma style API to interact with this local database.
+
+And so you've defined what data syncs in, you've installed the library, which has brought along then like a WASM build of SQLite. So that adds a little bit of dependencies into your client side app, which is maybe a kind of operational trade off to consider. But basically then you can just start swapping out the way you do data bindings to your components So, for instance, if you have a React application, we provide a use live query hook, and you just basically bind a query to the local database to a state variable in your component, and then that state variable just stays live whenever the data changes, and everything just automatically renders and stays reactive.
+
+So you can typically keep all of your existing front end components and either integrate Electric into your sort of state management pattern, and If you're using something like MobX or something, or if you sort of co located things like reducers or sort of fetching, or alternatively, you [00:22:00] just go in and just bind the data directly and each of the components can just talk to the local database.
+
+Um, so there's sort of two key points really, where A, you have, your backend, where what we've tried to do is make it compatible with existing Postgres data models, so you don't have to kind of change anything about your kind of backend systems. And then in the frontend, it's just basically how you choose to read and write to data from your components, or sort of bind this live data to your components.
+
+**Andrew:** Could you use electric in the front end, like as a replacement for Redux entirely? Like, it seems like the really sweet spot for me here is like with linear, uh, from our conversations with the founders there, like interacting with the data model is just like, you just, ~~uh, lost my train of thought. Um,~~
+
+**James:** Yeah, it's just like, there's a, there's a certain thing about just from a developer experience point of view. I know, for instance, with Linear, one of the things that they've seen is you have this sort of separation where if you were building like a kind of web service based application as a front end developer, you're [00:23:00] having to sort of write code that interacts with these web service APIs, whereas what they've done is they just have the local data store.
+
+It's like a kind of local graph store. And you just write code against that. And then anything that sort of happens to like sync data or interact with the back end is abstracted away from the front end team. So it's really nice in terms of mapping to the separation of concerns because the back end team don't need to worry about what's happening on the front end and vice versa.
+
+Um, and also just as a developer experience, you can just write to that store and you don't need to do anything else. So it's kind of much sort of simpler. 
+
+**Andrew:** So since we're using, uh, electric for like local state management, is the, is there like, what's the delineating line of like, I want some of this stuff to be synced and some of it not to be synced, or is it all synced eventually in the end? Like, where does that line kind of, kind of be drawn?
+
+~~Mm~~
+
+**James:** So you have an aspect of saying, I want to control what data syncs where. And so that's like, should this data sync off the local device? Should it sync onto, you [00:24:00] know, whose other devices should it sync onto? So that's one thing. And that's where we provide some controls around this sort of partial replication and shape APIs.
+
+Um, you also have this aspect of like, if you have this, uh, client side database, um, What's really interesting is it becomes like a unified store. And so you've typically had like in an app, in your application architecture, you'll have the sort of main database or main sort of data model for your application.
+
+And then you have the sort of UE state as well. And in the client, you'll have some state management solution like, yeah, MobX Redux or kind of whatever sort of pattern that you're using. And certainly the prospect and definitely where it is going to go with Local First is that you can just combine everything into one unified store, it's sort of locally available, it's reactive, and that store can just basically take over and mean that you don't need to have an additional state management layer.
+
+It's not fully there yet. [00:25:00] Like, that is a sort of target where there's a number of cool projects that are working towards that. Like I mentioned, the RepliCache team. Uh, Johanna Schinckling is working on a project called Livestore, which is the succession to a project called Riffle, which was developed by Ink and Switch as a sort of first local reactive database.
+
+And, uh, And what he's working on is very optimal in client reactivity on top of a local embedded database. And so there's a lot of engineering work there to be able to make this model where like, so the ideal from a developer experience is you can just basically do a write to the local database. And it, and that's that, and everything else that would, for instance, need to re render to reflect that data change would just sort of pick it up through the reactivity system and re render.
+
+But, of course, in the client, and particularly in the browser, and with these embedded WASM databases, you have a performance challenge, because you don't want to block the main thread, and going in and out of WASM takes time, and different [00:26:00] drivers have like sync or async interfaces. And so, Like, typically what works very well at the moment is sort of standard CRUD interactions.
+
+Like if you take Electric, if you just basically use our live query bindings and write directly to the embedded database, if you're building any kind of simple form based or fairly standard page, the reactivity is so fast, you don't notice it, everything's instant, it just feels like magic. If you have a busier page with lots of data and lots of reactive bindings, or you're crafting some sort of maybe more complex like reactive interface, something with sort of lots of sort of graphics and panels and interdependent rendering, and maybe sort of real time presence, etc.
+
+Then you will find that you still do need to craft some of the state management. Some things like the performance of going into the local database and coming out again will sort of take two animation frames or just take slightly too long. [00:27:00] And so you can get slight sort of jitter between what you actually sort of see with your live cursor and then the state updates slightly behind it.
+
+And it's a suboptimal experience. So as I say, there are, there are libraries like LiveStore or, which are kind of working on really optimizing that part of the stack. And then I think once they come along on a production ready, it's going to deliver on this premise that you just write to this one store and everything just works.
+
+But if you're trying, if you're doing slightly more complex stuff at the moment, that would be slightly heavier in terms of that sort of reactivity loop in the client, you still actually at the moment in reality need to craft your own client side state management.
+
+**Andrew:** Yeah, it makes, it makes a lot of sense. I love the overall vision though. Something, a topic that we've touched on a lot here on DevTools FM is like melting away the barriers between computers and like getting rid of transfer protocols. And just this idea that I have an app, it interacts with the database that might be synced, it might not be.
+
+That, that just seems like such a nice bread and butter experience.
+
+**James:** Yeah, and it just sort of feels like [00:28:00] where it should be going, right? If you think about a future of sort of AI optimized compute, you should just have this sort of declarative view on it, where you have components, they declare what data they need, and it should just work. And I think, That is basically the end point that a lot of the people working in the local first space at the moment are sort of moving towards and as a developer, you know, you're just not going to have to write the code that five years ago you spend an awful lot of your time writing, right?
+
+There's this stuff at the moment where you now have, um, generative AI that can kind of generate boilerplate for you and a lot of kind of application like create rest APIs for you. But actually. Like, you're just not going to need the boilerplate because the need for it is going to go away. Um, so I think it really is, it really is a sort of optimal end point for how software has been evolving, both around reactivity and state management.
+
+**Justin:** Yeah, I think there's a lot of market forces at play here too, because it's like, you know, There's obviously a lot of pressure to have like smaller teams [00:29:00] delivering high, higher and higher quality experiences. And if your team is doing something and sort of a maybe more old school way that like works, but you have, you know, four layers of compute or three layers of compute, you know, these like translation to translation to translation, your iteration speed is going to be so slow.
+
+That's going to be really hard for you to keep up with what everybody else is putting out there. And I think that just. The whole industry seems to be pushing towards this, like, let's spend the time writing the code that's doing the things that we really care about and spend less time writing code that is all on the edges of, you know, what else may be going on.
+
+Um, and, uh, to sort of like, In that thought, I think there's just this acknowledgement that like client server interaction is like a distributed computing problem and it's like hard and you know, like sure we have these simplistic but like I don't know, kind of harder, like building a rest [00:30:00] API on the surface is like a, it seems like a very simple thing to do, but it's like nefarious and it takes a long time.
+
+And then you still end up spending forever in your database layer. And this is like, these things that seem simple to understand actually are just like non trivial problems that end up eating a ton of time. And companies are just solving these again and again and again and again. And it's like, we just want to build cool apps, you know?
+
+**James:** I think one of the beauties of something like REST, I guess, is that it kind of, because it's stateless, it does in a way solve that distributor systems problem. But I think so, so almost if you could just basically build software on a REST pattern, okay, yes, you have sort of offline reliability problems, but in a way it's actually quite simple and sort of bulletproof.
+
+I think the challenge is that, like, what we've sort of seen is that, like, Actually, software is moving beyond that. You have stateful real time protocols. There's a sort of certain level of experience of modern software that sort of has outstripped that, that [00:31:00] layer. And so that sort of moved things into exactly as you describe, like people kind of hand crafting their sort of real time sync protocols and just almost sort of choosing where to stop as they sort of pull back the layers of complexity as it goes into distributed systems world and everyone sort of comes to their own peace on like which edge cases they're going to handle or not.
+
+Um, and so, yeah, I think this sort of idea that if you can just basically move state transfer into the domain of the database layer, and you can have these sort of database grade systems that bring all the sort of rigor and guarantees to solve the data synchronization problem, then you can kind of take that out of the application domain while still actually being able to deliver these modern experiences.
+
+**Justin:** ~~Cool. Andrew, you want to take the next one?~~
+
+**Andrew:** ~~Uh, sure. Um, ~~
+
+
+#### [00:31:44] CRDTs and Rich CRDTs Explained
+
+**Andrew:** so in your docs, you guys mentioned CRDTs a lot. Uh, CRDTs help with resolving conflicts in data. Uh, you guys also mentioned, uh, rich CRDTs, which I've never heard of. So could you, uh, tell us how Electric [00:32:00] uses CRDTs and what rich ones are?
+
+**James:** Yeah, absolutely. So a CRDT is a conflict free replicated or replicatable data type. So, They're basically data types that can handle concurrent updates and always converge on the same state. And so they are a very key primitive to building a sync layer like ours, where what we try and do is we, uh, eliminate conflicts, uh, without having to have people sort of somehow coordinating ahead of time or any kind of replication consensus.
+
+So CRDTs are this sort of key primitive data type. Um, But what they can't do on their own is maintain other guarantees that as a developer you might want to have from your sync engine or your database system. So rich CRDTs are techniques that build on top of CRDTs to preserve other database guarantees or data integrity guarantees.
+
+So for example, we [00:33:00] focus on synchronizing relational data between Postgres to SQLite. When you have a relational database, there's just a whole bunch of stuff that you're used to being able to rely on, like foreign key, referential integrity, constraints, etc. And so, Like, if you have this sort of conflict free sync layer, how do you also make sure that you have a system that always maintains referential integrity?
+
+And so, for instance, one of the rich CRDT techniques is a technique called compensations that means if you have these, say, two concurrent updates, that if you didn't do anything about it would result in a foreign key referential integrity violation, like someone has done an insert pointing to a row that's been deleted.
+
+A compensation can kind of fix the database basically in the merge logic to make sure it doesn't result in an inconsistent state. Um, and so, CRDTs were invented by Mark Shapiro, Nuno Pregoítha, and Carlos Bequeras. Um, two of those, Mark and Nuno, are on our team. Also, there's a lot of, [00:34:00] uh, researchers who worked with those academics kind of through the evolution of CRDTs and sort of related technology to sort of strengthen this kind of, um, eventually consistent or sort of A B programming model.
+
+And so my co founder and our CTO Volta, he worked with those academics for a number of years, and together they invented a lot of these techniques that we now call rich CRT T techniques, like how you can do things like preserving numeric invariants, preserving relational invariants, Um, and really a lot of like where we came from as a project is there was this sort of, there were a lot of academics who were collaborating in this area.
+
+They did a couple of big, uh, European funded public projects, uh, which ended up in a system called AntidoteDB, which brought a lot of this research together. And so that AntidoteDB was a distributed database system that, for the first time, implemented, uh, a model called Transactional Causal Plus Consistency.
+
+Transactional Causal Consistency based on CRDTs. And that's been formally proven to be [00:35:00] the strongest possible consistency model that you can have for this type of offline capable or highly available database system. And so it combines highly available transactions, which are a kind of distributed version of atomic transactions, so they guarantee atomic applications of a bunch of updates that are in a transaction, with causal consistency, which is the sort of strongest consistency model you can have on the eventually consistent side, and then the sort of pluses and minuses.
+
+Based on conflict free CRDTs. And so what we did with Electric is we started off with Antidote, and actually when we started the project, we thought we were productionizing Antidote and building a next generation geo distributed database. Um, But what we realized was a better approach was to kind of use the same core algorithms as a replication layer behind existing open source databases.
+
+And then particularly Postgres was the kind of obvious ecosystem to integrate with. So some of the core stuff we did was then working out how to do the same kind of consistency and integrity guarantees on Postgres, which as a [00:36:00] database, it doesn't give you the same kind of concurrency primitives.
+
+Internally, Postgres has MVCC, Multi Version Concurrency Control, so it has sort of snapshots, which is sort of how they manage like concurrent transactions, but externally you can't query Postgres at a specific snapshot, so we had to sort of figure out some clever stuff to be able to provide this sort of same level of like formally proven best possible consistency guarantees just on top of these standard relational databases, which basically at the core of what we do is this sort of active, active sync engine is our kind of core technology.
+
+**Andrew:** So the, like, the CRDTs are built into it, and as a developer, I don't even, like, care about it, right?
+
+**James:** Yeah, and it's interesting because you, you have different approaches to that. There's some very cool databases, there's a system called Ditto, there's some relational ones like Evolu, Vulkan, or CRSQLite, which are focused on like putting CRDT data types kind of in your data model. So you can more explicitly say, here, you know, I want a counter, I want a sort of particular [00:37:00] type of set data type.
+
+And you have these sorts of pre built data types that you can build a data model on. What we've done is we have implemented CRDT semantics. So you get the same behavior as if you were working with CRDT data types, but just using standard relational data types. So the thing with electric is like, it's just a Postgres data model.
+
+It's like strings, arrays, JSONB fields, kind of whatever you normally use. But then the way in which we implement the merge logic gives you the same conflict free benefits and same consistency benefits as if you were working with like specialized CRDT data types. So it's funny in a way, because as a team we come from the heritage of like our academic advisors invented CRDTs, but in a way we've sort of moved away from this world of like specialized distributed systems using esoteric data types and just tried to make the same stuff work with what you just use kind of using standard Postgres.
+
+**Justin:** Yeah, it makes sense. I mean, you have a, uh, like a complexity mindshare gap there of like, you often [00:38:00] see this, right? The people who are really, really good at say, um, You know, understanding CRDTs and like building products on that may not be the kinds of people who are really, really good at building applications.
+
+Not necessarily that there is an overlap, but you know, this is like, uh, sometimes bridging that like mental gap is an important part of these kinds of product experiences.
+
+**James:** Yeah, definitely. And I think, yes, in a way, I mean, they're quite different skills, right? Kind of being attuned to developer experience. A lot of the sort of challenges of like crafting good UX and stuff in kind of modern software just is a different domain of kind of problems of really being able to get into the details of verifying correct distributed sort of systems types and things.
+
+Um, And there's quite a few different approaches to that, where people are sort of trying to join up the two worlds. But yeah, they are really quite different skill sets. And it's such a fun rabbit hole to go down, like CRDTs, distributed systems, like the algorithms are awesome. Like I'm a generalist developer, and [00:39:00] it's just sort of such fascinating stuff, and you get to sort of have all of these like thought experiments in your head, trying to like go, if we do it like that, is it correct?
+
+Um, but, um, actually kind of being able to do that sort of stuff properly and rigorously from a research point of view just does tend to be quite a different world. It's the sort of Erlang conferences rather than the React Native conferences, right?
+
+**Justin:** Right, right, right. Totally. 
+
+
+#### [00:39:21] PG Lite: Postgres in the Client
+
+**Justin:** So, uh, kind of talking about one component of electric SQL, and I hope it'll tie in a little bit. So, uh, you have this, uh, Thing called PG light, which is like what I understand Postgres in the database, uh, or in the, in the client, sorry. Uh, so PG light, that is your, basically your client engine.
+
+Right. Um, so could you explain a little bit more about that and like how it fits into the overall story?
+
+**James:** Yeah, definitely. So, so, so when we started, we have been sinking into SQLite. So SQLite is obviously just like super performant, very mature, local embedded relational [00:40:00] database. But then we've been syncing between Postgres on the server and SQLite in the client. And, so, You just have a whole bunch of challenges around that, where you have these different type models, like Postgres is a sort of proper type system for the database, SQLite is actually sort of very lax, and there's this sort of mismatch between things in terms of, uh, the data types and the sort of functionality of the systems.
+
+So actually with Electric, we sort of built all of that mapping layer, and sort of just converted between the two models, and that was one of our sort of core things that we had to build. Um, but, um, But it was obvious that if we could run Postgres in the client, it could just be much better from a whole bunch of perspectives.
+
+Like SQL Light is much more optimized, it's like a smaller build, like it, it's optimized for running in this embedded context. So there's a lot going for it. So obviously it's like the most widely deployed piece of software or database software or whatever the stat is, right? So it's obviously awesome, but.
+
+If you could just have the same database on both sides of that [00:41:00] replication path, you don't have to do data mapping, you don't have to do serialization, you could be running the same extensions in both of them. So with the way that software is moving towards AI, you can have PGVector in Postgres, and then you can have PGVector in Postgres in the client.
+
+And so you can just have Basically the same data without having to do this sort of mapping between the two systems. And so that was the kind of obvious motivation for going, well look, could we make this work? And there there's some, like there were some projects before, which were very cool, which demonstrated running Postgres in the browser as a wasm build, but they were VM based, so they were quite heavy and they basically, the approach was like, run Postgres inside a VM and compile that to Wasm.
+
+So it was a sort of 32 meg download and there was a bunch of sort of overhead with this like virtualization. Um, And then, actually, the NEON team shared with us a base repo where they'd done a proof of concept of doing a pure WASM build of Postgres, which they'd done the kind of core thing, demonstrated it could [00:42:00] be a very small download, it needed a few things adding, like persistence and sort of improving.
+
+And so we basically took that on. We actually tried a few times to kind of like crack it, to sort of get persistence working, get the compilation working. Like I had a go at it, failed, like someone else had to go at it, failed. And then one of the guys on the team sort of took it home one weekend and just sort of didn't stop till it worked.
+
+So Sam Willis basically sort of took it on and just sort of cracked it as a build. Um, and then, And then we sort of published it and it kind of, there was a lot of people really interested, like it sort of spiked on the internet and it's had a lot of star growth as a project. So we now maintain PG Lite as like a separate open source project.
+
+In a way, what we'd see is like this, there needs to be a Wasm Builder Postgres, maybe over time, this could be either an inspiration for, or could be on a pathway to being upstreamed into the sort of main Postgres repo or as a sort of primary Postgres Wasm Build. Um, And then we've basically been working to make it more reliable.
+
+[00:43:00] Um, just looking at the sort of build tooling, fixing things like sort of memory issues and sort of compilation kind of challenges. And then we have added a, uh, dynamic extension loading mechanism. So, like on the server, you can kind of create extension in Postgres and sort of load arbitrary code. On the client, you need that code compiled for Wasm.
+
+Um, You don't want everything compiled into the build because it would be a bigger build that you don't necessarily need. So we wanted a sort of way of basically downloading extensions by URL and sort of being able to run them within the Postgres WASM build. So we've now built that out and we have things like pgVector and some other cool extensions running in the client.
+
+And so yeah, and now basically it, is an alternative to SQLite in the browser environment to run as the client side database. And so it, you can do now Postgres to Postgres with Electric. It's now a first class supported option. And there's a bunch of stuff which we're able to do specifically with PGLite that will be [00:44:00] moving forward where it will probably become our main client side database in time.
+
+So we've been working, for instance, on some primitives for efficient live query subscriptions. You have this model I was describing where you like bind data to a component. So imagine you're showing like a listing page of issues or something. Um, when the data changes, You like what, what you have as a naive model is basically detecting a data change, rerunning a local query, setting the results set, kind of components re render.
+
+So there's a few aspects of making that efficient. And one of them is looking at the kind of in database, maintaining efficient subscriptions, and then you're only yielding the data that's changed over the WASM boundary because it's relatively fast to query the database, but it's relatively slow to move a whole load of data in a serialized way over that JS WASM boundary.
+
+And so we're working on some of those optimizations for PGLite to become a slightly more sort of native reactive database in the client. ~~Um,~~
+
+**Justin:** I got you. So
+
+at the moment you can switch them [00:45:00] both out, but it's like PG lights, not necessarily the core one yet. It's like, you're still leaning on SQL light.
+
+**James:** Yeah, SQLite is smaller and more battle tested. Uh, and PGLite is sort of catching up fast and has more capabilities. And so they're both first class supported options. Fast forward two years time, you know, probably PG Lite overtakes just because if you can kind of make it more mature and slim down the build, which there's definitely a pathway to do, you get the benefits of stripping out all the complexity of this sort of mapping between the two database systems.
+
+And it just becomes Postgres everywhere.
+
+**Andrew:** it's called PG Lite, but it seems like it has a bunch of the features. Like, I wouldn't expect, uh, plugins or add ons to be part of that. Uh, what else are you guys gonna add to it? 
+
+**James:** Well, anyway, the funding is, is, is The fun thing is it is just Postgres. So it's, it runs in single user mode, which is quite a fun hack, because Postgres has this single user mode from a long time ago, mainly as a debugging tool. But we were able to just, that one [00:46:00] of the key things that the initial repo that we inherited from the NEON team, what they'd done was basically use that mode to be able to run in a kind of, in the WASM environment where you don't have the same concurrency primitives available.
+
+Um, But apart from that, it is just fully featured Postgres, so it literally has all the features. It has all the indexes, all the data types, all the extension capability, um which is just a bit mad, right? Like, I mean, certainly for me as a web developer, the idea that you could run an entire fully featured Postgres inside the web browser is just feels a bit like you're living in the future.
+
+And yeah, when we've done stuff like, so, Like, one of the platforms that we're looking at is Tauri, which is a, it's like a, an application packaging system. And so it's good for desktop applications. And so with Tauri, for instance, we've done a PG light as the client side database with a, an Olama model for local AI, fast embed and PG vector.
+
+And suddenly you're able to make these applications, which are both like. interactive kind of real [00:47:00] time sync kind of transactional applications, but then when you're writing data you automatically create vectors in the client, feed that as a vector search into the AI, you have local RAG, so it sort of feels like these capabilities of a more advanced database in the client will be able to support some of these directions software's going in, where for instance you want to be able to feed data into AI that's running on device.
+
+I think Postgres with pgVector, just because of the way that it integrates the vector data into the main relational model, is a really strong bet for kind of how that's being built out. And you've seen, for instance, with TimescaleDB, they've just, they've just now released a ten times more performant pgVector kind of extension.
+
+So there's a lot of sort of engineering effort going to sort of optimising that stack.
+
+**Justin:** Nice. That's awesome.
+
+**Andrew:** Wanna ask the next question, Justin?
+
+**Justin:** Sure. 
+
+
+#### [00:47:48] Future of ElectricSQL and Monetization
+
+**Justin:** Um, so we always like to ask some future fashion questions at the end of our episodes. Um, and you know, this is an interesting area because it's like local [00:48:00] first in a, in a large way really does feel like the future. Um, so when we're, when you're thinking about, uh, the next steps for electric SQL, um, what, what does, what does that future look like?
+
+**James:** Well, interestingly, it's, it's actually less about adding features, and it's more about making what we already do really properly work. There's this sort of demo where, kind of, Like Valley with real time software where real time software you make great demos and it kind of works and then you sort of push it out into production and it doesn't scale properly and the sort of platforms die.
+
+What we have found as we've built out the system is we've been trying to sort of hold to quite a high bar around optimality. It's kind of because we come from this research heritage, so it's like what's the best possible local first platform and how can we provide the right, the best possible guarantees for building on this model.
+
+And what that has led us into is like quite a [00:49:00] complex stack. And so what we're focused on from a product point of view at the moment with the project is like people really want this to exist, but kind of not just exist at a kind of, I can play with the technology and it functions. It's like, I need to be able to deploy this into production.
+
+And like, would you trust your data to the system? And so that's really what we're focused on. And there's sort of a couple of different aspects, one of which is trying to push some of the things which we've built into quite a vertical stack out of scope. So I mentioned, for instance, LiveStore, like LiveStore does a much better job in client reactivity than what we built out as a first client library.
+
+So it's a much better fit to kind of integrate something like that or Drizzle or TinyBase in as a client library. And like we've built a whole number of steps of the tooling to sort of make a developer experience work. But we're trying to just focus in on the core sync engine. There's this sort of hard stuff around the concurrency challenges and the distributed system stuff and getting that active active replication to work. What we've done is it's twofold. It's sort of looking to try to just [00:50:00] simplify or slightly loosely couple the platform a little bit more so you can integrate some of these other alternatives and we do less in the core sync engine, but also we've been going back and focusing a lot on reliability of like the core sync and so like Can you get a million concurrent users in front of a single commodity Postgres?
+
+How does that, how does that initial sync perform? How fast is it compared to doing a standard data fetch? Like what's the sort of resource profile in terms of things like storage, memory, CPU, as you're scaling out that sync layer as you get kind of more users of an application? And so just a lot of the focus of the team at the moment is on that reliability piece.
+
+So we sort of keep the same feature scope. Yeah. In a sense, actually reduce it, but we make sure that as a sync engine component that you can have as a sort of data layer in your application, you can properly trust it. It's extremely reliable, it scales out with you, and you're not going to kind of hit issues where like your data model gets too large or you've got too many concurrent users and, you know, Because if you think [00:51:00] about it, if you buy into this kind of approach, you really need this sort of database grade reliability for that system, because you can't deploy out, say deploy out mobile applications, and then suddenly you've got some sort of data inconsistency, like it's one of the, one of the hardest things to, uh, to kind of debug or kind of resolve for yourself in production.
+
+So, you know, it's our responsibility to solve those problems, and thus we're slightly sort of pushing some of the other aspects of the system slightly sort of out of scope, because other people can do a better job than us with things like migration tooling and client side reactivity, but we need to focus on making the sync engine bulletproof.
+
+**Andrew:** So one thing I see missing from the website, uh, is a pricing page. So what is your guys plan to monetize all this? If you can talk about it.
+
+**James:** So, I mean, at the moment it's, you know, it's all Apache 2. It's designed for self host. Like one of the things is this is data infrastructure. It runs next to your database. It kind of needs to be open source technology. You know, [00:52:00] if we weren't, if we weren't open source, then you'd be sort of picking an open source alternative.
+
+So we can't see sort of any other kind of approach to this as a project. This has, this has to be sort of proper kind of permissive open source technology. In terms of monetization. It's a sync layer. There's kind of these like operational data replication flows. So there's an obvious piece there that you can monetize.
+
+You can look at the approach of building a hosted service. Um, and you could do that in different ways. We could do that as a company. We could partner with other people. So we're working with some very cool companies. There's people like Superbase, MotherDuck, et cetera, who are also kind of building our operational data infrastructure.
+
+And so whether we build a sort of sync service, whether they build a sync service, they're all sort of different options that we can look at. And then you have a thing where as this becomes more mature and it's delivering business value, you have a kind of prem cloud or kind of larger company monetization strategy.
+
+So if you are building a more serious application with a larger user base, [00:53:00] you would want to work with us as a company. And whether that's a sort of advanced edition, an open core strategy or some kind of, um, Uh, some kind of, uh, private cloud kind of, uh, productization and additional support. There's a lot of kind of features when you're running this stuff at scale that could be kind of very valuable to have.
+
+How does it sync out well? What kind of operational visibility? Do you have sort of standard kind of, uh, enterprise controls over your system? And interestingly, some of those are quite tied into some of the nuances of this as a sort of concurrent distributed system. If you like, you know, how do permissions work?
+
+Can you lock out an employee if you fired him? But, well, people are already making writes offline. So, you know, are those valid or are those not valid? So you have some interesting sort of specifics of this specific system that we could potentially build into that type of product. But to be honest, at the moment, as a company.
+
+Like we, we see quite a lot of those options. None of it means anything if we can first of [00:54:00] all get to some proper level of production use and deliver good business value, right? And I think if we can do that, there's such a big opportunity for this to become such a big shift in the way that people build software that because we have this sort of operational sync layer, there will be lots of opportunity to monetize.
+
+**Justin:** is really one of the interesting conversations at the local first conf is really talking about like monetization and traditional software distribution platforms. If you're thinking of a saas, it's like sasses have a very clear sort of monetization strategy. I think infrastructure products have always had been sort of on the fringes of this, of like, especially database products, trying to find a good way to monetize a database product has always been a challenging endeavor.
+
+But As we look further into not only monetization of your particular project, but also the projects that may use your project or whatever in the future, this is kind of some interesting questions around like how this space goes to market and what that means [00:55:00] and, you know, how it changes the shape of software capitalization and stuff.
+
+It's a, it's going to be really interesting to sort of watch it evolve over the next few years.
+
+**James:** Yeah, I think very much so. I think you sort of look at the economics of typical SAAS and it's kind of based around controlling the user's data in the cloud. And so a lot of the reason that people are interested in local first software is from that aspect of like, let's change this so that instead of that you can own your own data and that you're not sort of your data is not the product that companies are kind of forced to monetize.
+
+And then if you look at, but because that changes the sort of dynamics of monetization, it does, you have to kind of look at going, well, okay, if you do build applications on that pattern, well, then how do you monetize? Because, like, SAS has had this very strong kind of subscription based kind of revenue model sort of built into the paradigm.
+
+And, On the one hand, I think it is possible to kind of establish subscription revenue to software that's been built on a local first architecture. And actually, once you sort of [00:56:00] introduce kind of sync, which is one of the things that people will want, if they want sort of real time or team based collaboration, then that's sort of, in a way, by adding the sync in, it kind of allows you to bring in that same sort of subscription based revenue, even if kind of people can choose, maybe it's easier for kind of users to move off your platform.
+
+And maybe with some sort of data interoperability even sort of switch between platforms. I think the mobile applications are quite an interesting model where like you have the app store which changed the way that you could monetize making mobile applications where you could do the work as a developer to build an application but publish it to an app store and get paid as people use it.
+
+And I think one thing with local first is that that type of infrastructure will evolve. So. As a developer, you could publish real time collaborative software. And your users could use it by connecting into, say, a standardized sync protocol without you as the developer having to operate all of that software.
+
+So you'd be able to build applications without having to take on the whole operational [00:57:00] side of sort of running all the servers to route the data in the background. And I think that maybe changes the economics of the kind of creativity around creating applications and how you can kind of build and monetize applications without having to raise VC funding to kind of.
+
+be able to afford all of those servers. And I think if you look at some of the patterns around data ownership, you have, you have sort of thinking like, If you own your own data, you can maybe choose where that's hosted, you can have applications that are requesting access to that data, perhaps you can monetize providing your data to those applications.
+
+So I think there's definitely a kind of different type of economic platform for deploying software that can be unlocked by this as a technical architecture. And if, if we can crack that, you know, maybe it can become one that's a little bit more sustainable and actually balanced in terms of not having to mean that if you want to build software and monetize it, you're almost forced to exploit people's data or sort of lock them into subscriptions because that's the only [00:58:00] way of doing it.
+
+**Andrew:** Awesome. 
+
+
+#### [00:58:01] Conclusion and Final Thoughts
+
+**Andrew:** Well, I think that wraps it up for our questions this week. Thanks for coming on James. This was a really interesting conversation about all the things you guys are doing at electric sequel. And I myself am excited to try it out on a few projects. So thanks for coming on.
+
+**James:** Awesome. Well, thank you for having me. Uh, I should say if you're interested in ElectricSQL, check us out. We're electric sql. com. Um, and we're on GitHub at electric sql. So please check out the project and we have an open Discord community. And, you know, if you're getting on board, just sort of say hi, and we'd love to help you if you're interested in building apps on this path.
+
+**Justin:** Yeah, thanks for coming on, James. Uh, you and your team are doing fantastic work, uh, and I'm excited to see where, how it evolves.
+
+**James:** Awesome. Thank you. 
+
+​ 
