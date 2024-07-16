@@ -211,7 +211,7 @@ export async function processMdx(
 
   const guests = new Set<string>();
 
-  transcriptTab.raw.match(/^\*\*(.+)\*\*/gm).map((m) => {
+  transcriptTab.raw.match(/^\*\*(.+)\*\*/gm)?.map((m) => {
     const person = m.replace(/\*\*/g, "").replace(":", "");
 
     if (!hosts.includes(person)) {
