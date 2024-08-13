@@ -1,0 +1,391 @@
+---
+title: Nicholas C. Zakas - ESLint
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Nicholas-C--Zakas---ESLint-e2mqm4l
+youtube: https://www.youtube.com/watch?v=m9Oo_hI4EjI
+tags: javascript, eslint, linting, typescript, javascript-linting, static-analysis, lint, linter, code-quality, code-analysis, static-code-analysis, static-code-analysis-tools, javascript-static-code-analysis, javascript-static-code-analysis-tools, typescript-static-code-analysis, typescript-static-code-analysis-tools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're delighted to have Nicholas Zakas on the show to talk about ESLint.
+ESLint is a tool that helps you find and fix problems in your JavaScript code by writing plugins that check for patterns in your code's AST.
+We talk about the history of ESLint, the challenges of building a linter, and the future of of ESLint.
+
+- https://x.com/slicknet
+- https://eslint.org/
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:50] The Birth of ESLint
+[00:06:54] Ad
+[00:07:55] Challenges and Customizability in ESLint
+[00:15:47] Nicholas Zakas' Personal Health Journey
+[00:23:25] Introduction to FlatConfig in ESLint 9
+[00:30:54] Rewriting ESLint Core: Goals and Plans
+[00:37:24] Language Choice for the Rewrite
+[00:45:16] Supporting Multiple Languages in ESLint
+[00:52:09] Future of TypeScript Support
+[00:56:42] Vision for the Future of Linting
+[01:00:10] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Nicholas C. Zakas:** [00:00:00] ESLint didn't win because it was fastest. Oops. If there's something that you want in it and it's not there, you can go off and build it yourself and not have to wait for the core team to do it. that customizability is the key feature 
+
+**Nicholas C. Zakas:** That really made ESLint popular​ 
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey, everyone. We're really excited to have Nicholas Zakas on. ~~Did I say that right, Nicholas? Um, great. Thanks. Uh,~~ so Nicholas is the creator of ESLint and has had a tremendous, tremendous impact on the industry, ~~uh,~~ just from that alone. But Nicholas, you've also had a really long and storied career. ~~Uh, ~~and just really excited to talk to you about all the work that you've done over the years.
+
+**Justin:** ~~Um,~~ before we start asking our questions though, would you like to tell our audience a little bit more about yourself.
+
+**Nicholas C. Zakas:** Sure. Um, so I think most people know me these days [00:01:00] as the creator of ESLint. I'm also a coach for software engineers and my prior life was full time software engineer, did a lot of open source stuff when I was at I work at Yahoo and at Box, I've written a bunch of books on JavaScript and just generally enjoy the web and web technologies and talking with people about it.
+
+**Justin:** Yeah, that's awesome. I, uh, it's, I mean, it's hard to understate kind of like the impact that you've had because there's been multiple points in my career, you know, besides just ES Lint that I've touched either tools that you've built or frameworks that you've helped design or like read some of your books or like, you know, so it's, it's really, you know, really, really cool.
+
+**Justin:** Kind of a big honor to, uh, to chat with you. 
+
+
+#### [00:01:50] The Birth of ESLint
+
+**Justin:** Maybe let's start with, um, with ESLint, uh, because that's, that's the thing that you're sort of most well known for by a lot of our listeners. Uh, so [00:02:00] where did that project start? Like, how did the idea come about?
+
+**Nicholas C. Zakas:** So the project started when I was working at Box. We ended up with a bug because we were still supporting IE7. with some of our customers and got this report that basically nothing was working in IE7. And it turned out what had happened was a developer had been using the native XML HTTP request object, probably dating myself a bit. And in IE7, that was implemented as an ActiveX object. But a lot of companies had network policies that didn't allow ActiveX objects. And so, as a result, at this company, the Box web app just wouldn't work at all. And when we dug in, we realized that this was actually a solved problem at Box. There was [00:03:00] already a workaround utility for that situation that was based on Flash.
+
+**Nicholas C. Zakas:** But the person who wrote that code was unaware that we had this workaround utility. And so the discussion started, okay, how can we catch this in the future and make sure that when people are writing JavaScript here, they know they should not be using native XML HTTP requests. They should be using our wrapper around it so that it will include the fallback, the flash fallback.
+
+**Nicholas C. Zakas:** And there were just no good answers for it. Like the best that we could come up with was just creating a regular expression check on every JavaScript file. Uh, to look for XML HTTP requests and of course that's, you can have a lot of false positives with that because it can match comments, it can match strings, it can match all kinds of things.
+
+**Nicholas C. Zakas:** And so I started thinking about like what we really need is we need something that will parse the JavaScript [00:04:00] code and then be able to look specifically for an identifier that's XML HTTP requests. And in order to do that, we need a utility that can parse the JavaScript into an A ST, so we can poke at the a ST. And somebody at Box had actually already written something for PHP that parsed PHP, into an A ST, and then just kind of poked at the A ST to find patterns that they were worried about in PHP. And so I started looking around and came across as Prima, which is a JavaScript parser written in JavaScript.
+
+**Nicholas C. Zakas:** that could output an AST. And as I was playing with that, I realized, you know, there's all kinds of rules you could write against this AST. So what would really be helpful is to have a system that will traverse the AST. And then as you come to each node, it'll just run whatever rules you want on each node.
+
+**Nicholas C. Zakas:** Um, and [00:05:00] from that is where ESLint came from.
+
+**Andrew:** I love that it was centered around like plugins and this customizable use case from the start, because, uh, like a lot of the newer tools today are like not plug in focus. And I think it's a real folly of the next generation because like, literally just today before this meeting, I was working on ESLint rules that are so custom that they would not make sense in any other repo, but my own.
+
+**Nicholas C. Zakas:** Yeah, it's, so it's a pendulum that swings back and forth. Because you start with, well, I don't want any configuration. I just want to install it and have it work. And then you get to a certain point where you're like, well, I want it to work except like slightly different here. So then you need some sort of configuration.
+
+**Nicholas C. Zakas:** And then you find more things that are just one offs in your project versus somebody else's. So you need more configuration. And then eventually you end up like, you know, when ESLint started, It came with a bunch of stuff just like out of the box. You [00:06:00] didn't need a configuration file. But what we found was that as more people were using it, more people were turning off the default stuff and adding other stuff.
+
+**Nicholas C. Zakas:** And at that point, like, well, if everybody's just going to be turning stuff off, then it doesn't make sense to have all that stuff on by default. So let's have everything off by default and then let people add in what they want. And then you're like, well, it's great. It's super customizable. But then you reach a point where you have like a thousand rules that are enabled and configured.
+
+**Nicholas C. Zakas:** And that's when people start going like, Oh, configuration is terrible. Like what we really need is a zero config option. And then the next generation comes out and like, we are the zero config option for whatever tool you have. And then they go through the same process of people like, yeah, well, I like the zero config.
+
+**Nicholas C. Zakas:** Except for this thing. Like, I really want to be able to configure this. And before you know it, you're like right back at the other end of the pendulum again.
+
+
+#### [00:06:54] Ad
+
+**Andrew:** We'd like to stop and thank our new sponsor for the week, Mux. 
+
+**Andrew:** If you've ever tried to build an app that includes [00:07:00] video, you'll know it is no easy task. From storage to streaming to quality to even the player. There's so much to get right, and it's all very hard to do at scale. I know this from working at Descript, where we've had to build out our own video infrastructure. With Mux, you don't have to do any of that.
+
+**Andrew:** They handle everything you could possibly want to do with video. Whether it's uploading, creating and hosting thumbnails. Or even including a video player on your website. They have tools to help make that job easier.
+
+**Andrew:** it doesn't just stop there though. They have a whole bunch of cool features like real-time monitoring, but the one that really struck my eye was the ability to implement live streams. The API is as simple as you can imagine. And with that, you can build your own Twitch, build your own YouTube live. The possibilities are endless.
+
+**Andrew:** So if you're trying to build a video app and you don't want to worry about all the gnarly video details that come along with it, Mux is a great option to check out. To learn more, head over to mux. com.
+
+
+#### [00:07:55] Challenges and Customizability in ESLint
+
+**Justin:** Yeah, we always, we have so many of those loops in our industry. ~~Um, something I was reflecting on is a lot of like, or the few sort of linters that existed. Sorry, one second.~~
+
+**Andrew:** ~~Housekeeping's coming by. Maybe.~~
+
+**Justin:** ~~Sorry about that. Uh, I didn't put the do not disturb sign out and okay, let me back up. Um,~~ [00:08:00] Something that's interesting that I like to think about sometimes, uh, when ESLint was like first coming out, the linters of that era, at least in the JavaScript, what few of them were, seemed to be more stylistic focused or the tools that like operated in that space that I was familiar with was like, Just style focused things.
+
+**Justin:** ~~Um,~~ and this is like pre, like prettier and auto formatters. ~~Um,~~ so, I also find it interesting to hear about your first use cases. Like, okay, we're looking for something that caused a bug. And then there was a lot of application of ESLint for like enforcing stylistic rules. And I'm curious to hear about like how you sort of like thought about that use case in those early days.
+
+**Justin:** Is it like, were you like, Oh yeah, yeah, this is a great thing. Use it to like enforce a consistent like code base. Or were you sort of more wary of using the tool sort of like as that? Like how were you kind of thinking about it in the early days?
+
+**Nicholas C. Zakas:** Yeah, so early on the linters to compare to were JSLint and [00:09:00] JSHint, and JSHint being a fork of JSLint, and JSLint being created by Douglas Crockford, who was very interested in the correctness of code, both in functionality and in appearance. And so JSLint had a lot of stylistic rules that were built into it that Crockford felt were best.
+
+**Nicholas C. Zakas:** Um, and that was part of the reason that the fork was created, JSHint, it's because there were a lot of people who didn't want to write code the way that Crockford wanted to write code and goal of JSHint was to be more customizable and more flexible. When ESLint started, I was focused primarily on bugs and identifying problems. But what happened was people said, like, ESLint is great, but unless you can support these rules from JSHint, I'm going to have to use both tools, and I really don't want to have to use two tools, like one to do the [00:10:00] stylistic stuff and one to do the, the pluggable rules. So I went through and started just duplicating the rules from JSint to give people the ability to just use ESLint and not have to worry so much about which rules were in which tool. And early on, I thought that was okay. There weren't that many stylistic rules to copy over. And I thought that once they were copied over that, that would pretty much be it. That would be the set of rules. ~~Um,~~ but what I failed to realize is that people are extremely nitpicky about their code and how it looks, and that people would just keep asking for more and more rules, more and more options.
+
+**Nicholas C. Zakas:** They could customize it to exactly what they wanted it to be. And. After a while, it just got to be too much. We were spending so much time on these stylistic rules, where somebody would come in and say, well, in my style, you know, on the third Tuesday of every month, I like to [00:11:00] have a semicolon there, but otherwise I don't.
+
+**Nicholas C. Zakas:** So can you add in an option for that? And we eventually just got to the point, like, look, We're spending too much time on these stylistic rules. Don't actually think that ESLint is the right tool to be handling these. No one wants to be told this is supposed to be indented eight spaces instead of four, go back and fix it yourself.
+
+**Nicholas C. Zakas:** It should just be fixed. And so now that we have tools like Prettier and even Deprint, These are great tools for formatting your code. You should just run them before you check them in. And then you can eliminate all of that noise from your ESLint configuration.
+
+**Andrew:** Yeah, there's been a lot of like Twitter rumblings of people going like, I don't need a linting anymore and just like throwing out the tools completely. And it feels so self imposed to me because as you said, it's like the tool does nothing when you install it initially. And you're the one that's adding all these constraints.
+
+**Andrew:** So like people kind of shoot themselves in the foot by adding like, Oh, let's enforce all the prettier styles here too. And then your file [00:12:00] blows up into a million red squiggles.
+
+**Nicholas C. Zakas:** Yeah. And I get a lot of like, Oh, ESLint is so slow. Like, well, ESLint. itself is not the fastest linter in the world because it does do a lot of things, but there are a few things that are within your control to make it faster. Like the number of plugins that you use, the number of rules that you use, and then there are specific plugins like TypeScript ESLint is pretty slow because it's looking at your entire project and not just the individual file that you want to have linted because it's trying to understand Everything that TypeScript understands about your project and ESLint plugin import, like scan your whole project to look for missing imports and all of that is really expensive.
+
+**Nicholas C. Zakas:** And unfortunately, the current ESLint core is all synchronous as well. So all of that is blocking. It can't really go off to do anything [00:13:00] else. But, you know, the first thing to If you find that ESLint is slow is to look at what rules that you have enabled. And this is why I'm now a big proponent of just not doing stylistic rules in ESLint because you can eliminate a bunch of that, uh, performance problem by offloading all of that to Prettier, which doesn't have to do the types of calculations that ESLint does because it it's playing completely different games.
+
+**Nicholas C. Zakas:** And so, you actually have a fair amount of control over how fast or how slow ESLint is. And we're also working on our side to make it as fast as we can, but ultimately, the number of files you're running it on, the number of rules that you're running, that has an impact.
+
+**Andrew:** Yeah, and I always think about that point when these new linters are like, oh, we're the fastest thing around. And it's like, well, you don't have all the plugins that are going to make you slow. Like there's, there's an elephant in the room and it's blue and it's called TypeScript.
+
+**Nicholas C. Zakas:** Yeah, [00:14:00] and the other thing is, and I tell people this all the time, ESLint didn't win because it was fastest. Oops. Like JSLint and JSInt, both were faster than ESLint when it came out. So speed is actually not the determining factor of why people were using ESLint in the first place, which is why other things that came along, like there's been at least, I think three JavaScript linters written in Rust to this point that I'm aware of. And they haven't been able to really get much of a foothold because as soon as you start using it, you realize that. You don't have access to the plugin ecosystem anymore. And that means that you're completely reliant on the maintainers of that linter to create all of the rules and do all of the functionality that you need.
+
+**Nicholas C. Zakas:** Whereas with ESLint, you don't have to wait for us. Like if there's something that you want in it and it's not there, you can go off and build it yourself and not have to [00:15:00] wait for the core team to do it. And think of that customizability is the key feature. That really made ESLint popular and why it's hard for other linters, even though they can be 10 times as fast as ESLint.
+
+**Nicholas C. Zakas:** But if they can't do everything that ESLint can do, it's hard to compete on just speed.
+
+**Andrew:** It's very similar to the, the inception of ESLint where you had to do that stuff for JS hint users. Like to win over the whole crowd, you need to emulate what's already there to a point.
+
+**Justin:** So, uh, we really want to talk more about, like, the future of ESLint and sort of some of the things you have planned. ~~Uh,~~ but before we transition to that, I'd just like to sort of talk about you a little bit more. ~~Um,~~ 
+
+
+#### [00:15:47] Nicholas Zakas' Personal Health Journey
+
+**Justin:** so, kind of one of the things that had happened in your life, like, while you were working at Box is, uh, you had Lyme disease and it sort of, like, affected your health.
+
+**Justin:** Uh, and, uh, On this podcast we really like to [00:16:00] talk about like the people behind the tools and like humanize the builders and I just want to hear a little bit of your story about like what that impact was on you and if there's anything you can share to like educate people or like, you know, um, I don't know, just really curious to hear more about your experience at that time.
+
+**Nicholas C. Zakas:** Yeah, so it actually started before then. ~~Um,~~ it's a little bit of a weird story, especially if you're not familiar with Chronic disease and kind of how it works. Um, but it actually goes all the way back to when I was in college where I woke up one morning, was really, really sick. So sicker than I've ever felt in my entire life.
+
+**Nicholas C. Zakas:** ~~Um,~~ couldn't eat, could barely drink,~~ uh, ~~flu ish, you know, fever, body aches, just felt terrible. Um, nobody could figure out, you know, what was going on. Nobody had any idea. I was hospitalized a couple of times. ~~Um,~~ all they could find was I was [00:17:00] dehydrated. That, that's all they could tell me. ~~Um,~~ and even though I eventually recovered from that, it took about a year, um, I found that I kept falling into this pattern of like, I'd feel okay and then I'd start feeling run down and then all of those symptoms would come back and I would be really, really sick for like two weeks and then it would just kind of go away.
+
+**Nicholas C. Zakas:** And I would be okay again for a few more months, and then it would come back, same symptoms. ~~Um, ~~and that just kept happening. And went to doctor after doctor, couldn't figure out what was going on. Um, but you know, when you're, you're in your 20s, tons of energy. Um, think like, ah, whatever. It, you know, it's fine.
+
+**Nicholas C. Zakas:** I can still deal with stuff. So, dealing with regular life, you know, job, relationships. whatever. ~~Um, ~~but this kept happening and eventually I got diagnosed with chronic fatigue syndrome. ~~Um,~~ cause [00:18:00] I, I did, I was having trouble energy wise, just really tired, sleeping a lot. ~~Um,~~ but nobody could tell me why. And if you look at, you know, the literature, there's no known cause.
+
+**Nicholas C. Zakas:** Chronic fatigue, there's no known cure. it, you just kind of live with it. Uh, and so that's what I did. Just kind of lived with it and did what I could, um, continued working, continued my career, you know, open source speaking, writing, and just kind of figured like, uh, you know, that's, that's just my body, just what it does, and I'll do what I can.
+
+**Nicholas C. Zakas:** ~~Um,~~ by the time I got to box, it had gotten a lot worse. So the, the periods of time where I had no symptoms were basically down to zero, uh, and the periods of time where I had symptoms or all the time, pretty much. So it was a struggle. Like, my first year at Box was pretty rough. Rough. I did my best. ~~Um,~~ I did miss a lot of time as I was going through that.
+
+**Nicholas C. Zakas:** And then once again, one morning I just woke up and I just [00:19:00] couldn't get out of bed. I didn't have the energy, could barely kind of roll over and get myself dressed. And once again, started going, seeing a bunch of doctors and eventually got diagnosed with Lyme disease. And Lyme disease is carried by ticks, so you get bitten by a tick, uh, and it kind of injects it into you.
+
+**Nicholas C. Zakas:** And it can be dormant for a while. Uh, I don't remember ever being bitten by a tick. ~~Um,~~ some people get what's called a bullseye rash. And if you look that up, you can see why it's called that because it looks like there's an actual bullseye on your skin. Uh, there's like a, a really like bright red center and then like a less red ring around it, another less red ring.
+
+**Nicholas C. Zakas:** Um, and if you have that, like you should go to the doctor immediately and you should have them prescribe you antibiotics immediately. whether or not you have other symptoms, [00:20:00] because if you see that, you definitely have Lyme disease in your system and you don't want to wait for it to get worse. And so that was basically the diagnosis that I got initially was you probably got bitten by a tick back in college.
+
+**Nicholas C. Zakas:** And it's been Lyme disease has been living in your body this whole time and just kind of coming back when you were feeling weak and run down and then kind of going into remission, uh, when you were feeling stronger. So. figured okay, like we'll treat this. Um, the unfortunate thing is, you know, if you don't treat it early, it gets very difficult to treat.
+
+**Nicholas C. Zakas:** So, you know, normal course of antibiotics, um, I think at this point is like three weeks, uh, during the acute phase and it pretty much knocks it out for most people. ~~Um,~~ but if you've had it living in your body for years, uh, that doesn't work. So ended up first, ended up just kind of working from home and then had to stop working altogether because I was just too [00:21:00] sick.
+
+**Nicholas C. Zakas:** Um, had to switch doctors because first doctor just really couldn't get me better. ~~Um, ~~and then the second doctor also couldn't get me better.~~ Uh, ~~and then we actually discovered that there was black mold in the apartment that I was living in. So, Not only was I dealing with the Lyme disease, the chronic fatigue, I was dealing with mold illness on top of it.
+
+**Nicholas C. Zakas:** Uh, and so finally got out of that place. Once I got out of the moldy environment, I was able to finally start making some progress. ~~Um,~~ but, you know, at this point, it has been eight years. since I've had, since I've been healthy enough to have a full time job. Uh, I'm, you know, when I work on ES Lent, it's, you know, an hour or two each day during the week. ~~Um,~~ it's about what I can devote to it at this point. ~~Um,~~ but I'm, I'm doing better. I can, you know, I'm still at this point, I kind of been declared Lyme disease free.
+
+**Nicholas C. Zakas:** Uh, and the [00:22:00] challenge now is really more the chronic fatigue that it triggered, which takes a lot more work to help your body recover from. ~~Um,~~ but I'm a lot better now than I was a couple of years ago. And very grateful for that and grateful that I have the time and the energy now to work a little bit on ESLint and to, um, build up my coaching business.
+
+**Nicholas C. Zakas:** And yeah, life goes on.
+
+**Justin:** Well, thanks for sharing that. And I think, you know, In spite of that, it's incredible of like how much you've accomplished. Um, but I also think it's like really important to sort of highlight the impacts that chronic health issues can have because especially I think At least I have been made more aware of chronic health issues since COVID has hit, you know, there's like a lot of people that I know in my, in my Twitter network who've got long COVID and who have really struggled to function.
+
+**Justin:** And I think it's like, it's important as an industry that we don't. [00:23:00] forget, you know, that there are people who even doing really good, really profound work are sort of struggling with these health issues. So thanks again for your story. And you heard this folks. If you get bit by a tick and you have a bullseye rash, please, uh, go to the doctor, that's important. ~~Cool. With that, let, Oh, go ahead, Andrew. Go ahead.~~
+
+**Andrew:** ~~Uh, ~~I'll also thank you for sharing. Uh, I haven't dealt with chronic health issues, but I, I really respect the, the struggle. Like that seems like it was an immense challenge to overcome. ~~Um,~~ 
+
+
+#### [00:23:25] Introduction to FlatConfig in ESLint 9
+
+**Andrew:** but moving on to ESLint 9, uh, a lot of things changed. Uh, the biggest one being the way you configure things.
+
+**Andrew:** So, uh, for people who don't know what flat config is, could you describe it to us and kind of the journey it took to get to this point?
+
+**Nicholas C. Zakas:** Yeah, FlatConfig is our nickname for the new config system, because the old config, config system was very much not flat. So in the old config system, there were so many different ways that you could extend your configuration. That it was really complicated. [00:24:00] So there was the extends key where you could say extends, you know, Airbnb, you get all the Airbnb configuration in and any number of other things.
+
+**Nicholas C. Zakas:** Uh, there were overrides where you could do override specifically for specific files, specific directories. You could embed configuration in your package. Jason file, you could embed override files in each individual directory as well. And then ESLint would go through and combine the configurations from all of the ancestor directories into one configuration. There was just a lot going on there that made it really difficult, both for people to. Configure and also to reason about and debug if something went wrong, because it was so hard to figure out where a specific configuration was coming from when there were so [00:25:00] many different areas that it could exist.
+
+**Nicholas C. Zakas:** And we got to the point where the configuration was so complicated that. When people had problems. Even the core team couldn't figure out why they were happening anymore. There were just too many variables to try to figure out. As a result, decided that it was probably time to rethink configuration from scratch because as.
+
+**Nicholas C. Zakas:** I'm sure a lot of people have experienced with software. You keep coming up with new features. Like let's add this to the configuration. Let's add this to the configuration, but when you don't stop and take a step back and look at everything holistically, you can end up with a bunch of features that don't make sense together, even though they each made sense individually.
+
+**Nicholas C. Zakas:** And that's kind of where we ended up with the old config system, which was the ESLint RC config system. So the new config system, FlatConfig, the whole idea was like, let's just [00:26:00] put everything in one file. So no more of this like extends and we're going to go off and we're going to try to load a bunch of different configurations for you.
+
+**Nicholas C. Zakas:** Um, no more trying to merge configurations from different directories. It's just making things way too complicated. What we're going to do is we're going to have everything in one file, and you can import into that configuration file anything you want, from anywhere you want. And mix it and match it any way you want.
+
+**Nicholas C. Zakas:** It's not going to be on ESLint to do that anymore. And as a result, I think we came up with a system that feels familiar enough to the original configuration system that it's not super confusing. Like it doesn't feel like you go in there and you just have no idea what's happening, um, but it's more organized and easier to reason about.
+
+**Nicholas C. Zakas:** [00:27:00] When something goes wrong so that if there's a problem, you have a pretty good chance of figuring out what the problem is yourself. Uh, and if there's a bug, then it's a lot more likely that we as the core team are going to be able to figure out what it is and fix it.
+
+**Andrew:** What types of problems were hard to debug? Like just what, like two rules not interacting well with one another or two configurations?
+
+**Nicholas C. Zakas:** So one big problem is the dependencies that shared configs had, because the shared configs, even though they're NPM packages, most of the time, There were typically like a YAML file or a JSON file or something like that. And that meant that ESLint needed to load in any plugins that that configuration was using.
+
+**Nicholas C. Zakas:** But that was really hard because you couldn't have the plugins of that shared config be a dependency in that shared [00:28:00] config package. Because if you did that, then those Packages were too deep in the node modules hierarchy for ESLint to be able to load on your behalf. So then you needed to include those dependencies as peer dependencies.
+
+**Nicholas C. Zakas:** And then sometimes they would be installed and sometimes they wouldn't be. And most of the problems that people would come to us with were errors about loading those plugins. Because they would get an error message that said ESLint couldn't find whatever plugin to load. And they couldn't figure out how to fix that.
+
+**Nicholas C. Zakas:** And we couldn't figure out how to fix that. It's like we were trying our best to hack into the Node. js module loading system, basically recreating our own version of that inside of ESLint, which had all kinds of edge cases and all kinds of problems. And so that was one of the big things that we wanted to get rid of.[00:29:00] 
+
+**Nicholas C. Zakas:** is we didn't want to have a custom way to load in other files. We just wanted you to use import inside a file yourself.~~ Um,~~ so that was one category of problem that was really difficult to deal with. Um, and another one is people didn't understand why they were getting certain results. Like, why is this lint rule enabled?
+
+**Nicholas C. Zakas:** And they had like, you know, 20 different ESLint config files in their project. And the way ESLint was configuring them, like, at the end, it just spit out, you know, a final configuration. And we eventually ended, uh, ended up adding a command line flag called print config that could print out the final calculated config for any given file, um, which is helpful, except when you don't know how that config was calculated, which we just couldn't tell people [00:30:00] because there were too many variables.
+
+**Nicholas C. Zakas:** ~~Uh,~~ and so, uh, A lot of the requests that we were getting on the core team were basically just help me figure out why my configuration file is throwing this error or isn't working the way that it should be working. And that was just taking up a ton of our time. And so that was another thing that we're like, you know, we can't get anything done for constantly helping people debug configuration issues.
+
+**Nicholas C. Zakas:** So it seems like the time is right to come up with a new config system. That's just going to be easier for everybody to debug and work with.
+
+**Justin:** Yeah, that's, uh, it's something that I've experienced before is just like, especially having sub ESLint configurations that I wasn't aware of, uh, as has sort of been before. But, um, I think the, the flat config is going to be a huge improvement and I'm excited to see it. ~~Uh,~~
+
+
+#### [00:30:54] Rewriting ESLint Core: Goals and Plans
+
+**Justin:** recently you started talking about, um, rewriting core [00:31:00] potentially.
+
+**Justin:** Uh, so. ~~Uh,~~ have you, like, started doing that? Are you still, like, actively planning to do that? And if so, um, what's your, what's your sort of plan? What do you want to change? What do you sort of want to get out of that?
+
+**Nicholas C. Zakas:** That is still the plan. It's been our plan, I think since last year or maybe the year before was when I posted the first discussion in our repo and yeah, the, there's a lot of stuff that we want to do in ESLint that we just can't do right now because of the core. I alluded to earlier that the core is entirely synchronous.
+
+**Nicholas C. Zakas:** So that immediately means that we can't do, like, asynchronous rules. We can't do asynchronous parsers, which are things that people have been asking for, for a while, but we just can't do it because the core is all written synchronously. So the thought process was, well, if we want to be able to do those things, which we do, async parsers, async rules.
+
+**Nicholas C. Zakas:** open up a [00:32:00] lot more possibilities. The two ways that we can do that are, one, we can try to evolve the current core, but realistically, that means duplicating every sync function with an async function. And at that point, you're basically writing two different cores anyway. So you might as well just say, hey, let's throw away and let's rethink things, um, from scratch and just see what we come up with.
+
+**Nicholas C. Zakas:** Since. We're going to be doing that anyways, let's just do it the right way. And I've had a lot of heartache around the ESLint API. Like it was, ESLint was never designed to be API driven. The very early version of ESLint just had one API exposed, which was Linter. And it was only exposed as a way to create a demo on the website.
+
+**Nicholas C. Zakas:** Like that was the only intended use case for it. In fact, to this day. We say that there is no [00:33:00] officially supported browser API for ESLint because it was never intended to be used that way. And in the meantime, people have been using it that way. Uh, and then people wanted to be able to access the kind of higher level stuff that the CLI was doing, reading files, reading config files, stuff like that.
+
+**Nicholas C. Zakas:** So we expose this ESLint class. And so now we have. An ESLint class and a linter class. And that's confusing. It's not entirely clear which one you should use. And so it's like the secret is like the linter class is the thing that will run in a browser, even though it's not officially supported to do that.
+
+**Nicholas C. Zakas:** And the ESLint class is the thing that integrations use to kind of emulate what the CLI does, but it doesn't do everything that the CLI does. So it's a bit of a hodgepodge of an API. And, and. We're at [00:34:00] the point where when somebody wants us to expose something, we have to decide which of those two classes does it belong to.
+
+**Nicholas C. Zakas:** And that decision is sometimes forced because if we want it to be accessible in the browser, then it has to be in linter because that's the only thing that will actually work in a browser. And that's a terrible way to design an API. It's like, oh, if I want it available in the browser, it has to go in Linter.
+
+**Nicholas C. Zakas:** If I don't want it available in the browser, um, it needs to be available in Node, then that needs to go in ESLint. It's a terrible way to design APIs. So the goal is to come up with an API that actually makes sense for all of the consumers of our API. Something that is Runtime agnostic as a core. So we're going to have a new package that is at ESLint slash core that is completely runtime agnostic.
+
+**Nicholas C. Zakas:** So that will work in any environment [00:35:00] that runs at least ES6 JavaScript. Then we'll end up having. A package that's specific for node that will use node APIs to interact with the file system and stuff like that. Um, but the core itself is no longer going to be just one giant class. It's going to be a bunch of smaller composable classes.
+
+**Nicholas C. Zakas:** So when you're doing an integration, you will have to write. more code. Um, but in doing that, you're going to have a lot more control over how you're working with ESLint. It's going to be a lot more flexible, hopefully a lot easier to test and a lot less error prone. Uh, and the goal is really to adhere to the single responsibility principle and just create a bunch of these small classes that each do one thing really well.
+
+**Nicholas C. Zakas:** And then we combine them together to [00:36:00] create. The CLI, we combine them together to create editor integrations, um, and as a baseline, any environment that's capable of running JavaScript can at least use the core to implement ESLint in some fashion. Uh, and that way we don't need to worry about, you know, are we being too node specific, which is something that I was concerned about with the current ESLint.
+
+**Nicholas C. Zakas:** And part of the, um, new configuration system as well was just removing a lot of the node specific. functionality from it so that ESLint didn't have to be tethered to Node necessarily anymore. And this process is ongoing. ~~Uh,~~ I am in the process of writing in RFC at the moment of kind of my first pass of what I think this should be. Um, it's likely to be a pretty long process and just based on the number of hours that have available. [00:37:00] Uh, and also on the complexity of doing a rewrite, but the new config system took It took five years to vet and implement, and I think we ended up with something pretty good. I'm hoping the core rewrite doesn't take five years, um, but it probably will take at least a couple years before everything is up and running and, and fully switched over.
+
+
+#### [00:37:24] Language Choice for the Rewrite
+
+**Andrew:** So when you initially announced this, there were a lot of people that were going, uh, what language are you going to write it in? Are you going to rewrite it in Rust? So I'd just like to hear your thoughts a little bit about, uh, choosing a new language for the rewrite or if you're choosing a new language at all.
+
+**Nicholas C. Zakas:** So short answer is we are not choosing a new language. It's going to be rewritten in JavaScript, strictly not TypeScript, uh, but JavaScript with types. So we can still get type checking in the core. I feel strongly that you have a JavaScript parser that ESLint is written on top [00:38:00] of, um, which we do call a spree, uh, that we need to be dogfooding that parser ourselves.
+
+**Nicholas C. Zakas:** And even though you can use ESLint with TypeScript, um, that wouldn't be exercising our parser. And I don't think we would be doing ourselves or anybody else a service by omitting that. Like that's the way that we find a lot of bugs is by dogfooding everything that we're working on ourselves. So it'll be JavaScript with type checking enabled. We did look at Rust and Rust is interesting because it's fast. Number one, um, but also complicated. So Rust is a lot more difficult to work with. There are likely a lot fewer Rust developers in the ESLint user base. Which meant that we would potentially be dissuading contributors [00:39:00] from our core audience.
+
+**Nicholas C. Zakas:** I think one of the things that has really benefited ESLint is that if you are a JavaScript developer and you want to contribute to ESLint, well, you can, it's written in JavaScript. ~~Um,~~ if it's written in Rust. I think we probably get a lot fewer outside contributions. And, I mean, I even went through the process of teaching myself Rust, creating a Rust project, ~~uh,~~ just a JSON parser so I could learn how it worked, ~~um,~~ and experimenting with it, and finally got the hang of it after some very trying first few months, and ended up enjoying it.
+
+**Nicholas C. Zakas:** I mean, I, I really do enjoy Rust. It was a lot of fun to write once I got the hang of it. And I like the speed. There's a lot of stuff I like about Rust. The problem that I couldn't get over was what about the ESLint plugin ecosystem? How do I get that to interact [00:40:00] with a core that's written in Rust?
+
+**Nicholas C. Zakas:** Because if we come out with a version that says, Oh, sorry, plugins don't work anymore. Then that's game over. Like why bother using ESLint over anything else at that point? Cause it is the plugin ecosystem that is a strength of ESLint. And if you look at like what Biome is going through right now, like they have also come to this conclusion that in order for the project to grow, they need a plugin system and that plugin system can't be Rust.
+
+**Nicholas C. Zakas:** It needs to be JavaScript, and they're going through the process now of trying to figure out, like, is there a way that we can create a JavaScript API that will allow people to write plugins and still have it inter interact with the Rust core? And I'm interested to see if they can solve that problem, ~~um,~~ because there's a lot of challenges going back and forth between Rust and [00:41:00] JavaScript, because it's not just that rules need to be written in JavaScript.
+
+**Nicholas C. Zakas:** Because that alone is a difficult problem, but you can embed, you know, a parser, a runtime into your Rust application and make stuff work. Okay, but it can't just be some new flavor of JavaScript, right? You need to be able to support, like, the npm ecosystem, because people are going to want to write rules using existing npm packages.
+
+**Nicholas C. Zakas:** So then you actually need to embed like node itself or Dino itself into your rest application, and you are passing things back and forth between both worlds. And then you end up with serialization and deserialization performance costs, which can be quite high. And so after at least my initial explorations with rust, uh, pretty quickly came to the conclusion that. It was going to be a lot more [00:42:00] work than I initially thought it would, and I wasn't sure that we were actually going to be able to deliver something that was valuable enough with all of that additional complexity over just continuing to build in JavaScript, just breaking up the core to make it faster, make it easier to work with.
+
+**Nicholas C. Zakas:** Look at, you know, what were some of the bottlenecks people were coming in with and trying to figure out ways to fix that. Um, creating an async core actually allows us to do a lot more interesting things to improve that paralleling parallelization of different types of operations. All of a sudden becomes an option.
+
+**Nicholas C. Zakas:** Um, so there's a lot that we can do staying within the JavaScript ecosystem that I think will allow us to move faster and not cut off all of the plugins that we already have.
+
+**Justin:** Yeah, [00:43:00] like you already said, I think that'll be key, uh, for the success of any new version is, like, you have to sort of maintain some support or parity for the, like, extensions that you had. Or the plugins and it is something that we've heard from folks writing Like native tooling and rust that interrupts the js ecosystem.
+
+**Justin:** It's like as soon as you Implement like oh you can write some extension in javascript. Now. You have a massive sort of like performance drain Just because of the sort of interop, the message passing, you know, data transference or whatever, it's the same problem that like WASM can have a lot of times, it's like one of the big performance problems that it can have is like, if you're passing a lot of data back and forth, that can be particularly slow or like, you know, reduce some of your performance benefits.
+
+**Justin:** ~~So, uh,~~
+
+**Nicholas C. Zakas:** And that was actually the initial exploration that I did was I wrote this JSON parser in Rust. ~~Uh,~~ and then compiled it to WASM and try to load that [00:44:00] into, uh, into a JavaScript environment thinking like, oh, it's going to be like way faster because it's written in Rust, it's in WASM, and I'm going to be able to get that AST out just like so much faster.
+
+**Nicholas C. Zakas:** And it ended up being significantly slower than the parser that I wrote in JavaScript specifically because of the serialization cost. When I ran a test where I just passed true back from WASM instead of the entire, um, AST, then the performance was equal to what it was in the JavaScript parser, ~~um,~~ which meant that there was basically zero performance gain by writing that in Rust because parsing and then just returning, uh, a Boolean or a number.
+
+**Nicholas C. Zakas:** It was only as fast as the JavaScript version that was returning the entire AST. And then once you serialize the AST and then deserialize it in JavaScript, it was [00:45:00] so much slower that it was just not even worth it at that point.
+
+**Justin:** Yeah, it's, don't make performance decisions on what you think you've heard about some language or tool being fast. It's like you really have to experiment and measure. That's, that's really important.
+
+
+#### [00:45:16] Supporting Multiple Languages in ESLint
+
+**Andrew:** So, a part of that announcement was that ESLint would start officially supporting languages other than JavaScript. Uh, what are those languages? What does that entail? Are there like more, like, does ESLint have multiple different ASTs now? Uh, is the name gonna change?
+
+**Nicholas C. Zakas:** The name is not going to change. It's going to stay ESLint. And I already got some feedback on Twitter about that, to which I responded, We don't have anywhere in the documentation that says that ES stands for ECMAScript. You can do a search. You won't find it. It's not there. So I don't feel like we need to change the name for any particular reason.
+
+**Nicholas C. Zakas:** And plus, the ESLint [00:46:00] brand is pretty strong. People understand what it means, what it does, and I think trying to create something new just because it's expanding its scope. wouldn't be a good use of time and energy. To answer some of your questions there, the idea is that there's a lot of different files in your web project that you probably want to have linted along with ESLint, and maybe you're using a different linter right now.
+
+**Nicholas C. Zakas:** Maybe you're not, but when I look into any of my projects, like I see Markdown files, I see JSON files, I see YAML files. Um, sometimes I see HTML files. Sometimes I see TOML files. And for a long time, people have been hacking ESLint to Lint non JavaScript languages. There's a bunch of plugins out there.
+
+**Nicholas C. Zakas:** There's GraphQL ESLint, there's [00:47:00] HTML ESLint. There's a lot of plugins out there that basically created a parser that ESLint could understand. And then basically tricked ESLint into parsing these other languages. So people have been doing this for a while. And so what we wanted to do was just say, okay, like, let's not keep having all of these other languages flowing through the JavaScript logic, because that's what's happening right now is all of this JavaScript specific logic is running on non JavaScript ASTs. And we've had to go in and make some adjustments to allow that to happen and be safe. But it's kind of a pain. Like we, we need to check and see, like, do we think this thing is a JavaScript AST or not? And if not, then like, don't do some of the more complex stuff because it'll just break things. And we wanted to avoid all of that mess.
+
+**Nicholas C. Zakas:** So the idea is [00:48:00] that there will be a new API for plugins that is a language API. And so just like you can create a plugin that has rules or configurations or processors, you can also have in that plugin languages that it exposes. So this will be built into any existing plugin that you want. It's not a new plugin format.
+
+**Nicholas C. Zakas:** It just adds a new key. to the plugin format, which is languages. And then a language class or object defines how ESLint should interact with this Language, because not every parser that exists out there creates a tree that is something the current ESLint core can understand. So that's one of the constraints right now is that you really need to create an AST that has things in the place that ESLint expects them to be, uh, [00:49:00] for JavaScript.
+
+**Nicholas C. Zakas:** With the language API, that's no longer true. You are free to use whatever AST format you want. You just define in that language object where ESLint should look to get the information that it cares about, which is like, you know, the location of different nodes. and the names of different nodes, uh, and how it can find different parts of the code. And once you do that, then any parser that can create an AST, you can use that to create an ESLint plugin. And then ESLint will go through and walk the tree and stop at each node and run rules for you that are written in the same format as the JavaScript rules are today. written using the exact same format, you just change the names of the nodes, uh, and maybe some of the methods that you call, but otherwise it's the same familiar API.
+
+**Nicholas C. Zakas:** And [00:50:00] so the plan right now is for the core team to create. Two official plugins for, uh, one for JSON and one for Markdown. So those will be our first two official plugins. And we're using those as kind of proofs of concept for the new language API. You know, I've been hacking on both of these now for several weeks, just trying to fine tune what the API should be and how it should work. And then once we get those done. We'll publish some documentation for how to create these languages yourself. And then our hope is that once we do that, um, people will go forth and start to create plugins for other languages on their own. Because again, we feel like our job is to provide a really solid core that people can build upon.
+
+**Nicholas C. Zakas:** We felt like it was important to create a couple of initial language plugins that people could [00:51:00] use as examples of how to do stuff. But we're really hoping that once we get the API finalized, once we get the documentation out there, that the ecosystem will build out on its own for all of the languages that people want ESLint to be able to lint.
+
+**Justin:** So an important part of this story is, is obviously TypeScript support. TypeScript, you know, having gained massive popularity, uh, especially in the last several years, uh, there was TS Lint that, uh, uh, originally existed as sort of like, um, Not even a fork of ESLint, but like a sibling and it had sort of its own semantics that was very, you know, dedicated to TypeScript and then eventually support was dropped for that and that has been all, you know, added by the community and various points into ESLint.
+
+**Justin:** So, going forward, do you think that the support for TypeScript, is that going to be? Sort of rolled in the ESLint or I'm not [00:52:00] exactly sure what the, the, the direct involvement now is, or, um, will that be like a community driven effort? Like, how is, what is the TypeScript shape going to look like going forward?
+
+
+#### [00:52:09] Future of TypeScript Support
+
+**Nicholas C. Zakas:** The current state of things is that TypeScript ESLint is a plugin that is managed by a completely separate team, separate from the core ESLint team. Uh, and that is what we What we want is we want the people who are really familiar with TypeScript to be working on the TypeScript leg of the ESLint ecosystem to make it as good as possible, because the core team doesn't have the time to devote to that.
+
+**Nicholas C. Zakas:** And we don't necessarily have all of that TypeScript knowledge that. They do from working with the TypeScript team, uh, more closely. Would we like to have better integration with TypeScript? Yes, [00:53:00] definitely. Does that mean we're going to roll it into the core? Probably not. Um, because there's something that I think people need to understand about ESLint is the reason that it's been around now for 11 years.
+
+**Nicholas C. Zakas:** is specifically because we actively try not to pull things into the core. We want a lot of things to exist in the plugin ecosystem. Because that allows us to focus on the core, uh, and continue to provide capabilities to the plug in ecosystem so people can build what they want. And that means that we aren't placing bets that we might lose.
+
+**Nicholas C. Zakas:** So there was a point in time where people didn't know if TypeScript was going to win or if Flow was going to win. And if ESLint had tried to pick a winner. And say, well, we're going to start supporting flow. Um, that would have been a big problem for the project. And likewise, we didn't want to pick [00:54:00] a winner in TypeScript.
+
+**Nicholas C. Zakas:** So what we did do was work with both teams to say, okay, let's try to come up with a format where ESLint can kind of be aware that type annotations are a thing. And figure out how to work with them so that it'll work with both flow and TypeScript. And we will, that's where we'll kind of hold it. And I know a lot of people now like, well, TypeScript won that battle.
+
+**Nicholas C. Zakas:** So like we should start like just building everything in TypeScript. And I don't think that we're at the end of the story. I think that there is a high likelihood that a lot of things that are in TypeScript right now. will make their way into JavaScript proper as we move forward. And so if we were to make a bet now and say like, okay, we need to go all in on TypeScript in the core, that could once again, end up being something that we don't use in the future because there was a time [00:55:00] where we were getting pressure to, um, have CoffeeScript.
+
+**Nicholas C. Zakas:** And if we had gone all in on CoffeeScript, then we would have spent a bunch of time on a language that like nobody's using now. Um, and I know it seems crazy to think, but TypeScript could also end up being that language. It could be made obsolete by JavaScript itself, just like CoffeeScript was. And so the approach that we're taking is, look, We are JavaScript first.
+
+**Nicholas C. Zakas:** We are a JavaScript core. We're going to continue to support JavaScript in as many flavors of JavaScript as possible going forward. When there are opportunities for us to improve the integration with any other flavor of JavaScript, including TypeScript, we're going to move in that direction, but we don't want to place any bets on any particular flavor of JavaScript winning because our [00:56:00] goal.
+
+**Nicholas C. Zakas:** You know, we are, ESLint is now 11 years old. I want it to end up being 22 years old and have people think that it's still useful. And in order to do that, we don't have a crystal ball, but the bets that we place need to be smart bets. And the way that we do that is we look back at the bets we made in the past and said, Hey, you know, JavaScript is pretty resilient.
+
+**Nicholas C. Zakas:** It keeps obsoleting other things that were supposed to replace it. So let's be mindful of that. Let's laser focus on vanilla JavaScript and just see where we can go from there.
+
+**Justin:** Yeah, makes total sense. 
+
+
+#### [00:56:42] Vision for the Future of Linting
+
+**Justin:** Um, speaking of bets, as we wrap up our episode, we always like to ask a forward facing question. Um, and I think the, this is a great transition into that question. Uh, having worked on linting for so long and sort of thought really deeply about that [00:57:00] problem. And, you know, as we've watched the ecosystem, um, Progress and new tools come out written in different languages and sort of all the activity that we have these days.
+
+**Justin:** What do you think the future of linting looks like?
+
+**Nicholas C. Zakas:** Well, I hope the future of linting looks a lot like ESLint. Um, and I, I say that because I still see on Twitter to this day, periodically people tweeting, I wish there was an ESLint for. Whatever, like some language. And I think that that means that we did a lot of things right. In that I don't think that Linter is having a ton of core rules and no capacity for plugins.
+
+**Nicholas C. Zakas:** is the way that linters are going to be written in the future. I think that linters need to be able to auto fix some of the things that they find. And ESLint was the first [00:58:00] JavaScript linter to do auto fixing. And there are still a lot of languages that have linters that do not do auto fixing. And I think that is something that ESLint has kind of made table stakes now for linting in general.
+
+**Nicholas C. Zakas:** And when people don't have it, they feel frustrated. Um, it's, it's pretty cool to see that there's even when I, I posted on Twitter, you know, what other languages would you like ESLint to lint? And people came back with all of these languages that already have existing linters. And when I asked them if they were using those existing linters, They said, well, yeah, but ESLint is much better.
+
+**Nicholas C. Zakas:** Like I would much rather use ESLint for those than these standalone linters. Um, so I think even if the future of linting isn't. ESLint itself, it's probably something that looks ESLint ish, which is a [00:59:00] small core, a good API that allows people to write their own rules very quickly, to load them at runtime, to be able to configure them however they want to be configured.
+
+**Nicholas C. Zakas:** Um, if they find a rule that isn't quite what they want, to be able to clone it and modify it. And create one that does exactly what you want to be able to plug in whatever language or whatever parser that you want and have everything just work to have it be deeply integrated into your development environment, whether that's VS code, your continuous integration system, um, or just a CLI and.
+
+**Nicholas C. Zakas:** I think that we're at a place in time where you're running out of excuses to not use a linter on any of the files that are in your project.
+
+**Andrew:** Well, I'm excited for the future. I think that bringing more languages into the fold is going to really like [01:00:00] super charge ESLint. Because I already use it that way today. So I'm glad it's becoming more official. And I hope ESLint is the winner in the end. Because I love the tool. That wraps it up for our questions on the episode.
+
+#### [01:00:10] Conclusion and Final Thoughts
+
+**Andrew:** Thanks for coming on. This was a wonderful conversation. Like, I think ESLint is the tool I've been using the longest in my career. And it's definitely provided some of the most value. So thanks for making it.
+
+**Nicholas C. Zakas:** Well, thanks for that. Appreciate the feedback.
+
+**Justin:** Yeah, likewise, Nicholas. I mean, it's, it is really hard to understate like how important ESLint has been on the JavaScript ecosystem in particular, and, you know, given how much JavaScript has blown up in the last, you know, 10 years, especially, it's That's a huge industry impact. So, you know, congrats to you and the team for making such a valuable tool.
+
+**Justin:** And yeah, just thank you for all the hard work that you've put in over the years on this. It's a, it's super, super valuable for the ecosystem.
+
+**Nicholas C. Zakas:** Well, thank you guys. I mean, it's feedback from the community that keeps us going. [01:01:00] So keep it coming. 
