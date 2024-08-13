@@ -1,0 +1,702 @@
+---
+title: Richard Feldman - RockLang, Zed
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Richard-Feldman---Zed--RockLang---Elm-but-for-everywhere-e2n1vl5
+youtube: https://www.youtube.com/watch?v=s--2X0kwe4Y
+tags: programming, rocklang, zed, functional, programming language, functional programming, rust, zig, typescript, elm, 
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Richard Feldman, the author of Rocklang, a futuristic functional programming language.
+Richard is a software engineer at Zed, a company that making a new code editor that's built on the Rust programming language and integrates AI.
+We talk about all the crazy feature that Rocklang has, and how it might change the way you write code.
+
+- https://www.linkedin.com/in/rtfeldman/
+- https://github.com/rtfeldman
+- https://x.com/rtfeldman?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor
+- https://www.roc-lang.org/
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Intro
+[00:01:31] Richard's Journey to Zed
+[00:09:07] Ad
+[00:10:54] Rocklang: A Functional Language
+[00:14:17] Design Philosophy of Rocklang
+[00:21:51] Rocklang's Platform Concept
+[00:32:47] Abilities in Rocklang
+[00:40:14] Balancing Type Checking and Compilation Speed
+[00:42:30] Error Handling in Rock
+[00:48:34] Async and Task Handling in Rock
+[00:54:08] The Future of Programming Languages
+[00:57:51] Community and Contributions
+[01:06:52] The Future of Programming
+[01:13:41] Conclusion
+
+<!-- TAB: TRANSCRIPT -->
+
+**Richard:** [00:00:00] In rock, you have this concept of platforms and applications. The application is like your program, you know, you're building an application and you're going to run, it's going to do stuff. The platform is what you build the application on.
+
+**Richard:** So unlike in most programming languages in rock, you have to pick. A platform to build on exactly one.
+
+#### [00:00:23] Intro
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, really excited for today's episode. We have Richard Feldman on with us. ~~Uh,~~ Richard really, it's funny. I was saying before we started recording to hear your voice because I listened to your software unscripted podcast. It's one of my favorites, actually. You've done a fantastic job with it.
+
+**Justin:** So props for that. Um, you're, you're the creator of Rocklang and you're currently an engineer, uh, at Zed, ~~uh,~~ really excited to talk about all that, but before we dive deeper, would you like to tell our audience a little bit more about yourself?
+
+**Richard:** I think that kind of [00:01:00] covers it. I mean, I did a lot of Elm stuff, uh, in the past. ~~Um,~~ I just don't have time for it anymore, really. Uh, Rock is inspired by Elm. ~~Uh,~~ it's like just Elm, but for different use cases and other differences in design decisions and stuff. ~~Um,~~ but I guess I wrote a book, Elm in Action, uh, and I taught some courses on front end masters for about Elm and also about Rust.
+
+**Justin:** That's awesome.~~ Hmm.~~
+
+**Andrew:** Sweet. Before we get into talking about Rock Lane, because there's a lot to unpack there. I was going through the documentation. I was like, Oh, I'm almost done. And I looked at the scroll bar and there was like pages and pages left. 
+
+
+#### [00:01:31] Richard's Journey to Zed
+
+**Andrew:** But you're currently working at Zed. Zed is an exciting new editor that's being built.
+
+**Andrew:** So can you tell us Zed and what your role is in the project right now?
+
+**Richard:** Yeah, that's awesome. So, uh, I found out about Zed because I just, uh, somehow heard about it and I started using it and I really liked it and one thing led to another and now I work there. Um, but basically it's, I guess you could think of it as like a VS code competitor, ~~um,~~ except that it's not built on Electron at all.
+
+**Richard:** ~~Um,~~ it's just all written in Rust. Uh, it runs [00:02:00] really fast. Everything feels super snappy. Um, and the, the founders of it are the same people who created Atom, the original project that Electron spun out of. ~~Um,~~ and to make a long story short. They're not a fan of how the whole electron thing panned out in practice.
+
+**Richard:** So they're like, no, let's just go back. Rewrite everything from scratch in rust, make it make speed a top priority. ~~Um,~~ and yeah, I, that really like aligns with my interests in editors. Like I want stuff to be really fast and also I want a really good VIM mode. Cause I have used VIM for a long time, but, ~~um,~~ I have always felt annoyed by the fact that you have this fundamental limitation of.
+
+**Richard:** You can only possibly get like UIs made, made out of monospace font, you know, quote unquote pixels. Um, that's a big limitation. So, uh, Zed's really good. It has a really awesome Vim mode. And also that integrates with multi cursor and stuff like that. Just totally seamlessly. It's the best Vim mode I've used.
+
+**Richard:** ~~Um,~~ yeah, so, uh, that's sort of like, uh, how I ended up at Zed, I guess. Uh, and, and why I like it, but, um, yeah, The thing that I work on at Zed is currently I'm working on, ~~um,~~ AI integration. So this is something that we're [00:03:00] on the road to shipping, uh, depending on when this episode goes out, we might've already shipped it.
+
+**Richard:** ~~Um,~~ but basically my whole big thing is I've been very personally frustrated with the gap between all of these like. AI demos and how flashy they are and how cool they look. And then when I sit down to try to use the tool, what the actual user experience is like, and so what I'm working on is like, let's make something that's focused on just like being as useful as possible and not being as flashy as possible.
+
+**Richard:** So we're not trying to act like it's a magic wand. It's just like, Hey, here's the thing that you can use that will help you write code more easily. The end.
+
+**Andrew:** So what are, what are some approaches you're taking for that? Cause like, personally, like I've tried to use like a cursor in the other editors, but like really I just keep coming back to autocomplete. I currently use supermaven cause it's like really, really fast. Uh, but like what, what are the different approaches you're taking for that?
+
+**Richard:** So the thing that I'm personally working on is, um, something that I know, well, I assume that the cursor folks are also thinking about, which is there's this fundamental challenge, [00:04:00] which is, uh, you have a limited context window and you have a huge code base. So, uh, if you want to say something like. Hey, like, for example, I was new to the Zed code base and a thing that I was always getting blocked on it would need to reach out to ping people to get help with was like, Hey, like, where do I put this thing?
+
+**Richard:** I want to start adding this feature. Like, where does that go in the code base? And historically pre LLMs, I would just like. Search around, like poke around in the dark, kind of like doing, you know, global project fine and stuff like that. ~~Um,~~ but it'd be much nicer to just ask the question in English and get a straightforward answer and an explanation of like, why it would go here and like, what things I need to be aware of and hopefully edge cases and stuff like that.
+
+**Richard:** ~~Um,~~ so of course that requires context of the whole project, which is way too big for the context window. So how do you make a useful feature like that, given the limitations of the technology? So the approach that I'm working on is essentially. Taking every file in your project and then having an LLM pre summarize it and just go through, read the code and essentially generate a very concise summary of what does this file do?
+
+**Richard:** And then basically when you [00:05:00] ask the LLM the question, it goes to these pre generated summaries of all the files in your project. And I have some strategies for keeping that up to date without having to rebuild the whole thing every time. Um, and then basically you can say, okay, given all of these summaries, Which files do you want to see the whole contents of like, which ones do you want to actually be in context?
+
+**Richard:** Because you suspect that they're going to be relevant to the question I asked, and that just happens behind the scenes. I don't have to actually like ask it that it just does that. And then based on that, now it can get a much smaller subset of my project that just seems to be relevant to the question I asked.
+
+**Richard:** Put that in the context window and that can give it a much better answer than if it didn't have that. So. Cursor has some strategy that they use to address this problem. I don't think it's that just based on, uh, the preliminary results I've seen from trying it out on our own code base, like versus trying out cursor on our own code base.
+
+**Richard:** This summarization approach seems to get much better results, um, than whatever cursor is doing. Uh, but it's, it's an interesting challenge where it's like we have, you know, you could just. Copy paste to, and from chat GPT. That's something I did, you know, when it, when it came out [00:06:00] and found useful, but there was always this limitation of like, yeah, there's certain questions that can't answer because it just does not know my code base and I can't just copy paste the whole code base in because it doesn't fit.
+
+**Richard:** So how do we solve that in a way that just makes for a nice user experience and makes a useful tool more useful.
+
+**Justin:** It's kind of funny how we were like, we're in a new age of search indexing and it just means something completely different now. But I mean, effectively trying to do very similar thing, except instead of just retrieval, we also get, you know, summarization and all these other like magical things for, and that's, uh, it's
+
+**Justin:** pretty amazing 
+
+**Richard:** You know what it reminds me of? It reminds me of when the very, very beginning of when 3D games were first coming out, like you had like, you know, Doom and Quake and like, there was this kind of, at first they were faking it a lot and they're faking it less and less and then graphics cards came out and then you had to fake it even less.
+
+**Richard:** Right now it feels like we're in the, you have to do a lot of faking it because Like the, the models haven't gotten fast enough for the hardware. Hasn't gotten fast enough to be able to, I tried doing the summarization locally, for example, um, so I was like, Oh, [00:07:00] it'd be so much nicer if you could do it all locally.
+
+**Richard:** You didn't have to go to the cloud for these summaries. It took an hour on my laptop with like all the fans maxed out on an M3 Mac, you know, with like max specs and like, you couldn't do anything else on the laptop because everything just ground to a halt and I was like, all right. Maybe we'll, maybe we'll do this in the cloud, but like in the future, it feels like this is the type of thing that, you know, hardware will get better at models will get better at, um, but, uh, but for now we're in the sort of like, you know, just got to hack around these limitations to get a good user experience.
+
+**Justin:** for sure. It's a, it sounds like a really fun project though. And I imagine incredibly useful because I'm assuming that a code base like Zed is. Not necessarily a trivial code base to jump into. So it's, Z is written in Rust, right?
+
+**Richard:** it is. 
+
+**Justin:** a, it's own custom rendering framework called a GPUI, uh, which I'm assuming that's like part of why Z is like supposed to be really, really fast.
+
+**Justin:** It's like, it does a lot of bare metal stuff.
+
+**Richard:** for sure. Yeah. So it's basically the approach that they took when they were doing the big rewrite, [00:08:00] this was all like before I joined. Um, but essentially, ~~um, ~~how do I put this? The basic design was, let's start with the bare metal Mac OS APIs, like just the stuff that the operating system gives us and then say, okay, well, we don't want to, Super hard code to those because we want to go on Linux.
+
+**Richard:** Now Zed's out on Linux also. And so obviously Windows will be next, but that's, you know, another big project. But basically how do you create an abstraction over the lowest level stuff? And not without going as far as like making a whole browser abstraction or, you know, pulling in one of these like C frameworks and wrapping that or something like that.
+
+**Richard:** Um, and so they wrote a whole blog post about how they did that with GPUI. Um, some of the abstractions are really clever around like wrapping the macOS native event loop and then making it so that you can essentially write async Rust functions and the way that that async is implemented under the hood in terms of how it dispatches is actually using the same Mac OS APIs that you would be using to dispatch if you were writing Objective C or Swift [00:09:00] by hand.
+
+**Richard:** It's really cool stuff.
+
+**Justin:** It's really awesome.
+
+**Andrew:** Uh, so now let's change gears a little bit and switch into talking about Rocklang. 
+
+
+#### [00:09:07] Ad
+
+**Andrew:** We'd like to thank our sponsor for the week, Mux.
+
+**Andrew:** Mux is an awesome tool. And just like one of the tools that we love to highlight on DevToolsFM, they take a super hard domain, distill it into a platform so you can build off of it and make things that you would never have been able to make before.
+
+**Andrew:** Video is notoriously hard to deliver. There's so many different things to think about. You have to think about hosting, muxing, you have to learn all these new words just to serve a video to your user and to build your product. And that's no fun. That's where mux comes in.
+
+**Andrew:** They handle everything you could possibly want to build a video platform. All the use cases I just listed and so many more. They even have a beautiful, customizable video player that you can just plop right into your front end. So whether it's the client or the server, Mux will help you create an awesome video app.
+
+**Andrew:** If you've never done video before, you might not know how many different [00:10:00] pitfalls there are. And some of those are just as simple as file formats. There's so many different file formats out there. there's also so many different connections. So your users might not be able to stream your nice 4k video.
+
+**Andrew:** what Mux offers is a seamless, worry free way to manage all of that without you having to think about it. They do all the transcoding, transmuxing that you could think about. and they deliver to your users the best possible quality stream, Given their network conditions and device.
+
+**Andrew:** If you ask me, that's a whole lot of work that I don't want to do, and I want to trust some experts with. So if you want to learn more about MUX, head over to MUX. com.
+
+**Andrew:** Do you not want to hear these ads anymore? Become a member on one of the various channels where we offer it. With your membership, you'll get the episodes a little bit earlier, and they'll also come ad free. But if you want to find another way to support the podcast, click here. Head over to shop. devtools.
+
+**Andrew:** fm. There you'll find our merch store. You can buy a hat and help us keep this thing going a little longer. And with that, let's get back to the podcast.
+
+
+#### [00:10:54] Rocklang: A Functional Language
+
+**Andrew:** So, uh, what is Rocklang, uh, why did you build it, and how is it different from other functional [00:11:00] languages?
+
+**Richard:** Yeah, sure. Um, so rock is a functional language. So our tagline is fast, friendly, functional. So fast in terms of we wanted to compile fast and also to run really fast. So in terms of compiling fast, the goal is, and we're not there yet, but the goal is that hopefully any, you know, reasonably sized project, like under a million lines of code, let's say should always compile in under a second.
+
+**Richard:** That's like either incremental or, um, or not incremental. ~~Um, ~~and that's like, Full type checking, you know, building from scratch, everything. ~~Um, ~~right now, smaller projects are like that, but like bigger projects do take over a second. Um, second, uh, fast in terms of runtime performance. So usually we are essentially saying, uh, we would like to be the fastest language among languages with automatic memory management.
+
+**Richard:** So go is generally the language that we're aiming to beat. Like whenever we have a benchmark, we're like, Oh, are we slower than go at this? Like, let's try it. Let's what's, what's wrong. Can we, is there a way we can fix that and be faster? Um, uh, but we're not trying to be at the like C plus plus C rust level.
+
+**Richard:** ~~Um,~~ that's, that's just higher than we want to be. Um, uh, so fast, friendly, functional, friendly in terms of user friendliness. So like error [00:12:00] messages in the compiler, we try to, uh, You know, follow like elms example and do a really good job of making really helpful user friendly error messages. Um, and then of course, functional, it is a functional language, so we don't have any object oriented features at all.
+
+**Richard:** ~~Um,~~ and the features that we do have are more geared towards making your life easier, easier in a functional sense rather than like, uh, Oh, or, you know, imperative procedural sense. ~~Um,~~ so the reason for creating it was. Essentially, I was a big fan of Elm. I had used it for a long time and honestly, one of my biggest pet peeves of Elm was just, I can only use it in the browser because that's what it was designed for.
+
+**Richard:** It's like really compiles a JavaScript, really focused on like making the experience of building web apps really, really nice. Um, and I loved it for that, but. There are all these other things that I want to do. That's not building web app U. I. S. Uh, like, you know, web app back ends like servers is a big thing that people always bring up.
+
+**Richard:** Um, also command line apps. But also there's kind of what I like to think of is like the long tail of domains where it's not just about those big things that people usually do at work and web development. ~~Um,~~ but also like Database extensions or like robots, or, you [00:13:00] know, there's just all these different use cases out there.
+
+**Richard:** And I was always like, Oh, I'd like to try out messing around with Arduino, but I really wish I could like pick up some Elm like language and just like try it out using that. Cause that's like the experience I like, um, or I, you know, database extension, or, or actually I was using Vim at the time and I was like, I'd really like to write a Vim extension, but.
+
+**Richard:** I don't want to learn Vim script. I've heard really, you know, unpleasant things about writing in Vim script. Um, so I wanted to try to make a language that could be used in a lot of different domains, including really esoteric ones. ~~Um, and,~~ and yet be good at that and have the sort of Elm like experience of feeling like what you were building on was really tailored to that domain in the same way that Elm feels like it's tailored for browser based UIs.
+
+**Richard:** Um, that didn't exist. And I know that that's, I, You know, good friends with the, the creator of Elm, uh, Evan. And I know that that's not a direction he wanted to take element. So eventually I was like, I'm going to do it. And, uh, so here we are. 
+
+**Justin:** How long have you been working on a rock now?
+
+**Richard:** So about five years, um, I started designing it, uh, [00:14:00] in 2018. I don't remember exactly when in 2018, but I, I just had these like, you know, sort of sketches and design notes and stuff that were pretty scattered. And then, uh, the first commit was like January, 2019. Cause at that point it's like, okay, here's the plan.
+
+**Richard:** Here's what I'm going to build. Obviously it's evolved over time, but, um, that was when I sort of like committed to like, okay. I'm going to do it. 
+
+
+#### [00:14:17] Design Philosophy of Rocklang
+
+**Justin:** So one of the, one of the hard things about any programming language is just like figuring out what it should do and what it should not do and being very explicit about syntax and features and everything. Um, you have a really great, uh, episode with the creator of Gleam, uh, is, which is another language I admire for like being very cautious about adding syntax and being and very thoughtful about like how you add things to the language.
+
+**Justin:** So, um, what's your methodology for like deciding when something should go in the language or be out of scope and like, how do you approach that?
+
+**Richard:** Yeah, that's a great question. ~~Um,~~ so I would say it's a really difficult thing to balance, to be honest. ~~Um,~~ it's I guess it depends on, uh, how much it changes the [00:15:00] language and sort of at what level it changes the language. So something that is syntax sugar, I think is sort of like the mildest change in the sense that it's like, this can already be written another way.
+
+**Richard:** So we're introducing an optional convenience. Now, even that has downsides because the more optional conveniences you introduce, the more different ways a given code base can look. So if we are going to introduce a piece of syntax sugar, I think it, um, It helps out a lot in terms of like, should we actually do this?
+
+**Richard:** If the syntax sugar is something that people are basically always going to use, if it's like, well, basically, once you have this in texture, pretty much, nobody's going to use it the old way. That's a lot better than saying like, we're going to introduce the syntax sugar and sometimes people use it, but sometimes maybe not, you know, whatever.
+
+**Richard:** Like, we're going to introduce it. In that case, I would usually by default rather say, let's just not introduce it and have at least there's consistency and like one less feature in the language. Um, so I try to set a pretty substantial bar for things like that. Then again, there's also things where, um, some pieces of syntax sugar are just.
+
+**Richard:** [00:16:00] really obvious. And even if it's like you might sometimes do it one way or sometimes do it the other, it's just like, this is so obvious how it works. And the learning curve is so close to zero and it's not going to affect the compiler much. And this and that, that I think that's like a lot more reasonable to add, even if people might not always use it that way.
+
+**Richard:** so yeah, it's, I would say it's a, it's a challenging thing because Nobody sets out to design a language that's extremely complicated and hard to learn. And like, you know, uh, there's a million different ways to do things, except maybe Larry wall with pearl. But, uh, at the end of the day, like lots of languages end up that way, uh, you know, unintentionally.
+
+**Richard:** And the way that they end up that way is because each little individual thing that didn't seem like much of a change at the time. Just add it up over time. So I try to be really mindful of that whenever we're talking about making a change or adding something new is like, how do we set the bar where we're like, okay, let's, uh, let's think about the big picture here.
+
+**Richard:** Um, I also try to, if we can, if we're talking about adding a new thing, thinking about, is there some way this [00:17:00] could replace an existing thing? So like we add the new thing, but then we deprecate something else and eventually remove it so that, you know, maybe the language is sort of net simpler as a result of this change. 
+
+**Justin:** Yeah, that makes a lot. 
+
+**Richard:** And we're very pre 1. Like we're not even 0. 1. We don't even have a number to release 
+
+**Richard:** yet. 
+
+**Justin:** Yeah. I mean, that's a really good methodology. I think that, you know, just talking about one language, I love rust. Uh, I've been using it for a lot in those last several years, but like rust has definitely had a lot of people involved and it's grown and changed and there's a, there can be multiple ways to do things.
+
+**Justin:** And you kind of end up with this like sort of bifurcation of, uh, approaches just because of like how high touch it is and how many people are involved. And, you know, um, It is, especially when you get, uh, a language that, you know, grows outside of that core group of people who are like building it in the beginning.
+
+**Justin:** That's when things can start to kind of, you know, getting a little bit wild west.
+
+**Richard:** For sure. Yeah, definitely. Um, there's some problem. I'm not sure exactly what the right term [00:18:00] is for it, but it's sort of like you have something that's not initially designed by committee, but eventually you just end up with a committee that's in charge of things and committee incentives just naturally gravitate towards always adding things, because if I'm like, I don't think we should add many features to this language, but I really want this one thing, but everybody has that.
+
+**Richard:** But for a different one thing, eventually you have this incentive where people should start saying stuff like, Hey, I'll vote for your thing if you vote for my thing, you know? Cause like, what's one more thing if it means I get my thing in. And it's just really hard to create committee dynamics where people are incentivized to say, no, I know everybody in this committee wants their own one little thing at it, but we're not going to add any of them.
+
+**Richard:** Because that's what's best for keeping things simple. It seems like an unsolved problem to me to figure out once you transition away from one person running the language to a large group of people, all of the, you know, approximately the same power level. Um, How do you prevent that from happening? I don't really know what the answer to that [00:19:00] is.
+
+**Richard:** Uh, but so I have this, uh, page on the website called BDFN, which is how I like to think of myself, which is benevolent dictator for now. So what I'd like to do is explicitly plan to transition to that. To some sort of model like that, whatever is going to be sort of the long term governance model of the language.
+
+**Richard:** But after we figure out how to do that in a way where it incentivizes the language staying simple, um, which I don't know how to do that yet, but, uh, hopefully we can figure it out at some point. 
+
+**Andrew:** Yeah, BDFL versus committee just reminds me a lot of like node versus Dino like nodes in a place where it's like it has this huge committee and like multiple vying like interests and wants out of the project and it gets us into like weird places where like CJS and ESM has just been like a shit show forever now and nobody really wants to fix it because there's just so much like, you know, Committee happening.
+
+**Andrew:** Whereas like you look to Dino and they just released, uh, like new standard packages with like data types. It's like, you could never even imagine node [00:20:00] doing something like that.
+
+**Richard:** Yeah. I think, uh, Rust's, um, editions design is really clever. Uh, so for those who aren't familiar, the basic design of Rust editions is they say, okay. Every three years, we're going to come out with a new quote unquote Rust edition. So I think there's been what Rust 2024 now. Um, and basically what an addition is allowed to do is an addition is allowed to make breaking changes to the language.
+
+**Richard:** But the cool part about additions is that the. The compiler, like every new release, the compiler supports all the previous editions, as well as the current one. So you can say in the same code base, like I'm using Rust 2024, but I have a dependency that's on Rust 2021. one depends on something from Rust 2015 and the compiler knows how to deal with all of those.
+
+**Richard:** And it's just totally seamless. And it doesn't matter that some of these codebases are using features that have been deprecated or removed or whatever. Um, so then you have this nice path where you can say, well, people aren't forced to upgrade if they don't want to. Uh, but we still have a way to make breaking changes and, you know, clean things up and [00:21:00] whatnot.
+
+**Richard:** To be fair, it seems like Rust additions have not been much on the side in practice of taking things out and saying like, this is now gone, we took it out to simplify the language. From a design perspective, it's cool that they figured out a way that they could do that without breaking backwards compatibility with older codebases while still letting people get updates to the compiler and whatnot.
+
+**Richard:** So, um, that does have the downside that the compiler permanently gets bigger and bigger, like every release, um, but you know, hard drives get permanently bigger and bigger too. So maybe it's fine.
+
+**Justin:** Maybe so. I'm sure like if there's probably going to be a point where that becomes really, really useful if it hasn't already happened yet. So it's probably a worthy trade off. Um, there's one specific rock feature that I want to talk about. Uh, and, and you, you sort of hinted at this as like building a language that can run in a bunch of different contexts, you know, whether you're on an Arduino or, you know, something else.
+
+
+#### [00:21:51] Rocklang's Platform Concept
+
+**Justin:** Um, so rock. Has this notion of like platforms as sort of like a built in primitives. So you're running a rock program targeted at a [00:22:00] platform. Could you talk a little bit about like what that concept means in the context of rock and like where it came from and how you use it?
+
+**Richard:** Yeah, totally. So, um, so in rock, you have this concept of platforms and then there's a related concept called applications. And basically, so the application is like your program, you know, you're building an application and you're going to run, it's going to do stuff. The platform is what you build the application on.
+
+**Richard:** So unlike in most programming languages in rock, you have to pick. A platform to build on exactly one. So there's no such thing as just like, Oh, I'm going to build a rock program that doesn't have a platform. It's just, it's just an application that they always have to pick one platform. Um, and the platform's job is essentially to be a combination between, uh, like a framework sort of, so it works as sort of a framework level of abstraction.
+
+**Richard:** So it's sort of. It's focused on a particular use case, like being a web server or a command line app or a native GUI app or, um, you know, Arduino, whatever, um, it's focused on a particular domain. And then also it's responsible for all of the IO primitives. [00:23:00] So in most languages, the standard library does all the IO primitives.
+
+**Richard:** You'll have like file system read and write and, you know, network stuff and command line stuff and whatever. But in rock, that's all part of the platform. So the platforms, um, it's like a framework, but the framework has a built in. broader scope of responsibility. And so the rock standard library is much smaller.
+
+**Richard:** It's all it's all data structures doesn't have any like built in concept of file. I own stuff like that. Um, now what's cool about this is that it means that each particular platform can tail tailor how those things work to what makes sense for that particular use case. So as an example, Let's say that I am writing a rock application and I'm building a command line app.
+
+**Richard:** Well, a totally reasonable thing for command line app to have is something to write to standard out and then also something to read from standard in and reading from standard in generally means like you're blocking or the program is not running anymore until you get stuff from standard in. Cool. Makes sense.
+
+**Richard:** What about a web server? Does it make sense for a web server to have primitives for blocking and reading from standard end and like you can't do anything else like not really. And if [00:24:00] I'm working in a package ecosystem, does it make sense that any of the packages in the package ecosystem that I'm using with my web server that they would be able to block on standard and like, no, I don't really want that.
+
+**Richard:** That's not really a thing. Okay, let's imagine another use case where I'm like, okay, now I'm in a web browser. I don't have a concept of standard end at all, but also I don't have a concept of a file system at all. Like, there's no browser API for, you know, reading and writing to the file system. Um, so why would I have, like, in my standard library, Oh, here's how to open a file and then write to it.
+
+**Richard:** Like, I can't do that in a web browser. That's not a thing. So, there's all these different use cases, all these different domains where, The set of IO primitives that I have really depends on the domain or the set of IO primitives that makes sense. And so part of what's cool about platforms is that you can just have only the set of primitives that make sense.
+
+**Richard:** And so your particular slice of the ecosystem, uh, which can include like platform specific packages, although really it's more like people have ways of writing platform agnostic packages that essentially say, without opening up the rabbit hole of exactly how this works, um, Something along the lines of like, Hey, if you want to install this, you need [00:25:00] to be able to be running on a platform that supports standard in our network or, or, you know, some combination of whatever your package actually needs.
+
+**Richard:** Um, and so the basic idea here is just that you have a really nice set of tools that work really well for the particular use case that you're using, and they're really well optimized for that. So another cool thing about this is that let's say that you're running in the browser versus you're running a.
+
+**Richard:** Native desktop GUI or a command line app. Well, the command line app can have its own HTTP implementation. Of course, there's a lot of different ones out there. ~~Um,~~ the platform, by the way, like the behind the scenes part of it is generally written in a lower level language like rust or C or something like that.
+
+**Richard:** So for example, um, the most popular command line app uses rust under the hood and then it has, you know, the rock like API on top of that. ~~Um,~~ same thing with the most popular web server actually also. ~~Um,~~ But basically like, you can just say, uh, I want to do an HTTP request and not really care that it's like rust under the hood or care that like, Oh, now I'm running in the browser.
+
+**Richard:** Cool. It's fetch under the hood. I don't care. It's the same rock code either way. It's just that like, depending on whether you're building [00:26:00] a. Or working on a platform that's running in the browser versus one that's running in, uh, at the command line or, or wherever else, ~~um,~~ the platform takes care of figuring out what's the appropriate implementation.
+
+**Richard:** Another, another, uh, I know I've been talking for a while, but another thing that you can do with this is, um, you can say, well, I would like to embed rock in another language. So for example, you might say, I'm going to embed rock in Swift. People have done this already. ~~Um,~~ and, and say like, okay, I'm going to use rock.
+
+**Richard:** Whatever Swift uses for HTTP. But again, guess what? It's the same rock code. Like I can share rock code across all these different use cases and behind the scenes, it's just going to seamlessly use whatever the appropriate HTTP thing is with the same exact API. Um, just depending on what the, the local, you know, uh, thing is because the platform takes care of that.
+
+**Richard:** ~~Um,~~ so we can get a lot of like really cool reuse in the package ecosystem, at least in theory, it's like the package ecosystem is very small right now, but it's designed to be possible to, Right. Rock code that works across a whole bunch of different use cases, even though the under the scenes behind the scenes under the hood implementation details vary quite a lot by platform.
+
+**Justin:** I love it a lot. [00:27:00] Uh, I mean, it is like pretty common that. When you're trying to do a class platform app, you're trying to do an app for like a very specific use case that you have to think pretty deeply about how you go about doing that. So it was like taking rust and like an embedded environment, you have a whole lot of like very different concerns than like application level rust.
+
+**Justin:** And then, you know, if you're writing a, uh, code. Cross platform app to just like do sort of basic operating system level stuff. You end up having to do a whole lot of stuff for that. So it's, it's really interesting to have that as like a first class sort of concern of the language. So that's really cool.
+
+**Richard:** Yeah. One of the things I like about it is that it means that you can strip out intermediate layers without breaking the application code. So, for example, I mean, a thing that might actually happen at some point is, um, Right now Rust is the easiest language to like write a under the hood platform thing just because it's been done the most, there's the most sort of infrastructure for it.
+
+**Richard:** ~~Um,~~ but we've been talking about how like Zig is also a language that's like really uniquely well suited to doing [00:28:00] these things and one of the things that's cool about Zig is that Zig has like a smaller standard library than Rust does and also it has Some abilities to like make it so that you can potentially compile your like command line application without even needing like a libc dependency on Linux, for example.
+
+**Richard:** ~~Um, ~~so you can have like, I think hello world in zig, there's a way that you can build it such that it's like smaller than hello world and see, because it doesn't even bring in libc. It just like does the, like the sys call directly to Linux. It only works on Linux, but it's cool. Right. Um, but the nice thing about this design is that A platform author could literally rewrite the entire under the hood, you know, behind the scenes, like implementation details, um, from Rust to Zig, completely different language, and then ship that as like a patch change and like nothing would break.
+
+**Richard:** And you're just like, okay, now stuff's like, my binaries are a little smaller. Neat, you know? So it's it's cool that it lets you do stuff like that. 
+
+**Andrew:** I find it funny that the initial, uh, want to build this was, Oh, I don't want to run stuff on the web, but now through this platforms thing, you can [00:29:00] actually run that stuff on the web. So how does that work? Is it like Elm where it compiles to a JavaScript or is it something else? Thanks.
+
+**Andrew:** Thanks. So it compiles a WebAssembly. Um, so rock by design, it's sort of, it's not targeting high level languages. It's targeting really low level things. So basically, it's like we either compile to WebAssembly or to machine code because they're basically the same level of abstraction, almost. Um, That's important because we do things like we have a lot of different number types.
+
+**Richard:** So you can specify like, I want like a eight bit integer or a 16 bit unsigned integer or whatever. Um, like a, you know, 32 versus 64 bit floating point number. ~~Um,~~ and so because of that, like it's, it gets kind of tricky if you try to map that to JavaScript, because JavaScript is like, well, we have number and then we have like big int and the performance characteristics of those are wildly different.
+
+**Richard:** ~~Um, and,~~ and also like, you know, you don't have like 32 bit floats and stuff like that. So we really want to. Try to sidestep all that and just say like, Oh yeah. And also JavaScript strings are like, you know, UTF 16 and all this stuff. ~~Um,~~ so basically we just say like, okay, this is what we compile to. If you [00:30:00] want to run rock code in the browser, you can do that through WebAssembly.
+
+**Richard:** Now this doesn't mean that like rock is not nearly as good as Elm is at like building web app UIs, but. But from my perspective, I'm like, that's fine. Cause I already have Elm for that. If I want to do that, um, that's like not really, uh, ever been a goal of mine to like, try to do the thing that Elm already did.
+
+**Richard:** My whole point was like, I wanted to do the stuff that Elm couldn't already do. Um, so I think, uh, given the goals of the language, it's, it seems reasonable, but at the same time, uh, A lot of people have already told me, Hey, I want to use the same language on the server as on the client. And so there's been some projects that people have worked on to like, build a little like virtual DOM thing, um, that like Rock can use to, you know, render in the browser where you basically have some sort of JavaScript, uh, shell that like kicks off like the calls to WebAssembly and like does the virtual DOM, you know, stuff.
+
+**Richard:** ~~Um,~~ so it's definitely possible. Uh, I have no idea what the performance will look like because, You have a lot of overhead compared to if you're just compiling to JavaScript to go back and forth through WebAssembly on multiple different levels. Um, on the other hand, like WebAssembly can execute faster.
+
+**Richard:** So I don't really have any idea how all that [00:31:00] shakes out, but I guess people will do the experiments and we'll find out. 
+
+**Andrew:** If they ever solve that problem with WebAssembly doing things slowly with JavaScript, it will change our world, basically.
+
+**Richard:** Yeah, I mean, I'm not super optimistic that they're going to, um, I guess we'll find out, but, uh, yeah, it, it doesn't really seem like, um, like there's been a lot of, uh, movement in that direction, shall we say? 
+
+**Justin:** It's a hard problem to solve, especially with like Spectre and, you know, a lot of the other like security concerns that they have. So it's like,
+
+**Richard:** Well, yeah, I mean, that, that one was about, if I remember right, it was about, um, what do you call it? Uh, multi threading, right? So, uh, and, and so they, they temporarily disabled some sort of, ~~uh,~~ feature that allowed you to like, I think it was like shared buffers or something like that. Yeah. ~~Um,~~ the web workers, uh, but I thought they re enabled it.
+
+**Richard:** Maybe they didn't, but either way, like the, the problems with web assembly and JavaScript are, ~~um,~~ I don't know if there's a lot of them. Uh, Brian Carroll, who made our web REPL. So if you go to rock lang. org,~~ um,~~ there's a REPL on the, on the homepage that you can try out. Um, that's all web assembly actually.
+
+**Richard:** So like none of that uses a [00:32:00] server at all. It all just compiles in your browser. And what's happening is what you're seeing there in the REPL is like a little, uh, you know, text input. I mean, you type in the text input. What's happening is. A WebAssembly build of the rock compiler is compiling your code to WebAssembly, executing that WebAssembly, taking the answer, feeding it back into JavaScript, which then puts it in the, in the text area.
+
+**Richard:** So you can see the output.~~ Um, ~~there's a, there's been some discussions on a rock Zulip about, um, people wanting to, uh, expand that into like a full playground that also just completely runs in the browser. ~~Um,~~ which is really cool. That's, Totally think you can do, um, and like, just, just building on that. But, uh, the reason I bring that up is that, uh, Brian Carroll gave a talk about how that whole thing works and all the sort of a hoops he had to jump through to get WebAssembly to be able to like, ~~Um,~~ but there is actually a lot of really complicated, uh, stuff going on behind the scenes, just because WebAssembly is not JavaScript.
+
+**Richard:** And the way that they talk to each other is complicated.
+
+
+#### [00:32:47] Abilities in Rocklang
+
+**Andrew:** So, uh, let's delve into a few of the other things that RockLang provides. It has a bunch of, like, high level features. There's one called Abilities. Does that tie into platforms at all, or is that, like, a [00:33:00] separate thing? Yeah.
+
+**Richard:** That's a separate thing. ~~Um,~~ so the way that abilities work is essentially, ~~um,~~ they're like traits and rust, or I don't know what the analogy would be in other languages. I type classes in Haskell kind of, ~~um,~~ but not higher kinded. Uh, basically the idea behind an ability, it's very simple. Um, is that you say I have a type, I've created this, this new type.
+
+**Richard:** I've defined it on. I've said this type has some sort of ability, which means that I'm specifying what the implementation of this particular thing is for this type. So it's called ad hoc polymorphism. Really, really simple example. This is equals. ~~Um,~~ so you can say I'm going to specify what equals means for this new type I've defined, or I'm going to specify what hash means for this type to turn into a hash hash code.
+
+**Richard:** ~~Um, yeah. ~~What's, uh, interesting about, uh, Rock's abilities that I've not seen in any other language is that we do two things that I have not seen come together, uh, in the same form for ad hoc polymorphism. So one is that, ~~uh,~~ we do inference on it. So, um, there's other languages that do this, like Elm does this for, ~~uh,~~ like equals, for example.
+
+**Richard:** So basically, like, for example, if I make a [00:34:00] new We call them records, but basically like you can imagine like an object, literal and JavaScript, um, just open curly brace, you know, some fields, colon, some values, close curly brace. You don't have to define that ahead of time. Like if you don't, you don't have to say like, here's the name of this.
+
+**Richard:** It's not a class. It's not a struct. It's just like, no, you just, the curly braces, that's it. You know, now you've made a new anonymous thing. It's fine. Um, what you can do with that is that, uh, that sort of automatically, That gets these abilities assigned to it based on type inference and like what you put in there.
+
+**Richard:** So for example, if I make a new record, and it's got like first name, string, last name, string. And I say, does this record double equal another record that also has first name, string, last name, string? Um, even though I didn't specify any types at all, it can just say, okay, well, I'm gonna infer that equality means for this record.
+
+**Richard:** Look at all the fields and compare them with the other records fields. And if all the fields are also equal, Then they're equal, um, kind of feels like how it ought to work. And yet, like in JavaScript, that's not what double equals or triple equals [00:35:00] does on a, on a object literal at all. ~~Um,~~ so that's, that's like kind of a nice quality of life thing, but where that gets really cool is when we have the abilities of encoding and decoding.
+
+**Richard:** Uh, so this is for things like Jason, you know, any kind of serialization, deserialization, basically. ~~Um,~~ so what you can do with that is basically you can say, uh, just like in JavaScript, you can say like, uh, Um, in JavaScript, it'd be called like json. parse. You say like, I have like, you know, user equals json.
+
+**Richard:** parse, and you feed it the JSON. And now user is now the contents of that JSON. Great. And then as you're going along your program, you might say user. firstname, user. lastname, user. email, whatever. Now in plain JavaScript, the downside with that approach is that it's really annoying if you mess something up.
+
+**Richard:** Like you got a field in the JSON that was the wrong type or that was missing and you expected it to be there The error gets surfaced like very distant from where the problem occurred. Like you'll just get like undefined is not a function somewhere and you're like, Why? And you trace it back. It's like, Oh, because a million steps earlier in the call stack, this JSON didn't have the thing.
+
+**Richard:** ~~Um, ~~you can improve that [00:36:00] situation by having some sort of schema that says when I decode the JSON, uh, I'm going to like validate that all these fields are here. And if there, if any of them is missing or the wrong type, then we give an error right away. That's cool. But of course the downside of that is now you have to actually define the schema ahead of time.
+
+**Richard:** Um, so what rock does is that we do using type inference, we infer. The encoding and decoding abilities based on the types that you used in practice, just like with records and equals earlier, except with serialization. So what that means is that you get the same, you don't have to write the schema if you don't want to, um, you just say like user equals, we don't call it JSON dot parse, but you know, same thing, like same basic thing.
+
+**Richard:** Just say, decode this it's JSON. Uh, and then, you know, that's it. And then now, based on how you end up using that value named user, like you say, user dot first name is you're using it as a string somewhere in your program. Last name you're using as a string email you're using as a string. The whole like rock type checker will infer that, oh, well, based on how you're using it, that means when [00:37:00] we, Are decoding that we need to check for, is there a first name, last name, email?
+
+**Richard:** And are they all strings? And if they're not all there, then give an error right there at decoding time. So it's kind of like the best of both worlds in terms of like, you get all the convenience of JSON dot parse, but you get all the type safety of as if you'd written out an entire schema by hand. And by the way, that schema is always up to date because it's inferred by the compiler.
+
+**Richard:** And if you want to write it out explicitly, a really easy way to do that is to like, add an optional type annotation that says, here's what I think it is. Then if that's out of sync, you'll also get an error at compile time. So. Yeah. I've not seen any language put those two together in the way that we 
+
+**Richard:** have. 
+
+**Justin:** That's really wild. So you're doing, uh, I, I don't have like a very deep understanding of like type systems and stuff, but you're, you kind of see this like decoding that's happening and you're like, okay, not really sure what this is, but we'll like continue on and go on. And he's like, oh, it's used this way.
+
+**Justin:** I'm going to like back up and say, okay, this usage here must be string. And if it's not then like blow up something like that.
+
+**Justin:** Hmm. like [00:38:00] that. Yeah. I mean, it's not actually like going back. It's more like kind of the general way that the type inference algorithm works and shout out to Ayaz Hafiz who implemented this feature and also like made it all work and made a bunch of stuff on the type checker either work for the first time or made it way better.
+
+**Richard:** Um, but basically the, the general idea is that when you're doing type inference, at least the way that rock does it, which is the Hindley Milner type inference system, um, As you're going through, you're sort of like learning more and more things about your types as you go based on how they're used. So for example, you might have one function that just says, Hey, Get this field off of this record and then return it.
+
+**Richard:** Well, so based on that, we're like, okay, well now I've inferred that this, this thing is a record and it has this field. And if at any point in the program, you find something that contradicts that, like for example, somewhere you're using that same value as like, as if it was a number. Then you can give an error.
+
+**Richard:** That's a type mismatch. So it's like, well, look, I don't know which one is correct, but you can't be both, it can't be a record and a number. It's gotta be one or the other. Those are incompatible. So error. Um, but you can, you can learn more and more about the type based [00:39:00] on how it's used as you go. So you say, okay, that function just returned, whatever the, whatever the Record value was, I don't know what that values type is because I'm just returning whatever it is, but maybe later on you say, what was the output of that thing?
+
+**Richard:** Uh, Oh, that thing that had that output that gets used as a number. Okay. Well now we can go back and say, this record must've had. Uh, that field name, which is now a number type. We know that because of how it was used later on. And maybe even later on that type gets used as like an integer. It's like, Oh, it was actually not just any number, it was an integer.
+
+**Richard:** ~~Um,~~ so the way that that works is essentially you have kind of like a database of types where it's like, at first we don't, we have like blank entries for each of them. It's like, I don't know anything about this type. And then as we go on, one of the things that can happen is you can have sort of like a SIM link is how I think of it.
+
+**Richard:** So it's like, I don't know what this type is, but it's like, The same as this type or like this field is like the type of this field is whatever this other things type turns out to be. So then as you learn things about more things, because of these sim links, you end up sort of fleshing out the whole picture of like how the programs, um, types fit [00:40:00] together and then at the end.
+
+**Richard:** You know, if you have any contradictions, uh, then you can give errors for them. And if you don't, then you're like, cool. Now I have inferred the types of everything, even though there was never any like backtracking and going back, you know, it was just like, Oh no, we just have this database now. And then like, that's what we use from then on.
+
+**Justin:** That's really cool.
+
+
+#### [00:40:14] Balancing Type Checking and Compilation Speed
+
+**Andrew:** Yeah, that seems like you guys have really intense, like, type checking for also having the goal of, we want a million lines to compile under one second. Those, those two things seem to be at odds.
+
+**Richard:** Not as much as you might think. Um, so we have a lot of, uh, prior art here, which is the elms compiler. So elms compiler is very, very fast and it's written in Haskell. And so we know that like, because we wrote rocks compiler and rust from scratch, that just means that there are. Certain optimizations that are available to us that are not available in Haskell.
+
+**Richard:** ~~Um,~~ obviously Haskell is a lot more convenient to write compiler in because as a garbage collector and stuff like that, um, and no borrow checker. But, um, and also when Evan started Elm, that wasn't really a viable option because Rust was,~~ was, was.~~ Very young at that point. Um, I don't even know if it existed.
+
+**Richard:** ~~Um,~~ but basically like, uh, we're pretty confident that we can get there, especially with incremental [00:41:00] compilation. Um, some of the techniques that we're working towards, but don't have yet implemented are some of the same things that, uh, Zig has been doing. So, uh, shout out to Andrew Kelly. He, he even awesome talk about, first of all, a lot of ways to make your compiler run faster in general at handmade Seattle, like, 2021, I want to say, ~~um,~~ and then also I've been talking to him about how Zig has been doing caching and they've come up with some really clever techniques for how to make, uh, reading and writing cache files of like incremental compilation stuff really, really fast and really, really reliable.
+
+**Richard:** Um, and we plan on doing the same basic strategy for doing that. And so I'm pretty confident that like, at least for like incremental rebuilds and stuff, ~~um,~~ that we'll have really good, like, performance at like reading those things out. ~~Um,~~ and then also, you know, just being able to do the rest of compilation fast, a scratch build will probably take more than a second if you have a sufficiently large code base.
+
+**Richard:** Um, but I think that's going to be okay because you know, these, uh, the other part of this design is that the incremental files should survive, um, like switching branches and stuff and basically not be coupled to like the current state of the file system, but rather just like. It caches like chunks of code that it's seen [00:42:00] before.
+
+**Richard:** And then we just had some expiration policy based on, you know, how old they are. Um, and so, yeah, one of my goals is like, if you're doing a get bisect and you're just like constantly checking out different revisions of the code base, that each of those should be able to take full advantage of the incremental compilation that was done before.
+
+**Richard:** Um, and you shouldn't have to have each one be like, Oh, well, no, no, everything changed. Sorry. Got to start over. Um, that's always been a pain. Pain point for me, uncertain languages.
+
+**Justin:** yeah, for sure. That's a, that's a great ability to be able to just like leverage that cash.
+
+**Andrew:** ~~You want to~~
+
+**Andrew:** ~~do a question, Justin?~~
+
+**Justin:** ~~Uh, go ahead. Go ahead.~~
+
+~~ ~~
+
+**Andrew:** ~~Oh.~~
+
+**Andrew:** ~~Um,~~ cool. 
+
+
+#### [00:42:30] Error Handling in Rock
+
+**Andrew:** Uh, so let's talk about errors a little bit. Uh, the, you have an interesting language level primitive called crash. So like, what's the difference between like crash and like throwing an error or handling an error?
+
+**Richard:** Yeah. So, um, we don't have the concept of like try catch, uh, there's no throwing and there's no catching. Um, crash is essentially for like give up and blow up the whole program. And so this is really intended just for situations where you're like, this should never happen. Like for real. I don't think that.
+
+**Richard:** You this, this branch of code should never get [00:43:00] taken. Um, and if this branch of code ever does get taken, then I would rather blow up the whole program than continue incorrectly because there's no graceful way to possibly recover from this. ~~Um,~~ so essentially this is for like. Cases where there's no way either.
+
+**Richard:** There's no possible way to get the type checker to rule it out. Um, which sometimes can happen or the cost of making the type checker able to rule it out would like destroy your performance or something like that, and you're just like, no, really what I want to do is say, I'm quite confident this will never happen.
+
+**Richard:** And so if this does ever happen, then just blow up the whole program. ~~Um,~~ when I say blow up the whole program, I actually mean that like, it's really Tell the platform I gave up, I'm done. So figure out what happens. So it's not explicitly specified what crash means for like the whole language, except other than like, we're dead, we're, we're done here.
+
+**Richard:** Um, so for example, a platform might say, well, if I'm a command line app, I'm probably just going to like. Print the message to standard error and then like exit with a non zero exit code, whereas like a GUI app might actually display a little pop up [00:44:00] saying like, Hey, I crashed or something like that. Um, but the critical thing is that it's not try catch.
+
+**Richard:** There's no way possible way to use it for control flow other than just like, you know, came over control flow. Um, so as a consequence of that, it, it feels a lot different than try catch. Um, in terms of like normal error handling where you're like, Oh no, there actually is a graceful way to recover from this.
+
+**Richard:** And we want to try to do that. We actually have. For my money, the nicest system of any language I've ever used for this. So the system has the following characteristics. Uh, if I have a function, let's say I'm doing some IO. This is how IO error handling. Um, I have a function that's going to do three different types of IO.
+
+**Richard:** So first it's going to do, uh, A read from a file in the file system, and that's going to give me a URL. I'm going to take that URL, and then I'm going to do an HTTP get to get something out of that URL. And then finally, I'm going to take what I got back from that HTTP request and write that to a different file.
+
+**Richard:** So it's a read, uh, HTTP request, and then a write. All three of those can fail in different ways. Like the, the read can fail. And like, you know, the file was not found. The right can fail in all the [00:45:00] ways the real read can fail. Plus it can also say you don't have right permission. Um, then the HTTP requests can have like network failures and stuff like that.
+
+**Richard:** So in rock, if I do all of those three, like right in a row, what will happen is that I will essentially get back the equivalent of a promise. Kind of, um, we call it a task. It's not quite like a promise in that, uh, promises run immediately when you instantiate them, whereas tasks sort of get, uh, Built up.
+
+**Richard:** It's like a rust future, but without getting into the terminology, you can think of it more or less like a promise, but critically it has error handling built in. So like in TypeScript promises, don't say what happens if there's an error. They just say in the type, like, well, here's what the promise produces if there's success.
+
+**Richard:** And if there's an error, you're kind of on your own. So task says, here's what this produces if it succeeds, but also. If it fails, here's what happens. Now, the cool part about the, here's what happens if it fails is that those errors accumulate into the type. So because I did those three, um, different types of IO, what I will get back is again, the equivalent of a promise that says on success, you know, here's what we get back.[00:46:00] 
+
+**Richard:** And on failure, we will get. All of these file read problems or a file, right. Problem or an HTTP error. And then when I'm handling those errors, I can basically do a pattern match that's exhaustive that says, okay, I'm handling every single error. Or you can use like a little underscore patterns to say like, actually.
+
+**Richard:** All of these things I don't care about, just ignore them. Or like, I'm going to handle some of them, but not all of them. And the cool thing about that is. If you forget a case, like you say, Oh, I, I handled the file IO ones, but I forgot about HTTP one. You get a compile error saying like, Hey, you didn't handle this.
+
+**Richard:** Like either put an explicit underscore here saying I'm not gonna, I'm not going to do anything, um, or, or, you know, make it be part of some other air handling or, you know, figure something out, but you didn't handle it. You forgot to handle it. And now if I add a new, uh, like IO operation in that series of events, um, that does something else, that's like a new type, has a new type of error that we haven't seen in those other ones.
+
+**Richard:** ~~Um,~~ uh, then now that can be a brand new type of error that again, will just like, give me a compile error if I forgot to handle it somewhere. So what I love about this is [00:47:00] that it means that I get this Very simple experience of like, I'm just gonna do all my things that can fail. And this works with I O operations, but it also works with just ordinary, like, you know, parsing or whatever, like things that can fail, uh, de serializing, um, all those things.
+
+**Richard:** It just accumulates all the errors and says, like, here are all the ways that you know what you've been doing so far can go wrong. And then I can say, all right, great. Now, based on that. I would like to handle all those errors and have the compiler tell me if I forget to handle any of them. So that for me is just kind of like the nicest experience for error handling that I've uh, encountered.
+
+**Richard:** You can also do stuff like you can sort of tag them and say like, okay, this error, like if you had like three reads in a row, you can tag it and say like, oh, this one is this read, this one's that read, this one's the other one. So later on when you're handling the error, you can tell which one failed and give it, you know, custom error message or whatever.
+
+**Richard:** Um, but yeah, I love that. And then, uh, you know, basically crash is really just reserved for like, okay, now we can't possibly gracefully recover here. 
+
+**Andrew:** That's, that's super cool. We talked to the people behind, uh, effect, uh, a few episodes ago, and it has like that same concept of putting errors into the [00:48:00] resulting types. But it's all manual. The fact that all of yours is inferred seems so much, so much more powerful. Cause like we, we forget to add stuff all the time.
+
+**Richard:** Yeah, totally. Yeah. It's, it's, um, it's kind of continues the theme with the serialization deserialization, where it's sort of like, is there some way we can get the really nice characteristics that we want in terms of like reliability, um, but also at the same time, get all the convenience that we want out of the approaches that usually have, uh, you know, Nice experience for writing it and reading it.
+
+**Richard:** And then like not so nice experience debugging it later.
+
+
+#### [00:48:34] Async and Task Handling in Rock
+
+**Justin:** I was wondering what the, um, async model for rock was, and it looks like task is to sort of primary, like async data structure. That's true.
+
+**Richard:** Exactly. Yeah. 
+
+**Justin:** Gotcha. 
+
+**Richard:** Yeah. So basically, um, I'm, I'm kind of working on, uh, trying to re figure out how to teach how that stuff works in rock because, uh, we introduced, um, a couple of months ago, this new syntax called exclamation point. ~~Um,~~ and the exclamation point suffix essentially works like a weight. [00:49:00] Um, except instead of saying like a weight, You know, read file, you say, read file, exclamation point.
+
+**Richard:** ~~Um,~~ it's not exactly one to one with async await. It's, it's a little bit different because it's just creating a task behind the scenes. It's, it's syntax sugar for chain tasks together. And, ~~um,~~ it's, so, so you don't have to, there's, there is no async keyword, I guess, is one of the differences. You just sort of write your function.
+
+**Richard:** And then if you use exclamation point, then now that function is going to return a task. Um, Which is really cool. And I love using it. Um, but I haven't quite figured out how to explain it to people yet. Um, I think I have this intuition that the best way to explain it is in terms of async await. So it's, uh, like, Hey, it's like async await, but there are these differences because I think that's the closest mental model.
+
+**Richard:** Whereas before I would explain how tasks work in a totally different way. So I'm still kind of adjusting to, to figure out how to do that. But, um, we've, we've landed some of the features that we'll, uh, Make that sort of experience complete, but not all of them yet. So I'm kind of procrastinating on figuring out how to redo the tutorial around that until we've sort of got all the pieces in place.
+
+**Richard:** Um, but it's definitely a lot nicer, like than the, than the system [00:50:00] we had before and the syntax we had for it. 
+
+**Justin:** Yeah, I've been doing some research on just like programming language paradigms and like function coloring, which is like a sink away. It's like when you mark a function as a sink, and it's like colored differently than a normal function. Uh, and. I've been reading about continuations. Uh, so the effects TS library is a continuation library, like gives you these nice, uh, possible or interruptible like, uh, pieces of, I don't know.
+
+**Justin:** I don't even know how to explain this, but, uh, it, it seems like some of this stuff becomes like a really hard, cause like, if you do like, there's small decisions that you can make in a language design that mean, Oh, I want to make this thing, Asynchronous now. And now like I have to change a bunch of stuff in my code base.
+
+**Justin:** So like in a JavaScript, you have some deep function calls somewhere and you like need to make this thing async. Then you may need to go like all the way up to like, whatever the top level thing is calling it and, you know, make them all async or handle the promise at some point. Um, [00:51:00] so how does that sort of work within rock?
+
+**Justin:** Cause like if you make something return a task, is it color the function or like do a bunch of stuff to that?
+
+**Richard:** Yes. Um, so it does. And the approach that I take is, uh, it's, it's a little bit different in the world of pure functional programming than it is in the world of JavaScript. So in the world of JavaScript, if you have async versus sync, mostly that's an annoyance because you're like, okay, well now if I want to make my function async, I have to add an extra keyword.
+
+**Richard:** I have to, like you said, you have to, it propagates. So all the calls have to all now become async. Um, that's very annoying. And the benefit is like hopefully some performance. Um, That's yeah. Like that's not a great user experience. Then on top of that, you have the bifurcated ecosystem where libraries are encouraged to say like, well, I have the sync version and the async version so that if you don't want to, you don't have to like do all that stuff. In the pure functional programming world, it's actually a different trade off. So yes, it is the case that if you're like, I want to introduce this async effect, you know, deep in a call stack, you do have to change the type of [00:52:00] that function. And then also all the functions that called it, um, in our case, rather Async keyword to all of them, you'd have to say they now return a task where before they didn't, um, but same basic, you know, user experience.
+
+**Richard:** The difference is that we get a lot more out of making that change because in Node. js, if I have a function that says I take a string and I return a string, you're like, okay, but it might also be calling like synchronously read from a database and like, you know, it might be doing any number of effects.
+
+**Richard:** In rock, if you see a function that says I take a string and I return a string, that's guaranteed to be a pure function, which means that you can, for example, memorize it for sure. 100 percent No problem. You can paralyze it for sure. 100 percent No problem. There are all these properties that you know about a function that just from looking at the type are guaranteed to hold because that's just how it works in a purely functional language.
+
+**Richard:** Now, If that function returns a task, now, you know that the rules are different. Now it's not safe to memoize because that task can go and do effects and can like read from external state or write to external state or both. And so [00:53:00] like when you run that task multiple times, it might do different things.
+
+**Richard:** So, Changing the type of the function is a benefit in rock's case, because it's like, no, I want to know is, is this actually just a pure memoizable, very nice, you know, whatever, or is it returning a task that's actually potentially going to not do any of those things. So I want to change all those function types because it tells me something really useful about them that like, they don't have this property anymore.
+
+**Richard:** And I really want to know that. So in, in some sense, like, you know, the, the function coloring blog posts, I think does a really good job of articulating like what the trade offs are. For JavaScript, somebody should, I don't know, maybe I should, somebody ought to write the equivalent of that, but like for a purely functional language, because the trade offs are just totally different.
+
+**Richard:** It's like, yeah, you still have to do the mechanical thing, but the benefit is totally different. It's like, you actually get a very concrete benefit from doing that. So I love function coloring in a purely functional language because I'm like, I Well, yeah, I want to know that. So like, I want those types to change so that I'm aware of the, of the fact that the guarantees around them changed.
+
+**Andrew:** Yeah, I, I really like that guarantee. It's similar to [00:54:00] like the error one, just like having more information available to me as a developer while I'm authoring something is like so invaluable. ~~Heh, heh,~~
+
+**Andrew:** ~~heh,~~ 
+
+
+#### [00:54:08] The Future of Programming Languages
+
+**Richard:** And I think, you know, it's interesting, like there's been a lot of talk about, um, like the impact of like AI, large language models and stuff. I'm like, what does it mean to be a programmer? Like, how is this going to change things? And I'm kind of like a. I don't know, pragmatic, like what can I do for me right now?
+
+**Richard:** Kind of a guy. And I'm not like, Oh, tomorrow it's going to be a magic wand. Like, I don't know. Everybody's been saying that for 50 years, maybe this, you know, eventually maybe they're right, but like, is it really going to be next year? Cause they've been saying it's going to be real soon for a lot of decades now.
+
+**Richard:** So anyway, um, nevertheless, I, you know, chat GPT, very useful, large language models in general, very useful. Um, But, um, when I think about like the future of programming and programming languages and stuff like that, one of the things that I'm always thinking about is like, okay, let's assume that AI gets more and more useful for like generating code and like helping me understand code.
+
+**Richard:** Like, what does that mean for languages? And. One of the things [00:55:00] that I've already seen is that I spend a significantly higher percentage of my time reviewing code than I used to, because if I want to author this like big chunk of like kind of generic code and then just like tweak it as opposed to like writing it all from scratch, it used to be that I would spend a larger percentage of my time writing that from scratch, but now.
+
+**Richard:** Instead, I'm like, Hey, Claude, you know, sonnet, please. I'm saying that so people know like what era it is. If they're watching this later, I think like, Oh, Claude saw it. That was the, that was the hottest thing back then, back in 2024. Um, I'm like, Hey, you know, uh, can you, can you author this thing for me? And then it writes it.
+
+**Richard:** And of course, I'm not just going to blindly trust this output. So I'm going to go review like the code that it generated, and I'm going to make changes to it and so on and so forth, but it's still going to net save me time compared to if I wrote every single line out from scratch myself. So in that sense, I start to.
+
+**Richard:** Care more about what is the code telling me? What can I get out of looking at the code? Like not just documentation in the form of comments, but also documentation that's checked by like something reliable, like a compiler. So that's a really good [00:56:00] example. I'm glad you brought that up of like where having those functions change types to tell whether or not they're pure functions really matters to you because.
+
+**Richard:** If I have Claw generate me a bunch of code and some of it starts doing side effects, and that's going to break my caching that I've written somewhere else in my program, I might miss that. I might not notice that there's like one line of code that's doing a side effect, and now all of my assumptions are violated.
+
+**Richard:** Like in most programming languages, I don't get that. But in Rock, it's like, no, if they're going to do any effects, It's going to change all of them to be task, like for sure, there's no, like, you know, read file, sync and rock. There can't be, so the language doesn't support that it, all the IO has to be async and has to change the type of the function.
+
+**Richard:** So if it did generate something like that, I would immediately spot that. And that makes it way easier for me to review. From the level of like, you know, are my, you know, assumptions being violated. Um, and you know, cache invalidation and like, you know, getting caching wrong and stuff like that is famously one of the most difficult things to do right in programming.
+
+**Richard:** So I really appreciate having help with stuff like that.
+
+**Justin:** Yeah, just having a strong type system, how nice, how novel.
+
+**Andrew:** [00:57:00] ha. 
+
+**Richard:** Yeah. And I mean, you know, it's, it's easy to say like, Oh, just have a strong type system, but I appreciate the challenge of like, Especially if you're starting from like a dynamic language, um, or you're starting from like, well, we have to, we have to support all these object oriented paradigms and like, you know, class hierarchies and subclasses you know, covariance and contravariance and stuff like that.
+
+**Richard:** Um, it, it can be pretty difficult, I think, to, to design a type system that meets all of those criteria and then also is still, you know, strong enough to give you really strong guarantees. One of the other things that I like about functional programming is that A lot of that stuff just doesn't exist. And so like the, the challenge of making a type checker that's really reliable and runs really fast is made easier by the fact that there's just a bunch of stuff we don't have to do.
+
+**Richard:** Cause there's just a bunch of stuff that's not in the language. Like we don't have classes, there's no subclasses, there's no like inheritance. It's just, those are not things that the type checker has to think about at all. So, um, that helps
+
+
+#### [00:57:51] Community and Contributions
+
+**Justin:** Yeah, I think more and more, I am convinced that like scoping your language down, uh, [00:58:00] especially if it's a new language, scoping your language down is, is really key to its success, or at least your sanity. Uh, I mean, there are obviously a lot of broad languages out there and many of them are successful, but, um, I It just, there's a lot of man hours behind, you know, a lot of these languages that just do a ton.
+
+**Justin:** I mean, Rust team, absolutely massive, you know, like the hours that Microsoft has put behind TypeScript, like all these languages that like, we end up relying on a lot and just have a lot of folks churning behind the scenes to power their
+
+
+
+**Richard:** for sure. And I mean, rock is no different. I mean, we, I, I I'm extremely grateful for all the awesome like contributors we have. Um, and like, you know, when it started out, it was like literally just me like writing the first, you know, commits and stuff. Uh, like it was like that for a while. Um, and then like, Oh, like Folkert joined and then Chad joined and like, uh, you know, what, one person after another kind of got on board and now it's like, I'm actually probably.
+
+**Richard:** You know, responsible for like less than 10 percent of like the new commits that are going in on like a weekly basis to the [00:59:00] rock compiler, just because there's so many more people, um, contributing than there were before and and working on different things like, you know, ecosystem versus compiler versus like, um, you know, writing documentation and stuff.
+
+**Richard:** It's just, it's really awesome. Just having a whole community of people who are like, You know, just contributing because they're excited about it and they love it. They want to like make it better. And I love that. It's, it's awesome. And, uh, we just have like our monthly like meetups where you kind of like get together on a call, just, you know, hang out and talk about, you know, like present what we're working on and stuff like that.
+
+**Richard:** And, um, yeah, it's, it's really nice vibe and it's, it's kind of a nice reminder of like, uh, none of this would have been possible before we had like the internet and like all these collaboration tools that we do now. And so it's kind of understandable why. We didn't really see languages at like this level of complexity coming up, like, you know, the 1990s or 1980s, because it's like, I don't know how one person could possibly, like, do all this other than Evan who made Elm because he's a wizard.
+
+**Richard:** But in general, this type of stuff is like really, really, uh, really difficult to try to do for [01:00:00] one person. 
+
+**Andrew:** So before we move on to asking about the future, uh, I want to know what do you think Rock's most powerful feature is? I was looking through the docs and you have some really interesting stuff like testing seems like way different than I've seen in any other language. You have a debug statement that's not like a debugger statement.
+
+**Andrew:** So where do you fall on that? 
+
+**Richard:** Sure. Um, So the debug statement is very simple. It's very similar to how the debug macro works in Rust. It's basically just say like debug and then like the name of the thing you want to print out. It's just a shorthand for like, just print this out to standard error. Um, the reason we have that as a separate language feature is actually because that is a side effect.
+
+**Richard:** Like it's definitely, you know, Like it changes what the function does. And so we wanted to sort of, but at the same time, and we, at first I was like, let's see if we can get away without it. And it turns out it's like, no, you can't get away with having a language that doesn't have print line debugging.
+
+**Richard:** That's miserable. So like, all right. So clearly this is a side effect that breaks the language's guarantees. But the idea is like, okay, if we make it clearly that like, This is kind of a special thing that sort of sectioned off from the rest of the language and [01:01:00] you understand very clearly that like, you should not, for example, debug stuff with knowing that that goes to standard error, then elsewhere in your program, right.
+
+**Richard:** Something that secretly reads from standard error and then like changes program behavior based on the debug state. It's like, obviously don't do that. So it's sort of like, okay, we're going to add this because it's like really important for being able to do stuff in the language, but like you, you You obviously like have to go pretty substantially out of your way to like break your program, like in terms of like the guarantees you expect to like actually get bugs.
+
+**Richard:** So, um, kind of like, all right, let's, let's not worry too much about that. And just like give people a useful tool. Um, so that's how that works. ~~Um,~~ in terms of testing. Yeah. So my philosophy in general with, uh, rock is like. let's just ship with all the tools that everybody knows everybody's going to want.
+
+**Richard:** And therefore we can do a really nice job of integrating them all together in a way where that's just not possible if they're all completely separate tools. So yeah, there's a rock test command that's built in. Um, there's a rock, uh, rock check for, you know, checking for type errors. There's rock [01:02:00] format that does like a formatter.
+
+**Richard:** It's a zero config formatter, much like goes original GoFunt. So like, There literally is not a configuration file. It's just like, I will format your code according to this thing. And that's the one way that code shall be formatted. Um, so there's no possible thing to argue about. You can't, there's no configuration at all.
+
+**Richard:** That's, that's an intentional feature. Um, uh, yeah, testing built in. Um, also we want to expand how testing works. Uh, like right now it's like, you know, ~~um,~~ well, one of the cool things about it is that, uh, Way back in the day, I used to do a groovy programming. I don't know if anyone's done that other than like maybe configuring Jenkins, I think is the only thing that it's used 
+
+**Richard:** for these 
+
+**Richard:** days. 
+
+**Richard:** Um, okay. Sorry. I said the J word. Um, but, uh, but yeah, so I was at a company that uses for application development. And, um, one of the things that I really liked about groovy was that in their test runner, If you got a, an error in your test, like you said, like, you know, foo double equals bar, actually you had to use like triple equals, um, which for them was just like a special testing only thing.
+
+**Richard:** Basically what it would do is it would print out like, okay, this test failed. This is the line that failed. And then also [01:03:00] here's what foo was, and here's what bar was. And, uh, so that was always like really, I don't know, a lovely experience for me because it was like, Yeah, that's the next question I was going to have was like, okay, I see that it failed, but like, what were the intermediate values that caused it to fail?
+
+**Richard:** Um, cause I'm trying to figure out like, what was the course of the failure? And sometimes it's obvious, but when it's not, that's like, I always just, next thing is go in and add debug statements to figure out like, what were those values? And it just sort of saved me the trouble of doing that. So, uh, we, I would say have a partial implementation of doing that.
+
+**Richard:** So the way that it works in a rock test is you write your little test and then you basically, um, If the test fails, we print out all the named variables right now, like that were in there. Um, I want to take that a step further and, and like sort of break down every individual like function call and just like tell you like, look, here's all the intermediate values for real.
+
+**Richard:** There's nothing you need to look up. ~~Um,~~ but we haven't done that. We haven't like got into a sort of final form yet. Um, another cool thing that's, that's nice about, um, rock test is that, uh, I wanted to make. The experience of adding a new test as like absolutely frictionless as possible. So you don't have to make a separate file.
+
+**Richard:** Even you [01:04:00] can just like in the same file, just the keyword is called expect. You just literally say expect. And then any Boolean expression and you're done. That's a test. And that will get run by rock test automatically. Um, you can also do inline expects. So those are like, like in the middle of your function, you can say like, Oh, I expect this to be true.
+
+**Richard:** ~~Um,~~ the cool thing about that is they're like assertions, but they have the critical feature that unlike. Assertions in most languages. ~~Um,~~ they only run in debug builds and during tests, which means that, so these are not like this will crash in production if you want to do that. And you should actually use the crash keyword.
+
+**Richard:** Um, but the whole point of them is that if I want to say like, Oh, I think this thing should be true right here, but I'm not sure, but if it ever isn't true, then I really want my tests to fail. Or like, you know, if I'm doing a debug build and trying it out, I really want to, I want to yell at me. Um, the point of them is to say, look, We are not going to incur any performance costs in these, like they're going to be gone when you do a production build.
+
+**Richard:** So like, don't worry about it. Put as many of those in as you want, because they're never going to possibly hurt your, um, your production code. And [01:05:00] also, uh, unlike assertions, they'll, they'll, uh, they'll give you a test failure, but they don't halt execution. So you can have them go along and it'll just kind of gather up like, Oh, this failed and this failed and this failed, you know, in the same run.
+
+**Richard:** And it'll just tell you about all of them. Same thing in like debug builds. It'll like inform you, but it won't stop the program. Um, So again, the goal is just sort of be like, okay, you don't have to worry about, you know, the trade offs of like adding these things in, just instrument your code, say what your assumptions are in actual code.
+
+**Richard:** If the assumptions are ever violated, you'll find out about it in your tests or when you're trying the thing out. Um, and then in production, there'll be zero costs because they'll all just get, uh, get thrown away. 
+
+**Andrew:** Those inline assertions are, are wild. I've never seen anything like it. It's like, unit test test units, but this is like in the unit. It's just, it's a mind bender.
+
+**Richard:** Yeah. So it's, it was inspired by, um, Russ has a thing called debug assert. And the way that debug assert works is it's, it's not quite what expect is in rock. It's basically just like an assertion that only runs in debug builds or in tests. And so it will just like, you know, stop the test and whatever. Um, but the thing that I always [01:06:00] liked about debug assert was that like, if I sprinkle them around my program, I'm like, yeah, I can, I don't have to worry about these causing any, you know, runtime performance issues.
+
+**Richard:** So I can do like these wild assertions, like, Hey, As soon as we get here, like every single, you know, this thing that gets called a bunch of times, we'll just go and do a whole database lookup and this and that, and like, you know, whatever. And it's like, that's fine. It's fine. Cause it's all going to get optimized away anyway.
+
+**Richard:** So, um, you can do whatever you need. I've seen like various forms of like shortcuts for tests, you know, like putting tests and comments like dot comments or, you know, a lot of different methodologies, but I like this because it's like. I'm sure the compiler is like still checking. So it's like, you still get some, you know, some like better guarantees of it's like, it's still just all code and you can kind of form your expectations around that, which is, which is kind of nice, you know, is like validate the thing that you're validating, I guess.
+
+**Richard:** Right. Right.
+
+
+#### [01:06:52] The Future of Programming
+
+**Justin:** Cool. So, uh, We'd like to end our episodes with a forward facing question. Um, and I think for you, the [01:07:00] question is very obvious. Uh, so you've spent a lot of time on rock, which I think is an absolutely futuristic looking language, like in the today and now, so I'm really excited about it, but what do you think programming looks like from here?
+
+**Justin:** Like, where, where are we going to go with it? Uh, is it going to be a lot more LLMs? Are we going to do a lot more functional languages? What, what's next for us?
+
+**Richard:** Great questions. Um, so a couple of thoughts. So setting aside the LLM question for now, um, one of the interesting things about building a, like a functional language that's designed to be like, you know, we have an explicit goal of like, we want to be mainstream with us. Like be like a, you know, top 10 most popular language someday.
+
+**Richard:** Um, it's always, there's a little bit of a funny disconnect that happens when you say something like that, because obviously if you look at any individual language, the odds that any one, you know, given language that you could possibly pick out of, uh, out of all the languages that are made all the The odds that any of those.
+
+**Richard:** Individual languages is going to become a top 10 languages, very low, but it's not zero because it's also true that if you pick any decade in like software history, like the history of [01:08:00] programming, and you're like, what are the top 10 most popular languages of, of right now? They change and they change because languages that did not exist previously.
+
+**Richard:** Come to exist and then get popular. And then they become in the top 10. And so a lot of people would say like, nobody's ever going to use your silly functional language. Ask those same people what they would like. If you go back and, you know, in like 15 years ago and you're like, Hey, what do you think of this Rust thing?
+
+**Richard:** They're going to be like, yeah, yeah. So that's going to be a mainstream language someday. Get out of here with your, you know, come on, look at this thing. It's a borrow checker and what? I don't know. Nobody's going to, now it's like, it's in windows, you know, like they're using it to build windows and Linux.
+
+**Richard:** Like, okay. Um, so I think it's, it's really easy to, um, Overlook, I guess, like changes that happen. Um, or like, you know, Rust is not object oriented. Go is not object oriented. The idea that you'd have multiple top, you know, most popular languages that are not object oriented was really unthinkable. And neither of those are functional languages, at least depending on your definition.
+
+**Richard:** I wouldn't consider them, um, functional languages. ~~Um,~~ but clearly it's no longer a prerequisite for like mainstream [01:09:00] adoption that you're an object oriented language. So as far as like, do I think functional languages are the future? In terms of adoption? I don't know. I mean, uh, perhaps. But I think that. A language like rock benefits a lot from being a functional language.
+
+**Richard:** There's a lot of like concrete benefits that I can point to that if it were imperative and procedural, it just would not have, um, that's why it is a functional language. And so I think rock can be potentially a language that becomes mainstream. And then as a consequence, it's like, yeah, now there's one more mainstream functional language.
+
+**Richard:** Maybe it's the first, maybe it's, you know, uh, some other language, you know, becomes that first either way. Um, that's So I don't think about it necessarily in terms of like, Oh, the future is like all the languages are definitely going to be functional, but rather that like. I see functional programming as something that like, obviously seems like a reasonable thing for people to try.
+
+**Richard:** I can definitely see a potential future where it does become mainstream and even like the norm over like the current norm of OO. Um, at least the way that like trends are going. Um, then there was the LLM question. So at least again, looking at kind of trends, [01:10:00] it definitely seems like. Large language models are going to get better.
+
+**Richard:** Um, they're going to become more helpful. So I think that again is going to mean a higher percentage of our time is going to be reviewing code that LLMs wrote and trying to figure out like creative ways to, um, incorporate that into an existing project in a way that's useful. And that like, doesn't break things.
+
+**Richard:** Um, I don't know how many people have tried this, but I certainly, and I have talked to a lot of other people and we have a very consistent experience with trying to create an entire actually useful. Program code base, just using, talking to an LLM and then like maintaining it. And it does not work, at least not today.
+
+**Richard:** Like, um, you can get pretty close. There's like some asymptote where you can get a cool demo up and running. Um, going back to my frustration with the beginning where people show all these like really flashy demos, like, look, you can build a whole app yourself. Um, and also if you have a really small thing, I mean, like if it's not like a whole, you know, consumer facing thing, like.
+
+**Richard:** Again, totally reasonable. Um, my dad doesn't know how to program and he needed something that was like doable via software. And [01:11:00] he just talked to chat GPT and it gave him a Python program that did what he wanted. And that's great. It's, it's awesome that he was able to do that because he used to come hit me up about it.
+
+**Richard:** Be like, dad, I'm busy. Uh, but you know, like now the fact that he can solve his own problem with that is awesome. But there's a limit, as I know, to like how far you can take that, at least with the current generation of things. So I I'm expecting that the frontier for that will move out. Um, but I think it's really easy, uh, to extrapolate beyond like what we actually could possibly have confidence about with those things.
+
+**Richard:** And I don't want to do that. So there's this great XKCD comic where it shows like a bride and groom next to a chart, and it says like number of spouses and it goes from zero to one and there's a line. And it's like, as you can see, if this trend continues soon, you'll have a million spouses, right? And it's like, that's not how this works.
+
+**Richard:** Like, just because like, we saw this, like, you know, these like breakthroughs and also these incremental improvements in LLMs, it doesn't mean that LLMs are necessarily going to on their own, get us to a point where it's just like, yeah, programming is just English. Now, you know, there's no programming languages anymore.
+
+**Richard:** You just say what you want. And [01:12:00] then. It just pops out, um, and it's maintainable and, you know, and all that stuff. Uh, that's not where we are right now. Right now there is a like very clear benefit to having useful languages that have, um, I like to think of the split as like you have high reliability tools and low reliability tools.
+
+**Richard:** So a high reliability tool is something like a compiler where it gives you very predictable, very reliable results. And if it doesn't, that's a bug. And a low reliability tools such as. Like the old big, useful one was web search. And now it's like web search and large language models or other AI models.
+
+**Richard:** Um, where it's like, yeah, the output is like very not reliable and, you know, you really cannot depend on it, but it's very useful still. And so I think the intersection of those two is very interesting. And, and like, they have the potentially more than the sum of their parts, the high reliability, the low reliability things.
+
+**Richard:** And I think. As programmers, it's sort of increasingly our job to figure out how to put those two together in really useful ways in the same way that before web search was a big thing. Um, programming was not about using web search, but now it's like, if you [01:13:00] don't know how to Google your way around stuff, you know, you're not going to be as effective as a programmer who does.
+
+**Richard:** I think it's kind of the same sort of, uh, uh, I don't know, the same sort of thing when it comes to large language models, like it's a way for today's programmers to just be more effective. And I think that trend is going to continue. I don't know how or when, or if it will be like, you know, uh, programming looks, doesn't even resemble how it does today, but I don't think we're even like a couple of years away from that.
+
+**Richard:** I think it's like. I don't know, more of a, more likely to be a more distant future than, uh, people who are extremely optimistic about timelines predict 
+
+**Andrew:** So I shouldn't believe all the Twitter thread boys and quit my job.
+
+**Richard:** in general. I mean, I don't even know if we're still talking about the same topic, but yeah.
+
+
+#### [01:13:41] Conclusion
+
+**Andrew:** Cool. Well, that wraps it up for our questions for today. Thanks for coming on Richard. This is a really fun dive into all the things that Rockling is, and I'm excited to see it grow, so thanks for coming on.
+
+**Richard:** Yeah. Thanks for having me. 
+
+**Justin:** Yeah. it was great being on the other side of the podcast. So that was really fun. Um, uh, again, for people who haven't, uh, checked [01:14:00] out Richard's podcast, you definitely should software unscripted. It's great. Um, rock looks fantastic. I'm so excited to, to play with it more and yeah, I hope, uh, your work at ZED goes really well, uh, we want to have more of the ZED team on the podcast at some point in the future, and we're really excited about what you're building.
+
+**Justin:** So.
+
+**Richard:** Awesome. Thanks. 
+
+​ 
