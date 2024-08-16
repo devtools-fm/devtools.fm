@@ -21,7 +21,7 @@ export const justin = {
   github: "https://github.com/Zephraph",
   site: "https://just-be.dev",
   location: "Brooklyn, NY",
-  employer: "Oxide Computer Company",
+  employer: undefined,
 };
 
 export const andrew = {
