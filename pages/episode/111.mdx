@@ -1,0 +1,450 @@
+---
+title: Jordan Harband - Npm Ecosystem, HeroDevs
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Jordan-Harband---Npm-Ecosystem--HeroDevs-e2njf3m
+youtube: https://www.youtube.com/watch?v=iNV53u-rzqo
+tags: npm, ecosystem, herodevs, open source, front end, frameworks, node, legacy, security, vulnerabilities, npm, package, ecosystem, javascript
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Jordan Harband, a pillar of the npm ecosystem.
+Jordan maintains a staggering amount of open source projects that are used by millions of developers.
+Jordan has some opinions that go against the mainstream when it comes to legacy support.
+Join us as we try to understand his perspective.
+
+- https://www.linkedin.com/in/ljharb/
+- https://github.com/ljharb
+- https://x.com/ljharb
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:07] Jordan's Journey into Open Source
+[00:05:44] Challenges of Managing Open Source Projects
+[00:07:34] Ad
+[00:08:43] Debating the NPM Ecosystem
+[00:17:40] Inside TC39: Shaping JavaScript's Future
+[00:26:22] The Importance of Legacy Support in Node.js
+[00:32:52] Security Vulnerabilities and Major Version Costs
+[00:36:57] HeroDevs: Extending the Life of Open Source Projects
+[00:39:35] Community Dynamics and Open Source Maintenance
+[00:48:14] Automated CVEs and Dependency Management
+[00:53:32] Future of Package Management in JavaScript
+
+<!-- TAB: TRANSCRIPT -->
+
+Jordan: I've developed a sort of human centered approach, I would rather inconvenience the majority than exclude the minority.
+
+Jordan: it's fine if people don't share that ethos but, that decision means that I want to maximize compatibility for my packages.
+
+Jordan: no matter what version, of Node you're using, you can upgrade my packages to the latest and ship it, 
+
+#### [00:00:21] Introduction
+
+Andrew: Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co host, Justin.
+
+Justin: We're really excited to have Jordan Harband on with us. Uh, Jordan, you are a legend in the JavaScript ecosystem. Uh, so it's really great to have you here. Uh, I mean, you've done a lot and I just want to highlight a few things. So you're on the TC39, uh, which is incredibly cool. I'm really excited to talk about that.
+
+Justin: Uh, you're, are you still working with Hero Devs? 
+
+Jordan: Yeah, I started in December.
+
+Justin: okay, great. So. Oh, fantastic. So you're working with hero devs, an organization that helps, uh, companies, uh, who depend on dependencies that are no longer supported, which is a very admirable goal, you're part of the open JS foundation, you've done a ton of stuff.
+
+Justin: Uh, I am excited to dig into all of that, but before we dive any more, is there anything else you'd like our audience to know 
+
+Justin: about yourself? 
+
+Jordan: no, I mean, I'm happy to be here. I, I appreciate, you know, everyone who uses my open source stuff or benefits for any of my contributions. And, um, I hope that, uh, you know, the, I think the best, the most impactful thing for, uh, open source maintainers remains getting, uh, Your employer to contribute in some way, whether it's through sponsors or Tidelift or thanks.
+
+Jordan: dev or something like that. So, um, if you want to help folks, not just me, but anyone, um, please advocate for them to do that.
+
+Andrew: That's a great message. Uh, so I think there are a set of profile pictures on GitHub and NPM, uh, that like I've seen everywhere and yours is one of them. I've seen you on countless GitHub issues, whether it's steering committee things or like a. A litany of ESLint issues. 
+
+
+#### [00:02:07] Jordan's Journey into Open Source
+
+Andrew: Uh, so how did you get to this place where you were maintaining and participating in so much open source in the community?
+
+Jordan: Yeah. Um, let's see. So, I mean, I, my first open source, like pull request. Was to a jQuery infield labels plugin, I believe, um, in like 2010, uh, it was, I was working at, you know, at a company that had a website and they were using the plugin. They had a bug and I was trying to fix it. ironically, that's like, I've since learned that that's a terrible user experience pattern.
+
+Jordan: But, but like from there, I just kind of, I, I think I really appreciated the ability to, it. Communicate directly with the authors of the software and report bugs, but also fix them. And then at some point, the, uh, more than one maintainer basically, like I would file enough issues or enough full requests, uh, and eventually they were like, here, you do it and they would hand me the keys and that was always very kind of, uh, Imposter syndrome generating because, you know, like I don't want to fuck up.
+
+Jordan: Like, I don't want to screw up. I don't want to, um, you know, break things for people. And so I came into it with that very, you know, I think I still have that sort of aversion to, uh, to censorship. Not to change exactly, because that has other connotations, but like aversion to, uh, causing disruption. Um, and, you know, I just kind of eventually, I kept accumulating more packages from other people.
+
+Jordan: I started making my own whenever I would see something that I needed to do that could, that was, that Like needed to be solved in more than one place. Um, you know, I would try and extract it to a package so I could share the source of truth and I could have like one set of tests and, you know, um, if I needed to fix a bug, I only had to do it in one place instead of like 58.
+
+Jordan: and you know, there's that app programmers adage, which is something like, if you see only like only do an only create an abstraction, if you see something repeated three times, and that's better advice than telling people to do it at two, but at some point, I think. engineers develop enough intuition to figure out even at two, sometimes even at one, when it's going to be useful somewhere else.
+
+Jordan: Um, and so I've just kind of done that and NPM has this small modules philosophy. That's kind of the same as the Unix philosophy of like some, a thing should do one thing and it should do it well. And that really helps a lot, especially like I've, NPM is, is one of only three. Uh, package management systems that I would describe as non broken.
+
+Jordan: Um, the other being Cargo and Nix, Cargo was based on NPM heavily. And like, and that's because they allow you to duplicate dependencies in the tree, meaning that you can have. Something that depends on version one of a library and version two, everything else like bundler and Maven and whatnot, there, there are just a flat tree of dependencies.
+
+Jordan: So anytime you update anything, you often have to update a bunch of other things. And it like my, my lived experience, my trauma there is, is from those, those specific ecosystems is like, uh, How hard updates were, because as soon as you update something, a bunch of other unrelated things break just because they happen to use the same common dependency.
+
+Jordan: And so not only does that, that world encourage people, I think to avoid dependencies, but it also. Limits how much kind of reusability you can get out of your code. And I, so I loved, I like, I found myself loving that aspect of NPM and, um, just kept going and then, uh, you know, part of that was maintaining polyfill packages, ES5 shim and ES6 shim, and then eventually I started making polyfills that were single standalone packages, uh, and that also is what led me into TC39.
+
+Justin: That's awesome. So there's like two parts of that, that I want to dig into a little bit more. 
+
+
+#### [00:05:44] Challenges of Managing Open Source Projects
+
+Justin: One is just like, so talking about like a large scale, open source maintainer, like how do you keep on top of everything? I mean, GitHub notifications love to the GitHub team, but they're kind of a nightmare, like it's really hard when there's a lot of activity to figure out what, what's going on.
+
+Jordan: Yeah, um, they are and it is, uh, and V2 is in many ways better than V1, but like the team seemingly got defunded right after they launched V2 and didn't get to get to some of the improvements they'd talked about doing. Um, but nonetheless, that is how I do it. I, I get email notifications, but that's, I almost never use them.
+
+Jordan: I just kind of mark them as read in mass. Every now and then, but, um, I have the GitHub notifications tab open on like my tablet, my phone, my computer. That's the first thing I look at most days, you know, the last thing I look at most days. Uh, and I group things by repository so that I'm able to quickly like, you know, cause there's some repos I follow where it's, um, I don't actually care most of the time, but I don't want it.
+
+Jordan: There's every now and then there's a really important thing and I want to miss. And so 90 percent of the time I can just like mark all as red and, you know, Ignore that repo. And then there's some, some projects where it's like, you know, if an issue pops up, I, I, by highlighting it by project, I'm able to immediately say, Oh, I need to prioritize that.
+
+Jordan: That's a big deal. Versus if it's just in this big, long, undifferentiated list, uh, it, that doesn't really work for me. So, but that, that's how I do it. And then, uh, I also have, you know, Slack and IRC and discord and email and all the things. And, um, yeah, I think just my particular brand of, you know, neuro divergence or whatever is it lends itself well to lots of different multiple, you know, ongoing threads and, um, You know, there's that thing that says that like only 10 percent of people are good at multitasking, but everybody thinks they're in that 10%.
+
+Jordan: And, you know, I think I'm in that 10%, but who knows? 
+
+
+#### [00:07:34] Ad
+
+Justin: We'd like to thank Mux for sponsoring our podcast. This week. Mux is a video platform for developers that enables teams to ship video based products faster than ever before. If you're looking to add live streaming or stream on demand, video content to your product, mux has simple APIs that enable you to ship that in days, not weeks. 
+
+Justin: They have tooling built for every stage of the video pipeline, whether it's simplifying video uploads, Intelligently determining the resolution of video playback for your users, providing editing features to programmatically generate social clips or add watermarks, allowing you to easily generate thumbnails for video assets, and even getting in-depth analytics on how users are engaging with your video content. 
+
+Justin: There's guidance and their docs for integrating with major web frameworks, they have SDKs in most popular programming languages. They are a very extensive platform that will help you ship your video products faster. So, if that sounds interesting to you go check them out at mux.com that's M U X dot com. 
+
+Justin: yeah. One other question on the topic that you covered before. 
+
+
+#### [00:08:43] Debating the NPM Ecosystem
+
+Justin: Um, So we were talking about like the shape of NPM, how you feel like this is like one of the only, uh, sort of package registries that's not broken. Uh, and there are some people who feel very strongly that, uh, the incentives of NPM actually incentivize broken.
+
+Justin: Bad behavior. It's like, Oh, we have too many dependencies. Oh, there's like too much, um, like fragility and, you know, risk involved and, you know, potentially for like supply chain attacks and things. And left pad incident is like a very popular thing that people, um, bring up. So I'm curious to hear about like your take on this sort of like, uh, alternative perspective on NPM and it's 
+
+Justin: shape. 
+
+Jordan: Well, humans in general, myself included, we like to paint things with a broad brush, especially when we're going for rhetorical impact on like, whether it's on a GitHub, you know, comment or a Twitter thread or whatever. So it's often oversimplified in lots of different directions. And I am very guilty of that.
+
+Jordan: Um, that said, right? Like, You know, if you've done enough interviews for a programming job, you know, that literally everything is about trade offs so, you know, or if you've worked long enough in an org, so the, there are, there are always trade offs for any of these decisions, right? Like there are some things that are, are problems because of the NPM model of a graph versus let's say the bundler or Maven model of a graph.
+
+Jordan: Um, there are some problems that you get introduced as a result. Uh, it also fixes a lot of problems. Um, the whole concept of peer dependencies. Which is a thing that's very confusing and hard to explain. And, you know, even though the few of us that think we understand it, that doesn't make it easiest for us to write docs that convey that understanding.
+
+Jordan: Right. But, um, peer dependencies are a necessary solution to one of the problems that the NPM style, that a deep graph like that, uh, creates. Um, the, the thing I would invite anybody to do is when they, if they think something is particularly good or particularly bad is kind of try and think about the first principles of like, what.
+
+Jordan: What are all the variables here, right? And so, leftPad is actually a great example because it's not a good example in the sense that Everyone used the left pad incident to say, well, look, see, this is why small, small modules are bad. Um, but the same exact thing could have happened if like the ESLint maintainer or Babel maintainer, or, you know, or whatever had unpublished their package.
+
+Jordan: Left pad was a hundred percent and only about like the ability to unpublish, which NPM immediately, you know, rectified more or less like they have like a, there's like an unpublished, very tight unpublished window. And while that needs refinement, right. Something that's, that's well known and dependent on you can no longer unpublished that problem is fixed.
+
+Jordan: It'll never happen again. and I'm pretty sure that cargo like learned from that and made it never possible in the first place. Right. So like, good people learn from mistakes. That's, that's a good thing. Um, but like when people talk about supply chain attacks, the number of dependencies doesn't actually have a bearing on that because.
+
+Jordan: If you're, if you're, if you're in the camp where you want to audit all code in your application, I mean, good luck to you, but also like you have roughly the same amount of code, possibly more with zero dependencies than you do with 10, 000, right? It's just about where that code is. And so that doesn't really help that problem.
+
+Jordan: The main issue. Um, so when, whenever people talk about the security of NPM, Um, and this includes in like expert, uh, uh, rooms filled with experts, like the open SSF discussions and people talking about S bombs and provenance and all this stuff. The vast majority of the incidents, like there's a lot of security issues that are theoretically problems.
+
+Jordan: Like, oh, look, this package, if you installed it by accident, would like steal your crypto or something. Sure, but people aren't doing that really, like not installing things by accident that often. So the, of all of the list of, of incidents on NPM that had like material impact, that were, or could have had much worse impact if they had been caught, right?
+
+Jordan: That were like a real concern. Um, the vast majority of those are not things that can really be programmatically prevented. They're from a bad actor, either a good actor who tuned rogue, or a good actor who, you know, was, was conned into handing over their package to, you know, somebody who became a bad actor or wanted to, you know, so like the XZ incident, right, which is not NPM, but, you know, that was, that was a two year long con that, you know, it's, it's hard to imagine that wasn't state sponsored, right?
+
+Jordan: Like that, you can't defend against that with software, right? Um, and so. One of the complaints that I get on some of my packages is look how many dependencies there are, but they're not looking at the right number because the number that matters is not how many packages, the number, just like it doesn't matter how many lines of code, right?
+
+Jordan: Like, we now know that is an absurd thing to care about, but people cared about that a lot, 40, 50 years ago, you know, so we've evolved since then. And similarly, I think we need to evolve past caring about package count and care instead about a publisher count. How many humans could screw up my dependency graph?
+
+Jordan: That's what matters. And if you have 10, 000 people in your company and you have 100 maintainers in your graph, guess which code base is more secure. It's not your first party code, right? Because you have more people that could screw it up. Now you have more levers on those, those employees, right? To prevent that.
+
+Jordan: But. You know, that it's, it's a different way of thinking about it that I think, uh, folks kind of forget it's, um, because the numbers that are front and center are the ones that are easy to calculate issue count, uh, star ball size, uh, number of dependencies, right? But those aren't actually useful metrics to look at.
+
+Andrew: Yeah, I do find that interesting that like you, you can't really one to one the amount of packages you have to authors. Cause like really MPMs full of authors like you who are prolific and really take up sizable chunks of that graph.
+
+Jordan: Yeah. And when you compare two packages that do the same conceptual thing, right? There's. More than just like, if you only use package size, you're going to end up with security issues in your application because you're going to find somebody will make a package that's like one K smaller solely so they can take over your supply chain, right?
+
+Jordan: Like that, that's not the only metric you need to look about. It's not something you should ignore either as a trade off, right? Like one of the trade offs of having a more secure dependent, like. A package ecosystem, which I would argue NPM per capita, like objectively is, is like the most secure. Um, but one of the trade offs is that is that, yeah, you have a lot more internet bandwidth.
+
+Jordan: You have a lot more tooling that you need to manage all the dependencies. You have potentially a lot more disk space that you need to use for your caches or for your installed graphs. Right. Um, but like I have hundreds of projects fully NPM installed on my machine and like, I think my all inside one directory and that whole directory is like 20 some gigs.
+
+Jordan: And that's not that much these days. That's like, like, I think a 5 USB drive would cover that. So it's like, people are complaining about disk space, but not really like thinking about it in realistic terms. And if you're trying to eliminate internet bandwidth, then sure, you can do that. Like, but arguably also that's NPM's job to worry about, cause they're the ones paying for that bandwidth.
+
+Jordan: And, you know, the, it's, it's also not that simple, right? That doesn't mean that, that I or any other package author should just ignore concerns about. You know, disk space or bandwidth, but like they, to me, they, they have to be weighed in concert with all of these other considerations. And then in terms of what I was saying in the beginning, right?
+
+Jordan: Like this sort of fear of disruption that I have, the thing that causes the most problems isn't performance or space or like in my experience, right? Isn't like, Like this thing ran 10 percent slower. That sucks. And you need to fix it, but that's not like a pager duty four in the morning kind of incident.
+
+Jordan: That's like, that's just a regression. You need to fix that. Um, you need to look into it and figure out why it's happening. But if something stops working on a browser that. You know, 10 percent of your paying customers use that as a stop the world situation. That is a far more important consideration to me than performance or size.
+
+Jordan: Um, and that's, that's informed by, you know, just my, my personal lived experience in, you know, I've worked at some smaller companies. I've worked at some bigger ones. Like I worked at Twitter and Airbnb and, you know, um, very large code bases, very large teams and like, and small ones. And it's. These are all real problems, right?
+
+Jordan: Like I think that, uh, it's just too easy to oversimplify and paint these things with one, with your favorite brush, whatever that is, and then say, therefore a is bad and B is good. And, um, and that's a fine conversation to be had when it's just a kind of didactic argument. But, um, obviously when it turns into people, you know, being jerks or harassing people or generating internet outrage, then that's perhaps not the most productive solution.
+
+Andrew: Yeah, for sure. 
+
+
+#### [00:17:40] Inside TC39: Shaping JavaScript's Future
+
+Andrew: And before we get to that part of the conversation, your opinions around legacy support, I do want to touch on your involvement in TC39. I find that a fascinating subject also that like. You're literally defining the future of the language. And then almost at the same time, alluding to the, the, the next part of the conversation, some people kind of think you're holding it back.
+
+Andrew: So there's this awesome, this interesting dichotomy between those two things. So like you told us how you became involved. Uh, it was through your, your various low level packages, but what have you worked on while you've been at TC39? And like, what's, do you have an area of specialization?
+
+Jordan: so I've worked on a lot of things. I've championed, I don't know, it's probably around a dozen proposals at this time, um, but I have to go count. Um, and I don't really have an area of specialization. I certainly know a lot about, uh, like. Observability and APIs and like things like brand checking and robustness, right?
+
+Jordan: Like, um, like I don't like to do in my packages. I don't like to do like dot push on an array, for example, because somebody could have redefined what dot push means. Um, But so like, I bring that court sort of perspective of like, how can we make the APIs that are added to the language less susceptible? To untrusted code monkeying with it.
+
+Jordan: Um, I think the thing I'm weakest on is like grammar and parsing and, you know, kind of, uh, syntax stuff, right? Like I have plenty of my opinions about usage of it, but I'm not very strong in my like understanding of, of the consequences of adding new syntax and so on. Right. Like, um, I was an editor of the spec for three years, so like I have a pretty good handling around spec language and how to.
+
+Jordan: How to describe something.
+
+Justin: Of the things that you've been involved with, with the TC39, what's, what like proposal or work that you've done are you most proud of? 
+
+Jordan: Um, Good question. The things that have already landed, So I think, there's a bunch of stuff I'm happy is there, like object. values and entries was my proposal. Um, I took it over from someone else, but nonetheless. And then, uh, So there's a lot of things like that that are useful. But I think that the one that I'm the most proud of so far that's landed is one that I actually designed myself, which was a match all string dot prototype dot match all, um, because I kept occasionally running into this problem of like, I have a global regex that also has capturing groups and I want to get all of them.
+
+Jordan: And, um, so I made the proposal to, to address it and, um, That one seems to be there. I haven't heard any controversy about like controversy or complaints about it. And I've gotten some, you know, gratitude about it. And, and that one was a hundred percent me. And so I'm pretty proud of that one. 
+
+Andrew: I love both of those JavaScript features. I use them quite, I use the former quite a lot. Um, so you're. You're like main ethos with a lot of the package stuff is I don't want prototypes to be polluted. How does that extend to these TC 39 proposals? So like in the case of match all, is it like you're worried that someone will overwrite match all to do different things?
+
+Andrew: How do you prevent that from like a spec level?
+
+Jordan: Yeah. I mean, so there are plenty in the language itself. We have to follow precedent and be consistent as much as we can. Um, and. That means that often by necessity, we have to put in things that are observable from code, like things that end up being a hook point where you could like monkey patch something, or you could put a custom to string on some object and then like observe, uh, you know, like be able to run your own code at some point in the algorithm.
+
+Jordan: Um, so it's not always avoidable, but I'm aware of it. And. And I'm not the only one on the committee who tries to minimize those things, both because like engines can't optimize it as well because they have to like, they can't like do something different because the user code can, could depend on the exact order that those things happen.
+
+Jordan: Um, and then, you know, folks that are concerned about, um, some form of security, right. So like Salesforce, for example, runs, um, like they allow you to run, write your own JavaScript plugins that then run in other people's websites. And like, They want to be able to do that safely, which is a very big ask. And so they have a way of kind of locking down the JavaScript environment.
+
+Jordan: Uh, and in order to do that, they need to know. What things are locked down and what, uh, kind of invariance or like, um, axioms that they want to maintain in the language in order to do that safely. So there's a lot of those different concerns. Um, and that, that sort of Salesforce use case, um, and they're not the only one.
+
+Jordan: There's a blockchain company that runs like smart contracts in JavaScript using one of these lockdown environments. There's a, um, uh, embedded chip company that runs JavaScript like on small devices and like, in order to. Maximize what they can put in ROM instead of Ram. I believe that that it's really important for them that things be non observable.
+
+Jordan: And so they have to lock things down and, you know, so there, there's a lot of actual use cases with lots of real money behind it, that most web developers just have no concept of, cause they don't have to deal with it. And so it is easy for them to hear those constraints and not care. And in general, inside TC39, that happens a lot where some people have a constraint that most of the other people just don't care about, but like we have to, as a care by default, just because other people in the room care and see if we can meet the constraints altogether.
+
+Jordan: And sometimes that means things don't advance or they're stalled for a long time, but, part of the danger of JavaScript in particular, which is that, uh, in another language, you could remove something later, uh, in JavaScript. You never can. We, the number one rule is we do not break the web.
+
+Jordan: So like pretty much anything that gets adoption on the web is, is there forever. So it's, it's. Most software choices, you, if you really screw up, there's a timeline after which your screw up is gone. And with, with JavaScript, there is no timeline. It is there forever, 
+
+Andrew: Yep. There's always that one guy who misspelled refer, and now we all have to misspell it forevermore.
+
+Jordan: forever. Yep, that's right. You got it. 
+
+Justin: Are there any other, uh, big, maybe like accidents or things that y'all wish would not have landed that, but that did and had like unconsequent or like unintended 
+
+Justin: side effects?
+
+Jordan: Oh, there are there are many. Um, The, so the, the language process for ES6 and earlier was different than it is for afterwards. So ES2016 and later, um, is a different process. In that process, Although those things can still happen and have, they, they're much smaller and harder, like more rare. Um, so I can list a lot, a number of things from ES6 that were designed sort of in isolation that turned out over time to, um, not have been great.
+
+Jordan: So for example, like regular expressions have a bunch of symbols, like four symbols so that you can make a subclass of regexp that doesn't use the built in regexp, like regexp parsing engine. And. In theory, that's a great capability to add, but in practice that has created so much work for every browser and engine and also drastically slowed down regular expression work and like made it really costly.
+
+Jordan: To make changes in certain parts of, of the language. Um, and just on balance, I think, even though the committee doesn't have an appetite to try and remove it because there's a chance it might break websites. Like, I think we all wouldn't want it, like, wouldn't have added it if we knew right at this point.
+
+Jordan: Um, there's also some of the decisions made with class, um, that kind of made it harder to add class fields later or decorators later or whatever it is. Um, there's one thing called the override mistake that the, um. The folks who care about that, the kind of secure subset of the language are really upset about, which is basically if you freeze, let's say you freeze object dot prototype, then you can't like, uh, It, because it has like, let's say a two string on it, you can't assign two string on anything else or it'll throw.
+
+Jordan: Um, and so like what, what they would have preferred to happen is that it like, if it can't, you know, if the thing is frozen, it's like a site, it makes a data property or I don't know, something like that. But there's, there's like little edge case, things like that, that have ended up affecting the language's consistency in a lot of different ways.
+
+Jordan: And, um, the committee has to balance pragmatism with idealism. Otherwise we wouldn't be able to get anything done. 
+
+Andrew: Yeah, it's a unique constraint of the web that we can't really break anything ever. It's like, it's, it's, it's probably astounding to any other platform, but I think that really, uh, is a nice transition into the next part of our discussion where, uh, we discuss your opinions about legacy support. 
+
+
+#### [00:26:22] The Importance of Legacy Support in Node.js
+
+Andrew: So, uh, recently you got, you became the main character on Twitter, let's say, uh, for some of your opinions behind how packages should support.
+
+Andrew: Older versions of node. Uh, somebody found that you were, you support all the way back to point four, which is like almost the start, I think. So, uh, why do you think that supporting, uh, these older node versions is so important?
+
+Jordan: Good question. Um, so the particular incident you're referring to is, is flooded with misinformation and, and wildly inaccurate, uh, misunderstandings, um, or inaccurate understandings. Um, but setting that aside, so the first thing is I am a firm believer in semantic versioning. So the fastest way you can get a lot of people angry at you, even faster than I got people angry at me is to make a breaking change in a non major version.
+
+Jordan: Um, React and TypeScript have a modified version of semver or form of semver and cause these issues in minor versions. And they get flack for it every time, despite years of saying here, we don't actually follow semver, we follow a version of it. Right. Um, So if you want to drop support for something as a package author, okay.
+
+Jordan: Right. Like it's with respect to SemVer, go for it, but do it in a major version bump. That's all. Um, so that's the first thing. Um, and part of that, like in the NPM ecosystem, there's the extra wrinkle of that, that the engines declaration, if you don't have it. It defaults to star that is in the docs. It's always been the case.
+
+Jordan: And so if you haven't said explicitly what your engines, your node version support range is for a package, you have to support everything. And if you want to get away from, if you want to make a more pragmatic argument, you have to support everything that worked and was that, and it was reasonably expected, like, and it was like reasonable for, for users to expect it to keep working.
+
+Jordan: So if you, when you did view, you know, two zero zero, if something worked and it was a reasonable use of the library. Then in version 1. 248 or 2. 48 or whatever, like you can't suddenly break it. Um, it, even if you don't, you didn't actually want to support their environment or whatever it's, you have to do a V3 to drop that support or you have to support it.
+
+Jordan: So that's kind of the one angle of it. But the other thing is. And this is partially informed by my experience in ecosystems like, like rails, um, where when you force somebody to do an upgrade by a major, by doing a major version, right? Because a major version, everything stops, right? You can't just seamlessly upgrade to it.
+
+Jordan: You might, you have to review the changelog. You might have to change things. You might not. You might have to make sure your environment is compatible. Maybe you already are. Um, but it's, it's a big deal. It's a high cost. Process to like by, by publishing a major version bump, you have imposed a cost automatically on the ecosystem. And it's significant. Um, the difficulty of updating bit is that the thing that in many of my past employers has held us back from upgrading the most by a large margin is. These types of compatibility problems, like in, in order for me to upgrade a rate rails or node or PHP, I have to get, I have to make it so that that move is as small and as possible so that the risk is as low as possible. And the more dependencies I have to change at the same time, the harder that is. And so it, because it's, it's a lot easier to do a hundred pull requests, updating 99 dependencies and a platform than it is to do. One pull request, updating them all at once. And I'm far more likely to like, I'm far more likely to get in trouble or like cause a production incident if I do the single PR versus the separate PRs.
+
+Jordan: So I never want my packages ideally to be the reason that an upgrade is harder. I don't support node 0. 4 because I think people should be using old node or old browsers. Right. Part of my also argument is that it's easy to test on node CI. And that gives me JavaScript environments that are similar to a lot of old browsers.
+
+Jordan: So I can make sure that I'm not depending on features that, you know, would break eventually in a web browser that I'm not otherwise testing for. So that's part of it, right? If I got, um, a good, a reliable automated in browsers, I probably wouldn't support old node anymore. I would just support the browsers and new node that still might create the same constraints on my packages, but it would more clearly explain what I care about.
+
+Jordan: Um, and that's, that's also because all of my experience looking at the internal private analytics of all of these employers is that the idea that everybody updates their browsers or that any browser is evergreen is just completely blatantly false. Um, Tons and tons of people, like, like enough to make any developer cry, would like are, are stuck on old browsers.
+
+Jordan: And the reason that they're upgrading is not the website still works. The reason they're not upgrading is that something else is hard. Either they don't have enough disk space or they don't know how to do it. Or they're on a locked down computer because they're in some computer lab and they can't make the changes.
+
+Jordan: Right. Um, you breaking your website is not going to force them to upgrade. It is just going to hurt a human being. And when you think about things in terms of human beings affected instead of percentages, it becomes a lot harder to justify dropping supportive stuff. And so I've long ago developed a sort of human centered approach, which is that, um, I would rather, like, like, I would rather inconvenience the majority than exclude the minority.
+
+Jordan: And it's fine if people don't share that, that preference, that, you know, that ethos or whatever, but, um, that decision means that I want to maximize compatibility for my packages. I want to make it easier. Like you, you can use. No matter what version, like, of Node you're using, you can upgrade my packages to the latest and ship it, and then you don't have to deal with any of my code when you're actually upgrading Node.
+
+Jordan: And that makes upgrading Node easier. That is the opposite of holding the ecosystem back, in my view. 
+
+Andrew: Yeah, I can definitely resonate with the upgrading packages story. Like 10 out of 10 times it, it all, it is always a breaking change somewhere else that's holding me back, like upgrading more than one dependency at a time is just fraught with terror. Uh, so the ability to only do it one at a time is pretty big.
+
+
+#### [00:32:52] Security Vulnerabilities and Major Version Costs
+
+Jordan: And then the other angle is about vulnerabilities. Like, lots of majors strand a bunch of users on old versions. So, for example, there's a popular NPM, uh, author. He has a lot of packages. He makes breaking changes quickly, like frequently. Um, the, uh, theory as a, you know, generally it's because like, there are at least pre ESM, the stated reason was what, that they want to just use new shiny syntax and they don't want to have to care.
+
+Jordan: About users of old things. So they just make a major, you know, to their credit, they always followed Semver and they did a major bump, but then when a vulnerability gets filed on one of the, their libraries, it's like version two through five is affected and then they publish a fix on V five, all the users on versions two, three, and four are screwed.
+
+Jordan: And then the maintainer has to do more work to do a backport or. They have to leave a bunch of users out in the cold, or those users have to do a bunch more work to upgrade, which is, for all the reasons we've discussed, might not even be possible. And then, like, that even, and that, there's other reasons too, which I've only understood since coming to work at Herodes.
+
+Jordan: There's companies that have, like, they're government contractors or whatever, and they could have contractual legal requirements that they are not allowed to update their dependencies. Because of stability, but they still also are required to have no vulnerabilities. And so, like, they're kind of, they're in an extra bind.
+
+Jordan: And that, like, that's where HeroDev's business comes from. And so, like, the creating a major version is a very high cost. And the other thing is you can go look at, um, there's a great website, majors. nullvoxpopuli. com. Uh, and you can type in an NPM package name and group it either by majors or also by minors.
+
+Jordan: And it'll show you the like last week's worth of downloads on that package. And you like, I think people would be shocked if they looked at. Um, maybe not like top level, like direct dependencies, like frameworks and, and webpack and ESLint and Babel, like tools, right? Um, those are probably more healthy, but if you look at the graphs of a lot of transitive dependencies, I wouldn't describe them as healthy because you see these like spikes in the older unmaintained versions.
+
+Jordan: And in that case, what that means empirically is the ecosystem did not want the breaking change enough. To upgrade to it. And the ecosystem here might be lots of people, but it also might be 10 people who are, you know, who have popular packages that are like feeding the download, you know, priming the downloads for that, for that transit dependency.
+
+Jordan: But nonetheless, that's, that's. That's the, your consumer, right? And so if your consumer doesn't want to upgrade to you, you screwed up and you can choose to double, to not fix that. Or you can choose to try and fix that. Um, or you can choose to avoid the problem entirely by not doing a breaking change and that is usually what I opt for. 
+
+Andrew: Yeah, I've definitely been in those package situations in my eye. I've harped on it on this show a lot. ESM versus CJS was such. A mistake on so many levels.
+
+Jordan: Very, yeah. And that that would be a whole other podcast and, uh, it does over, I didn't mention it when you asked about TC 39 mistakes because it would be a whole other, you know, podcast or seven. But, um, yeah, it, It's the same with packages that go ESM only as they have, what they have done is they have made a breaking change that makes it impossible for some users to use them.
+
+Jordan: And you can go look at that website I mentioned and see how, like the number of users that, like there's, there's, uh, somebody who's been making graphs of like how many popular packages have migrated to ESM. And, um, if you look at the, the, the same numbers, Uh, by where users are assigned to versions instead of like, you know, where it's like, like, I think the way they're doing it is all downloads are grouped by the latest version, but if you actually look at the specific version that is being downloaded, people aren't using native ESM yet.
+
+Jordan: And the way to the way to change that isn't to make everybody else's life harder in the meantime. There, there are, there are ways to change that, but it's, that's not it.
+
+Justin: I, I'm curious to sort of like to build off of this conversation. 
+
+
+#### [00:36:57] HeroDevs: Extending the Life of Open Source Projects
+
+Justin: So, uh, we've mentioned a few times you work at hero devs. Um, and so this organization like is very explicitly for extending the life of open source projects. And could you talk a little bit more about like the details of like what that means and like what your day to day kind of 
+
+Justin: looks like? 
+
+Jordan: Yeah. So let's say, um, view, for example, so vue three is out. View two is unsupported. What this means is that there's a security vulnerability in vue two, uh, You've got it. There's no fix for it available. Uh, and the Vue team is not going to fix it. So you are guaranteed to not get a fix for free. Uh, and your choice then is you can upgrade to Vue 3, which if you can, you should, you should use the migration guides, the change logs, like whatever's out there and you should try and upgrade.
+
+Jordan: Um, nobody's saying you shouldn't. Right. And, and, but as I mentioned, there are a lot of organizations that can't either legally and contractually they can't upgrade, or they just don't have the resources to do it right now and they need to buy themselves some time. And so, uh, what we sell at HeroDevs is, uh, we call it never ending support, but it's essentially a private fork of the public package with security fixes included so that you can install that and nothing breaks and your vulnerabilities are patched and you can achieve, you know, PCI compliance, FedRAMP compliance, all the different check boxes that people need to check.
+
+Jordan: Um, and then we, you know, we donate some percentage of that back to the maintainers, uh, and. Which helps them develop the new version. So, you know, it's, there is, there's a, perhaps an argument. That people could make that like, we're enabling someone to use an older version. But while that's true, they're going to use it anyway.
+
+Jordan: And you like, it's the same as the browser thing, right? Like nobody's using an old browser because they need an incentive to upgrade. Everyone wants to be on the latest and greatest all the time. If they're not, there's a reason. And you are unlikely to be that reason, whether you is the software author or the website or whatever.
+
+Jordan: Like there's some other reason and making life harder for them. Isn't going to make it easier for them to, to, to upgrade.
+
+Andrew: Um, so, uh As part of that twitter drama there has been a lot of movement and even like a community forum There's the e18e community who is They're trying to, it's called the ecosystem cleanup. They're just trying to go through and reduce bloat in the package ecosystem. And they've kind of identified you as bloat in the package ecosystem, which I find crazy.
+
+Andrew: Uh, but what do you think of these like modern packages? Like I've seen Neo traverse and people trying to re implement everything in new stacks. What, what do you think of that?
+
+
+#### [00:39:35] Community Dynamics and Open Source Maintenance
+
+Jordan: Well, um, it's unfortunate that that initiative was mired in some incredibly toxic behavior by a lot of the individuals still working in it, um, for a month or more. Um, but setting that aside, I think that that's the only thing that they should have done in the first place. If you don't like what an open source package is doing, use a different one. That I think there is, it seems like there's some folks out there that believe that be by being part of a community of people using an open source package that that gives you any entitlement or right to decide what happens with that package. It doesn't open source is not like it's, it's. The MIT licenses as is there's some great blog posts about that.
+
+Jordan: Like if you don't like it, go somewhere else, right? Like, obviously the maintainer probably wants to hear your feedback and wants to make you like it. But if you've given that feedback in a friendly way and they aren't, you know, amenable to it, then peace out, like do something else. And so if. If somebody wants to use, you know, Neo traverse or Neo QS instead of traverse and QS, fine.
+
+Jordan: But consider that that's adding another, at least one more, more maintainer to your graph because I'm probably still in there. It's like, look at, you know, you should be looking at the. Like, there's also the likelihood that those APIs remain the same, right? Like, in order to keep that up. So, people ask, how can I do all the work to maintain all these packages?
+
+Jordan: Well, the author of those two packages has now signed up to, not just to maintain those two packages, but to follow, very rigorously, My pack, two of my packages and every change I do, they need to figure out if they have to, you know, most of them, they're going to have to incorporate and they can do that.
+
+Jordan: That's like, that's their choice to do. And that's fine. It's just like, that's a lot of work to sign up for, but then the, the consumers now have to decide. And now I want to trust somebody who. Yeah. You know, you have to, you have to decide to trust a new publisher and, you know, there's, I'm, I'm not at all implying that that, that the, that particular publisher or anyone else's is less trustworthy or credible than I am.
+
+Jordan: Right? Like, that's, that is a subjective determination. Everyone's got to make for themselves about each person. Um, but it's a, it's something you have to figure out. And the amount of time in the ecosystem, how many people know them in person, their financial ties to things, their citizenship, all those things actually really come into play if you're looking at it from a supply chain perspective and a reliability perspective and, um, I, I wish them luck.
+
+Jordan: Um, I have offered my help in a few places to try and help them do it correctly. Um, you know, my, it's yeah, I mean, there's, I think the main fallacy is that people think that I'm benefiting in a way from like having lots of packages and downloads such that I am incentivized to, in a shady way, um, Increase those numbers.
+
+Jordan: And I dearly wish that was the case. Like if that was the case, I would have lots of mansions and like, sure, then you can make that accusation, but I still have to have a full time job. I live in an expensive place. I have kids, like I have a, you know, I have like payments to make like open source just doesn't, it's not lucrative.
+
+Jordan: Right. Like, and the number of people on the planet who have made a living. Just doing open source is very small. And like in the JavaScript ecosystem, I can think of like five and one of those people got hired full time by ever sell to do it. So it's like, there's, it's just not a reasonable claim to make because not enough people are paying, you know, are donating their fair share or whatever, contributing their fair share into that ecosystem.
+
+Jordan: If they were, then. Then that would become a reasonable conversation to have. I still would claim that that hasn't, is not influencing my decisions. I would, I do these things on packages that have no downloads the same as I do them on packages that have millions. But, um, yeah, if you, I think, but if you, it's, it's also fun to see, uh, the people who have made those accusations, trying to get their own packages, adopted places and increase their download counts.
+
+Jordan: Um, but you know, people can make of that what they will 
+
+Andrew: Yeah, it is another person in the, in the stack. And it's like, I've found through my open store source work that it is hard. You don't like, it's not something that everybody can stomach for like ever. And like, you've been in the ecosystem for like, I don't, you said 2010, that's 14 years deep in the open source.
+
+Andrew: Like maintaining that much stuff is an incredible amount of work. And I don't think that these people are really understanding that fact.
+
+Jordan: I mean, I agree, but I think another angle is, um, the, the, the things, the industry, like the zeitgeist cares about change over time and things repeat. There's like cycles and there, this is a period of time where it seems like a lot of people are caring about, uh, size and performance and great, those things should always be improved if they can be.
+
+Jordan: Um, but. I think I formed a lot of my opinions during a time when size and when, when pursuing size and performance caused way more problems than it solved. And so I don't value that myself very highly. That's not to say if someone can, can meet, keep all of my same constraints and make my stuff faster and smaller, a hundred percent, I will take that.
+
+Jordan: Um, it's just the, in order to make things faster, smaller, they have to drop constraints. And that's been brought up too, right. Is that like, If you make a tiny replacement library, not like the Neo things are different, right? That's trying to like match it one to one, just written differently. But like, if you're just trying to say, well, instead of using a, you should use B, they do kind of the same thing, but like B is smaller and faster. Almost without a doubt. That's because B has no features. Compared to a, and anybody who's using any of those features can't use B. And if they think they can, and they switch to B, they'll break something. And you've just caused them way more pain than you've saved them. Right? Like, I think that's the other thing is like CPU time is more expensive than disk space and human time is way more expensive than all of those put together.
+
+Jordan: And that's, it's, uh, you know, there's, there's trade offs, right? Like you can talk about environmental impact too, but you know, it's, it's all about relative impact as well.
+
+Justin: Yeah, I think, um, We'd sort of started off by talking about this before we started recording, but the, the important thing here is like to remember that we all have things that are important to us. There are a bunch of trade offs that we have to make, like you've been saying, and like, um, it's easy to get like dug in on positions and get really heated, but like, You know, we're all just trying to make a software here and like, you know, help people out and especially in the open source community, because it's so, it's such a thankless job already.
+
+Justin: Um, and it's like, it's, it's rough to see people like in that community sort of turn on each other. So, you know, just, just pre facing all this is like, you know, at the end of the day, we all, you know, have things that we're trying to do and we just want to make the ecosystem better. 
+
+Jordan: I would, also add the, uh, Chesterton's fence, I believe is the term, which is, uh, before you take down a fence, you need to understand why it's there. Um, and, and I think that the, and again, I've suffered from this just as much as anyone else, that there's a lot of folks that are relatively new to the industry or young or both.
+
+Jordan: And. They can have amazing ideas and the age is not a requirement at all, uh, in any direction for skill or for, you know, innovation or whatever, but, um, it is often correlated with experience and experience can help you answer why something is there and whether and how important it should be. And I think it's often underappreciated, I think.
+
+Jordan: Um, People look at something that's been the, you know, that's like, Oh, that, that thing is 10 years old or, you know, whatever. And it's like, well, there's a reason and you don't have to agree with it. Before you complain about it, you should try and make, you know, understand what the reason is. And if it's a bad reason, maybe you'll convince the person to change it.
+
+Jordan: Right? Like, uh, I'm always, I can be convinced differently on any of my opinions. It's just, you'd have to present a good enough argument.
+
+Justin: Something I wanted to talk about related to, uh, some of your earlier work and like your current work, uh, talking about, uh, you know, extending legacy support for packages that are no longer actively maintained and trying to make sure that they have security updates. 
+
+
+#### [00:48:14] Automated CVEs and Dependency Management
+
+Justin: Um, I'm curious about how you feel about automated CVEs, um, because it's been a, it's been a thing like, and GitHub, you get like a lot of automated notifications.
+
+Justin: It's like, Hey, you know, there's, um, Prototype pollution issue with this package or, you know, something like that. Um, how do you feel about like, kind of where the ecosystem is at with that and like how valuable those are. And maybe I would follow up that with one other question is like, what do you think of valuable signal is for like learning about vulnerabilities that need to be patched or dealt with in your organization?
+
+Jordan: a good question. Um, okay. CVEs are better than nothing. And they're also terrible. Um, the main reason that they're one of the main reasons they're terrible is, uh, they don't have a clean structured way of talking about code paths or code branches. So like for many of my packages, they only do one thing. So if you're, if it says you're vulnerable, you probably are, but like, I have some packages that have 10 different options and if you're only vulnerable when using one option. And that affects a thousand people. And then, but the versus, and it actually affects a thousand people instead of the like 2 million or something that are using the package, then only a thousand people should get a CVE notification because the others don't have to care. But there's no way to prevent that.
+
+Jordan: They'll all get the notification. Um, I think that, so that's a big piece. The other thing is there's not a facility in the ecosystem, the CVE ecosystem to. Indicate that a vulnerability doesn't apply transitively. So like, for example, I maintain an ESLint plugin and it has, uh, some transitive dependency or direct dependency that's vulnerable to something.
+
+Jordan: But the way I'm using it, it's not vulnerable period, right? Like it doesn't apply. There's no way for me to check a box somewhere that says I'm the maintainer of this ESLint plugin. I guarantee that nobody is vulnerable from this CVE based on. Using my ESLint plugin, they might be vulnerable some other way.
+
+Jordan: And if, and then they should still be notified, but not through me. But instead I get all these issues with people complaining. Well, Oh, my security scanner said, there's a problem. You need to fix it. And my answer is no, I don't. I'm depending on this with a carrot range. Like I can't do anything just like you can't, we all have to wait for that person to update.
+
+Jordan: And when they update you won't, you know, I won't have to, or my answer is, well, you know, I can't upgrade to the new version because of these various reasons. So I'm stuck with this one. So either they can backport a fix, please go ask them, or it's a false positive and you can just ignore it. But, you know, there's a lot of, it seems like there's a lot of organizations where engineers aren't empowered to ignore, Those kinds of warnings or override them and those people end up getting screwed and that sucks.
+
+Jordan: Um, yeah, so like, I think, um, I think that when you're talking about direct dependencies, it's your move to make when you're talking in an application where you have a lock file, it's your move to make, you can update things and the only things that you should be creating noise anywhere about. Beyond that, um, are things that need, like that you can't fix by updating.
+
+Jordan: And ideally all of the noise would direct you to the only place that can, which is the author of that transit dependency. And in the case where that's me, great, like then I deserve that noise, I need to fix the problem, and I need to release an update, and then, but as soon as I've done that, it's on everyone else, and, you know, usually it's the people with the lockfiles who are able to do the upgrade, they just don't know that that's what they have to do.
+
+Andrew: So when it's your issue, uh, you do a practice that not many other people do in the MPM ecosystem where you like actively maintain each release line. So in those cases, are you picking it to those release lines? And then also, do you have any tools that like help you do that? Because it seems, it seems like a lot of work.
+
+Andrew: Justin,
+
+Jordan: Yeah, so most of my packages avoid breaking changes, so they're still on v1, so I don't have to deal with it. Um, The there's a smaller subset of packages that have a few majors. And so usually I try to at least backport it to the majors. Um, and I'll check that website I mentioned, like to see if they're still being used, right?
+
+Jordan: Cause if no one's using them, who cares? Right. I'll wait till I'm asked. Um, but the only tool that I've found I need is, uh, and I made a package for it. Um, forever ago, it's called safe publish latest. And it, when you try to publish a package, if, if the version number you're publishing Is earlier than the latest version.
+
+Jordan: It will stop the publish and say, Whoa, are you sure? Because when I've done backports, sometimes I've accidentally marked V1 as latest when V2 should be latest. And that can break a lot of systems too. Um, and that's a feature I want NPM to add. And, uh, you know, and to, uh, may obviate my package, but, uh, until they do, that's the tool I use.
+
+Jordan: Other than that, it's just Git. I check out the version tag that I'm branching off of, and I cherry pick the commit in and modify it as needed and push it up. And then once the I passes, I publish it.
+
+Andrew: So as we're, uh, as we're wrapping up, um, we always like to ask our guests about, uh, something in the future, future facing question. 
+
+
+#### [00:53:32] Future of Package Management in JavaScript
+
+Justin: And for you, um, and, and especially given sort of the topics that we've covered, what do you think about the, what do you think the future of like maybe NPM or more generally, what is the future of package management in JavaScript?
+
+Justin: Like, what does that look like? 
+
+Jordan: Um, okay. I would love to see GitHub start funding things that don't have the letters AI in them, and Again, so that NPM can get the funding it needs. Like, NPM should have like a hundred full time people on it, and I doubt it has more than ten. Um, Um, if that's fixed, then, um, I imagine that the future is just continual improvements to the CLI and continued iteration of like best practices for how to publish packages and it just, you know, things will continue getting better gradually as they have been.
+
+Jordan: Um, yeah, it was, it was a very different world 10 years ago. Um, as if that doesn't happen, then I think it would be on, you know, Like incumbent on the potential competitors to NPM, um, JSR, Volt. sh. Um, and they would have to make a product that interoperates with NPM well enough and provides enough benefit and value to incentivize people to migrate.
+
+Jordan: Um, that is a very tough challenge. And, um, I hope that, that in the event that, uh, GitHub does not, uh, fund NPM properly again. Uh, I would hope that one of them is able to achieve it. For the betterment of all of us. Um, Yeah, 
+
+Andrew: Yeah, I'm excited to see what happens with those other ones. And I wholeheartedly agree with MPM. Like even the U. I. Is kind of busted. Sometimes now it's definitely kind of gaining some bit rock.
+
+Jordan: yeah. I mean, every time, all the work the NPM team has done now and over the years, I, I think is great, right? Like I'm like, they do good work. It's just, there's nowhere near enough of them for many years now to do all the good work that's required. Um, so this is not a slight to any of them. It's only a slight to whoever is deciding the budget for that department.
+
+Andrew: Well, that wraps it up for our questions this week. Thanks for coming on Jordan. This was a great conversation around an area in the node ecosystem that doesn't get too much light. So I'm glad you're there holding it up. 
+
+Jordan: Yeah. Thanks for having me. Happy to be here. 
+
+Justin: Yeah. Thanks so much for the conversation. And, uh, yeah, I appreciate your perspective and the sort of wisdom and guidance of having worked in this space for a long time and taking in a lot of considerations for people who quite honestly probably don't get a lot of representation. Um, so appreciate that. 
+
+​ 
+
+
