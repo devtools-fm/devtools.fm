@@ -1,0 +1,436 @@
+---
+title: Predrag Gruevski - TrustFall, Cargo Server Checks, and the Future of Query-Based Tools
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Predrag-Gruevski---TrustFall--Cargo-Server-Checks--and-the-Future-of-Query-Based-Tools-e2o5fju
+youtube: https://www.youtube.com/watch?v=BZSGVCz4ALw
+tags: rust, rustlang, rust-lang, cargo, semver, semantic versioning, versioning, version control, query-based tools, query, queries, database, databases, sql, graphql, trustfall, cargo server checks, open source software, oss software, open source software, oss software
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Predrag Gruevski to discuss TrustFall, a new query-based tool for querying anything.
+Trustfall make it simple to turn anything into queryable data.
+Predrag used that to create cargo-semver-checks, a tool that checks your Rust packages for semantic versioning compliance.
+
+- https://x.com/PredragGruevski
+- https://predr.ag/
+- https://github.com/obi1kenobi/
+- https://crates.io/crates/cargo-semver-checks
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:23] Introduction
+[00:02:23] Innovative Hiring Strategies
+[00:06:32] Introducing TrustFall: A Revolutionary Query Tool
+[00:09:19] Ad
+[00:10:46] Trustfall continued 
+[00:17:01] Optimizing Queries with TrustFall
+[00:28:37] Real-World Applications of TrustFall
+[00:30:34] The Future of Query-Based Tools
+[00:34:45] Challenges and Solutions in Semantic Versioning
+[00:39:35] Expanding TrustFall Beyond Rust
+[00:44:59] Preventing Breakages with TrustFall
+[00:50:15] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Predrag:** It's my opinion that if we make querying a thousand times easier, then life becomes a thousand times better. Just sort of looking at the world around me from the Things that have happened to me in the last few days, a bunch of things that are fairly complicated queries have happened to me.
+
+#### [00:00:23] Introduction
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my co host, Justin.
+
+**Justin:** Hey everyone, uh, today we're really excited to have Prajak with us. Uh, on the podcast. So I've actually read several of your blog posts, uh, independently of one another and not realize that it was by the same author. So I'm, I'm actually incredibly, incredibly excited to talk to you about. Not only what you've worked on, but about your, uh, writing as well.
+
+**Justin:** So I had stumbled upon the, the wifi only works when it's raining post. And it was like, so, so good. Um, so anyway, I'm, I'm excited to talk about that, but before we dive in and start talking about, uh, some of the topics that we have on today's agenda, would you like to, um, introduce yourself to the audience and, uh, you know, tell them a little about yourself?
+
+**Predrag:** Yeah. Thank you so much for having me. It's a pleasure to be here. Uh, so yeah, my name is Predrag. Uh, I work on developer tools, infrastructure, compilers, databases. It's all kind of fuzzy. I really like intersectional kinds of projects where you apply the cutting edge techniques in one field to another field.
+
+**Predrag:** I really get a kick out of doing that. Uh, I get a kick out of preventing unfortunate accidents from befalling all of us, and I really love software that runs very quickly and very correctly. So thank you And kind of distills the best expertise into automation so that everyone can benefit from it without earning a PhD in the nitty gritty details of semantic versioning or correctness or compilers or whatever else that might be on their plate.
+
+**Predrag:** So I have a large number of projects that I've worked on. I'm very happy to talk about all of them. Many of them are very weird. Many of them are very ambitious. I hope everyone listening to this is ready for it. I, I get very excited talking about this. So, uh, hope you don't mind me going into the technical weeds every so often.
+
+**Justin:** No, not at all.
+
+**Andrew:** 
+
+
+#### [00:02:23] Innovative Hiring Strategies
+
+**Andrew:** so you mentioned that you like applying things from one field into another field. Uh, is there an example you have of that outside of the stuff we're about to talk about?
+
+**Predrag:** Yeah. Um, uh, at one point, and this is maybe another one of the blog posts that you might've read, Justin. Uh, I wrote a blog post about how we did hiring at my last job. I really got a kick out of essentially playing money ball for early career engineers. Because I was the head of a team at a small startup that did some very, very ambitious infrastructure compiler database type stuff. If you wrote the job description and you tried to hire according to that job description, all of the candidates would be like, you know, L6, L7 at Google, and we definitely didn't have that kind of money, right? But you can't make really good stuff without having really good engineers on the team. And so we just had to hire smarter than everyone else.
+
+**Predrag:** And so I read the book Moneyball, uh, and I took some of the learnings from there about, you know, the book is about how do you build Uh, kick ass baseball team on a budget. And they adapted some of what I learned there about software hiring for people who are either straight out of college, still in college, or maybe within a few years out of college.
+
+**Predrag:** And so we ended up building an absolutely kick ass team. All of those people have, you know, long since, you know, graduated to other awesome companies. And a lot of the stuff that I am building now has been influenced by the stuff that we invented together at my last job and then open sourced. Uh, to give you one example, uh, we heavily, heavily discouraged looking at how many years of experience people have, and instead looked at what people have done in the number of years of experience.
+
+**Predrag:** So we looked at people who are, you know, the absolute standout person in their college, in their environment, you know, like hire the top one person from a school that maybe isn't like the top number one in the country. Right, as opposed to hiring all of the best people that everyone knows are really good and like.
+
+**Predrag:** You know, everyone tries to fight for, or the people with like 10 years of experience but not a lot to show for it. And my favorite way of explaining this is like, I've been playing hockey for 12 years. When the Stanley Cups were on TV, I was on my couch watching them and not on the ice playing, right?
+
+**Predrag:** You'd think that with 12 years of experience, I should have been like senior hockey player in one of those teams. And yet it's almost as if there's some confounding factor there that made that not be the case.
+
+**Justin:** I like that analogy.
+
+**Andrew:** Yeah, that that's hilarious. I read a little bit of that article and, uh, It is interesting. The like strategies you used where it's like, Oh, let's look at freshmen. Nobody else is looking at freshmen. And, uh, I definitely felt that as a college student way back in the day where it's like, Oh, freshman year, uh, you just, just go do a side project.
+
+**Andrew:** I guess nobody's going to even look at you.
+
+**Predrag:** Yeah, I actually had a personal experience, uh, that shaped all of this for me. I had that, that exact same thing happen in freshman year where I went to a career fair, I, Tried to submit my resume to a large megacorp that we all interact with on a fairly regular basis. And they just flat out rejected me as soon as they heard I was a freshman, like they didn't even want to take the piece of paper with my resume on it.
+
+**Predrag:** And then two weeks later, they sent me a cold email being like, Hey, we saw you competed in this international programming competition that we sponsored and you did really well. Would you be interested in interviewing for a full time position? And I was like, this doesn't make any sense. Like this is just horrifically broken recruiting processes, right?
+
+**Predrag:** Like they don't want to hire me as an intern and they want to hire me as a full timer. Like something's wrong here. And so it was, it was these kinds of, you know, gaps in the system that my team tried to, to sort of sneak through and find all of those people that are getting rejected on, on the basis of something other than merit.
+
+**Predrag:** Right? Because of some failure of the system or some miscalculation of, of how good they must be or some other, you know, confounding factor.
+
+**Justin:** I would say that like resumes are probably a confounding factor here, because when you are judging someone by a single piece of paper or two sheets of paper, it's like really hard to get a sense of like how good they are. 
+
+**Predrag:** A hundred percent. 
+
+
+#### [00:06:32] Introducing TrustFall: A Revolutionary Query Tool
+
+**Justin:** so, uh, let's transition and to talk about one of your projects. So you had this really great Post called how to query almost everything.
+
+**Justin:** Um, it was about this tool called trust fall. Um, and this really resonates with me, this tool, because I was working in a startup, uh, up until recently called membrane, which was trying to build a data graph to like query a bunch of different data sources. So this is like a topic very near and dear to my heart.
+
+**Justin:** Um, so can you tell us about trust fall and like what the, the sort of like what the idea behind this tool is?
+
+**Predrag:** Definitely. It's based on a personal observation that I've had that I don't think is unique. If you have this kind of data graph that encompasses everything that you care about and you can query it quickly, easily, efficiently. then a lot of things become easier, right? If you can just express everything as a query and it's something else's job to figure out how to get you the data that you need, execute that query efficiently and just give you the answers you were looking for.
+
+**Predrag:** Many other tools are then just expressed as write a query, get the results and then do something with those results. So Trustful is an attempt to make that possible. Um, it's a piece of foundational infrastructure. So it doesn't come with too many batteries out of the box. You still have to plug in the different data sources.
+
+**Predrag:** Different data sources have different constraints. So you obviously, you know, there's still some engineering that is necessary to make that work. But the fundamental vision is that we need a compiler like system that gives us a database. engine, you know, that we can embed into our applications, right? It has to be compiler like because it has to do a lot of the optimizations that we care about.
+
+**Predrag:** Otherwise, we're going to re implement everything from scratch because that'll be higher performance. And it also has to be database like because Declarative querying is just really good, right? If I don't have to write imperative code in every case, then I'm decoupled from changes in the underlying data structures.
+
+**Predrag:** I don't have to worry about, oh, an index got added and now the query should execute completely differently. You know, we get massive ergonomics benefits. And so what we need is kind of like an LLVM for databases as it were. Where we can stay in this high level. I just read a declarative query and it's something else's job to figure out how to do all of that.
+
+**Predrag:** And we want a piece of infrastructure on the other side that they can take that query and run it over a variety of datasets, whatever we care to plug in. So it's a very ambitious project. It's at the same time. Very established and that I've been working on this kind of technology for seven, eight years now, depending on how you count and also simultaneously very early because almost all of the data sources that everyone cares about haven't been plugged in yet.
+
+**Predrag:** So it's a long arch attempt, but I'm very excited to be working on it and it's getting better every day.
+
+
+#### [00:09:19] Ad
+
+**Andrew:** and thank our sponsor for the week, Mux. Mux is a wonderful platform that makes adding video to your product as easy as you can imagine. Video is a treasure trove of hard problems to solve. Whether it's the various image formats, streaming high quality video to your consumers, building out a nice player that works on all platforms.
+
+**Andrew:** There's so many things to think about and so many things to build. That's where Mux comes in. One cool idea that Mux has been playing with recently is adding AI to as many parts of their product as they can think of.
+
+**Andrew:** Where this really comes to a head is their Mux player. Some of the features you get out of the box with this thing are so cool. You get automatic chapters, summarization and tagging, it'll even automatically translate and dub your videos. So cool. And I love how it makes your content more accessible without you having to do much extra at all.
+
+**Andrew:** And I'm sure it doesn't stop there. I bet they have a whole bunch of other cool things cooking up with AI. I know they have some really cool stuff in just like how the encoding works using machine learning. So if you need to add video to your platform and you don't want to spend weeks adding it to your product Check out Bucks.
+
+**Andrew:** And if you don't want to hear these ads again, become a member of one of the various channels that we offer it. With that, you'll get the episodes ad free and a skosh earlier. If you want to find another way to support the podcast, head over to shop. devtools. fm. You can pick up a hat and show that you really are a nerd,
+
+**Andrew:** with that, let's get back to the podcast.
+
+
+#### [00:10:46] Trustfall continued 
+
+**Justin:** Yeah. The The plugging in data sources is the long tail effort here. Um, and it's like anytime you're providing a unified interface for data access across like potentially many data stores or APIs or whatever, it's just like, okay, now I need to implement these things for every single one, which is, which is a challenge.
+
+**Justin:** Uh, a particular question I have about TrustFall is, Does it actually act as a database in that? So let's say you're querying a data source and you have like a hacker news example, which may be hacker news is pretty static, but, uh, maybe you have some like, Data that can be stale or this changes or whatever.
+
+**Justin:** And you're querying this information. If you store it, it'll be really efficient to re query it, but it'll also become stale and you need to like go back to the original data source to some, at some point. But if you go back to the original data source, then you pay the performance hit of like doing that.
+
+**Justin:** So how do you balance the freshness of data and like going back to the source versus like caching?
+
+**Predrag:** Absolutely. And this is where TrustFall is kind of more like a box of tools with which to build an integration and not really a highly opinionated, this is the one true way of doing things. So TrustFall is not a database in itself. It doesn't store data, it doesn't cache stuff for you, you know, it doesn't do any of those things, but it gives you the ability to do all of that where and when it makes sense.
+
+**Predrag:** Right. So sometimes the data that you have is completely static. It's, let's say a JSON file in your local disk. So caching doesn't really make a lot of sense because you're just going to parse it into memory and it's going to be static. And other times you have this complicated data set, like GitHub or like hacker news or something like that.
+
+**Predrag:** And there, Some more, you know, advanced techniques like caching, batching, you know, predicate pushdown, things like that become important. TrustFall's job is to do all of the optimizations that are always a good idea, regardless of where the data is coming from and make it very easy, very easy for the integration of the specific data source to do all of the other optimizations that make sense.
+
+**Predrag:** So for something like GitHub or Hacker News, in many cases, what you'd want to do is just. You know, use HTTP caching, record what is the, uh, you know, ETAG of the response, and then revalidate as necessary. If you care slightly less about freshness and somewhat more about performance, then you maybe don't validate the ETAG and say, hey, if this is, you know, less than 10 minutes old or something, then you just take it as a given and keep going, right?
+
+**Predrag:** But the idea is to expose a spectrum of options and not force it. any particular model or approach down anyone's throat.
+
+**Andrew:** So does the package currently come configured with any data sources or do I put in all the data sources myself?
+
+**Predrag:** TrustFall by itself doesn't come with any data sources, there are a variety of data sources that have been implemented as libraries that you could install and use, and they rely on TrustFall under the hood. So the idea there is they expose a query interface where you write TrustFall queries, they provide the bindings, and under the hood they bundle the TrustFall engine.
+
+**Predrag:** So TrustFall is designed to be embeddable. If you ship an application, like CargoSemverChecks. Trustfall is under the hood, it's part of that, but you don't necessarily notice it, you just write some queries and those run. It's the same with the Web Playgrounds, that's just Trustfall compiled to WebAssembly running in your browser.
+
+**Andrew:** So we've covered, uh, like what it is. It's a thing that puts a bunch of data sources together and I can query them. Uh, we haven't really covered why I would want to do that or what that enables. So like, what are the things that you're trying to enable with TrustVault?
+
+**Predrag:** Yeah, absolutely. It's my opinion that if we make querying a thousand times easier, then life becomes a thousand times better. Just sort of looking at the world around me from the Things that have happened to me in the last few days, a bunch of things that are fairly complicated queries have happened to me.
+
+**Predrag:** I was on a flight. My, uh, the, the incoming plane for my connection was delayed. And so I got an email saying, Hey. Like, you might miss your, your connection because the, like, flight is, you know, late, uh, on the, on the way in and stuff like that. Like, do you want to reschedule? That is a fairly complicated query that some process, you know, had to run of, like, look up all the passengers that might be affected by this and send them an email telling them that they might want to reschedule and book themselves onto another flight.
+
+**Predrag:** Right? I've had situations where a piece of code was pushed that was going to cause some sort of outage downstream. One example from the blog post is like, Hey, Your service is attempting to use a Python version, uh, specified in the pack, in the package manifest that is, you know, Python 3. 11, but it's going to be deployed on Kubernetes with a Docker file that says 3.
+
+**Predrag:** 8, and that won't work because you have a mismatch of Python versions, right? CargoSemverChecks is another use case. It's a semantic versioning linter. I very nearly accidentally pushed a breaking change in one of my packages. And again, it was a query of like, hey. This API guarantee that you used to provide is no longer satisfied in the new version. If these things are easier to implement, We're going to have fewer instances where I ship something to production and then, oops, I immediately regret it because I broke myself. I broke everybody that depended on me downstream. And now both I, as the maintainer and everybody downstream of me as users have to do a whole bunch of very expensive mitigation, because if you have an expansive ecosystem, like we have in Rust and Python and JavaScript, right?
+
+**Predrag:** If one code change can cause a thousand hours worth of debugging downstream, That is a million dollars plus worth of expense that the community just incurred. And that is an unproductive tax, right? That effort was spent and it just kind of disappeared. We lit the money on fire and we are never going to see any valuable, you know, anything come out of that.
+
+**Predrag:** That is just unfortunate. If more querying can prevent these things and more querying can produce better applications, better workflows, better user experience down the line, not just for developers, but for just regular users that, you know, have a computer and have a phone and have an account for your system, I think that's a better world to live in.
+
+**Predrag:** So that's the sort of five to 10 year vision of what I hope that TrustFall can enable, and we're already doing some of that, but I think we can do a thousand times more.
+
+
+#### [00:17:01] Optimizing Queries with TrustFall
+
+**Andrew:** So it's like the way I'm making sense of it is it's almost like a linter for everything, like where ESLint, it traverses an AST graph. And you can find problems about that. Trust fall lets us come up like a few levels higher, connect a bunch of disparate graphs together and lets us query over that.
+
+**Predrag:** Right. Absolutely. I want everything from, Hey. You're meeting a friend for a walk in the park tomorrow, but it might be thunderstorming. Do you want to reschedule? All the way to like, hey, you're about to break everyone that's depending on your package, right? Like, these are rules, I want to separate the policy of like, don't go out for a walk in a thunderstorm from how do I actually get the data to figure out that I have a walk outside and it's going to be thunderstorming and like, there's some REST APIs involved in getting all of this data together and expressing that policy.
+
+**Justin:** Something's really interesting about this topic to me is that. I think a lot of times when I'm thinking about automation and this, in this case of like, Oh, we have this tool that, that allows us to query over a lot of data sources, I think of like maybe a traditional ETL system where we're like connecting data from APIs to do some process.
+
+**Justin:** But what I think is really interesting about how you've actually applied this is you gave the cargo Simver example of like using TrustFall to query, uh, Data from like config files and like things that are, you know, more static and using it, you know, to like check rules in that way. And it reminds me a little bit of like, there's a tool called like SimGrep, which is like semantic graphing.
+
+**Justin:** It's like finding patterns and ASTs and stuff for security checks or dependency checks or stuff. It reminds me of that like problem. So this is really, uh, like. It is a broad, like, sort of, like, query everything problem, which is kind of interesting. Um, looking into the syntax, it looks a lot like GraphQL.
+
+**Justin:** So is it like GraphQL under the hood, or is this like a, uh, its own custom query language that, like, Borrowed the semantics from GraphQL.
+
+**Predrag:** Yeah, it's a custom query language that borrows the semantics. Uh, the, the bars, the syntax, a lot of the tooling, uh, all of that, but ultimately it's its own thing. So when I was sort of shopping for, for syntax for this query idea that I had, I noticed that GraphQL has a fantastic tooling ecosystem around it.
+
+**Predrag:** It has schema visualizers. It has LSP autocomplete syntax, highlighting this very expressive type system, all of this really nice stuff. But I didn't want to adopt GraphQL wholesale because it also, in my opinion, has some shortcomings. There are certain queries that are very difficult to impossible to express in GraphQL.
+
+**Predrag:** You can't do recursion. You can't do aggregations. You can't just slap a filter for wherever you feel like it. You know, you kind of have to do only the things that the resolver is able to do. And I can't just say, you know, recurse on this and filter on that and aggregate there. So I wanted more expressiveness.
+
+**Predrag:** So I sort of found a way to GraphQL syntax, uh, into doing my bidding. So the front end of, of TrustFall reads GraphQL syntax, uses the type, the type system, uses the same autocomplete, same LSP, same visualizers, same everything. and translates that into trustful internal representation. And from that point on, everything is different.
+
+**Predrag:** So the responses that you get aren't fully nested like GraphQL. They're lazily evaluated, not eagerly. And, you know, in this sort of heavily nested UI friendly, but perhaps not performance friendly kind of style. Uh, so certain trade offs are made with an eye toward. Being better for, hey, I have like a billion row query that I want to run that is going to be very expensive and maybe I don't want to blow my entire rate limit on this one thing, right?
+
+**Predrag:** Uh, and that unfortunately means that it's not as good for driving a UI directly. You can't just plug it into relay and call it a day. On the flip side, it makes workloads like cargo server checks, not just possible, but very easy with, with very good, you know, benefits. So, it's not tied to GraphQL syntax down the line.
+
+**Predrag:** You could imagine, you know, bolting on another syntax. This is a common trick that compilers use, right? Build a front end, translate to the same internal representation, bam, you have another syntax now. So, everything from SQL to just natural language with an LLM translation layer is fair game. But none of that is implemented right now.
+
+**Predrag:** There's just the one syntax.
+
+**Andrew:** I was actually going to ask a question about LLMs and translation. Cause it seems like the way you present the tool in almost all of the blog posts is here's this natural language query. And then it's like, kind of, we hide the graph thingy off to the side and here's some results. So have you played around with that?
+
+**Andrew:** And does it work?
+
+**Predrag:** Actually. Yes. So TrustFall has been around for long enough that I've managed to get popular LLM tools to dump its documentation verbatim to like proving that they've been trained on it. And so they're actually quite good. They're uncannily good at writing TrustFall queries, but as is often the case.
+
+**Predrag:** Making the most of a very powerful tool like this comes down to how well is the schema design accomplished to fit the goals that you're trying to do, right? So if you have a really terrible, unergonomic schema, then no amount of LLMing around it is really going to help you. Your queries are always going to be awkward, they're always going to be slow, they're always going to be unfortunate.
+
+**Predrag:** And so that's one of the big reasons why I haven't sort of gone all in on the LLM to query language kind of thing. Okay. Just because I think that there are a couple of more foundational problems to solve first, but absolutely it's on the table It's definitely going to happen sooner. If not later,
+
+**Justin:** That's it's pretty mind blowing. It's really cool. I can't help but think also about like the sort of N plus one problem that GraphQL has where you have a query that like hits a bunch of services and granted, I know this isn't GraphQL and it doesn't execute in the same way, but principally you have the same problem as you're querying in many data sources and you may need to, like, if you're getting, um, If you're getting, say, like, you're querying a bunch of users from GitHub that have contributed to some repo and you're getting their user ID or something or, and some information that's only available in their profile, you may end up having to, like, make a request for every user and get their profile data and, like, stitch that together in a larger response, and GraphQL or the Facebook team originally sort of Come up with the concept of a data loader, which is like some advanced caching layer.
+
+**Justin:** And that's, that's hidden kind of behind the implementation. Um, so it's like something that on the implementation side, you just like would use data loader to do smart caching and stuff. And is the same story in TrustFall? It's where it's like, you just kind of have to know, it's like, okay, this could be an N plus one, like a waterfall query.
+
+**Justin:** You need to do some performance optimization here. Or is it like smarter than that? Like, what is it?
+
+**Predrag:** I would argue it's smarter than that So the guarantee the TrustFall as a query engine not talking about any specific data source offers is this any Kind of query optimization that you can do without TrustFall you can do with TrustFall So it's never going to make anything that you could have done worse just because you chose to use TrustFall, right? And it actually goes one better than what we normally do when we're optimizing stuff by hand, which is that when you implement an optimization, TrustFall will apply that optimization to every query that can benefit from it. And you don't have to go manually going in, you know, like tweak every single query that you, that could possibly benefit from that optimization.
+
+**Predrag:** I can give you a specific example from Cargo Sample Checks. So Cargo Sample Checks is a tool that ensures semantic versioning compliance for Rust. And the way that it does this is it has currently about 80 queries. We keep adding more, more queries, uh, sort of every week. Uh, they do all sorts of things like, are there any public functions that used to exist and no longer exist?
+
+**Predrag:** Trivially breaking change, right? Have any of their function signatures changed to take more arguments? Trivially breaking change. Uh, have any struct fields disappeared since the last version? Trivially breaking change, and so on and so on. A common problem here for almost all of these queries is we have an a language item, a function, an enum, a struct, something in one version, and we want to match it to the corresponding language item in the new version. And when I say a language item, I mean something at a specific import path, right? Because just because something is named the same thing doesn't mean it's the same thing. It has to, you know, when I import it, that's the way that we know it's the same thing. But one language item could be, uh, available at multiple different import paths.
+
+**Predrag:** And so this is something that's a little bit far down the, the language hierarchy, right? It's not like, oh, it's just the struct, right? It's like, what are all the paths? Okay. It's the same one. Fine. So this is a bit of a repeating thing that almost all of our queries use. And adding one optimization that makes it possible for TrustVault to know that it has an index available, that it can in O of 1 look up, you know, what is the item that corresponds to this path, improved all 80 of our queries.
+
+**Predrag:** So we added a couple hundred lines of code And we sped up cargo sample checks by a factor of 2, 300 plus, we get like, you know, three and a half orders of magnitude of speed up with a couple of hundred lines by adding this optimization that just says, you know, we keep looking up items by their import path.
+
+**Predrag:** Let's make that smarter. Right? And importantly, what we didn't do is go through 80 individual queries and optimize each of them independently. Right? So this gives us a massive amount of leverage when building this tool, because it means that. Okay. When people are contributing new lints, they don't have to worry about optimizations.
+
+**Predrag:** The optimizations are automatically applied. So we have people who are, you know, high schoolers, and people who are still in college, and people who have never used TrustHall before, people who don't know anything about static analysis, who are contributing semver lints that are running with very high performance and that are scanning, you know, everyone's Rust packages.
+
+**Predrag:** Because we've taken the complexity of static analysis, import, you know, resolution, performance optimization off the table, they're sort of off their plate. They're still handled, they're still happening. It's just that people that are really good at performance optimization do the performance optimizations.
+
+**Predrag:** People that are really good at static analysis do the static analysis. And people that want to write a lint, they write a lint knowing that they get the best of the other two worlds. You know, sort of handled for them expressed in the TrustFall schema and made available to their queries automatically. So I think that's kind of a paradigm shift from how other tools are doing it. And I think the benefit of this is something that we've just become exploring. I don't think we've fully realized the benefits of what this sort of mode switch of how tools are developed, uh, you know, what that could enable and what kinds of tooling it could lead to.
+
+**Predrag:** Because ultimately this is a maintainability win more than anything else, right?
+
+**Justin:** Just trying to grasp the implications here. And, uh, yeah, it's pretty big. So it's read only query only. Uh, is that true?
+
+**Predrag:** For the time being, yes, I have some drafts for how it would be expanded to be read write. Uh, I have drafts for how to extend the language in the, in the system in any different directions. So, you know, all of those will happen sooner or later, uh, as a function of funding and interest. Uh, but yes, there's no fundamental reason why it has to be read only.
+
+**Predrag:** It just so happens that that's how far we've built so far.
+
+
+#### [00:28:37] Real-World Applications of TrustFall
+
+**Justin:** mean, this is a, this is a, I mean, linting, for example, is a pretty broad problem. And it's interesting that we're talking about, like, what in some ways is a linting problem, but not exactly. Um, and, and again, I go back to the ideas, like, when I think about a tool like this, generally I think about, like, stitching APIs together, but this is, like, so much more.
+
+**Justin:** It's kind of, it's really, really interesting. 
+
+**Predrag:** my, my favorite, uh, example, since we're talking about stitching APIs together, um, Um, at one point I got a little bit annoyed because we had a flaky job that I couldn't figure out what was going on. So, uh, I wrote a little trustful query over a GitHub adapter that I haven't Published anywhere yet. But if someone's curious and listening to this, pick me and I'll help you get set up.
+
+**Predrag:** Uh, I wrote a query that said the following, uh, look up GitHub actions, workflow runs that have run more than once on the same commit and where a job had a different outcome. Between, you know, run a and run B. And that just flagged all of the different flaky workflows that we've had. Right. It just flagged here, all of the jobs that have failed and here are the log outputs of each of the jobs that failed.
+
+**Predrag:** And so I could tell you like this many of them failed because of a network glitch. This many of them failed because we like failed to install some dependency because the like registry was unavailable. And this, this is how many of them failed because of some like intermittent issue Some other tool had that we were then able to, you know, report upstream and so on. And if I hadn't had that ability to just write a query and move on with my life, you know, let it run for like, you know, 30 seconds and then get a nice tabular view that I could just, you know, dump into a, a viewer and analyze easily. I probably would never have done that query, right? It's just like beyond the threshold of like, is it even worth me understanding how to use the GitHub API and all of the intricacies and quirks?
+
+**Predrag:** But given that I had this ability, I threw this query together. I got some useful data and some benefit came out of that. 
+
+
+#### [00:30:34] The Future of Query-Based Tools
+
+**Predrag:** And if we could scale this up, not just as the GitHub API, not just to this particular query, but to anything that anyone might be able to query, I think we've just scratched the surface of what is possible.
+
+**Predrag:** I'm super excited for what comes next.
+
+**Andrew:** I was reading through your posts and you said there's lots of tools that are database querying tools in disguise. What tools do you think those are outside of the ones we've talked about?
+
+**Predrag:** Yeah. Um, I keep coming back to, to linters because I think it's an under explored area, one big problem of adopting. Let's say like my pie in a big, uh, existing Python code base is that on day one, nothing works, right? My PI is angry and upset about everything, but imagine that you could run a query. That's like, Hey, did this pull request make anything worse?
+
+**Predrag:** Right? Are there new errors that MyPy was not flagging previously and is now flagging? Okay, disallow those specifically, right? This is a thing that is useful for MyPy, but it's useful whenever you want to enable a new rule and a new tool and a new linter or whatever it might be, right? It'll be useful for TypeScript if you want to be more Uh, more strict about using any, for example, or things like that, right?
+
+**Predrag:** It would be useful in a variety of different places in security, in a lot of the, the software development world. A lot of the tools that we use, a lot of compiler technology, next generation compilers, many of them are actually query based. The way that they do stuff is like, you know, hey, dead code analysis.
+
+**Predrag:** Well, is anything using this piece of code? Right? For example, right? If nothing is using this piece of code, then I'm not compiling it. Uh, this is one of those things that I think You know, a handful of people have figured out, people have started talking about query based compilers like 10 years ago, but I think it'll really take another 10 years before this is commonplace enough and sort of common parlance and common understanding.
+
+**Predrag:** And so I think, you know, we have to lead the charge and make like manifest the future that we want to exist in the, in the world.
+
+**Justin:** I'm just trying to like wrap my head around the implications of that too. This is, I don't know, this is, this is super fascinating.
+
+**Predrag:** I'm super excited to be working on this.
+
+**Justin:** I mean, it sounds like a really cool space. I, uh, I remember I talked to this guy who was working on a tool called Betterer and essentially what it was doing is like setting arbitrary benchmarks for changes in your code base. So it's like, we gave a TypeScript example. So it's like, if you were wanting to migrate to strict type checking and TypeScript and you had like A hundred errors or a thousand errors or whatever.
+
+**Justin:** Um, you could like, it could like incrementally check. It's like, okay, you have X number of errors now. And then like diff it the next run and you have like Y number of errors or whatever, and like over time, it just like helps you migrate to a new pattern. And it sounds like that's like kind of one of the things that you could really implement 
+
+**Justin:** seemingly easily.
+
+**Predrag:** Absolutely. And in the past, I actually built a tool to help me with, with another project, uh, that answered the following question. What is the strictest possible MyPy config that will still pass for this project? Right. And if you can find that, then that enables a very interesting sort of ratcheting type of workflow where you say, okay, I will calculate the strictest possible type checking configuration.
+
+**Predrag:** I will check that into the code base. No regressions from there. Also, anytime the tool calculates a new strictest MyPy configuration, you're forced to check that in. Right. So CI fails, unless you're already at the strictest setting that MyPy allows and no relaxations of the policy are allowed. And so that sort of makes sure that the ratchet only tightens over time, right?
+
+**Predrag:** You're allowed to not, not make anything better. You can't make anything worse, but anytime you do make something better, it can't slip ever again. And that was the way that we migrated a hundred thousand line Python code base to using typing from no typing at all, to using typing productively. If these kinds of tools are something that we can build in an afternoon as opposed to in three months, I think that's a better world.
+
+**Andrew:** Definitely. 
+
+
+#### [00:34:45] Challenges and Solutions in Semantic Versioning
+
+**Andrew:** And the first tool that you, you chose to build on top of TrustFall does seem like a pretty hard problem. We've, we've talked about it a little bit at this point, but Cargo SemVer checks is built upon TrustFall and it's just a bunch of natural language, uh, rules. So why did you choose SemVer as like the, the first thing to tackle?
+
+**Predrag:** Yeah, it's a great question. Semver is one of those things that I think is very divisive in the community for unfortunate reasons. Um, Semver is just categorically a good idea. We're just really bad at doing it in practice. The rules are much more complex than, than they seem like. And so we humans are just absolutely atrocious at doing it.
+
+**Predrag:** I mean, I've been doing Semver and Rust for two years, and there's not a week that goes by that I don't find a new horrifying way to accidentally cause a breaking change in your own project. Right? And so if the bar is you have to get a PhD in semantic versioning and work on it for several years exclusively before you can be a productive package maintainer that doesn't blow up everyone else's projects every so often, then that is just not a good place to be, right?
+
+**Predrag:** We're not going to get a lot of packages that uphold semver, and then we're not going to get the benefits of it either. But if we can get better semver compliance without pushing a lot of semver learning and unfortunate, you know, tooling friction on everyone. Then the premise of Semver is really, really appealing.
+
+**Predrag:** I run cargo update or NPM update or whatever. And all of a sudden I benefit from thousands of hours of other extremely smart maintainers doing work on their own packages, right? I get performance improvements. I get new functionality. I get security patches. And best of all, I don't have to know about any of it, right?
+
+**Predrag:** I just ran one command and then all of a sudden my project is better off. Right? So the premise is fantastic. And what's holding us back. is our ability to actually execute on it. And when it comes, you know, when push comes to shove, the rules are, you know, complex, but they're innumerable. There's a finite number of them.
+
+**Predrag:** And if we can build a tool that just checks, not even everything, just most things, the things that most commonly are the problem, right? We managed to reduce the problem, you know, the problem severity by a couple of orders of magnitude. All of a sudden, Semver is a couple of orders of magnitude more useful to everyone.
+
+**Predrag:** And there are millions of people that use all of this software on a daily basis. So, if we can prevent one catastrophic Semver break that costs, you know, a few thousand hours worth of lost productivity, Millions of dollars worth of, you know, extra productivity have manifested into the economy, and I think that's a really good place to be.
+
+**Predrag:** And so it's one of those places where a fairly small amount of investment and time, effort, and money. Can have a tremendous impact on a lot of ecosystem packages, on a lot of maintainers lives, and a lot of end users lives, not just people who program, but everyone that uses that software, right? If we can prevent one unfortunate, you know, CrowdStrike level incident, humanity is better off.
+
+**Predrag:** It's not just, you know, me, TrustFall, CargoSanforChex. It's all of humanity, you know, suffered tremendously off of that one incident. And so whatever that we can do to prevent it, I think is worth it.
+
+**Andrew:** Yeah, it's such a common problem in the node ecosystem. Like Just like one thing a lot of people don't have is the engines field declared in their package JSON and just not having that causes so much confusion. And as a maintainer myself, I don't like having the reason about semantic versioning, like, even knowing that, like, oh, I went from node eight to nine.
+
+**Andrew:** That's a breaking change that kind of like takes like institutional knowledge that I only have from just like working in the field.
+
+**Predrag:** Absolutely. And it's very unfortunate that right now in the absence of tools, like Cargo Server Checks, we The way that we educate engineers and maintainers about these rules is that we wait for them to get burned by them. And then we say, Oh, you should have known this. Nobody told you this. There was no way that you could have feasibly known about this, but you just broke everyone and everything.
+
+**Predrag:** So like, first of all, feel bad about doing it. And second of all, like do emergency maintenance because otherwise everyone's broken and upset with you. And that's just not a very friendly environment. So. So in a very real sense, what I'm hoping to do is, you know, as we all collectively get burned by these things, we should take that expertise that we've hard won by blood, sweat, toil, and tears, and distill it into automation so that that problem never ever happens again, right?
+
+**Predrag:** We might not be able to foresee every problem that we're going to encounter down the line, but there's no reason that having encountered a problem, we can't just write, you know, a 50 line trustful query, check it into a project and then say, never again.
+
+
+#### [00:39:35] Expanding TrustFall Beyond Rust
+
+**Andrew:** So, Cargo SemVertex is built for Rust, of course, but could I use the same methodology and tools to build the same thing for TypeScript? I don't think it would work for JavaScript, too dynamic, but at least TypeScript, we might be able to do it.
+
+**Predrag:** You might be surprised, actually. So, I, I have a linter for Python that also does semantic version checking. Uh, I haven't published it yet, but if someone listening to this wants to play around with it, give me a ping and I'll help you get set up. I just want to polish some more of the rough edges before I, you know, make a, make a big push.
+
+**Predrag:** I, I really hate other people discovering rough edges that I know I could have, you know, found and fixed myself. So I'm a little bit, you know, cautious about that. But if we can semver check Python, we can definitely semver check JavaScript. And TypeScript is just a strictly easier problem. So, I've actually tried to nerd snipe, uh, Chris Krycho, who maintains the, the semver rules for TypeScript, uh, website.
+
+**Predrag:** into building some of this. It's a work in progress. I don't think he's fully nerd sniped yet. But if someone wants to build a semver checker for TypeScript or JavaScript, hit me up and I'd be very happy to help you get started with using TrustFall and making that possible. I think it's not just viable, I think it's Less difficult than it might appear at first glance.
+
+**Predrag:** I think this is one of those like feels intimidating until you're really dig into it. And with a little bit of perseverance, like just about anyone could do it.
+
+**Justin:** there are some problems, I guess, I guess the big thing for Simver is like, Is it a breaking change or not? That's the big question, right? Because, I mean, that's the thing that's like most important. But there are some like simpler questions that are more semantic. It's like, is this a bug fix or is it a feature addition?
+
+**Justin:** It's like, minor patch. And maybe, I guess, is the position just in this is like, that's kind of a less significant decision and more of a human decision to make?
+
+**Predrag:** Yeah. And even for what is breaking and what is important, you know, there are certain cases where it makes sense to allow a breaking change. Like if a maintainer found a critical security vulnerability in their package. And the best way to fix it is by breaking the ecosystem because it's just that bad.
+
+**Predrag:** We don't want to stand in the way of that, right? We want to tell that maintainer, Hey, by the way, this is breaking. You have the full information that is necessary to make a good decision. What decision you think is the best is up to you, not up to the tool, right? So we don't want the tool to sort of tie your hands together and say, you're not allowed to do this period.
+
+**Predrag:** You know, you have no choice. The, the framing that I really like is when a maintainer uses this tool, The tool should give them all of the information such that they never feel like they made a decision that they later regretted because they didn't have the information that was necessary to make a better decision, right?
+
+**Predrag:** So minor versus patch, in my personal opinion, not that important. I think preventing major breaking changes that cause a lot of friction and frustration is more important. Uh, we do have some of those, like this is a minor change, but it might cause frustration. So you should maybe think about it in cargo server checks.
+
+**Predrag:** Uh, I definitely think those are worth building. It's just a question of where do you allocate resources and priority. So right now, most of the resources were spent on this is a major breaking change for sure. Or this is with very high probability going to cause a lot of friction, even though technically it's allowed under SEMVR rules.
+
+**Predrag:** You know, the soundboard rules are very complicated and sometimes very hazy. And so it's, it's good to flag some things where people might want to exercise some more care and judgment. Like, hey, this is technically not breaking, but if you revert this commit, that will be a major breaking change. So maybe tweak the code to do something else now so that it's a little bit safer in the future.
+
+**Predrag:** If you change your mind or make some other kind of change, right? So it's not just semver, it's just in general, am I going to regret this down the line? 
+
+**Andrew:** Do you guys implement Magic 0, where you're in like the version 0 and breaking changes aren't like actually breaking changes?
+
+**Predrag:** So Rust is very interesting about that, because the way that Cargo implements semver is that even 0. x packages have semver, uh, responsibilities. Cargo actually ignores leading zeros. So 0. 1 to 0. 2 is considered a major change. But 0. 1 to 0. 1. 1 is considered a minor.
+
+**Andrew:** Interesting, I didn't know that. 
+
+**Predrag:** And so, yeah, it's, it's one of those things that a lot of people, even in the Rust ecosystem, don't necessarily know. Um, so being a Rust tool, Cargo Sample Checks implements, you know, the Rust rules. But obviously for, for Python, for JavaScript, for TypeScript, we would want to adhere to whatever the ecosystem's rules are.
+
+**Predrag:** And at the end of the day, for a lot of stuff, even within Rust, you know, The community doesn't necessarily have a consensus on which types of changes have to happen when, right? Like, if you bump the minimum supported Rust version for your package, should that only happen at major release boundaries, or is minor okay, or can it happen in a patch?
+
+**Predrag:** Different packages have different norms, and so, in that case, Kargo Sempercheck says it is the maintainer's responsibility to communicate through setting the configuration options. What they're willing to adhere to. And then Carver Sample Checks will apply that, but the config is also machine readable.
+
+**Predrag:** And so downstream users and tools can read that and understand which things are guaranteed on which releases. 
+
+
+#### [00:44:59] Preventing Breakages with TrustFall
+
+**Andrew:** mentioned the CrowdStrike incident. How do you think TrustFall could have helped with that?
+
+**Predrag:** ultimately I think that there's a large pressure, especially when you're a publicly traded company to build new features, to get more customers, to, you know, expand product lines and things like that. And a lot of the time testing internal tools, developer experience internally and externally can end up suffering.
+
+**Predrag:** So. I don't think that that kind of incident is caused by incompetence. I think that that kind of incident is caused by the people that wanted to build the tools that might have prevented those, those kinds of issues from hitting production. Like those ideas were just not prioritized because they were seen as maybe not the thing to build right now.
+
+**Predrag:** Maybe the money is better spent elsewhere. Maybe we only have a limited number of cycles and something else is higher priority. So my viewpoint on it is that if we can make. Building these kinds of tools, even tools that are extremely one off, you know, like you mentioned the changing the engine field in your, in your package, right?
+
+**Predrag:** If you could make this be so easy to build that it's not even worth having a conversation with your manager, a director, you know, heaven forbid a VP at your company, like, can I spend two hours to build this tool so that we never have this problem again, then we will have many fewer of these kinds of incidents and not just the catastrophic worldwide visible, you know, all the flights grind to a halt for a couple of days kinds of issues, but all sorts of little points of friction where.
+
+**Predrag:** You know, hey, like GitHub actions is down for two hours because like a bad config got pushed out. Oops, right? Nobody comes out ahead from, from these tools, but there is sort of an equilibrium. I want to borrow a phrase from what something Patrick McKenzie said about fraud, right? He said the optimal amount of fraud is non zero.
+
+**Predrag:** The optimal amount of breakage in production is non zero too, right? But if preventing breakage becomes cheaper, the optimal amount of breakage in production goes down too, because it is cheaper to prevent it, so you should prevent it rather than suffering the consequences.
+
+**Justin:** so we've covered a lot of really interesting use cases, uh, for TrustFall and I mean doing a lot of things that I would not typically associate one tool to do, uh, which is, which is really neat. So there's like this, you know, linter like case, there's sort of data aggregation, query, anything sort of interface.
+
+**Justin:** Are there any areas that you feel are sort of like unexplored, uh, outside of these, uh, cases that you've discussed for TrustFall where it like might yield some benefit that maybe. Is not obvious, uh, from the outset.
+
+**Predrag:** Something that I'm very excited about is making it easier to interact with the zillion APIs that are out there and that are sort of technically available, but you have to understand the REST API or the GraphQL API or the client library or whatever. Because all of these APIs, no matter how simple they want to present themselves as, they always have their little idiosyncrasies and little quirks and, you know, oh, you should have known that, you know, you can hit this API endpoint, which is faster than that API endpoint.
+
+**Predrag:** You know, there's a lot of effort in my opinion that is spent in earning this hard won expertise. That is not portable from one use case to another, and definitely not portable from one company to another. And I think that just like there's a lot of friction in building little one off linters, because you need to know static analysis and performance engineering and have a concrete thing that you want to check.
+
+**Predrag:** And all of a sudden this balloons. I think that there is also an edge in, Hey, I just want to build something that, I don't know, like. Surfaces the flaky runs in my GitHub workflows, or, you know, immediately shows me the top three most popular repos that a new candidate who applied for a job at my company has contributed to, or things like that, right?
+
+**Predrag:** Right now, we have a zillion little SaaS tools that take one slice that is essentially three queries in a trench coat. As an entire SaaS company on top of that, because it's just so difficult to do all of the plumbing quickly, easily, competently, and bundle all of those little idiosyncrasies of the APIs. If we can make it easier to interact with all of the APIs with good performance, by hiding all of those idiosyncrasies into a layer that understands them and sort of sweeps them under the rug, automatically applies whatever caching, batching, magic is necessary to make it all ergonomic. I think that, well, first of all, you know, a thousand companies are going to have to work a lot harder for our dollars, but second of all, we're going to have a lot more tools than we really know what to do with, you know, the, the Delta between, Hey, wouldn't it be nice if, and actually having that thing in production can go from, you know, months to hopefully hours and ideally even minutes. This is not something that's going to happen overnight. There's a lot of work that has to happen, but I've done a lot of prototypes. Personally, many of them, you know, not public, just sort of shared with family and friends that have pointed to a much brighter future tomorrow. So if anyone's listening to this and is interested, please come talk to me.
+
+**Predrag:** I'm very happy to chat about it. I'm very happy to show you some of this stuff and just generally stay tuned because I think the future is bright.
+
+
+#### [00:50:15] Conclusion and Final Thoughts
+
+**Andrew:** Well, I think that perfectly covers our last question. You answered them both, uh, pretty well right there. I'm excited for this future too. So thanks for coming on the podcast. This was a, uh, like a mind bending conversation. One that I think will stick with me and Justin for a few episodes to come. So thanks for coming on.
+
+**Predrag:** It was my pleasure. I had a lot of
+
+**Predrag:** fun. 
+
+**Justin:** Yeah, Prajag, this was fantastic. I can't wait to dig in more. I feel like there's maybe a recurse project here. I don't know. I'm gonna, I'm gonna stew on it. Maybe there's something to work on. But this is a really great tool. A really interesting topic. And thanks so much for coming.
+
+**Predrag:** Amazing. Uh, I'm glad you enjoyed it. And. Cargo server checks is very contributor friendly. So if something in there sparks your interest, if you want to write a lint or two, or build an optimization or two, I'd be very happy to point you in the right direction. Not just you, Justin, but anyone listening to this, uh, it's an open source project.
+
+**Predrag:** It's for the benefit of the community. I'm very happy to mentor people. You don't need any special skills. All you need is a little bit of elbow grease and determination. Everything else is, you know, totally fine and will happen.
+
+​ 
+
+
