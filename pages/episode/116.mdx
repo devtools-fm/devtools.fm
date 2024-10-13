@@ -1,0 +1,412 @@
+---
+title: Nathan Manceaux-Panot - Retcon - Rewriting Git History made Simple
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Nathan-Manceaux-Panot---Retcon---Rewriting-Git-History-made-Simple-e2p11e6
+youtube: https://www.youtube.com/watch?v=NeQGRrbMpJE
+tags: git, programming, software development, source control, source code, version control, git client, retcon, rewrite history, history, git history, git terminology, conflict resolution, undo, redo, virtual history
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we have Nathan Manceaux-Panot, the creator of Retcon, a git client.
+Retcon is a git client that helps you rewrite git history with remarkable ease.
+You can drag and drop commits to create new commits, undo, redo, and more.
+
+- https://cykele.ro/
+- https://mas.to/@Cykelero
+- https://github.com/Cykelero
+- https://indieapps.space/@Retcon
+- https://retcon.app/
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:02:36] Challenges of Building a Git Client
+[00:04:52] What Makes Retcon Unique?
+[00:10:19] Ad
+[00:11:22] Virtual History and Conflict Resolution
+[00:23:14] Undo and Redo in Retcon
+[00:31:05] The Complexity of Git Terminology
+[00:50:22] The Future of Source Control
+[00:52:47] Wrapping Up and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Nathan:** The primary thing about retcon is for people who write history often or who. Don't rewrite history because they think it's too slow as it allows you to do it like instantly like Yeah, as fast as it could probably be in terms of interaction.
+
+
+#### [00:00:20] Introduction
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co host, Justin.
+
+**Justin:** Hey everyone, we're excited to have Nathan Manceaux-Panot on. I hope I got your last name right. So you are working on this tool called retcon. It is a tool to help rewrite git history. For probably everybody listening this has used Git or probably uses it on a daily basis and I'm really excited to see what you're doing and talk, talk about like why you've done and everything.
+
+**Justin:** But before we dive into retcon, would you like to tell our listeners any more about yourself?
+
+**Nathan:** Sure. Um, so I've been a developer for a while now, uh, but the fun thing is, um, I was in front end development for the most, uh, most of my career. that's why I fell into, uh, as a teen and, uh, that was most of my career. But, a couple of years ago, a bit more than a couple of years ago, um, I left my job and had some time and thought, Hey, I'm going to try and work on that side project, right?
+
+**Nathan:** That thing I had, that idea I had, like, I had a bunch of notes, a bunch of, um, outlines, um, drawings of interface, in a notebook somewhere. and today I'm going to try and get, take a couple of months to work on that. And this is how I got started working on Retcon, which is like a macOS app. So absolutely nothing to do with, uh, from a developer.
+
+**Andrew:** Oh, was it your first go at like Mac development? Cause I noticed it's like a, a Swift app. It looks like, or at least Swift or Objective C.
+
+**Nathan:** Yeah, so, uh, Swift, absolutely, and AppKit, so, um, Apple's older, uh, UI framework, but I think it's still the right choice today for some Mac apps, such as Retcon. Uh, and yeah, that was my first Mac app, which is fun to say, because when your first, you know, app and anything is a good client, like, that's a terrible choice as a starter.
+
+**Nathan:** But here we are. Um, But before that, I did have some, um, did work for a few months on the iOS stuff, like learning iOS stuff. Um, Stanford university actually has these, uh, free video courses online. It's like on YouTube, I think by, uh, Paul Haggerty. And they're excellent. Like if someone wants to learn iOS development, they're really good.
+
+**Nathan:** Like the teacher is really good. Uh, and so that's how I learned iOS development. And a lot of that transfers to macOS development.
+
+**Andrew:** 
+
+
+#### [00:02:36] Challenges of Building a Git Client
+
+**Andrew:** you, you said building a get clients hard. What, why is it hard?
+
+**Nathan:** yeah, on the surface, I don't know. On the surface, like, uh, what's gi right? A bunch of commits and, um, and they, they have their, they contain code changes. obviously I didn't write it from scratch, right? I'm using a, a framework, slip GIT two, uh, which gives you all the basics. Basics. Like if is underselling it massively, right?
+
+**Nathan:** Gives you commits and branches exploring and diff you can do Reba like, right? All the, all the functionality, core functionality of GI is there. So, you know, if you wanted to write a basic Git client, um, like a general Git client, a regular Git client, the hard part would be the UI. It would really be like, yeah, how do I display that stuff?
+
+**Nathan:** Because actually, even just displaying information in Git is just too much. Terrifyingly complex, just display a gif a diff, if you do it very simplistically might be okay, but as soon as you want to interact with it, that users to interact with it, it's super complicated. so like the, like the first hard part of building a client is the ui.
+
+**Nathan:** There's, there's so much surface, so many things to see to show and yeah, so many concepts in game, like at its heart is just a list of commits, but they're on different branches. They can have tags. Uh, when you create a branch, there's a million things that can happen, not a million things, but you can create the branch here on our different commit.
+
+**Nathan:** And maybe you're trying to use a name that's invalid or it's a valid name, but it's the name of an already existing branch. So all that, when you're building a UI, you're going to want to take into account. It's a massive pile of complexity, but like complexity by breadth, I would say. Uh, for once again, for a regular client, the complexity, I think, is not in the depth, like you don't have to do anything crazy complicated, but you have to do a lot of it to get something basic and so that when you're only trying to display information, um, you know, get client that follows the conventions of get, but then if you want to go deeper and make something like Retcon, which goes crazy with, with what it does with the repo, um, then you have to get into that complexity and like, you know, You know, I guess we'll, we can talk about that more in depth later, but it's just.
+
+**Nathan:** You're going to handle diffs and I don't know, commits and orders. And I mean, everything can happen at that point.
+
+**Justin:** So maybe let's let's back up a little bit retcon specifically. 
+
+
+#### [00:04:52] What Makes Retcon Unique?
+
+**Justin:** So what is it and how does it differ from like a typical Git GUI app?
+
+**Nathan:** All right. So the focus in the retcon is very different. Initially I, I thought it would not even do all the basic functionalities of a, of a gig client. Like, you know, um, Well, to give you an example, um, I think when I added pushing, pulling like from remotes and get retcon, uh, it had been in existence for more than two years, uh, and creating commits like committing that was added after at least nine months, I think like.
+
+**Nathan:** 12 months or something. Um, so that gives you an idea, like retcon focuses on other things and nowadays it does have these basic features of managing branches, et cetera, for the most part, but, uh, the very core of retcon, what makes it valuable and unique is its ability to rewrite history, but like to let you rewrite history much faster in a, in a very different way.
+
+**Nathan:** Um, so, so it's about, um, interactive rebases. So I'm going to describe them quickly for anyone who is not so familiar with them. So, you know, typical workflow in Git is you do some work and you commit it. So, you know, you embed it in the commit. It's got a message and your changes are encapsulated in there. So you do commit after commit. In some teams, you're going to want to rewrite history from time to time. So you're going to say, Hey, uh, I created a commit that's called fixed bug. And another commit that's called add feature. And these are not very good, right? This is not very clear. So maybe I'm going to want to rename that commit or reorder them, or maybe even, um, Merge commits together, fix up them, or scratch them.
+
+**Nathan:** So that's rewriting history, taking your list of commits and rearranging it in a way that makes more sense. It's super useful because you can get, um, because that, well, super useful for many reasons. It's a, it's an act of communication, right? The commits always contain the code changes, but not always the intent.
+
+**Nathan:** and having a clean history, right? Well ordered with clean messages that tells you why you made the changes that recapture the context around them, which is useful for, uh, if you have colleagues reviewing your PRs, they can do it much more quickly and nicely. If they know what it's about and your history can just tell them, and it's useful for you in the future when you come back to these commits and try to understand what the heck you were thinking.
+
+**Nathan:** Like, why is that class? You know, why did they even add that thing? Why did that all that complexity? Uh, that's the kind of questions that, uh, having a clean history can answer. So Retcon is focused on that. And the way you would typically do a, um, an interactive rebase, um, is using the terminal, right? So you would do a git rebase interactive, uh, dash on.
+
+**Nathan:** And the way these go is you initiate the rebase. It gives you a to do list. So it gives you the list of commits, like the current state they are in right now. And you modify that list. You reorder the lines because it's just a text file. You do whatever you want. Reorder the lines. You can add a special marker at the beginning of the lines to say, Hey, I'd like to reword that commit to a fuse it, like fix up it, fix it up with a merge it with a parent commit.
+
+**Nathan:** So you do that to do list in there. And when it's done, when you close that window, the actual rebase happens. Like Git tries to apply your to do list and that may succeed, or you may encounter a conflict, uh, that's a lot of exposition. so you may encounter conflicts. Like if you delete a commit and it changed some lines and a later commit changes the same lines, Git doesn't know what to do.
+
+**Nathan:** So it pauses for a conflict resolution. And maybe you want to resolve multiple conflicts in a row. And when that's done, the rebase is applied. So that's the basic way it goes. Um, you can do that in the terminal. Some get clients GUIs will allow you to do the same thing visually, but it's very much the same workflow created to the list and then resolve conflicts one by one, and then you're done. Retcon was born of the idea that, you know, I love rewriting history. I think it's super valuable, but also, uh, ain't nobody got time for that. And like, seriously, like, yeah, like the, the concept is elegant. The UI, honestly, it's pretty, it's pretty good idea, but. Yeah, it takes so long and even for the smallest modification, like if you just want to rewrite the message for a commit that you made a while ago, it's like you have to go through all these steps.
+
+**Nathan:** Um, so it's a huge charm. Retcon focuses on, on making all these actions available like immediately. So if you want to change just the message of a commit, You go to your list. So in the retcon, you always see the list of commits, you select an old commit, uh, and where you see this message, you, you type the new message and that's it, you don't even have to confirm, like as you focus out the field, it saves it in place.
+
+**Nathan:** So there's, there's no step two is there's barely a step one. In that case, uh, you just find the commit changes message and it's changed like renaming a file in the, in the file explorer or something. Um, or for a more complex example, like if you just want to reorder things, well, you have this big commit list and you just click and drag, like you move the commit from where you, it is where you want it to be.
+
+**Nathan:** And that's it. That is it. Uh, someone actually commented like on, uh, on Macedon, I think they said, Hey, I was confused for a while. It was looking like. For step two, like they were looking for what to do after moving the commit. They were confused because yeah, that's what we would expect. But no, in retcon, there's no second step because there's no mode.
+
+**Nathan:** You don't have a to do list, then an application of things. Then you're not, no, no, no. It's always the same thing. You're always in edit mode. Uh, yeah. And so that's, that's really the primary thing about retcon is for people who write history often or who. Don't rewrite history because they think it's too slow as it allows you to do it like instantly like Yeah, as fast as it could probably be in terms of interaction.
+
+#### [00:10:19] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for the week, MUX. If you've ever tried to add video to your product, you'll know that it's full of pitfalls. Whether it's hosting, streaming, or even building a snazzy player, there's a lot of things that you have to get right to deliver a good experience. That's where MUX comes in.
+
+**Andrew:** MUX offers an end to end set of tools that let you ship video to production faster than you've ever been able to before.
+
+**Andrew:** The feature I'd like to highlight this week is their automatic cold storage feature. With video, the highest operational cost is hosting all of those videos.
+
+**Andrew:** It can be a lot. With Mux's automatic cold storage feature, it makes it a bit cheaper. For each video that your platform has, it tracks whether or not it's being streamed. If it hasn't been streamed in a certain amount of time, it moves to colder and colder storage and saves you more and more money.
+
+**Andrew:** I think that's pretty cool. That is just among a host of other things that make shipping video with Mux a breeze. So if you want to learn more about Mux, head over to Mux. com to check them 
+
+#### [00:11:22] Virtual History and Conflict Resolution
+
+**Nathan:** So to accomplish all of that, are you like stashing and popping things in the background like to like abstract away stuff or like, like, how does that work? that's yeah There's a lot of stashing reapplying and rebasing in the background to abstract away stuff like that's actually a good description of what's going on and and there's multiple layers to it, but All right, at the core, um, there's the idea that if you do edits in place, natively, you're going to run into trouble. Um, like in my example, right? You move a commit to a new place and that's applied instantly. That sounds good, right? And I thought, let me just code that up. But you'll quickly discover that it may cause a conflict. I mean, of course, but what do you do then? Because when you have a conflict, you know, in regular Git, um, you can't do anything.
+
+**Nathan:** You have to resolve it. Now, or, um, cancel everything. Um, but for Retcon to be useful, that can't be the case. Um, if, if when there's a conflict, you're stuck, then there's a lot of things you can't do, because you move the first commit, and you're blocked, and you're like, oh, yeah, but I want to make more moves.
+
+**Nathan:** It's, yeah, whereas in the to do list from the, from the regular mode, like from the regular git, the to do list, you can do anything you want, and then you apply it. So if, if you need to make multiple moves, you do that. In Retcon, you don't have the luxury of saying, oh, yeah, well, we'll see later. Uh, not in that technical way. So the core thing about retcon is that it still allows you to make changes when you have conflicts going on, when the, when it's paused, I call that state being paused. So you move a commit because it is a conflict and you're like, eh, whatever you move another commit and another one, maybe you delete a commit can name, um, above and below, by the way, the conflict, like above the conflict, below the conflict, you can do all the changes you want.
+
+**Nathan:** And then when you're done, when you're satisfied with the, how it looks at that point. You start resolving conflicts, although sometimes making another move will remove the conflict. Like you move one into position, there's a conflict, you move a second one that clears the conflict. You didn't even have to, uh, to resolve that. So that's necessary. Like what I've just described, that's just user interaction, right? That's just how you see it. You're like, Oh, I can move things even when there's a conflict. Uh, but then there's, okay, how do you achieve that technically? Like how in retcon, um, was that coded? And the idea is that retcon needs its own in memory representation of your history.
+
+**Nathan:** Uh, I call that virtualization. That's a bit like, uh, React's virtual DOM. That's, that's very similar conceptually. So there's the virtual history in retcon. There's an internal data structure. That's, you know, really close to just being an array. That's virtual history. And so anything you do in retcon, it, uh, modifies that virtual history. So you move a comp, so whenever you do anything, it modifies that intermediate trend, um, representation in retcon's memory. And then it tries to apply it to her actual physical repo. So if you move a commit, uh, Retcon will be like, okay, here's a new virtual history. Like it's kind of immutable in place, sort of functional.
+
+**Nathan:** So it's like, all right, makes a copy of your current history, um, modifies it with that move you've made. And then it's, it tries to, uh, realize it, to make it physical, to see, okay, can I actually make a history like that? So, uh, Retcon will ask Git, like it's a series of cherry picks, basically. To recreate the new history and maybe they'll succeed and maybe they'll fail with the conflict.
+
+**Nathan:** If it succeeds, well, very cool. Like it's, it's got a new head commit. So it applies that and modifies your branch. It applies your, your virtual history. It's physical now. Uh, and you didn't see anything, right? You moved it like it's instant. It's not something you perceive or if there's a conflict, well, then it pauses.
+
+**Nathan:** So. It shows you, and that's the fun part. If there's a conflict, Retcon is going to show you your history, like your target history, which you made. So the reordered one, which doesn't exist, it only exists in Retcon's mind. It's the, it's the virtual history, but it will be displayed exactly like your normal physical history. Um, and it'll rewind time, it'll, uh, check out the conflicting commit and allow you to resolve it if you want, like, like a normal conflict resolution, checks it out, preps everything for resolution. Um, so that's, that's the core of the core thing, right? Anything you do, it's applied to the virtual history, and then that may result in a valid history.
+
+**Nathan:** Or not, if it's valid is applied. If it's not, you're in that overlay mode. You're in, you're paused and when you're paused, you can keep making changes. And that's perfectly natural for retcon because you're making changes to that virtual history. You keep modifying it. That's just, once again, sort of a big array memory of commits.
+
+**Nathan:** Um, And whenever you make a change there, retcon checks, is that valid? Can I apply that to the physical repo? If so, you're out. If not, you're still paused and maybe you'll pause in a different spot. Uh, yeah. And that's the whole, that's really like a huge part of what makes retcon retcon, both the, the, the, what makes it complicated to work on and what makes it, you know, a good tool is really this virtualization concept.
+
+**Nathan:** Um, and the idea that Retcon is able to represent histories that do not exist, that are not valid by Git standards. Um, and that everything in Retcon, every single feature is built on top of the virtualized history. Um, so yeah, wherever you're looking, whatever you, whatever you do in Retcon can, can happen, uh, regardless of virtual states, basically.
+
+**Nathan:** So you can even, um. Rebase, for instance, while paused for conflict resolution. You can actually, you can actually push from a remote, sorry, pull, you can pull from a remote while paused for conflict resolution, like you're in the middle of a rebase and you realize, Oh no, I'm missing that one commit. And this is the reason for the conflict.
+
+**Nathan:** You can still pull and it pulls and rebases on top in that all that works because everything's implemented on top of that, uh, virtual history concept.
+
+**Justin:** That's, that's really wild. Um, It's such a cool approach. This is like an event source for your, like an event sourcing system for your, your git history kind of. Um, I was trying to think of like the implications of that and one of the things that I, one of my immediate questions was like, well, what if you muck around in the thing while it's paused?
+
+**Justin:** Uh, so it's really interesting to hear that it'll like, pick up those actions and sort of like, you know, insert them in the correct place. Is there a point at which. You just have to throw away the virtual history. You're like, okay, you've done something and like, we're, we're down this track, but like, we just need to like abort and go back to like the current state of the repo or like unwind the virtual, the
+
+**Justin:** virtual history stack or something. 
+
+**Nathan:** I I don't think so. I don't think so. I mean, anything, no, cause like you transform the virtual history and it always represents something. I mean, if you, if you. Like in the extreme, most extreme of cases, you'll get conflicts at every commit, right? You resolve one, and the next one's a conflict. You resolve all of these, in a way that makes sense, if you can.
+
+**Nathan:** And at the end, you get an actual history that gets physicalized. Um, another extreme case would be deleting all the commits. I think that works, and that just deletes the branch. I mean, I'm going to do something. So it doesn't make much sense, but you can, you can do like command a and delete it. That'll just, yeah.
+
+**Nathan:** Delete the branch. Why not? Um, and you, you make that, um, comparison to an event source. And you know, that's the initial approach I had was this. And this is why I use the word functional before. Initially, it was not in that functional idea. It was like a series of transforms. That was my approach. Initially, anything you do, I can't remember.
+
+**Nathan:** Is this like, okay, from the initial physical history, you added this, renamed that, et cetera. But it turns out that was not as resilient. Um, it was harder to code with. And so the idea now is that it really creates a copy of your history. Of course, there's a lot of copy on right stuff and all that. It's not nothing.
+
+**Nathan:** Yeah, nothing crazy, but it's sufficient in memory. But the idea is you just represent your history as you want it to be a list of commits that can have a virtual transformations attached, like rewording and all, it doesn't actually do them instantly. Um, but mostly it's kind of stateless. It's, um, it just represents the state you would like to get to. Uh, yeah, and, and anything, and so the, the key also is that anything you do in retcon, it always gets applied to that virtual history. So, in a way, there's no difference from going to a valid history, like you're currently unpaused and you make a simple change, like you reword, like that is the exact same thing as being knee deep into a rebase where you have three conflicts resolved and three pending and you rename a commit at that point.
+
+**Nathan:** It's the same thing. All you're doing is taking a virtual history. Changing a little thing in it and you get a new one. Uh, it's just that in one case, the virtual history is like instantly generated from your actual physical history. And in the other case, it was in memory already because you were paused with that virtual history.
+
+**Justin:** I imagine there was a lot of crazy bugs to figure out in that because just synchronizing States is one of the hardest things. I think one of the hardest things in computer science, it's like, You know, just years of dealing with like, oh, you have like a server in this state, a client in this state, you need them to like, be sort of have the same representation.
+
+**Justin:** This is like, how many, like, millions of man hours that we've spent just trying to, you know, work through sync issues.
+
+**Nathan:** Yeah. Yeah. I don't know how to frame this exactly, but yeah, bugs for sure. A bazillion of them, uh, actually a very scary one. If anyone's thinking of actually reading Retcon, please use Retcon. It's good. But it was, um, really early on. Uh, the thing was weeks old and it just wiped the entirety of a repo, like a friend was trying it on at work, by the way, right.
+
+**Nathan:** Work repo, he had, he had a lot of faith in me, appreciate him. Uh, and it just deleted every single file in there. Um, that was more than two years ago. I have a battery of crazy tests. Now the test does just go through everything. Like every scenario could think of and, and we'll, there's so many things about this, but like the test undo redo.
+
+**Nathan:** So anything, um, they'll do like, Oh, what if you modify this and edit this and delete that file and then confirm. And then you undo all the way to the beginning. And at every undo step, step, the tests will check that we rerun the asserts from that step. So we know that at every step, it's exactly what we expect.
+
+**Nathan:** And then the redo everything back to the end and rerun every single assert along the way. Um, so yeah, like it's, there's a crazy amount of tasks. I have so many safety features that I've built over the years. So some of them are for development time only. So some of them run at runtime and actually in that, uh, you know, scary story, I just told, um, At the time there was a whole repository backup feature.
+
+**Nathan:** Like it would just back up everything, even the ignored files. Um, you know, every 50, 15 minutes, uh, in a hidden folder so that if something happened, you could recover it. Cause at the time I knew, I knew it was very new and wild and, uh, and there was a risk at the time. So I had the, I had these things. So yeah, bugs, bugs galore.
+
+**Nathan:** Ah, yeah. And at the same time, there's something, at the same time, there's something reassuring about it because you do talk about sync and yes, but also no. Uh, very, very, I know, very eloquent. Um, the idea is that, well, it's back to that functional approach. Um, you don't want to have to keep track of small changes and everything and deltas and stuff you need to do.
+
+**Nathan:** And it's more about absolutes. You want to know what you want to get to, where you want to be. So. You know, in memory, what is stored is the virtual history, like the actual thing you want to happen. Um, and that moves the problem that doesn't remove it, that moves it. It means now the problem is having incorrect absolute thing at all times.
+
+**Nathan:** Um, uh, but that also means it can be handled differently. 
+
+
+#### [00:23:14] Undo and Redo in Retcon
+
+**Nathan:** And so like I just talked about undo, uh, and that's an essential thing in Retcon, like if you have the ability to just change everything, anything with just a click and drag, you definitely need the ability to undo it just as easily. Like it's non negotiable.
+
+**Nathan:** So yeah, undo, redo in Retcon and it's pervasive, pervasive. So almost anything you can do in Rekon, you can undo, um, uh, it's like deleting a commit, moving a commit, rewording, but also like deleting a branch or pushing to remote, that one's a bit special, but even pushing to remote, you can safely undo, like you won't override anything by mistake, that, um, and so the way I had to go to, to implement that initially, I thought, you know, I'm just going to record the state of things whenever, like before the operation So I was like, all right, to implement undo, I'll just make a big snapshot of everything before the operation, and then record that data somewhere.
+
+**Nathan:** And that's my undo stack. And when you undo you go back, but then no, no, no, that's much too naive because of a bazillion reasons. The biggest reason is Retcon often doesn't modify, doesn't touch your uncommitted changes. Like you can safely do all you do in Retcon, even when there are, um, unmodified files in your, um, in your gear and like.
+
+**Nathan:** 10 things to say about that again, but, but yeah, that's the core thing. And that includes doing things like, all right, you have a commit. You have a commit and it modifies some lines in a. txt. Um, well, it adds, it adds a few lines, it append a few lines to a. txt. You delete that commit. So the lines, they go away.
+
+**Nathan:** That makes sense. You go to your editor and you change that same file. Like in the middle, you change a few things. And finally, you go back to retcon and you undo that. You undo that commit deletion. So you're undoing a deletion. So that's going to add some lines to a file that you've modified. That it works, that it works exactly as expected.
+
+**Nathan:** The files, they come back, the commit comes back, lines come back and your changes in the middle of the file, they're preserved, like untouched. You don't see the difference. You forgot about them. And, you know, probably most people will think about it when it happens. They'll be like, yeah, and did the commit deletion, that makes sense.
+
+**Nathan:** But in practice, that means DreadCon needs to rebase a bunch of things. It needs to take your changes and rebase them from the old head to the new head. Um, so it's like a relative thing. It couldn't store the absolute contents of the file at the, before the undo, because if it did that, it would override your changes.
+
+**Nathan:** So instead it's constantly storing things in an absolute form, but also reapplying them relatively to whatever's going on right now, because it is very delicate in that way, it's absolutely in the stories, but delicate in his actions, always trying to change the minimal amount of things that can, so that whatever you did is still there, uh, and preserved.
+
+**Nathan:** so, uh, we were just talking about undo there. Is there a redo? And then also, I feel like you could undo back to a place, accidentally edit a file and then try to redo. So how does it like deal with interim changes like that? Because I could very well imagine like, we're just getting blasted away as I'm like going forward and backward.
+
+**Nathan:** Yeah, I don't, I don't think I have, like, there's no, there's no satisfying answer to this. Um, cause you can undo, you can redo, but it has the same limitations as in like a word processor or like in an IDE, that if you undo, undo, undo, undo, and make a change in retcon, Well, that will replace your redo stack because you've made a change so that all the redos are gone.
+
+**Nathan:** So, um, definitely in that way, it's, it's yeah, it's just, just that right. Undo, redo works just in a, like in a regular app, but I don't expect people to undo really far and. Expecting to come back. Like that works, right? If you undo a hundred times, you can. I think it's just limited by memory. Um, basically, but, um, you can undo a hundred times and you'll get exactly where you were before, and then you can redo a hundred times and you'll get exactly where you were there. Um. Yeah, what will prevent you from redoing will be if you make any change in retcon, or if you change the history or the stage from another app, because these things also get added to retcon's, um, undo stack. So you can actually do something and get in the command line and you can mostly undo it in retcon, um, with limitations because it doesn't know exactly the context of the change.
+
+**Nathan:** So it, yeah, I can't guess at what happens, but it can definitely get undo branch changes and, uh, and stage changes. So it's like, and this is interesting because it's also, it's like, this is more of a design thing now, but it's both a strength and the limitation of Retcon that it works like it's undo works just like the undo in any GUI app, right, undo, reduce, tag.
+
+**Nathan:** So that means it's incredibly intuitive. Um, there's like a chart on my website. It's like, how, how do we, how do you undo this thing? Right. And for every single thing, it's like press command Z, like every single thing, press command Z, you already know how to undo an icon. That's a strength. The weakness with that.
+
+**Nathan:** Is that it has the same limitations. So if you make a change, well, like if you undo five times and change something, you can't redo anymore. Cause you've just created a new undo point. Um, and this is something I'm thinking of changing, but I really don't know how, um, in terms of design, once again, it's the branch push thing.
+
+**Nathan:** Like if you push your branch. Well, you can undo it very easily. Command Z works super well, uh, every time. Spent a lot of time working on that thing, but you can only undo that. Like you can't, can't undo a local change, like reordering commit. First you have to undo the branch push cause it's. It comes in that order in the undo stack.
+
+**Nathan:** And that makes sense, right? The undo stack works the way it does. And this is what makes it intuitive, but also it's at times limiting. You're like, okay, I'd like to undo my change, but not under my push. And, uh, like, yeah, I had this situation the other day and we would deploy a Netlify like, cause I'm using Netlify.
+
+**Nathan:** So any change I make instantly deployed on a distant branch and I had to undo the, that push if I went on and do the rest. Um, yeah. So, you know, pluses, minuses.
+
+**Justin:** Yeah, history undo is, is pretty challenging, I think, in general, because there's a bunch of different strategies. You can have just like a straight undo stack, or you could have like a branching undo model where, like, you have, like, different forks that you can take and not to be confused with get branching and get forwarding. I mean, all that makes sense. I was reading through the landing page, though, and one of the lines that you wrote that I really like is that the cheat sheet you won't need, you know, just talking about undo is like, oh, you did a thing. Command Z, you're out of the thing now. Um, that is, that is huge.
+
+**Justin:** That is massive. Um, I think
+
+**Justin:** sometimes, With Git in particular, and a lot of the tools that we use, we kind of have this, um, Stockholm Syndrome, you know, it's like we, uh, we, like, come to love the things, but it's like, You know, maybe not always. It's like through a lot of pain. Um, so given your now deep expertise and like digging into, uh, gets internals or at least like the interfaces, the programmatic interfaces that gets providing, um, what are some things that you wish that get did differently that would make your life easier?
+
+**Justin:** and or other people's lives easier. Like, if you could make a change to get today, it is like, okay, well, if I did this, it would make things so much easier. Like, what would that be? And why would you want to do it?
+
+**Nathan:** that's a good question. I don't know that I have an answer for that. Um, I'm thinking because, you know, a lot of I don't know, Git is pretty tight, right? Like, the model is pretty solid. Um, you know, I'm going to avoid that. I'm going to, I'm going to evade that question and go slightly to the design side. 
+
+
+#### [00:31:05] The Complexity of Git Terminology
+
+**Nathan:** I think something in Git that's made my life really hard is the terminology.
+
+**Nathan:** It is so bad. So bad and no offense to the people who came up with it. Like it's extremely hard to come up with good terminology. And when you do it like over, I don't know, five, 10 years, like how long the core terminology, uh, came along. And like, anyway, no offense, right? I appreciate how hard it is, but stuff like, okay, the stage, that's also called the index and also called the cache.
+
+**Nathan:** And like all of these three words, they're synonyms, but also some things have these names and others don't like, um, Like an index is a data structure type actually, and, and the cache is just using an index as its data structure to back it. And it's a mess. So yeah, the, the names in Git. And what made things even harder is that then for retcon, I had to come up with new terminology, uh, for some of the things like, Oh, you're paused in the past.
+
+**Nathan:** Um, You, a lot of, yeah, a lot of words, new words need to be used. And, and I would constantly be being, um, how do I say this? Uh, splits between, uh, using familiar Git words and using the more descriptive. Potentially better words. Um, and this is a big dichotomy at the heart of retcon is that it targets both experienced users and beginners.
+
+**Nathan:** Like I built it for myself. So like, I know what a get releases, uh, interactive, I know how to do them. I'm comfortable with them, but I built it because I wanted to go faster. So in that way, it's squarely targeted towards, um, experienced, uh, people experienced with it. Right? Like, uh, it's not, oh, it's not like a GUI to make it easier, but it's not that powerful.
+
+**Nathan:** No, no, it's like for going super fast. At the same time, it is a GUI and I did try my, my best to make it like super approachable because it can, it's, it has the potential. So I worked really hard to make it, um, newbie friendly. I think it mostly does the job on that. And so what that means in practice is that for every piece of text in Retcon, I always thought, okay, I can come up with like a better word for this for sure.
+
+**Nathan:** Uh, that'll better describe what the thing is, but if I do that, uh, people who know Git, they will have no idea what it is and they will assume it's a whole new thing cause it's a whole new word. So it follows that it should be a different thing. And, and there was such a thing, like for fix ups, you can fix up in retcon, which is like a squash, but you don't keep the message.
+
+**Nathan:** So most people know squash by name. Fix up is the thing you often want to do because you know, if you, if you had a temporary commit, you don't care about sending this message. And none of these were as bad. Or is descriptive. I mean, it's quest may be okay, but that's not where I come to us. So that would be misleading fix up.
+
+**Nathan:** No one knows what fix up means. So it was like, do I call that merge? Oh no, I can't merge means something in Git. Do I call that flattened? That's weird. It was the case for a while. Is it flattened there? And like, yeah, there, there's this, that thing went through many iterations and now it's fixed up. Cause I'm like, okay, if I can't find a great word, might as well use the one that some people will know already. Um, and same thing for, oh, that was a big challenge. Do the leading commits. So in Retcon, you can delete commits, you know, you can do a hard reset or a soft reset. So you can delete a commit and discard the changes it contains or just delete the commit, but keep the changes it contains. And that took so long to find the right terminology for this, like the menu names.
+
+**Nathan:** Um, and in the end I went with, I went with something very descriptive, like delete commits. And the other one is delete, commit and commit and keep changes or discard changes. Anyway, there's a, so you see them by one side by side and you kind of understand what they mean in this way. But, um, but it took a while to get there because yeah, delete, commit, delete, changes, delete, commit, and changes, only, only delete, commit, only, what do you mean only just, yeah.
+
+**Nathan:** So that's, yeah, that's the, yeah, I think one of the hardest part of a building a good client was that finding the right terminology that would respect the existing one, but also could extend it, uh, and be very concise and be less confusing. It was a, that was a trip.
+
+**Andrew:** Yeah, when I was learning about Git, uh, I was surprised to learn about its origins, that it didn't start as what we all know as a version control system, and it was more of like, This weird database of things. And then what we have is Git today kind of emerged from that. So lots of complexity hidden there for sure.
+
+**Andrew:** So going back to retcon a little bit, uh, to me, it seems like you've, you're tackling UX challenges in Git that you, you want to fix, whether it's rewriting history, command Z, are there other things that you want to fix with Git, uh, that you think have less than stellar UX?
+
+**Nathan:** Oh, good question again. Um, I've been deep in the trenches lately, so I'm more focused on what I've worked on already, but yeah, there's a bazillion things. The core Git model is really nice. Like the concept concepts are, it's really well thought out, but yeah, there's so much to change. Uh, well there's, okay.
+
+**Nathan:** There's one thing and okay. This is one thing that is changing retcon. Um, and that I haven't gotten a lot of feedback on some, I should ask for a feedback. Um, it's got to do with the stage, the way you stage things. So in, uh, usually in Git clients, when you want to create a new commit, you know, you're going to go and stage things.
+
+**Nathan:** So you've made changes, your working directory, it's got, it's dirty, right? It's got this uncommitted changes and you're going to stage some of them. Like, Oh, that file in this file, I want these to be containing the commit, but that third file doesn't come along. So you stage just what you want. It's at file level and it's also at line level within the 
+
+**Nathan:** file
+
+**Nathan:** the way these are displayed in most Git GUIs. And I think it.
+
+**Nathan:** I mean, the GitKlee sort of funnels you also in that representation is that it shows your uncommitted changes separate from your uncommitted changes that are staged, like these are really two, two different boxes. So you'll have word here and stage usually these two things. And now I know why, because I, you know, for a long time, I was wondering why would they separate them? Because the intuitive thing would be to, I mean, to me anyway, would be to have a single view. Here are all your changes, like from the current commit, from the latest commit, all the changes you haven't committed.
+
+**Nathan:** And some of them are staged. Um, but no. Most clients, you have these two boxes and, and that causes issue, like when you stage something, it disappears because it goes to the other box, it goes to the other section. And if you're like, oh shoot, I staged something I didn't want to, you have to go to that other box and unstage it from there and it disappears again. Um, you, you don't have a bird's eye view of everything that's going on. Uh, and this is something that, yeah, bothered me for a while, especially since some apps already do better, uh, already have this checkbox concept, but usually only at the file level. Uh, and I think that's super useful because you see the list of your files and you're like, this one, this one, this one, like you check them, they're checked.
+
+**Nathan:** And that's, like I said, they didn't move to a separate, separate location. So in Retcon, uh, this is actually different. It's a single view. And you can just check stuff. And when you see the file contents, you can also just check lines in there. Um, yeah, you're like, you have three change lines. You can just check the second one.
+
+**Nathan:** And then now it's staged, like it's a little check next to it. And, and that's it. And I'm, I'm coming up, like, I'm, I'm having a hard time describing what happens because it's so simple. Like visually, you're like, yeah, I checked it. Now it's checked. But the thing is, it is monstrously complex, mostly complicated to, to actually implement that.
+
+**Nathan:** And I, I was not prepared for this. It was not ready. This took months, months and months of work to actually implement. But the way it works, it actually provides you with these two diffs. Like you can ask it for two diffs, uh, head commit to, Stage and stage toward dinner. Uh, you can't ask it for like the combined diff.
+
+**Nathan:** You have to make it yourself. And so that was what happens in retcon. So it's like a whole bunch of steps. So retcon collects these two diffs, like ask for these two diffs that are generated by git. So it's just a long text thing, right? Like a long piece of text or every line with metadata for each line.
+
+**Nathan:** So it's like, Oh, here's the old line number is the new one. Um, is it added stuff like that? Retcon fuses these two together. So like it reviews the whole, the whole thing. Both pieces of text and like compares them and, you know, merges some lines, insert some lines, um, trying to try and get the order, right?
+
+**Nathan:** I mean, guess the order, right? Like there's a lot of, um, it's not heuristics. It's like it's precise, but you know, you have to figure out how to do that. Uh, and that's, that was a mess. Um, and when you get in the end, there's a single diff that you can present to the user. And even that is still like, there's still a small part of it.
+
+**Nathan:** Um, because line numbers, for instance. So one of the things retcon does is it tries to display just the info. That's actually relevant. Like if you look at a commit, uh, you know, some, some clients might tell you about the message of the commit. Good. Uh, the hash of the commit useful and the author. Okay. And it will tell you about the committer.
+
+**Nathan:** Okay. Even if it's exactly the same as the author, not relevant, it's the same. And it'll tell you about the hash of the parents. Okay. That's a little too much. Some slides even tell you about the hash of the, of the tree of the commit. And I think 90 percent of people don't know what the tree of the commit is.
+
+**Nathan:** And they're right. They don't have to know. This is really irrelevant information. Uh, and in the diff to come back, sorry, I'm, I'm getting sidetracked really easy. In the diff, uh, in the diff, Git will show you like these little, um, at signs like at sign, at sign 13 comma 12. Same thing. Many people don't know what the numbers mean and you don't really need them.
+
+**Nathan:** They're really superfluous. There's a bit of interesting info in there, but barely any. So retcon does a well, does away with all that. Boom. Away, away, away, none of that. And with the line numbers, that's where I'm getting to. Um, same thing, old number, new number. You. Usually, you know what, neither of these mean.
+
+**Nathan:** You're like, these are numbers. What can I use them for? What can I, what can I, uh, cross-reference them with? Um, the answer often is nothing. Um, you look in your editor and the same line has a completely different number. It's very strange. So Red Con only displays a single number, and it always matches what you see in your editor.
+
+**Nathan:** Which sounds like obvious, I mean, you ask anyone, you know, if they didn't know about git, they would tell you, oh, the line numbers, well, that's the number of the line that you wouldn't,
+
+**Nathan:** yeah, they wouldn't think of anything different, but turns out it's technically like a lot of work, because if you ask for different diffs, you'll have different line numbers.
+
+**Nathan:** So when you have the stage diff, um, oftentimes. Um, but you have two numbers and one of them, I mean, sometimes you don't even have the number you need, is what I'm getting at. Um, so in the workdir diff, you often, one of the numbers is the number of the right one. But in the stage, uh, Retcon actually has to compute the number sometimes.
+
+**Nathan:** So after it's assembled, uh, both, uh, diffs, it has to go through all the lines and infer the line numbers for some of the lines. And once again, like it's deterministic, like it's not a plausible heuristic or something, but it does have to, from context, compute the line numbers, um, for lines in the stage mostly.
+
+**Nathan:** If a line is in the staging under some circumstances, Git just doesn't tell you about this line number. And so I say, like, I just told you about all of that, all these computations, all these things it does. And the result is You look at Retcon, you look at the file, it's got three lines. You select line number two, it says number two.
+
+**Nathan:** You stage it, and now, it's checked. Nothing else has changed. And you think, Hey, nothing else has changed. And that is so wrong. That is so untrue. Actually, like the diff is like the line comes from a completely different source. And the number two was previously given by Git, but now it's computed based on context, but visually nothing has changed.
+
+**Nathan:** And it was so much work to get to that space, to that spot where it's stable, like, uh, like you would expect. Uh, yeah,
+
+**Justin:** I appreciate this approach. So you've really done it on hard mode to like, make it feel like staged and on stage are like kind of one. Like point and and not have to think about that so much, but if you go into git You know CLI, and you're like git status, then I'm assuming that you will see the actual stage and unstage Which is a pretty hard thing to do as you've been expressing.
+
+**Justin:** Uh, so before the show, we had talked about some other tools that I had my eye on. There's this, there's this tool called JJ or Jujitsu. That's kind of a, a popular alternative CLI, uh, UX for Git. And one of its things that it does is it has a working copy as a commit. So basically any, any code that you have that's like in progress, In your repo.
+
+**Justin:** It automatically adds that to a commit. It just, like, any changes you make are just amended to this sort of, like, work in progress commit. And so it simplifies this problem a little bit by just having, like, this, like, work in progress, commit, like I was saying. Uh, and so it's not even thinking about like what stage you're on stage is automatically always committing things.
+
+**Justin:** The only problem is if you go in with like a regular git CLI and you like look at the state of things, it's like, oh, well, uh, there's nothing staged and I have this like weird commit and now they have to do a lot of things. In the background to, you know, keep track of like, okay, what is the actual history?
+
+**Justin:** What are the things that you actually want to push versus, you know, so they, there is some decisions that they will have to do, uh, that are sort of like different than the decisions you make. But I think what's interesting about your approach is you make it sort of like you cleanly preserve the actual get working state.
+
+**Justin:** Whereas, you know, they've, they've come up with an alternative model that sort of like changes, get, um, Likewise, we had, uh, Scott on who was one of the founders of GitHub, and he and his team are making this tool called Git Butler, and they have like virtual branches, um, so you can have like a lot of in progress stuff, uh, that is on stage, but they like exist and different like virtual branches.
+
+**Justin:** Um, again, the problem. Here becomes this, like, if you look at, if you do like get status and the CLI, it's like, Oh, you're on the get Butler integration branch. And like anything that, anything that get tells you at that point, the CLI is just like lies. So, you know, it's like, there's all these trade offs. So I really appreciate the like hard work that you did to like keep the normal get working model sort of.
+
+**Justin:** contend
+
+**Nathan:** all right. So that's super interesting because one of the things I did consider for retcon, one of the early sketches in my sketchbook is I was like auto commits. And so the idea was like, yeah, creating commits takes too long. Like I'm a very, um, impatient person and taking, creating commits takes too long.
+
+**Nathan:** What if I didn't have to press the commit button? And that was the whole idea at that point. I mean of that feature, like. The commit is created as soon as you stage things, like why not? And when you stage more, it amends and yeah, why not? And then, you know, I thought about it and be like, Oh yeah, but that's going to be confusing.
+
+**Nathan:** And also we like pressing the commit button. It's like, it feels like achieving, confirming something. So anyway, I went, I abandoned the idea and I went on to the next crazy idea, which was what if everything was staged? By default, like by default, you could still unstage, but it wouldn't say by default. And I really liked that idea because it removed the, um, the step of staging everything when you're interested in that.
+
+**Nathan:** And then I realized, yeah, but that's going to mess with everything. Like if you use any other tool in parallel with retcon, it's going to be a mess. Um, and so, yeah, it's, I hadn't really thought about it, but I haven't thought about this recently, but yeah, in retcon, I did a lot of work so that it would respect the existing state of things, the existing, um, Workflows you have the, the other tools, the model, the model, the existing model.
+
+**Nathan:** And so, yeah, for the most part, it won't mess with these things. It won't, it won't crazily stage and stage things. We'd, uh, even create branches, uh, technical branches. And you, so you can totally use retcon in concert with your command line, um, staging your command line and committing retcon, the opposite, et cetera.
+
+**Nathan:** For the most part, you won't notice crazy stuff happening. Retcon really tries to be like, you know, removes it's shoes at the door, uh, when it gets into the Japanese home. Uh, that's sort of this feeling, uh, you could. You could get, uh, yeah, and so in some, like, I need, I need to point out, like, in some ways it doesn't do that.
+
+**Nathan:** Um, when you rebase in Retcon, like when you're on ASTRAE, it doesn't use the interactive rebase system at all. Like you can't continue it in the terminal at all because it's a completely different way of doing things. Um, and when it sets aside your, uh, your current changes, like when you're, um, When you resolve a conflict, like your current working directory, it's preserved, but like, it's preserved in retcon memory, mostly, uh, so you won't be able, it's not a stash.
+
+**Nathan:** So I'm saying like, it's not an actual stash, but mostly, mostly it tries to respect your, um, the environment, this, that environment.
+
+**Andrew:** Yeah, that's, that's nice. And it allows you to like not have to build the whole world because like most get tools have to build everything from the start to be like a real contender to be a replacement in your workflow. Whereas this is like, there's one part of get that kind of sucks. Kind of sucks. And all the other tools to, uh, its own tool makes a lot of sense.
+
+**Nathan:** that's a good point. And actually that's doubly relevant here because that is something that was, uh, alluding to, um, at the start in retcon basically. Every feature has to be built on the virtualization engine. Um, like for a rebase, I can't use Git's rebase because if you want to rebase while paused, Git will say, no, there's a, um, there's a conflict.
+
+**Nathan:** So, Repcon has, has its own rebase logic, like it, that it can run there. And every single feature, even just displaying the current branch name, well, when you're rewriting history, the head, Is, you know, it's a detached head and you, you've checked out, sorry. When you're paused, when you're paused, you check out an old commit.
+
+**Nathan:** And actually this is what happens in the command line. Like he will show you like the path of the commit, which is not helpful at all. You don't care about that. You want to be like, Oh, I'm rewriting main. So it still shows main. So in the retcon in the, in the. Branch list, it'll still show main because it's not showing you the physical head.
+
+**Nathan:** It's showing you the virtualized head. And so every single feature of Retcon has to be sort of rebuilt. This is one of the things that slow me down, slows me down. Uh, that, yeah, I have, whatever I add, I, I can't use much of the original Git logic, or at least I have to build a wrapper around it to properly inform it of the actual state of things.
+
+**Nathan:** So it is very useful for Retcon to, yeah, respect your existing workflow, and as you say, that allows me to not have to reimplement the world.
+
+
+#### [00:50:22] The Future of Source Control
+
+**Andrew:** So wrapping up here, we usually like to ask a future facing question. And for you, I want to ask you, what do you think the future of source control looks like? 
+
+**Nathan:** That's a good question. It's interesting, because Git is, is there, right? Git is, everyone uses Git, not everyone, like game developers don't, but It's just, it's like the default, there's a monoculture sort of monoculture of Git. And it's not a bad thing because Git is really good. Git is an open source, Git continues on evolving. Um, I don't know, right now it's hard to imagine anything replacing Git, but I guess that's always the case.
+
+**Nathan:** Like you always have this one thing. It's hard to imagine anything replacing this and then it gets replaced. I don't know. So far the approach, like, Oh, also the thing that, that, that's It's the ecosystem. I mean, we have get hub, of course, but we have get clients. There's one called retcon. If you don't know, it's pretty cool.
+
+**Nathan:** Uh, and all these things, they, uh, yeah, they, they add value to get. So it would be pretty hard to replace. If someone wants to replace it, it was to replace it. It would have to be really different. At the same time, I guess there's, I mean, there's so much to be unhappy about with Git for all the good it is.
+
+**Nathan:** Like Git is incredible, but also there's so much to be unhappy about. Um, yeah, I guess that's possible. I guess that's possible. And when I started using Git, no, the first time I heard about Git, it was a colleague and we were using, uh, from a colleague we were using SVN at work. But he was using an adapter.
+
+**Nathan:** He used git commands basically, and git concepts on top of SVN repo. Maybe something like that will happen on top of it. Yeah, it's actually possible.
+
+**Andrew:** Yeah, it's, uh, it's fun to think of all the apps that might come of like what you're doing, where you're kind of building on top of get and going the extra mile that they might not need to, or want to
+
+**Nathan:** Yeah. Yeah.
+
+**Justin:** I could, I could totally see Git just becoming the sort of infrastructure where the model is retained and the services are retained, but like, like what you're doing and like what a lot of other products are doing is like the UX just changes on top and how we interface would get just like fundamentally changes, but the things that are under the hood just kind of persist.
+
+**Nathan:** And we probably have a lot of examples of that in other areas, like the web and stuff like that, where the, the core state of as the compatibility, compatibility layer, but then yeah, higher level abstractions are built on top. That would be 
+
+**Nathan:** cool to see.
+
+**Andrew:** Yeah. A set of good primitives gets you real far.
+
+**Nathan:** Yeah, for sure.
+
+**Justin:** indeed.
+
+**Andrew:** Cool. 
+
+
+#### [00:52:47] Wrapping Up and Final Thoughts
+
+**Andrew:** Well, that wraps it up for our questions for this episode. Thanks for coming on and talking about retcon, Nathan. This I'll definitely be using it when I want to reorder commits. So yeah, thanks for talking to us.
+
+**Nathan:** Thanks.
+
+**Justin:** Yeah, thanks Nathan. And you know, congrats on the launch. Uh, that's huge. Uh, the tool looks awesome. I'm excited to, to give it a try. Uh, yeah. And so for the listeners who want to give it a try, you can go to retcon. app. That's R E T C O N. app. Cool. And thanks for joining us. 
+
+​ 

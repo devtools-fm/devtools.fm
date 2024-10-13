@@ -1,0 +1,417 @@
+---
+title: Kris Rasmussen - Figma
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Kris-Rasmussen---Figma-e2pk89r
+youtube: https://www.youtube.com/watch?v=3TcYJafhIeo
+tags: figma, webgl, wasm, ai, design, development, programming, javascript, react, vue, angular, node, rust, rustlang, rust-lang, rust-lang
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we got the opportunity to talk to Kris Rasmussen, the CTO of Figma.
+We talked about Figma's history, the evolution of Figma, and what they see as the future of designer/developer tools.
+We dig deep on what they're doing with Dev Mode and ponder how AI might change the way we work.
+
+- https://www.linkedin.com/in/kristopherrasmussen/
+- https://x.com/kris_rasmussen
+- https://github.com/krisr
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:21] Introduction
+[00:01:50] The Evolution of Figma: From WebGL to Design Tool
+[00:06:38] Web Technologies and Wasm in Figma
+[00:12:48] Ad
+[00:14:14] Challenges of Running Figma at Scale
+[00:18:39] Introducing Dev Mode: Simplifying Design Handoff
+[00:33:35] AI in Figma: Enhancing Design and Development
+[00:46:57] The Future of Figma: New Features and Innovations
+[00:48:46] Conclusion and Closing Remarks
+
+<!-- TAB: TRANSCRIPT -->
+
+**Kris:** [00:00:00] What a lot of people don't recognize is that Figma is like a traditional web application, but it's also like a game engine. Not only are we like using these lower level technologies.
+
+We're also building kind of our own low level In memory abstractions for doing rendering
+
+#### [00:00:21] Introduction
+
+**Andrew:** Hello, welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my cohost, Justin.
+
+**Justin:** Hey, everyone. Uh, we're really excited to have Chris Rasmussen on. Uh, Chris, you're the CTO of Figma. Uh, it's a real great honor to have you here. Uh, Andrew and I have both used Figma quite a lot. We use Figma for this podcast to like put together some of the social stuff. So it's really, really great to have you on.
+
+Uh, we're excited to talk about like what Figma is working on. Uh, but before we dive into that, would you like to tell our listeners a little bit more about yourself
+
+**Kris:** yeah. Um, so yeah, I'm Chris. I've been at Figma for going on eight years now. Um, [00:01:00] I started back in 2016, just a month before we launched our first product. Um, I think, uh, when, when people think about Figma, I think the first thing their mind goes to is a product design tool, which is definitely, um, a good way to think about us.
+
+But, uh, I think a lot, a lot of people miss is that we've been building for the entire product team from day one. And a lot of our new products that we've been launching are evidence of that. Um, so the way we think about it is we're just trying to help people go from imagination to reality or design to production as quickly as possible.
+
+Um, we know it's a very iterative process and a very cross functional process. And so from day one, we've tried to build not just the product design tool, but all of our new tools in a way that makes them readily accessible to anyone in the company so that everyone has a single source of truth for the future vision of their product and they can align together and ultimately get that stuff translated into working production code or production assets that they can consume directly.
+
+
+#### [00:01:50] The Evolution of Figma: From WebGL to Design Tool
+
+**Andrew:** So we were talking to somebody else on the podcast. I can't remember who, but they said that the original demo for Figma was just like a WebGL ball of [00:02:00] water and that it somehow went from that to what we have today. So can you fill us in a little bit on that journey from ball of water to like design tool?
+
+**Kris:** Yeah, that's a great question. Um, you know, honestly, I don't think I was there when that first ball of water was created, but I think what people are referencing is, um, Evan, uh, who was the, is the co founder of Figma, um, and was the CTO of Figma, um, before, uh, Dylan and Evan got started, Evan was doing a lot of, prototyping with WebGL when it first came out.
+
+And Evan's a brilliant graphics programmer and he created this, uh, this like, uh, you know, simplified fluid dynamics simulation, uh, in WebGL with a ball that you could displace, uh, you know, a 2D fluid field on top of it. Um, and it was really cool. And I think it just gave people like a glimpse into what browsers were now capable of.
+
+And I think that's ultimately what gave Evan and Dylan even more confidence to pursue bringing a Professional design tool into the browser, which way back when like no one ever thought it would be possible myself included
+
+**Justin:** Yeah. I mean, I'm reminded of the time before [00:03:00] Figma, uh, when Sketch was the primary design tool that like designers that I know interfaced with and, you know, native Mac app, they, they really sort of focused on performance and sort of this native quality as the thing that like really differentiates themselves.
+
+And, and that was, was important and valuable, but I think like the Figma team has shown that. You can get performance and good quality on the web, and also I think unlocked something else that's like really sort of set a different tone in the entire industry, which is like multiplayer and collaboration.
+
+That's now like the price of entry. So, could you talk a little bit about your, your sort of, like, strategy, like, technical strategy around, like, collaboration and like, how y'all think about that internally?
+
+**Kris:** Yeah, um, so I guess like first and foremost like we always recognize that we're a professional tool And I think when you're building professional tools, especially like tools that you live in eight hours a day five days a week or [00:04:00] more Um every ounce of performance always matters In particular, when you're kind of designing applications, you want to be able to look at a lot of different ideas and screens all at once.
+
+And so oftentimes, like, the level of performance you need for a design tool, or at least the performance characteristics you optimize for a design tool, are even more advanced than what, like, you're actually going to need when you, Create the production application and only render a single screen at a time.
+
+Um, so we, we knew from day one that we, we had to care about performance, but we also felt like, uh, the design process was a little bit broken. Um, we were still stuck in this kind of world of, you know, almost like print artifacts, like, you know, where, you know, you're, you're creating something and like, you're literally shipping the result.
+
+Um, and you're just like embedding it into, you know, a newspaper or, you know, a simple static website or something like that. Um, and the reality is like design has become so much bigger than that in the context of building digital products, you're not actually even producing the end result. Oftentimes you're usually, you know, [00:05:00] visualizing.
+
+What the end result could be to help bring your team along in the line. Um, and so it's just inherently a much more collaborative and iterative process. And so we knew that we wanted to build, um, an experience that really made it completely accessible to the entire team and got rid of all the friction that I think a lot of us were feeling Um, back in the early, uh, 2000s around, you know, having to go through this very kind of complex coordination process around handoff and, you know, trying to understand a lot of the, the intent of these, these mocks and designs and trying to keep track of how they're changing and what the right version of the file was and stuff like that.
+
+And so I think the. You know, we made the decision to bet on the web very early on. I think it turned out to be the right call way back then. I think there are still a lot of people, even when I joined that were second guessing whether or not we would be successful on the web. Um, to be honest, stigma wasn't always, uh, you know, super, super fast.
+
+We had some A lot of different edge cases we had to like optimize for over the years as, as our customers kept pushing us to our limits. Um, but I think we, we showed [00:06:00] the team and we showed the world that, um, even though there are some limitations to the abstractions that we build on, on the web, those weren't, um, the actual barriers to performance.
+
+There was ways to change the structure of the problems and the nature of the problems to work around those sort of relatively minor limitations in retrospect. Um, but yeah, and ultimately I think building for the web was like the strategy because, uh, everyone knows how to share a URL. Um, we made sure that viewers were free so that, you know, you never had to worry about whether or not someone could view your file.
+
+Um, and it just made it that much easier to, to get everyone on the same page and actually build an experience not just for the, the professional designers, but also for all the other professionals that they're working with to bring their ideas to life.
+
+
+#### [00:06:38] Web Technologies and Wasm in Figma
+
+**Andrew:** So speaking of web technologies, like, as you said, to build a product like Figma, you need a lot of things from the browser and those things were like either very new or just coming into existence when Figma was coming around. Uh, one of the things that you guys, I think are kind of famous for is like, you guys use Wasm in the browser, but, uh, I don't think many people know where like the [00:07:00] line is on that.
+
+So like, how did you guys use Wasm? And like, have you, have you used it in more in new, interesting ways since then?
+
+**Kris:** Yeah, um, so yeah, it's kind of like a fun story. Um, so I think in the, in the very, very early days, uh, Wasm didn't exist. Um, and there was this thing called ASMJS, which is like this kind of subset of JavaScript that you could use that browsers like would run in a more Wasm like way, more like as if they're running some sort of virtual machine code.
+
+Um, but that had like, You know, it's on set of limitations and wasn't as efficient as wasm at the time. Um, so, and then web jail was still like relatively nascent when I think the company was founded, um, and, and also evolving. And so actually in the very early days of Figma. Um, the team actually, uh, built their own programming language to transpile, uh, the application logic and the rendering logic to different platforms, including the web and also native to sort of hedge their bets.
+
+Um, but by the time I joined, it was pretty clear that these lower level browser [00:08:00] APIs, even with ASMJS and just WASM, uh, sorry, WebAssembly APIs, Not, not WebAssembly. WebGL at the time were sufficient to build a pretty compelling experience. And so, by that time we went all in on the web and we kind of got rid of the, the transpilation step and the intermediate language and what not.
+
+But yeah, I mean, I think what, what ultimately happened is, um, uh, as we continue to kind of push them to the browser and other people in the game industry and other areas did as well. Um, the, the people developing the browsers, um, we're also trying to like enable those sorts of new use cases on the web.
+
+Um, and we owe a lot of like credit to the teams, you know, at Firefox and Chrome and everywhere else that was, was pushing these limits. Um, but ultimately when Wasm came around, it wasn't that hard for us to just, you Change our tool chain to compile to this new target and start to explore the potential there.
+
+Um, and so we did that really early on. And, um, at first it actually. Had some trade offs. Like, uh, I think, um, not all browsers were like caching the compilation artifacts. There was some [00:09:00] additional initialization time required relative to what we'd been doing before. Um, but we worked with the companies, um, who are developing these technologies who also happen to use our software.
+
+Um, and, uh, and, you know, a lot of other people did too, and ultimately now it's like in a position where it works extremely well for our use case, and we're very happy with it, but our use case is pretty unique. I don't think everyone needs to be using lasm all the time. Um, it really depends on what you're trying to do.
+
+And also, like, what other libraries. You're trying to consume. So in our case, um, we consume a lot of the same lower level, like, um, font shaping libraries and whatnot that operating systems and browsers themselves consume. Um, and browsers didn't provide the right abstractions. And I don't think they still do to directly access that type of font information.
+
+And so, um, it's actually very, it's much easier for us to just consume those C libraries and then, you know, compile them to Wasm than it is to rewrite them. So that's another motivation for it.
+
+**Justin:** Yeah. Another big use case there was the plugins. Uh, I know that like [00:10:00] originally when y'all were designing plugins for Figma, There's like a, generally a hard problem if you have like a, you know, shared application that's like collaborative and you want people to run code on it without like, you know, a bunch of security issues, I think generally you're looking at realms.
+
+Uh, I'd sort of like read some of the early articles about like, you know, trying to build, uh, the, the plugin infrastructure. So it was like realms is like a way to like, Isolate JavaScript, uh, and it's sort of like on ram or whatever. And it turns out that like, that wasn't ready yet. And they, you know, I'd like found some issues and ended up going to Wasm.
+
+Do you, do you recall like much of that journey and like, have you had learnings from the plugin ecosystem so far?
+
+**Kris:** Yeah. Um, yeah, that was a really interesting time. I think, um, like to your point, I think a lot of people. Nowadays, take it for granted that it's like totally possible to allow third party developers to run custom code inside of the same kind of web process that your application is running and not get access to sensitive data and [00:11:00] whatnot, or not totally screw up your application.
+
+But we knew that like we wanted to provide an extensibility model. Um, sketch had a very vibrant plugin ecosystem at the time that we were developing and, um, we knew that we needed to be competitive, but we also had learned that there was a lot of problems with the model they had created and that they had exposed their entire internal kind of object model, um, to third party developers.
+
+And as a result, every time they updated their application or their own. You know, their own kind of object model, um, a lot of plugins were breaking. And so we want to be really intentional around what we expose to third party developers, both from the perspective of security, but also from the perspective of like ensuring that they're, they're binding to the interfaces that we actually can maintain over time.
+
+Um, and so, yeah, we explored realms, um, which had some issues at the time. I'm not actually up to speed on where it's at now, just cause we, we don't really need it anymore, but, um, ultimately what the team did, which I think it just, it still sounds so crazy. Is we basically found a small JavaScript runtime.
+
+That we could compile, uh, [00:12:00] into a LASM, you know, executable inside of our, uh, address space. And then we expose scripting languages, er, scripting interfaces, um, via that runtime, just like you would in developing a game engine. Um, and essentially use that embedded JavaScript runtime that's running inside of, effectively, a JavaScript runtime.
+
+Um, as a sandbox, uh, in order to really control what these third party developers could do, um, with, with customer files and, and limit access accordingly to, to build trust and ensure that people could install things without worrying too much about it. Um, so yeah, it's, it's amazing in retrospect that all of that worked out and that, you know, it's as, as fast and performant as it is, but, um, yeah, it's, it's credit to the team for really taking their time to look at the solution space and pick a, pick something pretty bold that, uh, ultimately I think contributed a lot to our success over the years.
+
+
+#### [00:12:48] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for this week's episode, MUX. MUX is an awesome platform that makes adding video to your product super easy. Video is one of those things that it [00:13:00] seems simple at the surface, but as you dig more and more into it, you realize it's a lot of infrastructure.
+
+Whether it's uploading, storing, streaming, or even playing the video, there's a lot of hard technical engineering challenges. And a lot of stuff for your team to own. That's where Mux comes in. makes it incredibly easy to build a platform that has video.
+
+One of the things I like to highlight on this week's episode is they have a new thing called Player. Style.
+
+When building a video player, there's lots of things you have to worry about. Playback speed, hover thumbnails, sharing picture in picture, styling all the native HTML elements. There's just so many things to worry about.
+
+That's why Mux came out with a new thing called Player. Style. Player. Style is a front end component for playing back video. And then styling it however you want. It's super nice. It's feature packed. You can make the thing look like any player that you want, really. I can't see why you wouldn't want to start [00:14:00] with something like this. And that's coming from me, the person who actually built and maintained Descript's video player. So if you want to save yourself a bunch of time and add video to your platform super easily, I would over to mux.
+
+com right now and check them out. With that, let's get back to the 
+
+
+#### [00:14:14] Challenges of Running Figma at Scale
+
+**Andrew:** Um, so running, uh, an app as big as Figma must come with some challenges. Like you serve countless customers, you have collaboration, which has to happen on the backend. So what, what have been some of like the challenges of deploying and running Figma at scale?
+
+**Kris:** Yeah, there there are like a lot of bespoke challenges I like to think I've had like a Fairly diverse career and seen a lot of different architectures and stuff and I feel like Figma is one of the most unique What a lot of people don't recognize is that Figma is like a traditional web application, but it's also like a game engine And not only are we like using these lower level technologies.
+
+We're also building kind of our own low level In memory abstractions for doing rendering and, um, managing the like file format and scene [00:15:00] graph. We're not always using like standard DOM and whatnot. Um, and so, um, We have like sort of like the same set of challenges than any kind of large scale web application would have, but we also have a lot of the challenges that like building like a game engine like unity or unreal would have in terms of or or an operating system or a browser or something like that.
+
+Um, and so we have like, we have like really, we always like to say that like, it doesn't. Like a lot of people, I think traditionally have thought of like back end as being like harder problems because like you're, you know, even in simple applications, you can run into these like complex scaling problems.
+
+Um, but at Figma, I think like some of our hardest problems are actually on the front end. Um, and we also have some pretty challenging back end problems. Um, so like the kind of problems we run into is, um, on the front end, uh, we, we have to create this experience that, um, You know, feels like a native desktop application.
+
+We don't ever want to like slow down someone's ability to go from an idea. To a visualization of that idea and by waiting on a server or something like that. And we also want to make [00:16:00] sure that people can co create in real time. Um, what really helps to like maintain that single source of truth and not have diverging explorations.
+
+Um, and to do all of that we, we have to basically load a lot of things at once. And, um, you know, make sure that they don't use too much memory or too many system resources and slow down the experience as a result. And so we end up with these massive files with, you know, hundreds of different pages and, uh, you know, complex dependencies and relationships because.
+
+Uh, a lot of like what we do is we, we bring in kind of abstractions from programming languages into the design tool ecosystem, um, and all of these things have to be kind of run in a way that ensures that they feel local and they feel immediate. So the user is never getting slowed down, waiting for, you know, a slow network or, um, Um, you know, waiting for someone else's change to propagate to their machine.
+
+Um, and so it's just a lot of like, you know, just like, you know, traditional engineering optimization work. Like I like to joke that, you know, there was this meme in the Silicon Valley that like, well, you know, why do people ask these weird algorithm questions [00:17:00] and we definitely had some, but they were like literally the things that we had to work on at Figma every day that are super relevant.
+
+And I think a lot of these questions came from people building early operating systems and game engines and browsers and whatnot. Um, and so in our case, it was actually very relevant to what people would do. Um, and then I think the other thing that I think is easy to kind of miss is that. Everything we do in Figma essentially operates like this eventually consistent distributed data store.
+
+Um, so each Figma file is being simultaneously like, you know, checkpointed in our infrastructure and then also streamed as quickly as possible in real time to all the other connected clients. Um, and it means that not only do we have to build all of this, like kind of real time infrastructure and have extremely high write throughput and whatnot.
+
+Um, but also every single feature we build. You have to kind of reason about it as like a distributed system, um, like this eventually consistent system. And so a lot of the like, you know, the basic product features that I think people take for granted, um, which are, you know, inspired by programming languages are kind of built in a way [00:18:00] where They actually need to be like, or work like a programming language, which I think people appreciate is kind of complicated, but also like work knowing that they're going to be streamed, you know, through these network connected devices and, and have to come kind of make sense and be eventually consistent and correct when they eventually kind of recreate themselves on different people's computers.
+
+So those are the, the kind of like bespoke challenges. I think that we, uh, we run into at Figma that a lot of people don't always realize.
+
+**Justin:** Yeah, I can't, I can't imagine the sort of like scale and complexity of that. Uh, just like the rendering problems alone. It's like you just want to like render sort of like what someone's seeing. But, you know, as they, as they scroll, you want it to be performant, responsive. It's, it's a wild problem. 
+
+
+#### [00:18:39] Introducing Dev Mode: Simplifying Design Handoff
+
+**Justin:** Um, maybe let's switch gears a little bit and talk about some of the, the sort of like new features and, uh, new work that you're doing.
+
+Um, so you'd recently announced, uh, dev modes. Uh, so what is dev mode and how does it make handoff, uh, simpler?
+
+**Kris:** Yeah. Um, so. As I mentioned earlier, I think like [00:19:00] early on in Figma's history, we knew that like our end users weren't just professional designers. There were also developers that they work with and product managers and everyone else around them. And, uh, and so early on, we actually did have some, some pretty basic inspection features, um, that enabled developers to go into a file.
+
+And, uh, and start to kind of look at things from the perspective of, like, what a developer actually needs to consume. So, for example, like, um, rather than just kind of visualizing colors in the properties panel, you could actually see the hex code for colors, or you could see some basic CSS snippets and whatnot.
+
+Um, and we knew that, that people found that functionality valuable. But we also knew that we needed to go a lot further to really kind of deliver on this promise of helping people go from design to production as quickly as possible. And so the sort of initial premise of DevMode was like, we needed to create a mode in Figma that could really, truly be tailored to the needs of productionization of designs without compromising on the core design [00:20:00] experience without, you know, Cluttering the UI are taking things away.
+
+Um, and so we launched dev mode with that premise and a bunch of improved features for developers, including the ability to very quickly find parts of a very large design file that are actually ready for development. So we have this feature called Ready for Dev, so designers can tag things. Um, and then developers are taken into like a curated view of the file that shows them exactly what they need.
+
+Um, and then we've also really like upleveled all of our inspection features to, um, generate code in different languages. Um, and also built out, you know, yet another kind of plugin extension framework, um, for developers. So the developers could act access, access plugins. Um, which previously were only available to people who had edit access to files.
+
+Um, and those plugins do everything from, you know, add new kind of forms of, um, code gen to doing full screen code gen, um, to integrating with other development tools, um, uh, like, you know, Jira and whatnot. Um, [00:21:00] and then we also built a sort of parallel view for developers inside of visual studio code so that you can get all this information contextually and we can start to surface things as you're working on the code rather than you having to context switch between these different experiences.
+
+So that's, that's how DevModes started and it's evolved a lot over the years. And we have like big plans for it in the future too. We're still in it's, I think it's kind of basically still in its infancy. Um, but, uh, some of the new stuff we're really excited about is one of the like kind of. Key pain points that a lot of teams face is they put all this effort into building these design systems and the design systems.
+
+I think like as engineers, we all kind of know, like we've had code libraries, shared code libraries that, you know, created these reusable UI elements for probably decades. Um, but the idea of like a design system and a design tool didn't really catch on until the last decade. And, um, one of the benefits beyond just like making designers more efficient and, you know, helping them kind of get ideas onto.
+
+Into a [00:22:00] format that other people are active faster is that it actually creates this sort of higher level abstraction for communicating with engineers and reusing existing code and ultimately creating more accessible, consistent experiences across your products. Um, and so we've been, uh, working with a number of our customers who had been building kind of internal prototypes and internal tools to connect their Figma design systems to code so that.
+
+It's very clear that like there is already code that your team should be using, right? Because sometimes like we, we, we build these like complex engineering design systems, but then we struggle to get people to use them. People like end up recreating the same button over and over again. You get all this accidental complexity and one button's accessible.
+
+The other one's not or whatnot. And so, um, now with dev mode, we have this ability in code to configure the mapping of your, your code libraries, like say your kind of Swift UI framework or your, Your react frameworks, um, and the, the corresponding design systems and Figma so that when you're inspecting files, you can see, um, not just which code component to use, but exactly how to use it to recreate the exact [00:23:00] same prioritization that you have in the design file.
+
+Um, and this has been something that a lot of our customers have been super excited about. And I think it's just like the beginning of thinking about how to help people kind of go from design to existing code. faster, which I think in some ways is more important than generating new code. Generating new code isn't always the hard part.
+
+It's actually a fairly mechanical process. The hard part is generating code that reuses the code you already have. So you're not creating a lot of accidental complexity and duplication.
+
+**Andrew:** So like in that, if I'm creating like a menu for my design system, what, what is it like to hook up the menu to the menu code? Like, can I like render a menu and then like Figma somehow figures out like what the components might be, or is it like all manual and I'm just like adding links and like docs directly into Figma?
+
+**Kris:** Yeah. So that's how we started. So when we first released dev mode, you could like attach links to components and they would be accessible anywhere instances of the component was used. Um, but Code Connect takes that a step further. So, um, it's, it's fairly easy to understand in [00:24:00] basic. Um, The way it works is, uh, we basically, um, provide a bunch of kind of framework specific language specific, um, code as configuration libraries, um, so that you can go into your code base and you can create these, um, these code, connect configuration files that essentially, um, more declaratively show us how.
+
+A Figma components structure, like, you know, the, the properties and parameters that you pass into it and the code component structure properties and parameters you pass into it, map to one another so that when we see like an instance of, um, like a menu or something in Figma, we can figure out the corresponding.
+
+Code component for mobile or for web, um, and also the corresponding set of parameters you need to pass into that code component to recreate the same kind of, uh, you know, state and configuration and look and feel, um, so at a very basic level, it's a, it's a convenience layer to build a mapping from like, uh, Figma component to code output, um, like a framework specific code [00:25:00] output.
+
+Um, what, what I'm really excited about, though, is that it's manual right now. And even, even though it's a little tedious, I think you get pretty good economies of scale out of setting it up. But I think it can also be automated over time. Um, and I think there's a huge opportunity to just more automatically.
+
+Go from, you know, whatever's in your design tool to your coding environment and help to reconcile these things and even give you more visibility into where there is duplication and where there's opportunity for consolidation.
+
+**Andrew:** Like if this code mappings happening, it feels like the next natural step is like, okay, we can map the design to code, like, why not just go from like design to like mostly complete app? Like, is there a future there? Because I know there's like, there's countless companies that try to be like Figma, but it actually makes an app for you.
+
+**Kris:** Yeah, yeah. So we definitely think there is a future there, but we don't think it's quite as like black and white as I think, you know, it. It's natural to want to believe, um, I think just, just like with like the way like a lot of coding AI tools are being adopted. I think that you [00:26:00] definitely, um, want to help kind of streamline parts of the process that can be, um, more easily streamlined.
+
+Um, but there's always going to be a level of, um, actual understanding that an engineer has about the broader system you're connecting to. That frequently is not going to be available to any sort of underlying mechanical transformation or AI model or something like that. And so you got to do it in a way where It expedites the process, but also does it in a predictable way that you can still control and fine tune and adapt.
+
+And so for us, like, um, CodeConnect in its current form is, is essentially like a basic primitive in that process. So it's like, um, a way to, uh, more explicitly view the mapping. That the system has and potentially will come up with in the future and then fine tune it accordingly. So you still have control over that output.
+
+Um, and then, of course, the next step from there is now that you have this, you know, these, these mappings, um, it's essentially like if you think about in modern AI terminology, like you have, you have a lot of [00:27:00] information that provides a very good kind of rag based workflow. To find the right context to, um, continue to kind of streamline the conversion and remove a lot of the tedious aspects of the process of translating from this design medium to this code medium.
+
+Um, the, the thing that I think people underestimate though, is that, um, it's not just about direct translation. There's definitely a lot of things you can just directly consume from a design tool in code. But oftentimes, um, the design process is like optimized to build alignment more so than to kind of.
+
+Build explicit details. And, uh, what a lot of engineers are doing, I'm sure you all have experienced this is, is trying to actually infer that intent from not just the design file itself, but also what you know about the code base and the company and the designer you're working with and whatnot. Um, and so that's why oftentimes, like, you know, going all the way to working application is imperfect because there's, there's missing context, right?
+
+The tool, um, even if you could encode it in the tool, people don't always take the time to [00:28:00] encode it in the tool. And so I think the other area we're really excited about with dev mode and the design tool in general is. Figuring out how to help people bring these sort of designs closer to the level of explicitness that is required to correctly implement them in production.
+
+Um, and I think that can happen on both ends of the spectrum. It can happen magically, like when the code's getting generated, but it can also happen magically when you're designing so that it's more easy for you as a designer to explore how things look in different states and different form factors and whatnot.
+
+And so that's, that's an area that we're really excited about too.
+
+**Justin:** Yeah, there's definitely so many aspects of design that are hard to codify or like very tedious. So, I mean, Having worked with a lot of designers, it's like, they're not going to design a component or a view for like every break point, you know, they're like, okay, here's like the largest, here's the smallest, it's like, figure it out kind of like, or, or you have a design system that you fall back on or some like design guidelines or something, or, but there are like a lot of like pretty [00:29:00] tedious, if you're going to do everything.
+
+And then there are like other things that are hard, like. Motion, like doing animations and designing for animations. Um, we had, we did an episode recently, uh, with one of the founders of Rive, uh, who were doing really cool things as an animation app and the browser. It gives me like Figma vibes, but that's another.
+
+Like challenging aspect. I know Figma does a lot of like has a lot of animation tools as far as like transitions between visual states, which is a huge thing. But have y'all thought like about like motion as a thing at all? Or is that just something sort of like kind of like separate to the sort of core goal of like figuring out what the like base design is?
+
+**Kris:** Yeah, I think, I think it's definitely an interesting space, um, and, um, I'm a fan of Rive too. Um, I think that ultimately we've been kind of focused on meeting our customers where they need us to meet them. Um, but we also aspire to, to kind of going further over time. So it's something we pay a lot of attention to [00:30:00] and, you know, we, we're constantly adding new features to our prototyping experience to enable richer animating as well.
+
+Um, but yeah, I think, I think like similar to kind of drive, I think that there's just this opportunity to basically make it so that when you can fully encode something and it's natural to do so in the tool versus in code, you can more directly translate it to code or consume it in code. Um, I think that like, it's, uh, we're oftentimes limited by the file formats we can export to.
+
+Um, and there's a lot of opportunity to kind of continue to uplevel that pipeline of export so that things that are already fully, uh, fully Explicitly represented in the tools can actually be just translated directly to the coding environment without any additional kind of manual steps in between.
+
+**Andrew:** ~~Um, ~~so, uh, Dev mode has been been out for a while now. It's been about eight months. Uh, how has it gone? Have people responded to it? Well, have like some of your original theories, like not panned out how you thought they would.
+
+**Kris:** Yeah, it's gone extremely well. Um, we couldn't be more excited about the reception and the adoption. [00:31:00] Um, you know, we just came off of, uh, one of our strongest years ever. So I think this is, uh, it's, you know, a lot of it is attributed to dev mode. Um, and I think what's, what's really exciting is like, it's, it's opened up kind of new conversations and new opportunities within our customers to learn more about what they actually need.
+
+Um, to, to bring the best ideas to life faster. And so, uh, we were just like excited about all the new things that we hadn't even thought of last year that we now realize they're just like obvious opportunities to continue to improve the overall product development process, um, for the customers that we already serve.
+
+And, um, it's really cool to just like, You know, have a seat at that table and be able to talk to engineering leaders now as well, and really kind of make sense of what everyone's trying to do. Um, one of the things I think that, uh, we've come to kind of fully internalize is I think a lot of people have a tendency to conflate design with design tool.
+
+Um, but I like to think of design as a process, and it's not just product designers who are designing, [00:32:00] right? Like, as you mentioned, oftentimes there's, there's edge cases or important aspects of a design that aren't fully, uh, represented, you know, when, when the developer comes into the picture. And I think as developers, we all have to kind of reason about those things as well.
+
+And we're sort of designing on a different end of the spectrum with a different set of concerns. Um, but I think ultimately like our, our. Our job at Figma is to, to really help people go through that entire process as fluidly and seamlessly as possible. And also make sure that people are strongly aligned as they do that.
+
+Cause oftentimes, like the hardest thing about bringing an idea forward is just having the confidence and conviction and courage that you actually know you're doing the right thing and that other people are bought into it as well. So I think there's a ton of opportunity now that we have developers, um, really, really deeply engaged with our product and actually sending their own set of feature requests and ideas and opportunities to us.
+
+**Andrew:** Yeah, I could imagine just the amount of plugins, uh, that developers are writing has kind of just exploded now that a lot more developers are looking at the tool.
+
+**Kris:** Yeah, that's exactly right. We see customers like building kind of bespoke code gen use cases and using [00:33:00] us like for like alternative kind of design tooling needs where they'll, they'll kind of inspect our file format and translate it to some radically different use case, like, you know, potentially even like a CAD design type use case.
+
+So it's, it's just cool to see the different ways people are using that new extensibility mechanism.
+
+**Andrew:** Yeah, here, here at Descript, we've been doing something very similar where we generate all of our design tokens from a few files in Figma using the export formats that you guys have.
+
+**Kris:** That's great. That's awesome to hear.
+
+**Justin:** Yeah, when I was at Oxide, we were doing the same thing. It's like generating a lot of, uh, design system stuff straight from like Figma tokens or whatever. It was, it was a core flow.
+
+**Kris:** Very cool.
+
+
+#### [00:33:35] AI in Figma: Enhancing Design and Development
+
+**Justin:** So let's, uh, let's switch over and talk a little bit about, uh, somewhat of the elephant in the room. Um, You can't, like, exist in this industry right now without talking about AI.
+
+And we've already sort of, like, touched on some of the cases, right? You were talking about, like, generation, generation not being just, like, a one shot process, being this, like, process of, you don't want to just, like, generate code. It's, like, you want to sort of, like, meet developers and designers where they're at [00:34:00] and sort of, like, enhance their workflows.
+
+Um, so given that, like, AI is, like, taking up and LLMs have taken up such, so much of our mindshare now, how are You internally thinking about like where AI has a place at Figma and how it can be leveraged to sort of help people in their design process.
+
+**Kris:** ~~Um,~~ I think there's just, I mean, because AI is at the basic level of technology rather than a, you know, a product in and of itself. I think there's just so many different ways you can apply it, especially in the context of, um, the, the ecosystem that we're creating in Figma. Um, there's a couple of different, like, kind of extremes that we, we tend to kind of anchor ourselves on just for the sake of discussion and alignment.
+
+Um, Um, I think like, uh, Noah, our head of design at our config a couple years ago, sort of laid out this kind of framework of thinking, um, around like, you know, using AI to lower the floor for design so that more people can process can participate in this design process. And as I said, it's not just about.
+
+You know, using the design tool. It's also about figuring out how to bring designs to life and, you know, handle all the [00:35:00] different responsive edge cases and whatnot. Um, I think we can also raise the ceiling of what people can create. I think like Figma is a testament to the fact that like differences in degree.
+
+Can yield differences in kind. Uh, and we've been able to basically really, um, focus on, you know, these, these key performance optimizations and, you know, making things available in the browser so that it's that much easier to share. And you see like different ways that people now use, um, our tool and different use cases, as we just talked about.
+
+And so I think, um, AI can, can really kind of like help to kind of raise the bar for, for the, the kind of creativity that, that professionals can express and the, the kinds of ideas they can. You know, bring to production. And I think even if you're just like speeding up that process, ultimately you're going to enable more iteration and you're going to enable better experiences as a result.
+
+Um, so those are kind of like the, the, the two extremes that I think are interesting to anchor on. I think the, like, as we were talking about before, I think there's a, there's like a little bit of nuance too. So I think like, you know, on the base level, you think AI, okay, it's going to like [00:36:00] enable me to, Make something out of a prompt, but as we just talked about, that's not, that's not actually, uh, what professionals want, right?
+
+Like it's, it's kind of like, you know, at the end of the day, um, you can only be so expressive with natural language. Um, and I think like for, for those of us who are engineers, like we know that at a certain point when you're pair coding with someone, you just want to grab the keyboard and, and change things directly.
+
+You don't want to have to keep telling people how to change things. Um, I think in the same way, you don't want to just keep telling this model, like, no, no, you don't, you didn't get what I said, I really meant this thing in the top right, or whatever. Um, so I think that, um, we're like really excited about exploring for our own use cases.
+
+How to marry the best of these new input modalities that the technology unlocks, like natural language, you know, maybe voice someday and whatnot with like existing, um, interfaces and direct manipulation. And in, you know, trying to give people the choice so that, you know, maybe when you're just kind of roughly trying to visualize someone else's idea, you can ask the tool to kind of help you get started, but do it in a way that is consistent with your brand and your identity and, you know, your existing code base.[00:37:00] 
+
+But then you still can just like, you know, grab the keyboard or grab the mouse and, you know, go click on the thing and like drag a color wheel and figure it out, um, and build up your own strong mental model. Um, so you can reason about it better for yourself rather than relying on some, some random model to do so with the context you give it.
+
+So I think there's just a ton of opportunity, um, for us. And, um, we're excited about all aspects of it. I think we're excited about helping people explore the design solution space faster. Um, we're also excited about how to help, um, designers do, do more of the productionization, uh, inside of the tool. And, and then engineers basically consume that more directly.
+
+So basically trying to figure out how to infer a lot of the, the kind of implicit context that we all take for granted. That actually takes a lot of time and it's very tedious to make explicit.
+
+**Andrew:** Yeah, I like how you guys are approaching it. It's like, Yeah. A lot of AI tools are like one shot. I'm just going to generate everything. I have no ability to like go in and tweak it. And like, you wouldn't want something like that in Figma and you guys aren't just stopping at like [00:38:00] generation. You're also like the, where I find AI features like really sing is when you don't have a prompt in like AI is away from your mind.
+
+So an example of that is common problem in Figma. You make this huge design, you go look at the sidebar and go, wow, I'm never going to be able to organize that into something a human can understand, like using AI to organize that I think is such an awesome feature. Cause it's like, that's not work I want to do as a human, but it's work that I need to be like fully expressive and productive in this tool.
+
+So I love all those little tiny features that are more like baked into the UI rather than just like, here's a box and we'll do stuff for you.
+
+**Kris:** Yeah, that's great to hear. Yeah, no, definitely. I think, um, we've been trying to think through like, how do we balance what these models can do off the shelf, um, that are immediately valuable to the existing workflow of our customers with like, um, what are the capabilities that we need to help these models learn or, um, grow into in order to really unlock kind of Figma specific, [00:39:00] um, power ups.
+
+Um, so, uh, we're working on both fronts simultaneously.
+
+**Justin:** Are there any, uh, specific implementations or features that are either shipped or in progress that you are particularly excited about?
+
+**Kris:** ~~Um, ~~I'm also excited about the, the layer renaming feature that we just talked about. Um, I think that, uh, it's just such a simple thing that goes a long ways towards just actually doing something that a lot of people don't like doing, but is, is actually very helpful. Um, I think that, uh, there's work we're doing to, to automatically, uh, explore how to like set up CodeConnect and things like that as well.
+
+Like so many people are excited about CodeConnect in our community. Uh, I just went to this conference, this developer conference in Berlin a couple of months ago, and, We actually had like the longest booth at the conference, the longest line to our booth, um, which was really cool to see. We didn't expect it.
+
+Um, but at the same time, like it still takes time to set up and we want to try to make that a streamline and seamless as possible. And I think there's, there's a lot of opportunity to do better there.
+
+**Justin:** Sort of like a last sort of like category question here on just like [00:40:00] the implications of AI and like inner tooling. So you started this by saying, you know, it's like, one of the things that we see is like, it can really like lower the barrier of entry is like more people can get in and start like expressing their ideas and design.
+
+So do you think, uh, Like AI and LLMs or maybe even a specific application inside of Figma will be something that sort of like change, changes what it means to be a designer or like how you interface with designs. And, uh, maybe the same for like an engineer, like how you, uh, go through the design process.
+
+**Kris:** Yeah, I think, um, so maybe taking a step back. So I think like one of the things that I, it's, it's always easy to like, kind of imagine what could be, but I think one thing I feel pretty strongly about, uh, is one part of like being an engineer is having sort of the persistence and the, the desire to learn specific technologies and specific tools.
+
+Um, and those tools are, you know, [00:41:00] oftentimes changing year over year, decade over decade. Um, and I think like, um, Even within like the, the field of like product engineering or front end engineering for that matter. Um, we've seen like specializations emerge over the years. And I think on some level, um, some of us have been like a little like uneasy with it.
+
+It's like, why, why is this like specific new, like framework, you know, getting like higher job offers than this other framework, which ostensibly is like, you know, requires the same level of aptitude and expertise and engineering knowledge. Um, And so I think like, you know, there's a reason for that. Just like, you know, some of these things are valuable at the time and finding someone who, who has that expertise already is, is super valuable.
+
+Um, but I think like one of the things we're going to see, uh, is, Like that sort of expertise is easier to come by by virtue of these models, helping us find it, helping contextualize it, helping translate things more rapidly. Um, and you could say like, oh gosh, that's like a bad thing. But like, the reality is like, that was already happening.
+
+Like very quickly, those, those [00:42:00] like specific roles, like maybe like a, you know, early days of mobile, like mobile engineer that they like the, the value of being specialized decreased, um, as You know, it became more normal. Um, and I think, um, on some level, I think, uh, like AI has the potential to really kind of like, uh, help us focus on the essence of what it means to, to be a maker, um, and, you know, there'll still be like opportunity to kind of maybe focus more on like the, the, the ideation and alignment phase of building versus the productionization and, you know, system design phase.
+
+Um, but at the end of the day, I'm actually kind of like excited to see like how it might help us as. Makers really like get to the essence of our craft and what we do rather than focus on some of the like The just pure like memorization like implementation detail kind of things that really aren't why most of us got into what we do in the first place Um, so i'm excited to see that shift.
+
+I think it could actually be a really good thing And then I I also [00:43:00] am excited to see people Like have the kind of courage as a result to wear more hats and, and like collaborate more strongly with one another so that we don't have these like waterfall handoff processes. We have like just really strong collaboration where yeah.
+
+One person might be constantly trying to kind of envision like. The, the kind of next, you know, opportunity or, you know, visualize it in a way that brings the rest of the team along. And then the other person is working on, you know, making sure it really sings and works well and, and is a part of like a cohesive maintainable system, but they're also working together and like, they're giving each other feedback at both ends of the spectrum, much faster, much more rapidly.
+
+And as a result, um, you know, you see a lot more innovation and just. more excitement and people don't feel like they're just doing, you know, doing downstream work from someone else. So I think a lot of that stuff is going to happen as we sort of democratize the specialization, but I think there's still going to be room for people to really like focus on the aspects of the process that they were always [00:44:00] excited about in the first place.
+
+**Justin:** Yeah. Something I like to think about in this space is any creative like pursuit, but especially design and engineering. The big thing that you have to deal with is you have a lot of decisions that need to be made, kind of all the time, and there's a lot of context around those decisions and, you know, There's a lot of decisions that you end up having to make, even if you don't want to or don't need to, uh, just because it has to be made by somebody, but like, there's almost like this, like decision deferral that you can do sort of like, I'm going to defer this decision to some external entity and then get back some result and then use my expertise to sort of like hone down on the things that are actually important and matter.
+
+And I think that that, like, you know, we, we have so much energy and being able to just like. Okay. Have more energy for the important decisions, I think, is an incredibly exciting thing and I'm really excited to see how, yeah, Figma continues to push on this very specific thing. Like we're talking about layer names.
+
+Making a bunch of decisions about layer names may be important, but it's not fun or [00:45:00] super necessary. And if you see a layer name that's like misnamed, therefore the thing goes through it. If it's like one of 80, that's fine. That's great. What a good outcome, you know? So I'm excited about like just less mungy work.
+
+The things that we all end up having to do that aren't like giving joy to us.
+
+**Kris:** Totally. Yeah, I think another, another example of this, um, that we talk about internally is, um, I think like on one end of the spectrum, right, we have all these like kind of code completion tools or auto completion workflows with AI now. And on some level, you can think of that as like generation. Um, but to your point, like there's a difference between like, you know, you type just one short sentence and then you hope that it generates the right thing and understood everything in your head.
+
+Versus like it's trying to adapt what it's generating based on what you've already done. Um, but I think on like a more fundamental level, um, like the, the whole like autocomplete process is also a form of search. Um, and I think like we all take it for granted how often we search for things, right? Like we're either searching for documentation or in Figma searching for [00:46:00] an existing component or an existing mock of a screen.
+
+And so I think we're, we're like equally excited about like, these, these new opportunities from the perspective of like, you know, how magical they can look. But also like, if you just look at it, like, uh, auto completion is just a form of like improved search where you're surfacing the right content at the right time to remove a lot of the tedious aspects of the workflow.
+
+And so, um, I think, I think, yeah, sometimes we get so fixated on like kind of the, the, the Twitter worthy demo that we kind of forget about a lot of the, the more basic things that we can do with these technologies that, um, aren't as threatening to what we love about what we do.
+
+**Andrew:** Yeah, speaking about shipping things other than tech demos, uh, before we move on to the future question, I just want to ask one question about how you guys deploy AI. Like are you guys doing things in the cloud or are you relying on the browser?
+
+**Kris:** Yeah, that's a good question. Uh, we do it largely in the cloud. Um, although we, we are exploring like ways to run models locally too, where appropriate, but right now it's in the cloud.
+
+**Andrew:** For sure. 
+
+
+#### [00:46:57] The Future of Figma: New Features and Innovations
+
+**Andrew:** Okay, so looking to the future, uh, [00:47:00] like, what is next for Figma? What are you guys building towards, like, what's the next big release? How do you want to make our lives easier?
+
+**Kris:** Yeah, well, we've done a few, few things recently that people might not have caught. So we did just release a new product, um, Figma slides, which we're super excited about. Um, I think it's, uh, it's like, first and foremost, it's just like a familiar medium that we all have used in our jobs to, to build alignment and kind of bring people along.
+
+Um, and I think that's a big part of what we do, right? We're trying to help teams like envision the future of the experiences they're creating and. Build consensus and conviction about where they want to take their products and then move forward as quickly and efficiently as possible, um, to, to bring the best ideas to life.
+
+And I'm just like really excited that we've actually seen people talk about Figma, not just as a tool, but as like a, kind of like changing the way that teams work, like you kind of like hear people talk about like the new suite of tools they use and oftentimes it's like Figma plus some other, you know, new tool like linear or something like that.
+
+And, um, it's cool to be a part of that, but I think there's just so much more. That we can [00:48:00] do to actually embrace the fact that, um, design happens, uh, within our tools and outside of the design, the traditional design tool. And I think everyone in a company is, is ultimately a part of the design process.
+
+And I think there's, there's a lot more that we're going to be doing and can be doing to. To really, um, make that more visceral and more powerful inside of the organizations that are adopting Figma. So Dev mode is the start of that. And there's just so much more I think we need to do there. Um, but there's, there's a lot of other stuff we have in the works as well.
+
+**Andrew:** I'm excited to see what you guys come up with. I'm a believer that good primitives yield very interesting results when mixed. Uh, I think FigJam's a great example of that. Slides is another one. So having DevMode in there as a primitive and building off of that, I think will yield some pretty cool results.
+
+**Kris:** Awesome. Thanks.
+
+**Andrew:** Sweet. 
+
+
+#### [00:48:46] Conclusion and Closing Remarks
+
+**Andrew:** That wraps our questions up for the week. Thanks for coming on the podcast, Chris. This was a very fun, uh, dive into how Figma works and what you guys are working on. So thanks for coming on.
+
+**Kris:** Yeah. Thank you for having me. It was great meeting you both and spending the time talking to [00:49:00] you.
+
+**Justin:** Yeah. Thanks, Chris. Figma is, is huge. It's really changed our industry and it's a delight to use. And, uh, yeah, keep up
+
+**Kris:** Thank you. All right. 
