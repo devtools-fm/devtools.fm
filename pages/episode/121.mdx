@@ -1,0 +1,361 @@
+---
+title: Evan You - Vue, Vite, VoidZero and the Future of JavaScript Tooling
+spotify: https://podcasters.spotify.com/pod/show/devtoolsfm/episodes/Evan-You---Vue--Vite--VoidZero-and-the-Future-of-JavaScript-Tooling-e2qqbv4
+youtube: https://www.youtube.com/watch?v=Aqfgw9XUIRA
+tags: tooling, javascript, vue, vite, voidzero, evan you, technology, typescript, programming, coding, software engineering, build tools, javascript tooling
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week Evan You joins us again to talk about his new company, VoidZero, and the future of JavaScript tooling.
+Evan build Vite and ushered in a new era of JavaScript tooling, but thinks he can do better now by building up new rust based tooling.
+Rolldown is the first step in this as they aim to make build times a thing of the past.
+
+- https://bsky.app/profile/evanyou.me
+- https://www.accel.com/noteworthy/our-seed-investment-in-voidzero-evan-yous-bold-vision-for-javascript-tooling
+- https://voidzero.dev/posts/announcing-voidzero-inc
+- https://github.com/yyx990803
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction 
+[00:02:13] The Journey of Vite
+[00:08:01] Ad
+[00:09:12] Transition to VoidZero
+[00:20:45] Technical Deep Dive: OXC and Rolldown
+[00:27:02] Commiting to the Toolchain
+[00:31:19] Plugin Possibilities
+[00:44:16] Future Plans and Goals
+[00:50:03] Conclusion and Farewell
+
+<!-- TAB: TRANSCRIPT -->
+
+**Evan:** the first stage of Vite really was like, Let's just make things work and make it better, uh, than the status quo, but underneath there might be a lot of, you know, hacks and things we want to improve in the future and now it's the proper time to do it.
+
+
+#### [00:00:20] Introduction 
+
+**Andrew:** Hello, welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Evan Yu joining us again. Uh, Evan, you were with us on episode 12, uh, back, uh, a few years ago talking about, uh, Vue and Vite. And we are now like 119 as of recording. So over a hundred episodes ago. 
+
+**Evan:** wow, that's, that's a lot of episodes. 
+
+**Justin:** we've been doing it a while, but it's, It's so fantastic to have you back. We're continually big fans of your work, uh, and how it shapes the ecosystem. So excited to chat again. Uh, and we're going to talk about what you're up to these days. But before we dive into that, would you like to tell our listeners a little bit more about yourself?
+
+**Evan:** Sure. Uh, hi, I'm Evan. Uh, I am, I have been an independent open source developer since 2016. And, uh, I worked on Vue. I still actually still work on Vue. Uh, I work on Vite. Um, and just recently we started a company called VoidZero and, uh, focus a bit deep, even deeper that, uh, goes into. You know, the full JavaScript tool chain, starting from servers.
+
+**Evan:** Uh, no, no, no. Starting from parsers to linters, formatters, uh, bundlers, transformers. Everything that supports higher level tooling. Uh, so the bundler we're building called Rodan is going to support Vite in the future. And Vite is now supporting a lot of other frameworks. So essentially, we're trying to build this, uh, vertical, uh, Unified tool chain that can support, uh, all the frameworks that depend on beats today and hopefully make everyone's development experience better.
+
+
+#### [00:02:13] The Journey of Vite
+
+**Andrew:** So, uh, back, back on that old episode, uh, long ago, you had actually just released V and since then it's really become like. A pillar of the industry, like many, a meta framework, uh, is based on it now. And it's like the starter pack for everything. What was the journey from getting, going from Vite to, Oh, we actually have to rebuild most of what's below the surface level and form a company around that.
+
+**Evan:** Yeah, um, I think the idea started at one point because when I first started Vite, uh, I was just doing a prototype, honestly, right? So I pretty much just took whatever that's available out there and try to fulfill the goals. And there were a lot of tradeoffs. And I nowadays I consider them kind of we, I, I didn't have the, the, uh, you know, the, the bandwidth to do all the things myself.
+
+**Evan:** So I have to use what other people have built. And that's, I think that's typically what we've been doing in the job for ecosystem because we feel like, okay, like we don't want to necessarily reinvent the wheels. Why not just use things people have already done? Um, so. In the beginning we were, I was using rollup because, uh, I've always liked rollups API and, um, then we ran into performance issues because, uh, so the, the first step of feats was to have a native ESM dev server, right?
+
+**Evan:** That felt simple. And then we use rollup to try to handle the dependencies because some dependencies are in CJS. Uh, we want to convert them to ESM so they can load in the browser, but rollup was actually quite slow if you have. Large dependencies. And so we started using ES build for that purpose. And then we tried using ES build for production bundling and it was.
+
+**Evan:** Not satisfactory because, uh, it has no control over how the chunks are split and the way ESBuild splits code is just a bit, uh, counterintuitive if you're building applications. So, um, so we're like, okay, now we need to think about, okay, we use ESBuild for development pre modeling, but we use Rollup for production modeling.
+
+**Evan:** And we kind of smoothed over the surface to make them work kind of the same way. Right. Um, and later on. When people started building real applications with Vite, um, for example, when people are using Vite with React. And previously, everyone was using Babel, because Babel was supported, um, interestingly, uh, if you use Vite by default, and you write JSX in TypeScript, they are transformed using ESBuild, which is quite fast.
+
+**Evan:** But the moment you want HotModule replacement for React, now you need to use Babel, because ESBuild does not support HotModule. Hot replacement transforms. So, um, but then Babel again made everything slow. Uh, so people also came up with an SWC version of the React plugin. So you see the problem here is, um, there are great tools out there, but some of them do this, some of them do that.
+
+**Evan:** And now some of the things they, they both do, they decide to do them differently. Um, and that's the reality that we're kind of dealing with in, in the JavaScript tooling ecosystem. I'm pretty sure it. Like, if you've worked with, uh, custom build stacks long enough, you understand what I'm saying, right? Um, so, in a lot of ways, the reason people love it is because we kind of hide this complexity away from them and try to, you know, give you a very smooth and consistent entry point so that you don't need to think about these things.
+
+**Evan:** But we're kind of, for me, I think we achieved this goal with the initial version of Vite, but, uh, long term wise, when people are starting putting more and more, uh, dependence on Vite, right, we're seeing more and more frameworks moving over to use Vite as the base layer, I kind of start to worry because I feel like, you know, the internal is not as pretty as it should be, and we kind of just swept all the deeper problems under the rug and pretend everything is great.
+
+**Evan:** So I guess deep down, you know, along with these growth and adoption, I've always had this like inner urge to say, like, is it really up to the task of being the future of all these like next generation framers and serving as the infrastructure? Does it will be able to live up to that expectation? And I don't think it will if we just keep using this sort of fragmented internals and try to.
+
+**Evan:** Stitch things together and smooth over the inconsistencies. so in a way the tool chain we're building right now at voice zero is an attempt to kind of attack this problem more fundamentally. Uh, let's say like, if we want to solve all the problems we want to fix indeed. What do we need? We need a bundler that actually is designed for it.
+
+**Evan:** And we need the sponsor to be also built on top of a tool chain that can, you know, handle all the different concerns, like. Starting from the AST all the way to minification and production bundling, right, uh, through a consistent system. And, um, at the same time, we want to also want to make each part of this tool chain, uh, individually usable.
+
+**Evan:** So let's say you want to just take the parser and do something crazy with it. You can totally, you should be able to do that, right? Uh, this tool chain, uh, Although it's unified, and it's a coherent system, it should not be a black box, right? You should not have to say like, you either take it all, or you can never use it.
+
+**Evan:** Um, so I think that's these are the two main premises that we're sort of centering the tool chain around is, uh, unification, but without sacrificing the ability to of composability. 
+
+
+#### [00:08:01] Ad
+
+**Andrew:** We'd like to stop and think our sponsor for the week. Mux. If you haven't heard of mucks. Max is an awesome platform. That makes adding video to your product easy. 
+
+Is 
+
+**Andrew:** adding a few libraries. If you've never had to add video to a product, you don't know how many pits of failure there are. 
+
+**Andrew:** Whether it's file formats, delivery, uploads. Or even play back. There's so much to worry about and so much that will bog your team down or trying to ship a stellar product.
+
+**Andrew:** So that's where mux comes in. They have a set of APIs and components that make adding video playback to your app or platform super easy.
+
+**Andrew:** And since there are a bunch of experts that know video inside and out, they'll have so many different features That your team would never have the time to get to.
+
+**Andrew:** One of those things being metrics. They have all sorts of different fancy metric dashboards to understand how people are consuming video in the apps that you ship. Recently they've been adding even more capabilities to their platform. Now you can see when viewers dropped from your videos, so you can gain better insight into how people are consuming those videos.
+
+**Andrew:** So, if you want to add video to your platform and you don't want to spend weeks to months doing it. Head over to mux.com.
+
+**Andrew:** With that let's get back to the episode.
+
+
+#### [00:09:12] Transition to VoidZero
+
+**Justin:** So you've been a. independent developer for a while, uh, and probably one of the most successful being able to work on a lot of open source projects and produce a lot of very successful open source projects, uh, while working mostly on your own. And now you're going. This route of, uh, so you've raised some VC, you're forming void zero.
+
+**Justin:** You have a few people coming to join you to like work on these ecosystem tooling. So why did you decide to make that transition from independent developer to starting a company? And like, what about the timing or the circumstances make this, uh, like a different choice?
+
+**Evan:** so, um, I think overall, I would actually consider myself pretty risk averse person. Some of the biggest decisions I'd made in my life. I kind of feel like I just swing it, but, um, like going fully independent to work on view. I didn't really know what that would entail. Luckily, um, I think I've built a lifestyle entrepreneurship, kind of lifestyle business thing around VUE.
+
+**Evan:** So that is enough to sort of support me and make my life sustainable. Um, so on top of that, right, I'm not starting a company because like, Oh, we need to make more money. So that situation, uh, it's more about. Starting the company is the more realistic way to, you know, essentially fulfill the vision that I'm trying to, trying to achieve.
+
+**Evan:** So, um, it's also partly based on the experience of working as independent developer, I kind of. Know where the limit of my current the current model can go. Um, I think a lot of people kind of use view and use me as a success story example for sustainability of independent projects. But at the same time, if you consider the, the scale, you know, the scope of view, like, we have more than 2, 000, 000 users supported by.
+
+**Evan:** I think at max we had like three people working full time on viewer related stuff like now it's probably still around three people. That's that's actually full time on view. Um, and then a bunch of, you know, part time contributors that we sponsor. So, um, it's sustainable, but at the same time we don't really see.
+
+**Evan:** It's growing say to the scale where we can have like a team of 10 people working on a full time, right? Because, um, I intentionally try to build the business around for you to be. As passive and carefree as possible. That's a lifestyle choice. Um, but also that means the conversion rate, because it's not a for profit business, like we don't do aggressive marketing or we don't like push features to sort of drive profit or revenue.
+
+**Evan:** Uh, so in a lot of ways, the conversion rate compared to the user kind of view is extremely slow, uh, extremely low, right? Um, And I'm not saying that's a bad thing for me. There's no sort of this or that in terms of open source sustainability or monetization. I think it all comes down to the goal you're trying to achieve.
+
+**Evan:** For me, view is a lifestyle business thing, and I think that's working very, very well for me. Right. I'm happy about that. But on the other hand, when I think about where Vite is going and thinking about the potential that Vite has and thinking about how we can actually You know, maximize that potential and make the thing, you know, uh, we hope it can be, and I don't see it happening with this sort of more passive model of like just helping people donate, helping people sponsor. Hoping someone comes, come, comes up with a business and decide to donate back to V uh, donate back to vet, right? That's actually, um, has a lot to do with, uh, with, I think partly with luck. It takes time. It also has a lot to do with what layer the project stands on, for example, because view is a very user facing framework.
+
+**Evan:** Uh, so most of the, most of the income that's generated by view is due to the exposure. Due to the high exposure and documentation and because when people use frameworks, they would likely interact with the documentation. Very, very cons, very, very constantly. Build tools is quite different, right? It usually sits one layer below the framework.
+
+**Evan:** And also, uh, when you set up build tools, once it gets you, gets it working, you're happy with it. You really have to actually look at the docs every day. So, um. When we go even lower, say like we're building parsers and toolchains like that, I've, I've seen how like projects like Babel struggle with funding despite such wide adoption, almost universal adoption across the ecosystem, right?
+
+**Evan:** So I don't think that model is going to work for the things we want, we want to build and, um, but at the same time, this is quite ambitious goal. So. I can't imagine it being done with part time efforts from just, you know, contributors who are like, Oh, we want to work on this together. I don't think that's going to happen.
+
+**Evan:** Or at least it's not going to happen soon enough. Um, so I think the only realistic way for us to actually do it is to have enough resource capital to have people to get people paid properly to work on a full time and as a team, right? So we have a common mission, a common goal, and it's It's much more serious than your, uh, say let's contribute to open source after work or on weekends, right?
+
+**Evan:** It's, it's different. Um, so that also inevitably brings in a question like of, uh, expectations from, you know, investments and returns. And I think one of the, the other goals of starting a company is because I always felt like. It's a bit sad that the JavaScript ecosystem is relying on a lot of critical infrastructure that's maintained by people that's either underpaid or just as labor of love, right? In a way, the ideal situation is we hope, okay, like big companies using these open source projects, making a lot of money, they should, they should donate back, they should sponsor. Um, and I think it's difficult because there is so much logistics that you have to go through to actually set up the proper organization like a foundations.
+
+**Evan:** And align the incentives and there's a lot of lobbying a lot of like just talking to people and getting people on the same page and to make things like that happen and smaller open source project authors really don't have the leverage or the time and the energy to make that kind of things happen. Um, so. And it's uphill battle before you become accidentally become kind of the critical infrastructure, the entire ecosystem relies on. So I think voice zero is also a different attempt where, uh, where the end goal we hold is we have a sustainable business model. That's mostly coming from, you know, bigger companies enterprise that's paying money that allows us to keep improving these open source parts and keep it free and open source for individual users for, uh, smaller companies, startups, so that more people have, uh, more JavaScript developers have free access to high quality tools.
+
+**Evan:** At the same time, the tools should also be well sustained and maintained.
+
+**Andrew:** So, Is your plan for monetization like charging bigger companies to use the tools and then like letting it be open source free for everybody else?
+
+**Evan:** not exactly. So, uh, we want to draw a line where, uh, if the code runs on your machine, it should be open source and free, right? Uh, we don't want to do things like, uh, so one thing we definitely don't do is to, like, ship something as open source and change the license later and hope people pay for it.
+
+**Evan:** That's just not the plan. The plan is likely to build. Uh, so we do have plans on building associated services that's tied into each step of the way, because when you have a tool chain, you have natural time into a lot of, uh, metadata every step of the way. And how do you Get deeper insights from these metadata.
+
+**Evan:** Uh, and how can we get higher quality metadata for each each task? You're performing on your code base, right? Overall, I think there's good opportunity to have, uh, to improve upon what we're currently doing. For example, like, how deep, how, how much deeper insights can we get from our bundles? Like, Okay. Uh, is your tree shaking accidentally failing?
+
+**Evan:** Is your trunk cache invalidation working consistently? Are you bundling things that shouldn't really be in the production bundle? And is your code, after your code is transformed by all these tools, is it still as secure as the source code pretends to be? So there are a lot of questions that, uh, That's hard to answer if you don't actually own the toolchain and be able, you know, be able to look at the source code from start.
+
+**Evan:** All the way back, all the way to minified in production that you actually ship to the users. Um, so I think there's quite a bit of opportunity here and we're intended to essentially build services that centered around this space. Uh, I can't do, I don't want to be too specific right now because, um, there's obviously a lot of things that can change.
+
+**Evan:** There's obviously, you know, um, some details we're still working on. But, um, the idea here is. There will be, um, if we make money, it's from services. It's not going to be from the open source stuff that we built directly. 
+
+**Evan:** And the open source tooltip obviously serves as the funnel and the moat for the services that we built.
+
+**Evan:** And that's the, that's the ideal outcome. 
+
+**Justin:** I think that makes a lot of sense. There is this, like, real thing of, like, big companies using open source tooling. It usually doesn't scale super well. And if you've worked in a semi large company and you've used Webpack, for example, and you know, like, oh, we have, like, a five to ten minute Webpack build, Well, like most people don't experience that because their apps are too small.
+
+**Justin:** But like, if you're a really large organization and you're doing, you're bundling a lot of code and you're like running a lot of transforms and doing a lot of custom stuff, you start hitting in those things. So I think it makes sense to a large degree to say, Hey, you've just got more needs and we have tools to sort of solve those needs, whereas.
+
+**Justin:** You know, 80 percent of people won't ever hit that scaling point. 
+
+**Evan:** Totally. Yeah. Uh, what a part of the, part of the reasons we believe there's a market for this is because half the team is. Have, uh, worked at ByteDance on their WebInfo team, and they support some of the largest scale JavaScript applications that we have ever heard of in the industry. And, you know, some code bases with 100, 100, 000 lines of JavaScript code, uh, and takes half an hour to, to build.
+
+**Evan:** Um, So scale that not every developer would have to ever deal with. And, uh, but, you know, that's that's why a lot of the tools that we are building, like the starting from the OIC parser is like. We are obsessed with the highest level performance so that these tool can still handle the scale the biggest scale application You can throw at it.
+
+**Evan:** It should be able to still do it With decent development experience.
+
+
+#### [00:20:45] Technical Deep Dive: OXC and Rolldown
+
+**Andrew:** So speaking of the OXC parser, uh, I kind of find it funny that, that it seems like that project in Vita itself started in the same way where, like, you were just creating a thing to for a side project. And I think potion, the guy behind, uh, OXC Was just kind of creating a reference implementation of a parser in rust.
+
+**Andrew:** So how do we get from there to this is now like that one little Lego block at the bottom of the big structure that is void zero
+
+**Evan:** Yeah, I think a lot of it is me when we when I was thinking about okay, we need to We need to write our own bumper for Vite And what do we base the bundler on top of? And we looked at, so there are multiple ways of thinking about this, right? So rewriting JavaScript, no, because it's going to be too slow.
+
+**Evan:** So we want to do it in a compugnative language. And we looked at Go, there's already ESBuild, uh, which is a great project. I think the downside of ESBuild is, uh, in order to achieve the maximum performance, um, ESBuild is architected in a way where, uh. Many different concerns are layered across as few AST passes as possible.
+
+**Evan:** So it's like, it's minification logic is actually spread across multiple passes. Uh, and it's not like minification is minification. It's like in the same AST path, you would see some branches dealing with minification, some branches dealing with transforms, um, and that making external contribute, making like basically two branches.
+
+**Evan:** Extending ES build in a reasonable way, quite difficult because you're going to be adding more branches in these AST passes. And it's going to be very difficult for, uh, for us to manage it. Like Evan Wallace is obviously. Brilliant, and he has everything in his brain and he can sort of improve VS build with this architecture because that's his intentional decision, but we just feel like it's not a good foundation for us to if we want to ever extend on top of it.
+
+**Evan:** And also, um, we do want to make each. Part, uh, sort of well isolated so that people can use it as individual dependencies instead of having to opt into the whole thing at all at once. Um, so then we turned to Rust and, um, so Fortune actually also contributed to RSPack, uh, at Bidens and there are some technical decisions in RSPack that made it essentially too late for them to switch to OXE.
+
+**Evan:** Um, because it's already kind of built on top of SFC for a very long time before OXC was even usable. Um, but I have been keeping an eye on OXC for a very long time. And, um, and I think it is important that for the new toolchain to be based on something that is, that kind of, Learns from a lot of the things that we've done in the past because it's abortion worked on OXC.
+
+**Evan:** He had contributed to Rome slash biome in the past as well. Uh, they had to contribute to SWC and deal with SWC during our respective M&amp; M. So, um, the team at Web Infra has. A lot of experience dealing with, you know, Rust language tool chains and systems. And I think he distilled a lot of the learnings into the development of OXE.
+
+**Evan:** Initially, as a proof of concept, and, uh, when it became a bit more production ready, it showed that, okay, all these things did pay off, like, both both SWC and OXC are written in Rust, but there is a pretty significant performance advantage, uh, that OXC has. Um, and there are some other design decisions, uh, that's a bit more detail.
+
+**Evan:** For example, uh, when you, when using this language to change to support the bundler, there are a lot of, um, semantic analysis that we have to do. For example, like determining whether this variable is referenced, uh, in this current scope, or is it, you know, shadowing outer variable, or is it used and exported by, uh, and used in another module?
+
+**Evan:** A lot of these kind of things. You have to do the, uh, uh, analyzation, right? So in JavaScript, most of the parsers just like stops at giving you the AST and they're done. Uh, so we are dealing with, say, um, I think Babel probably provides a bit more infrastructure for that. But, uh, yeah. In my own work, for example, in the view compiler, we have to do a lot of these semantics analysis ourselves.
+
+**Evan:** Uh, I think it's felt which Harris has also written quite a few tools are centered around this. Um, but I believe that should be a first party concern of. Of a language tool chain. So, uh, actually actually comes with a semantic analysis API that allows you to query these information after the parsing is done, because as you parse, it also collect, you know, collects and stores this information already.
+
+**Evan:** So you don't, so you don't have to do the traversal yourself to figure out this information. You can just ask. Right. Um, so this is also slightly different from say, uh, the, uh, You know, the way SWC works. Anyway, like, I don't want to bash SWC, because it is the first JavaScript Rust toolchain. Right? And I think it serves its purpose really, really well.
+
+**Evan:** A lot of people are still using it. It's great. Uh, but, I think there are things we can learn from it. Uh, Learn from the past efforts. Uh, and, We believe OXC is just a better foundation if we want to build more ambitious, uh, features on top of it. Um, so, yeah, so Rolldown essentially started out, uh, with OXC as the base.
+
+**Evan:** And so far, uh, we are happy that the performance is turning out to, to, to be, you know, living up to our expectations.
+
+**Justin:** Something I've always admired about your approach to projects is that very iterative style. So I remember when I first discovered Vue, you were Just making the transition from Vue 1 to Vue 2, introducing virtual DOM, learning a lot of lessons from React. And that always struck me and I feel like you've sort of had a pattern doing that over the years.
+
+
+#### [00:27:02] Commiting to the Toolchain
+
+**Justin:** So I'm curious to like tie into the sort of incremental approach that you are taking now. What have you learned from projects like Biome, uh, and Roam, for example, who've tried to. Tackle somewhat similar problems, but maybe from a different angle. And SWC probably is like in the same category. They're like trying to tap, tackle some performance problems.
+
+**Justin:** What are the like big lessons and takeaways and things that you're trying to do differently than those projects might've tackled?
+
+**Evan:** I think, um, in terms of the, uh, end division, uh, it's very obvious that Void Zero has a lot of similarity to what Roam wanted to do. Uh, I think the, there are two major differences. Um, first is we decided to work on the tool chain for Void Zero. Uh, Mostly because we already have Vite serving as sort of a point of convergence, right?
+
+**Evan:** If we didn't have, we don't have Vite as the leverage, then the chance of success will be much slimmer, right? And Roam really didn't have anything like that. Uh, they started out with something that's completely from scratch and with the hope of So, so for Rome, I think the biggest challenge is just going from zero to one.
+
+**Evan:** How do you make people adopt it? Right. Um, and they started out with a formatter, which kind of makes sense because formatter is probably the least intrusive piece of task that in the overall development flow, uh, in a way it's completely coupled from everything else. Uh, that makes it easier for people to switch to and adopt.
+
+**Evan:** The downside of that is it's also. Not a strong, you know, leverage to, to have because, uh, it's not really related to the, to the rest of the tasks people are doing. Right. Um, so I think the, uh, the, uh, the angle where you get the adoption from this is more like a strategic difference. I think. Right. Uh, another more technical difference is I think Rome's implementation or, or biomes rust code based.
+
+**Evan:** Okay. Uh, was initially designed to be more intended for an IDE use case scenario. Like, they focused a lot on the IDE story. So, um, they essentially built something, uh, they used a, something called CST, Concrete Syntax Tree. Because they want to preserve the, um, the shape of the, the original code as much as possible.
+
+**Evan:** And they want to be resumable and more error resilient. Uh, a lot of this are great for IDE use cases, but not necessarily best if you want to do the other task, for example, get the fastest possible transforms, uh, and also, um, basically be able to use the AST for multiple tasks along a pipeline, uh, so when we, I think Ocean would, could probably share more insights on this front, but I think the difference between the AST and CST was also a major reason where, uh, Uh, portion was like, we don't really want to do that.
+
+**Evan:** Uh, you know, X, C, um. Yeah, but, um, I think it's unfortunate that, uh, Rome didn't get to actually, you know, keep going beyond what it is now. But, um, I think it, it still showed people that, you know, it's possible to write high quality tooling for JavaScript in Rust, uh, because a lot of people are happy with Biome as a formatter nowadays, um, And it's also part of the reason why we're not in a hurry to work on Flowmatter, because it already kind of fills that gap.
+
+**Evan:** Uh, we will probably eventually have an OXE based Flowmatter, just for complete, complete sake, but for us, that's just going to be down the road.
+
+**Andrew:** Your first point reminds me of the saying, make it work, make it right, or make it, yeah, make it work, make it right, make it fast. Like you made it work, Vite, we already have like the grand vision and just all of this work now is like truly like making it right and being able to like make sure the pipes make it fast.
+
+**Evan:** Yeah, yeah, in a lot of ways. Um, yeah, I think the first stage of Vite really was like, Let's just make things work and make it better, uh, than the status quo, but underneath there might be a lot of, you know, hacks and things we want to improve in the future and now it's the proper time to do it.
+
+
+#### [00:31:19] Plugin Possibilities
+
+**Andrew:** So I've developed a little bit of, uh, a few Vite plugins, uh, as I've gone along. I've done a lot of static site generation and I've built like rebuilt storybook a few different times. And most of those things usually come down to like, I need to make a very intense, uh, plugin. For the system and the one thing that kind of trips me up a lot of the time is the plugin API for V is the same as a roll up, but it only has like a select few hooks.
+
+**Andrew:** And I feel like those hooks are probably excluded. Cause like, we have like speed concerns in the mix, uh, with the advent of like roll down, will we see the plugin API start to like open up a little bit? Like, will the speed unlock more power that we can give to plugin devs?
+
+**Evan:** Uh, I'm curious, what are the hooks you were looking for but doesn't work in Vite?
+
+**Andrew:** there's just like a handful, like four or five of them that like, I've always want to use, but they just don't run in dev mode because, uh, they're, they're not there. So, yeah, just wondering, will the new power expand to more, more stuff for us to do? 
+
+**Evan:** so it's, uh, this is an interesting one because, uh, so first of all, uh, with row down and in a future version of Vite, dev and prod will become more consistent. Uh, they will be using the same plug in pipeline and it will, so dev plug in, the plug ins will work exactly the same between dev and prod. Um, But the interesting part about having JavaScript plugins running in a Rust based tool is there is, there is the overhead of sending data back and forth between the two languages because they don't share memory, uh, by default.
+
+**Evan:** So in most cases, when you send things across the wire, you have to clone them in memory. And that's probably one of the biggest, um, bottleneck for speeds. So, uh, let's say if you use rawRowDown without any JavaScript plugins to bundle 20, 000 modules. It can do it in 600 milliseconds. Uh, but if you add a couple of JavaScript plugins, you can slow it down by maybe two to three times.
+
+**Evan:** Um, this is directly correlated to the number of modules because we have to, for every hook of every plugin, you have to call it once for every module. So let's say you have a plugin with three hooks, then we're doing 60, 000 Rust to JS calls. And that's not cheap, even if you don't do anything in the hook, it's still quite a bit of a cost, right?
+
+**Evan:** Um, so we're looking for ways to optimize that. So first of all, uh, base layer compatibility is, we want all the existing V plugins to be able to continue to work the same way. It might compromise the ideal performance to a certain extent, but let's make things work first. And then the next step is, for Vite itself internally, we've actually already ported some of the Vite internal logic over to Rust.
+
+**Evan:** So, um, right now it's only for production, uh, for builds. So when you do the production build, you can enable the native equivalent of some Vita internal plugins. Um, so that allows us to essentially get Vite build speed down to maybe two to 2. 2 and a half times slower than raw Rodin without any JavaScript plugins.
+
+**Evan:** Uh, which I think is actually decent. Um, and in fact, that's already kind of on par with other pure Rust bundlers, um, And then we are doing a few things to essentially, there are two, two different ways you can think about this. One is reduce unnecessary Rust 2. js calls, right? So in a, in typical Rust, uh, roller plugins, we do a lot of things like in the transformer hook, we look at the ID.
+
+**Evan:** If the ID ends with a certain extension, we do this, otherwise we just return early. Um, this is actually wasteful if you are, uh, you're using the plugin in a Rust bundler because. The bundler essentially do, does a Rust to JS call, figure out it actually doesn't need to do anything, but it already paid the cost, right?
+
+**Evan:** So this is why ESBuild's plugin actually requires to have a filter outright, uh, before it is ever applied. And we're going to essentially introduce something similar. So it's going to be an extension on top of the current rollup syntax, it's going to be compatible, because when you use the object format for your hooks, right, so you specify a logic in the handler property, and then you can have a filter property to say, uh, only apply this hook if the ID matches this regex or something like that.
+
+**Evan:** Um, so. We can essentially determine whether this hook even needs to be called for such a module before we even call it. Uh, so we don't even need to cross the Rust to JS bridge. That's one thing. The other thing is, um, we're seeing a lot of plugins in the wild doing very similar things. For example, In the transform hook, a lot of plugins take the incoming source code, parse it using a JavaScript parser in, in the hook, and then do their own like semantic analysis or AST traversal, and then use something like magic string to alter the code and generate a new code, and also need to generate the source map, and then pass it back to the bundler.
+
+**Evan:** So a lot of work done in JavaScript, Not leveraging the Rust parts. And then also the Rust needs to now need to take the source map and do the source imagine. And source maps are also quite heavy to pass across the boundary because it's, it's bigger objects than source code. Um, so we're designing, trying to design APIs to essentially make this kind of standard ASD based simple transforms to uh, to be as efficient as possible.
+
+**Evan:** So imagine more. Instead of getting the string of the code, you actually get the pre parsed AST, uh, directly. And, um, instead of generating, manipulating the code and generating the source node in the JS side, you still do the same kind of magic string like operations. Say like, append some code here, remove the code here.
+
+**Evan:** But these operations are kind of buffered. And send as very compact instructions back to rust and the heavy lifting of code manipulation, stream manipulation and source map generation is actually done by rust on the rust side, right? So the only work you're doing on the JS side really is looking at the AST and record the operations you want to do and then tell the rust side to do it. So I think this in fact covers can cover a very wide range of custom transform needs, right? Because like we're actually able to build views, single file component transfer entirely using this model in JavaScript. And if we get this API natively from the bundler, then we can actually offload a lot of the heavy lifting to the rust tool chain instead of doing it in JavaScript.
+
+**Evan:** And I don't even need to. Uh, install a posture dependency myself. Um, so this is the second part of it. And then, if we go a bit deeper, that's, this is further down the line. We're also investigating whether it's possible to, um, send ASTs from Rust to JavaScript as little memory cost as possible. So this is something called like zero cost AST transfer.
+
+**Evan:** Uh, using theoretically, it's already possible using a shared array buffer. Uh, and then we need, uh, some, we need a custom deserializer on the JavaScript side that understands the memory layout and be able to like lazily, uh, read the AST from the flat array buffer as you need, right? Uh, one of our team members, uh, Overlook Motel actually has a proof concept of this working already.
+
+**Evan:** But getting this properly into OXC. is going to be quite challenging. So this is something we're eventually going to do down the road, but the proof of concept shows that this is possible, right? And there are some exciting things in the JavaScript specs. For example, there's a share struct proposal.
+
+**Evan:** That's, uh, that's, that's quite new. That's still stage one, but, um, it also is, you know, kind of exciting if you can, um, use share structs to, um, essentially properly share state across worker threads. And maybe Rust, right? So this, what this unlocks is proper parallelization of JavaScript plugins. Right now, uh, when you use JavaScript plugins with a Rust bundler, because the JavaScript plugin still runs in Node.
+
+**Evan:** js process, it's still single threaded, right? Um, one thing we've done is trying to use multiple worker threads to parallelize the workload. But, um, the downside of this is, for example, if the plugin uses a heavy dependency like Babel, Right. Each worker thread needs to initialize with Babel and allocate the memory for it.
+
+**Evan:** And in a lot of cases, it ends up that the gain, you know, is smaller than you might think, like, because it's like the initializing cost of each worker thread just like offsets so much of the performance gains you get. Uh, it's challenging. Like there are some things we played around with, for example, um, instead of spawning the worker threads through a Node.
+
+**Evan:** js main process, and then kind of Get the data back and then send it back to Rust. We let the worker threads directly send the data back to Rust. Um, I think some of this might be useful, but, uh, applying them blindly for every plugin may not end up being as beneficial as we think. So, there's still a lot of work that we're exploring in this area.
+
+**Evan:** Uh, but I'm kind of optimistic that, or, you know, a long term goal for us is to tackle this, um, still allow users to easily write JavaScript plugins, but without severely compromising the overall performance of the system.
+
+**Justin:** Yeah, I do think that this is one of the hardest areas, um, for, for all the reasons you've outlined. And, and the temptation is real to just say, sorry, no more plugins in JavaScript. But like, it's also, you know, there's a big ecosystem churn cost there, which is, which is a pretty big downside. 
+
+**Evan:** yeah, I kind of want to mention there's also, uh, we, we do want to start with getting things, getting the plugins work right then we start having a recommended subset or a recommended best practice for writing performance JavaScript plugins for Rust. Uh, so maybe we'll have linked rules to help you kind of guide, guide you writing these plugins, or we can have runtime warnings.
+
+**Evan:** Like one thing we actually did is. We use OXC to implement a small tool that can look at your plugin source code, uh, and, um, it'll look at, for example, look at your transform hook and notice that you're doing something like if id. test. regex. return Right. So this is a sign of early return. It shows that this, this transform hook is actually eligible for filter optimization.
+
+**Evan:** We'll detect such cases and, and actually give you a soft recommendation, say like this plug in hook can be refactored to use the filter API to make it more performant.
+
+**Andrew:** it's kind of sounds like there's going to be kind of a divide here at some point where there's like, there's a bunch of legacy rollup plugins that still work in the new architecture. But then as we go on kind of like a recommended V2 of all of those that use these new APIs to make things really fast.
+
+**Evan:** Yeah, and in a lot of ways, we do also want to make most of the common things you need to do built in. For example, if you use rollup, rolldown today, you don't need commonjs plugin because it just works out of the box. You don't need the node resolve plugin because it just works out of the box. You don't need TypeScript transforms, you don't need JSX transforms.
+
+**Evan:** All of these things just work without plugins. Um, so, in a lot of ways, it's, it's similar to rollup's abstraction, uh, level is a bit, uh, rolldown's abstraction model is a bit more like esbuild slash vite right? It's a bit more battery included, because that's also the most, you know, pragmatic way to get the best possible performance.
+
+**Evan:** 
+
+**Justin:** lot of sense. I'm really interested to see what y'all end up coming up with, with the AST transforms, because I feel like this is, this is a pretty common problem is like, if you need to do very performant AST transforms, I mean, you have the added problem of like going across language boundaries.
+
+**Justin:** Um, this, this just reminds me of a random project that I saw the other day called like render from this guy named Eric Mann. And it's like, it's a byte code that runs in JavaScript that like is a rendering engine or whatever. And it's just like, I don't know. There's like a lot of interesting things in the space when you start thinking about like, how can we make, uh, like marshalling and serialization very, very, very fast.
+
+**Justin:** So this will be really cool. I'm excited. 
+
+
+#### [00:44:16] Future Plans and Goals
+
+**Justin:** Um, well, maybe as we're getting close to wrapping up the episode, let's think about, or talk a little bit about what the future looks like. Um, So you were, you're saying earlier that Vite is already pretty prolific. So it is your, your starting point. You have, um, sort of this broad baseline that, you know, say Rome when it was starting was missing.
+
+**Justin:** Um, but there's still a lot of work to do. So, uh, what do you like think the priorities going into the project will be? And you know, what is your like time horizon that you're sort of anticipating You know, say some of your first products when you release, like, what does that look like for you?
+
+**Evan:** so this is obviously going to be a quite long process. Uh, I think right now our priority is getting rolled down to sort of a beta status. There's a lot of alignment work that we need to do right now, because, uh, with the goal of being able to swap out ES build and roll up, right? We need to make sure, like, because the sort of the, uh, the mission of wrote out is to unify the two.
+
+**Evan:** So, um, In terms of how they handle, for example, C-J-S-E-S-M interop, how they handle a lot of the edge cases. Uh, they need to be as consistent as possible, but, and, and they, we need to basically, um, enable the test cases of both bundlers run RDA against those test cases and try to pass as many of them as possible.
+
+**Evan:** And then for the ones that's not passing, we need to analyze them and see each, whether this is just an, you know, output difference. Or is it more like a correctness issue? Right, so we kind of have to label them one by one. And if there are inconsistency between the two, we need to make a call on which one do we go with.
+
+**Evan:** So this is just a lot of groundwork, but it's necessary before we can consider it, you know, production ready. Once that is completed, I think Rodan, uh, in parallel, OXC is also trying to finish the syntax down leveling transforms. Like, uh, some of the hardest ones are like the async generators and stuff like that.
+
+**Evan:** Um, but it's, it's well underway. So, um, I think by end of this year, we're hoping to get Rodan to beta status and have the transforms. Also more or less completed. So that's a good milestone to hit. So that also primes the entire tool chain to, for general testing, uh, into Vite itself. So, uh, Rowdown based Vite already has a work in progress branch where we pass over 90 percent of the tests.
+
+**Evan:** Some of the tests that's not parsing are actually more or less blocked by, uh, like tests like legacy mode, which we were kind of like intentionally punting on because, uh, I'm not sure, like, how many people will still be using legacy mode by the time we actually release the thing is stable. So, um, so in a way, like, wrote down, it is somewhat usable.
+
+**Evan:** Like, we are actually already able to use it to power of interest to build the docks. But we want to wait until wrote down is. Ready, we have all the transforms ready, then we have an alpha or slash beta release for Rodan based Vite, and have people test it. Um, so this version of Rodan based Vite is strictly just replacing esbuild and rollup with Rodan.
+
+**Evan:** So, Feature equivalence. No, not really many new things. It's mostly like we want to make sure the transition is smooth, frameworks can move over to the new one. Um, so that will probably also take some time. In that same process, uh, we do eventually want to move Vite over to, uh, a full bundle mode. Um, that's entirely powered by Rowdown.
+
+**Evan:** Um, as nice as unbundled ESM is for smaller projects, We've run into scaling issues in larger projects, especially when you have, say, more than 3000 unbundled modules as a dev server. So we believe a fully bundled mode is still necessary. And it also allows us to get rid of some of the issues. For example, uh, optimized depths.
+
+**Evan:** Uh, It can be completely eliminated. So all your dependencies and your source code will go through the exact same transform pipeline for dev and for production. So consistency will improve greatly. Um, and for the, uh, meta frameworks, the, um, one important API for meta frameworks, SSR load module, uh, slash in the new environment API is called like environment dot run module, something like that, um, and, uh, So internally, it's currently still using a JavaScript based transform.
+
+**Evan:** Uh, that will also be replaced by a Rust based implementation that's exported by Rodown. So that you'd use the same bundling mechanism for your code running in the browser, or, and running other environments, for example, Node. js SSR. Uh, that also gets rid of the configuration needs for SSR externals. So, Removing optimized apps, removing SSR externals are the two major goals of the full bundle mode and also greatly improving, you know, page load performance in larger projects.
+
+**Evan:** Um, so that's kind of down the road, probably Q2 next year. Um, and we will likely kick off some product development in parallel once we get road, uh, once we get the row down based Vite into beta status. 
+
+**Andrew:** Well, that sounds like a whole mountain of work that you guys have to do. So I wish you guys luck on that. 
+
+
+#### [00:50:03] Conclusion and Farewell
+
+**Andrew:** Uh, that also wraps it up for our questions for this week's episode. Thanks for coming on Evan. It was a pleasure to have you back on and it's exciting to see how much progress both the projects have had and what the new project holds.
+
+**Evan:** Thank you. Pleasure to chat.
+
+**Justin:** Yeah. Super excited for what y'all do. Uh, I we've had, uh, you know, a few other episodes where we talked to people building infrastructure tooling. We had the biome to the biome team on a little while back. We had Charlie Marsh talking about rough and UV in the Python ecosystem. And this, uh, Really seems like of the bets that we've taken in this space.
+
+**Justin:** This seems like the one that's like most likely to succeed. And in my case, it's always a big bet, but like, I have a lot of faith in y'all. So really excited to see what you do and wish you all the best.
+
+**Evan:** Thank you. 
