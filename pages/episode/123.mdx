@@ -1,0 +1,439 @@
+---
+title: Anselm Eickhoff - Jazz Tools
+spotify: https://open.spotify.com/episode/3dN0oKrWiGjNunFo7sWAz5
+youtube: https://www.youtube.com/watch?v=E7UNbIf6oA4
+tags: typescript, frontend, backend, jazz, local first, crdts, collaborative editing, data structures, databases, security, permissions, open source, business model, future, garden computing
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Anselm Eickhoff, a creator of Jazz Tools.
+Jazz is a reimagining of what the client server boundary is and how it can be used to build local first apps.
+Join us as we explore the next generation of local first tooling.
+
+- https://bsky.app/profile/anselm.io
+- https://jazz.tools/
+- https://github.com/aeplay
+
+Episode sponsored By MUX (https://mux.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Intro
+[00:02:08] The Origin of JazzTools
+[00:05:55] Security and Permissions in Jazz
+[00:08:01] Ad
+[00:09:21] Using Jazz: A Developer's Perspective
+[00:13:05] Collaborative Values and Data Structures
+[00:21:15] Challenges and Future of Jazz
+[00:25:40] Building Blocks of Jazz: A New Approach to Databases
+[00:27:24] Jazz's Unique Performance and Use Cases
+[00:34:41] Open Source and Business Model of Jazz
+[00:46:06] Future of Jazz and Garden Computing
+[00:51:09] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Anselm:** once I had that, I'm like, Ooh, this is actually, this, this starts to feel like a whole abstraction. it's actually really neat. I want to build every app ever like this from now on. If I feel like that, maybe other people will too. So maybe this wants to be a framework.
+
+**Anselm:** and that was kind of how I got started with it. ​
+
+**Andrew:** Hello, welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Anselm on with us today. So Anselm, you're the creator of JazzTools, uh, and we kind of bumped into each other both at the local first conference in Berlin and then again at an Ink and Switch conference in LA. So I'm really excited to have you on, uh, to talk about what you're building.
+
+**Justin:** But before we dive into that, uh, would you like to tell our listeners a little bit more about yourself?
+
+**Anselm:** Sure. Yeah. Really glad to be part of this. Uh, I've been looking forward to, to kind of talk to more general DevTools audiences for a while, because Jazz has been kind of niche. About myself, I think the best way to characterize me is I've mostly worked as a full stack consultant, most of my career, um, particularly taking a lot of apps from zero to one.
+
+**Anselm:** And kind of noticing all the repeating boilerplate across a very diverse kinds of apps, different kinds of industries. And that was kind of something that always bugged me, but I never had a solution for until I discovered what eventually became Jazz. That's, that's kind of my story and roughly the Very quick origin story of it.
+
+**Anselm:** We can go more into that later. Other than that, I'm, I'm a bit of a hybrid between a designer and the developer. My mom was a graphic designer and I've always really valued that side of things. And I think when it comes to DevTools in particular, I I'm really happy. that we now have this term of developer experience and that we really care about making nice DevTools that that's always been, um, a big mission for me, particularly in terms of allowing more people to become developers, more different kinds of people, because I think the world really needs that.
+
+**Anselm:** So that's something I'm really passionate about.
+
+
+#### [00:02:08] The Origin of JazzTools
+
+**Andrew:** So what was that spark that led to jazz tools, that aha moment?
+
+**Anselm:** I think it was really like a side project that I started working on called Garden, which is essentially a Notion clone. And I, I saw Notion for the first time. I saw Figma for the first time. I got really excited by this, like what I would call a new class of apps that just have multiplayer baked in on a very fundamental level.
+
+**Anselm:** And I was like, how far can we take this? Had some of my own ideas and basically started Building this app, it was partially like even like a visual programming language environment inside something like an ocean and lots of crazy ideas there. But, but really started focusing on the base infrastructure of like, how do I really bake in multiplayer?
+
+**Anselm:** And I also wanted it to be offline first and like sync between devices, like. All of these things that we now know as local first, I didn't really know the term then. I just want, knew that I wanted the app to work like that. And, and I was like, okay, this is actually really awkward with traditional, um, stacks and, and ways of building apps.
+
+**Anselm:** And then started running into the term local first. And so lots of the early blog posts and research of ink and switch. And, um, most importantly, their auto merge library, which was this first like way of, of. Taking this concept from academia CRDTs and making it look really, really friendly, basically just like mutable Jason.
+
+**Anselm:** And that got me really excited and, um, started playing around with that, using that for the infrastructure base, but very quickly ran into limitations back then. It was mostly about performance, but. I also started thinking about, well, how do we, like, this is nice for sharing state. How do we do permissions in a local first way?
+
+**Anselm:** And this is where it is. This base layer really started to be something unique. Um, I started playing around with public key cryptography combined with CRDTs to give you these permissions. And once I had that, I'm like, Ooh, this is actually, this, this starts to feel like a whole abstraction. And it's actually really neat.
+
+**Anselm:** And I don't want to just build this NotionClone app like that. I want to build every app ever like this from now on. And, um, if I feel like that, maybe other people will too. So maybe this wants to be a framework and that was kind of how I got started with it. And actually I kind of stopped building the app and just focused a hundred percent on making this abstraction.
+
+**Anselm:** What it feels like it wanted to be, but always in mind with what kinds of apps can you build with it?
+
+**Justin:** So to sort of recap, Jazz is like a framework for building multiplayer apps, uh, that sort of looks like you have immutable JSON and it has really good security primitives built in. Um, how long have you been working on this?
+
+**Anselm:** So almost, uh, I think over four and a half years now, and, and most of that time, like four years of it, I've just been working on it myself. And then kind of as a result of, of, of local first conf. Um, I was able to raise some money and now I have a team of people working on it with me and we're starting to build a commercial product around it as well.
+
+**Anselm:** Happy to talk about that later. But yeah, for the most part, it was just me really doing a lot of research initially. I really wanted to convince myself of the performance characteristics of this weird alien new tech. than just doing more and more API design and, and really thinking about how can we make this look familiar and understandable despite being so different.
+
+**Justin:** Yeah, this is a local first as much hype as there is around it. It's still like a really hard space. It's like the hardest distributed consists, or it's like, it's just a very hard distributed systems problem. And I think the fact that you're thinking really deeply about security is also pretty compelling.
+
+
+#### [00:05:55] Security and Permissions in Jazz
+
+**Justin:** So I was going through the docs and you say that, uh, jazz, the, the cloud service or the hosting backend doesn't actually see the data that's coming in through that's encrypted by clients. So could you talk about like, sort of your, your approach to security and how, you know, you've maybe, you Where you started from and just like we're all CRDTs and like how you ended up where you're at now.
+
+**Justin:** So, um, I think the origin was really that, that I drank quite a lot of the ink and switch local first Kool Aid, including all the philosophical values of like, Users on the data it's on your device. And I'm like, well, with, with cryptography, I can actually take that a bit further where like, even if you do sync through a server or you could do peer to peer sync, how do I ensure that, um, access control is.
+
+**Anselm:** Secure and verifiable by anyone. And, and that's how I ended up with the kind of like old and proven tools of public key cryptography. And, and I use pretty standard stuff data. Only new stuff is really like, how do we make that compatible with something that that changes as dynamically as like multiplayer state.
+
+**Anselm:** Um, and what I realized over time, just. It's starting to think about things more pragmatically. Like realistically, most people don't really care about that stuff. They want, they just want to build an app. They might even build an app with a traditional trust model where, where the users trust the provider of the app with the data.
+
+**Anselm:** And that's fine. But it's still.
+
+**Anselm:** A really good abstraction for, um, just having expressive permissions that you don't need to enforce on the backend. The fact that you can do it on the client makes the architecture way simpler. Plus then you get this benefit of, um, if I want to be a service provider in addition to the open source framework and do the sync and storage for you.
+
+**Anselm:** Now it's end to end encrypted, at least in the sense that you as the app developer don't need to trust me and you users don't need to trust me. They might trust you, but neither of you needs to trust me. And it truly becomes a generic service that doesn't need to know anything about your app, which is very different from the The cloud services we traditionally consume.
+
+
+#### [00:08:01] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for the week, Mux. If you haven't heard of Mux, you're in luck today, because Mux makes it easier than ever to ship a video based platform. In the past, you had to worry about so many different things when setting up video. For your product, whether it's uploads, hosting, optimizing, or even playback.
+
+**Andrew:** There's so many different things to worry about, and it's really such a hard thing to deploy. Your product manager won't understand when you tell them it'll take you months, but with mux, that isn't an issue. Mux provides a whole bunch of different SDKs, toolkits, and components to make sure that you can ship video in your product as fast as you need to.
+
+**Andrew:** Use as much or as little of them as you want, but where you do use them, you'll be hiring video experts to make your app sing
+
+**Andrew:** they do so many cool things that make the video playback better for your users that you won't even have to notice that they're doing them. One that I really like is they'll do adaptive streaming based on the user's network conditions. You can even, based on the video content yourself, control how high of a bitrate you stream at directly affecting your costs.
+
+**Andrew:** So if you want to add video to your product and you've been held up in the details, go check out Mux today. With that, let's get back to the episode.
+
+**Andrew:** 
+
+
+#### [00:09:21] Using Jazz: A Developer's Perspective
+
+**Andrew:** so what does using jazz look like? Uh, we, we know that it's a nice layer that makes it easy to sync data and it's nice and secure, but how does that actually translate to me writing apps with it?
+
+**Anselm:** So to, to put it in its most radical way, basically you build a new app, but you completely throw away your backend and your database. All you do is you start by defining a data model and something that kind of looks like. Database, uh, schemas or, or like a GraphQL schema. And then as soon as you have that schema, you can start creating objects locally and you can start creating permission structures locally.
+
+**Anselm:** They're, they're called groups in jazz. You can like add accounts with different rights, and then you create an object within a group and it inherits the permission rights. That's kind of the mechanics of it, but you can do all of this on the client. Like you can literally. Create objects in a button on click handler.
+
+**Anselm:** You can create a group and then like invite button on click handler and, and it immediately exists locally. You can mutate it synchronously. And that's the only thing you really have to think about. You have this mutable local state that you can start building your app around by basically just building the UI for the features that you want.
+
+**Anselm:** And then, um, you get accounts. And, and sharing as first class abstractions from jazz. Again, you just need to build UI around these. And, and as soon as you combine all of that, you have a fully working multiplayer app. That's also offline first. Um, that's, that's kind of how it works. Most of the time, some apps might want to interact with existing systems, like a traditional database or like a third party API.
+
+**Anselm:** And what you can do there is, um, use your package called jazz, not just for example, where you have a little service, uh, server worker. That also just becomes a client to the sync and storage infrastructure. And it actually has its own little account, just like users do. And you need to explicitly share data with it for it to be able to either read it or write it, whatever you want it to do.
+
+**Anselm:** But once you do that, you get this really cool setup where. You don't need to make requests to an explicit endpoint anymore. You basically just, you talk about the shape of data that exists in your app and the concepts that really make sense for your app, and you've got browser clients or, or native app clients kind of
+
+**Anselm:** mutating that state and listening to it.
+
+**Anselm:** And maybe you have some server workers also listening to it and mutating it. And, and synced without them really knowing about each other explicitly. That's, that's like the coarse picture of the kinds of apps you can build with jazz and what that would feel like.
+
+**Justin:** reminds me, uh, we were talking to two moths from linear about their development process. Um, and because they have a sync engine that drives linear a lot of times when, uh, a product engineer is coming in and like working on a product, they're really just thinking about like the models on the front end, uh, the shape of this.
+
+**Justin:** Object that you're working with and not so much thinking about like, Oh, you know, how does this need to translate into a SQL query or whatever to store this in a database? It's just like really hyper focusing on that. Um, and then sync is sort of like taken care of as a matter of course. Um, so this is this is exciting, but I also think that this, um.
+
+**Justin:** This layer that you're talking about of like, okay, we have to interact with an external service and, uh, we need a bridge to bring the external service into our local first world is, is a part that also I feel like it's missed a lot of times in the local first space, because it's like, it's, it's not all just the data that you have at your fingertips, right?
+
+**Justin:** It's like all this stuff that's like still out in the real world. Um, so it's cool to, to hear that you've got a solution for that or thinking about it. maybe it's sort of like build on this conversation. Let's go a little bit deeper and talk about some of the primitives, um, that you have in, in Jazz.
+
+
+#### [00:13:05] Collaborative Values and Data Structures
+
+**Justin:** So I was reading through the docs again and you have this, this notion of, of co values or collaborative values. and there are things like co map and co lists, uh, that are data structures that you sort of like build your scheme out of. Uh, so what other sort of like primitives do you have? Are those the main ones?
+
+**Justin:** When you use these, like, what does that sort of enable? Like, what is that doing under the hood?
+
+**Anselm:** Yeah. So these are really your main contact point with, with jazz and, and, uh, to be precise here, jazz is actually a framework on top of a protocol called co Jason, like collaborative Jason. And that's where most of that logic is actually implemented and and. Code. json gives you these different kinds of co values.
+
+**Anselm:** Like you mentioned, co map and co list. These are the two most important ones. You can really think of them as your bread and butter data structures, just like objects and arrays are the most important data structures in, in JSON itself, and you can represent almost anything with that, and then the way the co values work together is that the fields in a co map or the items in a co list can either be JSON primitives, like a string or a number or a Boolean.
+
+**Anselm:** Or there can be references to other co values, um, internally, they're just represented by storing the ID, the ID to the other co value, but what jazz does as a framework is it, it resolves these references for you transparently. So, instead of seeing an ID, you see, uh, either loaded or unloaded. Instance of that other co value.
+
+**Anselm:** And finally, jazz gives you the schemas to precisely define, um, what types the different fields have in your co maps or co values. So you can really think of it as like co json gives you dynamic json, where you might have any kind of data. And then jazz gives you type schemas on top of that. Plus the resolution magic.
+
+**Anselm:** There are other co value types. Um, one is called. Co streams, we'll probably soon rename it to co feeds because that makes more sense to people. And that's kind of a map from account to an append only log of arbitrary items. And that's really, really useful for something like user presence, because each user on each device just pushes the current state, like cursor position, and then you can really easily get the current cursor position or the history of all cursor positions.
+
+**Anselm:** Which brings me to another really interesting property of the co values
+
+**Anselm:** By default, they present a view of the current state, like the eventually consistent current state, according to your local knowledge, but what they actually are under the hood is the history of all edits that ever happened to them, which means that you can very easily time travel and ask it, what did this value look like two hours ago?
+
+**Anselm:** Or you can go and really detail and see like who edited this field. At this point in time and see every little edit in there. Um, there are other co value types. One we already have that is really important as binary co streams. They are kind of just like co streams that you store chunks of binary data in.
+
+**Anselm:** But what that lets you do is store. Files or even video streams in jazz and self. So now you don't even need blob storage anymore. They get synced just like all of your structure data and you can reference images or, or yeah, any kind of binary file, like a PDF directly from your co values and it, again, Something that is for some reason, traditionally very hard, like file uploads or image uploads are suddenly super easy.
+
+**Anselm:** And just another thing you can play with really important co value types that are still coming are, um, co plaintext and co rich text, where co plaintext is basically just a co list of characters. And that's how you represent collaborative plaintext with like concurrent insertions of people working the way you would expect.
+
+**Anselm:** And then co rich text is a particularly interesting one, because.
+
+**Anselm:** Even with CRDTs, if you implement rich text in a kind of naive way where you represent the DOM tree, um, you can end up in really hairy situations and really crazy, uh, conflicts where even the automatic conflict resolution of the CRDT does end up with the like eventually consistent state, but it's nowhere near what you would expect semantically.
+
+**Anselm:** And you have all of these little pieces of duplicated text and broken formatting and. The way jazz will and co jason will represent rich text is where you have to plain text as a list of characters. And then the, you have what is called markup ranges that point to like movable positions in the CRDT where the intent is captured by default in a much more high fidelity way.
+
+**Anselm:** And the conflict resolution does exactly what you would expect, even in quite complex scenarios, which I think is, is really important for. Well, Every app that needs rich text, which is actually like a lot of collaborative apps. This is like, and that's probably going to be all of the co value types ever.
+
+**Anselm:** You can do a lot with those and building your app is really just like, how do you combine the different co values into a shape that represents the data of your app and what is the permission structure of groups that each of the co values needs to be in to represent how. Uh, sharing and, and permissions work in your app.
+
+**Andrew:** so that that's one thing that stands out a lot to me is like, right, when you create these co values, you just say, this is just for me. This is for this group. I feel like that's super cool. Is there any other stuff that you do it the like Uh, the declaration site of a co value that is like a unique feature like that.
+
+**Anselm:** I don't like, I don't think so. And like, that's kind of all you need. Like, uh, what's the shape of it? Who owns it? One thing we want to try in the future, maybe, but I can't really promise that is to, to pull some of the permission structure more into the schema itself. Because right now it's like, when you create a co value, do you say which group it belongs to, for example?
+
+**Anselm:** Um, but even that it's, it's pretty ergonomic. And, and because the groups and who are members of it are kind of like a very dynamic thing, you typically want to, to use that in the parts of your UI where you implement like a sharing flow, for example,
+
+**Andrew:** So, uh, you said that the whole backend is encrypted, which is another super cool property of it, but does that make debugging harder? Like if you have a user that's having some trouble and you want to go look at a table or something just to like, see what the state is. Can you just not do that in a jazz app?
+
+**Anselm:** well, kind of by default. No. But what you can do, we have something called a jazz inspector. Well, like if the user trusts you with their account credentials, you can just look at data as them and you have access to everything as they do. And that's what you use for debugging and just makes that initial step of them having to give you their account credentials a bit more explicit.
+
+**Anselm:** Um, and probably we'll offer kind of a default way of doing that where like, if, and to be precise, I mentioned earlier that like you can build traditional apps that are end to end encrypted in the sense that my sync server doesn't see your data, but you can of course also use jazz, um, in a way where it's fully end to end encrypted and you can't see user's data, like you just mentioned.
+
+**Anselm:** So I think in our kind of like cloud slash developer dashboard that we're working on, we'll probably. have that as an option where you're like, look, I'm, I'm a trusted app. My users trust me. Um, from some off methods, like if you use clerk or something like all zero, the way it works is that the jazz credentials, like the key pairs literally stored in the metadata of the user.
+
+**Anselm:** So by default admins already have access to that anyways. And then that way. If your users already trust you, you might as well give the developers the full debugging experience of being able to look into every individual user. But it's no longer a default. It's no longer something that's the only possible thing.
+
+**Anselm:** Um, you can build end to end encrypted apps and then it's harder to debug, but with individual users, you might just ask them for their account credentials.
+
+**Justin:** Yeah, that makes a lot of sense. There are definitely, like, usability trade offs in there, but it's nice to have the option to be, like, completely hands off, especially in, you can think of scenarios of Like health data, for example, it's like, you know, there, there's a lot of liability to having access to health data.
+
+**Justin:** So if you can say we have no access, that's a, that's a really nice property. 
+
+
+#### [00:21:15] Challenges and Future of Jazz
+
+**Justin:** One of the things I wanted to chat about, um, this is a part in the local first space that I felt a lot about is that there's this common problem. Cause you have these like distributed apps, um, that are like syncing data across devices.
+
+**Justin:** If you change the schema of an app. That can cause a ton of problems. Um, this is like what I think of as like one of the hard, mostly unsolved problems in the space. But I'm curious, like how you think about that? How do you think about schema changes and, uh, how that impacts, uh, like synced data over
+
+**Justin:** jazz? 
+
+**Anselm:** Yeah. I mean, as, as any local first framework developer will tell you like, yes, that's literally the hardest part of local first. And even to complete newcomers to local first, the way I sell it to them is like, look, it makes all of these really hard things really easy, but there's one thing that's kind of cursed now, which is migrations.
+
+**Anselm:** And, um, what we've realized and practice by building apps ourselves with jazz and With our early adopters helping them evolve their apps as they start to need their first migrations. Um, first, the way it looks in jazz is that migrations are attached to an account. So on the client before it launches into your app, it sees if there are any migrations that needs to run on the data kind of rooted in your account, and that's a chance for you to define those.
+
+**Anselm:** Um, And right now it's kind of a bit wild west. You can do what you can do any kind of mutation in the migration. It's up to you to do it in a way that, that won't cause problems. And the main pattern to follow here really is kind of think about it, not as a centralized database migration with that, like you stopped the world.
+
+**Anselm:** You, you make sure it's the same everywhere, but think of it as protocol evolution, particularly if you're familiar with something like protobuf or even graph QL schemas, where the philosophy is kind of. You never remove fields. You only ever add new fields. Um, if you do that with jazz, you typically don't run into any problems.
+
+**Anselm:** And even if you have some old clients, um, that haven't done the migration yet, that the interop is still as best as it is possible, theoretically. So over time, as we see more and more apps and really crystallize these patterns, we will probably provide guardrails where like, Maybe with some typing help, we make sure that you can only do migrations that have these properties and so on.
+
+**Anselm:** But right now it's just up to you. And obviously we help you with it.
+
+**Andrew:** So uh, the exciting part to to me about jazz when I read the docs is it kind of like reimagines what a back end could be. Uh, really exemplifies that for me is file uploads, as you said. Like there's literally like people are, create whole services just to like, make file uploads easy 'cause they're just so hard.
+
+**Andrew:** Which is kind of crazy since it's like one of our default actions on the web. But what other parts of the backend do you wanna like consume into this platform that is jazz.
+
+**Anselm:** So obviously it, it. Um, needs to do more things that databases traditionally do. Um, a big one is kind of queries and, and search indices where right now, one of the surprising things is that very often because it is such a like user first perspective, um, You can actually load all of the data of a user or even a whole org into the client.
+
+**Anselm:** Again, caveat here, one of the special things about jazz is you don't have to, it has very granular sync. That's something we can get into that kind of sets it apart, but still over time, as you load everything in your org, by like looking at it, you can actually have all of that on the client. And very often what would traditionally be a database query with an index is literally like a brute force JavaScript dot filter.
+
+**Anselm:** map over everything and that's still super fast, but as we're starting to see local first app where you are dealing with hundreds of thousands or millions of objects, you do want search indices. Um, over those where you can quickly look up items by their properties, everything that you would expect from a traditional database index.
+
+**Anselm:** Um, the fun thing is we can just, uh, pull that into jazz as well. Clients and, or server workers could collaboratively maintain the index and the index gets synced as an object, just like everything else. So you get some really fun properties there. And, and over time, I want jazz to be more and more what looks like.
+
+**Anselm:** Okay. A distributed database that's kind of exploded into his part that does everything you need. 
+
+
+#### [00:25:40] Building Blocks of Jazz: A New Approach to Databases
+
+**Anselm:** And you kind of pick and choose, um, what you want to build in a sense that might feel a bit like. Redis where like Redis doesn't really give you a full blown database. It gives you like the building blocks for a database.
+
+**Anselm:** And then you kind of assemble those into what, what you need for your app. And that's probably how like search indices will feel like in, in jazz. Um, Obviously part of that these days is also being able to do vector search. So we're like, um, what is every feature that people need from a database? Uh, and similar systems like blob storage nowadays.
+
+**Anselm:** And how can we make that work with the co values so far, the indication seems to be that surprisingly, you can just do all of it with jazz. And, and I feel like philosophically, there's a good reason for it because. The way I started seeing traditional stacks is they're just a very manual way of creating shared state for like structured and unstructured data between users and devices that just follows this established pattern of like, you have a backend, you have a database and you have clients, but there's kind of no. 
+
+**Anselm:** fundamental reason for why it should be structured like that. And if you turn the problem around and you're like, what's an abstraction for sharing state and, and making sync your main way to do that, suddenly everything that you need can fit into that model. So that's, that's what we're trying to do with jazz and, and, um, not just like theoretically, but including all the batteries and pragmatic like bindings You might need to actually get your app off the ground. 
+
+**Andrew:** That's, that's so cool you can find solutions like that where it's like you just have this encrypted file store that's automatically synced. I can do a whole lot for you.
+
+**Anselm:** Exactly.
+
+
+#### [00:27:24] Jazz's Unique Performance and Use Cases
+
+**Justin:** One of the things, as you're sort of talking through this, one of the things that I think is interesting to touch on is like the limitations. Uh, so local first, typically local first apps are typically very user centric. It's like a database per user. Usually they're, they're working with smaller sets of data and that gives us a lot of leeway.
+
+**Justin:** To experiment with ideas that just aren't performant at a scale of like 10 million users or a hundred million users or whatever. Um, but as you're talking about like more distributed database stuff, they're like scales become an issue. So what problems do you think that jazz is going to be like well suited for in the space?
+
+**Justin:** And like, at what point do you say, okay, uh, this is like a little bit beyond like jazz's scale or like not a problem that we're trying to solve.
+
+**Anselm:** So two things come to mind. And, and again, I'm very radical here in the sense that I want jazz to do as much as possible. Like, like really, um, one is that right now it's best suited for greenfield apps, just because we haven't really explored the like sinking jazz state with a traditional database very much, which I think you need in almost all cases where you want to gradually adopt jazz.
+
+**Anselm:** Um, You could build that by hand right now, and we would be very happy to help you too. Just so far, we found that the people who, who try out jazz and adopt jazz, there's some, they're building something completely new where they can really do everything with jazz. And then obviously we have features to catch up with there in terms of unblocking different kinds of apps.
+
+**Anselm:** The other thing is, um, and I want to be really precise here because Developers are very keen to optimize and, and this is usually the part that sounds scariest to them, but jazz does keep the full edit history of everything you ever do to a co value. Um, 
+
+**Anselm:** the performance limit of that is way higher than you think it is.
+
+**Anselm:** So for example, something like user presence, where you like record cursor movement into a co value. Um, it's like by default, a lot of other frameworks create a separate abstraction for like ephemeral state where it's basically just publish, subscribe, and then you never hear of it again. The reason we say it's fine and jazzed to keep all that history is because even if you record cursor movements for a whole year continuously, it's not that much data.
+
+**Anselm:** It's like a couple megabytes. Um, and it might actually be useful to, to keep it around if you want to have like a call recording feature or something like that in your app. So that's kind of one thing where we're really expanding people's, um, conception of, of what you can do on modern computers. The one thing where I'm like, no, you absolutely can't do that with jazz is people asking me if they can build like real time simulation games and store the state of that in a core value, where like, if it's a turn based game, absolutely, easily fits.
+
+**Anselm:** But if you're, if you have like a 3D world with physics, Don't try to build a multiplayer game with jazz. You could in theory, but you would run into scaling issues there. That's, that's like the main one. Um, other than that, almost any type of app should be fine. And if you run into performance issues, I consider that a bug and we have, we've been lucky to already have really diverse early adopters so far where, um, for example, one of them is literally building kind of a social network.
+
+**Anselm:** So they have something like close to a couple million, um, Visitors each week, and I don't know exactly how tightly interacting they are, but that's something that's very out of scope for the default assumption of what people have for local first. They're basically just using jazz like a traditional database to, um, um, I should probably say what it is.
+
+**Anselm:** It's like a. learning platform that's kind of structured a bit like Reddit where people can in a user generated way collect good links and materials if you want to learn like for example Rust or how to play the guitar or whatever. And they get from SEO lots of first time users and then they like render this page of lots of material out of jazz.
+
+**Anselm:** For this user one time, they might not even ever come back, but that's very, a very different usage pattern from what you would expect from a typical local first apps where you have small teams that interact mostly with the same data again and again, that they keep locally. And we had to stretch jazz a little bit, but it only took us a week to basically optimize it for that use case.
+
+**Anselm:** And that's, that's the approach we will take. And. That's only possible because of what I briefly mentioned earlier, that jazz takes the default route of granularly loading data and not making 
+
+**Anselm:** you define ahead of time as a developer, what is like a box of content that we can load as a unit, like, um, with a lot of other frameworks, it's either, um, database per client or organization.
+
+**Anselm:** Or you have to come up with some like delineation of like, what is a document in our app? And then that's the unit of what you can sync. Um, as I mentioned, when I described the co values. It's specifically built as like this, this giant infinite graph of co values that can reference each other. And, and that means that the individual co values can actually be quite small.
+
+**Anselm:** And that's what makes it more scalable as well. And then like, you just resolve those references for as deeply as you need for like each particular view of the UI. So the same. Optimization patterns like pagination work exactly the same way. And in addition to that, you could explicitly choose what you always want to keep offline to make an app work offline.
+
+**Anselm:** Well, but because of that granularity, the scalability actually is already quite good, even though the code is like horribly unoptimized at the moment.
+
+**Andrew:** so a thing with react apps is having like local versus global state in a jazz world. Do I just like kind of default everything to jazz since that's like the, the nice base layer,
+
+**Anselm:** Yeah. And that, that has two really fun properties where it turns out, like even just UI state management is a huge topic in and of itself. And there's like hundreds of frameworks around it. Um, with jazz, if you just build everything around co values, you can do something very fun where like literally like leaf components can subscribe to different co values by ID.
+
+**Anselm:** And you could subscribe to the same co value from a hundred different places in your UI without having to coordinate between those under the hood. Jazz deduplicates that for you and just attaches these as different subscribers to the same core value and that actually makes it a lot easier to build front end code, which means that you're more likely to use it for more stuff in your front end, which means that stuff that you would never have thought of even syncing before Like how far down did you scroll in this document?
+
+**Anselm:** And maybe you want to sync that to other devices. You now have the option to do that. And jazz is actually funnily enough more convenient to use than good old local state that's not even synced.
+
+**Andrew:** That's a really, that's a really fascinating, uh, concept, especially I'm thinking about, like, historical, like, uses data. It's like, suddenly you get, like, these analytics, uh, use cases falling out. 
+
+**Anselm:** Sorry. One more point as well, because you framed it as global state. One slogan that I really like is that the problem with global state is actually that it's not global enough and we're making it even more global.
+
+**Justin:** nice. 
+
+
+#### [00:34:41] Open Source and Business Model of Jazz
+
+**Justin:** I want to, I want to transition the conversation a little bit and talk about like jazz, the, the business. So jazz is, uh, an MIT licensed, uh, project, uh, or at least the main repo is, um, And we've, we've had a lot of people on the podcast talking about like what it means to build a business with a large open source component.
+
+**Justin:** Um, we've talked to people in open source space or in the, in the local first space, I should say about like the challenges of building like local first businesses. So I'm curious about like your take on this. How do you think about, uh, how you license jazz code? What needs to be open source? What doesn't, um, and, and sort of like, How you ultimately monetize this project in a successful way.
+
+**Anselm:** Yeah, so I'll start by just kind of precisely describing the current situation where like, yes, the framework and all of the packages around it are open source. There's an open source version of the sync and storage server you can run yourself. And, um, again, just to be completely transparent here, It's easy to run that on a single server.
+
+**Anselm:** If you want to scale it across multiple servers, we don't really like help you with that much, but if you're smart, you can totally figure it out and you can basically build a clone of, of jazz cloud. And that's very intentionally so. 
+
+**Anselm:** We're starting to build convenience features around that into the commercial hosted version of jazz cloud, which again is the sync and storage as a service where like you get a nice dashboard and you actually get these like weirdly precise, but anonymized analytics about what users are doing in your app without any extra instrumentation.
+
+**Anselm:** And that's probably where a lot of the commercial value in the product will come from, but. Because we're a startup and because this is a super weird new way of doing things, we're very aware that like adding vendor lock into that would be like fatal for people adopting it. So, um, the nice thing is it has all the local first property.
+
+**Anselm:** So the users already own the data and. By you having the option to run your own sync server, or even have a hybrid setup where you have your own sync server as a backup that's connected to jazz cloud. And if we mysteriously disappeared, you could just reroute your clients to your instance of the sync server.
+
+**Anselm:** You, you keep all of your data and you don't have to change a single thing about your app. That that's a really important property for us and one that we will maintain for that reason. And in that sense, I think I'm actually really lucky because a lot of other open source frameworks with a commercial offering have a much harder time delineating what I like open source versus enterprise features.
+
+**Anselm:** And for us, the incentives just seem much more clearly aligned. It's very easy to separate. It's a very easy. Sell to individual developers, to businesses, why they should use jazz cloud. It's mostly about, um, the convenience of it versus running your own one. You really don't want to be running your own, um, real time infrastructure like that in itself is super hard.
+
+**Anselm:** That's something that we can figure out. at scale. And again, the special properties of jazz come in really handy here because of the encryption we talked about earlier. Um, you don't need to trust our infrastructure. So that's inherently already a different kind of relationship to it as a service. And the other thing is, Because of the encryption, we don't necessarily need to run a typical multi tenant setup where you get your own instance.
+
+**Anselm:** We can actually just use really beefy servers for all of the jazz house because the data like doesn't ever touch each other because of the encryption. And, and, and that's just, again, makes this an even easier sell and even easier setup for us. What's actually challenging and something that we want to help our adopters find nowadays.
+
+**Anselm:** How do you sell local first apps? And, um, I think part of it is exploring new ways of paying for apps. If, if people are up for it, really, um, buying into that idea of users on the data and you charge for access to updates of the app, but we also want to support more traditional models. And again, in the sense of being batteries included, the way that that would look like is that.
+
+**Anselm:** We, um, as, as a developer who's using jazz cloud, give you really high fidelity, um, analytics per user and, and dials to kind of be like, well, if they canceled their Stripe subscription, you stop syncing specifically their account. Um, And then for all intents and purposes, they don't cost you anything anymore.
+
+**Anselm:** They don't get most of the value of your app anymore, but we're actually in this nice world where they still have all of their existing data that they had locally. Um, and, and I think that that can be something where we might end up, uh, in a situation where it's even easier for developers to integrate payments.
+
+**Anselm:** And we, we really want to make that easy and help people adopt that because obviously we won't. Our awesome local first app builders to be really successful with the apps. And at the same time, it empowers users more. I I'm, I'm very optimistic about that part.
+
+**Andrew:** Yeah, when we talked to other founders, it seems like that it's, we will ask, okay, now what does the platform do? And it's kind of like, they have to like, reach and stretch for like, oh, we can add some analytics here. You can see some graphs there. But with jazz, you're reinventing the whole thing. And it makes sense that like, you need like, a whole, platform.
+
+**Andrew:** New tool set to think about it. I think how observability and analytics and these event things just like. Our properties of jazz, basically that you don't have to worry about is super powerful. Like here at Descript, we have a set of like six different tools that are a nightmare to integrate, to get all of this stuff when it's just like, Oh, that's just like part of the data now.
+
+**Anselm:** Exactly.
+
+**Justin:** A trend that we've definitely seen, and I think I hear more as I talk to people is that it seems like teams are pushing to like do more with less people and they want less, like overall expenditure, less tools, less complexity. Um, I think it's part of the, the sort of like crunch mode of the industry right now.
+
+**Justin:** But I mean, it does seem like tools like jazz make provide a really good opportunity is like, if you have less overhead and you can pull out more of these features, um, I think it'd be interesting to see where you go specifically around, uh, you know, the, the sort of like product features of like, How do we help, you know, end user developers become successful?
+
+**Justin:** Cause like, that's the, that's the big thing about these like, uh, product like platform plays is like, you know, what is the, what is the value we can add beyond just, you know, the, the sort of like basic stuff that's expected. But I'm also excited. This is a, this is one of the. Probably more mature things in the local first space.
+
+**Justin:** Um, it's still sort of like very much up and coming and there's a lot of hard problems to solve. And maybe this is a, a good next question. What, so we talked about the schema problem earlier about like that's one of the big un, like big hard problems in the space. What do you think the other challenges of the locals first space are?
+
+**Justin:** What, what do we have left to solve?
+
+**Anselm:** I think the biggest problem is, um, honestly just getting people to think in that way, even like adopting a completely new way of, of building things. That's, that's like always the hardest part, but I think in terms of like what happened over the last 20 years, which is roughly like my awareness as a programmer This is the most radical shift that I've seen.
+
+**Anselm:** It's like in the front end sense, it's, it's as big as Rails and react. Um, but in the backend sense, 
+
+**Anselm:** like we haven't really moved from the traditional model at all. It's still database client server. And we've gotten more advanced about like. Um, how we structure apps, how we orchestrate it. But it's been the same, like all the time.
+
+**Anselm:** And this is the first really different way of doing things. Um, so the biggest challenge is just educating people, finding ways of framing that, that are either like familiar or like, at least not scary. And, and the nice thing about this is that that's very much a collaborative effort because there is a bunch of local firsts and in some sense we're competing.
+
+**Anselm:** And in some sense we're like different approaches to the same thing. Yeah. But the challenge we all share and where we can all work together is to even get people to consider, maybe we should build apps in a different way and, and, and. That's what I spend a lot of time thinking about and, and we're super early with, with docs and, and don't, don't even have any blog posts yet.
+
+**Anselm:** So far, the people who find us, like they already get it. They get local first and they will work around all the rough edges, um, because they really need it or they really see the nice properties of it
+
+**Anselm:** Uh, in, in my experience. Introducing front end developers to local first, like they get it as well, because for them it's like, it's kind of the same cell as a backend as a service.
+
+**Anselm:** Um, it obviously works very differently under the hood, but in effect it gives you the same thing. Plus all of these extra nice things. And they love the idea that they can now build whole apps without a backend. And this story becomes even more interesting, which is something that I actually hadn't anticipated when I started out with generative AI.
+
+**Anselm:** Because. Turns out generative AI is pretty good at like chucking together front ends. Well, if that's now all it needs to do to build whole functioning apps, you can suddenly move really quickly with way fewer people. And I am excited about both what that means for individual developers or people who I would call almost developers, like designers who code a little bit, who, who can now, um, confidently build whole apps.
+
+**Anselm:** You can suddenly make industries out of what used to be tiny niches of end users that weren't worth it. building anything for either in a commercial or just like effort sense. On the other hand, big companies, um, who need lots of people can now suddenly Be more modern again and move really quickly.
+
+**Anselm:** That's, that's what really, really excites me. And the upside of that is so huge, but it's still like such a challenge to, to get people to even consider something new. So that's, that's, I think that the main thing. 
+
+**Andrew:** Yeah, I, I see a lot of parallels here between React and Jazz, where it's like when React came out, it kind of shirked a lot of what front end was about N-V-C-M-V-C-C. Splitting JavaScript, uh, UI as a function of state, all of those things were super new. And I see jazz doing very similar things where it's like, okay, we have this backend.
+
+**Andrew:** It was kind of like a fractured Lego piece type of thing. What if we just. Re imagine that as one cohesive unit that can easily produce UI,
+
+**Anselm:** Yeah. Yeah, totally. And I liked the parallel you drew there because like, um, the whole like, yeah, people used to be super strict about separating even behavior from UI and, and, and like, Now everyone agrees that obviously the way React does it is the way to go and a lot of other frameworks start looking more and more like that.
+
+**Anselm:** I think signals are now kind of emerging as like, that's obviously the best way to do reactive state and like, um, it's it's it's similar in a way but I think it's even more drastic because it touches not just the front end but the whole stack and and reimagines it like you said, um, I'm, I'm very I'm a very optimistic person in general but I think like, give it five or 10 years and we'll look back and be like, how did we ever build.
+
+**Anselm:** Apps like that weird way like that. That's just so much work.
+
+**Andrew:** 
+
+
+#### [00:46:06] Future of Jazz and Garden Computing
+
+**Justin:** so it's been great getting a lot of insight into what you're building with jazz Uh, but your company is garden computing Which you're you're sort of talking about the garden app earlier and jazz is your your sort of first product Um, what do you what do you think is the future beyond this?
+
+**Justin:** You know what comes next for jazz and what comes next for garden computing?
+
+**Anselm:** Yeah. Um, so for jazz I think one big thing is really nailing the mobile story We started a first step there with react native support In many ways the whole local first story makes even more sense for mobile developers than it does for for web developers um I mentioned earlier rich text and doing that really well is is a major thing that unlocks a lot of different kinds of apps one other thing I think that we haven't really talked about before is like You I think it's starting to be clear how local first in general and jazz specifically solves a lot of the like data sharing and permissions problems.
+
+**Anselm:** But I think. As we enable higher and higher fidelity multiplayer offline first apps, the main challenge is actually going to be in coming up in new, uh, with new UX to represent partially synced offline, really highly multiplayer state, even the problem of like, you've been on vacation for a week, you come back into your company's notion and you want to know like what's happening there.
+
+**Anselm:** That's really hard. And that's also where we want to provide tools around this like rich History that jazz has, um, to, to help you build these, like what are actually new kinds of features. That's a big topic for jazz. Um, and then something I'm really excited about is taking this underlying protocol, co jason and, and making like a, an open standard out of that, that can be implemented in other programming languages and making it really like a multi environment protocol and, and, and framework, um, for garden computing in general.
+
+**Anselm:** I, I did mention Garden earlier. Something that we want to start doing very soon because um, as soon as we have rich text, we can start building that again. And we want that to be an end user product in its own right. Basically. Yeah. A notion competitor in the beginning. Both because like I want to enable all of this whole new ecosystem of developers to build cool apps, but we also want to build cool apps with jazz ourselves.
+
+**Anselm:** Like that's the whole point, right. And I think we're in a unique position there to be like, look, this is really there. The bar of quality of software you can build and it will be like a product in its own right, but also kind of like the flagship app for jazz. Um, and, and yeah, in the meantime, we already have a bunch of other ideas of what we want to try building.
+
+**Anselm:** We're like, we're kind of annoyed by discord. That's pretty good, but it's also annoying. Like, and If you have jazz, suddenly it becomes really easy to build something like that. So why don't we try and build our own discord and see how that goes. And there's lots of interesting things you can do with AI.
+
+**Anselm:** We're like based on the schema of a jazz app, you kind of quote unquote could just add AI and you get this like automatic collaborator that just knows how to do stuff in your app. Um, that's something we want to explore. So I think we'll, we'll stay this mix of like a framework and service company plus some end user apps, because I think you can't really do the framework without it being really driven and influenced by the needs that real apps have, and obviously we try to be really close with our adopters, but I really think the only way to, to build a good framework is if you're constantly building apps with it yourself, that's one thing.
+
+**Anselm:** And then like more generally, like. I would like to take the move that I kind of did with jazz tools, which is like explore these like new and interesting ideas from the fringes of academia, like CRDTs. I mean, by the point I discovered them, they had been a thing in academia for about 10 years, but these things just really take time and, and kind of being this mix of like a research lab and a really like, Product company where you take these new ideas, you find ways to make really ergonomic abstractions out of them and then do everything that's necessary to bring them into the mainstream, including like the batteries included part.
+
+**Anselm:** But also, how can this be commercially viable and self sustaining part? Um, and I obviously don't know what the next. Things of that nature are going to be like one topic. I've always been really interested in a simulation But I don't have any like concrete enough ideas for now We're like focused on jazz and everything that you can do with that, but that's kind of the kind of company I want to build
+
+**Andrew:** so many cool things to unpack in there. Uh, if, if you guys do like notion is such a good like product to target. Cause like linear is just like, Oh, we're good Jira. And everybody's like, Oh, of course. And like, I think notions almost in that same place of everybody's like, we like it, but it's just like so terrible sometimes cause it's so slow and jazz could probably make that good.
+
+**Andrew:** The AI part though. That that really kind of just slapped me because like, since you, since you have all of your state and UI in this one place, you're right. Like you could have AI opening menus for you, uh, just because it knows where all of all of the state is. So that's, that's super cool. 
+
+
+#### [00:51:09] Conclusion and Final Thoughts
+
+**Andrew:** Um, that wraps it up for our questions though.
+
+**Andrew:** Uh, thanks for coming on Ansem. this is, this was a amazing, uh, really, uh, interesting talk for me. I'm super excited to use jazz. I've been looking for some tool like this for a while. So thanks for coming on the podcast and talking about it.
+
+**Anselm:** Yeah, my absolute pleasure. Thanks for your great questions guys 
+
+**Justin:** Yeah, it is wonderful to have you and jazz is such an incredible framework. So yeah, looking forward to trying it out. 

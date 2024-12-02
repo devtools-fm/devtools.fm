@@ -196,7 +196,14 @@ export async function processMdx(
   const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
   const [, thumbnailId = null] =
     (data.thumbnail || "").match(/\?v=(.*)$/) || [];
-  const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/);
+  const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/) || [
+    null,
+    null,
+  ];
+  const [, spotifyEpisodeIdAlt] = data.spotify.match(/\/episode\/(.+)/) || [
+    null,
+    null,
+  ];
 
   const tabSections = await parseTabs(content, components);
   const showNotesTab = tabSections.find(
@@ -228,6 +235,7 @@ export async function processMdx(
     youtubeId,
     thumbnailId,
     spotifyEpisodeId,
+    spotifyEpisodeIdAlt,
     frontMatter: data as FrontMatter,
     tabSections: includeSection ? tabSections : [],
     description: includeTranscriptAndDescription

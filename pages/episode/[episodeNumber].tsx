@@ -83,6 +83,7 @@ const Episode = ({
   youtubeId,
   thumbnailId,
   spotifyEpisodeId,
+  spotifyEpisodeIdAlt,
   tabSections,
   frontMatter,
 }: ProcessedMdx) => {
@@ -134,14 +135,29 @@ const Episode = ({
         {frontMatter.title}
       </h1>
 
-      <iframe
-        className="mb-8 md:mb-12"
-        src={`https://podcasters.spotify.com/pod/show/devtoolsfm/embed/episodes/${spotifyEpisodeId}`}
-        height="161px"
-        width="100%"
-        frameBorder="0"
-        scrolling="no"
-      />
+      {spotifyEpisodeId ? (
+        <iframe
+          className="mb-8 md:mb-12"
+          src={`https://podcasters.spotify.com/pod/show/devtoolsfm/embed/episodes/${spotifyEpisodeId}`}
+          height="161px"
+          width="100%"
+          frameBorder="0"
+          scrolling="no"
+        />
+      ) : (
+        spotifyEpisodeIdAlt && (
+          <iframe
+            className="mb-8 md:mb-12"
+            src={`https://open.spotify.com/embed/episode/${spotifyEpisodeIdAlt}?utm_source=generator`}
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            height="161px"
+            width="100%"
+            loading="lazy"
+            frameBorder="0"
+            scrolling="no"
+          />
+        )
+      )}
       <Browser>
         <Navigation
           index={activeTab}
