@@ -1,0 +1,505 @@
+---
+title: Artem Zakharchenko - Mock Service Worker
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Artem-Zakharchenko---Mock-Service-Worker-e2tn3gv
+youtube: https://www.youtube.com/watch?v=ijHSyuH5EaM
+tags: technology, podcast, interview, mock, service, worker, msw, api, mocking, testing, node, js, epic, web, devtools, fm, programming, coding
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Artem Zakharchenko, the creator of Mock Service Worker (MSW).
+MSW is a library that allows you to mock network requests in your tests and demos.
+We talk about the evolution of MSW, the technical details of how it works, and the future prospects of the library.
+
+- https://bsky.app/profile/kettanaito.com
+- https://mswjs.io/
+- https://www.epicweb.dev/
+
+Apply to sponsor the podcast: https://devtools.fm/sponsor
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction 
+[00:00:55] Artem's Background and MSW Overview
+[00:03:39] The Evolution and Technical Details of MSW
+[00:07:57] Ad
+[00:08:16] Interception Mechanisms in MSW
+[00:15:14] Advanced Features and Future Prospects
+[00:18:08] Mock Generation and Automation
+[00:20:57] Customizability and Ecosystem Expansion
+[00:22:38] API Design Philosophy and Challenges
+[00:29:50] The Pitfalls of Patching Globals
+[00:33:17] Generating Mock Data: Best Practices
+[00:37:09] Epic Web: A Year in Review
+[00:52:28] The Future of MSW: What's Next?
+[00:56:26] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Artem:** I just tried to imagine the perfect API, and I started tweaking this little prototype that was called Mockery, I just did it over a weekend. It was one big file. Everything was in the service worker. I pushed it and forgot about it for probably a year or so.
+
+Then, it got picked up by can see dots on Twitter.
+
+#### [00:00:21] Introduction 
+
+**Andrew:** Hello. Welcome to DevTools. FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+~~Hey everyone, uh, we'd like to, about that, uh, hey everyone, uh, we'd like to introduce our guest today, uh, Artem Zakharchenko.~~
+
+**Artem:** ~~Hey! Hello!~~
+
+**Justin:** ~~I'm gonna go back and do that again. Uh, ~~hey everyone, uh, we'd like to introduce our guest today, Artem. ~~Just going to leave it at that. Uh,~~ Artem, you are the creator of MSW, uh, which is a fantastic tool.
+
+Uh, I used it a lot at Oxide. It was like a really, really big part of our workflow. So incredibly excited to talk to you about that. Uh, you work at Epic Web Dev and we're also excited to talk about that. We're big fans of Kent. Uh, but before we dig into that, uh, would you like to tell our audience a little bit more about yourself?
+
+
+#### [00:00:55] Artem's Background and MSW Overview
+
+**Artem:** Yeah, of course. So, hey everyone. My name is Artem. I'm a software engineer and also a developer educator at Epic Web. And I somehow found myself working for the past couple of years exclusively on dev tooling. So I'm really excited to discuss it here.
+
+**Andrew:** Sweet. So let's, let's hop right in and talk about, uh, the main thing that I know you for, which is a mock service worker or MSW. So can you explain to us what that is and how you came about creating it?
+
+**Artem:** Yeah. So MSW is a mocking library. I'm pretty sure most of the listeners used some sort of mocking library in the past. Things like Knock or Mirage or some fetch adapters. And the whole point of MSW is to allow you to describe the network. But there was a kind of a different philosophical approach to the project because usually people reach out to mocking for different reasons, actually.
+
+So mostly it's testing, of course, we need to gain control over the network, prevent certain requests from happening and also, you know, just being in charge. Of the response, but they're also quite a big, as it turned out area for other use cases, like when you develop your applications, I know from my own experience, uh, we used to work with a designated backend teams and it was quite often that, you know, you're kind of ready to start, you have your backlog prepared, but there's just not that much done from the backend side.
+
+Maybe the folks are busy, you know, stuff happens and then you basically blocked. And so a lot of. People actually use MSW to unblock themselves so they can just start developing, they can describe the contract, they can even show it to their backend engineers and just keep being productive, which I found to be really cool.
+
+And then there's also like all sorts of demoing and presentations. So basically I tried to approach it from an, um, higher level perspective of tooling, if this makes sense. So it's not a part of your test suit. It's not a part of your, I don't know, any particular integrations. It's just its own thing.
+
+**Justin:** Yeah, it's, it's really, really fantastic and really powerful. So when I worked at Oxide computer company, we were using mock service workers to sort of like fake out the entire backend. So we had a, a single page app, uh, with a rest API that it talked to. And we had an open, uh, an open API spec for that. And we would just generate the mock service worker handlers for that.
+
+And basically anytime the API updated, we'd get like new handlers and it. It sort of like gives you the ability to like, Oxide's console is open source. So you can actually go to the repo and like open up the web console and like look at and play around with it and interact with it just like you're doing a regular rack and it's all powered by mock service workers.
+
+So it's like a, it's a really, really powerful library for both testing and demos. Yeah. It's awesome.
+
+**Artem:** Yeah. 
+
+
+#### [00:03:39] The Evolution and Technical Details of MSW
+
+**Artem:** And like how I came to create it, I think, uh, it was, uh, some seven or something years ago, I think it's 2018. And, um, I was just looking for better tooling and I was very, very new to the concept of testing in general. And then there was the smoking part and we tried a few different things. Back then, and I realized that maybe it can be better and I did this, uh, uh, experiment I do with every idea.
+
+I just tried to imagine the perfect API, like how would a perfect API look like? And I started tweaking this little prototype that was called Mockery, which is a stupid name to be fair. And, um, I just, I just did it over a weekend. It was one big file. Everything was in the service worker. And I, I pushed it to get hub and forgot about it for probably a year or so.
+
+And then, and then it, uh, it got picked up by can see dots on Twitter. And then I rushed to, to Polish it all and to publish it under a different name. And then the rest is history.
+
+**Andrew:** So, uh, what sets it apart from other mocking libraries? You mentioned a few, the one I usually don't use a library. I usually use jest mocks, which are just like not a fun technology to work with. So how does, uh, MSW set itself apart?
+
+**Artem:** Yeah. So as I mentioned already, like, uh, the whole idea of MSW is just to give you control over the network and it doesn't matter where you need it. So you kind of start from the mocks. And then you integrate it all down, whether it into your testing framework, like Chess to B Test, maybe into your end to end tests with Playwright or Cypress, maybe in Storybook, maybe in somewhere else, maybe spawn a local HTTP server.
+
+So the whole idea is that this is your way to describe the network. And then you do. Whatever you need with that later on, uh, what sets it apart is also a couple of other things. So from, from the very start, I found it to be quite limiting that you, uh, encounter mocking solutions that were very specific to certain requests, uh, clients.
+
+For example, you would see a fetch mock and it works really well with fetch, but let's say tomorrow you migrate to something else, especially if you're a node GS, maybe you migrate to raw HTTP request, and then suddenly you have to adjust your test, which is. That's something I, a big fan of. So one of the things that MSW does pretty well is being request client agnostic.
+
+And this means that you can describe the network and it's completely unrelated to how that request is made. All that matters is what is that request and how you want it to be handled. And then the second thing that came out of that is being an environment agnostic, which is also amazing because we have this request handlers, which are like functions that you use to describe this, this network.
+
+You know, contract, and they're written just in, in plain JavaScript. So you use the FET api, you can use a fetch p request to handle the uh, uh, intercepted request. You can use the response class to construct the mock response. And I try to create just this kind of natural feeling to it all, almost like being an A part of the native API.
+
+And then MSW does all the heavy lifting under the hood to figure out. How to translate different requests from different environments like Node. js to that fetch API and then let you interface with that. So being request client agnostic and environment agnostic is really powerful. So you write your network once and suddenly you can integrate it anywhere.
+
+And yeah, um, I think those are the main key points that sets it apart.
+
+**Justin:** Yeah. I think there's, there's like this notion of mocking that like it can be really fragile and really expensive. Anybody who's like done extensive end to end testing has like. Definitely come across this before. Uh, and in my experience, mocks. Like end to end tests are kind of like, it's best that you have as few of those as possible and like push them down to like the lowest level possible.
+
+So mocking the network instead of like mocking an express handler or, you know, something like that, uh,
+
+is a powerful.~~ uh,~~
+
+~~is~~
+
+**Artem:** Yeah, because if you think about it, that fragility mostly comes from two places. You're either to, uh, kind of bound to the implementation details. So how your software makes the request or you're bound to the response itself. Like I want this response to stay in sync. So these are usually two main factors, how your mocks get, you know, out of date and fragile, and suddenly you find yourself maintaining mocks instead of writing tests.
+
+So, yeah, I definitely agree.
+
+
+#### [00:07:57] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for this week, but we don't have one. So if you'd like to sponsor DevTools FM, head over to DevToolsFM slash sponsor to apply. And if you want to find another way to support the podcast, head over to shop. devtools. fm, where you can buy some merch and rep the podcast.
+
+With that though, let's get back to the episode.
+
+
+#### [00:08:16] Interception Mechanisms in MSW
+
+**Andrew:** So how does MSW like prop itself up in front of the network and like how is it able because like I can imagine how you might do that for just fetch, but doing it for like all the different types of API seems like it might be a bit harder.
+
+**Artem:** Yeah, it is actually hard and I'm really excited to talk about the interception. So let's go. So, um, of course, like to handle a request, uh, you need to intercept that request, right? You need to gain control to, to catch it before it's actually made, because that's the whole point. And MSW does this slightly differently based on the environment.
+
+So in the browser. And this is where it started. It was, initially it was a browser only tool and it started as an abstraction over service worker, so thus the name. And the whole point is that we have the service worker that lives alongside your application. And by design that API can intercept traffic.
+
+So you can, you can write your own handling in the worker, and then you usually use that to cash assets to maybe deal with some progressive enhancement, like offline capabilities in PWAs were achieved mostly through service workers. So it's a fantastic API, but it was never quite used for mocking because it's kind of tedious if you try to do it just in the worker, which I did like.
+
+Seven years ago, you quickly kind of meet the ceiling because that's not much you can do there. And you have a very strict scope to, to comply with all the security considerations. So what MSW does, it uses the service worker that it registers just as the interception mechanism. And then it routes all the, all the requests through the main thread, through your app, where you have these request handlers defined.
+
+So it's your, uh, your favorite tools, your favorite language, like TypeScript, your third party libraries. It doesn't matter. Basically, it's your app, but the worker acts as a source of network. And I think it's a real nice way to put it, because when we go to Node. js, It's kind of changes a little bit because there is no service workers there.
+
+And what we have to do, we have to catch the requests in a more conventional way, way, like people used to do, you know, like, uh, global. fetch equals my new fetch, uh, but. being more considerate, uh, about what those interceptors do to your codes or to your tasks, for example. So what we have, we have a standalone library called interceptors, which, uh, provides this, this request agnostic request client agnostic way and, and translates all the different requests and no GS to fetch API requests.
+
+And that's mostly down there, but it has a very, um. Very clear responsibility. Like it doesn't do any route matching. It's a very simple tool and actually built it to be a low level uh, library so anybody can build their own MSW on top. Because what I've learned from all these years of building a PMLogging tools, it is really hard, especially in Node.
+
+js to implement. consistent, but also seamless interception. Usually it's, it's quite primitive and it hurts a lot because, because you just replace a lot of the native code, native network code, and you just interface with the mock more than you interface with that code that's going to run in production.
+
+So what we do, we iterate on this intercepted library. And I think this, you know, last year we did some seventh or something iteration. And this one is the most spectacular yet. Uh, I, I sound like an Apple commercial, but it's the best interception yet. Because what we did, uh, with the help, uh, from, from contributors, we created the algorithm that kind of intercepts requests on the socket level.
+
+So we, we go ~~even,~~ even. Deeper down. So, so a quick overview, like you make a request and note, um, most likely you're making a, it through the HTTP module and using client request or, or just HTTP dots request. So you have this layer, this is your app. Then it creates a client request under the hood, which you probably not creating manually.
+
+It's quite verbose. Then the client request creates a socket that's going to be your tunnel to transfer the data. And then that socket, uh, sends and receives packets or packages, and then it routes them through the parser, uh, HTTP parser in this case, because we're dealing with HTTP requests. And then it implements all the request handling and responses.
+
+So we used to sit on in the middle for, for a while, for a few years. So we were on the client request level, which is also how most of the node GS, uh, mocking libraries work. They replaced the client request. It's a, it's a good middle ground to, to inject yourself into, but then it was bugging me. Like we can do better.
+
+We can do much more if we can just lower this logic to the socket level. But for a long time, ~~it was,~~ it was kind of impossible to do because once you're on the level, you didn't have even the protocol. Context sockets can be used for anything for that socket for, HTTP. And now suddenly like you need to write a parser.
+
+No, that's a bad idea. But then completely by accident, like I stumbled upon a thread on GitHub that you can actually import native Node. js HTTP parser. It's just kind of hidden. It's published, but it's hidden. It's like in, in a special underscore HTTP common module, which is a built in module in node and there's a parser.
+
+And I was like, yes. Let's give it a try. So I gave it a try. It was a complete disaster. And then in half a year, I gave it another try and then another, and then eventually, uh, we arrived at this, this layering that made sense. So what we do now is we have this mock socket class, which is just a pass through socket.
+
+It doesn't do anything by default, but it lets, you know, when, when data is written and read from the socket, and then we wrap it in a more, um, specific class, which is MockishDTPSocket, and this one uses the Node. js parser, so suddenly all the, all this data from the socket is, is going through the parser, and we know when certain requests are happening, when responses are happening, and this is where we translate them to FetchAPI.
+
+And then on top of that, we construct an HTTP agent, and then we hook it to the HTTP API that I mentioned before. So we're still kind of activating on this middle layer, but the way requests are routed are from the socket, from the underlying socket. I don't think we can even go deeper because it wouldn't make sense.
+
+And this is almost perfect. And I'm very happy that we have this API. It's quite groundbreaking. I haven't even announced it yet. I think, I think this is the first time I'm talking about it in such a detail. I have a long post, a long blog post, uh, ready, but yeah, I need to publish that. So basically, um, what I was trying to say is that there's different ways to intercept requests.
+
+So we can rely on standard APIs like service worker in the browser, and we can come up with something ourselves since there's nothing better in Node. js. to have kind of the seamless way of handling requests, no matter how they were constructed.
+
+**Andrew:** Did going to that lower level unlock, like, new types of things that you could mock that previously were, like, too hard or cumbersome to?
+
+
+#### [00:15:14] Advanced Features and Future Prospects
+
+**Artem:** I think, first of all, it unlocked more of the network code for, for everybody consuming MSW. Now you, your code will create this client request instances. It will actually create sockets, which wasn't the case before. It will actually push the data and read the data. And to me, that matters a lot. Basically the closer I can get people's tests.
+
+And demos and anything working to production, the better, because now what it did, it unlocked a bunch of bugs that people found that wasn't there. And I love this about MSW, the more we bet on the standards, the more we try to kind of be less intrusive. As possible, the more people find this little kind of, uh, hidden, hidden bombs they have in their code or in their tests that just wasn't there.
+
+Cause if you like, uh, you know, enter this black box suddenly, yeah, everything is nice and shiny and passing, but if you allow more code to run, Hey, you find a kind of inconsistency here, or you actually making a request that doesn't make sense. Per spec, but because everything before was just giving you a thumbs up, uh, go ahead.
+
+Yeah. You thought everything's okay. But with, with this lower level interception, we are utilizing more of Node. js, which is really important. We actually found some bugs in Node. js too, which I love so we can improve and everybody can, you know, Move towards better ecosystem in general as, as in terms of like features, um, I'm trying to think there was something that was related feature wise.
+
+I don't think so, but we did the foundational work to potentially allow things like mocking SMTP in Node. js for that. We also need a parser, but Hey, maybe that's. Something for, for the future to consider.
+
+**Justin:** was thinking with raw sockets, it gives you a lot of power, but also like a lot of complexity. Right? So it's like, if you're thinking about the request level, you're not really thinking about like, is this HP 1. 1? Is this HP 2? Is it HP 3? You're just like, whatever, it's a, it's a request or it's a response.
+
+But like, at the socket level, you really have to be aware of the protocols, like you're saying, it does give you the ability to like support it. potentially broader classes of protocols. But so are you just supporting HTTP 1. 1? Or is it like, do you have like HTTP 2 support is like, you know, what, what is the, the layer of support at the socket level,
+
+**Artem:** I think it's fair to say that we support everything that node. js HTTP parser supports. So if we can, if we can grab that information from the parser, then at least you should be able to know that, uh, let's say HTTP two request happened. Uh, I don't have any test cases to prove this, so you may as well disregard, but I think that we should be able to, to intercept that and then maybe some specific functionality.
+
+It may be missing because we're not really tailoring for this right now. But as, as the protocols and as the standards evolve, I think we will find an option. People will complain and then it will be implemented eventually.
+
+
+#### [00:18:08] Mock Generation and Automation
+
+**Andrew:** So, uh, one big part of mocks is writing them and it seems like with, uh, a big enough application, writing a big mocking layer might be a lot of work. Uh, do you guys have any solutions to help automate some of that? Or like, what is the process of actually mocking my API?
+
+**Artem:** Yeah. Yeah. That's a good one. I think a lot of people are struggling with, uh, actually creating sufficient, like, Mock set for, for the application or for the existing task cases for a very long while, uh, we didn't have any way to like create the mocks because very often people would want to create them from, let's say, runtime behaviors.
+
+And I wasn't a big proponent of that because maybe you have bugs in runtime behaviors. It would be nice to have some kind of higher ground, maybe an API spec that is the right source for, uh, for your mocks. And then I think a couple of years back, uh, we, uh, unveiled the source. library, which is basically another, another package in the ecosystem that can work alongside MSW.
+
+And what it does, it, it accepts different formats of your network and it generates request handlers that you can then feed to MSW to, to do the mocking for you. And right now we support. OpenAPI. So great. If you have a spec ready, you can feed it to source and grab the handler's format, which is very nice.
+
+And we also added support for network archives for AGR files, mostly for debugging purposes. I think I have a video on YouTube, which is a, like a short, uh, uh, use case where I have a bug in the browser. And it's kind of a tricky bug. It doesn't happen all the time. It's intermittent. It's, it's kind of hard to reproduce, but I caught it in the browser.
+
+And what I want to do now, I want to grab this state of the network and put it alongside my test. So I can run my test and my potential fix along this very. thing that happened. So what I can do, I can export this network from the browser and into archive. I can put this archive next to my test and I can provide it to the source library.
+
+So now I have this snapshot of the network working reliably through MSW to, to verify, Hey, I'm actually fixing this. And I think it's a really cool use case. So these are two primary ways how people can do generation of mocks. Uh, there's also a few. Just, just user lens solutions. I think there were, there were a lot of them actually over the years because people are tired of writing the mocks by, by hand.
+
+So there are some related to network archives, some for open API. Some for, for even like more targeted third party libraries, I'm trying to, to recall yes, packed, of course that there's packed. So you have a contract testing by done by packed. You can also use that to, to have mocks from this. So I think people built a, I think considerably enough tooling around it.
+
+And I'm also looking forward to exploring more inputs to, to, to the source library.
+
+
+#### [00:20:57] Customizability and Ecosystem Expansion
+
+**Justin:** something I was just thinking of generally, like if you replace the internet, like. Is the interceptor level like customizable? Like, so I was thinking like, Oh, this is great. Like, this is a fantastic tool for the node ecosystem. I wonder like what it takes to spread this to like the Dino ecosystem or the bond ecosystem.
+
+And like, you know, there's just some internal differences there, obviously. Um, Is, like, the interceptor part of it something that can be replaced? Is it, like, designed in that way?
+
+**Artem:** So speaking of MSW, you can, you can create your own, uh, setup class. So, and you can use different area of interceptors there. And this was actually one of the, one of the issues we discussed recently on GitHub, uh, with one of the contributors, they wanted something else. Like they said, like we written our own interceptor for our thing.
+
+It makes sense. How do we plug it in? Like we want it in MSW. So what you can do, you can create your own class. You can extend this, this existing base class. So you have all the experience from MSW, but you can provide your own interceptors area. And, and you can do that through this low level library that I mentioned, you can pretty much implement it yourself too, but I think it provides very nice starting ground, being able to apply the interceptor, dispose of it, uh, append overrides and all of this.
+
+So yeah, you can do that. Uh, I don't know if, if it's like the best strategy to account for different, like, Environment differences, but it's something to explore. Yeah. I'm trying to build in general APIs that would be composable as much as possible from, from MSW to how you can compose resolvers. And all the routing logic to, to this low level things like interceptors.
+
+It is not very common, um, for better or worse, but you can definitely do that. And, uh, it's very often a by product of, of API design, which I think is nice to have.
+
+
+#### [00:22:38] API Design Philosophy and Challenges
+
+**Andrew:** So I was going through your docs last night and it, they are just. Beautiful docs. You can definitely see that you have a root and graphic design because even all your blog posts have a nice little, uh, illustration along with them. Uh, one thing I noted though was that the recipe section is huge and there is so many different situations where you can use mock service worker.
+
+So, uh. Of those, like, what was some of the hardest ones to support? Like, you support GraphQL and WebSockets. It seems like that's, like, going above and beyond the initial, uh, uh, value proposition that MSW is.
+
+**Artem:** Yeah, there, there is a lot of things. Uh, a lot of like particular scenarios, some of them brought by, by people using the library. Some of them just kind of something I wanted to have for a long time, like WebSockets. What was the most difficult to support? It'd probably be WebSockets. It took like four years, not of active development, but like four years of constant consideration and thinking and brainstorming.
+
+And I think it's very, very nice. We finally announced the official support last year, last autumn. So now people can also mock WebSocket APIs, which is a new protocol for us, but a very, very nice addition. I definitely like the streaming support. This is my favorite. I think a lot of developers are discovering streaming on the web, like last year and this year, and with things like LLMs and, and, and AI application, it's going to get more popular.
+
+And it's very nice that you can mock streams in MSW, just. In the most elegant way I can think of, because it's just web APIs. There's nothing from MSW. You just create a readable stream or a transform stream. I actually have a very nice lesson on a cat that I absolutely loved making where I showcase how you can, um, intercept a video stream.
+
+Uh, let's say if you're building a URL on Netflix and you can transform that stream in any way you want. So you can feed it to some video transformer if you want. Let's turn it black and white. Why not? But what I did, I showed how to insert latency between stream chunks so you can actually test the loading spinner.
+
+So you streaming from a, from a load bandwidth connection, and now you want to test, Hey, my app should show, you know, I'm buffering, I'm trying. And that's how you do it. You just intercept the stream, pipe it through a transform stream and then respond using a fetch API response. The very little MSW, and this is what makes it beautiful.
+
+**Justin:** Latency tests are super powerful. That's, that's, that is really a superpower. It's, like, just being able to, uh, inject latency in your mocks, in particular, uh, it, like, tests a lot of pathological cases. Um, What are, so like, what are some of the details that are hard to get right when you're building something like this?
+
+I mean, you've got so many layers. You've talked a lot about like composability of the software. You've talked a lot about like inject inserting yourself at the right layer of abstraction. Um, what is your sort of like approach to maybe new features or like how you think about adding things to, uh, MSW?
+
+**Artem:** Yeah. Um, that's definitely a great question. I think I was very lucky slash I'm not, I'm not sure consider it at the very beginning when, when every like, uh, core aspect of MSW was designed that it kind of turned out into this composable thing. At least for me, as somebody who develops and adds things and tries to improve things over the years, I always take, uh, like the seamlessness.
+
+Uh, into, into like high, high regard it always on my mind whenever there's a new API, I'm trying to think how to implement it. So it doesn't affect, uh, much. So it affects as little as possible of your code. I also absolutely love the paradigm where mocking should actually resemble the way you would work with this API.
+
+So if you, if you, for example, creating a fetch request on the web. Well, you call fetch or maybe you construct a request instance provided to fetch new receiver response instance. And that was in, in the, you know, in the foundation, how we designed a MSW 2. 0, which is completely fetch based. And I love it because that's how people make requests on the web.
+
+And that's how they should ultimately mock them. There shouldn't be any custom abstraction sitting in the way of you, you know, requiring to be learned. It's just. Regular JavaScript, which, which I think is the, the theme of, of a lot of my API decisions here. And, uh, this goes also to, to other protocols like WebSockets.
+
+So when we design WebSockets, it's obviously very different from HTTP from the way you create these connections to how you handle them. It's all event based. There is no definite way of like handling an event. You can just receive events. You can send events and that's it. And this was also very Um, important to, to reflect in the API that we got, which I always try to be inspired by the standards that we have.
+
+Like, how is, how is it working there? How do people interact with those standards or in case of like WebSockets where maybe not that many people use the raw WebSocket class, I was looking a lot at, at third party libraries like Socket. io. To NWS as well to, to, to see how they nail it. Like what kind of experiences are familiar to people?
+
+What would they expect when, when you work with, with WebSocket? How would you mock that WebSocket? So if I can strike this resemblance, this always leads to a more clear API. So to me, to me, this is really important, um, from composability point of view, I think I try to make things do again, as little things as possible, because there were a lot of situations over the years where people wanted something like, can we have a base URL option?
+
+In MSW, like all our requests are against this, this defined host. Can we have a base name? And yeah, it sounds like an appealing thing to have, but I always said like, if you, if you want to have base name, just, you know, do it yourself. Like create a utility. That's that's called, I don't know, with a base name or, or do I like.
+
+Anyway, you want to call it and it will just accept the URL or a path portion of the URL and just rebase it against against your base name. I think that's a really, really good way forward. I think this is how people should perceive third party libraries. They shouldn't do every little tiny detail for you, but they should give you enough tools so you can achieve those tiny details if you want to.
+
+Because MSW is very, very flexible, maybe to its own demise, sort of, that you can Have a path matching by, by a string, by a full URL, by a regular expression. And it's very hard for us to, to give you an API where all of these will be matched against the base URL because MSW doesn't know. But you do know, you know that you're making, let's say, requests using string paths.
+
+So it's very easy for you to handle this and say, yes, my utility won't support regular expressions. I'm good with it. So this is something that's kind of tricky to get right. But saying no and like knowing where to draw the line is very important for API design. So it doesn't get into this bloated monstrosity.
+
+That's, that's very often the case with projects and that's not their fault. It's, it's just what people want. And then you obviously want to please, you want to make sure your tool does the things people want it to do, but it's also your, your responsibility to, to know when it shouldn't do something. And I think that that's contributed a lot to, to how MSW is today.
+
+And I think it will contribute a lot to what it will be in a few years later as well.
+
+
+#### [00:29:50] The Pitfalls of Patching Globals
+
+**Andrew:** The, the, those thoughts remind me of another blog post on your blog where you have lots of opinions on patching globals, and it seems like it's another thing where it's like, oh, I want this API and this thing is right here. And it seems like it would be a nice, easy thing to work into my API design, but usually goes wrong.
+
+Can you share some of your thoughts on why we shouldn't be patching globals to implement APIs?
+
+**Artem:** Absolutely. Yeah, this is a very touchy topic. Definitely to me as somebody who's been working with, with globals and patching globals myself. And then, then I realized that, yeah, that's a bad thing to do. Like, and I wrote this piece on my blog to kind of highlight this problem a bit better, because it seems like not everybody, um, understood the whole picture of it, which is fine because as a consumer of, of different projects, different utilities, you kind of want this good UX. So you want, for example, your fetch function to have some, some special property that would make your life easier. But there's so much more to consider, especially behind the scenes, especially in the whole ecosystem, that I thought that it would be a good idea to highlight this. Uh, so, uh, the main point is that you don't generally modify things you don't own.
+
+And this is how you get a very stable code in terms of your influence on the environment. So I think that was a, uh, I think a series of tweets. Uh, the back then where there were a few APIs by BUN and, and some APIs by next GS and also some APIs from React that, that they all had something in common. They wanted to modify existing globals.
+
+Uh, there was fetch, fetch, modifications and a few other things. And it was kind of out of place because. They would break a lot of compatibility. And to me, like the educational aspect of it all was very much hurting because you, you raise in generations of developers who would think that this, these APIs actually work like that.
+
+And the moment you set foot outside of that framework or outside of that environment, suddenly they don't. So it just didn't make sense to me. Why would you invest your, your effort? As a consumer and as a library author into creating this problem when you can avoid it. And luckily this, this wasn't just me.
+
+A lot of, a lot of really great developers shared this, uh, you know, perspective, especially from those teams that I mentioned. So people listen to the feedback, people, people adjusted those APIs. So for example, caching from Next. js was just moved outside into a nice declarative API, and I think that's the way to go.
+
+So, uh, yeah, definitely not a good idea to patch globals due to anybody who wants a bigger picture. You can go to my blog and read about it. There's also a very nice, famous piece, uh, from, uh, the incident with MooTools, how they patched the global. And it turned out that now we cannot have this nice API.
+
+Everybody just kind of misses on it because, because of adoption, because of A ton of factors to consider. You cannot just be looking at developer experience in isolation. There's much more things there.
+
+**Justin:** Oh, yeah, the Smushgate.
+
+**Artem:** Exactly. 
+
+~~ ~~
+
+**Justin:** I really appreciate that point. And I think it's interesting, um, Now, when people are like modifying prototypes, which is also just a terrible thing to do in general, but like now people are using symbols, uh, if they ever need to modify a prototype. So at least that way, you know, like it can never be nearly used.
+
+The ergonomics of that are strange,
+
+**Artem:** Okay. I see.
+
+**Justin:** yeah, yeah, generally not a great idea. Uh, uh, JavaScript.
+
+**Artem:** Oh yeah.~~ I~~
+
+**Justin:** So
+
+
+#### [00:33:17] Generating Mock Data: Best Practices
+
+**Justin:** we've talked a lot about, um. Uh, like the sort of concepts of MSW and a lot of, and some of the feature set. Uh, one of the things that like maybe to acknowledge is that, so you have this fantastic ability to like mock network requests and like now you need to populate it with data and you know, some teams have like presets of fixture datas, uh, but What do you have, what are your thoughts about like tools that sort of like infer types and generate mocks or is like, is, does the MSW team have a suggestions for like faker libraries or something?
+
+Or is like, do you think that's a bad practice? I'm curious to just hear your thoughts about like tools that actually generate mock data.
+
+**Artem:** think that it is a good idea to, to outsource your data generation to let's say types, that's a. Pretty cool idea. Maybe your database models, maybe some other abstractions you have. So definitely if it works for you in the context of your project, I always encourage people to try that. Um, it's a very interesting topic that we also tried to address in the past.
+
+Like we had, um, we still have a library called data and it allowed you to model. Objects, basically using, using like a seed functions and then you can create entities. It came with a little build in querying system, something similar to Prisma. So it, we try to kind of make it easier to describe data, to query data, to create marks that are stateful effectively.
+
+Uh, and it's still something to have in mind. It's not directly on the roadmap, but it's probably something that needs. A lot of love, like a lot of people wanted to, to update data and I've been sitting on the next version of it for like a year or two, but it just didn't, uh, didn't click it. It wasn't right.
+
+And I think just a couple of months ago, I realized what was missing. Like, why, why can't I get this, this use case, right? And I think that the realization there was that the library was doing too much. It was trying to give you the means to model data. It was trying to infer the type. So your models are type safe.
+
+It was trying to give you the querying capabilities. It was trying to give you handlers. So you have stateful mocks. And I think that kind of sometimes pulled in different directions. So I couldn't decide on, on the API. I couldn't decide on, on the behaviors. And probably one thing that I learned, uh, thankfully is that.
+
+It probably has to be split somehow. And I think that like data descriptions themselves is probably not something you want to invest a lot of effort in, especially when there's a lot of cool tooling, like, like Zod, if I'm, if I'm naming it right, I'm sorry. Like sometimes there's similar tools. I think there's Zod schemas.
+
+There's a lot of interesting ways to describe data that also makes sense outside of mocking. And that's the theme I fully embrace. Like we need to repurpose tools. We need to make sense. In terms of coherence of what we're building. So maybe in the future we would like support something like a Zod schema and then give you querying capabilities.
+
+Or maybe querying would be a separate library that can query any objects. Like it's, it's not as easy of a problem to solve, but I'm happy that people try people find solutions because in the context of their app and their business requirements. It's, it's a smaller surface to address. They just need to solve their problem and I need to solve potentially everybody's problem using this API.
+
+So I definitely encourage people to, to use, to, to repurpose things. Just try to make sure that your, your mocks or your data in this case, they come from some sort of clear definition, clear specification, if you can. Because that's ultimately the right place to define all things. I'm also working on something very exciting and a little secret and a little probably, um, not so secret soon, which will address this a little bit.
+
+It's not related to MSW, but it's related to how you design APIs. And yeah, that'd be nice.
+
+**Justin:** Looking forward to that.
+
+**Artem:** Oh yeah.
+
+**Andrew:** ~~Uh, ~~
+
+
+#### [00:37:09] Epic Web: A Year in Review
+
+**Andrew:** so, uh, let's switch up and talk about your work at Epic Web a little bit. So, uh, you've been working there for around a year now, I think. So, uh, what has it been like and what have you been working on?
+
+**Artem:** Yeah. So last year it's actually been, uh, autumn of the year before I joined Epic web, uh, which is incredible. I still, I still can't believe that. So, uh, so I, I have a chance to work alongside incredible people, uh, to create great educational materials around testing in my case. Cause, uh, can't reach out to me to ask you, Hey, do you want to update the testing JavaScript to be more up to date, to use maybe different tools, to, to showcase different things.
+
+And sure. Like I gave it a thought and I agreed eventually. And now I spend a whole year basically working on that material. We, I have put out two workshops right now. I was still. Uh, trying to also improve it, like recording and writing and everything. I never truly done this before, at least on this scale. So now there's two great workshops there on testing fundamentals and on mocking techniques. I'm really proud of all that work, especially in the mocking techniques. It was a very fun one to build. And, uh, yeah, the process is generally very. Freedom based, like I, I admire can see dots in a lot of, a lot of aspects, especially on, on his view on, on, on work, on how he approaches education.
+
+And I definitely learned a lot. So what I do, I just try to translate the testing JavaScript that people already know and love into like the next iteration, but from the, from the very start, we agreed that it won't be just a copy based that. Updates dependencies that just doesn't make sense and it didn't make sense to me as well So what I'm trying to do I'm trying to take the essence of let's say a module if it teaches you about particular thing and I'm trying to keep everything that Should be there remove things that got out of date over time and also add new things So you have more eventually and every workshop I put is is quite much bigger than the original Module, which is amazing.
+
+So so I'm trying to add something from myself as well on You know my different approach to testing and some thoughts how you should structure things and it's been really really fun like going through All this process. So basically, I'm in the middle of creating a new workshop right now, so it's a very themed right now to describe the way it works is that Well, I have, I have a certain topic to cover.
+
+Let's say right now I'm covering a component testing. So there is a really great module in testing JavaScript on using just and react testing library. So I want to translate that, uh, to, to the workshop format, first of all, and also to maybe some newer technology that we have because, uh, I don't believe in, in testing browser.
+
+Code in browser like environments. This is something I will try to work as hard as I can this year. And the next year is to help people migrate to much better tooling. And this workshop is precisely this one of the things that can help them migrate. So I'm, I'm, I'm writing the script. I had an outline right now.
+
+Of different exercises and steps. I sent it to Kent and he approved, yes, this is awesome. And he gave me the green light. And now I'm slowly going through every exercise and writing it, the, the text description, putting up the example app, and, and the idea is to, at the end, show you how we can migrate existing test from GS DOM to V test and we're gonna be using Vitas browser mode, which is a quite a new feature.
+
+It's already publicly valuable, but I think it's, it's quite. Uh, it was, it was just recently released. I think it's like recent months and it's such a great feature to have. I want people to, to know about it, to use it. And I will try to have this workshop help make sense of it. So that's kind of the process.
+
+And then I have a live workshops. Usually when the writing is done, this is something that the Epic web team just, just recommends. And I think it works nice. So we have a live workshop where I can. Try this material, uh, with real people in, in, in, you know, in real time and get the feedback. See what's working, see what doesn't work, and maybe change things, maybe add things.
+
+Like, I did quite, quite a significant change in the mocking techniques workshop. When, when I gave it live, I realized that one of the sections just didn't work. It was section on globals. And, uh, exactly related to the, our discussion, like not patching global. So what I did in that section, I decided like, let me show you like three different ways you can patch a global for your testing and why each of them is wrong and then show you the right thing.
+
+And it sounded very nice on paper. Hey, like I'm, I'm doing this, I'm making a mistake. I'm learning, but when I gave it live, I realized that it's like you teasing something great for like an hour. And I think it's, it's just frustrating. Like, I don't think that worked. So I decided to just scrap that section.
+
+And instead I focused on just practical tips. When do you need to mock global? So we have three sections. You can mock global, uh, values. You can mock, uh, environment variables, and I think you can mock functions because they are slightly different from, from values. And I think that worked really, really well.
+
+So yeah, so there's this life element to it all. And then when everything is done, I sit down to record. And hopefully edit and publish and that's, that's the life cycle of it.
+
+**Justin:** How do you like the, I mean, like the education aspect and the sort of like. I don't know, technical expertise, development aspect of like maintaining an open source thing. It does seem like there's like some overlap, right? Like good communication always helps at an open source library. When you're thinking about API design, it, that is like some form of just like pure communication, right?
+
+You're really thinking about like how to be explicit and how to say only what you sort of like mean to say and not express other things. Uh, but I mean, what's the transition been like from like. Doing a lot of technical things to trying to focus like pretty heavily on education. How have you found that process?
+
+**Artem:** I think it was, uh, it was quite similar because I think when you, when you have a open source project, there's a lot of hats you wear. And like one of those was definitely a communication with people. It was building community. It was explaining things, but most of all, I think it was writing docs, which, which takes a lot of time and like trying to get this things right.
+
+I still. Use the same, the same techniques I use in my, in my documentation. I use them in, in writing educational materials because I like them. I like certain ways of presenting information of trying to guide the person through the problem and arrive at the conclusion. And I think it's just, uh, resonated with me maybe because I was kind of trying to teach my projects for years to people also doing some, some recorded materials on them.
+
+Like I have to, I kept courses on MSW. If somebody wants to support me and just learn more about mocking. And I think it was just kind of natural progression. For me, because I learned a lot about testing over this years. Again, I started MSW. I was very, very fresh to the idea of testing, mostly afraid of it.
+
+And now through the years, I just saw so many people feeling the same, but also having real problems that just needed solutions. So, so I was trying to provide those solutions with, for things like MSW. And it's nice to now being able to expand this. So I can share my expertise on a more general level. How do you, how do you make a good test?
+
+What is a good test? How do you know that? Because there is a way to know that. And like, how do you write your assertions? How do you structure tests and all of this? How do you test React components? I'm really happy to, to have this outlet so I can express this. And there's definitely a lot of things I learned.
+
+I don't know everything. And there's a lot of stuff I learned during the research, during this live sessions that also makes me a better. Testing developer, you know, so everybody wins.
+
+**Andrew:** Yeah, I love the journey you had of like, Oh, I don't know anything about testing to like now today you're like teaching courses on it and and making libraries to make it easier. So I just love that journey of like novice to expert.
+
+**Artem:** Yeah, yeah. That's been a fun one.
+
+**Andrew:** ~~Um,~~
+
+~~let's see. Uh,~~ I just want to roll it back to a second just to talk about the browser mode on the test. I feel like that is Such a cool feature, uh, that like not, as you said, not a lot of people know about before it, the only thing, the only way you could do that was by using Karma basically, which is like an ancient web testing technology.
+
+So like, uh, a lot of changes have happened in like the testing ecosystem in JavaScript in the past few years. Uh, what do you think about them? Do you think Jest has gone off to a pasture somewhere and we should all move to the test or, uh, should we all be writing everything in playwright?
+
+**Artem:** Yeah, there's definitely been a lot of, a lot of development, a lot of progress. I'm, I'm very stoked to be a JavaScript engineer right now. Even AI things considered, whatever you, whatever you fear there, it's, it's genuinely the best state we've been, especially if you feel. I've been like developing 10 years ago, 20 years ago right now is just fantastic.
+
+We have so many great tools. We have so many great standards and it's only going to get better. I'm really excited about testing realm in particular. Like I think Cypress, like a years ago, it was a really good introduction to. Like a more accessible end to end testing compared to Selenium. And now then there's like tools like Playwright.
+
+And I think like we, we follow a very similar pattern there in the tooling. Uh, people trying to come up with a more, uh, approachable ways to kind of adopt different, different testing strategies. So like Playwright was a really, it still is a very nice browser automation. Uh, tool and I use it a lot and I love it and a similar thing happened to, to Jest.
+
+Like, uh, I was absolutely astonished when I picked up Jest, like, I don't know, six years ago, I don't know what it'd been. And, and now I understand that it does have some shortcomings, it mostly, a little bit falling behind, uh, with time, like it still doesn't have nice support for ESM. You can still do that, but the way you do that, it's not something I want to do. As an engineer, I want to have a test. I want to write it in a language that's supported, that's there, and I want to have it run. I don't want to be spending time on configuration. You can count me lazy on that because there's much more things to configure in the areas that matter. Like ESM support, TypeScript support, those things must be native.
+
+It's just period. And that's where a lot of, uh, Great improvements were in, in, in the view ecosystem and especially in Vitas that we get now, uh, it's just fantastic. Like the whole idea of being, being kind of built on top of Vite and having this compilation aspect, and then having the test experience, which is very familiar to just like, uh, I migrated to rather big projects, like hundreds of tasks from just to Vitas.
+
+It was a great experience. It was fast. Uh, the tests gotten faster, which I love. And there's a lot of tiny things that Vitas just does better. Behind the scenes and, and more apparently to you that I just share and it just clicks with me. And that's why I'm teaching, uh, all everything that, that you find in Epic web using Vitas, because it's a fantastic tool.
+
+And, uh, now with the addition with browser mode, it just gets even better. I've been, uh, excited and sold on the browser mode. Like for months, we've been talking with the team, uh, at Vitas about it. It was really great. Now I finally have a chance to try it out, to, to integrate it into. Into the workshop to, to test something with it.
+
+And I think more people should try using it. It's, it's really a nice idea. They're combining the compilation of Vite. So you have all the modern syntax, all TypeScript, you have everything. Not just that, by the way, but also you building your app. You're building your tasks the same way you build your app, which is like the selling point of building things on top of VEET, which I honestly didn't know.
+
+Like, I talked with Anthony, uh, from, from the VEET ecosystem. And he just, just explained it to me and I was quite impressed. Like, that actually makes sense. Like, again, you want to have as, as close context as possible. So you want to have the same network code. You want to have the same compilation, obviously.
+
+Although there are some differences under the hood in VEET. But it's still, uh, kind of, you can, you can disregard those because those are implementation details of Vite. And I love that you have this, uh, consistent compilation. Then you have Vitest on top, which provides this familiar testing framework experience.
+
+You have described blocks, you know, after each, every hook, everything you've been used to. And then you have on top of this, on top of this, a browser automation now, so you can hook your, your browser, which can be playwright. I believe they support different browser providers. It can be another, another kind of browser.
+
+And, uh, you can have this all three components working together. So you can, you can get your code isolated code, which is not an end to end test, which is just your component compiled with V test. And then, uh, sorry, compiled with Vite and then served in the browser and have Vite as a layer that interfaces with a browser.
+
+Something similar to Playwright, but done a little differently. And this is where I see a lot of, uh, integration testing going forward. I want us to slowly sunset things like GS DOM and browser like environments and embrace browser automation. Because I know a lot of people still have the stigma, it's slow, it's, it's, it's not nice, it's, it's gonna, you know, take a lot of time.
+
+It will be slower than integration tests. Of course, like nobody's trying to say that it's not, but it is at the fastest, most accessible state it's ever been. Like it's not, it's not Selenium from 10 years before. It's something completely new. And at least in my experience and everybody I talked to, like we actually have quite performant test suits in Playwright, in Cypress.
+
+There is some elements that you have to be aware of, something that you can contribute to, to degrade or improve your experience, but the tools themselves are really fast. I think there's just no excuse to pay quite a big price, actually, for using browser like environments, when the price of this spawning the browser, of this automation is much lower.
+
+As I have, I've been thinking about this for a long time, like, uh, from, from this discussions around performance and testing, uh, and perhaps maybe it's a silly thing to say, but, but I get this, this phrase that, Performance shouldn't be your top consideration in testing because the most performing test is the one that doesn't exist, the one that you didn't write.
+
+That's the fastest test. So to me, of course, I want my test to be fast. I want the fast feedback loop, but it shouldn't come at a cost of compromising my environment. Of compromising the code I'm testing. I want to be testing the same code and the tools like, like with this browser mode actually allow me to do that running the browser, having my testing experience there.
+
+It's really cool. I'm excited about that.
+
+**Andrew:** Yeah, getting rid of JSDOM is getting rid of a pit of barbs that really has never given me value and has only given me pain. So I welcome it.
+
+**Artem:** Oh yeah.
+
+**Justin:** I think this, this like plays well into the overall like mocking conversation, right? It's like, you want to fake less things or push it further down the stack. Like get closer to the real environment that you want to test it.
+
+**Artem:** because things like, like GS Dom and those environments are. Mocking in a way your browser APIs, they're polyfilling them, they're implementing them, but that's still a mock. And if I can run against the real thing, this is probably a good use case. Like you, you don't want to hit an actual server during tests, but I want to hit actual environments.
+
+So that's a, that's a good, yeah. Contrasting topics there. Yeah.
+
+**Justin:** Yeah, absolutely. 
+
+
+#### [00:52:28] The Future of MSW: What's Next?
+
+**Justin:** So it's been great hearing about your story and all the work that you've done for on MSW and what you're working on now. Uh, I want to like shift the conversation a little bit and talk about the future. Um, so you've done a lot of work with MSW over the years. Uh, there's been a lot of really awesome work that's landed lately.
+
+You were talking about WebSockets. WebSockets are incredibly exciting. Uh, so what is, uh, 2025 look like for MSW? Like what do you have planned?
+
+**Artem:** Oh yeah. Um, it will be hard to top WebSocket support, at least in my eyes, it was, it was extensive work, but there's. One thing that I'm really excited about, and I think we're going to ship it this year, maybe actually sooner than, than I realized, it would be cross process interception. So this is, this is going to be something completely new, but in the light of modern frameworks, kind of shifting to this mental model where we collocate server and client, we have this react server components.
+
+We tend to kind of keep it all together because we have no GS, we can have JavaScript everywhere, I think in the light of this development. There's been this, uh, this, uh, need to control network in a different process. So, so for example, a lot of people actually, actually wrote and GitHub and asked me on Twitter, like I have a Next.
+
+js app, I have a Remix app, and I'm testing it, oh, let's say, I don't know, in an end to end test or something, and I hit a page, and that page has a server component to it, right, it has a counterpart that runs on the server, probably fetches data, and I want to control the network, like, I want to, let's say, serve a different data right now, but what a lot of people don't realize, ~~this kind of ~~This kind of behavior, this kind of feature doesn't exist in Mocking right now.
+
+It's just not possible in any way because we're talking about different processes. You have a process of your test, which is often a Node. js process, that spawns the browser, which is another process, and then there is a server, which is a third one. So ~~you need a,~~ you need a cross process way to communicate the network.
+
+And I think we found a really interesting solution to that, uh, which is this cross process interception, or remote interception. And it, it is so harmonious with how we used service workers, then I think it's, it's the right direction for us. So as I mentioned before today, we use a service worker, just like a mechanism to, to provide us with requests, like an interception layer.
+
+And we have this messaging channel between two threads, like a worker thread and the main thread to communicate. Hey, this is a request. Hey, this is a mock response. So why not have the same or similar messaging layer between two processes? Because it's possible. You can have message channel, you can post different, different events.
+
+You can transfer streams between processes. And then I started hacking on this idea of remote interception. And this is something that we already have in the PR. And I think it's a relatively good state. There are still some things to polish, but it's already the main. Junk of this API is there and it will allow people to control the network from tests wherever that network is It's it's pretty cool.
+
+I don't know if it makes this process agnostic. I don't know, and I don't really care much in terms of this, this phrases, but I like the ability to give more control to people, especially since it has a lot of this use cases right now, people are facing this issues. They want to have control in a different process without realizing that's probably a different process.
+
+And I'm excited to ship this API. This set up remote server API to not just help unblock those things, but I would also love to use it to repurpose it and try to teach people to test things like react server components, which is still hugely unsolved. Like how do you test it? Nobody knows people trying to come up with built in utilities in frameworks.
+
+I don't think that's the way that's. Quite tightly coupled and I would love to experiment with slightly different and I already have some proof of concepts which are very promising and this is something I will explore later this year.
+
+**Andrew:** Well, it seems like it's an exciting time to be a JavaScript engineer with all the different testing things happening from you and from the community. So thanks for coming on the podcast and talking about them. 
+
+
+#### [00:56:26] Conclusion and Final Thoughts
+
+**Andrew:** This is a really fun time diving ~~deep,~~ deep into the guts of MSW and all the related topics.
+
+So thanks again for coming on.
+
+**Artem:** Thank you so much for having me. It's been incredible. Thank you.
+
+**Justin:** Yeah. Thanks Artem. And your, your work is fantastic. I mean,
+
+honestly, MSW 
+
+is like, it's really, it's really a game changer. It's, it's one of the tools where every project I start, it's like one of the first things I install. So thank you so much for your
+
+work.
+
+**Artem:** That's so nice. I hope that's not going to be the last game changer. 
