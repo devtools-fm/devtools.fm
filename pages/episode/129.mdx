@@ -1,0 +1,374 @@
+---
+title: Jeff Dickey - Mise, Usage, and Pitchfork and the Future of Polyglot Tools
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Jeff-Dickey---Mise--Usage--and-Pitchfork-and-the-Future-of-Polyglot-Tools-e2u0tsg
+youtube: https://www.youtube.com/watch?v=XDAfpzjBYJQ
+tags: technology, development, cli, tools, mise, asdf, pitchfork, usage, terminal, rust, node, javascript, python, aws, postgres, daemon, environment
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Jeff Dickey, the creator of Mise, Usage, and Pitchfork.
+You might know him from his work on Oclif, a CLI framework for Node.js.
+With his latest tools he is focused on making development easier and faster.
+
+- https://www.linkedin.com/in/jdxcode/
+- https://jdx.dev/
+- https://github.com/jdx/mise
+- https://github.com/jdx/usage
+- https://github.com/jdx/pitchfork
+- https://github.com/oclif/oclif
+
+Apply to sponsor the podcast: https://devtools.fm/sponsor
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:48] The Story Behind Oclif
+[00:04:48] Building Better CLIs: Principles and Practices
+[00:08:42] Introducing Usage: Swagger for CLIs
+[00:13:27] Ad 
+[00:13:46] Pitchfork: Simplifying Development Daemons
+[00:15:40] Mise en Place: The Ultimate Development Environment Tool
+[00:28:36] Advanced Features of Mise: Tasks, Hooks, and Environment Variables
+[00:38:17] Future Plans and Conclusion
+
+<!-- TAB: TRANSCRIPT -->
+
+**Jeff:** ASDF It was like the only real popular polyglot tool manager.
+
+I took a closer look at it a couple of years ago and I realized that it was terribly slow. It was making my shell take two seconds to load. 
+
+I bet if I rewrote this and it doesn't language, I could make it faster
+
+
+#### [00:00:22] Introduction
+
+**Andrew:** Hello. Welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone. We're really excited to have Jeff Dickey on with us. ~~Uh, ~~Jeff, you are the author of my new favorite tool, a tool that I'm using in literally all of my projects. I'm like going back and resurrecting projects just so I can add this tool, which is, uh, a fun side quest. But, uh, so you're the, the author of Meets in Place, ~~uh,~~ which is a tool version manager.
+
+And we're really excited to talk about that today. But before we dive into that, would you like to tell our audience a little bit more about yourself?
+
+**Jeff:** You bet. Yeah. So, um, I've kind of been in the developer productivity space for, about a decade. And so, um, my first job was, uh, I joined Heroku to rewrite the CLI basically had a mandate that, ~~um,~~ the old Ruby Heroku CLI needed to go. ~~Um, and, um,~~~~ sorry, I'm getting an echo.~~
+
+**Andrew:** ~~From yourself.~~
+
+**Jeff:** ~~Yeah, I don't know,~~
+
+**Andrew:** ~~yeah, maybe it was my headphones. I'll turn them down.~~
+
+**Jeff:** ~~maybe. Okay, sorry. Um, yeah, so I, ~~so I've been doing DevTools ~~for,~~ for a long time. I started at Heroku where, ~~uh,~~ I came on with a mandate to rewrite this old, crufty Ruby CLI in, in another language. Um, and, uh, really just kind of fell in love with building developer tools. It's just been a big passion of mine, especially CLI things.
+
+And, um, I've done quite a bit of open source stuff. I wrote a CLI framework for node called, uh, OClif. ~~Um,~~ and then, ~~um,~~ a lot of unsuccessful little tools here and there. But my most recent one, uh, Mise en place, I started about two years ago. Which, uh, people seem to really love, which, which is great to see.
+
+**Andrew:** Cool. 
+
+
+#### [00:01:48] The Story Behind Oclif
+
+**Andrew:** So let's start out with, uh, OClif since that's, uh, the classic thing that you might be known for. So, uh, what is OClif and what were some of the like guiding principles behind that project?
+
+**Jeff:** Yeah. So, um. The, really the goal with OClif was to merge two CLIs in particular, uh, you know, Heroku is owned by Salesforce and so Salesforce had their CLI, Heroku had theirs, and they wanted to sort of merge the two and also have both of them be independent CLIs at the same time. Uh, and both of these CLIs were developed with a very similar org structure that is common in large companies with a CLI where You have a lot of different teams that maintain one small component of a CLI, you know, a few commands here and there, um, that all kind of need to flow into this big CLI.
+
+And, um, Oak Cliff written in Node ~~was, ~~was a pretty solid fit for that. ~~Um, ~~cause just the way that, that Node dependencies work, each sort of module here can have its own set of dependencies. Um, and each of those depends to be different versions. And so that model really worked well for, you know, sort of large CLIs with hundreds of commands.
+
+Um, and, uh, you know, it's, it's, uh, I left the development of that close to a decade ago now. Um, but I know it it's, you know, it's still being developed. It's still, ~~uh, ~~I know big companies are still picking it up. I think Shopify picked it up recently. Um, you know, I, had I stayed on, I, I wanted to also make it really like the solution for small CLIs as well, because it is a little bit daunting for, uh, for small CLIs that's not what it was made for.
+
+Um, but I think it could have been, you know, I, I always wanted to have just like a single file example of just like, here's, here's CLI. Um, but you know, that never came to fruition, but it could have
+
+been, 
+
+**Justin:** Yeah, I always kind of think of like Oaklift feels like the next JS of like CLI frameworks kind of
+
+because There are like a lot of small ones, like Commander was around forever, you know, and it was like a good way to make a small CLI app. And I mean, this obviously still being developed too, but things like that, that were just like rely on like chaining interfaces or whatever.
+
+They like grow very messily. I think you have to have a very rigorous team to sort of maintain it. ~~And that ~~
+
+~~is one of the things that I like.~~
+
+**Jeff:** The big problem with node CLIs is the startup time, because the way that you write a CLI, it's been a while since I've been in the node space. I don't know if other solutions have come around this, but normally you have like a, you know, you do a require of all the commands. And so if you've got a CLI that's Tens of thousands of JavaScript files, then any time you load any, you know, any time you run the CLI, it's got to go parse all that JavaScript.
+
+And so the thing that OClif did was it, it would just load the command that it's about to run. Right. And so that made it much faster, right? I mean, this is still node. So, you know, you're, you're looking at a hundred milliseconds, probably overhead, no matter what you do. Um, but at least it's only a hundred milliseconds, even in, you know, pretty large, uh, code base.
+
+
+#### [00:04:48] Building Better CLIs: Principles and Practices
+
+**Andrew:** Yeah, I think, uh, an article you wrote a very long time ago at this point, the 12 guiding principles of, uh, command line interface design. ~~I've,~~ I've referenced back to that a lot. Uh, one thing I want to know, though, is you'd write a lot of CLIs still, uh, but you don't use Node. Do you not use Oclif anymore for those CLIs?
+
+**Jeff:** ~~Um, ~~I haven't, no, I haven't used Oclif in a while. Right. And really just because I haven't written a CLI on that scale in a long time. Uh, you know, I, I still think it, it has a good utility there. Right. Cause you know, like most of my CLIs are in Rust now, but like that would not be a good choice for a lot of what people are using Oclif for.
+
+Right. Because it's. Like I was saying, you, you, you have, might have a server team that's doing, um, like Postgres and stuff. And like, if they don't have a lot of Rust, if they don't have a lot of CLI experience, you need something that's. That's pretty simple. And, and even though people complain about JavaScript a lot, I think any software engineer can write it, right?
+
+And if, if it's something they only need to do for five, 10 percent of their job, I think it, it, it's a good, you know, common denominator for a lot of developers.
+
+**Justin:** So other than like startup time, uh, and potentially like this, Composability and simplicity to like contribute to for large teams. What do you think are the really important, like D S D X aspects to keep in mind when you're like building a CLI? Like, what are your like fundamentals? It's like every time you start one, you're like, okay, these are the things I don't want to keep in mind.
+
+**Jeff:** You know, there's some basics, you know, things you might expect, like using standard error and standard out correctly. One thing I'll say on that, cause I think this is commonly misunderstood. Standard error is not for errors. It's, it's for any information that isn't part of the normal output, right? So, you know, oftentimes that's warning and errors, but it might just be progress information, uh, you know, anytime that you just need to have something go to the user.
+
+That's what it's there for. And so, um, you know, that that's, I think that's one important one that that's often misunderstood. Um, you know, and, and I think putting some thought into like what you name things. One philosophy I have is that command names should always be verbs. Um, and not nouns and, and that I think tends to have bring a consistent interface to the way things are built.
+
+Um, you know, like for example, uh, I'm sure we'll talk about ASDF, but like, uh, there's a command to change the global version of, of different tools. And the way you do that is ASDF global. And then the name global is not a, it's not a verb, right. Should be actually, and actually I see if it's changing this to set.
+
+So I think they realize that it is a mistake. So now it's ASDF set global, um, like dash, dash global, something like that. And that, that makes a lot more sense. So, you know, I think, um, you know, the sort of name of the CLI, a verb, and then, you know, the things it does.
+
+**Justin:** Yeah. Yeah. That makes a lot of sense. There are some like CLIs that I've used that I feel like. The noun is okay. So like GitHub, for example, this is like GitHub PR, like doing something on a PR, like get a PR checkout or whatever that feels like, okay, but there's like a lot of topical categories.
+
+**Jeff:** basically the last thing, right. So it's, it's GitHub PR create, so that's good. Right. Um, and like with any rule, there are exceptions, uh, you know, like Heroku logs that just works, I, I don't, I, I wouldn't, I don't think it should be Heroku logs lists, Heroku logs view, uh, you know, sometimes conciseness is just better, um, but, but yeah, I think as a general rule to start from, it should be, ~~you know, yeah.~~
+
+You know, a tier could be fine. And actually when it's a tier, the middle stuff probably should be a noun because you're sort of describing some middle thing, whether that's. Pull requests or repositories in the case to get up CLI. Uh, I think it's a good way to do it.
+
+**Andrew:** Cool. So let's start jumping into all the other projects that you've been working on. Uh, there was a lot for me to review when preparing for this episode. 
+
+
+#### [00:08:42] Introducing Usage: Swagger for CLIs
+
+**Andrew:** So the first one I'd like to talk about is usage. Could you tell us a little more about that project and what inspired you to write it?
+
+**Jeff:** Yeah. So usage is, uh, you know, in a sentence, it's swagger for CLIs, right? It's, uh, it's, it's mostly just a spec of, uh. It's written in a language that, uh, people probably had heard of called cuddle. Um, but you know, it's, it's just a configuration format. Maybe, you know, it could have been JSON or YAML, but I went with cuddle because reasons and it was fun.
+
+Um, but, uh, it just describes what a CLI looks like, what arguments accepts, what flags it has. And, uh, I think probably most importantly is all the help. Uh, and so the idea is that once, once you've defined a CLI with this specification, then things like generating markdown documentation for help or, uh, you know, having completion support can be much easier.
+
+And so the, the target market really for people using usage isn't end users. It's really for C Life framework authors and vendors. Um, cause if, if, if anybody out there has written, uh, uh, completions in particularly before, I'll know it's, it's really hard. Uh, it is not a lot of fun. And, you know, if, if you've got users that want.
+
+It's work in bash and ZSH and PowerShell in, uh, you know, new shell, like you've got to repeat that really painful logic several times over. And so, you know, sort of like, uh, how, you know, language server protocols work and IDEs, similar ideas, you just need to make this. It's relatively easy to dump spec and then the usage, which runs as a runtime on the user's machine, um, can basically generate the completion code for you.
+
+And so, you know, it, it basically enables very powerful completion support without needing to code for each individual shell.
+
+**Justin:** That's pretty awesome. I think this, this shows like your, your expertise and building CLIs, because this is an area that you won't get in for a while. But like, when you start trying to like, do this, it's like, Oh, it won't be too bad. I'll just like, do this for like Z shell. And it's like, Oh, wait, what about fish?
+
+What about whatever? Then completions are really gnarly. ~~They're,~~ they're like, surprisingly gross.
+
+**Jeff:** They're horrible, absolutely horrible. I, and part of it is just that I never want to write one again. Right. So my hope is with usage, I could just, you know, I've written it once and now I don't have to repeat that for, for every CLI, 
+
+**Andrew:** Yeah, it's cool how it also does other outputs. Also, uh, having man pages and markdown documentation, just so, so much simpler. And I like how like. Most of the time when I've written CLIs, it's been a node and the documentation and all of that is a part of the definition. And it's like, they're so linked.
+
+Whereas this is so primitive that I can use it on just like scripts or just like whatever I want to describe more so, which I find very interesting.
+
+**Jeff:** Yeah. Yeah. And, and we'll get into like how this, there's a lot of integration with me's here. Um, but like, you know, being able to have just a single bash file that can, you know, have this completion support, have doc generation around us was a big goal for me with writing that, um, you know, and documentation is, is huge.
+
+Right. I think, you know, sort of getting back to your earlier question about like what makes a CLI good, I think like. You got to have markdown, you got to have a good website that, that people can, you know, command F and search and shows up well, and SEO and all that stuff I think is paramount. Right.~~ Um,~~ and so, you know, uh, I just released a newer CLI called pitchfork.
+
+And I was able to just, you know, once I dropped my little dumper thing in that that created the usage spec, just like, I just had all that. It was amazing. It was, it was when I built that for me is it took me, uh, it took me weeks to, to write all that.
+
+**Justin:** It feels like the recipes for a new OClif shaped thing are like there. There's like something about like this new, like meta framework for CLIs, but it's not necessarily about like the direct implementation. So as much as it is like the infrastructure around it,
+
+it's pretty cool. 
+
+**Jeff:** Yeah, I guess I'm thinking very polyglot nowadays. I like, I just don't really see myself as tied to any specific language. And so I really like things that are agnostic, right? That, that, uh, you know, if I'm writing something and go, it's, it's just as easy to pick up these, these libraries and then work with them. 
+
+**Justin:** Yeah, I've been doing a lot of CodeGen lately. I've got a project that's like written in Rust that uses this crate called Schemars to generate JSON schema, and I'm like generating types from that. It's like, once you get in the polyglot world, having some baseline configuration or whatever feels like it's kind of a superpower, because otherwise it's really hard to like maintain any sort of consistency.
+
+
+#### [00:13:27] Ad 
+
+**Andrew:** We'd like to stop and thank our sponsor for this week, but we don't have one. So if you'd like to sponsor DevTools FM, head over to DevToolsFM slash sponsor to apply. And if you want to find another way to support the podcast, head over to shop. devtools. fm, where you can buy some merch and rep the podcast.
+
+With that though, let's get back to the episode.
+
+
+#### [00:13:46] Pitchfork: Simplifying Development Daemons
+
+**Justin:** Um, so before we move on to Mies, uh, you'd mentioned this project Pitchfork, which I wanted to talk a little bit about. So Pitchfork is new, um, it's, it seems like you're like pretty actively working on it. So it's a CLI for launching, uh, daemons, uh, which is, seems really cool, seems really hard. And like my, my big question was, is like, okay.
+
+So, you know, people might be familiar with like launch D or system D or something. They might be using some OS primitive to like run their daemons. Like why, like why pitchfork and what does that give people?
+
+**Jeff:** ~~Uh,~~ yeah, so this, I probably have a success rate of like one to 20 when it comes to things. And so this, this is very experimental, but Um, so, so pitchfork is really about development demons, right? So it's really not a replacement for like DevOps tools, like, uh, like system D. Um, the problem I, I wanted to solve is that I launched, let's say my. Documentation web server for some CLI. Then, like the way I do that is I open up a new terminal window and I minimize it. Then, you know, next day I forget that's running and I go do that on a different CLI and the port's conflict and you know, so I wanted a way really for my demons to stop when I'm done working on something, you know, was, was that is, it's more the stopping that, that I needed.
+
+And so the way that Pitchfork works is once you enter a directory that has a, you know, sort of Pitchfork config, it'll launch whatever daemon you want. So say you're, you know, Postgres, uh, server, your, your web service or documentation, whatever, whatever daemon you want to run. Uh, and then when the last terminal session leaves that directory, it just will, will stop the daemon automatically.
+
+And so no more do I need a separate terminal window and no more do I need to remember that I have these demons running, I need to shut off.
+
+**Justin:** That's pretty cool.
+
+**Andrew:** ~~Uh,~~ 
+
+
+#### [00:15:40] Mise en Place: The Ultimate Development Environment Tool
+
+**Andrew:** so let's move on to Mise, uh, Mii's is a much bigger project than these other two where these are kind of tiny utilities. Mii's seems to like take a bigger part of your development workflow. So what is it and why did you 
+
+**Jeff:** Yeah, so the, I think the tagline really encapsulates it, right? It's the front end to your development environment, right? And so, uh, my goal with mise, is for it to be one polyglot, uh, interface that no matter what your product's written in, no matter how many languages, ecosystems it has. You just have one common way to set it up, to manage it, to run it, uh, and, and to, you know, maintain it, you know, so running your dev ops commands and stuff would be, um, would be at least started through, through me is, is, is the idea. And so, uh, there's really three sort of pillars of, of me is that, that make it what it is. Uh, first one is, is tools. And so, uh, me is. It started out as a separate project actually called RTX that was a direct, uh, just Rust clone of, of a tool called ASTF. And, um, I guess we maybe put a pin on that, but, uh, the, the other two pillars are, um, uh, environment variable management.
+
+So, you know, similar to env or direnv if you guys are familiar with those tools. But this is just a way that when you enter a directory, you have some environment variables set up. So whether that's no dev or your AWS creds or things like that, whatever, whatever environment variables you need, they'll just be there when you enter the project.
+
+Uh, and the last one is tasks. So, um, you know, a lot of people will use like make to have a bunch of phony tasks so that, you know, there's basically just a common, easy way that developers entering a project can run different things they need to do, whether that's stall dependencies, build a project, you know, or, you know, sometimes deploy it, cut releases or, you know, things like that on the tests, obviously.
+
+Um, and so, you know, means kind of brings all that together as, as one tool so that, um, you know, imagine you, if you have me set up in a project, use it, you know, the idea is all you need to do is go into that project, run these tests, and that's going to run the test scripts and it'll install your dependencies stuff, all your environment variables.
+
+And you don't even need to care or know what language it's written in. Right. So, um, yeah, that basically just brings all of this together. 
+
+**Justin:** Yeah, there's, there's a lot there. This tool is doing a lot and it's from the outside. It's like, might maybe a little bit hard to grab the grapple with like the actual value. But so let's just like, start. We kind of put a pin in asdf and like, talk about that a little bit. So this is my sort of introduction to me is like.
+
+I, um, was a user of ASDF, but I never really liked it. So ASDF, just a tool to manage versions of things. So I would use it to manage the version of Node, the version of Python, you know, the, these kinds of things. Um, and ASDF team is great, uh, they've done a lot of good work. There's a lot of great plugins that the ecosystem has built.
+
+But for me, I always bounced off like the commands. You're talking about the like, the verb. It was like always, I could never remember the right commands. Like, how do I install the like right version of node? It's like, did I install it like in this directory? Is it global? And it was always like a little bit clunky.
+
+Um, but. There's a lot of projects that will use, like, three or four different tools for managing different versions of things. So you got, like, Rustop for managing Rust versions, or you got, like, nvm, or n, or, like, any number of, like, things to, to manage, like, node versions, and et cetera, et cetera. Um, And I think that like, this is both like hits that sweet spot of like, actually the commands are like very sane and it like does what you think.
+
+Uh, and like hits just like the rest of like kind of what you need well from there. So tell us a little bit about the story of like, you know, building replacement for ASDF, like what was your motivation there? And then what did that journey sort of look like getting to me as to like where it is today?
+
+**Jeff:** Yeah, I think, I think developers automatically kind of see the value of ASTF when they first hear about it. Right. Like I think developers are pretty comfortable. With tools like nvm and pyenv and, and, you know, things like that, but it's, it's annoying to switch between them, right? Because they have slightly different characteristics, slightly different UX, right?
+
+Um, different file name structure for how they define versions of things. It's great to just have one file that you can just, um, you know, set things up. Um, and so. You know, I, I think that the ASDF was, was pretty, uh, it's pretty much like the only tool that, that did this. It was like the only real popular sort of polyglot tool manager.
+
+Um, but I, I took a closer look at it a couple of years ago and I realized that like, it was terribly slow. Like it was on my work computer that had a bunch of security software running. It, it was making my shell take like two seconds to load. Um, And so, you know, I kind of immediate was like, you know, I bet if I rewrote this and it doesn't language, I could make it faster because, you know, it's, it's written in batch.
+
+So every line of code in there is making a new separate process. So of course it's slow, right? Like if you, if you just had a single process really written in anything, probably could be written in like Python or node and be a lot faster. Anyhow, um, You know, so, so I, I kind of set out to just, it's really an experiment.
+
+I wasn't really intending to ship it. I just kind of was playing around with it and trying to learn rust and built a very basic, uh, you know, rust version of ASTF. Um, and, um, you know, I posted it on the, ASTF board. I was like, Hey, I have this little thing of experimenting with, and people start using it immediately.
+
+Immediately I had users. And, um, You know, I, there was definitely a need for just the same thing, but faster. And so that was, you know, it was very exciting for me. And then, so I, you know, I, I literally read every single ticket on their board and, um, people had a lot of really good ideas for how the DX could be improved.
+
+Um, and so I, I literally just implemented their ideas, uh, and, and so, um, You know, the sort of end result is that that that means ends up being very easy to use. But, um, you know, I, I can only take so much credit for that because I do really just implemented the ideas that people have had over the 10 years ASCF has been around, um, and put that into into a similar tool. 
+
+**Andrew:** That's a, that's a fun way to prop up a new tool is just by going through all of the bad feedback about the other tool. Um, I I noticed that, uh, so with, with, uh, Mise, you can, you like install, uh, like different types of node and Python and all that, but in some of the plugins, it's still references ASDF.
+
+What, what are the, the situations where I'd want to use like the Mise version versus the ASDF versions that are kicking around?
+
+**Jeff:** Ooh, I think I might need to sit back and explain sort of how, how, how these works. So it started out really like the tools was just, uh, you know, used ASDF. Um, but for different reasons, the way that the tools are defined ASDF is not great. Uh, and so. About a year ago, I built this, uh, you know, set of features in Mise called multiple backends. And so, uh, what Mise ended up turning into was that ASDF was one way you could install tools with Mise, but not the only one.
+
+And so you can also install tools with NPM, with PIPX, with Cargo. Um, and then a couple, you know, more generic, uh, tool managers called UBI and Aqua. Um, and sort of each of these has their pros and cons, but, you know, ultimately for security reasons, for performance reasons, for stability reasons, there's often, you know, better ways to install tools with one backend versus the other.
+
+Um, and so, you know, generally for a user, they don't need to know this, Mise has sort of a, you know, it has a, a registry and I've, you know, it's a curated list of all the hundreds of tools Mise has, and I, you know, selected what I think is the best for, for each one. Um, and so. You know, it's, it's, uh, it's different for each one, right?
+
+Uh, if I were to try to summarize it, I'd say that ASDF is the most, uh, capable as a backend, right? So the way ASDF plugins work is it, it, it's, uh, it's bash code, right? And so that code could go out and come, it could compile, um, the tool it can. Fetched it from GitHub releases, it could run, go install, it could really do anything.
+
+Um, but, uh, yeah, so like as a user, um, uh, I, I don't know, it's complicated.
+
+**Andrew:** No, it makes sense. You have Bash, and Bash, you can do anything. So there's, you end up having to trust like random people on the internet to do things on your computer. Which is never a good idea, really.
+
+**Jeff:** No, no. And that's, that is, so that's, that's probably the biggest problem with ASDF. And I knew that going into this, that, um, the way ASDF's model works is you have. Every tool you use has its own repository that is almost always just some random developer built this code that goes and fetches a tool. Um, and that's very risky, right?
+
+Cause, uh, you know, if you've got 20 different plugins, you might be relying on all of those 20 developers to not get hacked and, and, uh, you know, ultimately have malicious code enter their plugin. Um, and so, you know, I've, I've just sort of recently, I put up a big post where, um, this is effectively become a solve problem in Mise now.
+
+Um, but, you know, basically when you use Mise with the default set, you're either getting stuff directly from the vendor without a plugin. Or in the, you know, few cases that I have to use a plugin, the plugin comes from a repository that I own, right? So, you know, you know, you're still going to trust me, sorry, but at least it's just one developer, right.
+
+And, uh, and, and not one for every tool you're using.
+
+**Justin:** Yeah, we had somebody on, uh, we had Jordan Harbin on a while back and he was talking about like dependencies and like the chain of trust is like being it's more about the people in your dependency chain than it is like. You know, the, the different packages are the different plugins that you rely on. Um, so that is like a nice model, at least knowing that like you have one source of trust.
+
+Um, I also learned about Aqua through, uh, through Mise. So Aqua is like, uh, they have a CLI tool that is kind of like Mise in that it like does the tool management, but it's like very focused on security. Um, and, and I don't think it has like a lot of the other features that Mise brings. Uh, but their registry is like really great.
+
+It's like also a really good source of. Like high quality tooling, um, that's like really focused on their extensions are focused on security. So, um, that's also like a great source. Um, and I, I do appreciate that means like supports these multiple backends. It like, you know, it gives me a lot of hope for the future of the project.
+
+Just being able to like, you know, change these in and out. That's a, that's pretty powerful.
+
+**Jeff:** Yeah. And, and so, so Mise, Aqua is the preferred backend for Mise. And so if, if there's an Aqua, you know, Aqua is just a, uh, it's a YAML manifest for each tool. And if that exists, I, I will always use it pretty much. Um, and, and Aqua has some more advanced security features too, that it supports like Cosign and Salsa verification that, that they go beyond just making sure that.
+
+You know, this tarball came from this GitHub release of this, you know, uh, username repo, um, you know, like salsa for example. It can. The dream there is like, you can look at a single Git commit from when that tool ~~was,~~ was tagged and you can verify that like even the whole build chain and all the dependencies that it pulled in was all, was all kosher.
+
+Um, and so, you know, our industry is still young when it comes to this, not that many tools support this. Um, but, uh, you know, I, I, part of the problem there is, is tools like me. It's right. Cause ultimately at the end of the day, if the developer is not installing stuff with, you know, some of these, these, um, you know, I think what will eventually be, um, essential security features in place, there's no reason for the vendor to publish it.
+
+Right. So, um, yeah, I, you know, I think the world looks bright and, you know, kudos to Aqua for, uh, at least starting us down the road by, by having a. Registry that, that tools like MUSE can rely on. 
+
+**Andrew:** Cool. 
+
+
+#### [00:28:36] Advanced Features of Mise: Tasks, Hooks, and Environment Variables
+
+**Andrew:** Let's delve into some of the other parts of Mise. Uh, one thing that stood out to me a lot was TAS, uh, coming from the, uh, Node world. I love to rely on my scripts in my package JSON and TAS give me a very similar feel. And Mise as a tool almost feels like a package JSON for everything. Uh, so what are TAS and how can I use them 
+
+**Jeff:** That's exactly what it is, right? I love NPM run tests. It's just. You know, uh, any node developer loves just being able to jump in a project and, and run this, you know, these conventional sort of commands that, that, uh, are used as pretty much all node projects. Right. So, yeah, I mean, that, that's my goal is I want to bring that experience to the polyglot world where, um, you can have that same experience when you jump into Python projects, jump into Go projects.
+
+Right. Um, and so, yeah, I mean, that, that's the idea, right? Is, is, is to have that common interface. Um, and you know, I think that like Paxos JSON tasks, for example, they're very limited, right? Um, uh, ~~there's,~~ there's not a lot of functionality there. Um, and a lot of times it's a boilerplate, right? Like maybe it just runs a bash script.
+
+And so ~~with,~~ with me is I try to think about like all the different ways people want to define tasks, right? Sometimes that is just a bash script, right? And so. And means that step is unnecessary, right? If you just sort of put your files in the right place. Means we'll just pick it up and it'll know that that, that script is a task and it'll present it as such to the user so you can generate your task documentation and, uh, you can have dependencies and stuff.
+
+It's all wired up as if it was in, you know, the configuration file, but then also sometimes, you know, having your tasks and toml is, is good too. Uh, you know, sometimes you just have, you know, five or six tasks that are all just. You know, one line of code, and so that can all just, just live there as well. 
+
+**Andrew:** Yeah. It's also an improvement because like you can't do comments and package JSON. So I end up with this enormous block of scripts where I can't tell anybody what they're for at all. And the way you can now mix me's with usage and get like full featured docs for your, uh, for your script section is super, super nice.
+
+**Jeff:** And the completions, the completions is the thing I get most excited about. So like with me as tasks, you can very easily have a completion for, let's say you have a ~~dash~~ dash username flag on a task, you can define another task that, you know, all it needs to do is print a standard out a bunch of usernames.
+
+So like maybe that's going into some API or something. It's very easy to do. And as long as completions are working in these normally, that just all gets wired up. And so you type these run, aim of tasks, ~~dash,~~ dash, username, tab, tab. Boom. There's your users. 
+
+**Justin:** Yeah, it's, it's incredible. And like, so the package. js one has a lot of drawbacks. So the comment thing I think is true. Oftentimes people install a separate dependency to be able to like run tasks in parallel, for example. Um, and so like Mise has like. Parallel tasks are out of the box. You have like dependencies, uh, so you can do like pre and post sort of in a package.
+
+json, but it's kind of gross. Uh, but you can actually like do dependencies. I mean, I love the, the fact that you can like wait on something to complete if like something else is running, you don't actually have to say, oh, I want you to run this. But like, if it's running, I just want to wait until it's done.
+
+That's super powerful. I mean, there's, there's like so much, the tasks are so rich. And I think when I really got the value, it's like, I had a project where I had, uh, installed Wrangler, the CLI tool, uh, for CloudFlare as a dependency of the project, because like, like I needed it to build, but like, ideally I wouldn't install it at a dependency, like hopefully it'd be globally available.
+
+So I like used the NPM. Like back end for me is to like install the thing and like, you know, you just like measure and build and it like runs the build script and to make sure is that wranglers installed, like does all this stuff. And I was like, this is really, this is really powerful in a lot of ways, especially combining the two between like managing the dependencies and installing things and then I think the project that I was mentioning earlier that I was doing, that's like a rust.
+
+Uh, project that like uses a bunch of other languages. So it's like Rust, it's Python, and it's Deno. Um, and it'll install all of them. It'll set them up. And I have like, I can do like Mise Run Gen, and it'll do Run Gen Python, Run Gen Deno, and like, you know, make sure everything is like set up correctly. And like, typically that's a, it's a hard, hard task.
+
+And we like, Dino doesn't really have a blast version manager and I don't know, there's, there's like so much stuff. And it's like the fact that I have like all of that in one file is like, it's super powerful. Um, and it's pretty, it's a pretty incredible like DX. ~~Um, ~~
+
+**Andrew:** ~~question, ~~
+
+~~go ~~
+
+**Justin:** ~~yeah, yeah. ~~So one of the other things that is like a pretty cool feature is like you have hooks that just came out of experimental. So it's like you can add a hook for like when you enter the directory or leave the directory. So what was sort of the motivation and inspiration for hooks? I mean, we kind of talked about pitchfork earlier.
+
+It sounds like a similar thing.
+
+**Jeff:** ~~frankly, ~~frankly, hooks is an exhaust valve. So I don't have to implement things. So, um, you know, so, so basically, you know, as people have started to use me for very advanced things, people started to ask for crazy features that I just. I'm not going to be able to develop. And so, you know, hooks was an attempt for me to figure out, okay, I'm not going to be able to develop all these things, but let's, as an example, you know, there was a user that wanted the ability to have one password, generate a bunch of secret environment variables that could enter in the project, like, I don't want to go out and build that integration, right.
+
+You know, so hooks are a way that I could build, you know, a place that they could define that themselves. Right? So, so now this user can have an enter hook that when they enter the directory, it'll call one password, generate the secrets file, and then then Mise can import that. Um, you know, another one was that a user wanted to have, uh, so, so Mise has support for Automatically creating and activating a Python virtual lab.
+
+And they wanted that virtual lab to come with some set of packages that for whatever reason, they don't want to have in their requirements at TXT. And so once again, this gives them that ability, right? Cause they could just run pip install, UV install, whatever. Um, and so I think it does a great job at that because these things are not hard to write.
+
+But ultimately it just, you know, solves those, or it, it gives you the usability to solve those advanced use cases without me needing to get more complicated than it is.
+
+**Justin:** Yeah, it makes a lot of sense. 
+
+~~Um, ~~
+
+~~Let's talk about, sorry, one second. Um, well let's, let's, uh, Andrew, let's talk about environment variables and then we can switch and talk about future stuff. Um,~~ so one last thing, one last feature to cover in these is, uh, environment variables, um, and we can talk about secrets as well. Uh, so this is like, you know, inf, great tool, uh, really powerful.
+
+Have a inf file and like automatically. You know, import those, uh, when you start up your program, it is another dependency, it's a very load bearing dependency, uh, anything that reads your environment variables is kind of, you know, uh, but like means has a lot of functionality to help, uh, manage environment variables.
+
+So would you like to talk through a little bit of those and sort of how you think about environment variables and, and maybe if you have like. Any thoughts on like having a good, like secure set up and like, you know, any, any tips that you build into these for that would be cool.
+
+**Jeff:** Yeah, you know, it's funny the way you bitch that is actually more the reason it exists. Uh, so this started cause it was easy because, uh, you know, when I built the tool management stuff for me is. Some tools, you know, Java, for example, needs to set the Java home environment variable. And so it was trivial for me to just allow the user to define any arbitrary environment variables they want.
+
+Um, and. You know, uh, so, so kind of initially it was just kind of a, I just threw it in because it was, it was simple. Um, but I, I found myself and a lot of users mentioned that they were, they were able to not use, you know, Durham or other similar tools. And it was just convenient to just, well, they've already got these.
+
+And so, you know, now they can just put this in one place and it's convenient. Um, you know, so, so that was kind of the case for a long time, but. Um, you know, as people used it more and as, as, as me grew, people, you know, had identified more use cases that, that, uh, were pretty compelling. Um, Python VM was, was a big one.
+
+Um, Python users love that they don't need to type source. vm slash whatever to, you know, activate their virtual and when they enter a project, they can just. Um, you know, another one was, um, uh, secrets management, uh, you know, so like having this dot M file on this, I guess I'm getting to your question about, you know, secure practice and stuff, but, um, it's, it's not good to have your, you know, AWS creds just sitting in a file. 
+
+**Andrew:** really 
+
+**Jeff:** Actually, fun fact, when I, uh, when I worked at Heroku, uh, I actually sent the prod creds to the AWS S3 bucket in the NPM package. And it was sitting there for a while until, uh, we got a bug report, um, from somebody that, Oh, uh, you're, you know, cause I just had the file sitting there and the way NPM publish works, it just package it right up and send the dot M file out.
+
+So, you know, it, it's just not good to have those files in, in plain text. And so Mise will use a tool called SOPS and Auge. Which allow you to encrypt those. Right. And so, you know, if, if that ever happens and those files end up out there, well, you know, they're encrypted, so, so nobody can get a get to them. 
+
+**Andrew:** sweet. 
+
+
+#### [00:38:17] Future Plans and Conclusion
+
+**Andrew:** So now looking towards the future, uh, you guys have a roadmap. It seems to have a lot of stuff on there. One thing that piqued my interest was the GUI TUI support. So what do you have planned for 2025 and is it going to involve a website?
+
+**Jeff:** ~~Um, ~~you know, it's, it's, it's gonna be a lot of refining, you know, there, there's some things that are still marked as experimental. Uh, like Mise has like a lock file that, that it needs to bake a little more. Uh, it needs some more design work and needs some bugs ironed out. Um, uh, let me think. Yeah. So I think like getting, getting most things out of experimentals is a big goal of mine.
+
+Uh, some of the supply chain stuff I mentioned earlier, um, you know, and that's a little less on me and Mise and more on the tools that it relies on. Uh, you know, like I want to build some, uh, features into me is that make it obvious when things like salsa and cosine are being used. So developers are aware and then, you know, presumably can, ~~uh, uh,~~ you know, prod the tool vendors a little bit to, to start adopting these things.
+
+I think it'd be really good to have, um, you know, and then also just improving the Aqua registry, cause I'm sure that there are many vendors out there that are doing this stuff, but we just haven't. We just haven't weared it up yet. Um, you know, so there's a lot of that, you know, I want to really improve the security across the board with, with how these works and the tools that relies on, um, there's been some like, you know, pretty small TUI things in, in these already, you know, like for example, if you type these run with no arguments, it'll show you a little FZF style selector.
+
+So you can type in a task to run similar thing with me use, which is where you install tools into me, um, so you can. Search for, uh, you know, how is it? No, is it no JS? Is it, you know, go, is it go laying, you know, you sort of start sort out those before you try it and run it. Um, you know, so I want to identify places like that because definitely CLIs can, um, there are definitely cases where having a interactive CLI is very handy.
+
+~~Um, uh,~~ I, I'm not working on it, but, uh, OG Marathon is, uh, working on a BS code plugin for me. That is, he's really adding a lot of features to it. ~~Uh,~~ but I, I will probably, you know, support that by adding more json support into me, you know, making it more. Uh, programmable so that, so that that can do more. Um, I think that's pretty exciting.
+
+And, um, you know, uh, you know, there's also like IntelliJ ID extension, so like that. So I don't know if I'll be working on that, but definitely people are, people are quite interested in that. They want those things. And so, yeah, I think, I think we'll see a lot more of that 2025. 
+
+**Justin:** That's incredibly exciting. Uh, yeah, I just want to say like, you know, thanks for all your work on this. Again, it is like, it's definitely in the last like several months. It's like the favorite, my favorite tool that I've picked up. It's like really changed a lot of my workflows. It's been excellent. So you, you've done a great, great, great job.
+
+**Jeff:** It's great to hear.
+
+**Andrew:** Well, that wraps up our questions. Thanks for coming on, Jeff. Uh, I haven't tried out Mise yet, but I'm definitely going to try it out when I set up my next new computer. So thanks for coming on and thanks for building such a cool tool. 
+
+​ 
