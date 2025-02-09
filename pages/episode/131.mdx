@@ -1,0 +1,426 @@
+---
+title: Aaron Boodman - Replicache and Zero, Building Sync Engines for the Web
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Aaron-Boodman---Replicache-and-Zero--Building-Sync-Engines-for-the-Web-e2ul1fo
+youtube: https://www.youtube.com/watch?v=M6PTxVFKVRY
+tags: sync, engines, replicache, zero, web, development, javascript, typescript, ui, ux, react, vue, angular, freamwork
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Aaron Boodman, a founder of Rocicorp, the company behind Replicache and Zero.
+They have been innovating in the sync engine space for years and have been working on Zero for a while now.
+Zero is a sync engine that is designed to be a general purpose sync engine for the web with a focus on DX and UX.
+
+- https://rocicorp.dev/
+- https://replicache.dev/
+- https://zero.rocicorp.dev/
+- https://x.com/aboodman
+- https://aaronboodman.com/
+
+Apply to sponsor the podcast: https://devtools.fm/sponsor
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:29] The Importance of Sync Engines
+[00:06:44] Replicache
+[00:11:52] Ad
+[00:12:11] Partial Sync in Zero
+[00:13:56] ZQL: The Query Language for Zero
+[00:21:11] Building Applications with Zero
+[00:28:57] Incremental View Maintenance Explained
+[00:35:11] Challenges in Building Sync Engines
+[00:40:46] Zero's SaaS Product Offering
+[00:42:59] Roadmap to Beta and Beyond
+[00:45:41] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Aaron:** We decided early on to drive the development of Zero with a dog food app that we've built because we wanted to be like really sure that we were like building the right stuff and like the thing that we built could actually be used to build like was a really good experience for building like actual sophisticated apps.
+
+#### [00:00:20] Introduction
+
+**Andrew:** Hello, welcome to DevTools. FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, ~~uh,~~ we're really excited to have Aaron Boopman. ~~Uh,~~ Aaron, you are one of the founders or the founder of rocicorp, ~~uh, work, ~~uh,~~ on ~~working on all sorts of sync engines. RepliCache is the one that I knew you for and then you've got this exciting project called Zero that's out now. So there's a lot of stuff to talk about here, but before we dive into that, uh, would you like to tell our audience a little bit more about yourself?
+
+**Aaron:** Yeah, sure. My name is Aaron Boodman. Uh, I'm the CEO of Rossi Corp. I started programming with web development in like 1997 or 1998. ~~Uh, ~~ I started, I learned JavaScript and, I've been a web developer basically in my heart ever since I started out doing UI tools. And then I spent a long time at Google working on Chrome.
+
+~~I got the experience,~~ I got the chance to work on a browser, which was like a life dream. And yeah, I've, that journey has kind of, sent me back to the idea of sync engines, like on and off over my entire career. Because sync engines are a way to make really good UI. And I guess like at the core, like that's what I, that's what motivates me.
+
+~~And. Uh,~~ yeah, at Rossi Corp, we started with RepliCache ~~and, uh, ~~ and now we're doing this new sync engine called Zero that I think is really going to, bring sync to the mainstream.
+
+**Andrew:** ~~Uh,~~ 
+
+
+#### [00:01:29] The Importance of Sync Engines
+
+**Andrew:** so let's drill into that more, uh, sync, like you've devoted a whole company to the problem of solving sync and you've tried multiple times. So like, why do you think, uh, this like what sync way of building things is better than like a normal web application? And, uh, do you see like the whole industry moving as a whole towards there?
+
+Cause I know there's this like big local first movement happening right now. 
+
+**Aaron:** ~~Yeah. Yeah. ~~So, I mean, people have been wanting sync engines for a long time. Like, uh, I mean, it's an old idea, it, it goes like, depending on how you look at it, it goes like all the way back to like, almost like the origins of like GUI programming. Like one of the, like, most famous, like, original, ~~like,~~ GUI software, like, ever, Lotus Notes was, like, built on what we would call a sync engine now Outlook, I don't know how old Outlook is, like it's old, uh, is like basically built on a sync engine.
+
+And the reason why like people keep coming back to this idea is like basically like physics, like the speed of light, you like, people who are UI engineers, they want to make things fast, like that's like at the core of like what we do, and. All modern software today is like client server software, you've got people all over the world, and you've got a server and usually the server, like, for a lot of practical reasons, kind of has to be centralized.
+
+So that just means that, like, by definition, there's going to be some people somewhere on earth that are far from the server and a majority of the world's population will be far from the server. And so this means that, like. You're sort of fundamentally limited in the UI ~~by,~~ by the time that it takes information to travel from the client to the server and back, which can be like hundreds of milliseconds.
+
+And so if you're building something, productivity software that people use all day for their work, those hundreds of milliseconds, ~~they, ~~they amount to this little bit of frustration, that just accumulates every single time you use the product, every piece of like UI that you interact with is like a little bit slow.
+
+And so that's why people keep coming back to this. ~~It's ~~it's a hard problem and I can like go into more like detail on that. Yeah I think the question was like why have we built a whole company around this? And I guess, it's because like, I don't know how can you, what motivates someone, like, I don't know why it resonates with me.
+
+~~Like,~~ it's just like, I want to make things fast. And this is something that seems like, it can solve the problem. And yeah, I, the whole industry, I mean, that's like a pretty bombastic thing. I think there's like, not every tool is good for everything. ~~Uh, ~~but I do think that general purpose sync, like up until now, sync engines have been like very specific, like narrow, like niche tools, like replica cash was like a pretty niche tool.
+
+Previous sync engines are pretty niche. And there hasn't been like a general purpose sync engine. With like zero, we decided to like finally try and take this on and make something general purpose. And I believe that something like zero can be like very widely applicable. Will it work for every single piece of software?
+
+No, but like it can be like general purpose, like the way that rest is general purpose today.
+
+**Justin:** Yeah, I think that just like, just thinking, stepping back and thinking about this problem more broadly, it's like Managing state across client server is a hard problem and it's often done like implicitly, like you sort of, say you want to have really fast UI updates and you have some optimistic UI update system that you add and now you've like got client state and you know that can get out of state with your server state and then you just like There's all these bugs that come up when you have like different sources of state and like, I mean, I think this is the reason why sync engines are so nice.
+
+It's like thinking about state in one holistic way and having that, persist across client and server and like, just reducing the overhead. So we had, uh, Tomas from linear on. Talking about their sync engine. And the big thing of linear is like their product engineers, as they're working on the product, they just have these like front end models and they just edit those and they don't have to worry about database or like what's happening behind the scenes.
+
+They have a whole team basically dealing with sync. So it's not a trivial problem, but I mean, there's like all this like niceties that fall out when you make this relationship very explicit. 
+
+**Aaron:** That's the other thing that's funny is like, when I, when we talk about zero, I always struggle with whether to talk about the DX benefits or the UX benefits. I think the DX benefits, if anything, Are like more motivating to like a lot of developers. They're like more exciting.
+
+But the interesting thing here is like everybody in the entire community, who's working on sync engines and local first, almost every single one of them came from a similar background as me, the UI developers, like what motivated it was like wanting to build better UI. But like what fell out of it accidentally was like, when you actually like rigorously.
+
+Design the relationship between the client and the server as like an actual distributed system and do like, real computer science and like software engineering to like do that correctly, like a better system falls out of it, like a much simpler system. That's like easier to reason about and like easier to build with and has like a much better DX, and so like, as an sort of accidental side effect. You eliminate like, cause there's all of this like accidental complexity in like current client server, web apps, basically because of caching, you have like caching, like all over the place, all throughout the stack and like, caching is just like, famously, like, famously subtle, right?
+
+Because you end up with these caches that are out of sync with each other, you need to invalidate the caches. And like, if you just actually rigorously do this and move from caching to like replication. Now all of a sudden the cache is, that's no longer a cache, it's a replica, is like always perfectly in sync, it's perfectly consistent with itself and, uh, optimistic mutations just work perfectly and you've centralized the complexity in the stack in like one component in the sync engine, and then the layers above that don't have to be aware of it.
+
+
+#### [00:06:44] Replicache
+
+**Andrew:** So I think that's a great transition into the road to zero, uh, where it started out is with some of the words you just said with replicash. So, uh, what is replicash? And how did that architecture look like? Like, I don't know, like, I know zero is like the good DX, the generalized DX. What made replicash not that?
+
+**Aaron:** Right. Well, so replica cache was our. And it's a fully client side sync engine. So the way that it works is it's a library that you embed in your web app. ~~And ~~it's a JavaScript library that you link in, and it has a protocol that it wants your server to implement. That basically has like two endpoints, push and pull and an optional third component, which is like a poke.
+
+So, when you want, when your client wants to make changes, it sends a push and when it wants to get the latest updates from the server, it sends a pull and when the server optionally wants to tell the client that, hey, something has changed, it sends a poke to the client, like over WebSocket or something like that's like a tap on the shoulder that tells the client, like, hey, now's a good time to pull again~~ and ~~it sounds like simple and it is actually like really simple and elegant and a lot of developers, it is.
+
+I mean, it's fairly popular. Like it's, I think it's one of the most popular sync engines like on the market right now. And it's like used by Vercel and like SST and, some important companies. But like that the sort of core, like beauty of the protocol push, pull and poke, like belies is a simple idea, but inside of that idea, there's a lot of complexity and the core of the complexity is in the pull.
+
+So like what the pull is supposed to do is send a delta of what has changed on the server to the client. And there's two parts of that are hard. One is that like, I mean, just computing a delta of like some small amount of state is easy, right? Like, you have two objects and you want to compute the diff, you can do that easily, right?
+
+But as the data gets larger, computing the diff is more and more expensive. And doing that all the time, like on any single change, becomes like just You, you need more and more fancy, like data structures on the server to do it well, but the bigger problem is like partial sync, like most applications, like it's easy to compute a diff if like, say that the client and the server are sharing some data, like data that you're thinking is just ~~like, ~~like, like a document and like everyone who has access to the document has access to the whole document.
+
+And that's all the data that there is. Then like doing this sync is easy. And this is kind of where current sync engines like prior to zero, like work really well, but like modern web applications don't work that way. You have lots of users, you have tons of data and there's way more data than is reasonable to sink to the client.
+
+And not every user can see all every piece of data there's permissions. So you need to be thinking like a partial subset of all of the data. And and you need to sync only the data that each user has access to. And so that, that actually turns into like a pretty gnarly problem. That's like the problem of like syncing a delta to a very complicated query.
+
+And when the query changes, like say that the data that the user has access to changes, you need to send that diff. Say that, say the user loses access to something, you need to like revoke it from the client. And then if the user changes, like what they're interested in syncing, like they navigate to a new part of the app, then you need to sync new data.
+
+And people were trying to, like the core RepliCache protocol actually enabled this the way that it was, the protocol was designed. You could actually build this kind of thing, but it was crazy hard to do like on the server, and so it basically led to a situation where like only very like, like strong developers and people who had a lot of time and really cared about this could do it.
+
+And we got to the point where a lot of people were really excited about using RepliCache and we're bouncing off it because of this. And meanwhile, a lot of people outside were getting more and more excited about sync engines. And we, we got to a point where we just decided like, we can see what the real solution is here.
+
+It's going to be really hard to implement, but if we can do it, then we can make something that like, most applications can use and get the benefits of sync. Like we could bring the benefits of sync to like the entire web. I'm using the word entire, like a little bit loosely here, but, to, to most of the web, and that is like really compelling, like opportunity, and so we, we eventually decided that we, we just couldn't like say no to that.
+
+And we started zero.
+
+**Justin:** So I heard you first announced Zero at the local first conf in Berlin last year. And this is like partial sync, which you were just talking about has been a big part of the sort of. Local first problem space. It's like local first makes a lot of sense. If you have a single player or like low sync app, it's like you're making a recipe book for yourself and maybe your family or something.
+
+The amount of data, like you're saying earlier is small enough that like sinking is easy. You just keep the whole database like in the client. But like, getting to. Bigger apps, say something like linear, where you have like many teams and a lot of data and whatever you start losing all of that.
+
+So it was really exciting to hear you talk about partial sync, uh, and zero and this terms because like, especially for the local first space, that's like, uh, one of the big sort of unsolved problems. So, uh, do you see like zero fitting? Into the local first space and any other aspects or any other properties that like make it a good fit for that space.
+
+Or do you think like the partial sync thing is like really the sort of, the real value of like what Zero provides from the local first standpoint.
+
+
+#### [00:11:52] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for this week, but we don't have one. So if you'd like to sponsor DevTools FM, head over to DevToolsFM slash sponsor to apply. And if you want to find another way to support the podcast, head over to shop. devtools. fm, where you can buy some merch and rep the podcast.
+
+With that though, let's get back to the episode.
+
+
+#### [00:12:11] Partial Sync in Zero
+
+**Aaron:** So the partial sync is the new innovation in, in, in zero. Like we, I mean, existing sync engines, including replicas do have something that they call partial sync. And so we're not like adding this term to the discussion but the partial sync that all existing systems provide is like very coarse grained and like very like inflexible and sort of insufficient for like the kinds of applications that like, if you're trying to build notion, like you can't really build it with these existing systems or not practically.
+
+And but like Zero does inherit some of the benefits from RepliCache. Like RepliCache had this new way to do conflict resolution that was new at the time. We called it like transactional conflict resolution. And sometimes we've referred to it as like server reconciliation. And so we, like Zero inherits that and that's an important benefit.
+
+And another thing that, that RepliCache had that was like, not RepliCache isn't the only system that does this, but it was a really big benefit of RepliCache. Is like connecting to your existing backend. So some sync engines, you like have to use their server. And there's like, even like things that are kind of close to sync engines, like, instant DB, I don't know, it's, it's a sync synchronizing system, I guess it's fair to say but you have to use their backend and I'm not like trying to throw shade here.
+
+Like, I think those guys are doing really cool work. But like a lot of users really loved RepliCache because it allowed them to use like common trusted tools like Postgres. Or connect to their existing backend that had a lot of stuff in it, or like, incrementally adopt, uh, because they have some existing application that's using like common tools.
+
+So, yeah, those are the big benefits of RepliCache, like, uh, the transactional conflict resolution and, uh, BYOB. And Zero inherits those. And adds partial sync or actually what we call it is like query driven sync to like to like distinguish from like the existing approaches to partial sync.
+
+**Andrew:** Yeah. So let's drill into that a little more. Uh, you have your, yeah. 
+
+
+#### [00:13:56] ZQL: The Query Language for Zero
+
+**Andrew:** own query language called ZQL. So how does that fit into the picture? And like, how is that to use as a developer?
+
+**Aaron:** Yeah. So like, I mean, the core idea is like, you're building some application, it's multi user, it's got a lot of data. You can't sync all the data and you only need to sync the data. You only want to sync the data that users allowed to access. So how do you define like the data to sync?
+
+And what do you do if you like if the user navigates to a different part of the app and they need new data, right? Well, like existing systems have ways to like structure the data that gets synced, but then like often it's not flexible enough to describe the permissions or to really describe like the intricacies of like the data that's needed.
+
+And then, if you navigate sort of off the map, and you need new data, like, you need to do that quickly, you need to like. The app needs to like specify the new data that it wants and get it quickly. So the core idea of Zero is like, you express the data that you want using queries.
+
+And there's no separate system that, that like, where you specify what data to sync. The app just makes queries the normal way, like as if you were using any other, like as if you were using super base or like Firestore or something like that, like in the client that makes queries. And those queries are reactive automatically every query in zero is fully reactive.
+
+And that, that is like similar to what like Firestore and Superbase are. Well, Superbase, the queries aren't reactive, but in Firestore, the queries are reactive. And so there've been other systems like Rethink that had reactive queries. So that part isn't novel. But then what's interesting is that the, we're not syncing the query, like the queries aren't reactive.
+
+What's really happening is that the rows behind the queries are getting synced. To a local client. And that client is like a real database. So the rows for each query are getting synced into a database. And then you can do new queries against that database. So when, once you've synced one query and you do another query that overlaps with the first one, any of the rows That came down from the first query are available to be instantly returned by the second query.
+
+And similarly, like if you change the data, so you have one query open and you change the data in, in, in your app, the query that you have open will instantly react to the changes that you made locally. So the, yeah, the core idea is you build your app out of these queries, and the queries are reactive and that we're syncing the data behind those queries.
+
+And what data is being synced is fully uh, described by the set of queries that your app is currently using. And that's it. Like, that's how you build your app. And so we, in order to do this we had to build this we had to build a new query language because we'll get into this in a bit, but like, we needed like a streaming query language, uh, to do this efficiently.
+
+And so, uh, we built this query language called ZQL. It's it's very reminiscent to like Prisma or Drizzle or Kaisley if you've used those. And you use it right from your app inside TypeScript. It's like fully typed and it's really nice experience. And it has all the power, basically the power of ZQL with some niceties added like subqueries.
+
+**Andrew:** So that, that model almost seems like a render as you, or fetches you render model where like I render components and it fetches as you go down the line. Uh, recently in like react talk, uh, a lot of the talk has been around like. Pulling your queries up to like a shared space or using a tool like relay or isograph to do that for you in the background.
+
+Does zero have any of those properties where it like kind of hoist things or does it give me the ability to hoist things?
+
+**Aaron:** Yeah, this is such an interesting question. When we started Zero, we were very interested in this idea of co located queries, where you put the queries inside your components and then they're sort of aggregated up the tree like, like Relay does. And you, they're sent all at once to avoid waterfalls, right?
+
+And, or like another way to say it is we're like very interested in the idea of co located queries and we wanted to like mitigate the problems that come as a result of co located queries, right? And so we built the query language like ZQL is like a fundamentally composable like system. It has some like first class subqueries.
+
+So you can like, you can aggregate the queries and like build them up into a ball and send them all at once. But we haven't actually like implemented the we haven't actually implemented the thing like, like the aggregation yet. And partly that started as like, just like, we haven't got to it.
+
+Like building the core query language is like very difficult. Building the sync engine is very difficult. And like, we just haven't got to that part of the stack yet. But also like. We decided early on to drive the development of Zero with a dog food app that we've built because we wanted to be like really sure that we were like building the right stuff and like the thing that we built could actually be used to build like was a really good experience for building like actual sophisticated apps.
+
+And like, one thing that we found as we were going along was like, we didn't need this, we didn't need this query aggregation as much as we thought we would, as much as we expected that we would. And we actually built this whole bug tracker, like similar to linear for our own use. And we haven't needed we haven't needed this query aggregation yet.
+
+And it's interesting to think about why I could go into more, but like, I think like the top level is like, we're like fundamentally rethinking like the architecture of apps. And a lot of the things that people are used to doing are like fallout from like the current architecture of house.
+
+And so like, as you, you change this like low level of the system and like the upper levels kind of change as a result, and it's kind of a mistake to like assume that all the things that you currently need at the high level you will, or they'll take the same shape or whatever, so I could go into more details about that, but I mean, the, I guess the answer to your question is like, you don't need, you don't need that stuff as much as you do today because of because it's a zinc engine. I
+
+**Andrew:** Yeah, because most of that's probably dealing with like the client server interaction and the overhead that's there. And if you have it all locally and readily available, it can be faster.
+
+**Aaron:** mean, it's because you can reuse the data from other queries, right? You think about like your, your typical view, right? Like you have this query waterfall problem, but like part of the issue is that like you do one query. You get data back and then you do, and then you do another query and that query might overlap quite a lot with the first one, but like this, the client doesn't know that, and so every single query is just like totally independent and disconnected from each other.
+
+And so like you, you kind of have to aggregate the queries because there's no way for them to share data. If instead what's happening is you're, you send a query and you get the data back and now that data is available for the next query. Then a lot of flexibility opens up. Like sometimes they just automatically overlap.
+
+Like think about you're building a music player, right? You see the track list, right? To render the track list, you needed the track information, right? Then you click on a track detail. You already have the track information, so maybe there's like a few extra pieces of information that you didn't need for the track list, like the album cover or something like that.
+
+And that could come in asynchronously, but often a lot of times. You already have the data that you needed for the next query. And then if you don't, then you can easily like decide to preload some of the data, and as an app developer, you often know the general shape of the data that you need.
+
+And so you can put a preload query in and that sort of flushes out the rest of the covering and then you need it less. I'm not saying it will work for like every single case. And I think there could be cases for zero based apps where you want it to load as fast as possible, and we still want some of that aggregation stuff and we might still build it, but we have just found that like.
+
+It wasn't as, it wasn't anywhere near as big of a problem as we expected. And like, we already have like, I don't know, like two dozen like people somewhere between development and production, like serious, like projects, like after a month and they haven't asked for it either. So we're just sort of building in, in, in order of priority.
+
+**Justin:** Yeah, makes complete sense. 
+
+
+#### [00:21:11] Building Applications with Zero
+
+**Justin:** Let's maybe step back a little bit and talk about, like, what the architecture of an app would look like, uh, when you're building on zero. So, so you mentioned earlier so replica ash was, like, very much like a front end, uh, front end sync engine. And then your back end had to implement like a few, like this kind of simple protocol.
+
+So when you're building with zero, what does that? What does that look like? What do you need in your app? What kind of requirements does it make around the technology you can use, etc.
+
+**Aaron:** Yeah, I mean, so the fundamental architecture is like you have your client, it's like more like an S more to the SBA side of the spectrum, like then currently is popular. And, uh, you have like this rich client, and it embeds the zero client, and then you have your database. Which currently the only supported database by Zero is Postgres, but like, there's nothing like we're working on expanding that.
+
+And eventually like lots of databases will be supported. And then in between where you would usually have your API server, you have, uh, the Zero, what we call the Zero cache, which is a service that implements the server side of the sync protocol. ~~And~~ and the, and you build your application by interacting with the Zero client.
+
+And that sends, has a persistent WebSocket connection open to the zero cache and, uh, and it and that's how it, it sends messages. When you make a change in the client, it sends a message over the WebSocket to zero cache that makes a change to the database. And and then when changes happen in the database, uh, zero cache, like implements the replication protocol of the database.
+
+So like most databases have a built in native replication protocol, so they can do like read replicas and stuff like that. So Zerocache plugs into that and it pretends that it's a read replica. And so it like consumes the the replication log of the database. And that's how it finds out about new information and pushes it down to the clients.
+
+And like, basically what happens is when you do a query on the client, ~~uh,~~ we open up a ZQL query, which is like a subscription, and we run that against the client side database. So it's just like listening to the client side database and like reactively updating the UI when the client side database changes. So like just with that, like when you do a mutation, we'll run the mutation against the client side database and the UI updates, right? Instantly, but we also take that query when you open a query on the UI and we send it to zero cache and the query runs reactively on the server. And so it's listening to changes to Postgres.
+
+And so when a change happens in Postgres, the ZQL query on the server, like, uh, it reruns, it gets the row change and it sends the row change to the client. That gets put into the client side database and then there's equal query on the client runs again. And that's how the UI sees the change. So you have the, these two, you have the same ZQL query kind of running in both places on the client and the server.
+
+Another like cool thing about this is like, that's really fun is like the way that, uh, zero cache is like finding out about changes that happen in Postgres is it's consuming the replication log. So what that means is that any change that happens to Postgres for any reason, that will end up in, in, in zero clients.
+
+Like, so it doesn't, you can have like old fashioned like REST clients, like talking to your Postgres database and you can have Zero clients talking to the Postgres database. If the REST clients make a change to the database, it will get replicated to the Zero clients. And there's nothing that you need to do to set that up.
+
+You can even like log into the database and just like make a change to a row and it will show up in the clients.
+
+**Andrew:** Uh, is that concept you just described what incremental view maintenance is? Like, I got to call it out. It's on the homepage of the
+
+**Aaron:** no. like, not not exactly. I just want to like, go back to the architecture though. So like, that's the sort of core architecture.~~ Um,~~ That, and that's the architecture that exists right now. If you like use Zero today. But like a really common need for applications. And I think like a problem with like, Most current sync engines is that like people often need to do really complicated logic on the right path of their app You know, they want to do like custom validation, you know to implement like, you know business logic constraints They want to do complicated authorization or they need to do side effects with other systems Like they need to put you know, they need to make changes to some external system Like a really dumb example is just like, you want to send a notification, like an email or interact with Slack or Discord or something like that, or like, you need to interact with an LLM, and, uh, so in, in in RepliCache, because of the way that the push protocol worked, it sent a message to your server and you implemented the push protocol.
+
+So in the, in your implementation of the push protocol, you had an opportunity to write whatever code you want to do validation or to interact with external systems. ~~Um, ~~But like in, in most other sync engines, there's no place to put that code, but because we built zero on top of RepliCache, we still like underneath, we have all the infrastructure that made that work.
+
+And so we've been working on this feature we call custom mutators. Where it's, where we add this feature back. So like the way it will work in a month or so is like, you'll run a mutation on the client. It'll send it, send the mutation to the zero cache and you can optionally~~ like put~~ put your own code in there and zero cash will call out to your API server and you can implement whatever logic you want in the API server.
+
+And then at the end of that, you just write into Postgres. And because of what we talked about a second ago, you wrote to Postgres, it will sync to the client. Um, So there's going to be, that's going to be the architecture in a month or two. You'll be able to put custom code on the right path.
+
+**Justin:** That'd be really cool. I want to ask a one question before we move on from this, uh, around like the zero schema. So we've kind of talked about how like zero hooks into the, uh, the post, postgres, right? Replica and what that looks like. So, uh, there is in the docs, you have this outline of like zero schema and it's like, you have a database schema and you have your zero schema.
+
+And I was just wondering, is like, Is the intent that you sort of fully implement your sort of back end data model? Like, I mean, obviously, everything that would need to be synced would have to be implemented in the zero schema. But does it, like, cover your entire application? Like, is this replacing drizzle or something, for example, or does it, like, live alongside of it?
+
+And just the things that are covered in the zero scheme are the things that are synced. 
+
+**Aaron:** Yeah. I mean, ~~the,~~
+
+~~the, ~~the reason that the zero schema like is is basically~~ the,~~ the core reason is to like make the client type safe, like, so that you have type hints and stuff Um, And I mean, that, I guess that's part of the reason that like. That's part of what Drizzle is doing too. so they they like overlap in a little bit.
+
+Uh, but because we like need our own query language to implement this all efficiently and reactively, like we can't use Drizzle. So there is like a little bit of like non dryness there that we haven't figured out. Um, Like it, it's definitely, like Drizzle kind of as an example, Drizzle does like two main things, right? or, or three main things. It like, It like manages your database schema, it handles migrations, and it gives you a type safe API, right? So like, we have to API, API part, we have no interest the, the other parts, like managing your and, and the zero schema has nothing to do with that.
+
+Like really all it is is like a thing that, that lets you have type um, access to our query language. So like one thing that people did right away, like within weeks of opening up the alpha was like implement, like drizzle to zero schema converters. That like run as part of their CI. And people who who don't like this non dryness, like we actually just leave it for our own app for easy bugs. just, We just deal with it and it's not, it's not fantastic, but like, it's not worth the infrastructure to automate, but for people who really don't they um, there's like converters that convert from drizzle um, to zero schema that you can run continuously. What's the other really popular one? Prisma, you know, there's a um, to zero schema converter. ~~Um,~~ Does that answer your question?
+
+**Justin:** Yeah, totally. Uh, I mean, this makes, that makes sense. That's kind of what I expected. It's like, because you were, when you were talking earlier about like the rest API, that's like interacting with the sync engine is like, well, that makes total sense. It was like, sometimes you're going to have this like big app and there's a lot of data that's like, doesn't need to be seen because it's like not something people are going to be frequently accessing or whatever, and.
+
+So this setup makes a lot of sense to me.
+
+**Aaron:** Yeah, you only need to define the zero schema for like the tables and columns you actually use in zero. And you can do it totally lazily. Like you you add a new feature and now it needs a new column, then you. Um, Then you just change it.
+
+**Andrew:** ~~Uh, so the docs a few times call out that consistency can be a problem, and it's something that you guys are working towards in, uh, the beta of Zero, you're currently in alpha, so like, what are those consistency problems, and how are you going to solve them?~~
+
+**Aaron:** ~~Yeah. Can we talk about the IBM first? Because like,~~
+
+**Andrew:** ~~I'll wind it back.~~
+
+**Aaron:** ~~OCD is like, we have this dangling question and I'm like, we got to answer. ~~
+
+**Andrew:** ~~okay. Uh,~~ 
+
+
+#### [00:28:57] Incremental View Maintenance Explained
+
+**Andrew:** so on, on the front page of the docs, it calls out two concepts with a link. Uh, first is equal. We already talked about that. And the other one is incremental view maintenance, which links to an entire paper that I assume was written for somebody's PhD. So, uh, what is that and how does it play into zero?
+
+**Aaron:** Yeah. So the big picture is like, you want your eyes to go fast. So you need to sink in it. Right.~~ Um,~~ But you can't sink all the data to the client cause there's too much and you need, and you have permissions too. So like, if you think about what, like. You know how to describe the data that should be synced like a natural way to do it is with a query language.
+
+~~Um,~~ So what you really want is to like specify data that that should be synced as a query, right? But there's this like deep problem in computer science that goes like back Um, of how, how to efficiently keep queries up to date. It's like a hard Um, Like you have any arbitrary ZQL query and, You know, some data in it changes, you don't, ideally, you don't want to rerun the query, um, to get the new results. You want to just somehow be able to take that change that happened in the database and do something and figure out like the change to the query~~ um, ~~efficiently. And for Zero, this is like a really big problem because, usually the app is going to be built out of like many you know, like.
+
+Uh, you know, in, in Z books at any point in time, a, you know, there's like a dozen queries open. Right. And as gaps get more complicated, it'd be like more. And we, it's, it's like even hard to even know which query to rerun. Like this is like the invalidation problem. You know, 10 queries open and one row in Postgres changes.
+
+Like ideally you don't want to rerun all 10 queries, but if you, if you look at the ZQL language and try to think about how you would figure out which queries to rerun, even that is really hard if you know, and then if you know which query to rerun, you really don't want to rerun it from scratch.
+
+You want to be able to do it incrementally. So people have been like, um, working on this problem, like. Over the, Over the um, like progress little by little, but recently, like in the last 10 years, I've been like a you know, a few big um, and like one of them uh, DBSP paper, um, that led to the product Feldera.
+
+So there's like the server side product called Feldera that's built on this paper. Um, And then there was this other paper, I can't remember the title off the top of my head, but it led to the product Noria. And oh wait, data, the the sort of, uh, research database was called Noria, but it led to the product ready set.
+
+And, but these, these products are um, they're server side things. They're meant for the case where like you have some really expensive analytics query that you're monitoring. Right. And you want like a dashboard where you can like go and you can see the latest like result of this at any time. And you don't want to constantly be rerunning this query.
+
+but we, we have this kind of much more interactive UI problem where like the user's constantly adding queries. And removing queries and we want and, and and we you know, be able to sync the rows that have, that are the, are the differences in those queries to the client efficiently. So we like, we, we took these papers and and and we use them as inspiration and we built our own IBM system.
+
+Um, That's kind of like streaming database. and, And that, that's what ZQL is. And like, like it would be really hard to explain like the intricacies of it, like in this format, but like the intuition is easy to understand. It's like, typically the way a database query works, it's like, you can think of it as like a function.
+
+It takes as input the database and it gives you like, it takes as you take a query in ZQL, it, it, it compiles that query into a function and then the function takes as input the database and it gives you out a snapshot of the result right at that moment. If you, and if the database changes and you want to do it again, then you got to run the function again. Um, But what like IBM systems do is they take your query and they compile it into a function the same way. But the input to the function is like a row that has changed in the database. So like the input to the to the function is like, um, this particular user row was added. This particular user row was removed or this particular user row was edited.
+
+And this is the old version of it. And this is the new version of it. And you send that one row through the pipeline. The function is actually like internally, like a pipeline of stages. And you send that one row through the pipeline and like the pipeline has stages like filter and join and like sort.
+
+And like at the end of the pipeline, what pops out is. It's a change, one row change to the query result. So like the query result had this row added, had this row removed, had this row edited. And so then you can take that row and if you're in the UI, you can update the one element, you know, efficiently that changed.
+
+So you don't have to like do the virtual DOM thing. Like if you're in solid or whatever, you can like efficiently update the UI, which is really fun. But like more importantly, if you're on the server where you have like thousands of these queries running and you need to be efficient. You can take that one row and you can send it through the sync engine to the client.
+
+So that's like the sort of core enabling technology of Zero. And like, we actually had the idea for Zero roughly, like maybe a year at least, or a year and a half before we started it. Because people were asking for this stuff in replica for a long time. And it was like pretty clear, like what the answer was product wise.
+
+But the problem was like, there were no UI, there were no like JavaScript IBM you know, that we could use to, to build it. Um, And like, you know,~~ like like a you know, ~~like a famous problem, like we didn't want to do it~~ Um, And so. Like, uh, ~~and so we kept kind of waiting you know, for somebody to do this because it you know, ~~it was~~ it was going to, it was going to become something that other systems were going to need or like would become Um, And it just never happened. And so, one day, like one of the guys on my Derek and I were talking~~ and,~~ and he was like. You know, He was like, let's just stop shying away from this problem. Like, let's look it in the eye. The expression he used was like, let's look the dragon in the eye. And like, how hard is this really to do? You know? And so, we, we looked, we took a look at it and decided that we could do it. And so we we built ZQL.
+
+**Justin:** ~~How hard has it been to do? ~~
+
+**Aaron:** you know, it's like CrayEngine, it's it's really like, it's really like intricate code. It's like not fun code, like, like It's it's really like intricate, a lot of subtle like details. And it's really hard to test because all of the features of the CrayEngine like interact with each other.
+
+So it's like this combinatorial problem. ~~Um, ~~So, you know, it's. It's been hard, but like, you know, it's it's totally worth it, ~~you know,~~ because like at the end you get this like totally general that you can you can take this query engine and you can write some query that you've never written before and you can run it and you get this streaming updates,~~ you know, ~~so that, that really motivates us.
+
+And it ~~it~~ centralizes all the complexity and inside zero and allows. Um, and, you know, at the end of the day, like,~~ you know,~~ it's just software, you know,~~ you know, ~~there's like papers,~~ it's not,~~ it's not magic. It's just like a lot of work, you know?
+
+**Justin:** it's very true. It's very true. 
+
+
+#### [00:35:11] Challenges in Building Sync Engines
+
+**Justin:** So I mean, speaking of the challenges of building sync engines and query engines and all the other things uh, we were talking about some consistency issues earlier uh, so it's like What sorts of, like, what sorts of challenges, not just consistency, like, what sorts of challenges have y'all run into are there any, like, sort of things that you still have to work through as you're going towards beta and beyond?
+
+**Aaron:** Yeah. Yeah. So, I mean, just to define the terms, I mean, I think a lot of like UI developers and like web developers aren't used to thinking of like distributed systems. And like consistency is like this term that's used in databases and systems like this, and it, it, it like sort of broadly means like what guarantees does the system make about the data that you'll you know, like an answer to your query, you do a query against the database and the database is like changing at the meantime, like while you're doing this query, like what what, what rules.
+
+Does the system like enforce about what version of the data you'll see? You say you do a query that like selects all the you know, and meanwhile, a user's added, you see that user or not? Or like, say that you're doing a query for users and you know, somebody runs a query that deletes all the users whose names start with a. Like, do you see any users that have the name a, do you see none,~~ you know, do you do you see you know, what are the~~ what are the rules? And, uh, so like this comes up actually for, for UI developers often like consistency problems, but I think we're just not used to thinking of them like a really common problem in like current um, like stacks~~ for, for~~ for web apps is like, you know, if you're using something like a react um, like you can easily end up in a situation where like your UI shows like one state of the data in one place and another state of the data in another place, you know, they're inconsistent with each other, you know, because like, um, maybe the cache for one of them was updated, but the cache for the other one wasn't updated. You know, Or like, say you did an optimistic you, you forgot to update the like optimistic result for one query. So like they show inconsistent results, right? One of the things that falls out of using sync engines is you get like consistency. Usually when you use like today's sync engines, you get consistency for free because you're syncing the whole data know, as as one like sort of atomic unit, and then you run these reactive queries on top.
+
+And so like the the cache, you know, like in Apollo, there was this concept of a normalized cache. But it wasn't like fully normalized and you didn't have queries on top. But like in a sync engine, what happens is you're syncing a database to the client and you run reactive queries. So like when the database changes, all the reactive queries update together.
+
+So it's like really nice. That's that's what we mean by consistency. Really like you do an optimistic mutation in one place and all the queries that are using that row, they all automatically update to reflect it automatically. So in, uh,~~ in ~~in today's sync engines, like that's commonly the experience that you get, but that is relying on the fact that you're syncing all the data, right?
+
+So when you introduce partial sync into the equation and then what happens? Um, So the consistency problems that exist in today's alpha have to do with when you have like a partial subset of the data, like here's an easy case to imagine, like say that you have, ~~you you, ~~you have like, um, a bug tracker and the bug tracker has like 100, 000 rows in it. And you've synced like the first 10, 000 rows. Um, And you do a search for all the bugs, uh, that are assigned to Justin, right? Um, And say that the current sort of the UI is like created descending. So we've got the first, we've got the first 10, 000 rows sorted by created ~~And, ~~And we do a filter for like, Owned by Justin, right?
+
+~~Um, So you'll see like a subset And and I'm sorry, my dog is scratching at the door. I have to get up. Uh, hopefully we can edit that.~~ Okay, so you'll see you'll, you'll, if we had the first 10, 000 rows sorted by created descending and you do a filter over that, you'll see the correct know, Maybe maybe there's like 100 rows that match the filter. You'll see the correct first 100. Right. But now I'll say that you, in the UI, you change the toggle, the sort.
+
+To be sorted by, created like the opposite way. You know, We, we were doing created descending. Now we do created ascending, right? So now the, if we want to update that, the UI optimistically, like instantly in response to the sort change, we'll again, do the query, um, over the 1000 rows that we already have.
+
+And we'll again, get like some results for that filter. But they be the, the ones that are at the end, you know, that would have, they won't be the correct result if we had asked the server. Right? So we'll get like. Some results optimistically. And then a second later, when the server result comes in, we'll get different results and the UI will flicker.
+
+And again, going back to like the central motivation for building these things, we're like UI developers, we want to make really good UI and this kind of flickering is not okay as, as UI developers. And like a lot of people that we've talked to and described this consistency problem, they're like, Oh, like that's how I expected it work.
+
+You know, Like they weren't expecting it to be any better than that. Like, this isn't okay with us. We want.~~ We want.~~ We want the system to return an optimistic result instantly the majority of the time. But if it can't return a correct result, it should not, and it should wait for the server to return a result so that you don't get a flicker.
+
+Because we want to avoid that flickering. So that, that's what the documentation is referring to when it talks about consistency problems.
+
+**Andrew:** Yeah. Lots to unpack with a syn engine and a query language. Lot lots in there.
+
+**Aaron:** ~~there's I mean, ~~there's a lot, there's a lot of complexity. And I hope when I'm explaining this, it's like, I hope that it's to the, to the audience. I~~ mean,~~ it's just like, if you talk about~~ like~~ a database, right inside the database, there's so much going on, ~~right.~~ But outside you just do queries and get results and it's really fun, ~~And like, and~~ and so like, ~~you know, if we, ~~if we talk about like how zero works and like what makes it special and what we're excited about, like a lot of it is like on the internals, but like the end result is like. You do these queries in your UI and like they update automatically and most of the time they resolve instantly and when you do optimistic mutations, those are instant and it's like a really fun way to build.
+
+**Andrew:** yeah the DX you see in the docks for like the salt and the react examples, like the docks are like 400 pixels tall. 'cause it's like, once you know how the thing works, it's like, oh, it's obvious how I would integrate this. So definitely great DX there. Uh, but moving on to. 
+
+
+#### [00:40:46] Zero's SaaS Product Offering
+
+**Andrew:** Some important topics, uh, tools have to make money and at some point zero will have to make money.
+
+So what does the SAS product offering for zero look like?
+
+**Aaron:** Yeah, ~~I mean, ~~it's pretty standard playbook that we're~~ um,~~ like we're going to offer, you know, I mentioned that there's this zero cache server that runs as part of the system that implements the server side of the same protocol. ~~We will~~ right now in order to use zero, you have to run this server yourself.
+
+And it's not like. Um, It's kind of a departure from ~~know, if you're, if know,~~ databases are stateful servers, you know, everyone's so used to using these like stateless serverless Um, but like,~~ you know,~~ databases have to be stateful sadly.~~ Um,~~ And, uh, so, so do sync engines. um, you have this zero cache is a stateful server.
+
+It's a distributed system. Um, It's got to run on like multiple nodes and it has like a coordinator node.~~ Um,~~ And it's not like. You know, For like an experienced, like backend engineer, it's not like a huge amount of, of effort to run. And we have, you know, dozens of of people running it like seriously after like just a month.
+
+And so you can but it's, it's effort, right? The same way that running Postgres is effort. Right. And most people don't want to do that. And so for those vast majority of people who are not interested in running their own sync engine server, or who want us to do it and and keep it working um, we will offer zero cash as a service and we'll probably charge like rates, like sort of.
+
+Comparable to like Postgres as a service or, you know, like, ~~you know,~~ hosting as a service and things like that. And then we also have a number of like bigger users who, have, have told us that, know, they they want to run it inside their own, like Amazon, like VPC~~ um,~~ and they don't want to like rely on it as a service.
+
+And I think this is like an emerging trend with like bigger customers. ~~Um,~~ And so we're really excited about, like making that really easy, making that experience really easy.~~ Um, ~~I think like PlanetScale has this really cool like for for how they make like the majority of their money, where they like sort of run PlanetScale, they like literally run it, you know, like on behalf of, um, customers, like inside the customers VPC.
+
+~~Um,~~ And they have like really advanced tools for doing this. And I. I think that's a direction that that I'm really interested in going.
+
+**Justin:** Yeah, I think especially for like enterprises, it's like, they want more and more things happening in their VPC, like less things happening outside. ~~Uh, ~~so that seems like a, yeah, very feasible model and something that you'll likely have to push into in the future anyway. But yeah, that's exciting. Uh, I feel like it slots itself well into like a clear value add, which is kind of like always what you want when you're building out something like this.
+
+~~So.~~ 
+
+
+#### [00:42:59] Roadmap to Beta and Beyond
+
+**Justin:** So you're in alpha now. We talked about some of the consistency things that you're thinking about. What do you think for beta and like how long have you planned for this cycle to go? Are you just like trying to test it out with customers and just see what things would come out? Do you have like concrete plans?
+
+Like earlier you mentioned the mutators as like a concrete thing that you're like looking to add. Is there like a lot more things like that you're sort of aiming for before you land
+
+**Aaron:** Yeah. The thing is like for like feature wise for beta, there isn't a huge number.~~ Like, ~~Oh, like on the, we have the roadmap on the website and it's basically like custom mutators are like the big new feature. There's also like a bullet in there. That's like, I need to, it's a little bit like poorly worded.
+
+I need to clarify it. But like, basically like an LRU cache system for the queries.~~ Um,~~ Like right now when you open a zero query, it sinks and you open another zero query, it sinks. But then when you close the query, it stops you know, there it's very like direct the lifetime of these queries is like very explicit, but like in order to make this system like more usable, the query should actually, if you open a query, and then you stop using it, it should actually keep syncing that query.
+
+For a little while, uh, because you already have the data, and also like most likely, like commonly the user will navigate back and they'll need that query again in the future. So it makes sense to keep it so that you can have the navigations be snappy. Like say that you're, you have two views in your app.
+
+You navigate from A to B when you navigate back to A, you you want that to be instant. Right. So in order to make that work really well and make the way people expect, we need to keep these queries running. Um, For a little while after you stop using them and then like age them Um, So that's another big feature.
+
+Um, The consistency stuff we were thinking that we would do for beta, but like all our users keep telling us that they don't, it's not a problem that they've hit yet, so we might like punt that. Um, And then the other big thing is just like we're going to keep scaling up, like how much data we've tested it with, Have like a demo where we have like a really big data set running in it like a fake bug tracker that has like You know a million bugs in it or something like that.
+
+The beta timeframe, like summer ish, I think is what we're aiming for. Our company is traditionally like really conservative with like the labels that, that we assign. Like a lot of people have said that the product is a lot further along than they expect from an alpha.
+
+And you know, I think like for beta, like the sort of quality bar that we're going for is like, ~~You know,~~ if you're building something like linear or notion, um, or superhuman, something like, like basically like any, like SaaS, it's like a productivity app. And you're building it from scratch and you're starting new, zero will be something that you should definitely look at.
+
+Like, I'm not like bombastic enough to say, like, it would be the best way to build that. Uh, but think it will, it will be something you should definitely consider.~~ Um,~~ And I think for a lot of those applications, it will be the best way to build it at the beta timeframe. , the main thing that will be different between beta and GA was, will be the SaaS.
+
+So like at GA, there will be a SaaS that you can use. ~~Um,~~ And you won't have to run the server.
+
+**Justin:** Makes total sense.
+
+**Andrew:** Cool. 
+
+
+#### [00:45:41] Conclusion and Final Thoughts
+
+**Andrew:** Uh, well that wraps it up for our questions today, Aaron. Thanks for coming on. Uh, zero seems like it has like incredible DX. I'm super excited to try it out on a project where it fits in. Thanks for coming on and talking about it.
+
+**Aaron:** All right. Thanks guys.
+
+**Justin:** Yeah, Aaron, thanks so much for coming on. I, uh, am incredibly excited to hear about the Progress to Zero. I've been super excited about it since you announced it at LocalforceConf. And, uh, yeah, can't wait to try it out.
+
+**Aaron:** Okay. Thanks. Bye. 
+
