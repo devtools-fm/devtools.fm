@@ -1,0 +1,434 @@
+---
+title: David Blass, - ArkType, better runtime type validation
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/David-Blass----ArkType--better-runtime-type-validation-e2uvake
+youtube: https://www.youtube.com/watch?v=JxAaWsAAQxM
+tags: technology, coding, programming, TypeScript, runtime, validation, library, performance, optimization, error, messages, constraints, type system, pattern matching
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to David Blass, the creator of ArkType, a runtime validation library for TypeScript.
+ArkType goes against the mold of other TypeScript validation libraries by using a syntax that is as close to native TypeScript as possible.
+It's packed with interesting features and has made David a TypeScript performance expert.
+
+- https://bsky.app/profile/ssalbdivad.dev
+- https://arktype.io/
+- https://github.com/ssalbdivad
+- https://arktype.io/docs/blog/2.0
+
+Apply to sponsor the podcast: https://devtools.fm/sponsor
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:01] Unique Features of  ArkType
+[00:08:35] Optimizing TypeScript Performance
+[00:13:18] Ad
+[00:13:37] Haunting Issues
+[00:18:13]  ArkType 2.0: Performance Boost
+[00:27:28] Importance of Good Error Messages
+[00:46:16] Constraints and Type System
+[00:51:11] Future of  ArkType: Pattern Matching
+[00:56:10] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**David:** I want to define something that's as close to a TypeScript type as possible.
+
+What's the closest thing I could get to native type syntax that I would be able to like, use in runtime JavaScript? And that was, like, really the core question from which a lot of the API was derived .
+
+#### [00:00:20] Introduction
+
+**Andrew:** Hello, welcome to DevTools. FM. This is a podcast about developer tools and the people who make them. I'm Andrew. And this is my cohost, Justin.
+
+**Justin:** Hey everyone, we're really excited to have David Blass on with us. David, you are the creator of  ArkType, a really awesome runtime validation library. We're really excited to talk about that. We had Colin on who created Zod way back in 2022 sometime. I'm a big fan of both of these libraries. So before we dive into that, would you like to tell our audience a little bit more about yourself?
+
+**David:** Sure. Um, so my name is David. I'm working on this project  ArkType full time. It's an open source TypeScript. Runtime validation library. 
+
+
+#### [00:01:01] Unique Features of  ArkType
+
+**David:** Um, it's got a couple really unique, uh, features, uh, or I guess, uh, there's a couple ways in which it's really unique. So, so one of them is that the definitions are specified, uh, in a way that looks like native TypeScript syntax.
+
+~~Um, so, uh, you know, they're,~~ they're like in strings, and you can use union expressions and parentheses and everything you can use in TypeScript, ~~uh,~~ and then it gets inferred out one to one. So that is pretty different for most APIs. And then, uh, the other really cool aspect of it that is admittedly sort of like, you know, uh, obscured to some extent from, from a lot of users, you don't really need to know it.
+
+Um, in order to use the runtime validation aspect of the library. But something that I think is really unique and could have a really big impact on the ecosystem is that it also has a set based type system like TypeScripts, meaning it can compare, uh, like, you know, schemas to one another and say, like, does this schema extend this schema, like the TypeScript keyword?
+
+Or basically, like, if I have all of these constraints, does that guarantee that this other schema is going to be met? Which, again, is like an end user you might not be able to make a ton of direct use of. But I'm super excited about, uh, in terms of the implications for the ecosystem, uh, like other libraries being able to like validate the schemas that you pass into them based on sets of constraints and lots of optimization potential to make, uh, the runtime validation really fast.
+
+So, uh, a couple of really unique, uh, a couple of really unique directions the library went in that I'm excited to delve into as well as some of the more hopefully basic aspects of, uh, you know, addressing the day to day needs for runtime validation in a way that's, uh, you know, makes, makes everyone happy.
+
+**Justin:** The syntax is, is really cool. I guess, uh, I've talked a lot about like type systems to co workers and friends and stuff and, uh, TypeScript's type system, being able to like type strings is always like when that landed, it was like very mind blowing and you're, and you're using that a lot. Um, how do you, uh, well, how did you stumble into that API?
+
+Um, and I don't know, like what, what's your experience with it so far? What are the sharp edges?
+
+**David:** Yeah. Um, well, it's funny. I mean, I've been working on this for a few years now, and, um, I honestly didn't really think this would be viable when I first started working on it. Um, I guess, like, the core inspiration for the API is pretty simple, right? So my thought process was like, Uh, I want to define something that's as close to a TypeScript type as possible.
+
+Like, what's the closest thing I could get to native type syntax that I would be able to, like, use in runtime JavaScript? And that was, like, really the core question that, that kind of, like, from which a lot of the API was derived. Like, you know, what's the least change that I could make such that You know, you look at the like  ArkType definition, you look at the types of definition, they're as close to one another as possible, yet I can actually use that same definition to, you know, check an object at runtime.
+
+So, uh, but like, how viable is that going to be? I guess I didn't really know when I started working on this a few years ago. Um, and my intuition was like, not that viable for like real stuff, I guess is like what the answer is for a lot of. Type level, uh, crazy type level shenanigans that people like, like to pull off for fun, like the type challenges and stuff.
+
+There's like so much, many cool things you can do in the type system. But like, are these gonna be like real robust, scalable things that you could actually have in a big project and that wouldn't like instantly fall apart? And usually the answer is no. So like I wasn't that optimistic going into this.
+
+But essentially, as I was, uh, building, uh, the, like, static parser, I guess is what I call the part of  ArkType that at a type level will, like, take a string and will, like, give you autocomplete feedback or will give you error messages that are really specific based on what you're typing in. Um, Essentially, like when I first started building it, I didn't really know anything about parsers and, uh, I just kind of like took the most naive approach, which, uh, it was like, you know, pretty much what you would do if you're trying to parse the string and TypeScript is that, uh, cause it's also maybe the most intuitive is that like, let's say you want to parse a union or something.
+
+Right. And you, um, so like you look for like a pipe symbol, you know, you say like my string extends like infer, you know, left. Right. Type symbol, infer right, this might be like what, like most, maybe a lot of people haven't done a lot of type level programming, so maybe that sounds totally insane, but basically it's like a regex, you know, you're like kind of like pattern matching, extracting out groups, so you're like, okay, I have my left group and my right group, uh, now I'm going to like do a union and parse these two types.
+
+Uh, and so that was what I did initially. It like was working better than I thought it would, but for like longer strings, uh, and especially for cases where like there was embedded syntax, A, it wasn't very performant, and B, um, It actually, like, had limitations in terms of what you could even parse that way.
+
+If you think about things like string literals with, like, pipe symbols in them, like, how are you going to know that that's what's happening? Um, so eventually I figured out this approach that was, like, iterate over one character at a time and, like, determine if that character is, like, something that we want to just, like, append to, like, a name that we're parsing or if it's, like, a special character that's an operator that we want to, like, start a new union or something like that.
+
+And it's just like shift reduce parser, if you want to look up this, this idea. And it turns out TypeScript is incredibly efficient at this, like, iterate over one character at a time and parse it. Like it can do that super fast. I guess there must be like very little kind of like overhead within the type system itself to just be able to iterate over characters like that.
+
+And, uh, so doing it that way, like I kind of expected when I was first implementing it, that in order to get some of those like niche cases, right. Where I have like. Parentheses or like string literals and I have like special characters there that would break the like parsing logic I expected that there'd be a performance cost to that But it turned out that it got way more efficient and also like became much more capable in terms of parsing like arbitrarily complex expressions So when I found that I was like super excited and it was like, wow, this actually has real potential.
+
+I'm like, I could totally use this in a real project. Cause like, you know, I was testing cyclic scopes with like 500 cyclic types and you could like parse them relatively efficiently and it would like all infer. And I was like, this is like better than existing stuff. Like, how is this possible that it's this fast?
+
+But, uh, it can be. And then. You know, I, I built this whole like type benchmarking and type testing library to try to make it faster. So I started iterating on the benchmarks as I was building the parser. And, uh, I think that that's something that ended up being really impactful because like other libraries don't have, you know, it's out there, it's open source, so they can use it, but they're not using it as far as I know still.
+
+So, like, they're kind of just, like, shooting, I don't know, what are you, like, shooting in the dark or something? They don't really know exactly what the impacts of the, like, granular changes they're making to their type inference logic are. But since we were, like, always iterating in this direction, where it's like, can we make this a little more efficient?
+
+Can we make this a little more efficient? Like, oops, we made a change that made it a little bit worse. Like, is that worth it? Or can we do something else? Um, it ended up that like this crazy strategy that really you would think would be very inefficient actually ends up being a lot more efficient than like most existing options and, uh, you know, can be something that like, you know, you can theoretically get that like amazing DX of feeling like you're writing a native type, but not suffering that like kind of performance overhead that you would expect that would make it unusable in larger projects.
+
+**Andrew:** Has doing all of that, like helped you write better TypeScript itself? Like, cause like I've written TypeScript for years. I don't know what makes. Bad, unperformative typescript. Like, as you said, it's like shooting in the dark. It's like shooting in the dark, but I don't know I'm shooting a gun or that I'm existing at all basically.
+
+So like, has it, given you that extra, like ability,
+
+**David:** Yeah. for sure. I mean, I think if you do anything that much, like you build intuitions about it. 
+
+
+#### [00:08:35] Optimizing TypeScript Performance
+
+**David:** Um, and so like actually what I've tried to do to support my full-time open source work is to do like TypeScript performance consulting. Um, so teams will like hire me to go in and optimize their TypeScript types or like fix issues they're having.
+
+And I actually think it makes quite a lot of sense for everyone because like, uh, it is a really niche, specialized area and it's not one that you can just. Learn in a day or like that, that you sort of like, I built tools to be able to have insight into whether the thing is performing well or not, but the problem is.
+
+That if you want, if you identify that something isn't performing well, and then you're like, how can I optimize this? Well, in a lot of ways, it's kind of similar to like trying to optimize code for V8 or like optimize where there's like basically this like opaque wall and then tons of like internal stuff goes on that you don't really fully understand.
+
+And of course, the semantics of like optimization at a type level are totally different than what would happen at runtime. Also, you have to break all those intuitions and like come up with a different strategy. So. Um, yes, it's definitely like a very niche specialty and yes, you build up like intuitions over time about like, this looks like a good strategy or this doesn't look like a good strategy.
+
+Uh, but then even from there, like, I don't trust. Like, I know that I'll still be wrong a decent percentage of the time, um, so, like, I still am very grateful that I have those tools on top of it to be sure, like, okay, like, this seems like a good strategy and a good way to do this, but I want to be sure that it's going to be, like, at least as efficient as it was before or something like that, um, so, yes, I would say that it's kind of good that, like, most developers don't have to or shouldn't have to, like, specialize in this stuff a ton because, You know, ideally, it should really occur at like a, at a library level that libraries are, you know, uh, optimizing like the types they're, uh, they're providing, because those tend to be the most complex.
+
+And if, if you're like, if your end user application level types are as complex as library types, like that is something you would, maybe you have like a special use case, but you'd have to like take those tradeoffs really seriously because it's hard to optimize. Types at that level, unless you have experience with it.
+
+And if you don't, and you're stuck with that, you know, feel, feel free to, you know, hit me up for some consulting work. Cause I'm happy to help out there.
+
+**Justin:** How, uh, just out of curiosity, like how big is the delta between TypeScript releases where, like, this is the big thing is like the compiler changes under the hood. They like add some new optimizations. Maybe there's D Ops is like, do you see like pretty big deltas between releases where you have to like.
+
+Tune your understanding and like try different things or whatever.
+
+**David:** ~~Uh, ~~yeah, so not, not generally. Um, and I give a type of team a lot of credit for this because like it is kind of built on a million edge cases that like people have. You know, uh, basically adopted as functionality at this point. And like, since everyone's exploiting them, they like have to stay in the language.
+
+And that's a tough thing to maintain. Um, but they have like a huge suite of community tests.  ArkType is actually in like a set of community, uh, tests that, that the TypeScript team runs, like when they make bigger changes to make sure there's no significant regressions, which is awesome and gives me a lot of peace of mind.
+
+Um, that's not to say they couldn't be like, well, we broke this one guy's weird, crazy types, but like, you know, we're going to make this change anyway for the good of the ecosystem. Of course, they could do that. Uh, but like, generally speaking, they take regressions really, really seriously. And like, they're, you know, sometimes it can be hard to get traction on new issues or like, even things you consider bug fixes that seem like obvious wins because they're pretty cautious, I guess.
+
+But, in terms of, like, their response when they have done something that, like, concretely breaks something that worked in the past, or something that makes something that worked in the past, like, significantly slower, they've always been really, really responsive and have taken those things seriously and addressed them, and it's honestly happened very, very rarely because of the amount of, like, regression that they've done.
+
+Testing that they do and performance testing they do when they're releasing new functionality. So, uh, I give them a lot of credit for that. Like the number of breaking changes there have been when a new TypeScript version has come out and like anything in ArchType has broken as a result of that, despite the like complexity of all the types that it's using.
+
+I think it's like less than, less than five times that anything is broken. And in all those cases, there's like a fairly easy fix. And I think in many of them, they actually went back and addressed the like original implementation as well and fix those things. So, yeah, a lot of credit to them there that like that stuff has been really stable and I've never, that was something that I was really afraid of.
+
+Also, like, with this project that, like, there'd be way too much volatility, um, because of how complex the types were. But, uh, yeah, credit to them that they've been very, very diligent whenever they release new stuff of being sure that it's not going to like break anyone's, uh, you know, existing functionality or at least minimizing that.
+
+
+#### [00:13:18] Ad
+
+**Andrew:** We'd like to stop and thank our sponsor for this week, but we don't have one. So if you'd like to sponsor DevTools FM, head over to DevToolsFM slash sponsor to apply. And if you want to find another way to support the podcast, head over to shop. devtools. fm, where you can buy some merch and rep the podcast.
+
+With that though, let's get back to the episode.
+
+
+#### [00:13:37] Haunting Issues
+
+**Andrew:** do you have like a issue on the typescript backlog that just kind of haunts you is like, oh this, if this were done, it would unlock so much. Cause I know I have a few of those I revisit.
+
+**David:** ~~Yeah,~~ yeah, there's definitely a few things that I think, um, I really wish that they did add. So I think one of them would be like tag template, literal types, like more, there's an issue open for like more specific inference for that. Uh, so I don't know, I'm actually, I actually don't use this API at all now, um, because it's not, you can't infer it very specifically.
+
+Um, but essentially if you've seen those like, you know, graph QL, like, you know, and then you have like the, the back ticks or whatever, and you can kind of like string interpolate things into that expression. Um, there's like some type support for that, but it's, it's very limited. Uh, there's an issue open and actually a PR open that would like add much more capability there, um, and make it more aligned with the, like, capability of the, like, core kind of like string parser, like a normal string API, like the one that normal that I'm using, um.
+
+But, uh, but it's just been they're like, oh, we're worried about, like, you know, exposing too many capabilities at like a type level. Like, what if people use this and like, do inefficient stuff, which I always think it's a terrible, like, I mean, it's fine. It's worth considering. But like, basically, people are already doing that.
+
+And this would just give them like, a more concrete, correct way to do this. That would be really, really useful for a lot of people. So, like, I'm definitely like, you already built this thing that you should definitely ship it. Um, yeah. But, uh, this, if you think about, like, how those string expressions work, which I know we haven't, like, delved into that much, but essentially, like, it just mirrors TypeScript, right?
+
+So you can write, like, string or number, just like in TypeScript, and it will work. Um, well, like, what if you want to do your own custom, your own custom type, if you want to say, like, string or user, where, like, user is some type that you defined? Well, there's definitely lots of ways to do that. Uh, you can take your user type and then write, like, dot or string.
+
+So, like, we expose that API as well, because that can be useful in some cases. Or you could use something called a scope, which I mentioned a little bit earlier, which allows you to find your own keywords. And so then that kind of like opens up that whole thing of, yes, then you can just like directly reference in a string expression, any of the types you define.
+
+And that's great, but like, I want the mental overhead for like new users, especially to be as low as possible. So you don't have to like use scopes at all to be able to do lots of. Um, lots of things in  ArkType, most things like really the only things you definitely need them for would be like, um, uh, co recursive types where you have like a references B and B references a, then we want some way to be able to resolve that.
+
+But other than that, like, you can do anything without scopes and they're like an optional feature. Um, but like, it'd be really cool if you could get that benefit of being able to, like, interpolate kind of like one of your own custom keywords into an expression. Uh, and that's exactly what those like tab tag template literal types would do.
+
+You could like have an existing type, you could like interpolated directly into your like union string or whatever. Just like reference it as like user or something like that. And then you wouldn't need to worry about like creating a scope or any of the like additional overhead that comes with that.
+
+And that could be super powerful. So there's like things like that, I think like const JSON as. J import json as const. I think it'd be so cool because like  ArkType definitions of serializable So you could like write an  ArkType definition and store it in a json file and then like import it and typescript right now Won't narrow the like strings in the json you import and that seems like a very easy thing to do So like I I hope that they do that one Um, and then like the other one that's just like a very general feature that honestly doesn't help me a ton but I think it'd be so good for the So good for the community and I have like a rant on this issue about why I'd be really good Um is exact types where you can say like this Object isn't allowed to have any additional keys, um, and they're like worried that people will misuse it, which, okay, uh, but like, I really think that it would provide so much value, especially if you think about stuff like object dot keys.
+
+Like not being narrowed and things like that. Um, you know, that's like a big pain point in TypeScript that it's like kind of annoying to like iterate over objects and like, you know, create the associations you want. Whereas if you had an ability to say like this type isn't allowed to have any extra keys, then you could have that like narrowed inference where you do object dot keys on an exact type and you get out like, you know, foo or bar or things that you actually define on the object.
+
+So those are probably my top three that I think about, but like, I'll say broadly that TypeScript obviously has done. So much that has made a lot possible and it's like surprisingly efficient at doing a lot of things that I want to do So I don't think it's any like anything fundamentally that i'm like, oh no i'm like totally blocked because of x y z Like these are nice to have things but yeah, frankly i'd say that like so so much is already possible So mostly I just focus on the stuff that can be done 
+
+**Justin:** ~~Cool Andrew, you want to take the next one?~~
+
+**Andrew:** ~~sure. Um, ~~s
+
+
+#### [00:18:13]  ArkType 2.0: Performance Boost
+
+**Andrew:** o you just came out with  ArkType 2. 0 and the big headline feature of that is it's 100 times faster. So how did you accomplish that? A large, large jump in performance?
+
+**David:** Yeah, okay. Well, this is definitely it gets a little bit in the weeds, but there's uh So there's this like just in time, uh, optimization that V8 will do if it's able to process code based on like certain constant references and things. So essentially if you think about writing code, like if, uh, like data, if type of data equals string, like, or type of data equals number.
+
+And that's just like a function that you wrote or something like that. Let's say you run that a thousand times like, uh, V8 and in general, like any JavaScript engine to varying extents is going to be very, very good at making that extremely fast. Um, but if you're, if your logic looks more like, you know, as something that you wouldn't might imagine in a library, like, uh, for.
+
+Like, you know, const constraint of like, you know, this type constraints, like do a bunch of abstract stuff because we have to implement it at a much higher level, it's going to get a lot slower. Um, so that's essentially what this takes advantage of, um, is that it like when you create the type, um, it basically like compiles a bunch of JavaScript code, uh, that is like very concrete references to all the checks that you're making that is very like engine optimization friendly.
+
+And then it actually will in an environments that support like executing new function, like, or basically like eval code in sort of like a safe context here, but like, that's what it is, um, then what it will do is it will like replace the in the like, you know, I guess, like standard implementations of like basically checking various type nodes with these like optimized versions that it creates in place.
+
+And that, that's what makes it so fast. Um, or at least that's part of it. But, uh, there's like an endless amount of, I've been working on optimization stuff recently also and there's really like an endless amount of stuff you can do. Um, I'll say like one thing that I particularly am, am really excited about that like you can't see in the like communities runtime benchmarks, which is what those comparisons are based off of.
+
+Uh, is things like discriminated unions. Um, so in our type, I mentioned, I guess, at the beginning that one of the most unique aspects of it was this like type system where it had this ability to compare types to one another and understand their relationships. Well, like, part of that is that, like, for any given branches of a union, it could, like, intersect them and say, like, here are all the places where I could check, and, like, it would tell me if I'm on branch A or branch B, which is really what a discriminated union is, right?
+
+You need, like, some kind of check you can make that says. Am I checking this branch or like am I checking this branch and I want to know that right away So normally that's like tag or kind but it could be all sorts of stuff You could say that like a string or a number is a discredited union because like I check at the top level like which branch I'm on Um, you could say like an I mean, I don't actually use this kind of optimization, but you could even say something like um Uh, like an object with a value property where in one branch it's greater than zero and in the other branch it's less than zero.
+
+That's also a discriminated union because you could check that property and check whether it's greater than or less than zero. And the whole point of this is a couple things, but like mainly it's that you're checking a union in constant time instead of checking a union literally, uh, linearly based on the number of branches in that union.
+
+Um, Because if you can just like make a couple like constant time checks and say, okay, am I in branch one or four or, you know, 77 or whatever based on how huge your union is like it can save you a huge amount of time if you can just skip Right to that branch and then say like, okay make these checks and is it valid?
+
+Um, so what  ArkType can do internally is like because it has that type level understanding it like will determine what the most efficient Discriminant that it can use is, and it can even do that over like multiple rounds of discrimination. So, like, basically, whenever you define a union, you don't have to, like, explicitly say, like, here's the discriminant and here's my union.
+
+It will kind of, like, figure out what are the optimal checks that it can make to, like, split apart all the branches and go to the right one as quickly as possible. Um, and so, like, that's the kind of thing where, yeah, uh, you won't even see that, like, in some of the basic, like, runtime validation benchmarks.
+
+But it's the kind of thing that can be super, super impactful if you're like validating complex types or unions, um, and you don't have to like do anything or even know that's happening externally for it, uh, for it to benefit you really significantly. Also, in terms of error messages, because like, you ever seen a really long union error message that can be pretty awful, um, but it can be much better if it's like, okay, well, I figured out that you must be trying to create this branch because, you know, your kind property or whatever was, was foo.
+
+So, like, I'm just going to give you the error messages for that branch, since that seems to be what you were trying to do, and then it's, like, a lot easier to unpack what went wrong. So, there's a lot of cool benefits there, and optimizations beyond just the sort of, like, uh, that, like, just in time compilation stuff is, can make things a lot faster.
+
+Um, it's also pretty gross, because, like, I have to implement Internally, like, I have to implement validation, like, four different ways, um, in order to, like, get all this to work. Uh, because there's, like, the built in validation that, like, just checks if something is allowed or not, so, like, returns true or false.
+
+And there's the built in validation that checks and, like, gives a detailed error message, because that's a lot less efficient. We only do it in cases where you actually fail. Uh, then there's the, like, JIT optimized, like, literally, I had to write it in JavaScript strings, right? Like, you know, version of, like, is the thing allowed or not, return true or false.
+
+And then the, like, okay, JIT optimized, like, let's build a, you know, helpful error message when the thing fails. So, you know, uh, it's a little, like, it was a little bit of a pain to do. And, uh, it is great that it's so much faster, but I'll level with you guys. Like, I, it is kind of a headline feature because people get, like, really excited about.
+
+Performance, whatever. But like, I think compared to Zod, you know, Zod, Zod is like, Oh, I'll take like, you know, one microsecond to do this and  ArkType is like, well, I'll do it in 10 nanoseconds or something. But like, is that really your performance bottleneck? Like, yes, it's a hundred times faster, but like, it was already probably fast enough that it's not going to be the number one thing that's going to screw you over.
+
+So, like, I would say the type level performance is actually probably a lot more relevant based on a lot of the consulting work that I do, where, like, people are struggling with, like, Zod and TRPC or various things, like, you know, crashing their editor. So, like, that aspect of things is probably more likely to be a bottleneck.
+
+And, like, the Perf stuff, it's like, hey, great if you are. Doing something where you're, you know, validating tons and tons of, of data. Um, and like, Hey, maybe in some of those cases I mentioned with unions, like if you're checking complex unions, yeah, that can take a long time. And so maybe some of those optimizations will really be helpful for you.
+
+But, uh, I do think people tend to like really fixate on those metrics and I will admit that like part of my motivation for optimizing them was that I knew that people really love them. And like, I got tons of feedback on that with the first release, like how fast is it? And like everyone wants to know that stuff.
+
+But, you know, for those in the know, like it's probably not actually the most impactful thing for a validation library.
+
+**Justin:** Yeah, for sure. Uh, I mean, especially because like a lot of times you're, you're validating hopefully on the outsides of your API. So like as things coming in, you're not like running it, you know, hopefully again in like really hot loops or whatever.
+
+**David:** Yeah, I mean, I'd say I'm like on, you know, handling like server, um, like JSON payloads or something like, you know, maybe it is the case that like you're processing the same sort of data a lot. Um, and that's like a case where it could be somewhat useful. Um, but still like whatever your logic you're doing internally to kind of like process it after it's been validated is pretty much guaranteed to be way less efficient than like.
+
+Whatever. I mean, like, like, I think Zod is, it's like a reasonable, you know, reasonably performant for like what it's doing. And I think, unfortunately, people who look at the performance, performance benchmarks are like, Zod must be so slow. It must be like, what did he do? Like, he wrote, he must have written awful code.
+
+And that's not at all the reason why there's like such a, such a big differential. It's because of this, like, and I have, I've, I've been in pretty close touch with Colin and I guess I shouldn't like leak whatever he's doing for Zod for but I think probably fine that like I know that he's implementing some of these like, you know, just in time optimizations for Zod for it.
+
+So maybe people will have something to look forward to there once that's ready. But, um, yeah, all said and done, like, you know, I bet like 1 percent of users would like really significantly benefit from this kind of, uh, from this kind of optimization and it's pretty marginal for most people.
+
+**Justin:** Yeah, like important things for, you know, a validation library like this is like baseline performance. Needs to be good enough. Uh, I think the thing that you alluded to a second ago, uh, type performance actually becomes a big deal. So, uh, for anyone who's like, I'm not picking on Zod here. I'm just going to say Zod because I've used it in like a big production code base, if you have like a lot of Z.
+
+infer schema, where you're taking your validator and you're getting a TypeScript type that's generated out of that, that can actually be really, really slow for type checking. Um, and especially if you just have like a lot of them. Um, so I'm curious is like, um, how you or how  ArkType does that and like the performance tradeoffs of that.
+
+
+#### [00:27:28] Importance of Good Error Messages
+
+**Justin:** And then one thing that I want to talk about like after that, which is like the other really big important thing for validators is just like Good errors, because like, if you don't know, like the whole reason of doing runtime validation is to like, we want to match, uh, the logic and our types with like these runtime checks, but you also need to know like what's going on.
+
+You know, it can be really easy to just get like this array of, you know, stuff back that says, Oh yeah, it's like this deeply nested key has an issue and that tells you nothing. So I'm curious about those two things.
+
+**David:** Okay, cool. So, uh, the first thing, um, like I said, so I built this, like a type benchmarking library, uh, a test. It's also for type. I guess I kind of built it for type testing where I could do assertions like, you know, a test, like some value, you know, uh, equals this at runtime and then like dot type dot to string and like snapshot the type.
+
+Representation or like, you know, snapshot type errors or like snapshot type completions and like there's literally no other library in the ecosystem that does any of that. So like, um, people should use it if they're writing libraries because like, I mean, I don't really care in terms of like, I'm not really trying to promote a test or whatever, but I'm just like, if you really want to have like robust type level functionality, like you need something that can make assertions about those things because.
+
+Uh, like just using the built in stuff or in like B test or whatever that just like checks if two types are the same or something. Um, that is better than nothing, but like if you're building a library where types are a significant part of the functionality, you really need a lot, a lot more than that. So I guess that's my, uh, tangent shout out to like having more robust type testing.
+
+But, uh, basically really like it's very absent in a lot of like major. Libraries in the ecosystem that make a lot of use of that, uh, type level functionality and same with like type level benchmarking. Obviously, um, like people just aren't doing it. So I think the biggest thing, uh, is just is just like I said before, I was sort of had like benchmarks for all the individual expressions that were being parsed and like, All these scenarios and  ArkType to make sure that whenever I made changes to the type of parsing that there were no significant progressions and performance, or at least that, like I said, if I'm adding some feature, I think it's important and like gives better detailed type messages, type error messages or something like I can make those trade offs knowingly and say, like, okay, this is worth the, like, 3%.
+
+You know, overhead and type checking performance or something like that. And I think most people just have no idea. And it's like. Yeah. It's just, you can't really have good enough intuitions, even if you've done a ton of this stuff, to be confident that like, whatever changes you make, you might not have just accidentally like, nuked your type performance by 50%.
+
+Like, it's just way too easy to do something that seems completely arbitrary and just Like it's a disaster. I still see that happen. And it's, it like really blows my mind sometimes. So like stuff you can add that like seems so innocuous, but maybe it's just like breaks caching somewhere or whatever. And like all of a sudden everything takes twice as long to check.
+
+And, uh, so you, I would really, I think that's the biggest thing. It's just that like every change we made was knowing the exact impact. And for most libraries, it was the opposite. And like. It's not to say that any of it was like, obviously bad or anything, it's just that without knowing, like, you're just bound to hit cases sometimes where like, something that seems really innocuous just is, is, is like, really, you know, again, it might be that like, it broke some caching scenario where TypeScript in the past was able to like, reuse is.
+
+You know, most of, uh, when you, like, repeat some type, uh, to, like, infer it a second time, it was able to reuse that, and now it doesn't for whatever reason, like, some extra, you know, context leaked in or something like that, and, yeah, now, now it takes, like, three times longer to, to, like, check your repo or whatever it is because of that.
+
+Uh, so, that's, that's probably the biggest thing in terms of type performance is just having the insight there. Um, and then obviously, like, building those intuitions as well, like, of course, that makes it a lot easier to get to a point where things are working well in the first place. Since, since I built the like naive version that didn't work at all in terms of type performance and just kept iterating until I got better, build much better intuitions about like, okay, I should have, I should start with like an approach that looks a little bit more like this.
+
+And then hopefully I won't have as far to iterate. Um, in terms of like runtime error messages being helpful and descriptive, that was definitely something that from the beginning, I guess. Just felt super important. And, um, I wanted to, like, come up with a sort of unique strategy for dealing with that. Um, and I think, like, classically, the one that the error messages that are the worst are unions, because they're actually very hard to give good error messages for.
+
+Um, because like, how do you say like, you know, in a succinct way, like, okay, it could have been any of these 10 things and it was none of them. Like, how do you describe why it was none of them? Um, so I did a fair amount of work specifically around that case and around customizing error messages in a way that like.
+
+They can automatically be composed into a union. Um, so like if you, like most, most errors, you can kind of customize as if you were completing the phrase like must be blank. And you can customize actual as like was blank. So that's kind of like default error message format in  ArkType. You can change that.
+
+But one of the really big advantages of, like, using a format like that is that we can take the, like, blanks that you filled in and put them into, like, compose them into a union error message that is really easy to read and understand, whereas if you kind of just, like, arbitrarily wrote whatever format you want in some complete sentence, like, we wouldn't actually be able to reuse that in a way that made it, uh, easy, easy to parse.
+
+So, like, this way, when we create the union error message, um, we can actually go through and kind of, like, try to collapse as much stuff as we can. So, for example, if there's, like, Lots of errors on every branch at the same path. We can like kind of collapse those together and say like this path had to be like one of these five things or something like that instead of saying like this object had to have a foo key that was this or this object had to have a foo key that was that.
+
+So, like, there's one way you can kind of pull things together. Another is like, um, is, uh. I guess, oh, man, I lost my train of thought a little bit on this one. I'm gonna be honest with you guys. Um, but I'll just say that, like, essentially, there's, there's several ways where we have, like, optimizations that, um, will, like, iterate over union error messages and try to collapse them down to make them as readable as possible.
+
+And I think generally, like, it really helps a ton with just being able to, like, get a top level, like, human readable summary of what went wrong. Um, and then you still get all the, like, introspect ability. You can, like, iterate over the array and, like, check the individual errors and. Map them, uh, and do whatever stuff you need there.
+
+Um, but yeah, I think like having that top level kind of like, okay, at a glance, like, what, what went wrong here? And having that try very hard to, um, just make the, you know, description of the errors as clear as possible, even when they start to get complex, um, definitely is like a really big. Selling point, I think the library, um, that that is really a lot better than like most of the other stuff that I've seen out there as a solution for those problems.
+
+**Andrew:** So that, that means you've implemented like logic within the type system to like compose those errors, right?
+
+**David:** Yeah, so there's specifically like some logic within the like union node. That's like, how do I create my error message and it will kind of like iterate over its component errors and and like, yeah, apply some of that kind of like merging logic that says. Like, okay, a bunch of them occurred at this one path, or like a bunch of them occurred, like, at based on this one value, or like I said before, maybe, maybe even one of the most impactful things would be, like, being able to automatically discriminate the union so that, you know, we can just eliminate a huge number of cases that wouldn't be relevant based on, like, a property that you provided and just give you the, like, you know, the information about why the one specific case that seemed to be the one you were actually trying to provide failed.
+
+So, yeah, I feel like there's a huge amount of, uh, a huge amount of benefit there, and I'm excited for people to, like, delve more into some of those things, because I think it's like, those are areas where People are just trying to, like, still build, it's a really new library and people are still trying to, like, build analogies compared to, like, what they're used to from Zod.
+
+And I think a lot of people are still just, like, iterating over all the errors and, like, trying to figure this stuff out themselves. And that's, I mean, it's good that they're introspectable and all that the same way, but, um. I actually think there's even more that can be done to like, you know, optimize those union error messages and like discriminate in a way that's, that's really helpful, but then maybe we still need to provide like some additional context to say, like, because sometimes it can be kind of surprising if you're like, why do you think that I'm trying to specify this branch?
+
+Like, oh, and it's because you said, like, kind was food, but maybe you. 50 other properties matched on some other branch, right? I can't really figure that out in a performant way. Um, so like there's lots of little nuances like that and I'm excited to get more feedback from the community. But basically I don't really think anyone else has even sort of like tried to like write really good union error messages.
+
+So like I think having something out there that tries to do some of that work for you is, is, you know, will be a big improvement and uh, yeah, it'll get even better as we get more feedback about what stuff is intuitive and what stuff isn't.
+
+**Andrew:** Yeah, I've done a bit of type gymnastics myself and, uh, you get to the end, everything type checks, you check that error message and you're like, how is any consumer going to know what that is supposed to mean? And then like, being able to compose nice error messages in the type system, that's also like a large mental, like learning hurdle as well.
+
+So like all of this being so easily accessible through like a nice API is a, is a huge win.
+
+**David:** Yeah, so I think that like what's one of the really cool things about  ArkTypes API is it's like an additional level of abstraction obviously compared to a standard API where I mean, first of all, we can build whatever syntax we want into the language. So that's that's pretty cool. But second of all, like, we're not Yeah.
+
+The primary mechanism for giving error messages isn't like the standard TypeScript, like, sort of, we return the type you should have passed in, um, and then you get whatever TypeScript happens to generate for that error message, and that really wouldn't even work in, like, any kind of, it just, it would not work, uh, well, first of all, you couldn't type, like, these kind of, like, string, these, like, validated strings, you can't write them like that, it has to be, like, as a function input that that sort of thing is validated, um, But second of all, like, even if you could for certain things, um, it would be really, really hard to read like you're describing, like, how would we ever expect an external consumer to be able to understand any of this?
+
+Um, and so basically, like, if you haven't seen what an  ArkType error message looks like, if you, you know, for example, like miss a parenthesis in like one of the types you're typing or like reference, like string, you know, and leave out the N or whatever it is. Um, you'll get like something like, uh, strig isn't assignable to, and then in quotes, it'll say something like, you know, strig is unresolvable, or it'll say like, you know, missing right parenthesis before, like, array, or something like that, you'll get this kind of like, it seems like the kind of error you'd get in your editor, but you're getting it, like, in a string as the reason why your type is invalid, and with the extension, it just kind of like, actually will inline that part of it for you and just extract it out, and so when you type something wrong, you'll just see something like, Strig is unresolvable, or you'll just see the part that says, like, you know, missing right parenthesis before array, but basically, like, because of this kind of approach we're using to validate your definition input, we can give whatever type we can, we can give whatever custom error message we want at a type level.
+
+Right? So, like, we're not relying on typescript to say, Okay, like, here was the structure we wanted, and here was the structure you gave us, and so, like, whatever arbitrary issue there happened to be, like, TypeScript will generate some potentially complex message for that, if it's including unions and including, like, deeply nested arrays or tuples or whatever it is.
+
+But for us, we're always kind of in control of what we're just, like, what feedback we're giving you at a type level anyway. So we kind of bypass, like, having to rely on TypeScript to give a good error message for those cases, and instead can just tell you, like, and a lot of time it'll literally tell you, like, what to do.
+
+Like, try this instead, or just, like, change your string to be this, and that's, like, all just happening in TypeScript's type system. But it kind of like, like makes it, it does create that extra layer of abstraction where like you are not actually thinking about TypeScript giving you like inscrutable error messages anymore when you're defining an  ArkType definition, because You're just, you're dealing with like our error message feedback that is like just a very like, yes, obviously we have to use type scripts type system at some point, but like the only interface to it is just that, like, you get a message back that says, like, your input was not assignable to here's your custom string error message.
+
+So, like, we get to. Kind of bypass a lot of that and I think it leads to way better experiences in many cases because like you said it's just way too easy As types get more complex to just like get things you need some kind of like parser or whatever Maybe you like, you know copy paste it into an LLM or something.
+
+I don't I don't know but like, you know, it's such a mess I remember, like, when I was first getting started, I saw an error message and it was, like, dot to dot, and I forget how many, like, billions of characters it was that it, like, omitted, but I, like, remember doing some math and it was, like, seven times longer than, like, all the Harry Potter books combined or something, and I was like, like, you generated that?
+
+Like, I mean, it's crazy. Of course, like, no one would ever be able to parse that, but, like, there's a lot of scenarios that aren't quite, like, that extreme, but are still, like, there's no way that, like, a human could, could understand this, so. Yeah. That's one of the big improvements I think that  ArkType makes by having a little bit more control over, like what, what feedback we give there.
+
+**Justin:** It's such an impressive library for sure, and I, I particularly love, like, the editor, like, enhancements, just to do, like, you know, syntax highlighting within the string to make it, like, look like an actual type. I think the familiarity that you have to writing actual typescript types is, like, It's a really strong motivator.
+
+Um, I mean, when I first saw it, you know, it was early, early like indications. It's like, I was like, Hmm, I wonder how that's going to be. But like, I especially think with the tooling and then if you take the familiarity of like TypeScript syntax and then you add in things like your Um, constraints, just like being able to refine, uh, types, you know, based on values or whatever, it becomes incredibly, incredibly powerful and, you know, combine this with good errors and everything.
+
+And that's, that's a, it's kind of a superpower. It's like really interesting. Um, and. I don't, I, the API to me would be like very non obvious, like this isn't, this isn't something that would like fall out, uh, from just like, if I were trying to build a validation library like this, I think like Zod API shape would be like probably what I'd land out in.
+
+But as we've discussed, it's like errors are harder and there's like a lot of like hard things about it. So I think it is, it's like incredibly interesting what you've built here. 
+
+**David:** ~~Yeah,~~ I appreciate that. I mean, I think, uh, I think to some extent, like it does kind of fall out in a lot of ways, but like just from TypeScript, instead of thinking about it from the perspective of like, how do I, how do I do validation, right? It's like if you're just thinking about like, how could I make something that looks as close to a TypeScript type as possible and then use it at runtime?
+
+Like, this is pretty much what you would do. Um, and there's not that much, like, ambiguity to it. Like, I guess the only other thing you could say is, like, Well, maybe you should just string embed everything. And, uh, like, how would it work if you just put all the object syntax and stuff in strings too? And, um, like, to me, it's pretty obvious that, like, or after thinking about it and trying it, it shouldn't be obvious, like, immediately, but, like, it's not actually as good, uh, because TypeScript is a lot less efficient, uh, at, like, parsing entire strings than it is at, like, using map types with objects, so those strings go, like, don't get, like, super, super long.
+
+Um, it also just makes sense, because, like, you already have that in JavaScript, right? You already have those, like, existing structures, like, why not reuse? Object literals and tuple literals and things like that that actually do map to like stuff in JS So that the autocomplete could still be really good and you know, you could still get these really detailed messages and all that So like that would really be the only point where you could say like well Like you could do exact one to one and just string embed everything but like in terms of editor experience and especially like if you don't have syntax highlighting or something which like my goal was to Have it be a good experience for people, even if they don't have like the editor extension or anything like that enabled that add syntax highlighting, as you mentioned, um, and can kind of like pull out those inline type, you know, error messages in a useful way.
+
+Um, but, but also like to have it be an extraordinary experience, like, hopefully in terms of DX, if you have that stuff, but like, it shouldn't just be like complete, like, if you just open some GitHub, like PR and it's like total nonsense because you can't see what's going on because it's all just a bunch of stuff and strings and.
+
+Uh, and like, I think it would lead to that experience very quickly if you just tried to string embed everything. So that was really the only point at which I was like, you know, maybe there's some other way to do this. But this really feels like how you'd want to go about it if you're trying to mirror TypeScript in a way that would scale and, you know, would work well whether or not you have the editor extension.
+
+Um, and so like, yeah, I don't want to take too much credit for the syntax or anything like that because, Um, it was nice just being like, all right, I'm just going to make it work like TypeScript. And that's like what all the tests are, that it just works the same way as TypeScript for all those built in types.
+
+And then, as you said, there's like maybe some level of creativity for like trying to add constraints to the syntax to make that natural, like, you know, number greater than zero or whatever. Um, but for the most part, like, yeah, I pretty much got to just like, Copy past of the syntax from TypeScript and that's the whole point, you know, and like, that's, that's really what I want people to take away when they're like first learning about it is they can feel alien because it's really different from Zod and other validators.
+
+Um, but all you have to do is like, change your frame of reference for like what you're building intuitions from, from other validators to TypeScript and then if you do that, you can like already write tons of types that you will have already like learn from learning TypeScript syntax and then you can just kind of like naturally extend that.
+
+You know, to include other kind of runtime validation related stuff. Um, but yeah, I think that's like kind of the danger is that if people don't make that connection and they're just like, Oh my God, like what does all this string embedded syntax sounds like a whole new language and there's no way I could ever learn this.
+
+Um, I can see why that would be intimidating. Um, so I'm trying to communicate to people as much as possible that like, you know, actually this is really just developed. To, to mirror a TypeScript and to give you some way to extend that. But like you can take all the knowledge you have from writing TypeScript types and it's gonna be like totally transferable and you can just, you know, use that to build whatever you need.
+
+Um, and yeah, I think that's what makes it so powerful. I think it would be cool to just like build whatever syntax I want or something, but TypeScript types and text is pretty good. And, uh, it's so important I think, for making it accessible to type trip developers that like they can just reuse what they already know and not, and not only that, I think that like when you look at a definition.
+
+To look at an  ArkType definition and not even have to hover it like to know how it's going to be inferred because it looks exactly like a TypeScript type that it's going to be inferred as like, it's one thing that when you hover an  ArkType type, it shows like a really distilled like form of the definition that's really easy to understand.
+
+So like, that's good. But really even better is that you basically just don't even have to do that because it's already so close to like what you're getting out in TypeScript anyway, that you don't need to like ask how it's going to be inferred to just see exactly what the shape of it is. So I think those are the really, really significant benefits of just keeping it as aligned with the TypeScript as possible.
+
+
+#### [00:46:16] Constraints and Type System
+
+**Andrew:** Yeah, the, the one area where you do kind of go off that path is with constraints. Uh, how, how powerful are those? Like how much is there? And are you kind of like trying to keep yourself, yourself constrained while doing that and not, uh, expanding that API too much?
+
+**David:** Um, I mean, I, I definitely don't think there's going to be like a ton of additions to the like, at least like what the syntactic constraints that will be built into the language that you can, you know, write as like number greater than five or, Whatever. Um, they are really powerful. Um, I mentioned that like  ArkType has this like built in type system like TypeScript where it can compare types to one another.
+
+That includes constraints also. So like, um, it's kind of like this extension of TypeScript type system where, you know, if you say like, well, would a type that's a number greater than five. Be assignable to a type that's a number greater than zero like it would because any number greater than five will be greater than zero.
+
+But the reverse wouldn't be true. Um, and same thing. Like, if you intersect, like, a number divisible by two with a number divisible by three, it'll be a number divisible by six. Um, and it can, like, determine any kind of assignability like that, including runtime, uh, like run what people would think of historically is like runtime constraints.
+
+But, like, it really brings that whole, like, type level introspect ability aspect of it. To include like those kind of like set based extensions for ranges and divisors and, and rejects and, and different things like that. Um, there's also like transformations is morphs like that was an, I had to kind of like uniquely adapt the type system to be able to accommodate, like, well, what does it mean in a type to say, like, you know, it accepts a string and then that string will be transformed to a number or something like that.
+
+So there's some unique like rules around that, but essentially everything kind of like. Is derived from these like very core principles of like set based types that are the same principles that the TypeScript type system is derived from. And I also don't have to worry too much about like diverging from TypeScript in terms of, I guess, extending it to say like, okay, well, now I can handle ranges.
+
+Because yeah, maybe someday TypeScript will support ranges and you can say like a number greater than zero or something. They could totally do that because I've literally written the logic that they would need to do that. Uh, so like they could definitely add that and it would totally work for them. Um, they would need to write some like additional logic that says how when you write like a JS expression or something, like if you say like number greater than zero and then I add some positive number to it, can it figure out that it's like still going to be a number greater than zero or whatever?
+
+Like they would have to write some unique logic around that. But for the most part, you know, it's, it's pretty much, it could totally fit into what they have. Um, and like, this is very clear, like set based definition of what should happen, where I don't have to worry that they're going to like build it in a way that wouldn't be compatible with what I did, because there's just like a, it's like a, kind of like a mathematical thing where like, there's no.
+
+It couldn't be wrong, like, right? There's only one real answer to like how two ranges intersect or like how two divisors intersect or like whether one thing implies another. Um, what I have to worry about though is like some of the like, you know, quirks of the language where, uh, when I'm trying to build a robust type system, like, do I really want to carry over?
+
+I don't know the idea that like an empty object, like if you do the like object literal syntax with like, um, with like no property specified in it, like in TypeScript, that would, it could be assigned like a number or a string or anything because it's just checking to see if it's something that would allow property access is one of these things that like people always get tripped off on TypeScript and I'm like, do I really want to like maintain that?
+
+And I actually went with No, I don't. I don't want to do that. I think it creates a lot of problems like internally also. So, like, that's a case where I actually have to decide, like, I'm going to diverge for existing functionality from, like, what TypeScript has done, because I think this will be more intuitive, even though it creates some inconsistency, like, the overall experience will be more intuitive.
+
+Um, like if I don't maintain that feature, and there's like a few other things like numeric keys where it's very weird, like in JavaScript, you don't have numeric keys, but in TypeScript, you can say like key of an array and you get like string numbers and numeric numbers back. And it's like very confusing.
+
+I'm like, those aren't really distinct thing at runtime. So, like, how do I represent that? And so there's a few areas like that, where I have to be like. Do I want to like, do what TypeScript did, how much of like a breaking change would it be for me to like diverge here and do something that I think would be more intuitive and be easier to use for the most part, there's like very few cases where I had to do that, but there are a few that like, those are always painful when I'm like, Oh no, I can't, I can't like, you know, I have this like nice new type system that like, it works in this very precise way.
+
+And, you know, has all these guarantees, like TypeScript, like, why did you do this? Now you're putting me in this awful position of having to decide whether to maintain that. Yeah. Like compatibility with this particular feature or, uh, to do something that I feel like will, will make it easier for users. But, um, yeah, those are, those are the things that keep me up at night, I guess.
+
+**Justin:** Fun problem to have. Um, Well, as we're wrapping up, uh, we always like to ask one future facing question, and for you, it's just like, uh, what's next for  ArkType? Uh, what do you, what do you got planned?
+
+
+#### [00:51:11] Future of  ArkType: Pattern Matching
+
+**David:** Yeah, so the biggest thing that I'm working on right at this moment is, uh, well, I, I guess I've pretty much wrapped it up now is, is pattern matching. Um, this is a really cool feature because I think it's like something that I've planned for, uh, a long time and I actually wanted to originally add it to like the 2.
+
+0 release. Um, but there were just like too many questions and I wanted to like ship the 2. 0 release a lot. So I'm glad that I did that. Um, but I knew this would be like a fast follow on feature because it was pretty much already ready. And, um, if you think about pattern matching, right, it's like, is it this, like, if it's this case, like do this, if it's this case, do this, well, like, isn't that already kind of just like validation basically with like a little bit of an additional wrap around it.
+
+And so it's a pretty small feature in some ways where, like, um, I'm really just getting the benefit of, like, the whole type system stuff, but here's where it gets, I just like, love this. It's so cool. So, like, here's where it gets really exciting, like what you can do with like a runtime type system, right?
+
+If you like, write. Some logic that says, like, if it's, you know, if a them, like, you know, uh, you know, run this function, if be like run, run this function, et cetera, et cetera, like that, by definition, like, has to be executed linearly, right? So, like, let's say there's a hundred cases, like, you have to go and go through each one sequentially to check if they match because, uh, you know, by definition, you have to run them in order, like, that's how pattern matching works.
+
+Um, but like because of our types type system, we can actually check, um, like which branches are disjoint, meaning like they'll never have any overlap. Uh, and for those branches, we can use a switch statement and like we're using a discriminated union, right? But like, we can actually check them in constant time.
+
+If we can internally check and guarantee that they'll never be any overlap between the two branches. Um, we can like check, like traverse, like a pattern match the expression. In constant time, that's like 100 cases that have to be guaranteed that like any matching case like earlier in the expression will be run before any that occurs later, but because we have that kind of like deep introspect ability, we can say like, okay, well, sure, they have to be run linearly, but because we know these two things can never co occur, we can just skip right to like the 78th branch and like run that one because we know that Since that one matched, like none of these other previous ones can match.
+
+So there's like stuff that just like, there's so many possibilities, I think, with having this kind of like runtime introspectable type system that like, you know, I, I, JavaScript, I think the language itself is working on like a pattern matching. Um, uh, it's a proposal for like adding that to the language, but it could never do anything like this because there's no like type system or like set based type comparison logic in JavaScript, right?
+
+So like, even if they added this. Like even if you wrote it in native syntax, like you would never be able to like traverse a pattern matching expression in constant time But because we have the ability to like compare these like basically It's like an ordered union, right? And like all this kind of just like falls out of that.
+
+And I love stuff like that where like the type system itself is so powerful. So sometimes you can just like build these like thin little wrappers around it that do things that just feel like it'd be totally impossible like in any other context. Um, and like seems just magical. And of course like it's just very satisfying to build that because it's so much less work than like building the actual type system.
+
+But like what you get out of it feels like really, really significant. So I'm gonna release that this week. And I think people will be really, really excited about like. It kind of has the same level of, um, the same level of like syntactic, like, oh, wow, it's like so concise and like, so readable as to like, it's the, it's the core  ArkType API, right?
+
+Like, you can like, write keys that are, you know, type definitions and stuff like that. But then also it has that, like, performance benefit where, You can just get performance that you would, like, never be able to get, like, even natively in this case, like, writing, like, a linear, um, uh, pattern matching expression.
+
+So, like, I'm very, very excited to share that with people.
+
+**Justin:** That's super exciting. I, I'm a big, uh, TS pattern user. I use it a lot, and, um, the performance characteristics probably aren't super great. 
+
+**David:** ~~I actually, I,~~ so I tested it a little bit against this and, like, it's, it's totally reasonable. Um, you know, the performance, I'll put it in the category of, like, it's good. Um, and, like, there's, there's nothing wrong with it and people should not, not use it because of the performance, uh, for the most part. Um, but, like, I, I think.
+
+Maybe even more so for like pattern matching than for, for a lot of like validation in general, it's pretty likely to be like on a part of your code that might be on the hot path if you're like checking a certain shape of object over and over and like processing it, like that could make a pretty big difference.
+
+And, um, yeah, so it, it, I think it just has a lot of potential and I'm excited for other library authors to, you know, start integrating more and like leveraging some of that introspect ability more as well, because it's just one of those things where like JavaScript has never really had a like. Run time type system before that allowed this kind of stuff.
+
+And, um, I know that I can't like, I have some ideas for stuff that I can build with it, but like, I'm sure that other people could come up with really cool ideas for things that, you know, that would enable as well. So, um, yeah, I'm, I'm definitely looking forward to, you know, more integrations and figuring out, uh, hearing from other people about more cool ways that they've been able to use it as well.
+
+**Justin:** exciting.
+
+
+#### [00:56:10] Conclusion and Final Thoughts
+
+**Andrew:** Well, that wraps it up for our questions this week, David. Thanks for coming on. You've put in an incredible amount of work and expertise into this library. And the next time I have a validation needs, I'm definitely going to be reaching for it. So thanks for coming on the podcast.
+
+Awesome. It's up to you how that goes. And thanks for having me. It was a great time.
+
+**Justin:** Yeah, great to have you on. 
