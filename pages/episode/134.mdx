@@ -1,0 +1,451 @@
+---
+title: Charles Lowell - Frontside, Effection, and Structured Concurrency
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Charles-Lowell---Frontside--Effection--and-Structured-Concurrency-e2vtoc4
+youtube: https://www.youtube.com/watch?v=vpedn6HkP7E
+tags: open source, structured concurrency, Effection, frontside, typescript, javascript, generators
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Charles Lowell, a developer and consultant who has created a library called Effection.
+Effection is a library that allows you to write structured concurrency code in JavaScript.
+What is structured concurrency and how could it be useful for you? 
+Find out in this episode!
+
+- https://frontside.com/effection
+- https://github.com/thefrontside/effection
+- https://frontside.com/effection/contrib/
+- https://frontside.com/
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:13] The Journey of Frontside
+[00:10:00] Balancing Consulting and Open Source
+[00:12:56] Introduction to Structured Concurrency
+[00:17:45] Challenges with JavaScript Promises
+[00:28:51] Introduction to Effection and Its Motivation
+[00:32:57] Using Effection in Practice
+[00:35:17] Error Handling in Affection vs. Other Libraries
+[00:38:32] Generators and Structured Concurrency
+[00:42:19] Debugging and Stack Traces in Affection
+[00:45:33] Upcoming Features in Affection V4
+[00:50:12] Future of Structured Concurrency
+[00:51:52] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Charles:** I think that in 10 years time, this will be the expectation of a runtime is that it will. It will have structured concurrency. I think any new language that's going to come out after the next couple of years will have structured concurrency in it.
+
+#### [00:00:18] Introduction
+
+**Andrew:** Hello, welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my cohost, Justin.
+
+**Justin:** everyone. I'm really, really excited for today's episode. So we have Charles Lowell on. Charles, you created a consultancy called Frontside. I want to talk about that. But you're working on this open source library called Affection, which is incredibly exciting to me. So excited to talk about all that.
+
+But before we dive in, would you like to tell our listeners a little bit more about yourself?
+
+**Charles:** ~~Yeah. So, um, my, uh, ~~my name is Charles Lowell, uh, and I've been doing development for a very, very long time. I guess I'm, it's hard to, think of it because I don't really conceive of myself this way, but I am, you know, spiritually and literally a graybeard. Um, I'd say I've been, uh, writing code now for about 30 years.
+
+~~Um, ~~and I'm the founder of the Frontside. Um, although I still write code every day. Uh, and work with our clients every day.
+
+**Andrew:** Sweet. 
+
+
+#### [00:01:13] The Journey of Frontside
+
+**Andrew:** So let's dig into front side a little bit. It looks like, uh, it's a consulting company that does a lot of open source. Can you tell us how you got into that and the types of open source projects you guys focus on?
+
+**Charles:** Yeah, so we've been doing open source kind of throughout the history of Frontside, but Frontside started Back in 2005. So this will be our 20th year in operation and Up until that point in my career. I had been working almost exclusively on the back end and I started doing a lot of web apps and rails apps and one of the things I realized is so many of the architectural patterns that I had been using and On the back end were directly applicable to the front end and which was, you know, at that time felt kind of like a little bit of a wild west, especially on the web.
+
+There's just, you know, you've got, uh, this very new thing called dynamic, you know, the dynamic HTML and JavaScript to control it and hey, go have fun. And so the front side literally was. Literally, the word means taking those architectural patterns from the back end and applying them to the front side. Um, and so that really was kind of the inception of the company.
+
+And since then, we've actually swung, I would say, a couple of times back to the back end and back to the front end because that's just kind of the way things happen. Um, it turns out that the architectural patterns that are developed in both of those contexts are almost always eventually applicable. In the other, uh, and so the things that we would learn on the front end, we end up taking the back end and vice versa.
+
+Uh, and so we've been Uh going at it for about 20 years and we've worked on a bunch of different open source, uh stuff in that time So originally I think um, we were primarily in the ruby community. So if you go into uh You'll find that we have a lot of gems, probably our most popular one is the one that integrates with Stripe.
+
+Um, we also did, as we were You know, working on the front side, um, the original, um, implementation of, um, the, uh, JavaScript integration gem. So we actually took V8 and embedded it into Ruby so that inside of a Rails application you could compile assets and, and evaluate JavaScript code all without leaving Ruby.
+
+Um, and so that's kind of now that's a, a more independent project, um, but we were the ones who, who started that. ~~Um,~~ we also. Um, we're very involved in the continuous integration and continuous delivery. That's always been very important to us, especially from the beginning. But being like primarily a front end consultancy at that time, we actually designed the artwork for the Jenkins project.
+
+Um, if you've ever, if you've ever heard of that. ~~So, ~~so we were, we're very big into the Jenkins community. Um, and we were, uh, uh, Actually brought the same thing. There's a lot of taking other run times and bringing them into other run times. We took Ruby, JRuby and let you write Jenkins plugins inside, inside Ruby.
+
+And if there's one kind of time theme for the, the company is that we believe very strongly that when development is done right, it feels like flying. There's no better feeling. Uh, you're commanding bits and bytes from great heights and they're doing everything that you want almost effortlessly. And so that's what we're looking for in terms of a developer experience, whether you're on the front end or the back end.
+
+Um, and so that's what we try and bring to our clients.
+
+**Justin:** I thought it was pretty interesting, like going through your landing page where you were like directly offering developer experience, like consulting as, as a, as a thing. Um, uh, when I think about a lot of traditional. Consultancies, I guess, I think more agency, um, not having worked in this space where it's like a customer comes to you, he's like, Hey, I want to build this thing, you know, et cetera, et cetera.
+
+Uh, but this is like, let me come in and, and speed up and just like improve the fill of your developer experience so that you can ship faster and like, you know, have closer iteration cycles. So like, was that. Is that something that I formed over time? Were you doing that in the beginning? Like, how did that come about?
+
+**Charles:** I think that's something that formed over time. Uh, originally we started, we were very much an agency. We were building web applications, first in Rails, then in JavaScript. Uh, we even did some Java and C for desktop applications. We were very much the model of, tell us what your problem is, and we will build you a product that solves that problem.
+
+Um, but I think we started doing DX consulting about seven or eight years ago, because, Time and time again, when we're in, especially very large companies that have very large development teams, we would see that so much money was being wasted on friction, like unnecessary friction. So you have these teams that are trying to essentially move, move a product down the road.
+
+And, you know, unless you've got wheels, unless you've got grease on the ball bearings, you're just going to be sitting there. Expending this massive, massive effort to just go a few inches. And so the underlying problem wasn't really a missing tool. Uh, it wasn't really a missing application. It wasn't even a organizational structure like an agile team or something like that.
+
+It was really just, there's so much friction in your tooling. There's so much energy being lost in meaningless tasks. Let's focus on the developer experience and then you can reclaim that money, uh, by having your developers being able to, you know, work without friction so that they can accomplish their task and it feels easy, it feels great. Turns out that's a product.
+
+**Andrew:** so reading through your website, it feels like where that has productized is into backstage. Uh, can you give us like a little overview of like what backstage is and how it accelerates that development? Yes.
+
+**Charles:** developed at Spotify and it is just a way for very, very large teams to share information, to share processes, uh, to. Just not reinvent the wheel time and time and time again, so, you know, at the very It's a very kind of minimum installation of the product.
+
+It will crawl your github Organization and just merch make sure that every single person in the organization understands what what kind of intellectual property exists throughout the organization and then it inverts the control so that The, you know, if you have a GitHub repo, all you have to do is check in an X, a YAML file, and it will tell backstage, this is my project, this is how you integrate it, and you can, uh, register your documentation so that you can have a single documentation site that's searchable, uh, and so on and so forth.
+
+So, um, like you guys, you know, mentioned, um, meeting and, uh, through a GitHub repo, uh, it's, it's kind of this. Trying to establish a very similar thing for people in organizations so that if you know, if you need something, um, you're much less likely to invent it on your own or if you need. Say documentation, you don't have to DM someone on Slack and say, Hey, how do you do this?
+
+You can just look and it's there publicly. So all of that is is part of if you know removing that friction So it's it's it's kind of I think it's an important piece in the toolkit if especially for very very very large I mean, we're talking development teams over 500 people you start to experience a lot of loss of People just not knowing that they can, there's an off the shelf component that they can reuse.
+
+It's right inside the organization.
+
+**Justin:** Yeah, absolutely. I, I'm surprised that backstage has like blown up so much. Well, I'm not surprised as in like, Oh, it's not good, but like, I'm just surprised, like it, it's a really cool thing. So when I was working at Artsy, I think. That's when it came out. And we had had this sort of similar problem of like, if you get a large enough organization and you have teams that are spinning up services, they like need to learn all the things that they need to learn to like spin up a service.
+
+And it was cool that Spotify had like open sources product where it's like. Need to spin up a service. Here's like a one click feature. We'll show you the catalog of like kinds of services you can operate inside of organization. Yeah, I don't know. That's really cool.
+
+**Charles:** Yeah. Yeah.
+
+**Justin:** ~~So it's also that you're sorry.
+~~
+
+It's also that you're offering this help, you know, integrating this open source projects and, you know, helping accelerate people's developer experience.
+
+So we really want to talk today about like some of your open source projects. 
+
+
+#### [00:10:00] Balancing Consulting and Open Source
+
+**Justin:** But before we move on to that topic, I just wanted to ask you a question is like, how do you balance time between paying consultant work and open source?
+
+**Charles:** That is a very, very difficult, or sorry, very good question. I don't know that there's, it's a difficult problem associated with that question. And I can tell you what we do. I don't know if it's, it's optimal. Um, so first of all, there's just, And this is especially when I was younger and not so much anymore.
+
+It was just like, you put in extra hours, uh, after, after work. Um, now I don't do that so much. Um, but the, if, if, when it, when it's really working, the open source work is very much on the long end of the. Uh, development cycle. And what I mean by that is, you know, we'll go into a client. We'll do some work.
+
+We'll go in again, do similar work. We'll go in three, four times and say, ah, okay, I see a pattern here. And it can be. You know, you can be difficult. You want to resist when you're, when you're, uh, working with a client, uh, to say like, I'm going to build you a framework because really what they want you to do is they want you to solve an immediate problem that they have.
+
+But once you've done solve the same problem four or five times, then you, it can be very easy to like in between projects, say in like, you know, a three, four week time period, like. Bang out a prototype, which is not quite a framework at that point, but it means that you're going to be able to use it on the next project.
+
+And even though you're not really introducing a framework, what you're doing is you're solving the problem that you know, that they're going to have already, uh, a lot more quickly. And then you take that and then, you know, so you kind of have a proof of concept, but you're not really promoting it as an open source project.
+
+Uh, and. Then, you know, you, you evolve it, evolve it. At some point, you're like, wow, okay, this is, you know, you have, um, you know, maybe five plates like this that are spinning. And then you realize, okay, this one, this one's special. There's something about this that really, um, needs wider adoption that people could really, really benefit from.
+
+So I would say in answer to the question, the only solution that I've really found is you have to be really patient and you have to be very Okay. Not rushing to try and make the end all be all solution. You really have to let it emerge over time. And sometimes that can, you know, that can take a very long time.
+
+I would say in the case of affection, it's, you know, almost seven years. Um, and, and, and, and multiple versions. But I do feel that we really have locked in on now on something that is very, very beneficial.
+
+**Andrew:** That's a great segue into talking about affection. 
+
+
+#### [00:12:56] Introduction to Structured Concurrency
+
+**Andrew:** But before we do that, I think we need to set the stage a little bit and talk about structured concurrency what that actually is and why I should care. So convince me.
+
+**Charles:** Okay. Convince you. So, so first of all, let me just start right from the top is that I would recommend for you and for all the listeners and really just anybody doing programming or, or is to go and hit read the blog post. Uh, they kind of started at least I, it might not be the one that coined the term structure concurrency, but I would say it was the one that brought it to prominence and it's, you know, for me, it's, there are, I can count on one hand, the number of blog posts that have kind of changed my life and this is one of them and I, I wish I knew his name, but it's the, the author of the Python library trio, which is a structured concurrency library.
+
+And what he argues. In that article, which is such a great mix of being academic, yet very approachable. So it's very thorough, very well annotated, but it's, you know, a very accessible argument. Uh, he talks about what makes abstraction possible. And he talks about the Original conception of structured programming, which we all appreciate structured programming now, because it's like a fish it's the water we swim in.
+
+You know, it's like us, it's the air we breathe. We don't think about the guarantees that if statements provide that while loops provide that functions provide, but. He encourages us to think about that being a revolutionary idea in the sixties and early seventies, where if you enter a curly block. You know that the control will pass out towards the end of the curly block.
+
+So if you enter an if statement by entering that curly, you will, and exit, control flow will exit through the curly. Same thing with a while statement, same thing with a switch statement, same thing with a function call. And what this does is it allows us to make abstractions because when I call a function, for example, I know that the only place that I can return is is to that.
+
+Uh, that function site, and so it means that I can build abstractions on this function because before the existence of structure programming, if you were to call a subroutine, that subroutine could like jump to somewhere else in memory and start executing instructions, and you might never return. And so it's just there's there's it's you can kind of a leak flow control.
+
+And so what, what the concept of structured programming is at its core is that you want to, or that is tying the lifetime of concurrent processes to a lexical scope. And what that means is literally what you see is what you get. So if I'm looking at a piece of my program and I'm looking at a single lexical scope, I know that everything that I create in there.
+
+Is going to be gone after I exit that lexical scope, and this is something that's applied, not just flow control, but, uh, it's very familiar to us in terms of memory, so we don't have to. This is not like when we're writing JavaScript or we're writing Java or writing go or literally any kind of modern, uh, programming language.
+
+Um, when you allocate a variable, you don't have to think, you know, if you allocate a variable inside of a function, you don't have to deallocate it. Because you know that once it passes out of scope, if you're using a garbage collection system, it's going to notice that it's not part of the root set anymore, and the garbage collector is going to reclaim it.
+
+If you're doing something like Rust, it's going to say, Okay, this thing is, uh, there's no owner for this object. Let's, it's, it's, it's, we're going to, we're going to destroy it. And so this is the same thing for concurrent processes. So every concurrent process in a structured concurrent system is going to be Bound to a lexical scope.
+
+So when I exit that lexical scope, that thing is not going to be able to survive. And I, I won't be able to exit my lexical scope until all the processes are finished. Um, and
+
+why that's important is it just means that you want two things. Uh, kind of the superficial reason is that you can't leak resources.
+
+Uh, because every resource has a very, very delimited lifetime. And then I would say the bigger thing is you can build abstractions. around it because every single operation is atomic.
+
+
+#### [00:17:45] Challenges with JavaScript Promises
+
+**Justin:** I think it's worth like talking about the native JavaScript stuff that we're, or the places in native JavaScript where you're running this problem. So, uh, promises aren't actually that great of an async, uh, concept. And it'd be nice to talk about a little bit more about that. And then you're talking about cleaning up resources.
+
+Um, so there's a new, uh, spec for the, um, what is it? Uh,
+
+**Charles:** The explicit resource
+
+**Justin:** Yeah. So we, we have like some new tools to sort of help do that. So if it's like you're allocating something you want to deallocate it out of scope. But, um, historically we haven't had that and it's been really easy for, you know, you don't close the database connection when you thought you should have.
+
+And then something blows up later. Um, so whichever path you would like to talk, if you want to talk about like, uh, clean air resources or maybe promises, because that's something general, I think either of those, I think would be really good to dig into a little bit.
+
+**Charles:** but we can talk about, uh, cleaning up resources. So in affection, and I would say in, in, in structurally concurrent systems in general, um, you. Not just a, not just, you know, a task or a promise or some, some concurrently executing code, but literally everything that has state is associated with that lexical context.
+
+So it's like a variable that's allocated on the stack. And when the stack is popped, you make sure that that resource will be cleaned up. And I will get into why the explicit resource management and async await Really not adequate to the task, which is why other other language run times are not adopting them.
+
+You'll notice that is unique to JavaScript and nobody else is doing that. ~~Um, uh, let's see.~~ So, um, you know, allocating a resource really is just like allocating a variable on the stack. But it's more than that, too, because you have to hand you have to be able to handle things like, um, uh, errors. In a uniform way.
+
+So if I have a scope that raises an error, I need to make sure that that error is caught. Um, this is actually a problem in async await. Uh, and if you, you go out there, you can see a lot of people, like if I do, uh, a promise. race, and I'm racing 20 promises against each other, um, and one of them fails, what am I doing, what do I do with the other 19?
+
+And the answer is they'll just keep running. You've basically leaked those processes. So this is one thing you can look at when you see a promise. race, you're almost always looking at a memory leak. And the most insidious thing about it is this memory leak doesn't actually appear until you're at scale.
+
+Because it's, it's not leaked outright in the sense that eventually, probably, maybe, these promises will resolve. Maybe they resolve after 10 seconds. Maybe they resolve after, you know, 10 milliseconds. But they're still kind of out there hanging in the ether. And if you're in development and you're only handling a very small request load, um, or your event stream is just a trickle, it's not going to be a problem.
+
+You're not going to see it. It's not going to have a large impact in your memory relative to the impact, total impact of the system. You take that same code and You know, you put it under really heavy load and you know, your event stream is more of a fire hose. Then all of a sudden each event leaking. You know, a small amount is still going to really, really stack up.
+
+And so one of the things I think that we fight against most when we're trying to evangelize this approach is getting across the idea that you, you don't always see these problems until it is way too late to fix them. And you're in production and you're handling a big load and you're like, Oh my God, I'm leaking all this stuff all over the wear.
+
+All over the place, um, it's the same thing happens with a promise that all except in the error case. So if I'm, uh, awaiting 20 promises, but the promise that all in one of them fails, uh, then I'm going to. You know, I'm going to throw the error immediately and the other one, the other 19 are leaked. So the race, you get the positive case, one resolves, you leak the 19. 
+
+All, one fails, you leak the 20. Um, although I guess race is both positive and negative. Um, so that's a, that's one of the reasons that are primitives and async await really aren't. Aren't adequate. ~~I would say is that, you know, error? Um, well, sorry. Let me back up a little bit. Uh, just one second. I'm getting a bunch of notifications.~~
+
+~~I need to turn off. Um, that's being on my screen. Sorry, guys.~~
+
+**Justin:** ~~No worries.~~
+
+~~All good. Okay. Yeah. Um, let's see. Where was I?~~ ~~Okay.~~ So, um, 
+
+that's
+
+so whereas affection, you're forced to handle every year. So if any of those operations, those concurrent operations fails, it's going to percolate up the up the stack. 
+
+we're
+
+going to The other reason, and this is a really, really big reason.
+
+**Charles:** Is that there is no way to resume or reclaim control of an async function once it is awaiting a promise. And this is really the most fundamentally broken thing about async await. Is that if I have an async function and I say await new promise and that promise never resolves, I have leaked that async function.
+
+Um, so you have no control. So whenever you await. No matter how long that thing takes to run, maybe it could be five years that it takes that promise to resolve their acing function is awaiting that promise, cannot resolve. It cannot settle for five years. Um, and that's an extreme case, but again, you have the same case where if you.
+
+Um, if you, uh, sorry, that's extreme, but again, you have the same case. Whereas if you're awaiting a lot of promises and they're taking a long time, there's just no way that you can back out. And so everything in that chain of causality is also leaked. So I could have a promise. I could have a call stack that's including a module from NPM.
+
+That's including a module from NPM. That's including a module from NPM. And inside there, it's got a promise that's not resolving and that's going to cause everything up the call stack. to leak. So one of the requirements of structure concurrency is that the life site lifetime of an asynchronous operation has to be controllable by the outermost scope, not by the innermost scope.
+
+And that's the problem with async await is the lifetime of an async operation is determined by the lifetime of its innermost promise, whereas In affection and other structurally concurrent systems, the outermost operation, the outermost async operation has control to say, Nope, we're done here. I don't not need it anymore.
+
+And you just, you just fold up everything from, from down on, from, from down on down. And so it doesn't matter what's going on at the innermost level.
+
+**Andrew:** Yeah, it's such an insidious problem too, because like, you just can't see it, like the code, you look at it and you're like, this, this looks fine, like I'm
+
+using JavaScript primitives, I'm, I'm catching errors and everything, and then you have these just problems kind of laying in wait, and that's like multiplied if it's like, there's like multiple functions between you and that promise,
+
+**Charles:** Right. Right. It's, it is really bad. And so I think part of the problems with the explicit resource management proposal is that it doesn't address this underlying mechanic, which is that the, when you're awaiting a promise, if it doesn't resolve, you're stuck. And so it will, by relying on the async await.
+
+Um, as it's kind of underlying cause, or sorry, it's underlying mechanism. It's subject to this whole thing. I also think that there are problems in that it's optional. So not only can you get stuck because. Um, not only can you get stuck because there's a promise that's kind of gone rogue, but you can also get stuck because you forgot to declare something with using.
+
+And so kind of what I would foresee is that we're going to have a new ESLint rule that like is like, don't use const, don't use let. Use using for everything. Um, which is kind of silly, right? But that's the only way to enforce safe, safe, like it's only way you can be safe. Um, and so I think the, the optionality is a little bit strange and just the syntax is extremely complex.
+
+So. I don't even remember, but if you look at that table, you've got like four using a weight for a weight using, you know, uh, constant using like it's, it's, it's, um, I mean, it's almost impossible to comprehend. And I think that's also kind of touches on an adjacent problem, which is the async await.
+
+Um,
+
+resolve synchronously. The only time that it resolves asynchronously is if it's actually waiting for something. And so what that means is, you know, unlike async await, you can use. Affection for an event handler. So one of the reasons you can't use async await for an event handler is that cancellation and prevention of defaults is a synchronous operation.
+
+So even though I would say an event stream from a button, like handling clicks, is most elegantly modeled as an async iterator, you can't do it. Um, because It's going to resolve in the next tick of the run loop, and that event is gone, and you can't, you can't handle it. So as a result, we're kind of left to do awkward workarounds, and we're back in using callback.
+
+Uh, hell, if you want to actually, um, if you actually want to handle events well. Um, And then, you know, there's a, there's a bunch of different, um, problems too, around like, uh, caching where if you want to check something synchronously and make sure that it's in the cache, but then you need to fetch asynchronously, um, being able to do that with async functions and a combination of sync functions is a real, it's extremely vexing problem.
+
+And if you Google it, you'll see a lot of people being very, very frustrated about it. And then finally, it just means that every API has to be bifurcated in some weird way. So we have, you know, symbol iterator, symbol async iterator, symbol disposable, single async disposable. And so the other reason I don't like the explicit resource management.
+
+Um, is that it kind of doubles down on this idea of there being two hermetically sealed worlds of sync and async, and you can't communicate between them. Uh, so, I mean, it's better than, I would say, like, if you're going camping in the woods and you're trying to survive, having a tarp is better than not having a tarp.
+
+But I would rather have a log cabin, um, you know, with a fireplace and a wood pile.
+
+**Justin:** Well, I mean, on that note, uh, so, so affection is the log cabin with the fireplace and the wood pile. 
+
+
+#### [00:28:51] Introduction to Effection and Its Motivation
+
+**Justin:** Let's talk a little bit about how, uh, affection solves this problem. And I guess maybe if you want to back up and talk about like, if there's like some underlying motivation of like why you built it, um,
+
+**Charles:** Sure. I can talk about those first. Yeah. So the underlying, I mean, the underlying reason that we built it, uh, is that we were working on web front ends. There was, there was actually two projects. We were working on web, uh, web front ends. Um, and we were at that time using Ember. JS and so Ember had a Structured concurrency library and the way the patterns that you could do AJAX requests that were automatically canceled on whether you were, you know, whether you were closing a route whether you were Repeatedly making a request inside of a autocomplete tab or sorry, on an autocomplete field.
+
+Um, or you wanted to manage, uh, the other thing that we use for was managing like 10 concurrent uploads. But if you change another upload, you wanted to queue it. And if, but if they, you know, again, touching into the other functionalities that I just mentioned, if you exit the page or you exit the route, you want to cancel all of them.
+
+Um, The patterns for managing the life cycle of concurrent operations were extremely elegant. Uh, I'd never really encountered anything like it, like the, the amount of thought I didn't have to expend on tearing stuff down, understanding when stuff needed to be, to just go away. And I could just say, you know what, if it's tied to this lexical scope, that's, that's the lifetime of the task.
+
+Um, You know, that was my first encounter with structured concurrency, and I was like, okay, this is really, really something here. Uh, and then it was shortly afterwards that that blog post came out, which I would encourage everyone to read. But then we ended up working on a custom testing framework, uh, that was, it itself was an orchestration server that was managing like five or six different processes.
+
+It was also managing a browser, uh, kind of like. Um, kind of like play, right? Um, it was also managing a set of simulators that would, that would come up and it was, you know, there were, there were, you know, there was a, uh, yes, build bundler. That was also kind of it was managing. So this was again, taking the.
+
+Pattern from the front end over to the back end. We realized, okay, we, we can use this structure concurrency back here because this is just going to be a nightmare if we're trying to manage this all by hand. Uh, and so that was kind of the original, the very first version of affection was a server conception of this front end framework, um, that we had used in Ember.
+
+Um, and. As we, you know, developed it, the, the idea of structuring concurrency gained more traction, especially outside of the JavaScript community. Uh, and so you have, especially on mobile platforms, where, you know, like basically Swift and Java, which are the main development languages for Android and, uh, iOS, or I should say iOS and Android, respectively.
+
+You know, on a mobile platform, you're dealing with. It's a highly event driven, highly event driven code. Uh, and so for them, it was, you know, very, very beneficial. And so I almost think that Javascript is a victim of its own pioneering success. In the sense that nobody had Async08 before Javascript. And there really is, like I don't want to, I don't want to bash on it too much.
+
+It, there is a real power in having these suspendable cot routines. Uh, and they almost got the story, right? But, but Async eight came out in like 20 13, 20 14, and then structuring concurrencies an idea was formalized in 2018. So by being ahead of the curve, I feel like we've kind of most also missed the boat a little bit.
+
+**Andrew:** Cool. 
+
+
+#### [00:32:57] Using Effection in Practice
+
+**Andrew:** So we've talked a lot about of affection, uh, but like, what does it look like in practice to use? I've looked at some of the other, uh, similar libraries in the space and they're kind of hard to learn. They have a big API surface, but effect doesn't really seem to have that or affection.
+
+**Charles:** So Right. So affection, our fundamental stance on affection. Is that the only thing you should have to learn is structured concurrency and structured effects and, or in other words, resources and everything else should be JavaScript. So people have spent a lot of time learning JavaScript. They've spent a lot of time learning JavaScript APIs.
+
+They spent a lot of time interacting with the JavaScript ecosystem. And so we want 99, if not a hundred percent of that knowledge. To be applicable to writing affection code. So if you know how to do something in JavaScript, you're going to know how to do it in affection. And I think that's, I think that's very valuable because if you look at affection code, it is immediately recognizable what it is that you're trying to accomplish.
+
+And with a few, a few substitutions, you can transition from kind of vanilla async await to affection and back and forth. So, uh, so I would say that's kind of the, the, the, the primary goal there.
+
+**Justin:** yeah, I think like, uh, Andrew made a little Freudian slip to this, but I think the like other big library in the space is effect. Yes. Uh, so we had, uh, Johannes Shickling on a while back and, uh, he talked about effect and, you know, effect is this like amazing library and it does, uh, it does a lot of things.
+
+So it tries to do structure concurrency among like many, many, many things. And to me, it feels like kind of like Erlang TypeScript kind of like, it's like really bringing a whole new paradigm. And it is like, it is a, it is a paradigm shift and, you know, with all the benefits and costs that come along with that.
+
+So that's one thing that I do like about affection is just trying to like solve this one problem. Um, but there, there's some good things that effect does. 
+
+
+#### [00:35:17] Error Handling in Affection vs. Other Libraries
+
+**Justin:** And I was wondering, you know, things about like, I don't know, does, does affection have a lot of opinions about like error handling, so you get the errors and, and a way that's like.
+
+That has the guarantees of structured concurrency, but like, then you have to, like, what is the shape of this error or like, whatever, you're, you're still sort of like responsible for doing all the other stuff, right?
+
+**Charles:** So, sorry, what's the, is the question about error handling and differences in error handling? 
+
+**Justin:** yeah, yeah. Like, is there any difference in error handling, uh, beyond the structured concurrency 
+
+primitives? 
+
+**Charles:** So, um, I'm, I'm not an expert on how Effect TS does error handling or how it encourages error handling. I will say this, that the way that you handle errors in Affection is the same way that you handle errors in JavaScript. Uh, and that's thematic of the way things work in Affections. So what you do is you put a catch block around, um, your code, and you can, you can catch errors.
+
+And, uh, if you want to return that error as a value, you can do that, like you would in Rust or Go, and, and maybe Affect, uh, but it's up to you and your option. So we actually do have a result type, um, that's not, You know, we don't, we don't encourage you to use one or the other. Uh, my personal preference is I actually.
+
+I know there's a little bit of a, uh, a backlash against, uh, exceptions. Personally, I like exceptions a lot. Um, I think it, you have to be mindful of the type of code that you're writing. If you're writing framework code, then it's very appropriate to treat exceptions as values because in framework code, you are explicitly managing the flow control of other code.
+
+And so using exception handlers or using exceptions that unwind your stack is. It's really onerous because you're actually explicitly dealing with routing that control flow and routing those errors. So if you look inside affection, you'll see that we always deal with errors as a result object. And, you know, we're doing a bunch of checks like this is okay, proceed, but we're all treat always treating errors as return values.
+
+Um, but if you were. Inside user land and 99 percent of the time, there's nothing to be done about an exception and why the hell am I saying anything about it? And I want to be concentrating my exception handling in a single place. And so that's kind of the, that's the heuristic that I live by is if I'm routing errors and the job of my code is to route errors and treat the errors of value.
+
+If I'm not, and there's nothing I can do to recover from an error. Then then don't. And so that's a long way of saying, way of saying is you can do both. Um, but you know, the affection way is that you would, you would handle errors the way that you would just normally.
+
+**Andrew:** It's cool that you guys don't make an opinion in there and like kind of set the two features to coexist with each other.
+
+I want to dig into a little on how, uh, effect does it stuff or sorry, I want to deal, uh, dig in a little bit to how affection does all of the magic. 
+
+
+#### [00:38:32] Generators and Structured Concurrency
+
+**Andrew:** Uh, you said it's just JavaScript, but it is using the part of JavaScript that probably 99 percent of people haven't interacted with, which is generators.
+
+So how do generators like help with this problem of structured concurrency in ways that promise can't? It's a special
+
+case. It's So, um, so let me back up so that the fundamental primitive in. 
+
+you get,
+
+like, stack Affection, actually, believe it or not, is not the generator, it's the iterator. And what an affection operation is, is it's just a iteration of effects. So, you, you're essentially using an iterator to express a coroutine that can be paused and can be resumed.
+
+**Charles:** And so, at its simplest case, what you're doing in a, in a, um, a, a affection operation is, you are, you have a An iterable of effects and you pull, pull the effect off, you evaluate it. And when they're not. Um, gives you a result, you pass it as the input to the next effect, and that's kind of, you know, I'm going to wave a little bit of hands here, but that's the way it works.
+
+It's the same basic process in effect. Yes, the same basic process in like a school monadic evaluation. Like, this is how you stitch together. Pure functions with side effects is you basically have a list of pure functions that are interleaved with side effects where you, you know, the, the, the side effect is evaluated and then, but then you're passing a pure or passing an argument to a pure function, which then gives you your next effect.
+
+So all that said, uh, a generator is a very, very clean way to express an iterator. So you can, I like to think of them as coroutines. So it is actually very similar to an async function in the sense that the state of the function can be paused at your yield points. Or, which is the same as an await point inside of an async function.
+
+And then when the effect resolves, you can pass that value back to the co routine. And as a matter of fact, generators predate async await. So they've been part of JavaScript for a much longer time than the async await has. And furthermore, uh, The async await was originally built using generators because the generators are general purpose co routines.
+
+And what that means amongst other things is that in, because this is the primary way that you express these iterators in affection is with generators, you are able to express a general level of effect with your yield that you can with an await because an await is basically a special case of. A coty coroutine resumption.
+
+That is only this. It's an effect that can only Track promise resolution or promise settlement, whereas at a yield point, there's an infinite number of effects that could be resolved. And so you see this actually in affection. Not everything is an asynchronous operation. Sometimes what we're doing is we're getting something off the context and that's a synchronous effect, but it's, you know, it's a, it's a similar idea.
+
+So it's actually infinitely more powerful in a way. So it's, it predates, it's actually simpler than. Uh, then async await, uh, and it's, and it's many, many orders of magnitude, more powerful, but this is, this is actually something we try and point out a lot. This is actually, it's just JavaScript. Every browser runtime supports it.
+
+You don't need extra, any build, build tooling. It's all built in and it's really fast.
+
+
+#### [00:42:19] Debugging and Stack Traces in Affection
+
+**Justin:** One, uh, thing that I was wondering about is, uh, one of the hardest things to deal with with promises is just debugging asynchronous code is challenging, especially because it'll split. And a lot of times you get like splits, uh, stack traces because it's like, Oh, something is getting queued up. And the, uh, the event loop like handles this at some later time and something fails.
+
+And you're like, how did this even happen? Where do I find actually what like called this? So do you find. Uh, with affection, you're able to like, I don't know, what is the, when an effect in affection fails is like, they're a better stack trace. Like, I don't know, how does, how does that work? 
+
+the 
+
+**Charles:** um, the, the answer is yes. And the answer is it's going to get even better. Um, so right now, because, and this is, this is because we're using. Generators, uh, and which, which is fundamentally harmonious with the underlying runtime 
+
+node, you know, V eight and, uh, j s core and all the, the, the, the javascript runtimes, they'll generate those stack traces for you.
+
+Uh, so I'm understanding I've got this thing that called this thing that called this thing, whereas if you're, callback. And I've got, you know, your stack trace looks, what you're seeing is the entry to the stack trace from, uh, like from your, you know, your TCP event handler and you're like, what, uh, and, and the stack traces to two levels deep and it doesn't really tell you, um, what was going on.
+
+Infection will actually give you, it'll give you the stack trace, providing you're using the generator syntax. Uh, just the same way that you'll get it with the wait syntax. Uh, one of the problems, if you've ever used like observable. js, um, this is one of the biggest comp uh, RxJS and observables. One of the biggest complaints is like, I can't get stack traces, because basically you're just getting context free function calls that are coming from some callback somewhere.
+
+If you look on stack over stack overflow, you'll see You know, a thousand questions complaining about this. I think, you know, systems like if you're going to use a system based on functional composition, uh, at the, at the core level, like we were using functional composition at the, at the, at the base layer, and then we have the generators on top of it.
+
+Um, you're going to need extra tooling to, you know, capture. You're where an operation originated from, uh, whereas that just kind of falls out naturally, uh, inside of affection. And I think it's one of the, when, whenever people use it, they're like, wait, these actresses are actually discernible and they work and like, wow, that's revolutionary.
+
+And it's, and, and, but, but it's part of our whole approach is trying to be as sympathetic with the underlying platform as we can, because it means that you're just. Going to be at greater sympathy with all of the ecosystem, including the development tools, including the third party libraries,
+
+**Andrew:** Yeah, the fact that the, the stack traces are readable is so huge. I'm, I'm a react developer also. And it's the same problem where it's like, Oh, my function got called. And then below that is 15 frames of what react was doing. And I'm like, I don't care. I don't care.
+
+**Charles:** Right. Right, right,~~ right.~~
+
+**Justin:** So you mentioned it was going to get better. An
+
+
+#### [00:45:33] Upcoming Features in Affection V4
+
+**Justin:** d I know you're working on a V4 release of affection, which I'm really excited about. So can you kind of give us a teaser of what's coming up in V4? 
+
+**Charles:** Yeah. So, um, I would say what you can look forward in V4 is everything, uh, and nothing at all. Um, and what I mean, let me start with the nothing at all. Um, so we should, the, the, the amount of the changes is going to actually be very small. Uh, so the API, the public API surface is not really changing. In fact, we're in the process of backporting a lot of the V4 APIs back to V3 because we find, one, they're very, very helpful.
+
+And two, that it's going to make it a much easier upgrade if those APIs are already available. So, Affection's not a very big library. It's, you know, it's maybe 20 functions and it's, you know, four, four and a half K of compressed JavaScript. So it's, it's not going to be changing on the outside very much.
+
+On the inside, it is going to be changing quite a bit. Uh, so originally we had written our own delimited continuation library. Uh, To build affection on and so, uh, what we can get in, that's a whole another can of worms of what a delimited continuation is, but it's a, it's a, it's a concept from functional programming, but as a result, we have built this iterator composition library on top of another iteration composition library, and so it's very confusing of what context you're in.
+
+All of that has been brought in to Affection v4 so that we have the delimited continuations are native and they're all implemented and it's very clear what type of code you're working on the second thing and this is where you're getting into more of a again. These are these are are very, very subtle details.
+
+There's a single run loop. Per Well, basically, there's a single run loop for the entire affection stack. Um, and so what happened before in V three or what happens now in V three is every single task will have its own. Run loop. And so it's possible to have non deterministic evaluation of event resolution in V4, everything is put into an absolute queue.
+
+And this means that things are more deterministic, but it also means that we can actually prioritize certain tasks over others. So for example, parent tasks. Are going to be in parent operations, have always have priority. So if you have two events that resolve two or two events that resolve while you're evaluating something else, the parent task will come in front.
+
+And what that means is if all the parent is going to do something that's going to cancel the child, the child task that will never, never run. So it's actually really important for, for supervision and for kind of enhanced guardrails of. Structure concurrency, the parent always gets to decide the lifetime of, of, of itself and its children.
+
+Uh, the other thing is that we're going to be having one where we, we have a way to represent, this is, this is another subtle point. Let me just put it this way. The stack traces are even better. So, uh, actions and function calls. And tasks and resources all got their own iterator in Affection V3. Now only, only a task and a resource is going to get its own iterator.
+
+Everything else is done within the same, same iterator. And so what that means is if I'm, if I'm invoking an action, or I'm calling an async function, or I'm doing, doing something like that, Um, I would, sorry, Affection v3 will reset the stack and so you'll, you'll, you'll get kind of the stack will be segmented along those lines.
+
+And so you won't get the complete picture. Now you will, uh, so that, you know, we, we, that was one of the kind of the harmonious effects that we realized was we were working with affections like the stack traces are really great. So we're like, can we make them better answers? Yes. And then I would say the last thing we can expect on v4 is, um, it's much more performant.
+
+Okay. So infection is already performant, it's actually really performant, but we had some benchmarks and we're, we're, it's consumes less memory and goes faster. 
+
+**Andrew:** Sweet. We like thin abstractions here. Uh, before we wrap up, uh, we always like to ask a future facing question. 
+
+
+#### [00:50:12] Future of Structured Concurrency
+
+**Andrew:** And for you, uh, you're kind of, we're kind of at this dawn of this structured concurrency trend. Like we're a few years into it now. Um, do you think It's going to change how we program is it going to banish promises and async away from our code, or is it going to take a little bit more.
+
+**Charles:** I think it absolutely is going to change the way that we program. I think that in 10 years time, this will be the expectation of a runtime is that it will. It will have structured concurrency. I think any new language that's going to come out after the next couple of years will have structured concurrency in it.
+
+Um, in the same way that this was, it was very controversial structured programming. In the sixties and seventies, people are like, you will take my go to statement of my cold, dead hands. Like you just can't take it away from me. It was, it was very, very controversial. And yet now in hindsight, it's like very obvious, but there's, you know, there's always going to be people who are invested in a particular technology because they have a huge sunk cost in learning it and developing an expertise in that.
+
+Um, but I do very much believe that async as we know it, we might see async keyword. Uh, we may see the await keyword, but it won't mean the same thing in JavaScript because eventually what JavaScript has in the form of the new promise constructor or being able to invoke an async function without binding it to a context is you essentially have the, the concurrent equivalent to go to statement.
+
+**Andrew:** Yep, I was thinking that earlier in this episode that it very much feels like a go to but like, just not even almost just not even explicit. It just seems like you're doing the same code. 
+
+
+#### [00:51:52] Conclusion and Final Thoughts
+
+**Andrew:** Uh, well, thanks for coming on Charles. This was a really fun dive into affection. You've built some really cool stuff here and I'm definitely going to be taking a look at it next time in doing any type of, uh, async programming.
+
+So thanks for coming on and talking about it.
+
+**Charles:** Yeah, please do. I mean, our whole stance on with affection is, in fact, the name affection is about warmth towards the javascript language and the javascript community and talking about that platform sympathy. So it's actually baked right into right into the name is making sure that it's as easy to work with if you know javascript.
+
+So please, If, if you're having trouble with asynchrony or even not, just give it a try, come in, jump into our discord, uh, start a discussion or file an issue on GitHub. It's a great time. 
+
+**Justin:** Yeah. Thanks Charles. Uh, affection is, is like one of the libraries that I like, keep coming back to for inspiration again and again. So I'm excited to use it in some of my upcoming projects and yeah, it's a great library. I really recommend people check it out. Uh, and I think you've done something really powerful here and like a really small footprint, which is also pretty incredible.
+
+So yeah, good work.
+
+**Charles:** All right. Thanks y'all. 
