@@ -1,0 +1,455 @@
+---
+title: Antonio Scandurra - Atom, Zed and the Future of Text Editors
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Antonio-Scandurra---Atom--Zed-and-the-Future-of-Text-Editors-e30i6fc
+youtube: https://www.youtube.com/watch?v=HJTVwNZ_fQM
+tags: text-editors, ai, rust, open-source, atom, zed, vscode, cursor, crdt, gpu, ui, plugins
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're delighted to welcome Antonio Scandurra to the show.
+Antonio is the co-founder of Zed, a new text editor built in Rust.
+He was one of the core contributors to Atom, the text editor from GitHub that was the start of a new era of text editors.
+Join us as we chat about the past, present and future of text editors.
+
+- https://github.com/as-cii
+- https://x.com/as__cii
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the ad-free episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:20] Introduction
+[00:01:47] Working on Atom and Open Source Contributions
+[00:06:27] Lessons Learned from Atom
+[00:09:30] Building Zed: Technical Decisions and Challenges
+[00:18:46] Collaboration Features in Zed
+[00:22:30] Technical Deep Dive: CRDTs and Data Structures
+[00:25:29] Extensibility and Plugin Approach in Zed
+[00:31:00] Building a Custom UI Framework: GPUI
+[00:39:16] Integrating AI into Text Editors
+[00:48:25] The Path to Zed 1.0 and Beyond
+
+<!-- TAB: TRANSCRIPT -->
+
+**Antonio:** Imagine a world where you have agents changing your code in the background. Maybe it's gonna become so autonomous that you won't need an editor.
+
+I don't know, maybe a GI is behind the corner until then, I do think that the editor is The platform where code is gonna be written and interacted with and read. 
+
+#### [00:00:20] Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hello everyone. Uh, we're really excited to have, uh, Antonio, uh, did I say that
+
+**Antonio:** That's right.
+
+**Justin:** Okay. Uh, so, uh, Antonio, you're on the Zed team, uh, and we're incredibly, uh, excited to talk about Zed. Um, it's a great tool. It's doing something really ambitious, uh, and from a team with a long history of building text editors.
+
+Uh, so really excited about that. Uh, before we dive in, would you like to tell our listeners a little bit more about yourself?
+
+**Antonio:** Yeah. Uh, first off, thanks for having me. Um, but, uh, yeah, I, I'm Antonio. I live in Italy. I'm a software engineer. Um, I started coding when I was, I. I think 13. Um, growing up I was very excited to see, to watch my dad like work on, uh, Excel spreadsheets. And that was my, I dunno, I was like fascinated by like him typing formulas and that was my, uh, I dunno, programming always had like a huge appeal, uh, to me.
+
+So yeah. Uh, sorry, coding when I was really young. And then, um. I think, yeah, right when I was, uh, 18 I started university and at the same time, I, uh, started my very first professional gig. Um, and, uh. Yeah, I mean, that's a little bit about me. 
+
+
+#### [00:01:47] Working on Atom and Open Source Contributions
+
+**Antonio:** I work on, uh, I worked on Adam, uh, back in the day. Uh, we can chat about how I got into working on Adam.
+
+Um, and, uh, nowadays I, yeah, co-founded, uh, Zeded with, uh, Nathan Sobo and Max Bruns Field. Um, we've been doing this, uh, since 2021, April, 2021. It's been four years already. A long ~~time. Um, um, yeah.~~
+
+**Justin:** That's, that's super exciting. The, uh, Adam was a very sort of like revolutionary text editor at the time that it came out. I mean, there's so many. Of fundamental technologies that Atom helped produce that power. So much of the products that we produce today, like Electron came outta the Atom project and it's like so many products are shipped on Electron these days.
+
+**Antonio:** Totally. Uh, yeah, I mean, sorry. One, uh, little bit of trivia, I don't know if everybody knows this, but like the first name of Electron was actually Adam Shell, it then changed to like Electron. I think like at some point, even when like they renamed it to Electron, there were still like some binaries that were called Adam Shell, uh, sorry I interrupted you.
+
+I just wanted to slip in that in there. 'cause I think it's funny.
+
+**Justin:** No. Yeah, I, I kind of remember that. I, like, I was really excited about Adam when it came out. Uh, and yeah, I don't know. I thought it was like a, an excellent thing to be able to like, use web technologies to be able to, uh, make an editor. But, so yeah. How did you, uh, get involved with text
+
+editors and, and development tools in general?
+
+**Antonio:** yeah. I, I think I was, uh, it was my, I think my second gig, I was working as a freelancer for this, uh, German company. It was like a Ruby on Rails shop. Uh, and I would, I. I think a coworker of mine sent me this invite to the beta of Adam. Adam was like a private beta at one point.
+
+Uh, I have like a vague recollection of it. I dunno if you guys like, uh, remember this, but I remember like there was this app and you had to like drag and drop a token into it and then you could download the, uh, the application anyway, like I, I was fascinated by, um, you know, using, uh, a different text editor and.
+
+So, yeah, when, uh, it finally became open source, this was, was, uh, prior to the 1.0. Um, I, I remember like I was, I was using Adam, uh, on my day-to-day work, and I would, I think, yeah, I was, I was, uh, I didn't like how it was split into the selections worked. Like I, you know, when you select the, the text and you wanna like.
+
+Uh, split the selections in, in into lines. Um, so yeah, the code was open, so I started basically submitting PRS to it. Uh, and yeah, the code for splitting selections into lines was, I think, n squared for some reason. Anyway, like I, uh, refactor it to be, uh, you know, and log in. Uh, I forget exactly how I did it.
+
+But anyway, like, um, it was really cool, like my very first interaction with like an open source project and I had. Uh, I was super lucky to, uh, interact with, uh, Nathan. I think like the very first person I interacted with was Nathan and, uh, you know, uh, one PR after the other. I basically started, uh, chatting with him like, uh, we, you know, and this, at the time, this was also my first time pair with somebody.
+
+Like, I remember we. We used the Screen Hero at the time. I dunno if you remember that. Um, um, I feel old talking about this. I don't know why. I'm just like, uh, so, so many tools I don't use anymore. Um, but anyway, like, yeah, we, uh, we paired on, uh, on uh, some stuff. I think it was about like measuring characters in, um, like aligned because you know, Adam being basically a fork of, uh, chromium, like, yeah.
+
+There were not, there weren't a lot of APIs to look to know where to position selections and cursors anyway, like I remember pairing with him on that. Uh, and then I think he was like randomly in Italy. He was on, on a vacation with his, uh, with his wife at the time. And, uh, yeah, we met in turn, uh, we hung out a bunch.
+
+And, uh, yeah, shortly after that, uh, I joined GitHub. Uh, so yeah, we, we worked on, uh, on Adam together for, for a while. I forget the exact. Timing. Uh, but yeah, uh, I was on the core team for, for, for a little while.
+
+**Andrew:** ~~Uh,~~ yeah, it that's pretty awesome that like your current gig is like. First commit, first PR connected to, to someone from that old project. Uh, the, the two projects do the same thing, but in like, drastically, drastically different ways, I think. Uh, so what were some like key learnings or lessons you took from Adam in your time there that you've kind of used and Zed?
+
+
+#### [00:06:27] Lessons Learned from Atom
+
+**Antonio:** I think one of the, yeah, most important ones I think was, um, really think carefully about extensibility. I think at the time, and Adam, like, um, you know, we had some APIs, but like basically people could reach into the editor and do all kinds of craZedy things, which, you know.
+
+On the one hand it was amaZeding because, you know, it sort of led to this Cambrian explosion of like extensions, right? Like, uh, I think yeah, the extension store in Adam was like, uh, you know, had a billion, billion things in it on the one hand. On the other hand, now you have a lot of people sort of relying on APIs and it's not version, you don't control it.
+
+And like, it was really, really painful to just change any, any API at all. And you know, I remember like when we had to make some, like. Large changes because we had to refactor, you know, whatever, like a major component. We would go through like all the GitHub repos to look for api, you know, users of that API, and being like, Hey, look, we're deprecating this.
+
+Please update to this new thing, this new version. Uh, but yeah, that was very, very painful and kind of like, 'cause you know, sometimes the, the shape of an API. More so, so like the performance of the API, right? Like, um, um, so yeah, that, that, that's something that we're like taking very, uh, seriously had Zed like we're taking a very different, different path with, you know, first of all it's versioned, like everything's versioned.
+
+Uh, so that's one thing. Uh, and also just like. Another thing that extensibility, I think wasn't really good for, you know, that didn't really like, um, help with and atom was that yeah, any package could ruin the editor experience. Like you have stuff running on the main thread and like at any point, uh, you know, a package could, uh, you know, take.
+
+You know, even as little as 32 millis, right? That's like four frames and 120 FPS monitor, right? So, um, yeah, I think being able to control that I think is something that we really, uh, care about in NZed. And, uh, yeah, that was a, a pretty painful lesson, but I think, I think we learned it.
+
+**Justin:** So. Y'all had that experience of building Adam, and I mean, I think Adam's success is definitely in its lineage, right? And, and, and all the things that's contributed to the space. Uh, I, I mean, vs. Code, which is probably the most popular editor today, wouldn't exist, uh, without Adam, uh, because I think it laid the foundations for that.
+
+Uh, and then y'all decided to create this new. Text editor based, written in rust, uh, with like a lot of native UI and like very different technical decisions. So, uh, what, uh, sort of what led y'all to what Zed is today?
+
+**Antonio:** Yeah. I mean, yeah. 
+
+
+#### [00:09:30] Building Zed: Technical Decisions and Challenges
+
+**Antonio:** I think this is also, um, uh, you know, it's relevant to one of the, another lesson we learned, I think, which was, yeah, I think like one of the biggest problems I think we had with Adam was, yeah, again, performance like. You know what's great about a web browser is that it gives you like this great foundation, right, that you can use to, you know, you have a lot of tools at your disposal, like you don't have to implement a lot.
+
+The downside with that is that like they're buried like deep down and, you know, these multiple layers of abstraction that you, you can't really control. Like, I remember, um, man, I spent. I forget how long, but yeah, I spent a long time, uh, trying to improve startup time and Adam at the time and like, um. I just couldn't, you know, there were things that I just couldn't remove.
+
+Like the browser was just taking a long time to do the first layout, or, you know, uh, it took a long time to do its first, uh, style recalculation, you know, I remember spending nights like looking at, you know, the, uh, instrumentation, uh, in the, the depth tools like the, the chromium dev tools and yeah, like you would just have like.
+
+300 millis of this purple blocks. Right. And I just couldn't inspect, like there was no way for me to like inspect it or, uh, you know, change the behavior of it Right. To like, make it, make it faster no matter how hard I tried. And so like, we, we, you know. I remember we resorted to the, at the, I don't know if like things have changed since then, so maybe this is, is outdated knowledge, but at the time, um, there was this technique called, um, uh, V eight snapshots, like isolate snapshots, where like we would sort of instantiate a portion of Adam up until us, you know, as, as later as we could.
+
+And then like we would snapshot the heap and like store it into a blob. And then like when we reloaded Adam, it, it would, we would steriliZede that into memory and that was. Marginally fast, like we got some speed up, but I don't know, it was like we didn't have enough leverage, I guess. So yeah, with Zed we started with an empty repo.
+
+We were just like, okay, um, we're gonna. Do it, like we're gonna own it top to bottom. And you know, things, there are things that we don't do right? Like, there are things that we defer to the operating system. Like we, you know, for example, if you open Zed, like all the chrome for the window, right? Like the traffic lights, uh, on the Mac, um, you know, are, uh, handled by the, the operating system.
+
+But, uh, you know, we wrote our own shaders. Uh, we, uh, like. Yeah, it's basically like, yeah, there's a lot of, uh, a lot of custom stuff going on and you know, that comes with downsides, right? Because now nobody knows how. You know, this UI framework we wrote, GPI. Nobody knows how that work, right? Like when you, even when you hire someone, like you need to ramp them up and like, uh, sort of, uh, explain, uh, how, how that works.
+
+I, I think like we, it's a really sweet spot where we ended up with GPUI and uh, NZed, but it is true that there's a lot of, um, custom code. Um, and yeah, so that's one side of it. The other side of it is just writing it in a fast language. Uh, you know. Rust. I don't know. Like we could have written it maybe in c plus plus.
+
+Uh, I don't know about c uh, but yeah, at the time I think Rust really gave us leverage to sort of, you know, it didn't look like a low level language to, you know, it's like, yes, you know, there were problems with the borrow checker. Things have gotten a lot better since, uh, since we started. Um, but, um. Uh, yeah, I think like being able to, um, have like a, a nice syntax, a really solid, uh, type system and, you know, tooling that, you know, is batteries included.
+
+Like you have a testing framework, like you have a solid dependency resolver. Um, I think that was, uh, that was really good and gave us, uh, great leverage.
+
+**Andrew:** Yeah, when, when building a text editor, like response time is top priority, and that 300 milliseconds, like that might not seem like a long time, but in the end it ends up being huge. Right?
+
+**Antonio:** Totally. Yeah. Uh, I mean, I, I think like one example of this NZed is like, uh, you know, we use, uh, tree sitter under the hood to, uh, parse, uh, source files and, you know, incrementally parse them and like render, um, uh, syntax highlighting and, uh, outline view and all kinds of other stuff. Um, and you know, like.
+
+What we do with tree sitter is like, there's this step where like anytime you edit something, we give, uh, the parser a chance to do that pars, the incremental parsing step synchronously. So we budget, I forget what it is. I think it's 500 microseconds. Like we, we say Okay. Like. We allow you to like parse this, you know, in time for the next frame, right?
+
+But if you can't make it great, like, we'll just interpolate and then like send that snapshot to the background and then like once you're finally good, like, you know, give it back to us on the main thread and so we, we will display it. Um, so yeah, every little bit counts. So yeah, having a fast language, I mean, 300 milliseconds is like.
+
+A lot. Uh, I mean, I think for startup time, I don't know what the, our latest benchmark is, but Yeah. Uh, I think, I think we should be able to start Zed within 500 millis. Uh, like, you know, you, you should be able to edit and, you know, it's very snappy. Like you, you click the, the app like it, it appears instantly.
+
+Um, and yeah, I mean another thing is yeah, like what I just said, like. The ability to control what's, what goes on the main thread, what goes on the background thread, right? Like, uh, and not being afraid of race condition. I mean, there are race conditions, but like, not being afraid of like, uh, you know, data races, uh, as much as, you know, in, in other languages.
+
+I think rust makes that, uh, a lot easier. It's not perfect, uh, but, uh, you know, I think, uh, I do buy the claim, uh, fearless Concurrency. I, I, I think it. It does work. Um,
+
+**Justin:** Yeah, there, there's some interesting. Tensions here. Um, I, I think like, as you know, when it comes to low level languages, rust is probably, it's both one of the easier to get started with and one of the harder, uh, so it's like a weird bifurcation there. Um, so one of the real successes of Adam was that, you know, it was like web technology, so it was easy to jump into.
+
+It was very extensible. Um, and sort of as we said, it's laid the groundwork for, you know. A lot of what has came after it via code. The, I think the language server protocol and like all the sort of advances that, that's helped establish. Um, and just like I, I think people have more, I. We see, uh, more customiZedation for languages and tools and like all these other things that come out of, you know, essentially what is, uh, a legacy of writing editors and JavaScript of really simple APIs.
+
+Um, so, so obviously writing, uh. An editor and rust where you can control the performance is great. And like you said, it has some trade offs and like ease of getting started, but uh, what are the other sort of like impacts of writing and rust? I mean, I know compilation times can be a
+
+challenge, like, 
+
+**Antonio:** Oh man. Don't even get me started on that. Yeah. I mean, yeah, that is, uh, yeah, that is, uh, a problem. I will say that I, I do think, yeah, I wish it was faster to compile. I really, it is, you know, our project, I think at this point is like. Probably close to 500,000 lines of rust.
+
+And it, you know, it's not super slow, you know, I'm sure there's like slower project, you know, slower, uh, ecosystems and like other, other, uh, projects that are slower to build. But I think, like right now, if you go like in one of the leaf crates right? And you sort of, um, change, you know, say that you wanna change something in, in the UI.
+
+Right. Um, like it probably takes on my M three max, I dunno, 10 seconds to like, uh, it depends five to 10 seconds, let's say that. Which, you know, you might argue, oh, you know, it's not that long. But, you know, if I'm just trying to change the color of a button, you know, I wanna just have some, uh, I'm, I'm, you know, toying with like the, how I wanna render something.
+
+It is, you know, it adds up. So, yeah, I wish that was faster. I. Uh, I'm hearing that Zedig is, uh, you know, I dunno when that's gonna land, but like, they're, they're writing like their own self, uh, hosted compiler that in theory, it's like, you know, blaZeding fast. Yeah. I wish Rust did the same. Like, I, I dunno, I do, I like rust, but yeah.
+
+That, that is a challenge. Um, yeah. What are some other challenges with Rust? I mean, yeah, the learning curve I think is still, uh, you know, tricky. It is, um, you know. Um, not, not trivial to, to ride, uh, a good rust. Um, what else? I don't know. Um, I dunno. I, I, I like a lot about it. I don't know. Some people don't like ay weight and rust.
+
+I think it's cool. I think they did a really solid job there. 
+
+**Andrew:** Cool. 
+
+
+#### [00:18:46] Collaboration Features in Zed
+
+**Andrew:** Uh, so, uh, Zed with text editors, there's lots of, uh, like previous work to, to look back to. There's been editors for a long time now. Uh, and you're rebuilding all of those things, but like what in Zed something that you think is like unique to the way that you can edit code NZed that you miss if you like, happen to use another
+
+editor? 
+
+**Antonio:** ~~Mm-hmm. ~~I do think like. Performance is at the, you know, it's not a feature, I guess it's a cross cutting, cutting concern, but like it shows, it is the number one thing that we were excited about starting out, starting. Uh, uh, but also like, yeah, talking to people that use Zed it is one of the things that people do appreciate about Zeded.
+
+So that's, uh, that's sort of at the core, uh, you know, the craftsmanship like that was put into like all the data structures and like, you know, we've been thinking about this problem for a very long time. Uh, and so like, I think it, it shows in the performance, I think. Yeah. Other. Uh, like another feature that I think is really cool and, you know, we only scratch the surface, uh, of it for right now.
+
+And, you know, we can get into it, into that in a, in a little bit if you want. But is, um, collaboration, uh, you know, a Zed. All of our, you know, pairing session and collaboration sessions, they all happen with NZed. Like, you know, we'll hop on a Zed channel and like somebody will start sharing their project, uh, you know, share their screen.
+
+And like, there's this seamless integration between like, you know, when you're in Zed you'll see like a high fidelity, like, you know, each. Each person gets its own buffer, uh, their own buffer. And like, you know, you can type at the same time. I can follow you, you can follow me. Uh, you know, as I tab around and as I tab away from the editor, uh, you know, we'll turn to screen sharing automatically so that I, you know, I see what you're seeing.
+
+And same story, like when you go back. So I think, you know, we paused a little bit work on collaboration because, you know, there's so. Many other table stakes features that we need to get to in order to, uh, sort of, uh, win the opportunity, like to actually, um, uh, that for people to like, enjoy collaboration.
+
+Uh, but I do think that's something that is really peculiar about Zed and again, it works the way it works thanks to the data structures that power it. Like the entire buffer is A-C-R-D-T and like, um, you know. I think some of the things we can do it, you know, it, it's because of that, it's because like, you know, the, the, the data structures powering that foundation are designed to be collaborative for the, from the ground up.
+
+**Justin:** So you'd done some work previous to helping found Zeded around like collaboration, like CRDT something, right? Like, uh, was it ditto?
+
+Was that yours?~~ I. ~~
+
+**Antonio:** That's right. That's right. Yeah. Um. Um, I mean it, I think, yeah, like we actually, our first CRDT that we wrote was actually for Adam. There was this package that we wrote called, uh, teletype. I dunno if you remember it. Um, but uh, yeah, that was our first, uh, foray into, uh, collaborative editing. Um. So yeah, after that, like, um, yeah, we, I, yeah, I left GitHub and yeah.
+
+Joined Ditto. Uh, which, yeah, kind of similar, uh, theme, uh, it's like this distributed database. I worked on the, uh, server side component of it, sort of like, uh, synchroniZeding the edit, the changes from, uh, the client devices to, uh, you know, a replicated server in the cloud. Um. Yeah, we use CDTs in there as well.
+
+
+#### [00:22:30] Technical Deep Dive: CRDTs and Data Structures
+
+**Justin:** So how does, uh, the collaboration features in Zed, how do they kind of work under the hood?
+
+**Antonio:** Yeah, so we used, um, this, uh, technique and, you know, again, the world might have changed since we started on this. Maybe there were newer techniques that are even better. I don't know. But like we used this, um, uh, technique, which I think in the literature is called RGA split Anyway, like, yeah, it's this, um.
+
+Data structure called replicated a growable array. And the idea is that like each, uh, you can think of it as like, yeah, each character gets its own identifier. Um, it's a little slightly more complicated than that because actually when you copy paste, like when you paste a giant piece of text, that's, that counts as one.
+
+You know, we only allocate one identifier for that. Um, and yeah, like then thanks to like lampard clocks, we can sort of. Like, as opposed to saying, I'm gonna insert, like if you, if the three of us are collaborating and I say I'm gonna, I wanna insert this character Right. As opposed to saying, I'm gonna insert this character at Offset three.
+
+Uh, the algorithm works by saying I'm gonna insert this character after this other I. Character with identifier, whatever. Right now there are, you know, there's subtleties in there to make it work correctly because like the three of us could all, we might all wanna insert after a certain identifier, right?
+
+And so, like there are some tie breaking rules that you need to apply in order to uh, uh, you know, make sure that like the order is deterministic across all the replicas. Um. But yeah. Uh, and I mean, it's not even that, I don't know, like the paper is written in a pretty like, convoluted way, but it really is just like, you know, find the, uh, the sentinel value and like sort by, after you do that sort by, uh, lampard timestamp and the lampard timestamp that has the highest, uh, that sorts the highest goes the closest to the identifier.
+
+Reason being that like. If you're the latest, like, it probably means that you're causally after those other edits as well, and therefore you want to be the closest to, uh, the sentinel value. Um, that's kind of the Yeah. How, how the, the buffer works at a higher level. Uh, we implemented a bunch of, uh, you know, optimiZedations around that.
+
+Actually, like I said, it's like a replicated growable array. It's actually stored as a, uh, as a bee tree. Um. Just because, yeah. You know, we want, uh, the login performance, uh, across the board. Um, and, um, yeah, I actually think that that is one of the cool, coolest, uh, pieces of tech that we have in Zed is the, this data structure called the sump tree, which is basically like, yeah, a beat tree, like a copy UNR beat tree.
+
+Uh, and you know. The fact that it's a B tree makes it fast. The fact that it's copy on right, and a pen only makes it so that it's very easy to like clone it, mutate it, pass it around to various threads. Um, yeah, I'm really happy about the, the design of that data structure.
+
+
+#### [00:25:29] Extensibility and Plugin Approach in Zed
+
+**Andrew:** So you mentioned, uh, a stricter approach to plugins. Uh, like I per, I personally use VS. Code right now. Well, I guess cursor and there's just like an, as you said, a Cambrian explosion of plugins. I, I've, I've paired back my usage to only like five or sub plugins at any time. But what is that different approach and like how, like how does that like, play out in like.
+
+Like, like actually.
+
+**Antonio:** Yeah. Yeah. So we're using Wasm, uh, like as opposed to, I think what VS code does is they have, like, they're an extension host, so they do actually confine extensions to their own, you know, a diff a separate process. Um, yeah. What we ended up doing was, um, taking a different step. Like we basically. Right now the extensibility story of Zed is still not, you know, we're not to 1.0 yet, so like it's the, you know, 0.1 of the extension, uh, uh, uh, API.
+
+Uh, but yeah, you can basically do a couple of things. Like, one is you can define, uh, language servers and themes. So, uh, you know, uh, I think there's two ways of doing it, but like, yeah, there, one of the ways is like you can use Wasm to define, uh, your language server and the wasm you. And we use wasm components for this.
+
+So we define an API and like we use this, uh, tool called wit, which is this interface, uh, protocol. Um, and uh, yeah, the extension. What the extension can do is basically like, yeah, implement that, uh, interface, that trait that we sort of export and, uh, you know, uh, compile it Tom and we will import it. Um, so yeah, like right now, the only thing.
+
+Some of the things that you can do with extensions are like, I think we allow two things. Like one is yeah, like installing language servers and, uh, sort of post-processing certain things that the language server returns. So completions, uh, uh, symbols, like, you know, you, the, the extension has a chance to, uh, you know, manipulate, uh, those, uh, the, the data that's returned from the language server.
+
+Um. Then like I think, yeah, we have this other API for, uh, uh, slash commands. So we have this AI offering NZed where we have an assistant panel and like the assistant allows you to invoke commands, uh, which yeah, we call slash commands. So like if you install some extensions can define their own slash commands and you know, you can think of a slash command as a way of.
+
+You know, like one, one extension you could implement is, you know, integrating with perplexity for example, right? So like, you could have a slash perplexity slash command and you can input a query and like, uh, you know, you can write some wasm to interface with perplexity. So, um, you know, there's a lot to do still on the extension front.
+
+I think, like, you know, manipulating text will be amaZing, like allowing extensions to, uh, you know. Sort of get in, in the way of like, or not get in the way, but, you know, be in the middle of like the user typing something and like you can do, uh, other stuff also, like adding, uh, some UI elements maybe. Um, I don't know it, we haven't yet gotten around it, so, uh, we're taking our time I guess with it a little bit just because like for every bit that we add, we wanna make sure that we can support it and like make it performant going forward.
+
+Um. We, we found that like yeah, a lot of what an extension, you know, needs is. Yeah. A lot of it is, yeah, just language servers, like language server gives you like a lot, um, uh, you know, you won't be able to do things like I think we in Adam at some point we had this extension that let you like. I think it was like space Invaders or something.
+
+Like you could basically destroy your editor. Like you could, uh, render like, uh, yeah, a game that you can shoot at different U Islands. But we don't have that. But I don't know, like in the future, I am excited about, you know, we write our own shaders, right? Like, I think it'll be amaZeding for people to like even integrate with that.
+
+Why not? Right? Like you can sort of, uh, you know, write some fragment sheet or to manipulate how. I dunno, write a certain cool animation that will be very hard to write in any other way. Right. Um, so, um, yeah,
+
+**Justin:** Yeah, it's really interesting. I, I think like extensions are definitely one of the key things that are kind of like table stakes these days. And there do seem to be like a lot of companies who are using, um, wasm as. Uh, an extinction interface. So we had, uh, someone from Figma on, uh, who was like talking about like Figma plugins.
+
+Uh, we also had Steve Manuel, uh, the, uh, founder of Delib. So, and they have 
+
+this wasm plugin framework called exm. Uh, it seems like a good approach. Um, but yeah, it'll be interesting to see like how that evolves. I think that like. Um, one of the few like frictions that I've had, like coming into Zed was just like, oh, this is like this big plugin that
+
+I'm used to isn't like, available or whatever.
+
+And you know, it's just a part of like ecosystem maturity and everything.
+
+**Antonio:** a hundred percent. I think we need to, you know, our story isn't, hasn't been fully fleshed out on the, on the extension front, but, you know, 1.0, you know, when we ship 1.0, I think that's gonna be a key component and, you know, um, so long as we stay true to, you know, those performance values, uh, I think, yeah.
+
+Uh, we'll be able to, to deliver something that's, uh, that's cool and compelling. 
+
+**Justin:** Yeah, that's really exciting. Uh, so staying on the sort of like native topic. 
+
+
+#### [00:31:00] Building a Custom UI Framework: GPUI
+
+**Justin:** Um, so you had mentioned earlier that y'all built a custom UI framework, uh, GPUI, um, which is. Uh, like incredibly ambitious. Um, I had previously done a little bit of rust UI work, uh, with this library called ii, which is like a relatively popular, uh, UI library in the rust UI world.
+
+Uh, so, so what pushed you to create your own UI framework, and what was that experience like? 
+
+**Antonio:** Yeah, I mean this is like back in 2021 when we started on GPI. So like things have changed a bit since then. And I think like there are a couple of projects now that, um, are interesting. Uh, I haven't, I'm not following super closely. Like, uh, there's some work from uh, Ray Levine that I think is really, really interesting going on.
+
+Uh, I dunno where he is at with it yet, but like, anyway, like, yeah. At the time I think, um. Our only option I think was like this library called, uh, Pathfinder, uh, which was, uh, I think like, I dunno if we had ever made it into servo, but I think it, it was supposed to be like one of the rendering backends for servo, um, library developed by, uh, PC Walton, um, one of my rust heroes.
+
+Um. But yeah, like I think even with Pathfinder, so like we started with that actually, that I think, you know, if you walk all the way back to the, the, you know, initial commits of Zeded, you'll probably find, uh, some usage of, of Pathfinder. Um, but yeah, like, I think, I dunno, we, it was pretty experimental at the time.
+
+It wasn't like fully a very robust library. And so like, as we were working on it again. It was a layer of abstraction that was getting in the way of what we wanted to do, which, you know, basically our hypothesis was, which I think has been, you know, has, you know, been tested out at this point. And as you know, we, we proved that it was a valid hypothesis was that, uh, you know, in order to render an editor and, you know, most UIs, right?
+
+All you need to have is like. Rendering rectangles with rounded corners, rendering text, um, and rendering, uh, be besate curves and shadows. So it's like there are these four primitives that like, you know, um, yeah, if you basically, and literally like if you go in, in the, in the GPI code, it's like we have four shaders, maybe nowadays a few more, but like. You know, assembling all these, these like primitives together leads to, uh, a ui. So, um, yeah, I think, yeah, this, we, um, we used, uh, you know, for rec rectangles, we used this very cool technique called sdfs, which, uh, I think is really, really cool. Uh, basically like, you know, very, very like embarrassing embarrassingly parallel, right?
+
+Like. For every pixel you can compute, like how distant you are from, uh, a shape and like determine if you're inside or outside. And when you're in the, in the middle, you can also anti alias. 'cause like, you know, I could just say that if you're in the middle of a, of a pixel, you could just say, you know, um, color it as with half the intensity.
+
+Um, uh, so yeah, like, uh, I don't know. I I would say like, it was, I guess a, a bit daunting at the beginning, but like, I, I don't. I don't know. I feel like we turned it around, like turned it, turned it around in like, I don't know, couple months, maybe less. I don't know. I it's not, if you look at the shader code, it's not that complex.
+
+Like it's not, we're not doing anything fancy, like for text rendering. We're using like a technique that's been known forever, which is, uh, you know, uh, atlases like texture, atlases, like use the operating system to rasteriZede a glyph. Save that in a texture and then do that for all the glyphs that you need to render, cache them so that you'll do it like a million times and then assemble them in parallel.
+
+In, in the, in the, um, uh, in the scene. Right? Like in the, in the current frame. So, I dunno. Yeah, we're not doing anything fancy. And what's cool about that is that that turned out to be. Very cool for porting these things, right? Like, you know, we wrote it in metal at the beginning and you know, when we shipped Linux support, I was very straightforward to port it to Linux as well because we're using very simple features of the shaders.
+
+We're not doing anything, anything craZedy. Um, so I think so far that has been a, a success and it's really cool to just go in the shader and be like, yeah, this doesn't work exactly as we want. Just let's just change it. Um. For paths we work, we were using, uh, this library in rust called the Le Leon Lion. I dunno, uh, where they do path tessellation.
+
+Uh, so a little bit of work happens on the, on the CPU, but like then once you have all the triangles, we just upload them all to the GPU and they get, uh, you know, iZeded in parallel.
+
+**Andrew:** I, I'm a web dev, so all this talk about shaders, like I like my brain almost can't even like connect, like, so you're using a shader to like render the ui. Is there like another layer that's like
+
+tracking cursor positions 
+
+and 
+
+stuff? Like you have to have 
+
+something to connect the two
+
+right. 
+
+**Antonio:** ~~yeah, yeah, yeah. totally. totally. Sorry, sorry. I jumped straight to like, yeah. Uh, metal, uh, literally no.~~ Yeah. Like there is, uh, like typically you don't even notice the shader, like you don't even know that it exists. GPI abstracts it for you, so like. There is this, um, uh, declarative, um, API, which it, you know, looks a lot like, uh, react, but you know, it's rust.
+
+So like a typical, uh, GPI, uh, component would be like, you know, you have a render function and that render function declares like a, a diviv and you know, that Diviv has padding of one. And, you know, we use like an API that mimics a lot tailwinds. So, you know, uh, pretty familiar I guess for, for web dev. So you, you just say, you know, P one.
+
+Uh, whatever, like ML two, you know, uh, um, and so you basically don't, don't even, don't even notice that we're actually rent doing all that, that, uh, shader computation, uh, in the background. Um, and yeah. And then g like, that's one thing that GPI does. The other thing that we do is like, uh, you know, entity, uh, manipulation, meaning like.
+
+You know, it's a reactive paradigm, right? So like an entity defines the data that it has, and then like, as you mutate that, mutate that data you can notify. So you, it's manual. Like it's not, we don't do anything automatically there. Like an entity needs to say that something has changed inside of it. And then like, if you use that entity, if you read an entity like, as part of, uh, you know, rendering, uh, a rendering, uh, function, uh, then like. We will re-render those, those functions and like re-render a, a frame, uh, so that we can sort of show the, the updated entity code. So in your example of like cursor position, there's like an editor entity that tracks, you know, selections. It's actually more entity, you know, an editor has a buffer and you know, anyway, at some point, like an entity has some selections and, uh, you know, um.
+
+There's a render function that that displays them. In the case of, of the editor, it's actually, and I think this is actually cool to talk about, like you can actually go use another API, which is more imperative, like as opposed to rendering a component. What you can do is like define your own element so you can say, okay, for editor, I wanna, you know.
+
+I'm gonna be in the driver's seat and I'm actually gonna paint rectangles and stuff like manually. So, because like, you know, editor, we have so many, you know, it's the core of our, of our product, right? So we wanna make sure like it's rendered as, as, uh, fast as we can. And so you can actually implement your own layout and paint methods.
+
+Like, there's literally like an element trait that you can override and be like, okay. Uh, I wanna implement Element four editor, and I wanna lay it out this way and I wanna paint it this way. And so that's where you would drop down to actually drawing these shapes. So, GPI, but again, you don't touch the shader, you just say context.
+
+Like we have this context parameter that we pass to these methods and you say context, uh, paint quad, right? And you know, you, I wanna paint it here with this corner radius and blah, blah, blah. ~~Um, ~~
+
+**Justin:** That's super awesome. Incredibly impressive.
+
+**Antonio:** Thanks. 
+
+
+#### [00:39:16] Integrating AI into Text Editors
+
+**Andrew:** Um, so let's move on to the AI stuff. NZed you guys have been working real hard on that. I'd say that's probably, it's probably the biggest topic in the industry of text editors right now is how to integrate AI into them effectively. So what has your guys' approach to it been.
+
+**Antonio:** Yeah, I mean, um, it's, I'll say it's, it hasn't been easy, um, because. You know, it, it is a new set of features, right, that you're adding to your standard editor. And so like, you need to strike this balance between discoverability. Like you want people to know that those features exist, but at the same time, you don't wanna like, you know, push it too much.
+
+You know, one of the, the core. You know, uh, one of the core principles of Zed is like minimalism and like, you know, we don't wanna have too many bells and whistles to like, you know, draw your attention to, hey, like, you know, this thing exists. Like, um, so yeah, it has been, it has been hard. Like one, I think one successful example where, where like, I think we've been able to, to strike a good balance has been like our recent edit prediction launch, um, where, you know how like.
+
+Um, you know, if anybody that has used copilot, right? Like you type something and like copilot, uh, in our case edit prediction, our Zedeta model comes up with, uh, a suggestion, right? Something that they wanna, that it wants to add to your code, right? Um, but you know, at the same time you also have, uh, other sources of, uh, uh, you know, completions, right?
+
+We have the LSP completion. So how do you show. Uh, both, right? Like, 'cause you want the user to be aware of the two, uh, you know, the two sort of completions, but like, how do you show them, uh, in a way that it's not confusing and that doesn't, you know, it's not visually clu cluttered. And so for that, like, I think one cool approach that, um, our designer Danilo took, which I really, really liked was, you know, we show both and then like, you can hold the.
+
+Option key, like they're both integrated into the same like completion menu, right? When you have like that race, like you have both completions at the same time, but then you can use, uh, the modifier key and for on Mac s that's option. You can hold option to sort of enact, you know, temporarily like modally that uh, uh, you know, the, the Zedeta completion and you know, that shows up in the editor.
+
+So, um, I dunno, it's tricky. Like it's a new paradigm I think. And like, um. People are adapting to it. I think like a lot of the industry is moving towards like appreciating, appreciating AI more. I think like even a year ago, people were like a lot more skeptical about it.~~ Uh, I think, uh, you know, it's been, yeah.~~ yeah. I think in the future it's gonna become even more, more pro prominent, but yeah. Um. For us. Yeah. Like we've, uh, you know, we've shipped, uh, so edit prediction, we have the assistant panel so you can interact with, um, an LLM to, you know, chat about your code and include your, uh, your context manually with slash commands.
+
+Um, we're actually in the process of revamping that, uh, to make it less, you know, the one thing about it that I really like is that it's very manual. Like there's no, you know. It's transparent, like you see what's happening. Like it's not magical. So when the LLM goes off the rails, you can kinda come back and be like, okay, I screwed up here.
+
+Let me, you know, change this context. Or, you know, uh, remove this file or whatever. Uh, that's, that's cool. On the one hand, on the other hand, I think like, I don't know. Many times, especially nowadays, like you don't need to have that level of, uh, you know, uh, craft in the, in the, in the prompts that you, that you type.
+
+So we're moving, uh, like, we're still gonna have like a prompt editor, like we're calling, but like, we're gonna move to more towards like, uh, uh, you know, more managed context. Ui, um, and, uh, you know, integrate it with, uh, code based search and, uh, you know, edits and magenta editing, like all of that I think is gonna be like, very important for us.
+
+Um, and, uh, yeah, we're working on it, uh, as, as we speak. Uh, so yeah. But yeah, it's been, it's been quite a journey I think. Like, and you know, it's also hard because like. Things change every week, basically, like, you know, every couple of weeks you have a new model that does something different and like, you know, now, uh, you know, things that a few months ago were just like, you know, hard for a model to achieve.
+
+Now they're a lot simpler. So, you know, uh, it's, it's been an interesting, uh, uh, uh, journey. But, you know, we as always, with Zed we've tried to kinda. You know, embrace it. Like, and for example, for edit prediction, we ended up fine tuning our own model. Like, you know, sort of, again, diving in like, and sort of owning it, uh, as much as, as we could.
+
+And, uh, I think that worked out pretty well. And yeah, I'm, I'm excited for the features that we're gonna, we're gonna shift to Zed uh, in 
+
+the, in 
+
+the near future.
+
+**Andrew:** Yeah, it, it's interesting this clash between like known UX paradigms, like we know what it, the text editor surface looks like versus like completely unknown UX paradigms where it's like, how could this like shift, like the one example you pointed out. Of like the suggestion pop over, like working between the two.
+
+I'd say that's my number one gripe with all these tools right now. I, I see the LSP suggestions and then the AI one is behind it, and I just kind of hit 
+
+tab and 
+
+hope. 
+
+**Antonio:** ~~man. Yeah,~~
+
+~~yeah, totally. Yeah. Yeah, a ~~hundred percent. And that's, but yeah, I think that's one key way in which like we can innovate. Like I don't think we need to do like, you know, just because like we're not a fork of VS code, like we need to do stuff, you know, extremely differently just because of that.
+
+But I do think that like staying true to our values, like staying true to like our. Performance and minimalism value. That's the added value that we can add to, to the AI front. And I also think like the collaboration aspects of Zeded, like I think we, like I said, we only scratch the surface, but like the fact that we have A-C-R-D-T and that we can, like, I.
+
+Can have really like fine grained control over like every single character that's in the buffer. Um, you know, imagine a world where you have like agents, right, that are kind of like changing your code in the background. Like I don't, I mean, I don't know, maybe it's gonna become so autonomous that like you won't need an editor.
+
+I don't know, maybe a GI is behind the corner probably. But like until then, I do think that the editor is like. The platform where code is gonna be written and like, interacted with and read. So, um, yeah, I think like investing in, in in those primitives is gonna, is gonna 
+
+pay off for 
+
+Zeded. 
+
+**Justin:** Yeah, absolutely. Uh, and I, I think y'all have done like a really good job of staying like sort of abreast of the changing industry. I mean, uh, I, I feel like of course. Collaboration does feel a little bit like table stakes in a way that it like wasn't, you know, definitely 10 years ago, but like even sooner than that.
+
+Uh, and, and likewise now that like, um, you know, LLM integration is becoming almost table stakes again, like y'all were. Like one of the earliest editors to talk MCP, uh, the model context protocol from philanthropic. And that was like pretty cool to see. So, um, yeah, I, I'm excited to see that story continue to evolve because it's like, the most interesting thing to me about Zeded is like, it's one of the.
+
+View like non VS. Code based editors that are actually doing innovative stuff. Right? And I mean, no, no hate to the VS code team or Microsoft. Obviously they're fantastic, but like I do think the space needs more doing a lot of first principle stuff. 
+
+**Antonio:** Thanks, Manny. I appreciate, uh, that you, uh, value that 'cause. Yeah. Uh, 
+
+actually Yeah, it
+
+really means 
+
+a lot hearing it, so thank you for saying that. 
+
+**Justin:** Yeah, I mean, I think this is how we make this area better, right? Is just like trying new things and we need more people to, to try new things in hard ways. 
+
+**Antonio:** Totally, And I look, I think also in terms of like, you know, you, you talked about MCP, I think that that's super cool. Like in general, I think. We have, there's an opportunity for Zed to kinda, um, you know, be even, you know, we're talking about extensibility. Like, I think it would be amaZeding if like, you know, we could have a really solid extensibility story where like, it's very easy to like extend Zed with your AI agents.
+
+Like I. I don't think we ne need to be necessarily like in the market of like, uh, selling AI necessarily. Like I, I don't know that like it needs to be, uh, our, uh, sole, uh, soulful job. So like, I don't know. Yeah, I think there's a really good, good opportunity for us there and I'm excited to uh, 
+
+to see what 
+
+we can do there. 
+
+**Justin:** That's, it's really cool. I'm really looking forward to seeing what y'all build. Um, and as we get close to wrapping up, we always like to ask a future facing question, and I feel like we're already sort of on the topic. So I mean, for you, I, I just, you know, wonder what your thoughts are. 
+
+
+#### [00:48:25] The Path to Zed 1.0 and Beyond
+
+**Justin:** Like what's, what's upcoming and Zeded, what do we have look forward to, you know, maybe your path to 1.0 and then maybe even more forward than that.
+
+What do you think the, like future of text editing looks like? 
+
+**Antonio:** Oh man. Yeah, that's, yeah. Let's leave that, uh, last question for later. Yeah. But. In terms of Yeah. 1.0. I see. I think like, yeah, we wanna, uh, we're marching towards, yeah. 1.0 and 1.0 means. You know, reaching, uh, a solid AI experience. You know, we put that in the 1.0 uh, uh, camp and, uh, finishing like table stake features.
+
+Like, you know, for example, we don't have a debugger yet. Uh, you know, a lot of people want a debugger, our GI integration, you know, we're, we just, uh, ship like a private beta of GI integration, uh, it's gonna. Become public, uh, soon. I don't know when this is gonna go out, but like, if it's going out, uh, yeah, check out the, the Zed blog 'cause maybe it's, uh, it's, uh, that's also, uh, available.
+
+Um, and you know, we, we don't have Windows support yet, right? Like, we're still on, on Macs and Linux. So like, I think yeah, the path to 1.0 is gonna be, uh, is gonna involve those, uh, those things. I also think like we need to do a better job, just like. Welcoming new users. Um, I think, you know, one cool thing about, uh, you know, these, these other tools like, uh, you know, uh, cursor, windsurf, et cetera, is that like it's very easy to like switch from vs code to, to them, right?
+
+Because it's the same thing. Um, uh, so I think like for Zeded. You know, we need to do a much better job, just like making the, the editor welcoming for a first time user. Uh, you know, for example, importing settings, uh, from those other tools. You know, even simple things is like setting your theme to, you know, a, a similar, you know, matching theme, uh, in nZed like, um, I think those are really like, important things that we need to, that we need to focus on.
+
+Uh, and of course, you know, extensibility, we talked a lot about it. That's gonna be a part of the, the 1.0 story. Beyond that. I don't know. I'm really still very excited about collaboration. Like, I think, like I said right now, like when you share a project in Zed it's like this synchronous thing that happen, you know, hap that happens in the moment, right?
+
+Like we share for that moment and then, you know, when the host goes away, that's, that's over. Right? Um, you know, we've been talking a lot and, you know, we have a pretty clear picture of how we wanna build this, uh, you know, this, uh. Data storage, you know, this system of record like CRDB, which is basically like A-C-R-D-T, but like for, uh, you know, tracking code changes.
+
+And I'm really excited about, you know, uh, sort of executing on that vision. Like what does it mean to like, track your code at, you know, a keystroke, the keystroke, uh, level, right? Like, um. You know, and yeah, basically being able to hop on a branch and like collaborate on, on stuff and like, you know, if I, if I go away, you can still keep going, you know, keep, keep working on it and, and vice versa.
+
+Uh, there's still a lot of untapped, uh, power in, in that. Um, and you know, on the AI front, I think like I could see a world where like, you know, more and more stuff becomes agentic. You know, it's hard to, you know, make, you know, making forecasts right now is like, I don't know. I, yeah. Anytime I see anybody like predicting something in the AI space, I'm just like, okay.
+
+I don't know. May, maybe that's gonna happen, maybe not. Like I, uh, so I'm not gonna, uh, uh, even try like predicting it. But I do think that like, you know, one thing it's for is for sure, I think like it's become easier and easier to like. I dunno, I think we're gonna be writing less code. Like I think, you know, you, we basically now have machines that can type way, way faster than we can.
+
+And so, you know, I think, uh, that's gonna be like, huge in the future. So, uh, leveraging that is gonna be, it's gonna be important, uh, 
+
+especially for a text editor, et cetera.
+
+**Andrew:** Yeah, I'm, I'm interested to see as you guys build out features, how you integrate AI into those, like you mentioned a debugger, and it's like, oh, if we're building a debugger from like. Ground Zedero and we have all this other stuff, like mixing it and making amaZeding experience is a lot easier and can be, can can be done like in VS code, you probably just can't. 
+
+**Antonio:** ~~A hundred percent. ~~A hundred percent. I mean, I mean, you probably can't, I, yeah, I don't, I don't know. I don't know much about the v the VS code, uh, code base. But what is true is that we own a hundred percent of the code base. We can change every single line, and we've written any single, every single line.
+
+And yeah, we know we own it. So 
+
+**Andrew:** Cool. Well, that wraps it up for our questions. Thanks for coming on, Antonio. Uh, this was a really fun time talking about Zed and all the different tech. Uh, so thanks again for coming on. 
+
+**Antonio:** Thank you. Thank you so much for having me. It was really, really fun. 
+
+**Justin:** Yeah. Thanks Antonio. Uh, it's incredible. You're doing amaZeding work. Uh, I switched over to Zed full-time. I am, you know, uh, I just wanna invest in it. 'cause like I said, I feel like more, we just need more innovation in this space. I mean, it is like these substrate for software engineering, right? It is like critically important that these tools are good.
+
+And I think y'all have a fantastic opportunity to really change the way we think about text editors. And I'm excited to see what you do. 
+
+**Antonio:** Thank you Justin. I really appreciate it. 
