@@ -1,0 +1,458 @@
+---
+title: Sam Goodwin - Alchemy and the Next Generation of Infra as Code
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Sam-Goodwin---Alchemy-and-the-Next-Generation-of-Infra-as-Code-e31gcm4
+youtube: https://www.youtube.com/watch?v=babOa4shATk
+tags: infrastructure as code, alchemy, typescript, ai, cloudflare, aws, pulumi, terraform, cdk
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're delighted to welcome Sam Goodwin to the show.
+Sam is the creator of Alchemy, a tool that allows you to create and manage your infrastructure as code.
+The current state of the art is built on all the tech debt of the past 10 years, Alchemy is a new approach to infrastructure as code that is more aligned with the modern web.
+
+- https://alchemy.run
+- https://github.com/sam-goodwin/alchemy
+- https://github.com/sam-goodwin
+
+Episode sponsored By WorkOS (https://workos.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:03:55] The Birth of Alchemy
+[00:04:29] Challenges in Infrastructure as Code
+[00:06:35] AD
+[00:11:04] The Role of AI in Infrastructure as Code
+[00:13:42] Deep Dive into Alchemy's Unique Features
+[00:20:34] The Power of TypeScript
+[00:24:48] Embedding Alchemy in Any Runtime
+[00:29:29] Adding New Resources to Alchemy
+[00:33:38] Optimizing Alchemy for Gen AI
+[00:36:56] Solo Development and Future Plans
+[00:44:58] Community Involvement and Next Steps
+
+<!-- TAB: TRANSCRIPT -->
+
+**Sam:** Having spent 10 years in infrastructure as code to just be able to click my fingers and get a new resource.
+
+It's just magic. I'd like to see more people experience that and start thinking more about how well I can unbundle myself from all this mess and manage my own world. 
+
+
+#### [00:00:21] Introduction
+
+**Andrew:** Hello, welcome to Deb Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my cohost Justin. 
+
+**Justin:** Hey everyone, uh, we're really excited to have Sam Goodwin on the podcast with us. Uh, Sam, so you're working on this project called Alchemy. It's infrastructure is code. I am really excited to talk about it. It looks incredibly fascinating, uh, and in my opinion, I. There's just not enough new stuff happening in this space.
+
+So I'm excited to see, uh, a fresh take on it. Uh, but before we dive into that, uh, we'd love to hear a little bit more about you. So can you tell us a little bit about your background?
+
+**Sam:** Yeah, sure. So, um, originally from Australia and I moved to, uh, Seattle to work for Amazon back in 2013. But I, I've always been a developer, but that was really my first start in, you know, everything cloud because we had access to. All of AWS and I was there for the early days back when you used to have to like, barter with teams to get instances.
+
+Like you'd have to go over to a team and say, do you have any spare machines? And they'd be like, yeah, I could give you an M1 or, uh, so like got to see the whole development of, you know, using AWS internally, but seeing it grow as a, as a platform for developers. So that's sort of my background. So I spent 10 years or so at Amazon.
+
+Over three stints. So I'm, I'm kind of a serial quit try and do something else and then go back. Especially when it comes to working at a company like Amazon, I've always wanted to do my own thing. Uh, but later on, I, well, first off at Amazon I had, I got to build all sorts of things, so I started off building.
+
+Sort of the, what was the robot mitigation team? So our job was to detect who was a human and who was not, and block them to save money on Black Friday. So that was a really cool experience. Made a lot of friends through that. Uh, got to do some high scale Kafka before Kafka was even 1.0. So got deep into things like Scala and functional programming and large scale data infrastructure and learning that everything fails all the time.
+
+So getting hands-on experience with that. Later I moved into information security, did a bunch more data processing, so really lots of data processing stuff. And Scala, which is where I got my start in meta programming, started to fall in love with meta programming. I think every developer ends up just falling in love with meta programming.
+
+Eventually, uh, from there I moved on to Alexa, where I started building a data platform, and the CDK came out at that time and I had just spent. Months write, writing, run books on how to manually set up infrastructure. And that was really stupid. And then the CDK came along 'cause I hated cloud formation and I got really into that really quickly.
+
+And I built a, I built a project called Punch Card, I think it was like 2019, which is, you can go look at it, it's pretty similar in theme, but it was the idea of just write TypeScript and, and compile everything to the infrastructure. Don't write infrastructure. Uh, from there I moved on and I had a very fun experience of building what's called, uh, Alexa.
+
+Not many people know this. Alexa had a programming language called a CDL, so it was meant to be, this was before LLMs, but it was meant to be for programming conversations. So I got to build a compiler and a type checker and all that kind of thing. Ultimately, it didn't, didn't work out, but, uh, it was a great experience Nevertheless.
+
+Then finally, I, I did a brief stint on the CDK team in AWS, uh, but for things like time zones and, and difficulty, I, I ended up just leaving that and quit to start my own company. I think that was back in 2022. 
+
+
+#### [00:03:55] The Birth of Alchemy
+
+**Sam:** I fortunately managed to raise some money to start a company, and I've been working on that ever since and I've tried all sorts of different things and I think I've finally landed on, it's all been an infrastructure I've finally landed on.
+
+The problem to solve is at the root of this, it's not on top of infrastructure as code that exists today. It's the root of infrastructure as code is, is a mess and it's heavy and it can be solved beautifully with TypeScript. And that leads us to here, which is, which is alchemy.~~ Yeah. ~~
+
+**Justin:** ~~that you're muted, Andrew.~~
+
+**Andrew:** So it seems like you got. To see really how the whole like cookie was made. Like you were there in the early days and you're there now. So
+
+
+#### [00:04:29] Challenges in Infrastructure as Code
+
+**Andrew:** like what are some of those problems that you just alluded to in this space?
+
+**Sam:** Right in, in infrastructure as code like, uh, how, why it was invented or sort of what, what's wrong with it now? 
+
+**Andrew:** What's wrong with it now?
+
+**Sam:** In my opinion, what's wrong with it now is like, the way I like to describe it is at the, what we have. Let's just pick, pick on an example. Let's go with like, SST is a really ~~good,~~ good product, for example, but what, what is it if you, if you boil it down, it's Terraform, which is then wrapped by Pulumi
+
+so Terraforms written in go. So it's a whole separate go process. And then that's wrapped again in Pulumi, which is more go code. And then they generate TypeScript facades on top of that, which SST then uses and writes their own facades and their own go extensions at the end of the day to just call fetch in the right order, right?
+
+Like infrastructure as code doesn't do that much. All it really does is, oh, I need to create a function. I need to update the function, or I need to delete the function, right? At the end of the day, it's a tool to call, create, update, delete in the right order. And if you look at that in first principles, it's purely just a fetch call.
+
+You know, like you can do that with just the standard library of node, for example. But in all the tools are baked on this 10 year plus history of terraform up. Uh. Which I think is just ridiculous, you know? Uh, so now, for example, I want to run it in a different environment. I, I, I basically can't, right?
+
+It's mostly local only, and there's so many baked in opin opinions and assumptions that have been built up over time with Terraform, it's very hard to understand what's going on behind the scenes. So yeah, alchemy, I basically was like, what is infrastructure as code in its minimum? Well, it's a function that you run.
+
+And you only wanna run it if something's changed since last time. So yeah. Uh, have one more example on what's wrong with infrastructure as code right now, but it slips my mind right now. Maybe it'll come back to me. Yeah.
+
+
+#### [00:06:35] AD
+
+**Justin:** We'd like to thank work os for sponsoring today's episode of Dev Tools fm. When you're building a SaaS product, integrating enterprise features like single sign-on directory sync and audit logs isn't just a nice to have. It's often the unlock for your next stage of growth. And that's where Work OS comes in.
+
+Work West offers a developer first platform that makes adding enterprise functionality feel like any other modern integration. They have SDKs and most popular programming languages and a well thought out API. It's really easy to get started with and easy to stay productive. The docs are genuinely great.
+
+They're very clear, very example driven. Built to get you from zero to production very quickly, and you'll find helpful guides for most common integrations. So it's really great for getting, you started serving your first enterprise customers and they have a ton of extra features. Everything from domain verification to fine grain authorization, and it's all built with developer experience in mind.
+
+So if you're looking to serve bigger customers without drowning in enterprise infrastructure work, definitely. Give work os a try. That's work os.com.
+
+So, yeah, I, I just wanna like, dig into this idea a little bit. Um, you know, I, I think that like. I don't know, infrastructure, templating, prob products or like infrastructure as code products generally have all this weight of the actual infrastructure that you're trying to to change. Right. Uh, so it's like if you're trying to provision, uh, AWS infrastructure or whatever, it seems to me that a lot of the challenge is just like.
+
+What are the options that people need available? And like, how do I figure out what the current state is and reconcile that? And it's like, um, the, the runtime, like abstractions that we're like piling on top of each other are like a real thing. But like, one of the questions that I had is like, if you're starting a new product in this space, how do you, I don't know, where, where do you start?
+
+How do you like, get competitive? Where you have like feature coverage where you can like. Do the basic things that people need to do because I think like one of the things with like Terraform, even though it's like there are like a lot of non-ideal things about it, it's just like there's a whole community, there's a lot of coverage, there's like terraform, uh, plans for like, everything and it's like, um, how do you like start to approach that like ecosystem challenge.
+
+**Sam:** Yeah, good question. And it's reminded me of the, the other point of I was gonna make about what's wrong with, uh, infrastructure as code is. Where you, where I'm starting is CloudFlare and I. There's, there's good reasons for why I think CloudFlare is the right place to start. Uh, first is it's not very well served by Terraform.
+
+Uh, that might be because of reasons like their API is very poorly designed in many ways. It definitely was, uh, organically developed. Let's say that, uh, but you look at, uh, SST for example, they have some. CloudFlare support, but when you ask them about it, you know, they'll admit that it's, it's not full baked.
+
+And the reason why is they're waiting for changes in the Terraform upstream. Right. They're waiting for this to be possible. They're, they're behind Terraform. And then that's gonna have to flow into Plum Me, and then finally it can flow into the SST product. Right? Or otherwise they have to build around it.
+
+And building around it is just more, more layers on top of layers. Right. So I think I'm starting with CloudFlare. CloudFlare, as you can see, is becoming a real behemoth, like they are nailing what I would say is the vertically integrated JavaScript experience, right? It's an extension of your browser that runs everywhere in the world.
+
+It's global. Uh, so, but they're mostly, if you don't use Wrangler, you're kind of screwed. And Wrangler, in my opinion, violates all principles of infrastructure as code, right? Uh, to set up. Resources, everything starts with run a wrangle CI command copy, A-U-U-I-D that it outputs and paste it in adjacent file, right?
+
+And then find that gets you going for a while. And then you're like, okay, but I need a developer environment. I need a production stage. And now I'm running these same commands that I already ran and, and then I'm copy pasting them into a different part of the J file, right? So I'm manually, I'm starting to expand.
+
+Like now I have three things to worry about that are effectively the same thing. Uh, so. By starting with CloudFlare, but the surface area is kind of small. Uh, it's a nice vertically integrated JavaScript ecosystem that you can make a lot of progress on quickly. Right. Just do workers, do workflows, do durable objects, and you know, you've got a lot of people happy by that point.
+
+Uh, yeah. 
+
+
+#### [00:11:04] The Role of AI in Infrastructure as Code
+
+**Sam:** So that, but, but coverage, like, I want to talk about coverage a little bit. I think this is the real AI is ultimately the game changer here, right? Like if we look at why, what you just said about Terraform, the moat. Why people need it is because the breadth is so vast, right? They, they, how many billions of dollars did they sink into having people just sit there and hand write how to create a function, how to create a bucket?
+
+How, you know, that was a lot of labor. Uh, but fortunately all the models are trained on it, and it's not a very dynamically changing thing like I. I was talking to, uh, Andrew, and he, uh, I forgot his last name, uh, unfortunately, but he said something that was really smart, which was the UI ecosystem changes every three months, but the rest API of a cloud provider does not change.
+
+Right. So there's no, like, oh, the, the training data limit is, is it's, it's three months old, so it doesn't know how to work with this new tool, right. It's just a rest, API. So you can just, what I've shown with Alchemy is you take the rest API documentation. You take my cursor rules file, I have you paste it in and you say, please generate me the resource for this.
+
+And it just goes, bang. It implements the whole resource, create, update, delete, even takes care of things like waiting when it's smart to wait for eventual consistency and then it writes all the test. Runs the test until they succeed. Right. So what I love about that is that like AI is now bringing in this sort of personal autonomy like. If you can solve your own problem, that's so much better than waiting and hoping for someone else to prioritize your problem. And that's now possible with infrastructure as code. And because infrastructure as code is so simple, it's just each resource has the same pattern. You can basically generate them on the fly.
+
+And that is definitely true for a s Uh, it's less true for CloudFlare because they've got a bit of a spaghetti situation going on. But yeah. Uh, and the. The final thing I would say on that, especially for AWS, so AWS exposes their cloud formation handlers through a thing called the cloud control API. So, and that's roughly 90% of all resources?
+
+I think. So with just one implementation, I can get roughly 90% of, um, cloud formation coverage in Alchemy. ~~Right. So, yeah.~~
+
+**Justin:** Yeah, that's a, that's a super big deal. And I, I think your, your point here about like. We don't have to do as much manual code. We can like do a lot more generation. I think it's a super valid one. And later I wanna talk more about like how you've kind of designed Alchemy with that in mind, but before we jump to that, let's just like talk a little bit more about Alchemy itself.
+
+
+#### [00:13:42] Deep Dive into Alchemy's Unique Features
+
+**Justin:** So it's an infrastructure as code library. It's written in TypeScript. Tell us more. Uh, what else makes it unique?
+
+**Sam:** Right. So TypeScript, TypeScript is native, is great. But, uh, the most unique thing I'd probably say about it apart from just decoupling from the whole ecosystem entirely, is it's not a complex graph abstraction. So if you look at things like the CDK or plume, for example, what you're doing is you're creating classes.
+
+Abstract over infrastructure that will exist later on, right? So I write new function in Pulumi, that that's, that that new function doesn't exist yet, right? Until I run Pulumi apply or plum me up, right? So what I end up doing is instead of being able to just say, create a function and then print out the functions a RM, I have to work with this lazy abstraction.
+
+It's called output, right? So instead of getting a string, I get an output of string. Now, it's not a promise, it's kind of close to a promise, but you can't await it. So you, uh, you have to chain everything together with dot apply, right? And that limits what you can do. So with Alchemy, I reversed that, um, to just make it async functions, memorized, async functions.
+
+It's actually closer to a durable workflow if you know how those work. Basically it's, it's a function you call a very light wrapper around it that keeps track of the state and goes, Hey, last time I was called with these properties and now I'm called with these properties, they haven't changed, so I won't do anything this time.
+
+I'll just return the old output, for example. Or, Hey, I've never been called before, so let me create it. Or at the end of the program I just check, Hey, these are all the things we created. And those two functions don't exist anymore, so I delete them. Right? So what I like about that is now it's just standard programming.
+
+Like everyone knows what an async function is, and I can chain them together and generate infrastructure that's conditional. So based on the output of one function, I might generate something else that's not possible with pluming, basically, or it's very hacky. With pmi, everything has to be statically declared.
+
+Um, in pmi. So with, but alchemy is just async function, so I can nest them. So I, uh, for example, in the CDK, there's a concept called the L two construct, right? Which are, there's the baseline cloud formation primitives, and then we build nice, friendly layers on top. For example, here's a. A service that has a load balancer and a container and A VPC and whatever, right?
+
+And they use, they use constructs inside it. In alchemy, each resource can just use other resources inside it natively. So you implement a resource, call the functions to create the VPC, create the load balancer, and it's just normal programming. Yeah. So my goal is really, I just want infrastructure as code to be JavaScript. No fan, no crazy CLI. No complex opinions. It's just a JavaScript library.
+
+**Andrew:** Yeah, the way you describe that right there, where it's like you have this thing that runs over it and only red redoes stuff as it needs to, it's, it feels as a front end developer, a lot like react to me, where you have, like, you've almost created a virtual dom for the infrastructure layer where you write this simple JavaScript on top and it handles the ding and the updating below.
+
+**Sam:** It is the exact same pattern, which is, so this is more speculative, but I'm pretty excited about like what could someone come up with if they tried to basically run Alchemy as part of a React application? 'cause it really is the same. It's run the infrastructure, get the, get what is meant to be the new state.
+
+Compare it with the old state and re-render, like it is the exact same pattern. This pattern is actually. Basically the pattern of all the best products in the world to solve the best problem. So React does it for reactive ui. It's like, oh, I don't have to worry about all these event handlers and crazy stuff.
+
+I just write a program that produces the dom that I want. People have become very used to that. It's very powerful. Uh, but there's another place where it's used, which is a durable workflows. So durable workflows is, Hey, I need to run something that might, it's a JavaScript program that might run for three years.
+
+At any point in time, it might wake up again and, and, and for example, uh, process a payment for the monthly payments for some user or something like that. Um, it works the same way. It's just a program that you write the workflow in and it will, every time it needs to make a new decision, it just runs from scratch again.
+
+Right? And if something's already been done, it just skips it. Uh, and Alchemy is basically the same thing. It's just memorization of things that have been done and just a little bit of intelligent decision making as you go. Same. Same pattern. Yeah. 
+
+**Andrew:** Yeah, we talked to Sunil Pi, one of the people that worked on the React Team way back, and he mentioned that they had a very similar. Demo where they had, like, it was way before React server components, but they had an application where they like specified a database as a component. So you like your whole app.
+
+The whole way down infrastructure to front end was just this one React application. So it was super cool idea. 
+
+**Sam:** Yeah. I, I'm pretty psyched about like, that sounds like infrastructure from code, which was a whole thing back in the day. It's kind of a punch card, that product that. I mentioned before, although Punch Guard's execution is way outdated now, I'm pretty excited about alchemy enabling those kinds of use cases because now that infrastructure as code is not the weight of the universe, you know, it's not these three tools strung together.
+
+It's just a JavaScript function that, by the way, is designed to, uh, tree shake perfectly. So it, it's probably a few kilobytes at most. We can just co-locate our application code with that infrastructure and have a conditional in there. It's like if environment is, you know, live, don't do anything, just return the value and now you've got infrastructure from code and I don't need to build it.
+
+It's just JavaScript. You can just use the baseline primitive or generate your own. And that starts to feel more like an ecosystem that can thrive, right? It's not getting in your way. You can generate what you want, you can run it anywhere. You're not gonna pay expensive bundling and have to figure out hacks around that.
+
+It's just pure JavaScript.
+
+**Justin:** I wanna dig more into the, to the like, why you think. The pure JavaScript part is important and like the embed ability. But before we go to that, like, I just wanna also highlight something. So you were talking about your history and you've, you've touched a lot of different programming languages. You've been very deep.
+
+Uh, and as we like, look at the, uh, sort of infrastructure as code ecosystem, but like the services. Ecosystem in general, we see a lot more TypeScript adoption, like a lot more, um, in both infrastructures code, but also in just like configuration, like more people writing it, configuration, just building services in general.
+
+
+#### [00:20:34] The Power of TypeScript
+
+**Justin:** I. And so before we sort of move on to the architecture of Alchemy, it's just like, why do you think TypeScript is winning this race? And like, why did you think, okay, you know, I've used like Scala, like low functional programming, but like TypeScript is obviously the language to choose here. Like why is that the case for you?
+
+**Sam:** Yeah, so. Starting with Scar, I, I, I was a big scholar, two nerd, and there was this project called Shapeless that really caught my attention, which was really clever meta programming for generating generic things, right? So you could, for example, define a class that's got three properties and it would automatically at compile time, analyze that and generate, for example, how to serialize this in DynamoDB or not, for example.
+
+It was a little bit like Jackson and Java, if you remember those days. But without reflection, it wasn't runtime inference, it was, it was compile time inference. And I just got really obsessed with that. And I started to learn more about functional programming and little bit of category theory tidbits, and became obsessed with compilers and programming languages.
+
+But then the, the. came along and forced me into TypeScript, right? Like it was built in TypeScript. I was like, all right, like, let me learn this language. I've never, I've never been a front end person, but I was like, okay, I'm compelled now because I'm very much into infrastructure. So that brought me into TypeScript, roughly like TypeScript 3.5, I think, and I immediately became obsessed.
+
+I'm like, oh my God, because I always struggled with scholars. Shapeless was a hack. It wasn't really, you know, designed like Scarlet wasn't really designed to do that. They were using a primitive called Implicits to hack this up. And now with TypeScript I was like, oh, there is literally a programming language at the type level here.
+
+This is everything I've wanted, but I. On top of that, what's so cool about TypeScript is you can be, you can be sort of lazy, right? Like if you can build an abstraction that doesn't really meet reality and then just cast to any inside your, inside your abstraction, give someone a really nice type, safe interface to it.
+
+But underneath, you know, it can be a mess. Right? With Scala, that was pretty hard. Like everything had to be like statically. Correct? Uh, at least in my experience. So the, the, the dynamic nature of it. With a really great static type system. I think one out. Uh, but, but another point on that is I've just done a year in Python, and one of the things that I noticed is like why Python is struggling compared to, for example, typescripts, is because everyone can just follow latest TypeScript.
+
+Everyone can just always be on the latest version of language, use the best language, features and type system. With Python, the types are tied to the runtime. So you can only use types that are supported by the runtime that you're going to support. And I think that erasure, that that type erasure philosophy that Typescripts had and being like straight passed through to JavaScript has really helped it thrive as a language, like everyone can just follow whichever version of the language they want.
+
+Uh. To your specific point about why it's great for configuration, it's like, well, 'cause it's Jason, right? It's basically programmable Jason with a type system that you can do more than just checking. You've got the right properties, you can encode the semantics of your tool or your service in there. Uh, for example, I wrote, uh, type, it's called Type Safe Dyna Moody B.
+
+It's another library that I built, which is. A type system implementation of DynamoDB semantics. So it'll type check the content of the query. So if you write an expression and you don't have the expression attribute value, it'll catch that. So I think that's why TypeScript is winning. You can see that now? 
+
+**Andrew:** Yeah, it's one, one of my favorite aspects of TypeScript is that you can just say F it and throw out the types completely. Like I was helping my, uh, my sister-in-law with some coding stuff, and it was in c plus plus, and we were hitting a compilation error. I'm like, I, I don't know. Usually I just say, just like, run, run it.
+
+It should run. Yeah, definitely a different paradigm.
+
+**Sam:** Yeah, like the flexibility to just hack around. I, I like, I definitely was against dynamic languages at first, but now I see the value, there's value in both sides. I still want the type system, type system, but I, I want the power to just bend the world. To do what I needed to do. Right?
+
+**Justin:** ~~Andrew, do you wanna take this next one or you want me to do it?~~
+
+**Andrew:** ~~Sure. I'll, I'll shoot it out. Um, let me read it first. ~~Ok
+
+
+#### [00:24:48] Embedding Alchemy in Any Runtime
+
+**Andrew:** ay, so one of the big features that you call out on the docs is that you can embed alchemy in any runtime. So why do you think that's, uh, so important? 
+
+**Sam:** Yeah, it's a good question. It's, it's the, it's one that I. was sort of noodling on. It's like. It's definitely a fact about alchemy, but there's def also some speculation there. We could talk about the browser, which we kind of mentioned, but I think the more interesting thing to talk about is CloudFlare durable objects.
+
+So there is no chance you could run Terraform in your durable object, but like why, why would you want to do that? Well, I think we're like, look at products like Lovable or Bolt new for example. Like they're, they're generating. So I think we've got millions of customers at this point. This is like personal software, right?
+
+So I can go on from my little business and generate a piece of software for myself. Well, that's, that's a stack, right? That's some code, it's some infrastructure. Maybe it's a connection to Stripe and it's a CloudFlare worker and a what have you, right? So we're entering this era of like thousands and millions of stacks, not just one or two for a product, like millions of them.
+
+And I think durable objects is the perfect abstraction to do this like. If you've got infrastructure that's per customer, a durable object is the perfect way to represent that, right? You need to make a change to the infrastructure. Well, I need to guarantee that only one change is happening at a time. I need to make sure that they, the change has happen in series or else it's just gonna get crazy.
+
+Well alchemy, you can just build a durable object, which I'm coining The durable stack, I think is a good term for it. Which is just a little node runtime with 128 megabytes of memory with one job, which is to apply changes for a single customer's infrastructure. And I'm pretty excited. I've, I've talking to some people who are jumping on board with that, uh, like, okay, I'm gonna, every customer, I'm gonna deploy a worker to workers for platforms for their website, and I'm going to create these durable objects with sq l light for their database.
+
+And maybe I'll create an R two bucket or something like that. And it's all isolated. And I can tell the customer that their infrastructure is totally isolated. It's not touching any other, any other customer's data. There's no data mingling or anything like that. So that's the best reason I can think of for why it's, it is really important for it to be embed is be able to run it in those environments, but also durable workflows.
+
+Like I am imagining taking alchemy and. An alchemy program can run as a durable workflow. Maybe it takes a long time, like it's the same problem. Uh, these are just all things that wouldn't be possible if you're lugging around into process communication with, with, uh, go or depend requirement that you must use a file system.
+
+You must have a file system. All these things are dependencies that just go on with alchemy. ~~Yeah.~~
+
+**Justin:** Yeah. Uh, it that's, it's such a interesting and compelling idea. Uh, um, you know, it's like, there's like this novel thing about just like, oh, well I'm gonna run it in the browser, or whatever. And I think there's like probably some like, testing applications or like, you know, visualizations of like, what's gonna happen that are kind of interesting.
+
+But like the durable objects thing is, is really fascinating because it's like synchronized place where this thing is running, you know, very durable infrastructure for managing our infrastructure. And that's like kind of compelling. ~~Um,~~
+
+**Sam:** It's recursive. 
+
+**Justin:** Yeah. Yeah, I don't know. Uh, I'm
+
+**Sam:** I've had someone, someone mention like, well, that means I could like, uh, what, what is it? Is it the, is it, I'm not great at front end, but like the shared web worker or whatever it is, where it's, it's like each browser for an application has this web worker. Maybe like there's a whole breed of local apps that are privacy focused, that run alchemy to configure infrastructure without ever touching my server.
+
+It's very speculative, but it's possible. Now, I don't know, but, uh, the, the main use case is definitely the, you know. Personal software, uh, running stacks in, in durable objects and having millions of them. Yeah, like really push CloudFlare to the limit. You know, this is, this is what they're built for.
+
+They've really been building up to this vision of like, people creating millions of workers. I think this is how we, we make it a reality.
+
+**Justin:** Mean, there's something to be said about the portability in general though. That's, that's like a, an important aspect, especially as like, there're like different JavaScript run times to choose from. I mean, you know, there's Dino, there's Bond, there's Node, there's like, you know, whatever else is gonna come out next year, you know, and just being like, oh yeah, well, we're ESM first and we run on all these run times and you know, whether you're a CloudFlare or you know, Dino or Bon or Node or you know, your own special thing, it's like.
+
+You can still manage infrastructure there. That's, that's a cool premise.
+
+**Sam:** Yeah, I'm, I'm a huge, huge bun nerd. I really love bun. Uh, I hope that, I hope that it wins out. It's definitely, definitely my, uh, joy to work with for sure. Um, yeah.
+
+
+#### [00:29:29] Adding New Resources to Alchemy
+
+**Justin:** So let's talk a little bit more about like how you would. Add a new resource to Alchemy because, I mean, this is a thing people are gonna discover, like, okay, great, like I wanted to do this, this thing for my infrastructure. You know, maybe oxide computer company comes like, Hey, we wanna build a an oxide thing for, for alchemy.
+
+Um, so how would they get started? Like, what does it look like to model a resource in alchemy and. Um, yeah, I guess you, you just mentioned that it's like just a function to, you know, create, update, delete infrastructure, but like, how do you sort of like make sure things are in the right state and, you know, what does, what does all that look like?
+
+**Sam:** Right. So the, the, the general shape of a resource is there's. Properties, which are what you input when you configure. And then there's output attributes. That's what they're called in cloud formation, or you could call them output properties. So you simply just think about your resource in terms of an input output.
+
+Contracts like, okay, what do I need to provide as part of the configuration? And what do I expect back from that? Right? And so that's just two interfaces. My properties and my output or the resource instance. And then you declare a function and there's a very light wrapper around the function where you give it a, what I call the FQN or a globally unique name or type name up to you, what you want to call it, but it's like an identifier for this resource type.
+
+So all instances of this resource can be associated with the handler, right? And then you just provide a function that takes in. The current state an ID for that resource. For example, my website needs to be unique within a scope which we can talk about later, and then the properties, and then it's a function that just needs to handle three cases.
+
+One is the create case, which is this resource doesn't exist. It's the first I've heard of it. What do I do in that case? Maybe I call post instead of put, for example. Uh, then there's the update phase, which is the properties have changed, but the resource already exists. So you have access to the, the current state of the resource.
+
+Maybe you need to write a bit of logic to, for example, in CloudFlare, and notice which bindings I need to remove because they're no longer there. And make a call specifically to that. And then finally there's the delete phase, right? Which is, how do I clean this thing up reliably? And this usually it's pretty simple, like it's uh, you know.
+
+Post put delete. If the rest API is designed well, it mostly maps to the rest call. Like rest is a resourceful design of resources. Posts. Put post for create, put for update, delete for delete. You know, the best resources work this way. Stripe, for example, took me one minute to generate because they're just perfect rest resources.
+
+Um, AWS is in a very similar boat, and then there's like a sort of the edge cases, right, which is most resources are eventually consistent. So, especially ones that, you know, have a heavy back, like you spin up a VPC, Amazon's got some, uh, waiting periods before it propagates and, and stuff like that. So you'll usually want to.
+
+At least think about those upfront and, and, and be okay when I update, maybe I want to wait a few seconds and then do a check and make sure it's consistent so that the consumer of my resource is guaranteed that it's consistent. Or maybe I'm like, no, I'm okay with providing an eventual consistent layer.
+
+So, so that things can move along quicker, um, and then resolve consistency down later so that those are some, uh, important things to consider. And finally, I guess the other one is. You want it to be item potent? It's usually better that, like if I don't, if I run the resource and then something kind of bugs out in the middle of it and then I run it again, I don't wanna be bricked.
+
+Like being bricked from a partial state is terrible. Like they should, if I run this multiple times, it should get to the same state. That's a really important, important point. So with those in mind, and these are all encoded in the cursor rules file by the way, um, you can mostly just. Take the API spec past it in prompt, and you'll get most of it, and then you'll use it a few times by running the tests and find the edges and repair them as you find them.
+
+**Andrew:** Something you just said there. 
+
+
+#### [00:33:38] Optimizing Alchemy for Gen AI
+
+**Andrew:** I want to dig more into, uh, the homepage of Alchemy even calls it out that it's optimized for Gen ai. I, I really wanna know like, what does that mean in like terms of API design? What does that term mean in terms of like, things you deliver to the user to like, make that possible?
+
+Like you just mentioned a cursor rules file. Like I've never used one of those so far. How does that fit into the workflow? How does it make like. Code that is always right. Like can, can you just dig into that a little more?
+
+**Sam:** Yeah. So the, the main thing that's working there is, is the cursor rules file, right. So, because it's just a function and it's just type script, and I have a nice fleshed out pattern. Right. I think one, one of the, one of the things we were going to talk about is. What does AI change, like, made me think more about in, in development.
+
+It, it is definitely patterns and conventions, right? If you let AI go ham on something, it, it will go ham, especially called 3.7 sonnet. It'll just build random stuff, right? Uh, but if you establish a really, really constrained convention, it's extremely productive. Like we're talking taking hours or days of work and reducing it to minutes.
+
+So. If you compare the development of a custom resource in Alchemy to say PMI or Terraform, like I would consider a custom resource plum with Terraform as a project. It's not just a new function. There are so many gotchas and things that are not obvious to the lm because there, there's like, okay, a Terraform is a GO project with a provider that you need to publish and build and and structure in a certain way, right?
+
+It's a big deal. It's like building a service more than it is like building a function. So in that way, generating a service is a lot harder for AI than build, generating a function. For example, Pulumi also has lots of. Edges. Like for example, if you use ESM, it'll just bug out. Like they're running like weird compiler stuff on your, on your resource, uh, which I think is a mistake.
+
+But that comes with gotchas that the AI just doesn't understand. And they're also minimum two pieces. There's the resource and there's the resource handler. So two pieces is always worse than one, where alchemy is just pure type, safe function. An established convention that can be spat out by an ai, so that is like optimized for ai.
+
+I'm also, because it's now a type, it's pure type script, I've started experimenting with integrating the AI SDK into IT and building resources around AI so you can flesh out a workflow that like generates code. And it'll only recompute a file if it's upstream dependencies of change for like, you know, thinking like, oh, I, I import this file.
+
+Well when the file that I import changes, I probably should think about recomputing and updating this file. But if it doesn't change, don't do anything. Right? So that's the other angle that I'm, that I'm experimenting. That's way more speculative. I'm doing that to generate my docs. For example, some of my docs are being generated this way, so whenever I change the implementation, it automatically updates the docs.
+
+Thinks about new use cases for that. That's pretty cool. I think there's a lot more that can be done there, but prompt engineering is hard and time consuming, and I'm not, not there yet, but that's, that's the AI story at the moment. ~~Yep.~~
+
+**Justin:** I wonder about like, so I, I think, I don't know. 
+
+
+#### [00:36:56] Solo Development and Future Plans
+
+**Justin:** It's interesting to think of you, like, are you working alone right now or are you sort of solo on this?
+
+**Sam:** Yeah, totally, totally solo. ~~Yeah. ~~
+
+**Justin:** Okay. It's, it's an interesting thing about someone solo, like working on an infrastructure as a code product because like classically, you know, I think of this as such a big thing like, because for it to be really useful you have to cover such a broad swath of area, like we've discussed and like you've like kind of talked about like how gen AI is like making this a lot more possible to you.
+
+And I'm curious like, how are you thinking about how this shapes. Building a company around, you know, something like Alchemy. So, you know, we were talking about like Terraform. So when HashiCorp was building Terraform, you just need hands on keyboard. You need like a pretty significant team to like bootstrap this and get it to a, a, a real point.
+
+And then, you know, the pressure to get like salespeople and get big contracts and like the shape of the business is really driven by the fact that like. You have to like put some real accelerant hair, raise a lot of money or something to get this like product really going because this is almost like this network effects that you have.
+
+But like, so you have this like emergent sort of new property of development, that means you can do a lot more with a lot less effort. And also you were trying to like, uh, constrain the abstractions and make it simpler to work on the product to begin with. So it was like. As you're thinking about like growing the product and building a team around this, like where's your head at like, I don't know, like what does that look like
+
+**Sam:** it's a great question. My head is definitely not there right now. Uh, my, my head at is, is at can I build the best product possible right now? Uh, you know, being solo means I've got plenty of time, flexibility, and, and runway to just focus on building the best product. And I'm definitely not in a rush to ruin the product by trying to monetize something that, that really shouldn't be, shouldn't be monetized.
+
+But I, I think, you know, I'm sort of biting my time and I guess my strategy is. Well, if Alchemy becomes the root of applications, right, the root of the future of applications, all infrastructure declared in alchemy programs and a community comes around and helps build out that base, and some of these AI stories start to evolve.
+
+And lms, you know, we get another jump like we got from GPT to 3.5 sonnet or another jump to 3.7. As those things improve, you know. Uh, on the side, eventually I'll be in a great position to move into what is looking like a, a personal software era, right? Where people, for example, I was talking to a guy who has a problem with calendars, you know, like one of the oldest problems in the world, and it's still a problem, right?
+
+And it's mostly because no calendar fits his needs. So he wants to generate personal software. I think alchemy could evolve, uh, or, or an adjacent product could evolve into that, where now I start focusing on. Not just the infrastructure problems. Infrastructure is solved and then I up level and apply the same scalable practices that I did for like Conventionalizing infrastructure so that AI can generate 90% of it.
+
+I could apply the same to. Another thing I've been experimenting with is event driven systems, you know, domain driven design and, and get into the actual application space and then that could become a. I, I point to lovable and bolt new as good examples, but I think this space is going to change rapidly, and they're sort of building from the top down is the, is my general vibe and I'm building from the bottom up.
+
+So I I, my business ideas right now is venturing into that space. Yeah.
+
+**Andrew:** So your email has aspect sh on that. Is that at all tied into Alchemy? 
+
+**Sam:** Uh, that was a, that was a previous spike of an idea that. Man, I have too many email aliases. Just, it's just another problem that I wish someone would solve. Uh, that's just a, a domain that I've got up my sleeve. I was working on a data product that was in that space. If you go to the, if you go to the, if you go to the website, you'll see that, uh, I, I've abandoned that for now, although I think it's a kick ass domain.
+
+It could have been a good, it could have been another good name for alchemy, actually, you know, like aspects. But I didn't have the NPM package, and I way prefer the NPM package than the domain. So went with alchemy aspect could become a pretty cool, like domain driven design product or something. Uh, but Yeah. it's, it's just an old school domain. 
+
+**Andrew:** Uh, dude, you, you could for sure get that MPM package name. They're super lenient with giving out parked names. This has not been updated in nine years and has no read me, so you could easily get that name. 
+
+**Sam:** Yeah. I've emailed that guy like three times. I think it's probably time to escalate 
+
+**Andrew:** Oh, yeah, e email support. You'll get it within like a day or two. I've done it a few times. 
+
+**Sam:** good try. Good try. Yeah.
+
+**Justin:** You hear to hear from?
+
+**Sam:** Yeah. 
+
+**Andrew:** Yeah, 
+
+**Sam:** one snip me now. 
+
+**Justin:** Yeah, yeah. We'll wait, we'll wait to publish this until you've had a
+
+**Sam:** Yeah. Yeah. Thanks. That's 
+
+**Andrew:** yeah. We can edit it out too. That that's how I, that's I, I own auto on NPM, which is a very, very short Yeah. Yeah. 
+
+**Sam:** I was trying to buy self ai. I think that's a really cool to name. It's listed as like a hundred dollars minimum offer, but I'm pretty sure they want like $2 million 
+
+**Justin:** Oh, for sure. Yeah. Yeah.
+
+**Andrew:** Yeah.
+
+**Justin:** So, uh, this has been like a pretty fascinating conversation. We've covered a lot of space, uh, and I'm just really curious about like, where you're at with alchemy and sort of like what your next big priorities are.
+
+**Sam:** ~~Mm-hmm.~~ Yeah, so I think the core of alchemy is mostly established beyond features, maybe like rollbacks. Or, uh, approval. So one that's worth talking about is the trade off that I've made with making it async functions is now it's eager instead of lazy, which means it's not as easy to preview a change, right?
+
+So like with Pulumi, I could say, Hey, what would you do if I ran you? And it would say, oh, well I create that. I would delete that with Alchemy, you can't do that. So that's a major trade off. But the. The solution is that is you put guardrails around things that need approval, right? And you surface up, uh, hey, I'm about to change the, IM role to admin access and send it to someone.
+
+You know, maybe you wanna deny that. So like the solution there, uh, shout out to Yehuda who actually gave me that idea. I hope he's listening. Uh, is approvals, right? So like there's some things around there that are missing, but mostly the core is established and now I'm just hammering out now that I've got the website going.
+
+Hammering out CloudFlare. So my, my goal is Wrangler should not need to exist anymore. Uh, maybe that's a bit heavy handed, but I think, uh, Wrangler is sort of struggling, right? Like it's at, its, it's at, its at its end. And I would love it if Alchemy could replace that. Like drop in replacement of no more, no more need for Wrangler to manage your infrastructure.
+
+Just use Alchemy. So that's Drew. Like I've got dral objects, I need to add workflows. I need to. Figure out like what are all the changes that just made in the last week? And think about which ones I need to support. Uh, once you get workers and workflows done, the rest becomes kind of easy 'cause they're just sort of standalone resources.
+
+So I, I think, I think CloudFlare will mostly be full coverage in the next two weeks, four weeks maybe. I've got another one up my sleeve, which is the Cloud Control API, which is the 95% coverage of AWS. I'm a big AWS fan, so I want to add that, uh. Then it's really just like community building, getting people to use that beyond like, Hey, it's working, it's great.
+
+Like come try it. Build a community, contribute a resource. I'll probably start adding neon databases and you know, things around the edges that really help flesh out a whole product. Like here is, you know, the CloudFlare agents template, but it also sets up stripe, so it does billing and payments, and it's also got.
+
+Inside it so you can do your login with GitHub or login with Gmail. That whole story fleshed out and managed in code is my top priority right now. And then following that, it is hard to predict, you know, like if nothing's moving, maybe I'll like get into AI a bit more. Or if things are moving, I'll, I'll, I'll double down and grow as much as I can.
+
+It's hard to predict beyond that. But coverage and coverage and stability is the main, main problem right now.
+
+
+#### [00:44:58] Community Involvement and Next Steps
+
+**Andrew:** How would you like people to get involved? This is a pretty new thing. It's only you. What can people contribute?
+
+**Sam:** Yeah, well, I think the most. The most exciting thing for me would be people join the discord, star, the repo. Like I, I don't know how to like, get stars on my repos. Please star the repo. That would be amazing. That would make me feel good in the morning. Uh, but, but please come join the Discord and chat about it.
+
+Like ask questions and maybe start thinking about how to contribute resources or use it, find what, what's missing, and build your own. I, I really love to see people try the AI generated experience. It's one of the most joyous things for me is. Having spent 10 years in, in, in infrastructure as code to just be able to click my fingers and get a new resource.
+
+It's just magic, you know? Uh, I'd like to see more people experience that and start thinking more about how well I can unbundle myself from all this mess and manage my own world. Uh, so yeah, I would say like, start the repo, join the discord. That would be the most helpful thing for me. 
+
+**Andrew:** Yeah, it'll be interesting to see what people build. It seems like you've built a very nice primitive that can be composed to do lots of new interesting things that might've been cumbersome in the past. So definitely excited to see what projects fall out of this. 
+
+**Sam:** Yeah, there's some, there's at least two people who are starting to really push into workers for platforms, so that's going to be really fun to see stacks of customer specific infrastructure. That's gonna be cool. ~~Uh, but yeah.~~
+
+**Andrew:** ~~You done Justin, ~~
+
+**Justin:** ~~Yeah. Yeah.~~
+
+**Andrew:** ~~questions? Okay, cool. Uh,~~ well that's it for our questions this week. Thanks for coming on, Sam. This was a very interesting delve into all things infrastructure as code where it seems like there's lots and lots of thorns to be had. So thanks for coming on and thanks for making the tool I. 
+
+**Sam:** Yeah. Thanks for inviting me. This is great.
+
+**Justin:** Sam, thanks again for coming on. Uh, I'm really excited to see what you come up with Al with an alchemy. I mean, I think that like ~~this, this space just,~~
+
+**Andrew:** ~~Stop. ~~
+
+**Justin:** ~~sorry. Uh,~~ this space needs a lot. More, I don't know. It just needs more life. Uh, and I'm glad to see new players in the space. Uh, it's been, it's been exciting to see it develop.
+
+Uh, you know, I think Plum is great. I think SSD is great. Terraform obviously opened up a lot of doors. I'm excited to see it get easier and simpler. Uh, so I wish you the best of luck and I'm gonna be following very closely.
+
+**Sam:** Yeah, it's, it's, it's time for the, you know, every, everything goes through cycles, right? Like you build up and then you burn it down, you build up and you burn it down. And it's been roughly 10 years since we burned it down, so. It's gonna try my best to just reduce this down to the smallest, the smallest piece that it can be and see what happens.
+
+I think with AI coming, like, like I mentioned before, the breadth mode is no longer a mode, right? Like, like all AI is trained on every piece of Terraform and every piece of pum, and now you can just, and we're getting closer and closer to just. Click your fingers and get what you need to make the next step forward.
+
+And that is so much more powerful than waiting on a team. I think one of the things I wanted to say was like, I feel like Git submodules should become more of a thing. Like I, I've started just not waiting, not cutting an issue on people's repository and just like, uh, forking the repo and embedding it in mine, and then just changing it on the fly.
+
+Something about this. Take your autonomy back in the and and just like be a solo team. Build the stuff you need. AI will do 90% of the work. Make good decisions. Yeah. Um, I think alchemy is the IAC revolution in that, in that philosophy.
+
+**Justin:** Exciting. 
