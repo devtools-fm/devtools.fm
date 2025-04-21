@@ -1,0 +1,400 @@
+---
+title: Zack Jackson - ByteDance, rspack, and the Future of Web Development
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Zack-Jackson---ByteDance--rspack--and-the-Future-of-Web-Development-e31pf9h
+youtube: https://www.youtube.com/watch?v=Uo1Gf_32MK0
+tags: rspack, webpack, vite, byte dance, rust, javascript, typescript, react, react native, web development, web assembly, module federation, ecosystem, bundler, compiler, tooling
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're once again joined by Zach Jackson, creator of Module Federation, and now core team member of ByteDance's rspack project.
+In this episode we talk about the bundler landscape, the future of web development, and how rspack is changing the game.
+
+- https://x.com/rspack_dev
+- https://x.com/ScriptedAlchemy
+- https://rspack.dev/
+
+Episode sponsored By WorkOS (https://workos.com) and MailTrap (https://l.rw.rw/devtools_1)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:11] Zach's Role at Byte Dance
+[00:07:59] Ad
+[00:09:02] Web Development Tools: Webpack vs Vite
+[00:19:54] RS Pack: Innovations and Future Directions
+[00:34:00] Ad 2
+[00:34:29] The Journey to RS Next
+[00:46:47] ByteDance's Lynx Project
+[00:54:30] Future Directions and Ecosystem Expansion
+
+<!-- TAB: TRANSCRIPT -->
+
+#### [00:00:00] Introduction
+
+**Zack:** Whoever builds a compiler that produces the smallest bundle would most likely win the bundle of war.
+
+Regardless of how developers feel about it, or if they say, oh, well they love this ecosystem so much, that doesn't matter if you can produce 50% less payload. ​ 
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Zach Jackson back on the podcast with us. Uh, Zach, you were on, it was like episode 30. Uh, we're like in the hundreds now, so it's been a while. Uh. So excited to have you on. Uh, and we know there's a lot that's changed with you. Um, so previously you were, when we last talked to you, you were working at Lululemon, uh, and now you're at Byte Dance.
+
+Um, and so if anybody wants to go back and check out episode 30, we talked a lot, uh, about some like really interesting work you're doing at the time, and I hope to get some updates on that. But before we dive in, uh, would you like to update our listeners? Uh. And kind of tell the new listeners like about yourself and like, what are you up to these days?
+
+**Zack:** Uh, yeah, sure. 
+
+
+#### [00:01:11] Zach's Role at Byte Dance
+
+**Zack:** So, um, I'm a infra architect at Byte Dance and. What that basically means is that I work on like a lot of our infrastructure tools. So, uh, obviously the company is really large, so there's a, uh, a big set of problems that, uh, is never ending to solve. And, uh, and yeah, and so essentially we, I think our team, we about 60 members on the infrastructure team and so it's about 60 of us.
+
+And on infra, we pretty much deal with everything from like. Uh, building out custom runtime, so like custom js runtimes that comes out of our kernel team. Um. Native frameworks or renderers for various things. Compilers, obviously JS frameworks, and then other, you know, things in between, like just the tooling to get stuff from A to B.
+
+Um, so yes, that's a lot of what I do day to day, which is essentially what I've just always been doing, but now like at a much bigger scale, which is quite nice. And, uh, and, and then yeah, then obviously Module Federation is still like, you know, uh, very close to my heart and, uh. I happen to land at the company who happens to be the largest user of it out there.
+
+**Andrew:** Yeah, it seems like Byte dance has created a lot of different things just from the outside looking in. Uh, there's like a lot of innovation going on and like next generation type tooling. So like. What for when you first started, like what attracted you to you, to the company and what projects that the company have you gravitated towards?
+
+**Zack:** Let's see. Um, okay, so I guess like a thing that I usually look for at a company is like, you know, I'm always about like impact. I know that's like an overused word these days. Um, I. Like generally, if I have to go somewhere and I'm just pigeonholed into, cool, well, like you'll do this. This is kind of why I got out of product engineering is it was just not high impact enough.
+
+And I think after a while, depending on it is also very dependent on like the health of the organization, how enjoyable it is to work on the product actually becomes. Um, so, you know, in, in, in, uh, some places it's, you know, you're very beholden to. Changes of like non-technical users, which is, can be difficult to kind of like, you know, really get in and get things done.
+
+So I would say the, the main reason ~~I, um, hold on. Are you guys still there? I think this thing froze up. Okay. Okay. All the, all the, uh, all the videos are frozen. Sorry. Okay. We can edit that out. Uh, but yeah, so anyway, uh. ~~What kind of attracted me was just really the size of the issues that they had and the fact that a lot of the problems that they were looking at were really similar to things that.
+
+I had been interested in solving and you know, I think ultimately it was kind of like, okay, well, you know, like when I was looking around at the opportunities and then the kind of just the numbers come out of like, Hey, well here's the size of the people that use this stuff and here's like the runway of problems that you can have to solve here.
+
+Um, and that really kind of hooked me in the end. But how it kind of started was it turned out Byte dance had been after me a couple times and I, uh, just didn't remember. Um, speak. Apparently I'd had like a call with the previous infra team manager before and I don't know, like why I didn't end up going there or what the deal was, but, uh, so what ended up happening on like, about a year and a half later or so?
+
+Um, how, how we actually started like getting involved was I was trying to replace web pack's, ES tree parser with SWC in like a desperate search for, for, you know, to make it faster. And obviously I knew nothing about rust at the time, so I'm like, Hey, how do I get like the rust back to the JavaScript, like, you know, the most basic thing, like just how do you like get it back out?
+
+Um, and so I'm fumbling through asking around online. Somebody, uh, someone's like, Hey, yeah, I can, I can help you and jumps on a call with me. And so we chat for a little bit and he unblocks me. And then we're going back and forth over just like, as I uncover the problems of why this ultimately is not going to work.
+
+Um. Uh, and uh, who I ended up speaking to was actually the lead of RS Pac and I just didn't know it at the time, so we're kind of going back and forth and he's watching me like fumble through, like failing, trying to make webpac faster with some rust. Um, and then, you know, things kind of die down and then maybe like a week or two later he just messes me.
+
+He's like, Hey, I wanna show you something. And so I get on a call and they're like, surprised. There's this thing we've been working on where we actually have ported webpac into rust, which obviously I was very skeptical about because I've heard this song and dance many a time before. And you know, my general assumption was, you can't like. You can't really do do it like for the surface of the API that it gives you, that's just not something that you can create in native. 'cause I haven't seen anything done in like, you know, in any of the other native build tools that have like an API on par to something that just stays in JavaScript. So, you know, he kind of took me through, it showed me actually these are the real loaders and are the real plugins.
+
+We didn't just fork this. It doesn't just look like webpac. It's actually running their ecosystem without a problem. And I think that was probably the main thing that hooked me into coming in was like, okay, this is real in like for all my involvement in Webpac and like how much I've been like. You know, a fan of it and how it's helped my career.
+
+Obviously when like the rust web pack pops up and it's like, okay, well you know, I feel like this would be real good. And then on top of that I found out, you know, they use a lot of federation here, so you know, there was just like, cool, I get to work on the thing I like to work on already just in rust and faster and less constraints.
+
+'cause we would actually own the product. So, you know, it, it was just, uh. That's really kind of what attracted me. Cool. There's really big problems to solve here that usually you can't really get solved unless you just have like unlimited resources to throw at the problem. And that's really, really difficult to come by.
+
+Um, and luckily just 'cause of like how the company, is it like, because it has so many products and so many different, like, you know, offshoots of various things. Um, a lot of the architecture attempts to be unified. So then that means it's like, okay, well you need a tool that's gonna be able to do like 200 different, you know, business cases that are, you know, vastly different.
+
+So just, you know, it was kind of cool 'cause it wasn't as, uh, fragmented and disjointed as like you would usually see where things kind of pop up around an organization for, hey, what works there? I mean, you know, that's totally fine. But I guess like it, it's one of those things where I think economies of scale really kind of help.
+
+And I like working in the areas where economy of scale is useful. So there were a lot of things here that just made it a, yeah, I'd love to come.
+
+
+#### [00:07:59] Ad
+
+**Justin:** Big thanks to work os for sponsoring this episode of Dev Tools fm. If you're building a SaaS and thinking about moving up market work, OS gives you everything you need to make your app enterprise ready without turning your roadmap completely upside down. From single sign on and directory sync to audit logs and fine-grain authorization work, OS is packed with the features that companies expect and developers can actually work with.
+
+What sets it apart is how modular and well-designed ev everything is. You don't have to use everything at once. Just pick what you need and drop it in. The APIs are consistent. The SDKs cover all major languages. The developer docs are generally some of the best out there. and if you're dealing with onboarding flow issues or user management headaches, work, west has solutions for that too.
+
+A prebuilt admin portal, secure credential storage with vault, domain verification, and a whole lot more. It is built to scale with you whether you're closing out your first enterprise deal or rolling out compliance features before the questions start coming in.
+
+So if that sounds like something you need check out work os@workos.com.
+
+
+#### [00:09:02] Web Development Tools: Webpack vs Vite
+
+**Justin:** Let's talk a little bit about Webpac. Um, so it's like, it seems like. For a little while, at least in the realm of like Twitter and Blue Sky or whatever that I'm on, like a lot of companies and a lot of people have been talking a lot about Vet and its sort of shape in the ecosystem. And I, I know that there's still a ton of companies using Web hack, uh, and I know some folks in, in places that I used to work there are still using Webpac, but like you definitely don't hear as much about it these days.
+
+And I'm curious like, how do you think like. APAC is like changing that. Uh, what are you sort of doing fresh and new and like, how does it sort of, how do you see it fitting in the, the current ecosystem?
+
+**Zack:** So I guess, um. Um, I don't know. I, I, I personally view them as like two different categories of tool, uh, to be honest, like, and nothing against v just in its current form. I know that it can do the job for many developers, but, uh. I dunno. I guess like, well, why doesn't next JS just use VITE then? Like why does Turbo Pack exist?
+
+Like not, I'm not trying to throw shade here and maybe like I just got off a very long flight, so, but you know, if it's the be all and end all, then we should, then nobody would be building turbo pack next would be using it and blah, blah, blah. But it's not, and that's nothing like, I mean, nobody uses CRA to build out these crazy type of things.
+
+And there's various use cases for them. I think really why Vite got so momentously popular, you know, just speculating here is. Configuring build sucks and nobody cobbled a solution to that together. You had webpac, which was okay. It's all in one. But then you also have like, you know. A PhD degree in configuring webpac to go along with it.
+
+So over time, p and then, and then, you know, something like ES build pops up and it's like, oh cool, here's like, you know, an API with four hooks and that sounds fantastic because if what you want, I, you know, when I think of ES build, I always kind of in my head kind of put it as, oh, I need fancy Babel. Like I need something that mostly just transforms things and kind of puts it in certain places.
+
+And that's about it. A little bit more than s wc, but you know, fancy Babel trans pile things. Pack it into simple files and off you go. Um, so, so I don't know. I kind of see like, uh. What V had done, and we had learned from this as well when we saw what they had done, but they got super successful because if you weren't using Webpack then it was like either roll up or ES build or some kind of Frankenstein between the two or whatever.
+
+And so what V did was say, okay, well, and they introduced this thing of like a build tool. I don't think we had that really. Like, I don't know. I, I really only use WebX. I didn't go hunting around, but we didn't really have something like a, a v type experience that was just off the shelf to use where, hey, here's a React plugin.
+
+And it's not, you like configuring the loaders, but there's like middleware on top of the, that's instrumenting the tool. I think that really helped a lot in, in its popularity because config hell was real. And also it was just faster because unbundled, you know, Skip's doing a lot of the build up front and back in the JavaScript based tooling world.
+
+That was a big issue. Now, I would say on the flip side though, it hasn't been all like sunshine and rainbows from, from like. Um, and again, I, I just know from like the research that I do on these bundlers and from like what users tell me, so I'm mostly just kind of parroting like the things that I've heard or think they might not be totally accurate or whatever.
+
+But, um, you know, like I think a big one that we can probably all understand is like, okay, well the development versus production discrepancy. And so, I mean, that's not a super bad problem. It's something you can work around. Either way, like it seems to have not impacted the community to a detrimental point.
+
+The problem is though, is I don't see a lot of people putting like half trillion dollar company and betting it on that consistency being good. This is something that I would say like Webpack has historically done well. It's had good artifact integrity. It bundles really small. It supports lots of things.
+
+It kind of meets you where you're at. And I think like when you're looking at the tools that you want, when you're on the lower end of like the problem surface, when you're in the, let's say like when you're in the 80 20 rule, in the 80, you have a lot of options, but in the 20, you don't have so many Like example, okay, if you take next Js.
+
+Next Js can't just use the S build or just use Vite. Like, I mean, maybe if you rewrote it from scratch, you could get all the things in there, but they could do that easier with just like turbo pack or Webpack to kind of do the role. But these are also some of the more sophisticated like build needs out there where they're doing a lot more crazy stuff.
+
+So, you know, I think there's just kind of a difference between the target markets of what we're looking at. There's, uh, you know, like. I would usually say that probably these are an acquired taste, but our target market is obviously everybody, we'd love for you to use the tools, but our, our focus primarily is like the focus we have here at home, which is, okay, you've got a $400 billion business and everybody uses things and it needs to scale.
+
+And like your compute costs are like, you know, it's at the point where you, you know, you're looking at engineering is cheaper than compute. So ci, taking long and chewing up boxes, the amount of manpower to just write a new compiler is cheaper than living with the boxes, taking 40 minutes. And if you can do that plus artifact integrity, all the other things that you want.
+
+Where we were just in a position of why not go and do it. So, you know, ultimately I think the tool will live side by side. Uh, what I think really needs to happen though is like with Rolldown. So that's kind of one I'm excited to see, like what's gonna happen there is, 'cause I think a lot of the problems in ve it's also kind of unfair to say, oh well, you know, I see some users use it as scapegoat.
+
+Oh, well, you know, it doesn't do this set. Or the other thing. Other thing. And yeah, sure. But they, like, they have a thing that they're working on to bring out. It's just not out yet, which, um, you know, again, we'll see what happens when it comes out. Um, but I think when, when we're in that space, what we've also noticed that was interesting is that V seems to be like looking at the mode for apps.
+
+So instead of doing the bundle list and dev, like it's always done, they're looking at adopting some kind of like proprietary web pack esque chunking. Format and some kind of runtime for it. And I think that that's a really good move. 'cause at the end of the day, I think like the whole idea of unbundled ESM, I think everybody has tried it for a while and it, you know, it kind of works, but there's, there's like problems with it that aren't necessarily on paper problems.
+
+Like, uh, doing everything unbundled, it's technically gonna work really well on your machine in incognito mode. But go get the user machine with like the six chrome extensions and the Bing search bar, like you remember the old IE where you'd have like that many toolbars like, you know, imagine a browser that's got like that, like your average chrome like laden extension laden browser, and then if you have to download like, you know, 4,000 little modules.
+
+It's not, your network isn't the problem. It's all the junk that's sitting on the client device that you can't benchmark against that like brings it down in the real world. Um, so, you know, so I think it's, I think a lot of these things seem to be going in the right direction of, Hey, we tried various things.
+
+We think a bundled mode would be good. And the reason that we can do a lot of this stuff is like we have faster tools so they can do more work. Like, cool. We can bundle it all really quickly. And make it, you know, more or less as fast as like unbundled, just because like rust would enable. Speed where, oh, if it takes like, you know, 300 milliseconds to start up, we don't really care at that point.
+
+Like it's beyond the point of caring. So I'm also excited for us to get that. 'cause it seems like everybody in the bundling space is kind of getting to the point where speed isn't gonna be like this thing that, you know, the bundle of wars are fought over, which I feel for like the past two years, that's a lot of what it's been.
+
+Oh, well, you know, which one's faster, or so on and so forth. But now it seems we're talking about like. Oh, well this one did it in one second and this one did it in 600 milliseconds. And it's like, okay, sure. That's still maybe, you know, two times faster or whatnot. But then when you look at the demo app and it's building like, you know, I.
+
+15,000 modules or something, you're like, okay, well realistically, yeah, so there could be a scaling issue, but if you can build, I don't know, like we have one here that's like, I think 50,000 modules. It's like, okay, if I can build a prod app of 50,000 modules and I can build it in 20 seconds, then you know, that's probably the slowest build RS P has on the market, and that seems more than acceptable.
+
+To us coming from, you know, that taking like over an hour or more to build. So I think as well, just like the focus is gonna start to shift as we all get the tools where it's fast and where it's like, okay, well, a little fa like when you're doing HMR, if it takes a hundred milliseconds versus like 85 milliseconds, nobody cares at that point.
+
+It doesn't take 15 seconds to see the update. So I think, I'm hoping that the Speed War kind of changes, but then again, I don't know what the next thing will be that the bundlers are kind of, you know, vying for, um, anyway, long-winded response, but that's just kind of how I see things. I think there's a place in the market for two and or or more, and at the same time, like now, it's more become like, well, what ecosystem do you wanna buy into?
+
+Like, which one has the parts you want? Feet has a big community, a big type of ecosystem, and lots of people like using that. There's also people who, you know, enjoy the web pack type ecosystem, but usually because it's like, oh, well, they're very familiar with loaders, or there's certain APIs that let them do certain things that are just easier to get done in there, or, you know, whatever other reason, just that's their flavor of the month.
+
+Then it's kind of nice to say, okay, well this becomes more of a preference choice and not like a oh. Well, like what's the real big difference here? But I think what we'll just see is there's gonna be just like you have React and you have angular and you have view, you're probably gonna have like cool, they're all gonna more or less do the same jobs that 80% of the users would need.
+
+And then it's really just what do you like using to do that job or what does it integrate with that you might also want.
+
+**Andrew:** A, a lot to dig into there. 
+
+
+#### [00:19:54] RS Pack: Innovations and Future Directions
+
+**Andrew:** Uh, so, uh, one of the original goals of RS PAC was kind of just to be this drop in replacement for Webpac and to like completely support the API, uh, that that works in the beginning, but as you. Said new things are gonna be unlocked. So like what? What has RS PAC like worked towards?
+
+That's kind of like innovations on top of Webpac rather than just like matching the old API.
+
+**Zack:** Okay. So I guess to go back a little bit as well for some context on why we went this route. So we didn't just like go, let's Port Webpac and that was the plan, that was the last thing that we did. So we have like pages and pages of documents. Um, I think, uh, there was something crazy I think like people who. Uh, people from Byte Dance have worked on every rust Bundler except turbo pack, as far as I'm aware. So most of them that are on the market, like in some way, shape or form, some origin story can be traced back to that person's time working here. So there's just a ton of knowledge in building these rust bundlers and like, you know.
+
+Like 60% of them came from people who had started working on those here, maybe left and took it further, whatever. But like there was a lot of like capitalisms here around bundle of research and doing this. Um, so the, the big thing that we have discovered is writing a bundle is actually not as hard as it sounds.
+
+The real problem is the API design and how that ends up biting you down the road. So when we started, we actually were like, okay, well the first version of RS Ppac actually was ES build and we rewrote ES build. And so at four time we were thinking of calling it Go Pack and it was gonna be written in go.
+
+The problem with go that we found is it doesn't do well with bindings to js with like very complicated bindings. Mostly like you have a garbage collected language to a garbage collected language and, and that doesn't play so nicely. So then we kind of looked, okay, let's look into the rust side of it, moving es build into rust and let's just fix some of the problems Es build has, because it was almost, you know, good enough for what we needed.
+
+Um, at the time we were just building our links apps with it, so we needed a, it was originally called Speedy, so we needed a, a speedy solution. For length and that was, Hey, ES Build can almost do the job there, but if we could just fix these issues. Perfect. What we ended up finding though, is like there were bigger challenges in like ES build for example, like if trying to fix the code splitting so that it chunks the code better, or R, there's like architectural challenges that make that not just easy to add, like the dev just doesn't want it in there, but it seems to be like, well, you know.
+
+There's fundamentally, it's a little bit trickier to try and do that. Um, so we kind of ran to this wall a couple times where it's like, oh, well let's try and create something new. And then it's like, okay, well then there's the explosion of what ifs that come in that haven't necessarily been thought through and it's uncharted territory and so on.
+
+So we had two main issues. One, we had a lot of things using webpac. Um, we were also investigating VET at the time because Vet was getting popular and we were like, Hey, maybe we could switch over to that. Um. And, and you know, maybe that could work. And so then one of our infra teams ended up building, I don't know if you guys know Farm Fe?
+
+Have you heard of that? Bundler?
+
+**Andrew:** I think I might have been on the page before.
+
+**Zack:** Yeah. Farm Fe.
+
+familiar~~ familiar.~~
+
+So, so anyway, so FARM actually started out as ploy. So our infra team was split into two sections. One, one half of the infra team was building RS ppac. The other half of the infra team was building ploy. We reorged folded the compiler teams together to reduce redundancy, and then the, I think the, the main guy behind ploy left the company and released farm.
+
+Which was like heavily, which is essentially like from all the work that they had done to deploy, packaged it up and put it out there. And from what I understand Deploy was, the idea was to have like almost a Vite type compatible API just very quick and solve the problems that we were impacted by, that there was no world out at this point.
+
+So this was the way that, you know, they were going out to solve it. So we wrote like, you know, I think maybe five bundlers in total, like getting through to this point. The reason we ended up on Webpac is. Again, design issues. Oh, well we can extend it here and there, but then like there's all the unknowns and race conditions coming in, which essentially just makes the risk too high to look at.
+
+So what we thought is okay, well, probably the easiest solution would actually be to take something tried and tested that we know is guaranteed to work for all the business cases. And that was webpac, which is a lot more complicated. But the nice thing with Webpac is it's also got over 10 years of testing behind it.
+
+And so, you know, it's pretty solid to start with that. So if we could Port Webpack into Rust and say, we have a foundation that we know has 10 years of like, here's all the things that all works. It's all very well tested, then we could start to enhance and iterate on it knowing that we actually have a stable replica of a powerful bundler to begin with, which is a lot less complicated than trying to design one that could be that or more in the. So 2024 was largely get parity, get stability with the APIs. Like a lot of it was speed doesn't matter. It's about artifact quality and making sure we have like a one-to-one or, you know, make sure it works safely, like make it safe and then make it fast essentially. Um, so in 2025, now we're looking at speed opportunities.
+
+So I would say like things that we've been, we've been considering as like, you know, time is gonna involve on, um. So there's, there's a bunch of, a bunch of like various things, but we're, we're quite interested in a lot of what the Turbo Pack team has been cooking up. And so we've had a lot of those plans in our plans since like mid 20, 24.
+
+So things like remote caching, function level caching, cash. You know, cash that you can share between different, uh, developers. Um, that's something we're very interested in. I think we already have like function level code splitting as well, so you can move single functions out of chunks. Um, which these aren't, you know, super, like most people aren't really care about those type of like, minutiae.
+
+But basically it means you can make like a lot more fine-grained implementation. Uh, a lot better. Code splitting, tree shaking. Stuff like that. Um, a another big area though, that we wanna look into, I think we've already started the work, but is gonna be into a, uh, into a, what is it? Um, into a unified build graph. So essentially saying, I want to build to an edge worker, a native device, a node server, and the browser, and I wanna do it all from a single build. And then I want certain imports in that build to remain under certain boundaries. So, um, you know, like building the whole a module graph that could control potentially three to four layers of your deploy stack, but as a, but it's understood as a single system.
+
+To the runtime. So this is something Turbo Pac has also been working on. So I, what I would say probably is a lot of the future things that we would consider is gonna be, we started with aligning to Webpac. We have a stable core. Then now looking at things like what Turbo is doing, how can those be incorporated?
+
+Because we think a lot of those problems, again, are things that kind of align with the problems that we would like to see solved. Some other areas though, like, you know, a kind of an interesting one is. Like there's still a lot of room in tree shaking and dead coat elimination, like my personal opinion has always been whoever made the sm, whoever builds a compiler that produces the smallest bundle would most likely win like the bundle of war.
+
+Because regardless of how developers feel about it, or if they say, oh, well they love this ecosystem so much, that doesn't matter if you can produce 50% less payload. To the end user, like the user wins and if you can serve them twice the light of the lighthouse score, like the business will override any engineering just because of like the, depending on the industry.
+
+But you know, that's what I would say. If you can produce a smaller artifact. All the other points are moot. Like everybody's gonna go for smallest thing to ship to user best experience. At least that's how I kind of think about it. Um, but, but tree shaking and dead code elimination is really tricky.
+
+However, most modern bundlers still leave about 40 to 50% dead code even after optimizing. So that's how much still could be done. Um. So one thing we've been looking at as well, we've been working I think with KDY on some of this too, but looking at how could we use tree dead code elimination and tree shaking by using the tight script syntax to help inform the bundler of what's going on.
+
+So usually when you build things, how it works is, uh. You take your TypeScript code, convert it into JavaScript, pass it to the parser, the parser reads it and does whatever. So you lose a whole bunch of things like, oh well if there were private, you know, if this class is private, you could check, well, is that method actually used in the implementation?
+
+If not, we know that outside you can't use it 'cause it's marked as private. So it's safe to tree shake if we don't find any intergraph linkages. So I think there's a ton of information like that, that we could extract, which would really help with like how we, how a bundler can understand the app using like a better syntax or, you know, a more informative syntax.
+
+Um, some other things that I know we've been playing around with was we had the idea of, um, of being able to use hot reloading to redeploy production. So HMR was designed for production use and nobody really did that. So something that we've been looking into well is imagine if you need to perform like certain hot fixes instead of having to redeploy the entire code base.
+
+What if you could just push the hot update chunk into an existing app? So if you just needed to add the patch, and the patch was only one kilobyte, you were essentially just pushing an extra KB into the existing app and all your users could get it. You know, and you could hot reload them. Not, not preserve state in the browser, but you could effectively do things like that where your deployments just become hot reloads to, um, to the, to the pipeline.
+
+So, you know, those are probably some of the more interesting areas. Then I know we we're also getting into like stuff with AI and other things like that. So what I kind of see is potentially some, somewhere down the line where these things kind of like mash into something like combined. Where you essentially have like a environment that's then custom built and then potentially we could bolt on some kind of like agent system to it.
+
+And we have a doc site system that's designed to be parsed by like a indexer for like, you know, a question and answer bot. And you would be able to have a code sandbox. 'cause we have like a. Like essentially, you know, we could, we have enough of the loose parts where we could probably do some more interesting things like that.
+
+I'm personally quite interested to see, I know we started on it, but like MCP for example, hooking up our, our build Doctor RS doctor to MCP servers and now your AI would be able to understand what's going on in the bill and what if that could go a bit further. And you had like some knowledge graphs, so like the compiler helps serve, here's the application, here's how it's working.
+
+Potentially kind of, you know, starting to utilize the, the bundler almost like as a language server of sorts, um, to find context and understand relationships about like manually splitting chunks and doing things like that. I think a lot of problems that you have in like AI and like Rag is very much the same thing as Bundler.
+
+It's just you're serving a different type of module back, which is like a text chunk versus a script chunk. Um. Yeah. So, you know, there's some kind of interesting things that I could see floating around here, but I think in general, a lot of it's gonna be on how do we make it, you know, faster. Like, I think the, mainly the big things right now are speed, um, improving the, the unified graph structure, because that would open up doors like RSC and other areas like that.
+
+And so something we've also been kind of considering is, you know, what if, what if like something like RSE wasn't bound to react. But what if there was like a bundler level protocol of some kind that fits within, you know, that kind of paradigm? Because if you have like a unified graph and you can build the server, build the edge, build the browser, and.
+
+The build is aware of every, like where every part is gonna be going, but also the runtime is aware of it as well. So the runtime could know that, hey, this is a server module per se, but what if you could kind of bake that into, well, this is just how like importing certain code works. Rather than like, oh, well here's React server components, and you have to pass it props.
+
+But you, I mean, theoretically you could do the same thing where you say, Hey, here's bindings to a function that you get on your end and there's bindings that gonna translate into net, like, you know, a network related call or call to a worker and then get decoded on the other end. Um, you know, kind of using a similar kind of principle as, uh, as like what RSC would do.
+
+Um. So, and I think particularly for something like links, that would probably be very useful because we already have this used main thread and like using the background thread, you do parallel, like multi-threaded processing on there. And so being able to do that more sophisticated without needing to, uh, kind of glue, uh, glue certain parts together, I think, you know, would be quite interesting.
+
+I think this is where it would be nice to say, oh, well, links already uses this thing where it's kind of like RSE, but it's built into like links itself. Now what if like the bundler itself had like a universal way to handle this problem of like, here communicate with resources that might not be here, but to you they feel like they are.
+
+
+#### [00:34:00] Ad 2
+
+**Justin:** This episode is sponsored by MailTrap, an email platform that developers love. Go for high deliverability, industry best analytics, and live 24 7 support. You can get 20% off for all plans with a promo code dev tools. Check out the details in the description below.
+
+Yeah, Lynx is, LYX is such an interesting project and I think the thinking about the, the bundling. Uh, scenarios there is like really interesting. 
+
+
+#### [00:34:29] The Journey to RS Next
+
+**Justin:** Um, this is something that we wanna talk more about in a second, but before we move on to that, I would like to ask you a little bit about like, you know, just recently announced, uh, a next ARS spec, uh, module and like kind of moving into the next JS ecosystem, starting to support that.
+
+Um, and this seems like sort of like an alternative. So if like your team's not using Turbo Pack or not ready for turbo pack, like you have this alternative, can you talk a little bit about like. The work behind that, like how that came about and the, the introduction post mentions like some collaboration with Versal and at least like fundamentals is like, what does that look like for y'all?
+
+**Zack:** Yeah, so, so yeah, I think it kind of, I think, well, I think it kind of all jump started a little bit when, when about, I don't know, like seven or eight months ago when, whenever I was in China, I, uh, uh, we were kind of looking for, Hey, what should our plan be for like the next year? Kind of doing like midyear planning, trying to think about like a bit, you know, midterm, what our roadmap's gonna be.
+
+Um. And so we're all sitting around the table, like putting out ideas. We had things like RS tests, which have now kicking off, uh, kicked off so like all, you know, RV tests, but like integrated within like all of our other tools. And so we're going through a list of like, things we wanna add to the ecosystem or change and then, you know, wanna, and then sarcastically, I just threw out RS next and, uh, I don't think sarcasm translates super well.
+
+So, um. So, yeah, so, so everybody was like, oh, okay. You know, that's, it would be interesting. And essentially what it ended up being was like, oh, well, you know, we've tested at web, uh, RSS ppac on virtually everything we can find. Like we just cloned down repos, see if RSS Ppac can build them. And that's kind of how we've like tested a lot.
+
+But the one we couldn't test was next. 'cause like you couldn't just clone it down and, and replace web pack with RS pack and you're good to go. Um. So then we decided to try it and so we forked next. And you know, I think it was like we went out, like over dinner somewhere. We like went out for an evening and we were like, okay, let's just mess around a little bit, like over a steak and just see, you know, what we can get it to do.
+
+And so, you know, within a couple hours we got, you know, pages ruder working. And of course not all the tests were passing, but it was like, okay, I could pick, you know, a series of random tests and like, you know. A basic page of router with some CSS and, you know, a couple other various things would work. And that was quite impressive to just see.
+
+Oh wow, okay. Like it didn't, it wasn't that difficult and a lot still doesn't work, but the fact that you could get like maybe 40% of of tests passing. You know, something like that from just, uh, like, you know, quickly trying it out to see, you know, hey, could it actually build this? So ultimately I think like the challenges that we had with that is, Hey, this is really cool, and I hyped it up far more than I should have just 'cause I was so excited to see it.
+
+Um, but the thing is we didn't have a use case for it. So for maintaining a fork of next is like a tall order. Um. But it was really cool to prove that, hey, the bun, like for us it was, can the bundler do the job? If it can, then like, cool. I think we're, we're hitting the right track when we can build what 'cause next is, I mean, really next is just the most complex Webpack plugin ever created and that's next JS with some server thrown in there.
+
+But it's essentially like, you know, the goat of build plugins, uh, out there. So it was the perfect test case. Um. So, yeah. So anyway, we kind of built that then shelved it for a little while. We, uh, a few people after the Rs, next thing went out, I think a couple people from Versal kinda reached out. They were like, Hey, what's your plans with this thing?
+
+And we were like, it was just kind of like mostly for testing. Like we wanted to see if it would work and it did work. So that was the end of it. Um. And, you know, we'd, they would ask like, if, you know, would you consider upstreaming this? 'cause it'd be great to like, have, you know, another option. And, hey, I think a big challenge next has is they're not necessarily closed off to like, other options being presented.
+
+The problem is, is like people aren't just on tap who can just, you know, quickly drop out a new, like just, you know, a brisk replacement of next js, this whole build infrastructure with something else. So I don't really think it's been a case of like. Oh, well N is really closed off. It's just, well, how many groups are out there who are just gonna like, well, one, know how to do it or what to do and like two, like, you know, just, it's, it's complicated to do.
+
+Like, so, so, uh, so, so yeah, when we had something that was partially working, we started the conversations with them and you know, it kind of like died out and came back and died out and came back a little bit over time. Um. And I think ultimately, like what we had found is there would be really nice symbiosis here because regardless of if like there's, if Turbo competes with RS ppac or you know, whatever, like the problems that RSS Ppac faces that, so like a lot of stuff at Byte Dance is built inhouse.
+
+And the main reason is because when we run into a problem, there's nobody we need to ask from the outside. Uh, so, oh, you know, and that can get a little crazy like you, let's. Build our own JavaScript runtime, but ultimately, if the business needs a problem solved, you don't have, like, there's no, no, it's, yes, we have everything we need.
+
+Um, so, but that said, there's still open source stuff we depend on, and so like a really big one for us is SWC. So if, and that's one that is hard to get access to. Because it's largely to like time, like KDY is like the main guy behind it. And if KDY doesn't have capacity to do it, we can't, like, then it doesn't matter how many prs you send in, like you can't like help coordinate with the author and Cool, how can we like utilize a mix of manpower and what did you want to do here and then like combine to try and like solve some of these issues.
+
+So we identified there's lots of like common shared foundations in general. That even if there's turbo pack here, like if R SPAC is currently impacted by an issue in s wc, we know turbo pack will be as well and beyond, like competing in the open source. 'cause again, like we don't have too much skin in the game in terms of like, like, you know, the, we don't like, we don't need anything from these tools.
+
+There are side effects of, we have our own problems to solve. And by solving ours, they mostly work for everybody else. So here's a copy of it. Um. But so, so I think what was interesting is like, okay, well we, one really admire Tobo pack's work. Like I still am a big fan of Tobias and think the guy's, you know, like really next level on bundler design.
+
+And I think a lot of my teammates would agree that yeah, he's, you know, like the epitome of building bundlers. So the, see. So I think it was just like a really good opportunity of, well, one, we do admire the work that they're doing over there. Um. The guy behind it, obviously we're very happy with his prior art since we've built our version off his like, you know, design.
+
+So it seemed this would be really help, you know, essentially how does this become like a rising tide lift all boats. We're happy to pass more of next tests and try to get this thing into an up streamable position. Um, if like there's, if we can also have a greater impact that solves some common problems we're having.
+
+So it's kind of like, okay, well we don't really use the next plugin, but it would be really great for SPAC to be able to prove that it can build that. Obviously, you know, that's a getting a kind of like a, you know. Informal blessing, you know, on Hey Rs. P'S good enough to, we'll let it run on here. You know, I think it was a big milestone for the project just to hit, but I think as well, like, you know, one of my colleagues had said that like regardless of any competition that might be between the two build tools, the fundamental layers are, there's so much more value to drive out of working together to fix those, even if we are never, like, even if we're at odds with like the top end build tool.
+
+Like if you know, it comes down to, like, an example was SWC used to have a kernel panic when you would have a chunk over a hundred megs. Now that's probably not a case a lot of people run into, but when you run into it. You know, you're kind of dead in the water. And so these were kind of things where we'd like, okay, well we'd love to be able to fix this, but we need to kind of be able to collaborate a bit more.
+
+And so I think this just created a really good atmosphere where, yeah, we don't, we, you know, we're happy to kind of help upstream, upstream this back end. Think it'd be great for the project, but we'd also love to like, not just, you know, take the Rs next stuff, kind of sink a bunch of manpower into it just to get it onto next Js.
+
+Like, you know, again, we don't use it, so there's really not much use for us, but we, it doesn't mean that we wouldn't have loved to see it get in there. And also the way that it's done is really great. But I think, I think the, the, the N rs ppac is really just kind of like a nice gateway piece of like, cool.
+
+Through this we can now like, you know, it, it's, we now are supported next 15.3. And I think like the main thing is, but we are gonna be working on shared. Problems that impact us both. So like some big ones already. I would say largely around s wc. Again, uh, I think since the past few months that we've been like collaborating, we've seen the like performance improve, like just various like reliability and performance improvements of s wc, like significantly, like improve essentially.
+
+And that's exactly what we want is. Uh, you know, if we know how to write the rust code and you know what you want it done, then perfect. Is there a way that we can kind of work together on some of these things? So really, you know, I think that that's, that's primarily how it came around is like, Hey, would you be, could we upstream this think it'd be a great, like community option?
+
+I think like the motivation behind it as well is just you, you have a situation where there's everybody who wants to go and use Turbo Pack, but a lot of the people who are on Webpac are usually. The big, like, you know, whoever's stuff on a web pack build is gonna be somebody who's worth like a lot of money.
+
+Like company-wise, 'cause it means that they've created this massive monster and it's not something that you can just rip out in a couple days and pop something new in. So if you're really coupled to these build solutions, I feel like in next it was also challenging 'cause you don't have an option. Turbo pack gets all the love, it's, it's getting all the speed and Webpack can't get any quicker and so those users just don't get brought along.
+
+So kind of is counterintuitive to Verso, to like to next. Good dx. Thing that it tries to promote is like, Hey, it's nice to work with, but then it's like, oh, well it's nice to work with only if you're in the club. Uh, but the web pack can't be fixed, so your best move is to move to web pack. And that's not a very nice thing to hear from like.
+
+Someone who relies on it. So I think this was a really good way where it's like, cool people who can't migrate yet. Perfect. Hey, and if you prefer the Webpac style convention, like maybe you want Federation or things like that, here's a solution that at least now is gonna be like fast or comparably, fast to what you could, you could get.
+
+Um, so yeah, you know, I think it really throws a lifeline to anybody who can't move. They can now get a nice DX improvement. We get a lot more, you know, eyeballs looking at it, and obviously we get like the best battle test that we could want, which is against, uh.
+
+**Andrew:** Yeah, it's cool to see more and more like shared foundations popping up between these projects. It, uh, it just lifts all the projects up, 
+
+**Zack:** I think the, the, the, the big, the big thing there is like, it's, there's a, it's surprisingly few people who actually like, you know, that, that own a lot of these libraries or something like the, the. The, the, the group, the clusters of devs are really small, so it's really, really helpful when there's an opportunity to like work together because, you know, there's, there's, especially in Russ compared to JavaScript, it doesn't feel like you have the same like vast JS devs everywhere, like when you go to conferences and stuff like that, like rust isn't quite there yet.
+
+So I do think it's probably best for those working in the language to try and. Work together if you're solving a shared issue, because really there's not as much manpower to stretch like you would have on NPM.
+
+
+#### [00:46:47] ByteDance's Lynx Project
+
+**Andrew:** So, uh, before we wrap up, I think we should touch on a new project from Byte Dance Links. Uh, it looks like it's a React native, uh, competitor. I think I saw some CSS in the docs. So could you explain to us what it is and like, is it like a native renderer? Is it like a web-based thing? What's going on there?
+
+**Zack:** Yeah, so Lynx is quite, quite interesting. So, so it was, so originally it was built at Byte Dance and then. TikTok is the one who's essentially the funder and the like main open sourcer of it, um, currently. Um, and I think the reason that we have links is so, so I guess one scenario is like, remember when Facebook wrote React and what was their first use case?
+
+It was the like button. They wanted to swap out a like button in, in PHP somewhere. Now I believe that that is essentially kind of like what, how, how we, like The reason that we use something like links was, okay, well we have a component that's maybe not worth writing in Swift or C and bringing in React native is to, it is potentially like too much overkill for this thing.
+
+So we need a, a. A lightweight solution that's, that's relatively low friction. And then a big thing here is like, everything here is web. Like it all is looks web or is kind of, you know, how do you make the web type experience show up in things that aren't necessarily normal web. Um, 'cause I think just in China, everything's a lot more client side rendered, so there's a lot more mentality around, okay, this is like how we kind of work.
+
+Um. But it also just makes it familiar, so, so yeah, so links some, some things that were, okay. So the first thing is, so Links is actually agnostic. So it's not co, it's not like React native, but it has React links, which is essentially bindings to links that give you JSX and or. So. I think under the hood it's technically using pre-ACT, but essentially, you know, here's like the lightweight React like.
+
+Bindings to this, but you could also do it with Feld. I think you could do it to view as well. And then, I know I just saw they announced they're working on a vanilla one where, hey, you don't need any kind of UI framework and you could just use vanilla js. Um, so like, is it web? It kind of, but we, there's a custom renderer built into it, so a similar kind of thing where we actually render it down.
+
+So things like, you know, I think you've seen, we have like really good performance on the virtual list, scrolling. Or like doing all the weird, you know, carousel things that are easy to do on web, but really hard to do in native. Like a lot of that stuff is also kind of baked into it. Um, but yeah, like even when you, so when you style CSS, I believe that is converted.
+
+Yeah, that gets converted into like the native equivalent. So it'd be the same as like, you know, I've never used much of react native, so I don't know much of the, the styling semantics of it, but. Essentially it's saying, okay, read this from your CSS and make that happen, and create the, the final like rendered element style correctly.
+
+We don't support all CSS selectors obviously, but we support like a wide range of them. But I think ultimately the, the, the thing that we were after was we need a, you know, a native solution that's fast, that's lightweight, that we can sprinkle into. Views that don't need all the effort or all, like the hard work that goes into like, making say the mainline experience.
+
+So, um, you know, I think like on TikTok they were saying like, the TikTok app is native, but the TikTok shop is links or something like that. I'm not sure if it was the shop, maybe it's the studio, have to go back and read the blog post. I don't, I don't work, uh, on TikTok. I don't work, uh, for tiktoks. I don't actually know, but.
+
+Essentially it's this idea of you have things that need to run super, super well, and you'll write those in native code, and then you have other things that are like, it's not, you don't need that much out of them, where a good kind of native but web feeling solution would be perfect to inject these things like banners or certain pages that are, you know, out in the flow, but maybe your main video scroller.
+
+Keep that and see. Um, so I think that was a lot of like what it was used for, like surgical ways to, you know, make a app, you know, have more features in app without necessarily, um, having to commit to like the whole, like all or none type of scenario. Um. So, yeah, so I think that was kind of like some of the main reasons that, that we, that we had done.
+
+It was, it was, it was very like tax, like, you know, surgically inside of existing apps. We needed something that worked cross platform because we have to deal with like a lot more devices as well. So, um. So we wanted, you know, something that truly worked on everything. 'cause we have so many, like hard, I think, you know, we even have like Pico, which is like uh, VR headsets and stuff like that.
+
+So when you're thinking about I need to cross platform solution, the potential of the platforms you're up for consideration are beyond just like, oh, well it needs to work on like a phone and a desktop or something. Um. So I think that's where a lot of it came in. Now it is still like in its early days and all of that, but it has been really exciting to see like what they're doing and I am, you know, I think they would love to collaborate with like existing community.
+
+Like I'm sure they would love to collaborate with like React native group and stuff like that on, you know, similar kind of thing. Hey, is there any kind of shared foundations that could be, you know, could be helpful to lift? App dev in general, but you know, that's, I know if you have any other specific questions in there.
+
+I kind of got off on a. You know, that was generally what links was like done, brought to do in its current form is like drop in there. What I would love to see is something like a router, I think that's like a missing part, but I also understand like why it's a missing part. Because we're not like making your, your normal like router app where it's, hey, everything is React native and it's all expo or whatever.
+
+It's more. Like we have a app that's built for this purpose, but this thing doesn't need to be in the same language. 'cause it's not as mission critical. Like the manpower to write it and see isn't necessary. We could do it better if we wrote it in a more web friendly language. And then that's also a lot more portable across a variety of platforms.
+
+**Andrew:** Cool. Well, it sounds like you guys are working on just so many different cool things. Like we're, we're out of time now, but uh, we didn't even talk about all the different Rs family members and all the different like permutations that you guys have come out with. Uh, so it's exciting to watch from the outside looking in.
+
+Uh, and thank you for building all these tools and for coming on.
+
+**Zack:** Yeah. Yeah, it was great. It was great to come on and chat.
+
+**Justin:** Yeah. Thanks again, uh, Zach for coming on. Uh, it was awesome last time to talk to you, to you about all the model module federation work you've been doing and great. This time to, to catch up on what the. The current state of APEC is, uh, it's cool that you are breathing new life into the Wepec ecosystem.
+
+It's such an important ecosystem and it's such a broad ecosystem,
+
+so It's great to see.
+
+**Zack:** It's something that you, you don't want to see die just because like times have changed and that was a big thing. Like it would be really nice to just keep it alive 'cause there's so many good things on there, it just needs to run quicker. 
+
+
+#### [00:54:30] Future Directions and Ecosystem Expansion
+
+**Zack:** Um, I would say like, I know we didn't get to the R stack stuff, but I think like in general, what we're just planning to do with our thing with, with what we've got is like, okay, as you can see, we're bringing out a lot of pillars of the infrastructure that we would need.
+
+We're gonna be bringing out tests we already brought out. Library builds, like, you know, unbundled Tree, shakeable NPM package builds. We have RS build, which is the recommended way to use it, which is essentially rve. If you were to say RS pack's the build engine and RS builds the V of the world. Um, but you know, I think probably a lot of this is gonna be how do we fill out that ecosystem to provide kind of, because.
+
+This is from our own internal unified infrastructure kind of approach for everything. It just makes sense to build like this. But I think also it's something I would greatly appreciate in the, in the open source space to say, Hey, here's like a full suite of tools. That I don't have to buy into all or none, but if I do want more, they're hap like, you know, that it's designed to work together.
+
+And I think that's something we still struggle with in like ecosystem is the pieces can be glued together, but it's not necessarily like one shop saying, here's testing, here's docu DocGen, here's Bundlers, here's, you know, frameworks. You know, all the other bits and pieces, library authoring. So it'd be really nice to have like a single pipeline for building your packages, your apps, and like, you know, everything else.
+
+So again, I think ecosystem as well. Users who wanna use this, we wanna make the ecosystem a bit more welcoming, bigger, and you know, I think that's also another key factor in like the future bundle of wars is gonna be, well, you know, what kit does it come with? It doesn't really matter if the tool's good, the whole box needs to kind of be there as well.
+
+**Andrew:** Yeah. There, there, there. There's. Seems like there's a few different groups trying to hash out that battle, so I wish you guys luck.
+
+**Zack:** Oh yeah. Oh yeah. Anyway, yeah, so thank you for having me on. It was good to, it was good to catch up after such a, such a long time. ~~I ~~
