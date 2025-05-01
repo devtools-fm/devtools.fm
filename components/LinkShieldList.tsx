@@ -23,11 +23,6 @@ export const PODCAST_LINKS: ActionLinkProps[] = [
     text: "Spotify",
   },
   {
-    src: "/platform-logos/google.svg",
-    href: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5idXp6c3Byb3V0LmNvbS8xNzcyOTkyLnJzcw",
-    text: "Google Podcasts",
-  },
-  {
     src: "/brand-assets/favicon.png",
     href: "https://devtools.fm/rss.xml",
     text: "Website RSS Feed",
