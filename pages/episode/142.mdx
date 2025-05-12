@@ -1,0 +1,236 @@
+---
+title: James Garbutt - E18e
+youtube: https://youtu.be/watch?v=u_j3YlZ9XKQ
+spotify:
+tags: JavaScript, performance, e18e, open source, npm, package optimization, bundle size, web performance, OSS, developer tools, frontend, code cleanup, node.js
+---
+
+<!-- TAB: SHOW NOTES -->
+
+In this episode, we talk with James Garbutt about e18e, a community-driven initiative focused on improving the performance of JavaScript packages across the ecosystem.
+
+We discuss:
+	•	The goals and vision behind e18e
+	•	What’s slowing down the JS ecosystem
+	•	Why performance work is often invisible—and how to fix that
+	•	The importance of community coordination in open source
+	•	How developers can get involved in improving the packages they rely on
+
+If you care about build times, bundle sizes, and the health of the JavaScript ecosystem, this episode is for you.
+
+🔗 Links
+	•	e18e Website: https://e18e.dev/
+	•	GitHub: https://github.com/e18e
+	•	Discord: https://discord.gg/e18e
+	•	James on Twitter: https://twitter.com/jgarbutt
+	•	Full episode + transcript: [link to your site if available]
+
+🎧 Subscribe to Devtools.fm for more conversations with the people behind the tools developers use every day.
+
+<!-- TAB: SECTIONS -->
+
+[00:00:21] Introduction
+[00:01:40] What is e18e?
+[00:09:06] Tools for performance analysis
+[00:15:27] Forking vs upstream performance improvements
+[00:19:58] Node version support in packages
+[00:30:21] Barrel files and why to avoid them
+[00:34:05] Keeping up with micro optimizations
+[00:44:47] Libraries of e18e
+[00:49:31] Contributing
+
+<!-- TAB: TRANSCRIPT -->
+
+
+**James:** the hot path in terms of the dependency that most people pull in doesn't really need to support that far back. So the whole thing was to create alternatives, than trying to get rid of whatever it is that's pulling all those in. 
+
+
+## [00:00:21] Introduction
+
+**ANDREW:** Hello, welcome to Devtools.fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. We're really excited to have James Garbutt on with us. So James, you are one of the minds behind this movement called e18e, which is a. Like an initiative to clean up and speed up and just improve the JS ecosystem. So we're really excited to chat about that today. But before we get started, would you like to tell our listeners a little bit more about yourself?
+
+**James:** thanks for having me, by the way. I, yeah, so I spend a big chunk of my time, leading the e18e Initiative. And main, I maintain quite a lot of open source projects as well. a lot of my time is split across all these different things. I view use and un js and chakidar and, a whole bunch paths.
+
+But I've tried, and I'm hopping between all these things. Ee18e is definitely my focus at the minute. will for, will be for a while, I imagine anyway. Um, but yes, see, where it all goes.
+
+
+## [00:01:40] What is e18e?
+
+**ANDREW:** Yeah, it's quite a big, lofty initiative and kind, amorphous. can you explain to us what e18e is and where it started?
+
+**James:** Yeah. some time ago, I think maybe like a year and a half ago or something, there was basically a social thread somewhere. where Bjorn, who was working on Astro at the time and Anthony working on, vite, and I was chipping away at cleaning up dependencies in a whole bunch of things. all, found each other in a thread of all places and, started chatting about maybe we should have a space to discuss this stuff. And we have people like Marvin doing the speed up the ecosystem blogs as well at the same time. so maybe we should at least create a discord or something, we can, all work together on, performance related open source tasks. and so from that, we created, Discord to at least discuss this stuff, which then turned into the EE project where. We can, get more people involved and create issues and, easier to pick up work for everyone else, basically to, just to expose the performance problems more, I imagine. but yeah, it, all came out of just various people trying to improve performance in all sorts of different projects and not knowing about each other's work basically. So it's been really good to connect those people, and just provide a space for, new contributors to get involved as well.
+
+**Justin:** I feel like when this initially came up, before the initiative happened and Discord and all that other stuff, it was like, there was like a tweet or something about, oh, if you install this package, actually you get like this explosion of dependencies. and there was like a lot of discourse on that and, It yeah, it's was the Java scope JAMA of the day, as it usually is. and so did you, were you like, already working on this problem before that sort of had happened? Is this something that was already in your mind or was there, like a moment where you're like, okay, like I can get in and do something about this?
+
+Or like how was your involvement started?
+
+**James:** Yeah. It was the big drama at the time. But, long before that, I'd been contributing individually to, to a bunch of projects to reduce dependency trees at the time. I started doing that maybe four years or so ago, and there's like a trail in my GitHub of various attempts of creating, like lint plugins and other tools to help you out with this stuff, of them really took off.
+
+I, carried on doing the PRS myself, that was long before e18e. Then e18e started maybe like few months in, or five to six months in, this drama began. but it did help a lot actually to, add some visibility to this stuff. we, got a lot of people involved that wanted to help out because they'd seen this, Yeah, ultimately the dependency tree stuff is because certain projects do actually need to support, really old versions of Node, for example. the hot path in terms of the dependency that most people pull in doesn't really need to support that far back. So the whole thing was to create alternatives, than trying to get rid of whatever it is that's pulling all those in. which I think has, mostly been successful. in a lot of cases we've contributed upstream as well, but you don't need to create an alternative. 'cause quite a lot of maintainers are happy to in, the engine constraint, for example, I. But there's always gonna be some use cases where, packages, like the one that had the crazy dependency graph, do actually have a use somewhere, just not in the of mainstream, projects.
+
+the common use case doesn't need to support node one, for example.
+
+so as long as we have alternatives, we can massively reduce the, dependency tree depth essentially. and if you really do need that stuff, you can still pull in, the, one that supports, old versions. but yeah, the, the drama did help, drive a lot of the effort. We were already working on a lot of this stuff for a long time before then.
+
+**ANDREW:** When people think performance, I don't think they typically think like dependencies in my graph. I think they'd usually think like actual, like runtime performance. So like why was, this tree problem seemingly the first thing you guys went after? And what real world like benefits does reducing the tree like that have.
+
+**James:** Yeah, so it is, it's different for each project, obviously, 'cause we're trying to improve, runtime performance, but also, the developer experience performance from App point of view. So the install sort of size, for example, affects, developer tooling more than it affects runtime because you would bundle things so you will tree shake and everything anyway. and similar, if you have a deep dependency tree, it adds complexity for the DX side of things, but doesn't necessarily affect runtime a massive amount. then have ones that are in the middle where, they're, increasingly deep, but also have, a lot of older code in there that could be modernized because the platform's moved on since. so if we can improve those, or create alternatives that lean on more modern primitives and things like that, built in functions and stuff. then, you're gonna improve the runtime performance and the dxin a lot of cases. and, some of these will also be like if you improve bundlers or tools, the output code, that's gonna happen at runtime. But yeah, we still obviously have a lot of, cleanup happening where it just affects dx. that's still important because, you could be pulling down maybe Hundreds of megabytes of install size, when actually you only pull in maybe a few megabytes worth of it in, reality or something like that. so it does still matter quite a lot.
+
+
+## [00:09:06] Tools for performance analysis
+
+**Justin:** So when you're talking to people about like just learning how their packages are being used or understanding the dependencies they're using, what are the like quick tools that you just give someone to say here's how, you know what I. Your state is like what your health of your project is.
+
+**James:** Yeah, so at the minute there's it's one of the tasks that we're trying to work on quite a lot recently because. There's a big list of tools. Basically we have a page on the e and e website called resources, basically links a bunch of these tools. But, these days, like the most common, two that we would use, the node modules spec to which, Anthony, and the, npm graph website, which, visualizes the dependency tree. there's also things like package size dev, which tells you how big themes to all sizes and like bundle phobia, like tools to tell you what the runtime size would be and things like that. but yeah, the minute there's quite a lot of tools and not much connecting it. So we do have some work going on to create like a, unified CLI in library, which joins all these together. 'cause you should be able to run this against your own project, and just get some summary or report or whatever, that tells you if there's warnings from any of these. but yeah, admittedly it is a bit difficult to me. You just have to know like the big list of tools to go to. unfortunately that is documented, but it could be better, obviously if it just works from one place. But yeah, check out the resources page 'cause that is super useful. And we have like link plugins and things like that as well, which help. and like upcoming tooling, things to do with, build plugins and, bundle analyzers and things like that.
+
+**ANDREW:** Yeah, it's cool to see you guys working on the bundle analyzer stuff. that's that's an area that I think is just so under explored and Performance tooling. there's been, there's two web pack ones that have been around for a decade at this point and not changed at all, and nothing has gotten past the, the DX of those.
+
+So I'm excited to see if, that area can develop more For sure.
+
+**James:** Yeah, and actually like one of the things that we're, we want to lean way more into is the node modules inspector, because, Anthony has done a really good job on that and even integrates, Lin now, which is the tool by beyond that, Links whether you've published your package correctly.
+
+Basically, it checks various things in your package, Jason, like a link to. but all of this is like available, being available in one ui. so you can view the graph, you can view errors with your publish, you can browse through potential well warnings and things. So if we add more features to that. a lot of this should be solved just through using that ui. So if we can have like bundle analysis in there, that would be really good as well. but I think that's the direction we're leaning more into just 'cause like you say, there are already a lot of bundle analyzers, but there's a lot more tools now than there were and, smarter things we can do about, Figuring out duplicates and common JS versus ES modules and all this kind of thing, and even suggesting alternative dependencies and stuff like that. so I'm interested to see where that ends up going. but yeah, we've got a lot of tooling to build.
+
+**ANDREW:** yeah, I'm looking through this and, node modules.dev. once again, Anthony knocks it out of the park. This thing is super cool, for anybody who hasn't been on it. It actually uses a web container, installs the npm module directly into the web container in the browser, and then does lots and lots of.
+
+Checks on like licenses and modules and all that. So this definitely looks like a super cool tool I'd. I'd love to see all the other stuff layered on top of it.
+
+**James:** and I think where we are going is that most of it will be available in that ui. So you know, there's, if you haven't. Seen it. There's a tool called Are the types wrong as well. that's super useful because it basically, links that your type definitions are resolvable by TypeScript, with the export maps and everything else like that. So if you can just run that and pub in and everything else within, the node modules, ui, you get a really good overview already of any potential problems. yeah, I think it'll be really good to just keep building more, checks into that. and, like you said, the UI is super nice,
+
+as with everything that he builds.
+
+**ANDREW:** Yeah, I just popped in one of my packages and oh my, the tree, on that one is quite, large.
+
+**James:** I, I always enjoy just expanding the deepest layer. go to the bottom of the dependency tree and see what's there and you'll find something like, is odd.
+
+
+## [00:14:41] Ad
+
+**Justin:** This episode is brought to you by WorkOS. WorkOS adds enterprise features to your app without the overhead.
+
+Single sign on with any provider. Directory sync that just works.
+
+Role-based access control, audit logs, admin portals, secure credential store, you name it. They have modern APIs, well-designed, SDKs and documentation that respects your time. It's built for developers, backed by great support and trusted by teams shipping fast and scaling up. So just focus on your product and let WorkOS handle the enterprise stack.
+
+You can get started at workos.com.
+
+WorkOS also has a podcast called Crossing the Enterprise Chasm. It's really worth a listen if you're in a startup and you're looking at serving upmarket or moving to enterprise customers.
+
+Thanks again to the WorkOS team for sponsoring us.
+
+
+## [00:15:27] Forking vs upstream performance improvements
+
+**Justin:** So part of the e18e Initiative is. Is to identify packages in the ecosystem that are like heavily dependent upon, and they're either not maintained or they're targeting like a really old version of Node or there's some other reason why you like, want to optimize them away. but this has to be like, like some of these packages may be like relatively straightforward in their implementation, but some of them are assuming aren't As you take on a new package, you're taking on the maintenance burden of maintaining that library. So how do y'all balance the sort of ecosystem need for a new package versus, the maintenance burden of taking that on?
+
+**James:** Yeah, so the part, this is like basically one of the things that we try to do obviously is, upstream, above all else. So it, if we can work with the existing maintainers to improve what already exists, then we'll choose to do that. But it's not always possible because, some maintainers are long gone, you just can't contact them. and some maintainers have different requirements, like on the version of node they need to support or something else. Sometimes there is a valid reason to create a fork or an alternative, but to help, with the maintenance burden when that does happen.a few packages, for example, have been hosted by some of the organizations that are in our community.
+
+So for example, there's an ES tool in org, which contains a couple of packages that are. Built by the community, but owned by the ES tooling organization, so that on purpose. So there's not just one maintainer. And it's the same with Tiny Libs. tiny Libs has maybe libraries, are each individually owned by someone who originally created it.
+
+But the organization maintains all of them we can, the burden and, Basically ensure that it's not gonna die off anytime soon. so yeah. I think, a solution to that is just making sure that there's always an option for new maintainers to, move their package to one of these orgs and get the help basically, that they're not alone. we've seen quite a few contributors that, want to create a new package but don't want to be the only one maintaining it. so they're really happy to have the option to join an org and, have some help. that's, that's also why we try not to switch to things that are not battle tested because we've seen this a few times where. it's all good. Someone can, create an alternative package. if it's got no users yet and no one's really tried it in the wild or any of that stuff, can't really promote that people move to it. so a big chunk of the work that we do in the communities to. Reach out to, larger projects to try these new tools out.
+
+And if they do work in some sort of beta version or something, then, we can gradually move them over to them. but it's gonna result, in a level of trust at some point in that you just have to trust that the maintainers are not gonna disappear. same that we did with the existing packages. but ideally most of them have more than one maintainer at least. can't always be true, but, in a lot of cases it is. And, quite a lot of the community members work together well enough that most of them are maintained by multiple members in the community. not many of them are like solo ventures or whatever. yeah, hopefully it just carries on that way.
+
+
+## [00:19:58] Node version support in packages
+
+**ANDREW:** One tough topic when it comes to publishing packages is supporting different node versions. part of that, big drama back then was supporting all the way down to some of the oldest node versions and, That's a hard thing to do if you're running a project. it really ups the maintenance burden if you wanna be like, oh, this last version supports all the way back to this old unsupported version.
+
+So what's your take on supporting node versions like that? And like when we drop an EOL for node 18, how long do you think we should support node 18?
+
+**James:** Yeah, it's a tough one because, don't, so I believe that there probably are people somewhere that do need to support very old node. like I said earlier, we don't want to get rid of the package that packages that, let them do that. but then. Most packages I would expect, assume that you are using like node 16 at least, or something like that. but yeah, I You mentioned node 18, out of long-term support soon, and yeah, it will be great day when that happens, but at the same time, obviously you can't just. Switch off it immediately. there will be a lot of projects that still have to support it for a while and, that's okay. it does mean that quite a lot of projects have the option to create a new major version or something that does require node 20 and above. don't believe that most of us should, so most of us should not have to support very old nodes, like 0.8 or whatever. but quite a lot of us will have to support node 18, for example, even when it's not long-term support. so I think that's fine. I think just naturally over time we should keep an eye on it and, When we can, bump the constraint. 'cause quite a lot of these projects as well, didn't purposely support old node. they just left the constraint like that and have been change, like keeping the code, compatible sins. Really, when you bring it up, quite a lot of projects have said, oh, don't we just bump the version up? And they have, and it deletes a lot of code because you can use built-in functions and things that didn't exist before. so I, yeah, my recommendation would always be just try. Use a more modern node. I fully understand that's not always possible depending on, what platform you're in working in and who it's for and things like that. so it's, different for every person.
+
+**Justin:** thinking about okay, so there's packages that depend on old versions of node. there's packages that depend on other packages that potentially have a bunch of dependencies themselves, but what are the other like big areas of cleanup that you see in the ecosystem? Like things that just people can do to really just improve, their packages.
+
+**James:** Yeah. C So the really big one that we've been pushing a lot recently is, moving away from dual packages. Quite a lot of packages out there in the wild basically ship double of the code because they wanna support common J-S-N-E-S modules, and in some cases still, for example. yeah, we've been doing a fairly big push to, move a lot of packages to be ES modules only, and I would recommend that for anyone if, you can, like obviously some packages still need to support common js, but, If, you are lucky enough that you don't need that, then you should switch to ES modules, especially now that the latest node versions can require it in common. JS So you're not losing, many users by dropping the common J support because they can still require the module. but think things like that.
+
+And, there's an ongoing discussion about source maps as well, but that affects like install size, not runtime performance. So it's, it's fairly low on the priorities, but would make a big difference. Quite a lot of packages, ship source maps and the source maps can often be much bigger than the code itself. so if you didn't ship that, modules would be a lot smaller, but there needs to be some solution to, be able to pull source maps in when you want to debug this stuff. So there's still discussion going on around that. Yeah, in general, if you're maintaining some project or whatever, I would just recommend, around known modules, dev for example, and see what your dependency tree looks like and just be more aware of what you're pulling in. keep an eye out for like duplicate dependencies, for example. different versions of the same thing. you could have a look for a mixture of common js and ES module dependencies and just see if there's more modern alternatives to some packages. smaller ones even. like going back to a tiny Libs example, like Tiny Libs has quite a lot of packages that are more modern and faster and smaller than the older ones they replaced. so yeah, you just browse around, the tiny libs org and unjs as well, both have a lot of, like that. but also you can just run like the, we have a link plugin as well in e18e, you can run that and it'll suggest, replacement, dependencies, basically. It'll detect what you're importing and just, suggest maybe you could use this thing instead. and that's not always another dependency. It could be a built-in thing that browsers have, for example, natively. so yeah, I think a lot of it is just being more aware of your, dependency tree and also just being more aware of how the platform has changed. We ship more features to browsers and node all the time. often people don't realize that something is built in now that they're pulling a package for, you could drop the package and just use the built in function. So definitely keeping an eye on just like change logs and stuff like that, release announcements and things. and then you'll, you'll, end up with a much cleaner code base because of it.
+
+**ANDREW:** Yeah. Hopefully when the require ESM stuff drops, we have to worry about a lot less of this. It's it's hard to anticipate what the new problems will be. It's like we're, very versed in this old problem that we've all struggled with for so long. Like I'm, interested to see if there's An unanticipated thing coming because I know for the longest time we didn't ship require ESM because, the node people are like, oh, it's bad for performance, like having to guess if this file is CJS or ESM.
+
+So maybe some of those will come to bear their head, but I don't know.
+
+**James:** Yeah, and there's still, there's still quite a few people that prefer Common J so I, I don't think it's, maybe, never, maybe it'll just be a long time, but I don't think, all packages will move to it. I
+
+think you will end up with some maintainers that genuinely prefer to use common J. and for example, from what I remember, there's some, open telemetry stuff, for example, that's not as easy to do in ES modules, because you need to hook into the require, resolver or something like that, that you can't really do as easily in ES modules. things like that obviously will get resolved over time. but yeah, there'll still be a preference for a few people to use Common J so I think it'll just be a mixture for a long time. but as long as you've got alternatives, I think you'll just choose the one that you prefer. And hopefully most people choose the s modules, because it does, it helps bundles a lot as well, and things like that. Because it's an actual, it's, a tree shakeable way, more easier than common Jase as well. just 'cause it's less dynamic. but yeah, we have yet to see what the performance of the module resolution and stuff like that will be in comparison. as far as we've seen so far, fine, but. we need to move more packages to it and, help the node team especially just try it out more, especially the require stuff, and get more feedback. 'cause they will iterate on that as well. So it, yeah. It's not close to being done yet.
+
+
+## [00:30:04] Ad 2
+
+**Justin:** This episode is sponsored by MailTrap, an email platform that developers love. Go for high deliverability, industry best analytics, and live 24 7 support. You can get 20% off for all plans with a promo code dev tools. Check out the details in the description below.
+
+
+## [00:30:21] Barrel files and why to avoid them
+
+**ANDREW:** So speaking of bundling and, performance of ESM barrel files are, a big topic when it comes to performance. so why are barrel files so bad for performance and, yeah, Why are they so bad?
+
+**James:** Terrible. So it's, a good way of seeing this actually is in browsers. let's say you, you have like an ES module that's a barrel file. and, a barrel file by the way, is just some file that re-exports a, bunch of the exports of some of the files. have, having an index file. but let's say you have one in, in a browser especially, and you've just pulled it from Unpackage or something, some CDN, the, from the module resolution then of your browser, it will have to send a request to all those modules that it's re-export even if you don't use them. In a bundle, you can k like, you can get rid of some of that, but it does mess with tree shaking a lot as well. So you are better off just, importing from the exact modules basically what you want. and there are limp plugins to detect this stuff now, and I think Biome has it built in. and, a few other, an ES limp plugin. Because it's just proven to be really bad for tree shaking. but if you run your code natively in browsers, it's even worse obviously, 'cause it has to load those files. so it's, yeah, it's generally just not good for performance, but it is nice for usability sometimes. So that's why we've ended up here. but I think that will change over time because especially with export maps, for example, you can more easily split modules up now and export specific things rather than needing one big index file. we'll see what happens though. 'cause there's, still a lot of them in the wild,
+
+**ANDREW:** Before export maps, it was just, it was so hard to do, like multiple exports without barrel files, right? Like you could throw a js file at the root of your project and then point it at something in a dis folder. But dual packaging hazards abound and, not a fun time. Exports maps have made it better, but the syntax a little, it's a, high bar for most, and it's very, easy to mess up.
+
+**James:** Hundred percent. And, that's, I think Ling helps with that. Going back to that, Just something to link the export map basically and help you out because it is a complex thing. A lot of people still get it wrong. simple stuff like putting the types, line after, after the module line itself means that sometimes the types never get loaded, for example. so using a lin, like lint tool or I add types wrong, We'll help you figure that out. But it's, yeah, it is a complex thing in general. and there's import maps as well, but I haven't seen many of those in the wild. so yeah, hopefully there's just good documentation on it.
+
+
+## [00:34:05] Keeping up with micro optimizations
+
+**Justin:** I'm seeing a little bit more of those in the Dino world. 'cause they're leveraging stuff like that. I wanted to ask, when I was going through the site, the speed up section, there is one thing that I had noticed. So you have this call out about avoiding generator functions for hot code paths. and I was curious like how much of a problem that is in practice, like what the practical slowdowns are for like, relative, code and also this is.
+
+The call out is very specific though that hey, some JavaScript engines are not gonna optimize this. Using this kind of code could lead to slow execution. but like internal execution or internal implementation of an engine is a moving target, right? Like V eight is always changing. JavaScript core is always changing.
+
+So how do you. When y'all are making these suggestions, how do you like, keep abreast of the performance changes in the space, to, be able to update your recommendations over time? And if someone else is like building a code base that relies on these features, how do they keep track of it?
+
+What's your advice there?
+
+**James:** that specific page is basically a very difficult, set of advice to keep up to date. I'm not sure there's a, like a, final answer to this or anything in that. The, like you said, the engines change over time. So I think on the same page, we specify that you should avoid chaining, array, methods, like mapping filter and things like that. But I think, what I remember, V eight actually optimizes a bunch of that, under the hood. So if you do. two filters, for example. I think it's smart enough that it can figure out that it's one iteration or something like that in some cases. it is a difficult thing to document because, the engine might push an update, next week that optimizes that. so I think we probably should update that page anyway, just to mention that it is a moving target, like you said. And as far as I'm aware, async and generators still do have some, performance issues, compared to like sync code. but the engines probably would benefit from you this stuff so that they can have opportunity to optimize it.
+
+so yeah, I think it's good advice, but at the same time, it's difficult to keep track of, when the engines themselves have, increased performance of this stuff. so I think it would be better that we can present it as like advice rather than definitely don't use this, if that makes sense.
+
+**Justin:** Yeah, I know like benchmarks are fraught in a lot of different ways, right? It's like really easy for benchmarks to misrepresent data, but like this kind of thing seems like the situation where benchmarks should actually be super valuable. It's here's the data collected on like these code pass of here's async, here's generators, here's another, Type of structure and just looking at like the performance implications of these, code paths. 'cause I think it's I've stumbled across features like this in the past where it's okay, don't use this feature. It's slow and then it like changes over time. But you still have that idea in your head.
+
+It's oh, it's slow and it's hard to up. Update that mental model. And it's hard to talk about too, just 'cause it's it's hard to visualize and what is the magnitude of the slowdown? Like, how do you know? I don't know. It's, always a challenge.
+
+**James:** a good example of this, I think as well is the various color libraries. we've got chalk, pico colors, anses, and a bunch of other libraries, that do, anse like terminal colors. And, ultimately terminal colors are just some escape sequences. all of these libraries, when they compete on benchmarks, they're just competing on how fast they can concatenate some strings, basically, because under the hood, all of them will, join the escape sequence with, the text that you want to make, red, for example, and then another escape sequence. It's how fast you can do that. And so when I see benchmarks for stuff like that, I do think like we should avoid relying on benchmarks for those things because the engine might change how I. string split performs versus iterating through a string and looking for the character on a split by. the benchmark might be worthless a week later if the engine pushes some update that optimizes it and then. Library A might have been faster than library B, and then next week library B is faster than library A. So yeah, in a lot of those cases, I think micro benchmarks in particular where you're just measuring some sort of fundamental operation, very useful. then using benchmarks more to. benchmark, like more complex code between libraries and stuff like that, or even just to keep track of change over time, against the, against different versions of Node, for example, are probably a really good idea. as maintainers, if you have a, if you maintain a library that, cares a lot about performance, probably a good idea to have some regular run.
+
+Benchmark just to test the, like a new version of Node hasn't come out that makes it slower or something. it would be good to see more libraries doing more of that, I think and, more apps and things.
+
+**ANDREW:** A long time ago, Crockford had wrote, Douglas Crockford, wrote JavaScript, the good parts, talking about oh, like actually only use this like subset of JavaScript. And that was, that was before like ES six and all that stuff. So this has been a while. And as I was reading through the sort of performance recommendations, I was like, I was thinking, do we need another JavaScript, the good parts?
+
+**Justin:** should we, as a community, rewrite that book and talk about it in modern terms? And I was curious if there was like one or two things if we like, we're all writing a book like that. What are one or two things that you would like, wanna make sure a hundred percent were added?
+
+**James:** Ooh, that is a tough one. 'cause I'm a big fan of ES modules, for example, but like I explained earlier, I can't really, say, oh, everybody should use ES module. they should, but, if you prefer a different syntax, maybe not. but yeah, there's things like, just different primitives and different built-in functions and stuff you can use now that you couldn't before. using sets and maps and things like that. but also, there's so many proposals out there that are introducing new features that. I, I wish were a thing already so that we could get rid of a lot of older sort of mechanisms and things. I, there was a proposal unfortunately shot down recently that was, adding, polls and records to JavaScript. and it, it would've made a lot of templating engines a lot faster, for example. They would be able to compare, compare two sets of template strings, like between renders basically, a lot easier. yeah, I would, mention like a lot of stuff around these newer primitives. but then at the same time, like it's. The language is changing all the time. People proposals still all the time, and new standards are coming out. so it's very difficult to know what to recommend to people. And friends that don't work in front end and work in, like CA for example, still joke that every day we have a new framework or something. And, every day we've got a new syntax or something. yeah, that's probably a good thing sometimes, just to keep things moving.
+
+**ANDREW:** Yeah, that, that's a double-edged sword. There's lots of movement, but it can be a lot to handle. I don't think I ascribed to that joke as much anymore. sure. Maybe five, eight years ago there were a new framework around every corner, but it's little bit different now. Like I, I take that comment with a, grain of salt.
+
+**James:** Yeah, and quite a few of them are, depending on the same stack these days, Everybody uses Vite, for example. Most frameworks and, there's like Pua that runs unjs is working on Nitro, which, has three, this little web server inside it that I think multiple frameworks are gonna be dependent on that soon as well. So it's really good to see that collaboration and that. Even if there is a new framework every day, they're all at least using a lot of the same underlying technology. and actually communicating with each other and collaborating. so it's, not like the old days.
+
+
+## [00:44:47] Libraries of e18e
+
+**ANDREW:** So in the e18e in the e18e universe, there's three large projects, going around. So there's tiny Libs, unjs and Es tooling. What's like the differences between all of them and how does, does e18e own any of them, or are you just contributors to various things?
+
+**James:** what bas first of all, like one of the early, intents that we had when making e18e was, it shouldn't really own anything. It's just an initiative and a community, to provide a space for people to collaborate. and that's why we have the ES tool in org as well, for example, which holds a bunch of. e18e focused tools, but it isn't e18e and similar, like Tiny Libs existed before e18e, because it, it had tiny bench in at the time, I think, which is really cool. Package for benchmarks. unjs existed before, but they're all basically organizations as in GitHub organizations that, happen to be working on things that are in this space. so es tooling generally holds tools. The e18e community has come up with that, like the link plugin, for example, that help out, suggesting module replacements and things like that. then, js was already being built by pya, who works on like a lot of nooks things. the, That's basically a big collection of packages that are all really focused and well built, and a lot of them are so that you can have an abstraction on top of the various cloud, out there. so you can have, un storage is one of the libraries, which lets you have a storage layer regardless of which cloud you're hosted on. So stuff like, that's really cool. And tiny Libs has like a tiny exec and tiny bench, and Abu a bunch of other packages. and so that's its own org with its own maintainers, that have we, happen to run that one now as well. But, we have our own discord for that, separate from e18e 'cause it existed before that.
+
+And it, there's like maybe five maintainers that maintain all of that. so yeah, we're in a, in the e18e community, we're trying to promote these organizations because they've got good aims and good goals, but we don't own any of them. the community as a whole is contributing to a lot of them. They just happen to be well aligned to what we're doing. but then we do have projects that we're working on. I have a GitHub board somewhere that, I use to keep track of what the big ones are we're doing. and those are more like, a big contribution somewhere that's taken months, that the community is working on, and there's maybe two or three people out of the community owning it. a good example of that is the new prettier CLI, which I've been reviewing some of it today. It's someone measured it in some benchmarks and it was like 10 times faster than the current pretty SCLI. and that is gonna be available like in prettier itself, like as the official one.
+
+It's not a separate thing. You install it will be the new CLI at some point. the community's working on that at the minute. massive project that's been going on for maybe like three months in the community. But Fabio that started it has been working on it for. Maybe four years. yeah, we have a bunch of ongoing work like that's really big that, change, how we use a lot of these tools massively. but again, we don't, we as e18e don't own it. We're just contributing to some existing project, trying to help out, that, that's the aim really.
+
+
+## [00:49:31] Contributing
+
+**Justin:** So for folks who, maybe have, are hearing about this for the first time and wanna do some analysis. On their projects, maybe they wanna get involved, or they wanna help improve the ecosystem. Where do you suggest they get started?
+
+**James:** if you wanna get involved in contributing, for example. We have, e18e issues repo has like loads of open issues, for, a lot of cleanup and speed up stuff, where we've already defined what needs doing, but someone needs to pick the work up. you wanna help out and you want to contribute somewhere, that'll have an impact, on, on a lot of people. It's a really good place to just pick an issue up and try it out. there's loads of people, in the community that will help guide you through that and will do code review and things like that. so like a, an example recently was, a collaboration with 11, where we have an issue, like an umbrella issue in the repo. to just investigate if 11 can be made smaller or faster. a couple of people from the community saw the issue and joined in and started investigating it. and there's maybe been like four, four or five prs landed in 11, and a new release recently that I, think, I think they named it like the e18e release. But, that was really cool to see, that they landed all these prs and it got like 20% smaller or something like that. so yeah, if you wanna get involved on that side of things, just have a look through the issues or join the discord, or both, and there's always people willing to help out and point you in right direction. as a maintainer of your own projects as well. if you maintain open source projects and you want some help, looking into the performance, join the discord and share the project, and people will probably, join in and, contribute. If you're, if you just wanna find out like how to make your project not open source necessarily, but just make your own project faster and lighter. have a read through the, the e18e website use a lot of the, there's a lot of good tools in the resources page. but use the link plugin as well. 'cause that's, that gives you a lot of easy wins in. just suggest alternative dependencies that have already been battle tested and proven out. so in a lot of cases it's a drop in replacement. so you could already have like speed gains and, better memory performance, for example, small memory footprint or install size or whatever, just by replacing a dependency. so I would definitely recommend just running the. And see what it reports, stuff like that basically.
+
+**ANDREW:** that wraps it up for our questions this week. thanks for coming on, James. this has been a particularly inspiring episode to me. I will probably spend my night. Looking at dependency graphs and trying to ship smaller packages, so thanks for coming on and inspiring me and our audience.
+
+**James:** Yeah, no worries. Hopefully it, people. Get more interested and involved in performance, changes because for too long it has been low priority, so it would be good to see more people care about this stuff.
+
+**Justin:** Yeah, absolutely. Thanks again, James for coming on and thanks for your work for the community. I'm excited that this initiative exists and yeah, hopefully we'll see some good stuff in the future.
+
+**James:** Yeah, no worries. Thanks for having me. 
+
+​ 
+
+
