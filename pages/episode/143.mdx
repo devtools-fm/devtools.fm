@@ -1,0 +1,331 @@
+---
+title: Stepan Parunashvili - InstantDB
+youtube: https://www.youtube.com/watch?v=t3QxNe2VEhk
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Stepan-Parunashvili---InstantDB-e331cl4
+tags: InstantDB, Database, Local First, Serverless, React, TypeScript, JavaScript, Firebase, Meteor, Luna, Figma
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Stepan Parunashvili, co-creator of InstantDB, a new database that's designed to make it easier to build local-first apps.
+Instant is a replacement for Firebase, and it's designed to be a more modern, more flexible, and more powerful database for the modern web.
+Join us as we dive into the details of InstantDB, the challenges of building a new database, and the future of local-first development.
+
+- https://www.linkedin.com/in/stepan-parunashvili-65698932/
+- https://www.instantdb.com/
+- https://github.com/instantdb/instant
+- https://github.com/stopachka
+
+Episode sponsored By WorkOS (https://workos.com) and Mailtrap (https://l.rw.rw/devtools_2)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:19] Introduction
+[00:01:14] The Journey to Instant DB
+[00:11:33] Instant DB: Features and Functionality
+[00:18:27] Understanding the Triple Store Paradigm
+[00:30:04] Improving Permissions Over Firebase
+[00:36:55] Handling Data Syncing and Presence
+[00:42:02] Future Plans and Hiring
+[00:46:58] Front-End First Technology
+
+<!-- TAB: TRANSCRIPT -->
+
+# 143 - Free
+
+**Stopa:** as we were building the fitness app, we built some of the rudiments of instant and we realized, this needs to exist.
+
+Like in the future. There needs to be this kind of tool that you can pick off the shelf that's gonna, simplify of the drudgery that is involved in programming, right? 
+
+​ 
+
+
+#### [00:00:19] Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, we're really happy to have Stepan on with us. Uh, so you are one of the creators of Instant db, uh, which is a really exciting, uh, new technology. We're really happy to dig more into that. But before we do, would you like to tell our listeners a little bit more about yourself?
+
+**Stopa:** Sure. Hey guys, my name's Stepan. Um, people call me Stoa. love to program. I like lisp, I like writing. And uh, I think, uh, instant was this culmination of this adventure that me and my, my co-founder were on that, uh, where we tried to just make, uh, development easier. So that's the, it's a little bit of background on me.
+
+Maybe some fun facts. I was born in Siberia and uh, I can speak a little bit of Chinese. So that's the. That's me.
+
+**Andrew:** Nice. 
+
+
+#### [00:01:14] The Journey to Instant DB
+
+**Andrew:** So I, I feel compelled to ask, so where did that development journey begin? Was it with an app? Like, did you set out to create this, uh, instant DB in the platform or was it more like a, a product first?
+
+**Stopa:** I think it was, it was kind of this idea that was building within us for a long time, so. To give context too. I think for us as developers, we started in the era of Heroku and, uh, and Firebase itself. So I always really admired, for
+
+**Andrew:** I.
+
+**Stopa:** Heroku because it, it let me, uh, build things that I didn't, you know, I, I didn't know how to run Linux containers at the time, so it kind of really opened my eyes, right? so we started with this layer, I think like developer tools that seem like they're simple for, kind of like beginners. They can end up really enabling people to build serious things. As time went on, um, two things kind of happened. One, I think you develop, uh, web apps today, you kind of at least I, I, you, I don't know if you guys relate to this, there's usually the same kinds of problems that you deal with over and over again. Like you get a database, you, you get, you write endpoints, you make sure the permissions are there, you funnel the data into the, the front end. You need to use a store. You think about optimistic updates, And. Fundamentally, this thing hasn't changed in a long time. Right? I think the closest thing, uh, that addresses this is, was Firebase for us, where if you use Firebase, you don't have to write endpoints, you can write queries on the front end.
+
+Everything's reactive by default. It works offline. Uh, and what would happen is sometimes, you know, for example, me and my, my best friend, we'd work at things like places like Facebook or Airbnb. Sometimes just to move fast, to like show some demo inside, um, Airbnb for example, we would just spin up a Firebase instance and just show what was possible. So the, the kind of germ of like, it should be easier started there. And then we started building these different startups. and eventually in one of the startups, you know, we did, uh. We did use Firebase, but the big problem was most systems require relations, You need to have, be able to say a post has a comment and then a comment has a user and gimme all the comments for a user. And doing this in Firebase was just such a schlep. Uh, we kept seeing this problem. Uh, we even wrote a blog post about it, and then everybody would tell us, why don't you do a business about this? And we said, no, no, no, no, no. That's not a good idea. We're gonna do a fitness app. So e eventually as we were building the fitness app, we built some of the rudiments of instant and we realized, you know, this needs to exist.
+
+Like in the future. There's, there needs to be this, this kind of tool that you can pick off the shelf that's gonna, you know, simplify of the, the drudgery that that is involved in in, uh, programming, right? Where actually there are these really fun parts programming, but uh, kind of repetitive step of take the data, normalize the data. it in the store. Do you normalize the data? Like we, we can make that easier?
+
+**Justin:** Yeah, so this is, this seems like a pretty. topic these days. Just thinking about like the, the classic app is kind of your, this three layer architecture where you have your database, your application back end, your front end, and translating between all the three is a lot of work and it's fraught and non-differentiating. So we've seen a rise of local first, uh, frameworks. Things that, like you just think about your database on the front end or your data store on the front end. You interact with it and hopefully things are, uh, good. Um, so what, um, I guess where in this space, uh, do you fit? So like, or maybe a, a better, broader answer for this question is like. How do you what? How do you describe what Instant DB is to people and like how does that fit in the local first space?
+
+**Stopa:** Yeah, maybe one way I can also describe this, this might be getting a little too abstract, but I do think there's this kind of pattern in architectures and each, each architecture has to solve like a different thing. So I'll maybe explaining this, we can just kind of find where instant fits too. So I, I think one way you can look at what's been happening and programming is, in the eighties. We can go even before the eighties, but we'll start with the eighties. You got client software, right? Like you have, you have personal computers for the first time you install things in your personal computer. Um, and, uh, you don't really at that in the eighties, nobody worried about the network, right?
+
+There's a famous story, I think it's apocryphal, but somebody asked, uh, Steve Jobs, um, what did he think about the internet or networking? And he took a floppy disk and threw, threw the floppy disk at the person. Said, that's your network. But around this time, you know, one thing that's interesting is by the nineties, if you look at software like Microsoft Word or PowerPoint, it's like the pinnacle of like, uh, client software.
+
+Like it works really well. You know, Google Docs is, you know, you know, arguably not better, uh, when you start typing then Microsoft Word in 1998. Uh, so it has all these big advantages, but slowly it had these disadvantages, which is. One shipping. That stuff takes forever. You know, you have to put in a Shri, you know, in a box. So you have to have these development cycles, bug invariably go through. Uh, you can't take the data with you anywhere, so you know, you're kind of tied to your computer, but then 2000 comes along. The internet and server-based software, just terms of productivity, destroys the client, right? Like, you can, you can, the data's available everywhere.
+
+It's easier to manage. You can ship updates right away. And eventually we get things like rails, where if you're building an app in Rails, you can go extremely quickly. Uh, but the downside of server based software is that, you know, every, every interaction goes through this in mid, you know, middle layer of the server. And no matter how hard you try, it seemed that it wasn't gonna be as good as the, as the, uh, client site software. But what ends up happening is Chrome just gets better and better and better to the point where you can run like 3D animations inside your browser. and suddenly now it's like no longer, you know, the network has gotten a lot better and the browser has gotten a lot better.
+
+So you can build a different kind of app and this app has to work in both places. Like when you see something like Figma, what you realize is it works like a client side app, but. also on the network. You can, everything's collaborative by default. Um, you know, it works offline. Like there's these, these effects to it that of change the style of app. But what ends up happening is when you build an app like that, there's just no, uh, fundamental tools for this. So it's extremely difficult to build apps like this. So now to kind of go back all the way to the question that you asked, think there's different ways that people try to solve this problem. One way is, you know, the rails approach where we still stay strong and say no, like everything should happen on the server. the problem is this ignores the reality that. Your browser is really powerful and your machines are extremely good. Then there's kind of this opposite approach where it's extreme, I would say local first.
+
+In the original Martin Kleitman of it, where it's extremely privacy centered, it's no central source of truth, right? Um, and that can be very good for things like, uh, you know, secure messaging systems and things like that. But the problem with that is you are starting to get rid. the benefits of the centralized network, where suddenly like those apps, you know, they cannot do things like they're great for mul, like a single player approach, you know, your own note taking app. But as soon as you start creating like a multiplayer note taking app, things start getting very difficult in that approach. So where instant kind of goes is a little bit in the middle where we try to be as pragmatic as possible, like what we care about is that. Users can build apps extremely quickly. We wanna make it so that within, like, you know, instant is the fastest way to build an app. But then we wanna add the, the kind of, uh, that Firebase had that makes building those apps really fun, right? Like when you build something on a Firebase, the app itself is generally better. Because it is reactive, it does work faster. It it optimistic updates come for out view for the box. I would say kind of instant this, this middle ground where what we're trying to do is to make it really easy to build linear notion in Figma. Uh, and what that kind of involves is some parts local first where we wanna make sure that optimistic updates happen for you. We wanna make sure that, uh, it does continue working offline, but you wanna have some centrality so that you can have. cursor state, you can, uh, you can solve problems like what happens when many people edit the same thing. Um, uh, how do you kind of reconcile all of that stuff? And, uh, that's kind of where we are. I would say another way to say is we're like fire base, but with relations. Another way to say is we're somewhere middle in the spectrum that I described, but hopefully that gives the context.
+
+**Andrew:** This is, this is an interesting space. Like you said, you, uh, you start, you started in the Firebase era. I started in the meteor js era. So like all, all of these, uh, all of these new frameworks very much feel like, uh, the promise that Meteor Js had. But I think the di the main difference with meteor js, it was still all backend and just like.
+
+Syncing to the client. There was no concept of that, like local first database type thing.
+
+**Stopa:** Meteor is really interesting by the way, because I think Meteor really did in a way inspire Firebase, but it also inspired Luna in in Asana. Uh, which is this kind of, I like a lesser known, uh, but, but one of the first players or first frameworks that kind of tried to solve problems in this way. then Luna was furthering, uh, was, uh, kind of adopted by Figma.
+
+And Figma built us, uh, a system that looks a lot like that. so a lot of systems literally just originate from meteor and uh, and we're still trying to deliver on that promise.
+
+
+#### [00:11:33] Instant DB: Features and Functionality
+
+**Andrew:** Uh, so, uh, we've talked about a lot about what it is and kind of how it works, but like, what does it look like when you're using it? Like what is the A PIA developer encounters?
+
+**Stopa:** As a developer, the API is like this. Instead of using use state, you just switch it and use use query, when you do that, suddenly data gets persisted. Uh, all the queries are reactive. you, you, you know, you have a similar, you have an API for auth. You have a special API for storage. you can share cursors, but the main, the main changes, instead of writing use state in your react hooks, you write use query, and then you get the data from the, from a database.
+
+**Justin:** So speaking of getting data from a database. Uh, so it looks like instant dp. You also have to like design, uh, your schema structure. In some ways this is similar to like Prisma or a bunch of other like, uh, data layers that people might have been familiar with. So can you talk a little bit about like the schema design and sort of like what that looks like?
+
+**Stopa:** Yeah. So this, um, there's kind of two things we wanted to do with schema and, uh, some kind of other inspirations, so I'll share them. One of the things we wanted to do is we wanted to make it easy, so when you start out, you shouldn't have to define a schema. If you want to, you, you could, but it should be possible to, to not define it. Um, and you know, I think this kind of goes against the grain sometimes, but I do think it's important because sometimes you really do wanna move quickly and the difference between one day and two days means that, you know, you have the time to build a project or you don't have the time. So, so we wanted to. Make that initial experience really easy. But as your app grows, you need to have relations, you need to have constraints, right? So what you, what the way instant works is you define a, um, you can start writing code. You can start saving data, and it'll kind of automatically create tables for you. But once you're ready, you can set up a schema. And under the hood, uh, the schema works kind of like a graph database. This is kind of esoteric, but it's also interesting, you know, the, the place where we got this idea was from Facebook, where under the hood, Facebook runs on a on a graph database. And why is that important? Because most of the time when you're writing front end, the kind of queries you wanna write are not the traditional SQL queries. actually queries with a lot of joins. So for example, just to load a page, like a task manager page, you would get the teams for the teams. You would get the tasks for the tasks, you would get the author for the task, you get the comment for the comment, you get the author, So, so there's this giant kind of query that you need to write. And sometimes writing that is a lot more idiomatic in a graph structure. So under the hood, um. Instant runs. So in order to make both of these things work, we need to support relations. We wanna make it super easy for you, um, to start building without a very strict schema. we run it on top of a graph database.
+
+**Justin:** ~~Cool. We'll talk about that a little bit more in a second, but Andrew, do you wanna take this next question?~~
+
+**Andrew:** ~~Uh, the one about eventual consistency.~~
+
+**Justin:** ~~Yeah.~~
+
+**Andrew:** ~~Um,~~ so with these like distributed systems, uh, there come a lot of different problems that you have to deal with. Uh, and in that you have to balance two things, the instant optimistic updates where the UI, uh, shows to the user instantly what happened, and then, uh, eventual consistency of relating that to what actually happened in the backend.
+
+So how do you like balance those two and what is instant's approach to that?
+
+**Stopa:** Yeah, I would say there's a lot of pragmatism here too. You know, when we first started working on this, a lot of the initial thought was, we need to solve CRTs to really like make this work. But turns out the surprise is that most, uh, if you look at how Linear works or Notion or Figma, they uh, just use last right wins, which theoretically is A-A-C-R-D-T, but. Uh, I feel like that stretches the definition a little in terms of difficulty. So the way that we kind of do things is like this. First, there's a pragmatic approach where by default the way conflict resolution works is at the attribute level. So what that means is if you have, let's say, a Figma layer and you change the font color and somebody else changes the font size, that is not going to, um, conflict. Uh, but if both people change the font color that is going to conflict. now the way that it de by default works is like this. When a user, let's say, changes the font color in the front end, we keep two different states. We keep a queue of all of the transactions that the user has made, the server has not kind of integrated into the query.
+
+So we say this is the, the, from the perspective of the user, this is the latest value, right? Then if any change happens. Which happened before this transaction, we kinda write it on top of that change. So from the user's perspective, they're always seeing the change that they made. Now, eventually that change will come back through the system, and then it'll remove the, that transaction from the queue.
+
+And then they'll get into a, you know, a basic state again. and for like the majority of cases, this kind of solves the problem. Uh, but in cases where you have more. about consistency. think this is something that, you know, I think platforms can try to solve this, but really this is a business domain.
+
+Like you need to know how you want. Conflict to resolve. So, so, you know, there's a lot of talk, like for example, CRTs can help you resolve conflicts, but in effect they don't fully, because you know, it'll reach to a con uh, a convergent solution, but it actually is not the convergence that you desire. and you can tweak things so that it converges that way. But oftentimes I think the, like the 80 20 approach that works for linear Figma notion is make it last. Right? Wins for almost everything. Right? And then in cases where you care, you can. You can, you can kind of funnel the data through one place and then make a decision on, on, you know, what should happen in that case.
+
+**Justin:** I think a topic that'll tie in nicely, uh, to both the question before and this one. Uh, so just reading through the site. So instant is actually built on a triple store. Um, so there's this database in the closure world called Atomic, which is where I learned about triple stores to begin with, I think. Um, and it, so I, I'm assuming that that's the basis of the graph database.
+
+Um, could you give like a high level, uh, overview of like. This data model and kind of how it works and how it might be different than users are used to. And I guess to add onto that, if there's anything about the triple store that enables the, the sort of sync that you just talked about, that'd be interesting to hear more about too.
+
+**Stopa:** for sure. It's a very interesting question, so. 
+
+
+#### [00:18:27] Understanding the Triple Store Paradigm
+
+**Stopa:** first kind take a step back. I think the way you can discover the triple store paradigm is like this. Imagine you're trying to build a database you want to support relations, right? You wanna be able to say, users can have posts, posts can have comments, and you want that to be fast. eventually you'd also like to have like, you know, strings should be strings and numbers should be numbers, things like that. But that's your kind of constraint. Now, you could try to solve this problem in multiple ways. could try to solve this problem by. Basically implementing all the entire sql, um, system, right? But the problem with that is, um, the language of SQL itself is very, very large. and you know, I, I think if you start out trying to create a database like competes with Postgres for example, that's gonna be a, a painful thing. 'cause 25 years of, uh, ex excellent, uh, research goes into it. Now what a triple store can do is, is if you think about the most simple way to express relations, uh, you could say it's just, uh, you could say you could, you could imagine instead of having a bunch of tables, you have one table and you say for a row, you, you can explode it out.
+
+And you say, for example, user ID one name Andrew, right? id one. Favorite color blue, right? And then to have a relationship, you can say user ID one, you know, podcasts, dev tools, fm, and then, and, and suddenly now you have this relationship, right? Um, this model originates from like RDF data stores and all these things where it's, it's a very nice way to explain like facts of information that aggregate together. Um. The nice thing about it, I think like why is this so useful, is it allows, basically three things for us. One is, I mentioned on the client you need to run queries locally, right? For it to work offline and to get optimistic updates. Now, if we wanted to run SQL queries locally, we would have to. Use something like SQL Light, is a very large, uh, binary to add into a, any anybody's website. So the benefit of this kind of triple store approach is you can write a query engine on top of that about a hundred lines of JavaScript. Uh, now it's obviously not gonna be efficient, but also, you know, you can make it very, very efficient. Like there, there, there is literature on this. So the first thing that the Triple Store helps in is that. Suddenly now you can, uh, write client side databases in a, in a very, very small amount of code. The second benefit that it does is triples are naturally good at this conflict resolution we talked about. Because, for example, you know Andrew, favorite color Blue Andrew, um, uh, you know, hair color black, they're, they're separate roles in the database so they don't conflict with each other. Right. And then there's a final advantage. Final advantage, which is what we wanted to do was we wanted to make it so that you could truly have a free tier. So, you know, a user can set up an instant, we can spin up a database and like five milliseconds, but when I say spin up a database, all we do is create a logical row in this, uh, single database that kind of partitions data. And the benefit of that is now every user can have a truly free database that never pauses, um, uh, because we can, we can also write this kind of query engine on top of something like Postgres and uh, and get the benefits from there. Did that make sense? I feel like I might have gone very, very broad, so let me know.
+
+**Justin:** I, I feel like explaining triple stores in audio format is a hard thing to do anyway.
+
+**Stopa:** Yeah.
+
+**Justin:** The thing that struck me when I was reading about Atomic for the first time is like they have this document page on like the universal schema where they do lay it out. Like, like, oh, if you were doing this in any database, you would have like one table.
+
+It's like one big table and here's like the very uniform data type. And I was like, it blew my mind when I first saw it. so you have to like be really good with indexes. I'm, I'm sure to like make this, uh, feasible. Yeah, I think to sort of like build on this. Um, so you've, you've designed your own query language for instant DB as well. Um, and some things that I love about it. It's like written in neurology js, it reminds me a little bit of GraphQL without needing the sort of like, you know, special language. Uh, which I think it's cool that you're able to do that. Um. But something that that jumped out to me is that it compiles to data log.
+
+And for those who aren't familiar, data log is like a query language specifically for like triplet, like data stores or like these, like atomic uses, uh, data log. So can you tell us a little bit more, you know, one about the query language and sort of what, what your goals for that are? Um, like two, like why write your own query language?
+
+Uh, I know we talked a little bit about like SQL and not not wanting to run SQL light. Um, so yeah, maybe, maybe take those. I.
+
+**Stopa:** Sure thing. Um, let me, let me kind of form the thoughts. So I think. I think the first thing is, maybe why data log and then maybe why something on top of data log. Because the first thing that I wanted to kind of mention is the triple database under the hood. This is not something that we necessarily like. We want the user to just feel very productive. They shouldn't have to worry about the underlying data structures. Like, kind of similar to Postgres in a way. Like when you add an index to Postgres, you kind of know the data structure underneath, but um, you don't really know, or you know, and, and when you run a query in Postgres, it can do so many amazing things and you just, I. You know, it's, it's like having like a, like a mathematician, uh, in your, in your, in your team that's doing the exact right thing to, uh, write your queries until it's not, which we can also talk about too. Um, so, so the, the, the way that we wanna make all of this, right, we don't wanna kind of. Uh, I, I also believe in this one thing where you need to meet developers where they're at. So there are some things that are important to tell somebody because it's like an expertise thing. Like you need to, if you wanna be a great guitarist, like you need to know some, some like unique thing about the guitar. But for some things like, I don't think you need to know the underlying structure too much on this.
+
+So what we wanted to do is we wanted to give people, like when you're writing things in TypeScript, you naturally think about things as objects. And relationships between them versus if we just went with a pure triple approach. actually, there are no objects. There are these aggregations of, of, of objects, which is an elegant idea of, I just contradicts very deeply with, uh, text script. So what we wanted to do was, look, let's give people something that is the most convenient way to fetch, you know, to describe what you want. And in my opinion, one of the most convenient ways. GraphQL like posts, boom. Right? Writing that query in SQL to get that data structure back is actually, I would say intermediate sql, right? The very basic one is a join clause, but if you want to, uh, aggregate each post under a user, you have to use JSO or you know, JS And I think most people don't do stuff like that, right? So I think GraphQL really makes things a lot simpler. The problem with GraphQL is twofold. One is it does add this extra build step, uh, and I do think that really impedes productivity when you're getting started. And the second thing is. It's really nice when data, when you can modify, uh, you know, your language. JavaScript, for example, or TypeScript, it's great at modifying data structures. It's not great at modifying strings or things like that. So it's very nice where instead of doing like this, this, this, you know, compiled like a ST node thing, all you're doing is just taking an object.
+
+And you know, let's say you want to create a table where you do filters. now you can just construct your query as the user changes buttons. And it's a really delightful experience. So I wanted to give the, the user this power. Like very frustrating in my opinion. And most languages, like for example, sql, you cannot do this, right?
+
+You cannot. It's a, it's usually a string. So you, you have to kind of think about how you're gonna generate this. Um, but we didn't want that. We wanted to make it something. It's a real data structure that you can use functions, uh, to generate your query. Uh, and then why not? You know? But in order to run that query, how do we run it right? Well, under the hood, because it is a triple store, one of the most elegant ways to run, uh, queries on a triple store is using data log. And the reason is data log is this much smaller language compared to something like sql, but it is equivalent. Like you can do every, almost everything you can do in sql, you can do, I think theoretically you can do everything. So that's what kind of led us say, okay, under the hood we have this triple store, we have this language on top of that which, um, which lets us easily query into it. But then we give this layer on top for users, which are pure data structures, which give them the data that they expect, which is objects and the relationships.
+
+**Justin:** So was using data log under the hood. Was that so that you could leverage existing, like query optimizations or like do like pull some off the shelf like libraries or something in order to not have to re-engineer that, versus just like having your query language directly compile down into, I don't know, something that does the data fetches
+
+**Stopa:** Yeah, the main one was, it's kind of like. I really believe, uh, you know, for example, DSLs get a very bad rep in the programming world because you can do them wrong and they can be very painful. But I think if you do them right, uh, they're very, very good. And you can actually see this, that like most of the most useful software are effectively DSLs. Uh, so the, the way that we look at the data log, it's kind of like this intermediary structure, uh, that we, we, that's to handle. uh, what that lets 'em do is instead of, for example, let's say we wanted to compile directly to sql, would create, uh, on Postgres, this very giant, uh, CTE, but, and then on the front end, uh, we wouldn't be able to compile to sql.
+
+We'd have to just kind of run those manually on the, on, on the data store. Uh, but the nice thing with this intermediate structure is now, now on both sides, we can have a lot of focus on generating this intermediate structure. And then running a data log engine is, I would say, reasonably simple initially. So if you wanted to, for example, do a hackathon where you write a query engine, guaranteed, you can do it in, in data log. Like I have a blog post. You can read it and by the end you'll have a query engine try to do that with something else, like if you wanna try and make your own SQL light. I think you'll have a, a tougher time.
+
+**Andrew:** So a through line I'm seeing in kind of like all the stuff you guys put out is, uh, making complex topics really simple and easy to consume. Like even in your, on your homepage, you're like, Hey, there's fetch. Why don't you just use that? And then you're like, oh, well there's all these problems you'd have to think about and you don't wanna worry about.
+
+
+#### [00:30:04] Improving Permissions Over Firebase
+
+**Andrew:** Uh, another topic that kind of is in that same area is permissions. Uh, you guys call that out very explicitly in your docs, is something that you wanted to make better over Firebase. So, uh, like what, what, what were the shortcomings of Firebase and how have you, uh, fixed those in your new system? I.
+
+**Stopa:** Yeah, so I would say. And, uh, like we're, where, at least where permissions was inspired for us, was another kind of ex Facebook story. So inside Facebook, there's this library called The End Framework, and they did a very interesting thing with how permissions work. you write permissions in a language that, in the same language that you, that, that, uh, uh, you write other things in the permissions are written. At each object. So there is no way for a developer to write a query where they can see something that they're not allowed to see. every query you can think of takes in an argument called the viewer, right? So it's either a user or a page or something like that. the reason they did this is, you know, you might think that the simplest way to do this is every endpoint has like an if statement, can you do this endpoint or not? But the problem is when you get more and more engineers, this just starts to break down like. You do not wanna have, uh, any, uh, privacy violations given the reputation of Facebook. You would think that we would, uh, would be willy-nilly going, doing that. No, no, no. We really did not want that. So, we worked very hard to make sure that that wasn't the case.
+
+And one way you can do that is to push the complexity down to the object level. I think Firebase, um, honestly, as I go through it, I, I think. I was too mean to Firebase originally. I think they actually did a reasonable job. I think it, the problem is it just gets tough, you know, you're, you're writing these strings, uh uh, there, there's these kind of gotchas about, because it's a document model, it's unclear, you know, if, if a permission level fails here, but passes at apparent. What should happen technically what actually happens when the parent passes and you just get all the data. so it's easy to kind of mix up. But what we really wanted to do with Instant was to kind of give you this level permissions. Uh, turns out Firebase has a great, uh, sub language called cell, which Google made open source. And we use something similar for, I mean, we use it, uh, to generate our permission rules. Um. But I think the, the big thing or the big gut, like aha, is I think it is really important to put permissions at, at the table level basically. Because what that allows you to do is you now no longer have to worry what kind of query can be written, In six months if I make a new endpoint, like will I add in a security vulnerability? No, it's impossible because you can only get data you're allowed to see.
+
+**Justin:** Yeah, it's cool. I, I, I like how like consistent it all feels too. Um, and it's nice to have it all sort of built in the same, like language, especially because I, I've definitely worked with like, know, obviously different query languages, but then different policy languages and like having to jump through. A bunch of like DSLs and different tools or like maybe they need build steps or the compile or their extra libraries or whatever. All of that stuff can stack up to not only be a maintenance burden, but also like be hard to piece together, how everything fits together. So I think everything up, uh, for instance, like this is like, is pretty nice.
+
+**Stopa:** Yeah, it was, it definitely took a lot of research, I would say, for permissions to be fully frank. I think we still have a long way to go to make that really good, but kind to give a next, like a goal, like a star of where we're headed is I. we were doing this research, uh, you know, some of the simplest ways you could solve this problem is to do, for example, role-based security or acls. Uh, but the problem is eventually you'll hit these issues where you cannot express what you need to express, in these languages. So you kind of duplicate your data model from your database into like ACL. Uh, so we didn't want that to happen. We wanted it to make it so that you can express the relationships. About who's able to see what, and it's in a single place, like your database. Um, so that's kind of where we're headed right now. I think we still need to add like better. Uh, like another that I love is like Rails act of record, in my opinion, has this really beautiful way of describing, um, how an object looks, validations for an object.
+
+Oh, this email has to be passed, this RegX and things like that. eventually we want to get to something that looks kind of like active record.
+
+**Justin:** So, uh, that's, that's pretty cool. I mean, I think active record is a good target because of like how, like pretty straightforward. Um, I. is to implement, uh, so like what is, what is like an authorization set up inside Instant db? What does that look like today? Can you just like, sort of walk us through like if you're trying to set like up a, some basic off flow or permissions, whatever I.
+
+**Stopa:** so here's how it works. First, when you start off, we make everything permissionless. So you can start hacking, make, make things work the way you want. Once you're ready to add off, there's like a quick start. copy a quick start. You can get magic code emails working right away. Uh, you can get signing with Google.
+
+There's an integration with clerk. So now you have authentication. Once you have authentication, right? now you can write permissions based on this authentication. Uh, you can also write it without having authentication, but I'm kind of walking you through this steps that you would normally go through. then a kind of like a mini language where you could write special rules on each object. So you could say, okay, I wanna make sure that a post can only be edited by the owner. you could, you could say a rule like Off ID is equal to post owner. Then boom, no matter what kind of transaction comes into the system, we're going to guarantee that in variant for you. That's the, that's the outline
+
+**Justin:** Cool.
+
+**Stopa:** like cool things you can do, you know, like, you know, you sometimes you don't wanna have off, right? So we have a, you have a system where you can pass in secret context from the front end so that then you can have something like, you know, if you know the secret password, you can see the, that data. Things like that.
+
+**Justin:** Like a password protected like chat room or something.
+
+**Stopa:** Exactly.
+
+**Justin:** Nice. Cool.
+
+
+#### [00:36:55] Handling Data Syncing and Presence
+
+**Andrew:** Uh, so one problem with, uh, these applications that do lots of, uh, syncing of data onto your local device from a server is what to sync. Uh, when we talk to the founders of linear, like if you're loading up a linear instance of your team's issues, that could be a whole boatload of data. So. Uh, how do you de, how do you decide like what to sink and like, how does like the sinking layer happen for you guys?
+
+**Stopa:** Yeah. So this is kind of also where things like local first start to diverge, right? Because you're doing fully local first you need to syn the entire database. But,
+
+**Andrew:** I.
+
+**Stopa:** or some, some something that approximates that. But the problem is you can't have like Twitter doing that. we took this, we took this inspiration from Asana, Luna. Via like life graph. And the way it works is we only sync the data that you query. the way it works is the front end sends a bunch of queries to the, to the server, We then respond to those, those queries, and we cache the, the, the one, all the active queries, but also then inactive queries are still cached as well, up to some limit. And then what happens is, uh, we just send you the slice that your data cares about. way that kind of reactive architecture works is you can think about you write these queries, uh, and these queries have of like, what's, what, what, uh, Asana calls a, a topic and a topic describes what part of the index this query cares about. Uh, so for example, you know, let's say you're getting posts. Where owners, blah, blah, blah. You might say, you know, gimme the, I'm, I'm gonna make this up a little bit, but in, on the post table, from this range to this range, that's what we care about. And then when a transaction, uh, happens, we tail the write ahead log from Postgres, we can generate topics from that as well.
+
+So it could say, this invalidates the post table from this range to this range, right? And based on that, we can do a match. Validate the query and then send an update to the client.
+
+**Justin:** That's pretty smart. Uh, ellos are superpower. Uh, it seems like a lot of like syncing engines are using those. Uh, that's, that's. clever. Um, uh, I guess a question to add on top of that though. So, so you mentioned earlier like presence and, and I've seen it like talked about in the docs too. So it's like if you were wanting to build a Figma style experience where you have like two cursors that are showing on the window, you don't actually want to save those cursor positions to the database all the time.
+
+So it's like you, I assume that you have to handle this sort of specially, how do you do the, the real time sort of, uh.
+
+**Stopa:** Great question.
+
+**Justin:** Yeah.
+
+**Stopa:** So we, we, we have like a separate kind of flow for that because when you think about the problems of presence, it's actually in, in some ways it's a lot simpler, right? Because there are no relations in presence. You can't say like, know, gimme only the presence for this chat room, or blah, blah, blah.
+
+You can just, you, it's just an object. Uh, so it's a lot easier to invalidate the right pieces. sometimes you actually don't even invalidate, really. You just send the new information that a user cares about. And the main thing you have to do is to keep all of that in memory. so what we did was we created kind of like an offering on top of instant.
+
+So, and what that does is all presence information is just in, in-memory data. Uh, so you could just think of it like an in-memory map as the, the, the very basic system. Now, how do you make that work when there are multiple machines? This is where things like closure, and we happy to talk about that too, coming to, uh, use, you know, there's these great solutions already.
+
+There's a, there's a library called Hazelcast, which makes it so you can share data structures across machines. So we have a hazel glass instance in our main machine that kind of, uh, keeps track of all the, the presences. Uh, so you join a room. You have your own presence, you can send messages and this kind of circum, circumvents, all the database, invalidation logic because again, for this, you really don't want any latency at all.
+
+Like you want to like get this as simple as possible, like as quick from point A to point B. Uh, so what we do is we just do, um, basically everything in memory when it comes to, uh, presence.
+
+**Justin:** That's pretty awesome.
+
+**Stopa:** Oh
+
+**Andrew:** Um, so look, oh, go ahead.
+
+**Stopa:** Oh no, I'm, I'm just, I I like the, the, the, the awesome. I, I give you guys a, was hard, so.
+
+**Justin:** It sounds hard. Uh, I mean, I think all of the stuff that you're doing is actually kind of hard,
+
+**Andrew:** Yeah.
+
+**Justin:** I mean prompts for doing it.
+
+**Andrew:** Uh, speaking of hard things, you guys probably have some nice hard things planned for the future. 
+
+
+#### [00:42:02] Future Plans and Hiring
+
+**Andrew:** Uh, what are you guys working on right now?
+
+**Stopa:** Well, I feel like there's, oh man, like one, it is interesting to run a startup in that, uh, like phases of a startup in the very be initial phase. It was just kind of research. It doesn't feel like a startup because you don't have any customers. So it almost feels like unemployment, uh, with a lot of, uh, fun technical research. once you have customers, then things are get, get very serious and you really need to make sure that, uh, customers are happy. So I think there's kind of a few things that we're working towards now. One, we need to hire. So if anybody's, you know, on this, you know, listening to this, wants to hack with us in San Francisco. we would be very excited, uh, to have team members join because at this point we, we, you know, you can imagine we have this kind of giant system and what we need to do is we need to make every single part of that system as good as possible so that eventually, right, like I think you can start building like almost any app on instant it will work.
+
+But once it gets even more and more and more like we want to be able to support enterprises, we wanna be able to, um, um. So for example, so what iOS and Android, right now we only support React native, um, that we have a TypeScript library, so you get automatic types. Uh, but I think, you know, if you look at things like archetype, that's an example where I just recently saw where I'm like, wow, these guys do some crazy things.
+
+Like if we could do things like that in our client side, SDK, our users would be so happy. Right? So there's just a lot, a lot of work to do. I think the main things are. our users, you know, make them as happy as possible. Uh, any place that they're feeling, uh, instant is lacking. We want to, we want to just make the quality bar better and better and better.
+
+I really always admired, um, linear's statement that they have a zero buck policy. I think we want to get there, you know, we have some bugs, uh, you know, but every time we're trying to, trying to solve them, um. So that's the kind of like state we're in. We need to hire is the main, main energy. Uh, so if you guys are in, if anybody watching this is interested, please uh, reach out.
+
+**Andrew:** Yeah, the getting those TypeScript types to be, uh, like perfect for your use case is no small task.
+
+**Stopa:** Definitely Andrew. Definitely.
+
+**Justin:** Yeah, you got, you got a lot of different areas of type. Just the query language alone is, is gonna be a fun one.
+
+**Stopa:** Oh yeah. Oh yeah. I'm thankful for, I think, I think his username is Jake Katz on Stack Overflow. I just, every time there's an issue I'll just go, go and stack overflow. There's like a TypeScript wizard who takes this time to, uh, help. So
+
+**Justin:** Mm.
+
+**Stopa:** things like
+
+**Justin:** Nice.
+
+**Stopa:** yeah, having a, having three or four more members, I think we'd be very excited to kind of, you know, currently we get. Kind of larger companies talking to us, but we really wanna make sure that, um, we can actually like, service them with a dedicated support and things like that. So I think we had, um, a bigger team. All users would be happier. So,
+
+**Andrew:** Yeah, the the archetype guy does do contracting, so if you want, if, if you want a great type script experience, you could probably pay him some money to do that.
+
+**Stopa:** uh oh, heck yeah. yeah.
+
+**Justin:** So. Uh, with where you're at, what are sort of the ideal use cases? So if people were kind of looking for infrastructure similar to what you're building, like who are the kinds of customers? Like, what are their shape that you really, really want right now?
+
+**Stopa:** Yeah, I think right now we have three kinds of kind of happy customers. So one of them are literally trying to build like Notion linear Figma. So if you're trying to build these things, instant will really like build that faster. Um, you know, we are still a startup, so I'm not saying that we're gonna, you know, uh, you know, if to us today, I would say, okay, wait, wait, wait six months, you know?
+
+But if you're a startup and you're willing to take the risk with us, like I, I think you can get a really big edge doing that. Another side is people who really like to prototype fast. So we have a lot of people who, for example, they're building a startup and they pivoted and they need to like, pivot and try a bunch of different ideas. I think right now, instant is probably one of the fastest ways that you could pivot, uh, or like build a, a product from scratch. Uh, so I think those are the kind of, you know, young startups the, the under like 10 employees who are willing to take a little bit of risk but want to pro, you know, be very productive. I think we'd be very happy customers of, uh, of instant.
+
+**Justin:** Cool. Andrew, you wanna do the future one?
+
+**Andrew:** Yeah, sure. Um, so we always like to ask a future facing question to finish out the episode. 
+
+
+#### [00:46:58] Front-End First Technology
+
+**Andrew:** Uh, so what do you think the landscape of front-end first technology will be like? Is that gonna be, uh, the standard for what people expect of software? Do you see the ball going somewhere else?
+
+**Stopa:** Great question. I do think there's that original kind of statement I started with 45 minutes ago in that I really think there's this architectural movement, you know, and we, we were client only because there was no network then we were network, because there was no client on the browser. And now there's both. This is like a fundamental shift, in, in the way, in like arch, in the way that you, the materials you have are now different, so you cannot build the same way that you built before. And I really believe that in order to build the next kind of like almost every app in the future is gonna feel like a notion.
+
+Linear Figma, they're gonna work everywhere. They work on your phone, they work on the tablet, they work on a laptop, on somebody else's laptop, but they're gonna feel unbelievably high fidelity and they're gonna feel, um, very fast. Um, but in order to do that, I think there needs to be this infrastructure.
+
+So that's, that's where I think, I really think things are headed, you know, uh, and, you know, we could talk about AI too, but, uh, I'll focus on the, the, the dev tools. Let's go.
+
+**Justin:** Yeah. Uh, I, I do think that like we, so we've had this back and forth, but like as you were talking about earlier, you know, when, in the eighties or or whenever, when it was just like, pretty much just client first is like the capabilities for doing, you know, internet connected devices and rich, you know, multiplayer experiences.
+
+Just like the infrastructure wasn't there. then when it did there, when it was there, we really overcorrected to it. And then I think in the early, like 2010s too, there were like a lot of people exploring just like, oh, we're just gonna build a spa, or whatever, you know, single page app. And, and then, you know, is the overcorrection again, like, no, just server side, eh.
+
+And I don't know, I feel like it's gonna balance out somewhere.
+
+**Stopa:** just,
+
+**Justin:** Yeah. I do feel like it's, it's sort of, it feels like it's teetering more to the center now
+
+**Andrew:** Mm-hmm.
+
+**Justin:** We're coming to realize that we need both. Like we need to be able to interact with our software without the server always having to dictate everything most of the time. Uh, and of course there are like
+
+**Stopa:** Yeah.
+
+**Justin:** places for technologies like Elixir's Live View, for example. I. Uh, that does everything on the server, but gives you this real time experience that's great for certain situations. But I think things like instant need to exist, uh, for like a lot of other use cases because it's like, um, there's more pressure to build apps faster.
+
+Uh, I think you're, you're sort of hinting towards ai. It's like also I think there is something to be said about like a smaller API surface area to do more things. even though abstraction costs can be kind of high, it's like. We have more appetite for that I think.
+
+**Stopa:** definitely. And I think there's, you bring a good point about the the spa as well, because. I think the one mistake we had during this kind of spy era is we were more okay with like a lower developer productivity. Uh, and then, and then the other mistake is okay with very high developer productivity, but not software quality. So I, I think eventually we'll, like it needs to be both I think it is possible so. That's kind of, I hope, the future our, our, our, our children are building like, uh, very beautiful apps at, uh, 100th of the So,
+
+**Andrew:** well, uh, hopefully we'll get there. But that wraps it up for our questions this week. Thanks for coming on. This was a really fun episode. Once again, treading the local first waters and seeing how you guys are doing it. So thanks for coming on and talking about it.
+
+**Stopa:** cheers. This is a blast, guys.
+
+**Justin:** Yeah, thanks for coming on. Instant is awesome. I'm really excited to see what y'all do with it and yeah, good luck. 
