@@ -1,0 +1,473 @@
+---
+title: Maxim Fateev - Temporal
+youtube: https://www.youtube.com/watch?v=94vJSZ_sCVg
+spotify: https://creators.spotify.com/pod/show/devtoolsfm/episodes/Maxim-Fateev---Temporal-e34jcbh
+tags: temporal, developer, programming, workflows, durable execution
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we talk to Maxim Fateev, a co-founder of Temporal.
+Temporal started as a tool for Uber but quickly grew into a tool that makes distributed code exectution a breeze.
+Come hear what one of the poineers of Durable Exectution has to say!
+
+- https://temporal.io
+
+Episode sponsored By WorkOS (https://workos.com)
+
+Become a paid subscriber our patreon, spotify, or apple podcasts for the full episode.
+
+- https://www.patreon.com/devtoolsfm
+- https://podcasters.spotify.com/pod/show/devtoolsfm/subscribe
+- https://podcasts.apple.com/us/podcast/devtools-fm/id1566647758
+- https://www.youtube.com/@devtoolsfm/membership
+
+<!-- LINKS -->
+
+<!-- Paste show notes -->
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:01:40] The Genesis of Temporal
+[00:05:10] Durable Execution
+[00:10:30] Ad
+[00:11:42] Temporal's Developer-First Approach
+[00:19:38] Temporal's Robust Architecture
+[00:21:52] Real-World Use Cases of Temporal
+[00:27:10] Handling Large Payloads in Temporal
+[00:30:12] Versioning Workflows in Temporal
+[00:36:14] Deterministic Code Execution
+[00:39:18] Temporal's Open Source Journey
+[00:48:13] Future of Durable Execution
+[00:52:00] Conclusion and Final Thoughts
+
+<!-- TAB: TRANSCRIPT -->
+
+**Maxim:** conceptually this is the first technology which abstracts out distribution from developers, right? So because this process is not linked to a specific machine, so we practically do live migration, that process seamlessly
+
+you can think about as building operating system for the world
+
+#### [00:00:19] Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is podcast about developer tools and the people who make 'em. I'm Andrew, and this is my cohost Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Maxim Fati on with us. Uh, so Max, you are the CTO and Co-founder of Temporal, uh, and a long time ago we actually had Sean Wang on, uh, SWIX, who was at Tempural at the time. Um, so it's been really exciting to follow your development, uh, on this like pretty like.
+
+Kind of really important and gr ever-growing an importance product. So we're really excited to have you on and talk about that. But before we dive in and start talking about temporal, would you like to tell our audience a little bit more about yourself?
+
+**Maxim:** Okay. Thanks a lot for having me. Just very quick background. Uh, most of my life I worked, uh, for, ~~uh,~~ large companies.~~ Uh,~~ and, uh, I spent eight and a half years at Amazon, a couple years at Microsoft, uh, four years at Google. And then my last job before in portal was at Uber. So I kind of big company, I was engineer.
+
+I never had a single report before I started the company. And the first four years and a half I was a CEO and now I switched back to CT World and I have zero reports right now. So I'm one of those CTOs, which does only technology, more like chief architect for the company. 
+
+
+#### [00:01:40] The Genesis of Temporal
+
+**Maxim:** Uh, so, okay, this is kind of my background and uh, just to give you some idea what I was working before that at Amazon, I was tech lead for the Amazon messaging platform, which practically was the, was based a broker based architecture for pops up All Amazon ran on that for, for a while.
+
+It was years before Kafka was even conceived. And then later that project was used as a backend for a simple queue service. And then later I was a tech lead for Amazon Simple Workflow Service. And uh, the simple workflow service was kind of a original idea behind what. We later implemented as an open source project at Uber and the project was called Cadence.
+
+And later we started a company and for the project, uh, as Timo. So Timo is MIT license, open source project. And uh, and there is a company which monetizes that as well. 
+
+**Justin:** So what were the sort of problems that you were running into with, or that these companies were running into with sort of traditional, like background tasks and cues and other things that like you actually needed a workflow engine for? Um, like what was the original motivation?
+
+**Maxim:** Original motivation is that every application, uh, and every application developer is distributed application. These days, most of them. And, uh, we give people kinda low level abstractions and we also give them bunch of patterns, how to assemble those abstractions into something useful. The problem is that, uh, as patterns go, you have to reassemble the whole thing every time yourself and every time you do it differently. There is no kind of way to do it. Uh, there is no underlying middle way, which will take out of most of that complexity. And the other part of that is, uh, um, if you think about your business logic, like your business logic can be pretty straightforward. Like, I dunno, call this 15 APIs in certain order, maybe based on some condition logic, maybe dynamically.
+
+And, uh, if you look at that and then say, okay, but how do I transform it to the scalable, resilient application, then your logic gets spread out across multiple pieces, bunch of callbacks and services. And then most of your code will be, will have nothing to do with your business logic. So like 10, 15, 20 lines of this API calls.
+
+Can be transformed to thousands and thousands of lines of logic, which has nothing With your business logic, and this is what we are exactly trying to solve, is can we go back and abstract out all most of the complexity from developers and let developers focus on what they kind of have to do is, uh, build applications and build applications which can scale and be resilient.
+
+**Andrew:** So when I was reading through your blog posts, I saw that, uh, you had a talk about building from first principles, the, the temporal workflow engine. When it comes to these, uh, long live workflow things, uh, what are those first principles?
+
+**Maxim:** Um, I think okay, uh, just be before going back because you keep calling Workflow Engine and I think this is not gi uh, it's not really good way to position that because first. Just probably term workflow engine gives very bad taste for most developers. The moment developer hears workflow engine, they just don't want even hear like after that I made this mistake making talks at the conferences called Workflow Engine whatever.
+
+And nobody comes 'cause nobody cares. Uh, while the problem we are solving that everybody cares about that problem and the solution we, we should propose based on new obstruction. 
+
+
+#### [00:05:10] Durable Execution
+
+**Maxim:** And this obstruction we call durable execution. And uh, what is durable execution? Think about it. Um, right now as a developer, your, your quote can crash anytime, right?
+
+So practically most of your complexity comes from the, uh, understanding that your program can just disappear right on, uh, without any notice. So that's why you always need to break into the pieces your practically need to p persist state all the time, right? So you either use database or queue and you need to reload that state on every call back and so on and so on.
+
+And what durable execution does it practice? Says, okay, imagine that you can preserve the full state of your court execution all the time. Durably, right? So in the most primitive form, imagine you are, okay. I, these days we are writing ai, uh, flows, right? Like you write AI based workflow, you call L-L-M-L-L-M returns list of tools you call a tool, and then your process crashes. Then at this point, practically, uh, you lost everything, right? You need to go back and recall it and imagine it was long run in things like, I don't know, ai, let's say open, uh, AI does research, right? So if you imagine if you implement, uh, implement something like research yourself, right? And if you may fails in the middle, it's a long run operation.
+
+It's not good. Uh, and, uh, if it's important, what will happen is that if you call a. Process crashes, then tool reply can come when it comes back and it can come back like three days later. Uh, the, uh, it probability select the state of the function as it is still blocked on the tool call, right? Uh, with all variables, all the environment present, and then, uh, go to deliver the result.
+
+Go to the next slide. So from the develop point of view, crash didn't happen. So in fact, imagine cashless execution, right? Double execution, cashless execution because cannot crash. And it's always resisted. There are a lot of implications of that because most important implication is that, uh, your quote can run as long as necessary, right?
+
+Because it cannot crash, then you don't need the database explicitly because you can just store something in a local variable, and it's guaranteed to be persisted and durable as long as you need. And then, as you said, NAPI code can take any amount of time. So you can make RPC, which takes five days.
+
+Imagine how simpler your system is. If you don't need to think about all the I stuff, events going around, you just call an API three days later, it returns from your point of view. There is no difference if it took 50 milliseconds or 30 days. And, uh, the, like most basic stuff can be sleep. Imagine you can, uh, in your code, you can, if you wanna implement something like subscription, customer subscription, you can do something like four loop, zero to 12 sleep 30 days.
+
+Charge send email. Obviously 30 days should be rec calculated based on calendar. But conceptually you get the idea and you can actually keep people cold blocking sleep 30 days, uh, in your code. And it actually makes sense in production code, right? Because process cannot crash. And that is, I think like kind of programming model.
+
+And then as you said, that presentation was mostly about back and how you create scalable back and which supports that model. And we obviously can talk more about that, but.
+
+**Justin:** Yeah, so help us like piece together the full story here. So Temporal's a durable execution engine, um, and you have. Uh, these SDKs in different languages where people are implementing their business logic. So they have a TypeScript, SDK, or a Python, SDK, that's as you said, like making an AI tool call or something, and in that runtime, in that SDK usage.
+
+They have local state, they're making, you know, calls to other systems like OpenAI or something. Let's say OpenAI fails, like how does temporal help at that point? Like, or what does a user have to do to take advantage of temporal to make sure that that failure doesn't crash their whole workflow?
+
+**Maxim:** So, uh, if you make all this logic and all this orchestration logic, um, you just run it inside of what we call workflow function, which is durable execution. Uh, you, uh, so practically the main requirement of this model is it's implemented by temporal, is that, uh, workflow orchestration function cannot make I direct io.
+
+It should be deterministic. So it means that all of them calls, all tool calls should be done in activities. We record results of those and we use event sourcing to recover state. Uh, that it means that, for example, if you take, uh, something like, I dunno, OPI OpenAI Agents framework and you can intercept all calls to, uh, LLM and all calls to tools, then you can run that framework directly in the workflow code.
+
+And then it means that any crash of the process will not affect the, uh, workflow state and activities are tried to thematically based on the specified retrial policies. So if LLM fails. You just, uh, again, it can fail as error, right? And if it's retriable error, you'll just retry it. The automatically it can time out and retry, or it can be error, which is nonrecoverable.
+
+So you'll return it back to the framework, to the workflow, and then you'll take care of that based on the whatever business logic is. So you have full control of that. And, but things like ophthalm trials. Chipotle doesn't limit duration of retry. So if you have a use case when you wanna retry for a month, you can retry for a month.
+
+There is no limit how long an activity can run and how long, how many times it can retry. It's all built into the system.
+
+
+#### [00:10:30] Ad
+
+**Justin:** If you're building a dev tools company, you're eventually gonna have to support enterprise. If you're building a dev tools company, you're eventually gonna have to support enterprise grade customers, and that means building S-S-O-R-A, directory sync. All the things you don't have time for on your roadmap.
+
+And that's where Work OS comes in. It's a modern platform for enterprise ready off and access with just a few lines of code you can integrate off Kit a drop in. Login UI that handles sign in, pass keys MFA, password resets and more If you need directory sync work os supports SEIM, provisioning with all the major providers.
+
+So thank Okta, Azure ad, Workday, whatever you use. And it keeps users and groups. Sync automatically. Their admin portal's a game changer too. It gives your team a self-service dashboard to set up SSO or verify domains or manage access without you having to build that out yourself. And we're, when you're ready for more advanced permissions, work makes it easy to define complex asset access rules without building your own policy engine.
+
+So if you're scaling your dev tools product into the enterprise, skip the boilerplate and go to work.com. And get back to building the fun stuff.
+
+
+#### [00:11:42] Temporal's Developer-First Approach
+
+**Andrew:** So temporal likes to describe itself as a developer first engine. So like, what does that mean in practice? Like what are all the different ways that I can run it and utilize it in my business?
+
+**Maxim:** So think about it. Uh, before durable execution was a concept. Uh, they what we called workflow engines, right? Existing ones they were trying to practically, um, you had a choice, right? You practically said. Now you write your code, like for example, Java go type script. Uh, but it's not durable. If you wanna make it durable.
+
+Now you practically need to convert your code to a JSON document or UI kind of pictures, right? Or deck or graph or whatever. So practically, you always had to create this kind of intermediate representation. And then we end up with things like, I don't know, BPMN or step functions when people frankly try to implement.
+
+High level languages as, uh, these syntax trees, right? Like we using js, ON or x ml. And these attempts are very developer unfriendly, and there is this promise that non-technical people will write, uh, code. But reality is that, uh, after certain complexity, even developers hate that because it's very hard to replicate power of Java, go or TypeScript in, uh, js ON right to XML. Temporal practice says, no, no, you actually, because you have durable execution. You just write normal Java code, right? You have full power of the language. You can use glasses, you can use interfaces, you can use, I assume code. I can practically, there are a lot of things you can do practically. Uh, it's a full power, even reflection.
+
+And uh, it applies to all other languages as well. So you practice, stay within your ecosystem. Use preferred language. We support a seven is the case. And the different languages, and you can actually do cross, cross language, uh, flows as well. And then, uh, you can use the same unit tasting frameworks if you, again, Java can use J Unit.
+
+Uh, you can, uh, use your CICD pipeline. It's just part of your code base and you link into your application. You don't need to ship this code somewhere. Uh, it's part of your application, it's part of your service. All you need is connection to a backend cluster, which keeps state like temporal uh, service.
+
+And, uh, this temporal service, uh, runs on top of a database. Open source runs on top of my SQL Postgres, Cassandra, and, uh, SQL Light. And, uh, or you can just point that to, to temporal cloud backend. And the same code will run, uh, without changes. Uh, everything you service and you deploy your service, you ministry service, which is good from security point of view, by the way, right?
+
+Because that's why a lot of enterprises, very enterprise care about, uh, user data a lot. Use the portal because they can, they run code themselves and encrypt everything before sending it to portal can cloud, for example, when they use a cloud. Uh, so there is no need to look at the data this's pass through.
+
+So that's why we pass security reviews of most security conscious companies.
+
+**Justin:** Oh, that's interesting. So your, your event log that you're. Using to back the durable execution doesn't actually have to have those strict values. You can just have like some encrypted log entry and so long as that can be decrypted on the client for the SDK, um, then you can use that cloud persistence without actually having to see like what the data is.
+
+**Maxim:** Exactly. Exactly. And I think if you go to security, there are like three main reasons how I explain people why you can use our cloud. Versus, uh, self question, open source is that first you run the code. So cloud doesn't know about your code. Second is you encrypt everything before sending it to the cloud.
+
+So with your keys and your encryption algorithm. And third one, uh, you only connect to the cloud and it never connects back. So then need to open any holes in your firewall. And obviously most enterprise use private link even to connect to the cloud. So it's. Uh, every security person, uh, talks to us and okay, it makes sense.
+
+**Justin:** So help me understand a little bit. Um, so you're, you're integrating sim portal into your backend system. Uh, you're, you're running this, um, these workflow functions to, uh, make a part of your business logic durable. Um, I. Is, is temporal itself actually like kicking off a call to that? Does your system have to say, okay, I wanna spawn this workflow, and then it just like happens behind the scenes?
+
+Um, I, I'm trying to get a good understanding of like the execution model. It's like who is actually calling these workflow functions and like, when does that happen? I.
+
+**Maxim:** So let's think about, let's say we just take very simple agent application, right? Like you, um. Let's say you start, uh, they make a call. LLM needs to, uh, let's say make a call, call a couple tools and return results. Like let's say we don't do a loop, we do a single simple one, right? So first you will, uh, go and let's say it's relates to some, I dunno, inquiry, right?
+
+Like some order, order id. So you will, uh, go to SDK, uh, and uh, call, say start workflow execution. This is decay. We'll call into the temporal GPC interface with a start workflow execution. JPC call passing all inputs in encrypted form, right? And also specifying workflow id. Temporal is fully consistent system, so guarantees uniqueness by id, business id and workflow ID in this case probably will be order id, right?
+
+Maybe order id, dash inquiry, whatever. And uh, then, uh, this task we practical update state inside of temporal service. And, uh, as I said, it can be self-hosted. Open source, MIT license in portal service. It can be temporal cloud, it doesn't matter. And then the service will, uh, do two things. First, it'll store the state, and second, it will create a task.
+
+And this task, uh, will be put in a special queue, like a practically workflow task queue. And this task will be picked up by worker. You host the worker part of your SDK, like, your application will be what we call worker process, which is practically, uh, listener to that queue. So it listens to QQ and we'll get the task.
+
+The task will say, oh, we just started this workflow with this type and this ID and these arguments. And then this case will be okay. This is a open, uh, it's a AI agent workflow. So it'll find the code for that, starts executing that, right? So, and then execution will say, I need to call L-L-M-L-L-M. Uh, it'll, uh, but LLM is an external call, so it cannot be done directly.
+
+It should be done for a command. So for an activity. So this quote will just generate a command schedule activity. Task with inputs and all data related. And again, encrypted will be sent back to the service. Service will update the state, create a history with events, and then create new task for activity task queue, an activity worker will pick it up, execute the LLM call, put results back and deliver back, say complete activity Task back on the server PC interface.
+
+Which will create workflow task. Workflow will pick it up and uh, now it says, okay, this is done right. So I can call next thing, which will be a tool and create new command to execute a tool. It'll create new task for activity. So it kind of is dance between. So we practically never call these things directly.
+
+We always call them through, use this all fully asynchronous and event driven on the backend so you get all the benefits of a, an event driven system. You get backlogs, you get, uh, rate limiting. You have flow control, and your workers don't need to open ports because they pull long pull for these tasks from the queue.
+
+But from your point of view, make an RRP C call and, uh, this RPC call returns, it's pretty fast, but um, again, it works very well even if things are overloaded or like there is a backlog, so you get all the benefits of that. Then at some point, the, uh, after everything is done, the, uh, like workflow, you'll say return the function, return the result, it'll probably make a command, complete workflow execution back to the server.
+
+And then at this point, uh, the client might be starting workflow synchronous. So it can be actually waiting on the result using long pole behind the scenes. And then this moment client will unblock and say, here's the result. So kind of there is this dense server worker, server walker, and then back to the client.
+
+**Justin:** Yeah,~~ so, uh, I mean building this~~
+
+**Maxim:** ~~I, I, I think,~~ I
+
+
+#### [00:19:38] Temporal's Robust Architecture
+
+**Maxim:** think, uh, just one thing I want to kind of just, uh, double click on this architecture is extremely robust. Any component can go down and, uh, any time, and you can't bring it back because again, we have a worker release in the queue, right? Every task has a timeout. So if it process a task and goes down, timeout will kick in queue already deliver that task, right. So, uh, if your workflow is, uh, like, uh, status is lost, it'll recover the state using event sourcing and then continue from, it was left on from your engineering point of view. You can add host remove, hosts, add capacity, remove capacity, and uh, support service can go down and back. Everything will just continue from where it was left off automatically without you doing any special treatment.
+
+**Justin:** I think you preempted my question there. 'cause I was gonna say this is like there's a lot of coordination going on here. There must be some operational complexity to like making sure this is. Um, like robust, but if you have it where it's like the components, uh, have like good fault tolerant boundaries, then it sounds like, uh, its, it's not as, not as bad.
+
+How, like in practice, how many services actually are running in total? Is it, is it like just the two main services?
+
+**Maxim:** You mean the backend?
+
+**Justin:** the back end? Yeah, on the back end.
+
+**Maxim:** No backend is, uh, 1, 2, 3, 4,
+
+**Justin:** Okay.
+
+**Maxim:** uh, practically frontend, which is stateless. Frontend, which practically does routing. There is so-called history service, which practical maintains the state and the events and all, uh, on all the kind of state machine of business logic on the backend. And then there is mention engine, which is practically keeps, uh, these task use and also performs like, uh, supports long poles, right?
+
+Because, uh, you, we support long pole. Mentioned long pole tool requests, uh, requires special kind of treatment there and nice. Think about task use, that they're fully dynamic. You can have unlimited number, unlimited number of them. So it's very common to have task queue process. For example, if you wanna route task to specific processes, right?
+
+So you can, if you need to, for example, say first task hits any host, but second, third, and fifth should go to the executive host 'cause they cash there, we can easily support that. Oh, sorry. One more Role is worker is practically background process and we have our own workflows, which run on the background doing all sort of interesting, uh, kind of maintenance tasks. So we, we call it worker pro, uh, worker role.
+
+**Justin:** ~~I'm, I'm good, Andrew, if you wanna ask the next one.~~
+
+**Andrew:** ~~Uh, ~~
+
+
+#### [00:21:52] Real-World Use Cases of Temporal
+
+**Andrew:** so you've been at this workflow game for quite a while now. Uh, both before temporal and now. Uh, what are some of the most surprising ways you've seen developers use temporal?
+
+**Maxim:** Um, okay. Nothing surprises me, really, uh, because it's a, it's a very, very, uh. Mm, like general purpose platform, right? Practically just makes you code robust. Every time you need the guarantee of execution, you'll do that. So it's practically used everywhere. It's like we, uh, it's, you can practically start from like, uh, up the stack.
+
+For example, at Uber. Um, you need to deploy a new version of a kernel to the data center. How do you do that? You deploy it, and then you need to reboot every machine. So coordinated reboot of every machine in your data center, all the hundreds of thousands of machines. Obviously it's a workflow using this technology, right?
+
+Uh, then, uh, you go up this stack, then you need to manage deployments, right? So, uh, you need to manage your Kubernetes clusters. You need to manage your infrastructure. For example, HashiCorp. They, uh, they, their cloud service is built around this technology because it allows them to coordinate practically deployments and the maintenance, all the backend of their, like, I don't know, the math clusters and other, other resources.
+
+Uh, Datadog, uh, uses that to practically do all the backend orchestration. That is kind of another one, uh, for uh, kind of this, and there are a lot of companies building control planes if you need to build control plane. For your service. That is the one of the best technologies to do that. Then you go up this stack, for example, you wanna do application deployments, right?
+
+CICD pipelines, that Netflix, for example, rebuilt their version of Spinnaker on top of that. And now they are, uh, decided not to even use Kubernetes at all because it's stops scaling for them and they just use temporal directly to practically do all the infrastructure automation. Then you go up this stack and you talk about data pipelines, right?
+
+You talk data pipelines, data movement, like everything related to processing data. Because think about most data solutions, they're good correction files. But the moment you say, oh, when I'm processing this, I need to do a bunch of API calls, which are not reliable. Data pipelines, usual data pipelines, technologies are not good for that.
+
+And uh, for example, like you're doing invoice generation, right? Or you're doing end of months invoice generation. You have a big, big, big job, but every invoice can be one. API call it can be 10,000 API calls. For example, at tub when you had invoices for companies. Some companies are huge, right? So invoice can take one hour to generate for one company, but it can be small because it's got two people company.
+
+So how do you orchestrate those? So, and then you go up this stack, you think like payments, right? So a lot of banks like, and uh, companies like every Coinbase transaction goes for this type of system, right? Because, uh, they like need reliability of transferring data between different blockchains. So payments, realtime payments in India for Brazil, like, you know, that has UPI in India, right?
+
+This type of instant payments, people use it for that. And then like real backend payments, like, uh, banks in your orchestra between each other. And then use things like customer onboard and business flows, like, you know, and now AI agents. AI agents is a very powerful use case there that people use it for.
+
+So, uh, because if you think about it, um, we focused a lot on frameworks, right? How you actually, you could make these calls and how you transform data. But we have so many frameworks right now. Why? Because it's not that hard to write a framework. But the problem is that running in this framework at scale, resiliently with all the failure modes is actually much harder.
+
+And what we are seeing right now that a lot of people who know about Tin Portal, they directly come to us and say, can we just integrate this, all these frameworks and make them run, run resiliently? So this is what are looking for to do is that can we just make the existing frameworks and um, run them on top of Tin portal so you get the benefits of all the nice abstractions they're creating, and we make sure that we can run these things at scale and.
+
+**Justin:** It is really amazing how broad of a use case it has. Um, but, you know, durable execution I think is, it's probably one of the more powerful concepts. Uh, I mean, even though like it's sort of like has existed in other forms for a while. It's one of the more powerful concepts that I think has been coined recently.
+
+And there's a lot of startups in this, in this. Space that I think temporal has like inspired to, to tackle this problem more broadly. Um, I actually worked at one myself, uh, for a little bit and I wanted to ask you about like a technical, uh, problem that we, like we had ran into. So you'd mentioned previously that you're using event sourcing for, um.
+
+Like capturing essentially like side effects and making sure that those are logged so they don't have to be reran and you can just use old results. One of the challenges with that approach is if you have, uh, either really large payloads you, like, you get a really large response back, or if you have like a streaming response, then it can be hard to store those effectively in the logs.
+
+So like, how does a, how does temporal try to help with these? And I, I think like the streaming response is like really applicable to maybe AI workflows. I guess they, they're doing a lot of those.
+
+**Maxim:** So, uh. For, but I want multiple questions there, right? 
+
+
+#### [00:27:10] Handling Large Payloads in Temporal
+
+**Maxim:** One. One is large payloads. There are two really different use cases for large payloads. One is that you just need to pass it through from one activity to another, right? You need to look into that. You just got file. You pass this file to another activity.
+
+So usually what you do is you do some level of indirection, right? You put it in some other storage, for example, S3 or some log store, or some even a local file. We actually can, because we can route tasks to the same host, right? You can practically cache it locally or you're in process. That is one way to solve that efficiently, just local C and maybe store in, in and then point when pricing pointers around.
+
+And we are working on, um, framework level features to make these ENT pointers around seamless, like an easy. That is one. Another one, sometimes you wanna, uh, look at the payload inside of the workflow code, and there, there are kind of couple options. One option is that you, uh, just again, cache these things and you return them very fast.
+
+And second one is sometimes you don't need the full payload, uh, to recover workflow state because usually imagine you have a function which counts words in the, in the file, right? So all you, and then you say, oh, if like, if I have less than 500 words, take this puff, otherwise take other puff. The only thing you need to store is the counter, right, not the whole file.
+
+So there are techniques to make that efficient so you could be able to kind of only store smaller results. And we are, we will provide them as well for streaming. It's an interesting question. Do you know any use case for streaming in AI Vault, which doesn't, uh, involve human waiting for tokens?
+
+**Justin:** Not really. Not really. I mean, it's just used as a sign of progress mostly.
+
+**Maxim:** So, you know, I'm old enough to remember, uh, dial up and, uh, I remember that, uh, I, I acutely knew how picture every JP X loaded, right? It could load from the top, it could load interlaced, right? Like it was like the whole thing watching the JP p loading. So my claim is that we are living in the JP like dial up vault of lms.
+
+The moment LLMs become fast and produce those tokens faster, the whole streaming will go away because nobody would care about that because it just will appear instantaneously. And all backend agents, like agents, which actually doing real work on the backend, for example, calling tools and doing other things, they need streaming.
+
+You need the full result to actually make your next decision. So reality is that pork flows don't need streaming. Uh, they, there are some use cases when streaming is useful and we are going to integrate them. I have ideas how to do that. I probably don't have time to kind of go in details there, but reality is that, uh, for all practical reasons, streaming is purely, uh, entertainment for the user while it's waiting for your kind of LLM to do the work.
+
+And you don't need Workflow Engine for that. You can just pass the stream directly. You can use Tim Portal to pass the pointer to the stream, to the client efficiently. And then you can, we can support streams natively. You can use something like Radius or some other technology, but I don't think there is a really need for drop execution to support streams for these specific, uh, l LM based use cases.
+
+**Justin:** Yeah, that makes a lot of sense. 
+
+
+#### [00:30:12] Versioning Workflows in Temporal
+
+**Justin:** Um, what other like, kind of tricky problem I actually. I just got back from the local first conference, and this was a big topic, um, is just dealing with like versioning of workflows. Um, and a few years ago I actually worked at Oxide Computer Company and they have this same sort of thing 'cause they have a control plane.
+
+Um, and when you, your, your data model is evolving. So like, lets say the workflow is evolving and you've got these, uh. In flight streams or maybe a service has crashed and it's like in the event log, but things have changed now. Like how do you deal with that versioning conundrum? Like what does that look like?
+
+I.
+
+**Maxim:** So, uh, first up, you, uh, before even going, how we solve that, we should realize that alterna an alternative is that ad hoc system, which doesn't even have story around versioning, right? Like, okay, you have these 50 components, multiple databases, multiple schemas, multiple services, and now try to move that shape.
+
+Right direction with, uh, durable execution. You have very explicit ways to deal with versioning, right? And there is very clear story. And, uh, unfor, uh, obviously it's not like, um, you cannot hide versioning because if you have process which runs for months and you want to change it well in flight, you cannot just make it absolutely seamless.
+
+It's, uh, it's not, it's not going to work like that. So there are two really, uh, ways to do versioning with these type of systems. One is. Uh, when system is, uh, workflow is shortlived, let's say it leaves up to a certain amount, like a few minutes, maybe a few hours, maybe a day. You can run multiple, uh, practically you pin the version of the workflow, this specific version of code, right?
+
+You practically say, I start this workflow in version one and I have set of processes which support version one set of workers. And I will keep this, uh, uh, set of processes around for as long as, uh, workflows with this version development. So it works pretty nicely if you have short workflows because again, you don't need to run too many of those.
+
+We call it a rainbow deployment. So you, you build system needs to a deployment system. You need to support running multiple versions at the same time. This Bernet is not that hard, right? You can just run them. ~~Uh,~~ other approach, which we don't have support right now. You technically can load multiple versions of the same pro, uh, kind of code.
+
+In the same process process in some languages. So you certainly can do it in tab script, you certainly can do it in Java with class loaders. Um, maybe you can do in something like in Python, but then spo in separate, like you can walk around these things. So we will provide more of that, uh, and uh, um, that is another approach.
+
+And then for long running process, it still doesn't help, right? Because if you have a process runs for a month, you have a bucket at the hand, you still didn't reach to that point. What do you do? We support that as well. And the way you do that, you just, uh, it's pretty actually simple, but uh, it's not perfect.
+
+You just keep both versions of the code inside of your code. You practically have kind of conditional statement. You say if old version, this is old code, if new version, this is new code. And uh, this allows you if code, uh, it didn't reach that version. It'll take new code puff. It's already passed that old code for recovery.
+
+We'll use old one. So you practically end up doing that. And then you have tools and processes how to validate that this is correct. So you can do replay testing and uh, practically you can just go and say for them, you can download a bunch of histories, check them in, into your, um, repo, and every time you, for example, run tests, you can go and replay all your workflows against all histories and make sure you didn't break them by mistake.
+
+That is absolutely recommend everyone using the technology doing that. Also we are working on safe deploys features. So we will do like self rollout, self roll bags, and this, uh, like testing of replaying before actually doing migration. So we will add more features around safety of deployment just to make sure that if you by mistake didn't, for example, put the correct logic there, we will catch it before it, uh, messes up your production.
+
+**Justin:** Yeah, I think that's one superpower that we really haven't talked too much about, but like the ability to replay and to test replays. This is the hardest thing in, in, uh, distributed systems is like you have a bunch of components and they all have their own behavior and like figuring out how they'll integrate can be really, really challenging.
+
+So being able to replay things
+
+**Maxim:** I, I think just general Visibil, I think if people ask us, we ask people why you used in portal and why you like this durable execution approach. Uh, first just less code and nicer code, then you need to think about it differently. But second, always comes up, or sometimes first is visibility. Runtime visibility.
+
+So this is so much because we record every interaction, right? You go and you see every activity call, you see every input, every output, right? You see, um, every number of every error, which happened there. So you practically, if something is stuck, you can go to UI and see that. So. There's general, uh, uh, trap, like visibility into the system at runtime and ability to download history and replay under debugger if failed once in production is very, very powerful.
+
+So I think yes, general visibility into your system. Obviously we integrate this metrics, this Datadog. There's like, uh, Grafana and uh, so you have all the other context propagation, so you get all the other visibility, but just general I. Like visibility to your system for like basic UI and history is, uh, tremendous.
+
+People love that.
+
+**Justin:** Yeah. That's awesome. I wanna ask one more technical question before kind of we move on and talk a little bit about like open source and open source business models. But, um, an important part of the temporal experience, uh, building these durable execution engines is to be able to access. Uh, or, or write code in the language which your application is written in.
+
+And, and you'll have a pretty extensive set of SDKs. So go Java, python, typescript.net, php, ruby, like you're, you're covering a lot of, especially like the web world basis there. Um, but like, what is, what does it require to support, uh, a new SDK? Is there anything special that a language has to exhibit, or is it just like a matter of, you know, porting like internal APIs and stuff?
+
+
+#### [00:36:14] Deterministic Code Execution
+
+**Maxim:** so, uh, the main requirement for workflow code is to be deterministic. Deterministic means that this code, every time you execute that you need to end up in the same state. Right? Uh, so as, unless you own fully own the runtime, and it's possible something like web assembly can do that. Uh, if web assembly was more mature framework with more language, we would support it by now.
+
+Just that, uh, most people don't use it in production. And, uh, we, every language we need to figure out how we are going to execute court deterministically. For languages like Python is pretty straightforward because we can just, uh, get a syno, uh, library and write our own practical dispatcher, right, which will practically, uh, a syno loop, which is fully deterministic and, uh, runs in exactly the same order every time.
+
+It, it's used, uh, for languages. Like, uh, TypeScript, we actually went further. We implemented, we used, uh, V eight isolates, so we actually provide fully determined Instagram type container for TypeScript. So you cannot even make deterministic mistakes in your code because every API is deterministic. So if you call time, uh, only replay will return exactly the same time.
+
+If you go random on replay, return exactly the same random number, so you kind of pretty safe. For language like Java and go, it's harder because they're multi-feed. We wanna support multi-feed code, so we had to ate our own dispatcher, which will dispatch your phrase one by one in exact order. And, uh, from your point of view, it looks like multi-feed code.
+
+In practice, it is cooperative, multi threaded in, controlled by our framework. Unfortunately, it means that in Java, in in go, you have to use our APIs for multi. You cannot just say New thread and Java, you ally need to use our I sync API, the same thing in go. You need to write like workflow dot go to create, go routine.
+
+You cannot just do go directly, otherwise you get full power of uh, uh, go and Java. It just, you need to use APIs for multi threading. Um, but yeah, it's a challenge and every new language is a challenge and this is the main requirement. And then there is pretty complex backend state machine. That's why we wrote, um, RAs based core library, which implements most of the complexity of the state machine on the client side and all new is the case.
+
+Used that library, uh, like uh, RAAs Library is a underlying dependency. So practically python.net, um, uh, what was the other TypeScript they all rely on, uh, and Ruby right now rely on that, uh, RAs core library. We, unfortunately, we still don't have Ra KA lot of people ask for it. Uh, we certainly will have it one day.
+
+It's just prioritization issue when we get time because implement every is the case. Certainly very, very challenging. One thing I saw is that, um, a lot of our competition, they probably still don't realize how much effort is to be like multi-language. A lot of them just single or two languages and um, yes, it's a to uh, this price we have to pay and, um, for be meeting developers where they are.
+
+**Justin:** Yeah, I think like part of what you pointed out is you have to hook so deeply into the runtime, uh, for some of these languages that it can be a, a real challenge.
+
+**Andrew:** ~~He might have dropped.~~
+
+**Justin:** ~~We will see.~~
+
+~~It was a good break in the conversation anyway. Um, so next up we have,~~
+
+**Andrew:** ~~basically two questions left.~~
+
+**Justin:** ~~yeah, so we'll do the, the sort of open source and then look in the looking ahead and we'll continue from there.~~
+
+**Andrew:** ~~Okay,~~
+
+**Justin:** ~~Have to figure out what's wrong with my, um, my mic.~~
+
+**Andrew:** ~~audio, video, equipment. So always a struggle.~~
+
+**Justin:** ~~I didn't, I didn't test it. I just, I just thought it would work. Of course. Hey, welcome back.~~
+
+**Maxim:** ~~Uh, it looks like I didn't lose my session. Good. I see it's 3% uploaded. Yeah. I lost internet, so I'm going through the phone, but I think it should be fine, right? Um,~~
+
+**Andrew:** ~~Yeah, it'll probably be good. Just a little bit slower. An upload.~~
+
+**Maxim:** ~~yep.~~
+
+**Andrew:** ~~Cool. So, uh, moving on, we're gonna~~
+
+**Maxim:** ~~I don't remember.~~
+
+**Andrew:** ~~open source.~~
+
+**Maxim:** ~~Where did they, we cut like, uh, did I finish the last sentence?~~
+
+~~Yeah. think you finished the last sentence.~~
+
+~~Nice. Okay.~~
+
+**Justin:** ~~Yeah.~~
+
+**Andrew:** Cool. 
+
+
+#### [00:39:18] Temporal's Open Source Journey
+
+**Andrew:** So open source has been a big part of Temporal's journey. I think you said that it started out as an open source project. So how do you guys as a company think about community building and interacting with open source?
+
+**Maxim:** Okay, first it started open source project at Uber, right? We build it as open source and then we fork it, but forked as open source. It's still MIT license, open source, both server side and is the case. And we also g guarantee full compatibility between, uh, open source and the cloud. So we even support migration, live migration.
+
+So if you're running an open source cluster, you can live, migrate to the cloud without downtime. So that is pretty powerful feature, but it requires compatibility. So I think it's pretty because sometimes people can assume they're not open source, it's not true, right? They're fully open source and they only monetize, run on the backend server is DK Library is always run inside of us.
+
+Uh, from monetization point of view, I think, uh, the, I've heard this phrase and I think I fully support that, is that it's very hard, almost impossible to monetize the library. And we have a lot of, uh, cases when we have super powerful and super useful and super, um, widely used, uh, open source library. And, uh, it's like Docker is probably the best example there, right?
+
+And, uh, it's still not very monetizable, right? If you look all successful open source companies, they are practically all have backend component, which is, uh, required. Um, like how to, like, it requires some management to run, right? Like databases, skews like Kafka and Chip kind of both of them together in a single package and reality is that, um.
+
+Like one thing about temporal is temporal is, uh, by just role execution, temporal in general, always sent up in the mission critical path of your company because a reality is that this is the better programming model. And once developers get comfortable with that, they almost always bring it to your most mission critical, uh, use case because.
+
+It brings availability and durability, which is very, very hard to achieve any other way. And also you usually need to move much faster and develop and develop productivity is increased tremendously when you use this technology. But point is you're on the most mission critical thing and you is a resistance component, which you need to scale and manage.
+
+And most companies at some point realized that it's much better to pay us to do that versus doing it themselves. Still, it's fully featured. Companies like Datadog, like uh, Salesforce are still fully, uh, man, uh, self-hosting, very large number of clusters and pretty successful with that. So it's not kind of crippled with, uh, uh, software.
+
+Uh, at the same time, a lot of companies, uh, like Netflix, they migrated from, um, like self-hosting to our cloud and. Uh, one thing is about like how we approach that. Again, we only monetize the Iranian Beacon cluster and we are consumption based practically. You pay for what you're using and it's very good, uh, model because for most companies, when we start with us, there is no big contract to sign. There is no like something.
+
+It's just, yeah, you can start using that. And you pay as you go. And, uh, it's a model which, uh, works very well for them. And certainly I think it's pretty good from monetization point of view as well, because it's very much aligned to the customer video. And, um, so far it worked very well for us. ~~Uh, uh, one, ~~one more thing is that people always ask when we going to change license, uh, are we going to change license from MIT? Because MIT is very, very permissive license. And, um, you know, like don't, like, it's very hard to make promises because it's very hard to keep up promises with corporations, right?
+
+Uh, I can promise whatever tomorrow I can be out and something else happens. But, um, I always tell people that from business point of view, the worst thing can do is change their license. Why? Because. Imagine you, uh, we are still a relatively small startup, right? Like we are 250 people now, and when we started, we were like 30 people, right?
+
+When we, we started to monetize that, you go to the 500, like, uh, license P 500 company and say, okay, now you need to put your business like, uh, you are planning to put your most critical use case on a startup code, right? Uh, for 30 people startup. Nobody will ever use you in production for that. So that's why having a fully efficient open source, uh, gives us, uh, people that trust.
+
+And that's why we guarantee, because the moment we change the license, most of our customers just might, uh, move, move from the platform because it'll be a hundred percent lo. So we realize that it's critical, clear. So from a business point of view. The, uh, staying this MIT license and ensuring full compatibility between, uh, our proprietary cloud offering and the open source offering is, uh, just a requirement.
+
+And it's, uh, common sense. It's not just because we are good citizens or whatever. It just, uh, makes a lot of business sense as well. It's, yeah, we love open source in general, but again, um, it's also makes a lot of business sense for us.
+
+**Justin:** Yeah, it's, it's interesting. I, I, I think the thing that we've seen definitely in, in database companies as, as they've gotten bigger. Um, other companies like Amazon want to offer their cloud services, you know, as a part of the Amazon offering. And that's one of the real big risks is, is people just running your product in the same way that you are trying to operate, operationalize it to make money.
+
+And, um, so have y'all thought about like dual licensing or, or like, is this just something that you're pushing off until it becomes an issue and then you'll sort of like reevaluate, like, what does that. Look like for you.
+
+**Maxim:** ~~Uh, you,~~ you can guess that this question was asked by everyone since the, even before we started the company and obviously our first investors, we had long conversations about that. I think there are a couple, uh, points there. Uh, one is that, um, I think Amazon in general became much friendlier too. Open source.
+
+We have very great, great relationship with Amazon right now. We have long term agreements with them. Uh, so it's one second is that, um, and we, and we are like transacting the marketplace all the time right now. Like a lot of people come from Amazon Marketplace. Uh, second thing is that, um, we, um, the way we differentiate our cloud besides just managing things, we actually built our own resistance.
+
+Uh, so temporal is practically tipo cluster database, right? Open source course, MySQL, Postgre, Cassandra. We build out internal database, we call CDSA Cloud data store. And uh, this database, um, is kind of written for a single API call. You can think it as a database, which is written practically to solve one specific use case.
+
+That's why we can do optimizations, which are not practically possible if you use any general purpose database. Even the best one in the world, right? Like people say, why I don't use whatever we can, you can. It now would be able to match performance of, uh, tailored solution we are building for that. And, uh, that's why the, our cloud service, if you compare practically the cost of running os open source, even not counting people just against the, our charges, especially at large scale, you practically end up in situation that is actually, uh, not more expensive and very frequently, much cheaper.
+
+And then you start counting people to manage your infrastructure. It is much cheaper to run on the temporal cloud. Then, uh, self hoisting. So if Amazon starts doing that, uh, unless they invest immense amount of time to build in their own kind of storage solution, which is tailored for that, uh, then uh, it would be very, uh, hard for them to match performance then.
+
+Also, if Amazon starts doing that, I think it'll be the best thing which happens to us because, uh, the pie will get much larger, right? Because still durable execution and temporal is still not the ubiquitous technology. If Amazon starts offering that, I can guarantee it'll become ubiquitous very, very fast.
+
+And I think we will find ways to differentiate. It is my, I'm not expert there, but my understanding, a lot of companies wish we suffered from that. They didn't have Superior Cloud offering to Amazon when Amazon started to offer that. Right. We do have one, if Amazon starts hosting to portal cloud, open source, i, I, they wouldn't be able to compete with us, uh, on anything.
+
+But like, okay, we will give it to, uh, we will give it to people who have marketplace rates to like people who do low scale and not enterprise, um, like, uh, workloads. Also, don't forget, Chipo has simple workflow service. I was tech lead for that. It's practically the same basic idea, just, uh, a little bit, um, outdated.
+
+And I, I think Amazon practically, logically deprecated that they don't promote it anymore. So for them, okay. Kafka cluster, so they still can do it.
+
+**Justin:** Yeah, that makes a lot of sense. It's just that's a, that's a question that we like to like ask a lot of folks who are creating open source businesses. So as we're wrapping up, we always like to ask. 
+
+
+#### [00:48:13] Future of Durable Execution
+
+**Justin:** Uh, future facing questions. Um, so you've sort of like coined this term durable execution or, or definitely been involved in like developing the space.
+
+How do you see it evolving in the next like five to 10 years? What are the, the big unsolved opportunities in this space? I.
+
+**Maxim:** ~~I, uh, uh. ~~Like if you, if there are quite a few, uh, one is just more runtime, right? Like deterministic run times and obviously web assembly is promising. We have competition doing web assembly, uh, based ones. Um, the first thing, a prototype actually when we started to portal was web assembly. Unfortunately, it just not practical 'cause we wanna have billions of parallel executions.
+
+Um, the current, unless you're writing in RAs c plus plus, right? This, uh, contains are pretty heavy. So you cannot have a lot of those, uh, loaded. So it won't be practical for a lot of, uh, life scale scenarios, but the moment it becomes more mature technology, we will absolutely degrade that. Also, we can do run times like we do in V eight for JavaScript, so maybe even on the operating system level.
+
+If you think about like, um, conceptually this is the first technology which abstracts out distribution from developers, right? So because this process is not linked to a specific machine, so we practically do live migration, that process seamlessly, you can think about that. It can be kinda replace the process idea, uh, of the operating system.
+
+So you can think about as building operating system for the world, right? Like this is like this real distributed operating system, which, uh, can have state full processes. So I think it'll evolve in more this kind of become more and more like operating system and have more services and more capabilities and more like, uh, um, operating system level features.
+
+Uh, how it exactly will end up, I don't know. Obviously the, another big part is the, all this a stuff, uh, that, um, I believe that, uh, almost every agent, long term, if you care about state and it's kind of doing real work, will run as a. Run on top of durable execution as orchestrator. I think this is the, um, given, uh, we have a lot of, uh, usage already in production by a lot of companies.
+
+I wouldn't be surprised that in portal runs more agent workloads than a lot of, uh, much more AI known companies than because, uh, people who not import just, uh, immediately start using it for those workloads. Uh, and um, uh. Just for example, recently OpenAI, uh, publicly kind of say that for example, uh, the.
+
+Image use case, right? Like when you, every time engineer imagery is using open JGPT, it uses Timo behind the scenes, right? The same thing. The cex, they have this CEX server, right? Like the gene like coder, right? Like this, uh, environment. It's all based on Timo as well. So, uh, companies like OpenAI using that.
+
+But you can imagine that, uh, more and more companies which do, uh. AI workloads, we'll learn about tin portal and we will do more stuff to integrate, like make it much more seamless experience for new no devices as well. Uh, so yeah, I think this is, uh, and then there is one more part, which I think is very important.
+
+Um, I mentioned this RPC, long run, RPC. So, uh, we have this protocol we called Nexus, RPC, which is practically standardization on top of extension of GTP, which allows you to run long grinding operations. So we wanna extend MCP with that. So we wanna support extend MCP to support long runion tool calls because we want a reliable or long runion tool calls and we already have solution for that and it works perfectly with Timo.
+
+So we would be able to practically, um, um, be big part of playing this, like this ECA system. So Timo execution and Timo will be big part of, uh, tool and ecosystem when need reliability and cross company calls.
+
+**Justin:** That's, that sounds really awesome.
+
+**Andrew:** Sweet. 
+
+
+#### [00:52:00] Conclusion and Final Thoughts
+
+**Andrew:** So that wraps it up for our questions this week. Thanks for coming on, max. This was a really interesting deep dive into the architecture that powers temporal. So thanks for coming on.
+
+**Maxim:** Thanks a lot for having me. 
