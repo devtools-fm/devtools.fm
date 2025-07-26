@@ -1,0 +1,393 @@
+---
+title: Maxwell Brown - Effect.ts and Effectful Technologies
+youtube: https://www.youtube.com/watch?v=qYohvLtApmM
+spotify: https://creators.spotify.com/pod/profile/devtoolsfm/episodes/Maxwell-Brown---Effect-ts-and-Effectful-Technologies-e362loj
+tags: typescript, javascript, functional programming, effect, effectful technologies, fp-ts, backend, frontend, developer tools
+---
+
+<!-- TAB: SHOW NOTES -->
+
+This week we're joined by Maxwell Brown, a co-founder of Effectful Technologies, the company behind Effect.ts, a library for building robust, production-grade applications with TypeScript. 
+Effect.ts is a library that bends Typescript in many ways, like putting Errors and Dependencies into the type system.
+Join as as we see what they've been up to and what's next for Effect.ts.
+
+
+- Effect Website: https://effect.website
+- Effect GitHub: https://github.com/Effect-TS/effect
+- Maxwell's GitHub: https://github.com/IMax153
+- Maxwell's Twitter/X: https://x.com/imax153
+- Effectful Technologies: https://www.effectful.co
+- Effect Discord: https://discord.gg/effect-ts
+- Effect Days Conference: https://effect.website/events/effect-days
+- Advanced Effect Workshop Materials: https://github.com/IMax153/advanced-effect-workshop
+
+<!-- LINKS -->
+
+
+<!-- TAB: SECTIONS -->
+
+[00:00:00] Introduction
+[00:03:03] Transition to Software Engineering
+[00:05:40] Effect and FPTS Merger
+[00:07:19] What is Effect?
+[00:17:23] Effect's Core Type and Dependencies
+[00:24:29] Pushing TypeScript's Limits
+[00:27:53] Challenges and Limitations of TS Plus
+[00:31:03] Effect Schema: A Powerful Zod Replacement
+[00:39:03] Effect's Community and Support
+[00:40:48] VS Code Extension and Developer Tools
+[00:45:53] Future of Effect: Roadmap and Innovations
+[00:52:03] Effectful Technologies: Vision and Goals
+
+<!-- TAB: TRANSCRIPT -->
+
+**Maxwell:** I believe TypeScript to be one of the most powerful types type systems that exists. Being able to have essentially a programming language as a type system is an extremely powerful thing that I don't, I think is undervalued gen in the general programming community.​ 
+
+#### [00:00:14] Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my cohos Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Maxwell Brown, uh, on the podcast with us. So, max, you work, uh, at, uh, it's Effectful. What is the name of the company? Effectful Technologies. ~~Uh,~~
+
+**Maxwell:** ~~And thankful technology.~~
+
+**Justin:** you're a founding engineer on the effect Ts team. Uh, and we're really excited to have you on to talk about this.
+
+Uh, we actually had Johannes Ling on, uh, it's been, it's been a while now. Uh, and he spent some of the time talking about effect, but we, he know it's, it's been really, uh, popular in the. Twitter sphere, especially lately. Uh, so we wanted to get you on, get somebody on the core team on to, to talk deeper about that. Uh, but before we dive in, talking about effects, uh, we'd love to learn a little bit more about you. So would you like to tell our listeners more about yourself?
+
+**Maxwell:** Sure. Um, so my name's Max. Uh, like Justin said, I'm, uh, one of the founding engineers, um, at Effectful Technologies, which is the company that's helping to drive the open source development of effect and all of its ecosystem libraries. Um, I. My background is primarily in actually DevOps and infrastructure.
+
+Um, so I kind of like to joke that TypeScript is like my hobby. Uh, but my background is actually, you know, DevOps, infrastructure system, administration, that sort of thing. That, and. My past career actually centered on like, doing that type of work. So before working at Effect, I was actually at SAP doing, uh, DevOps and infrastructure for their, one of their cloud products.
+
+Um, and prior to that I was also at Tumblr doing data engineering, SY systems administration, DevOps, kind of like had my hands on a lot of buckets. ~~So.~~
+
+**Andrew:** So before that, it seems like you were in a completely different field. Uh, do you wanna tell us a little bit about that and what led you to being a DevOps person?
+
+**Maxwell:** Yeah, sure. Um, yeah, so software engineering was not my first career. Um, I actually started out after college, uh, as a pharmacist. My specialty was in stem cell transplantation, so I worked for around. Seven years as a licensed pharmacist, uh, and primarily practicing out of New York. Um, and it was a great experience.
+
+I loved pharmacy. I loved healthcare. Um, it was really, um, just like very rewarding, um, to work in that kind of field and to work with the very talented physicians and nurses and all the staff that I got to work with. Um, but. 
+
+
+#### [00:03:03] Transition to Software Engineering
+
+**Maxwell:** Right around after COVID. Um, as many healthcare professionals at the time, uh, experienced, I was experiencing quite a bit of burnout, uh, just from, you know, everything that we had to deal with, uh, especially being in Manhattan during COVID working in healthcare.
+
+It was, uh, I was, I was just extremely burnt out. Um, so I made a transition out of clinical pharmacy. Uh, had an opportunity to go work, um, at Tumblr actually, uh, as a data scientist because part of my job, uh, at the hospital was doing some data science activities. Um, and pretty quickly they realized that I wasn't actually a very good data scientist. But I was actually a very good engineer, or at least they thought so. Um, and so after about a month as a data scientist at Tumblr, I moved, uh, to their data engineering team. Um, and it was one of the greatest experiences I've had in my software engineering career thus far. Um, I learned so much. You know, we were an extremely small team, um, and we had our hands in a lot of different buckets.
+
+So. I was doing systems administration on our Kubernetes cluster. I was doing, uh, DevOps and automation for our data org. Um, just like a variety of different things. And so I got to learn a lot, um, 'cause it was such a small team. Um, and then my mentor at the time actually left and moved to SAP, um, which is how I ended up there.
+
+I followed my mentor to SAP, um, because I also wanted to get some experience on the cloud. Like working with the cloud because Tumblr is actually on, completely on bare metal. Um, so it was kind of like two different experiences I was getting. Um, and I stayed at SAP for a while before uh, Mike approached me with the opportunity to join the team at, uh, at Effectful.
+
+Um, and that's kind of how I landed here. But my relationship with Mike and the team at, uh, effectful and also like the effect. Core contributors goes back about six years. Um, because like I mentioned, TypeScript has always been kind of like a hobby of mine. Um, reaching back all the way to when FPTS was kind of like the.
+
+New hotness of like functional programming and TypeScript. Um, so I did a lot of like, work with Julio from the FPTS, uh, like who kind of maintained FPTS at the time. Um, and then met Mike through my work on FPTS. And that's kind of kind of how I got involved with effect. So Mike and I have known each other for about six years now, and that's about the same amount of time I've been contributing to effect.
+
+
+#### [00:05:40] Effect and FPTS Merger
+
+**Justin:** Something that I didn't realize was the FPTS uh, library actually, or the. Immunity, like merged with effects. Uh, what was, what's the story there?
+
+**Maxwell:** Yeah. Um, we were lucky enough to get Julia to join our team, um, about a year or so ago. Um, and the logic behind that was we did not want, first of all, we didn't want a fragmentation of the developers who were passionate about FPTS, but. Um, also like, wanted to continue doing functional programming and TypeScript and, you know, when effect first started being developed, we were leaning much more heavily into the fp like paradigm.
+
+Um, so the, the idea there was first and foremost not to cause some sort of fragmentation or rift between. FTS developers and then those who wanted to like use effect. Um, and then the other kind of logic there was that Julia was a brilliant engineer. We wanted to keep working with him. He's developed some amazing libraries, um, and he was also interested in seeing, uh, effect continue to move forward.
+
+~~Um,~~ so we were lucky enough to get him to join our team and he's, we've been working with him now for the better part of two years. He has been the, uh, core developer of the effect schema libraries. I don't know if you folks have used them, but they're amazing. Um, he really is very focused on the developer experience at those libraries.
+
+Um, and yeah, that's kind of how we ended up where we are today.
+
+**Justin:** I guess for context for listeners, uh, FPTS is a functional programming library for TypeScript, uh, in case folks that know about that.
+
+**Maxwell:** Yep.
+
+**Andrew:** Cool. 
+
+
+#### [00:07:19] What is Effect?
+
+**Andrew:** So before we go any further, it'd probably be good to establish what effect is for our listeners who might not know about it. So could you give us the elevator pitch for it?
+
+**Maxwell:** Sure. Um, so kind of like our, our. Catchphrase or a core like proponent is that effect is a library for developing production grade applications with TypeScript that's like kind of our North Star and what we've always built towards. Um, but I think it goes much further than that. I think that we develop effect, um, to be, I, I, I don't know a better way to say this, but we develop it kind of to be like a boring library.
+
+We want it to take care of. All of the aspects of your code that you have to deal with on a regular basis that you don't want to have to deal with. You know, as an as an engineer, we wanna focus on the fun stuff about our code. We wanna focus on developing features for our users, providing value to the people who are using our software.
+
+And because of that, when we traditionally develop applications and TypeScript. We end up ignoring a lot of the, uh, aspects of development that are kind of critical to providing a good user experience, but not necessarily the most fun things to have to deal with when you're actually developing your application.
+
+Things like error handling, interrupting processes during execution of your application, um, properly testing things like things that we just like, we know we have to do at some point. You don't necessarily have to do upfront when you only have 10 users. Right. Um, but what we've seen is that with effect, the, the logic behind developing effect is as your application grows and you wanna, you need to make it more production grade.
+
+We, we've seen that. You end up introducing a lot of ancillary code into your code base to kind of deal with these concerns. Deal with things like observability, deal with things like retries, deal with things like interruption, deal with things like error handling. And what ends up happening is your code becomes less about the features and more about dealing with all of these kind of ancillary aspects.
+
+Um, and so you start accumulating all of this tech debt. And then you become afraid to start adding new features, right? Because you've got this kind of mess of code that you've developed in order to handle these ancillary concerns. And now you kind of don't know what's making your code work, what's, what's gonna break if you change this?
+
+I don't have enough test coverage. And so the real logic behind why we developed effect or why effect was developed in the first place. Was to take care of all of these cross-cutting concerns and allow you as the developer to focus on the core logic, the features, the things that you want to provide to your users.
+
+Um, and let us deal with all of kind of the boring aspects of your code. Um, so when you're writing applications with effect, you end up with a much more highly composable. Piece of software so you don't end up having to deal with writing your own implementation of like a retry or dealing with integrating observability into your code base because it's built into the core framework.
+
+Um, so that was kind of like a long-winded elevator pitch, but that's kind of the logic behind why develop effect was developed in the first place, um, and why we're continuing to develop it the way we are.
+
+**Justin:** So I've heard it positioned as like the missing standard library for TypeScript. Um, and so I just kind of wanna dig into that a little bit more. What specific gaps in the ecosystem do you think affect this feeling? And like how would it compare to just like. I don't know, clobbering together a lot of your own tools like LO dash and Zod and RXJS, and, you know, other tools in the framework, maybe even historically, F pfs, uh, FPTS to like kind of solve some of these problems for you.
+
+**Maxwell:** Yeah, that's a great question. Um, I think I'm gonna make a little bit of a bold claim, uh, and say that effect, if you're integrating effect into your code base, you can sort of replace all of those ancillary libraries, the libraries that allow you to do things like, um, you know, have utility methods or, you know, deal with streaming, whatever.
+
+You can replace many of those just by integrating effect into your code base. Kind of the benefit that you get is, um, the same problem that exists in the TypeScript ecosystem right now to begin with. Uh, or you kind of gain the benefit of everything is developed to work together. Everything is developed to compose with one another.
+
+So if you're using effect for your core business logic and you introduce a part of your application that needs to stream something. Effect has streaming primitives that you can use to deal with that. You don't have to introduce another library. You've already got it built in, and it's designed to compose, I think, in a lot of the code bases we've seen over the years.
+
+The problem with the NPM ecosystem, first of all, it's a, it's a wonderful ecosystem. You know, TypeScript, JavaScript. Probably has the best ecosystem community of developed libraries that exists on the planet, right? It's, it's fantastic to be a part of this ecosystem, but the problem is that these tools were developed in isolation.
+
+They weren't designed to work together. So if you need, you all of a sudden have a need for streaming, right? You need to introduce a new library to deal with that, and that library may not. Work with the library that you introduced to deal with errors or the library that you introduced to deal with observability or whatever other problems you're trying to deal with in your code base.
+
+So then you have to write the glue code to deal with integrating this library with this library to then be able to integrate with your business logic. So you're writing like a lot of extra code just to be able to use the library that you introduced to deal with a specific problem. Um, I think the, one of the benefits you get with effect is that everything is designed to work together.
+
+You don't have to deal with all of that glue code. You just plug and play wherever you need. Um, oftentimes, like we hear developers who start working with effect say that it feels like programming with like Lego blocks because you can just swap pieces in and out as you need them. You know, if you need a retry here, great.
+
+Plug in a retry, right? If you need observability in this particular, uh, area, fine. Just wrap your code with a width span, right? You, it, it's much more the, the design decisions that we put into developing the library are made in a way that is to foster com composition, and that's not just with the core library, but it's also with all of the ecosystem libraries that we're developing as well.
+
+**Andrew:** So that's probably kind of the road that led you guys to having such a large library. Like I think, uh, the effect docs are a little daunting. There is so much. It does, but it's probably all in service of that kind of like fidelity of it all. Just like fitting together like Lego bro. Right.
+
+**Maxwell:** Yeah, I think that you bring up a good point, which is that, you know, our, the library, it, it, it does require some buy-in upfront, right? And we're, we're sensitive to that as well. Right. We, we know that there's a little bit of a learning curve when it comes to. Approaching effect from the beginning. Right?
+
+And in many cases that learning curve is not something people wanna deal with when your app has 10 users. Right? Um, we're not designing effect for like that type of adoption. We're designing it for folks who wanna really build like robust production grade systems in TypeScript. So. To kind of comment further on your point about us having so many ecosystem libraries.
+
+I think the decision point about when we introduce a new library or not really comes when we as a team have a need for something. Uh, because we dog food our own software very heavily, um, and it doesn't exist. Or somebody in our community says, Hey, we have a need for X, Y, Z. Like, you know, is this being developed?
+
+Can we work on it? Whatever. Um, and that's kind of, sort of how the ecosystems come together over time. I think some of the best software that is built, uh, comes from your own need of like something, right? The, uh, I think a good example of this is the CLI framework that, that we have in effect, which I built a while back.
+
+Um. At the time Effect didn't have a CLI framework and I needed to build a CLI and I didn't want to use something that wasn't effect, or I wanted to use something that had native integration with effect. Um, and so that was kind of how like the CLI framework evolved, right? It, it was developed out of need, out of want.
+
+Um, and that's sort of how our ecosystem has grown over time as well. Um, and kind of also, like you mentioned. Every library that we ha that we have in our ecosystem is designed to compose with the core primitives that we have. So if you are building an effect program and then all of a sudden you have need of like a database, well, you can use our SQL adapters and then whichever database you have, you can sort of plug in whichever one you want.
+
+Um. We're the, that's kind of the logic behind why we're developing the ecosystem the way we are. It's like, if we think that there's a need for some, uh, library in a production grade system, um, that's kind of like how we decide whether or not something's gonna be introduced into the ecosystem.
+
+
+#### [00:17:23] Effect's Core Type and Dependencies
+
+**Justin:** Let's dig in a little bit and talk more about the core of effect. So, um, I know about like, effect types, uh, from a lot of functional programming ecosystems. Um, and so effect has. This type called effect, uh, which is like the sort of core fundamental, primitive, it's like to make air handling more robust. Uh, but it also has something that's different from some of the other types in the ecosystem I've seen.
+
+So for example, I've used Never Throw, which is another sort of functional, uh, effect base library for, for just doing air handling, right? It's like, don't. Uh, throw return a result type and it has, you know, some stuff on there. So the core effect type has this like success and error generics built into it.
+
+So it feels like a result type like you might see from rust or from never throw or whatever. But it also has this like requirements generic, which is kind of interesting. So to bake in, like kind of what the effect depends on. Um, can you talk a little bit more about like that core type and its usage and like why is having dependencies like.
+
+Express is a part of the types of the effect, like why is that important?
+
+**Maxwell:** Yeah, no, that's, that's a very valid question. And you know, we get, we get that question quite a bit. Why is. The effect type represented the way it is. Maybe we can start by talking about, like, you know, any program pretty much that we ever write has three concepts, right? It has inputs, you put inputs into the program that you're gonna run, right?
+
+Whether it's a CLI or a binary or whatever. That program's gonna have some inputs. And the effect type sort of represents those as the dependencies of your program. Things that your program needs to run, and then. When your program actually executes, it can either succeed with something or it can fail with something.
+
+Right? And those three things are kind of core proponents of any program that we ever run. Um, and so that is kind of the logic behind why the effect type is designed the way that it is. It's designed to represent a program. Right. That is gonna be wrong. Um, and that type goes back to other libraries from other ecosystems.
+
+You know, effect was originally very heavy, heavily based on, um, the ZEO library from Scala. Um, so a lot of these ideas are not our own. They're ideas that we took and sort of adapted to work really well in TypeScript. Um, but that's kind of the. Reason why the effect type is structured the way that it is.
+
+It's designed to represent a program and an effect that you declare in your code is exactly that. It's a program, but a program as a value. So when you actually declare an effect in your program that you're writing, nothing actually happens when you run that that file, right, the effect. Is lazy. And because it's lazy, it's a, it's a lazy representation of a program.
+
+It allows us to do some pretty cool stuff. You can modify the behavior of that program at runtime. You can add behavior, you can wrap it with additional things that you need. Um, and it gives us some pretty powerful things, and maybe we can talk about later related to concurrency and. Um, like observability that we can do, um, that you might not be able to do very easily or if at all with kind of like a JavaScript promise, for example.
+
+So maybe like an easy way to conceptualize an effect is like a lazy promise. It's a promise, it's something, it's a program you've declared but haven't run yet. And then in order to actually execute that effect or program, you have to run it with something. So you would actually execute it in. Code, um, code, and that kind of runs the effect.
+
+So it's kinda like the basics of like why the type has three generics and why it's structured the way it is. But getting back to your question about why expressing a program that way is so important, the having errors and dependencies explicitly declared in the types of your program, um, I think is a, uh, extremely valuable thing to have.
+
+Right? There's a whole. RFC that exists in the TypeScript repository about adding throws clauses to TypeScript in general. Right? Because clearly developers want a way to express the fact that their program might fail with some reasons or for some reason, right? Um, but. JavaScript's not really designed to support that kind of like typed failure paradigm.
+
+So that's why libraries like never throw. Um, and other libraries like that exist is to kind of support that particular use case. Um, but with effect we also take it one step further and also represent the requirements of your program, the things you have to put into the program to make it run, uh, in the type as well. So what do I mean by the requirements in this case? Well. Programs in general have aspects of them that you wanna isolate and be able to test. Right? The, the, there are many aspects of our program that need to be tested, and oftentimes it can be difficult to test if they're not isolated into their own pieces of logic.
+
+So with effect, we. Represent those dependencies, those aspect pieces of logic that we wanna kind of inject into our program, um, in the requirements channel so that we can, in a type safe way, say, Hey, this program needs a database. We don't care what kind of database it is, but it needs a database to be able to run.
+
+So we put that in the type so that if you run your pro, if you declare your program and don't provide it with a database, you get a compilation error. And. Declaring dependencies in this way comes with like a couple of different benefits. One is the testability of your program dramatically becomes a lot, like a lot easier, um, because you can plug in whatever.
+
+Version of a database from our example before that you want. So in production, maybe you're using like a Postgres dot version of implementation of that database, but in testing, maybe you have like some test version that just mocks out everything that you need. So being able to have that represented in the type system makes it really easy to see, um, at a glance.
+
+When you're working with effect, how this program can succeed, what it's gonna produce if it succeeds, what errors it could potentially fail with, um, and then what dependencies it needs to actually run. So, um, both making your program much easier to understand at a glance, but also making it much more easy to test because you can inject whatever versions of a dependency you want in order to satisfy that requirement at runtime.
+
+
+#### [00:24:29] Pushing TypeScript's Limits
+
+**Andrew:** So you're doing a lot with the TypeScript type system. You guys are pushing it, uh, probably be, as you said, beyond what it was meant to do. Uh, so have you guys tried, like, experimenting with, uh, changing that type system in any way or like contributing back to TypeScript to get some of these, these things going?
+
+**Maxwell:** Yeah, no, the, the, there have actually been several different. Experiments that we've done over the years, uh, with TypeScript as a type system because, you know, personally I believe TypeScript to be one of the most powerful types type systems that exists. Uh, being able to have essentially a programming language as a type system is an extremely powerful thing that I don't, I think is undervalued gen in the general programming community.
+
+Um, I think TypeScript is an amazing, amazing language. Um, and we did, uh, an experiment. I think it was about a year ago. Um, primarily led by Mike, uh, our, uh, kind of like the benevolent dictator for life of the effect community. Um, he led an experiment where we forked the TypeScript compiler, uh, and built something called TS Plus, which was a way to. Add, uh, behavior and generate type, generate runtime information, but from the type system. So for example, you could declare a type, uh, in your project and everything was annotated with kind of JS doc annotations. So you could annotate a type that you declare in your type system, uh, to register it with ts plus. And then you could add behavior to it. So you could, for example, um, declare like, I don't know, a map function. And then in, again, in JS doc annotations, you could attach that to the type that you've declared. So that instead of making that type of class and written, declaring everything inside the class, which becomes totally untree, untree, shakeable, uh, instead at runtime, it just figures out that that exists.
+
+And you still get the nice auto completion. Like if you were to. Run that as like a class. Um, but he also took it a step further, uh, and added support for custom, um, operators that you could declare. So you could overload, for example, like the plus operator in, um. With these JS doc annotations. So you would register, like, I forget what the annotations were called, that was a while back, but you could register, for example, a function to a operator, and then when you actually compile TypeScript, it would replace instances of those operators in your code with that function call.
+
+Um, which was kind of cool. Um, we also had derivations, uh, so in other languages like rust and Scala. Uh, you can do meta programming with de derivations for different things. Um, so we added support for that to ts plus where you could declare a type, like an interface for example, and then you could use a derived macro to generate a schema for that at runtime. Um, which was kind of like pretty cool and something that hadn't been done before. And ts plus actually led to some prs back to the TypeScript code base after finding like issues and things like that. Um. 
+
+
+#### [00:27:53] Challenges and Limitations of TS Plus
+
+**Maxwell:** But ultimately, while ts plus was super cool, uh, and at a certain point in time we had re replaced, uh, all the effect code in the code base with ts plus code, um, because it compiled to TypeScript, so it didn't matter.
+
+The problems with ts plus is that obviously it required a compilation step that did not play well with other. Uh, tooling in the JavaScript type script ecosystem because many of those tools just strip types, don't do a compilation pass. So for example, if you were using this ts plus in anything that required hot module reloading or uh, just stripped types in general, you would end up with a problem, right?
+
+And the other problem with ts plus is that the compilation step was long. So just like compiled languages that have long compiled times, we introduced that. Compilation step. That took a really long time. So that was kind of like an experiment that we did a while back. Um, just to try to make it easier to work with TypeScript types, uh, and add meta programming to TypeScript because that was, that's obviously not a, a core proponent of TypeScript is that it has to work with JavaScript.
+
+Um, but again. Ultimately we abandoned that experiment. And, uh, Mike actually wrote a great blog post about ts plus, kind of like a postmortem on that project. Um, and why it was great and why it, why it sort of like fizzled out. But, um, we've also worked closely with the. Some of the contributors to TypeScript over the years.
+
+Um, so Matoo is like probably one of the most avid contributors to TypeScript that we know. Um, and we work closely with him when features come up that either are bugs or things that are missing from TypeScript that we wanna add. So either we create prs ourselves or we work with Matt and he's so much more familiar, um, with the code base.
+
+Um. Yeah, I mean, there's always gonna be features of TypeScript that we miss, that we want access to. Um, but overall, I, I think that, like I said in the beginning, this, this, it's, it's one of the most powerful type systems on the planet and I don't really see how other types systems can catch up because being able to, again, program with types is, is such a powerful paradigm to have access to.
+
+**Justin:** Yeah, for sure. I, I think it's probably best, uh, for the ecosystem that you drop the experiment. And I think the biggest thing is like, the thing that I think about is like with any new tool is like, what are the implications for adoption? And I think like. Effect as it's landed today with this sort of like logical structure that it has is, is obviously really powerful, but it, it's already a hard thing.
+
+I think sometimes to convince people. It's like, yes, this does a lot, you should buy into it and you should use it. You know, and, and if it was like, oh, and also there's this other like fork version of TypeScript that does all these things that you like, need to use to use it, it would, it would've made adoption a lot harder.
+
+So I'm glad y'all, y'all took a different path with it. Um. 
+
+
+#### [00:31:03] Effect Schema: A Powerful Zod Replacement
+
+**Justin:** I'd like to switch gears really quick and talk about some other specific like parts of effect. Uh, so you had mentioned effect schema earlier and I've heard just a ton of praise from that, especially in the local first ecosystem. Uh, I went to the local first conference this year and last year and people there were incredibly excited about effect even.
+
+Or effect schema, even if they weren't using effect itself, they were just like, effect schema is so good. So effect schema, sort of like positioned as a, a Zod replacement sort of, but like it does a lot more. Um, so what unique capabilities does it offer and like, how is that leveraged in the, uh, effect ecosystem?
+
+**Maxwell:** Yeah, I, uh, schema is one of the cooler aspects about effect, and I think it is oftentimes a gateway drug to like starting to get introduced into the effect ecosystem. Um, it, it. The, the Great Julio Conti, like I mentioned before, is the one who is actually developing a schema very heavily, and he's done such an amazing job with the, with the module.
+
+Um, the, I think that the. benefit or main maybe difference from libraries like Zod or, or any of these other, um, like schema validation libraries that exist out there? Um, is the decision that we made to support bi-directional in coding. Um, and don't get me wrong, I think they're, that Zod is a fantastic library.
+
+I think Colin is doing some amazing work with Zod four also. Um, so shout out to, to him for that. But, um, I think what's missing from those libraries is that bidirectional aspect. Those libraries are very focused on decoding, uh, information and validating that information. Whereas I think that that misses kind of like the point.
+
+Of having a schema validation library to begin with, because when you're working with information that's coming across the wire, oftentimes it's not just incoming information, right? You have information that you get, and then oftentimes your application has information that then you want to send. You want to either send information across the wire, you wanna serialize it to the file system.
+
+You want to communicate between workers in a binary format and. While there is, there are tools obviously within JavaScript that can allow you to do the, not just the decoding, but the encoding piece. Right. Um, they're not. They're disparate, they're, these libraries don't focus on kind of the encoding piece.
+
+So, um, at, at one point in time, I forget who it was, I made the comparison between effect schema and ER from Rust. So for any folks who have used C and Rust there, we with effect schema have internalized the concept of, we don't just need. Decoding in JavaScript. We also need encoding. We need serialization and D serialization of information because almost no application these days is just receiving information.
+
+It's sending information as well, or persisting into the file system. So I think that's the core difference between effect schema and a lot of these other libraries. There are many other aspects of effect schema we can get into that I think, uh, separate it from some of the other things that are out there, but.
+
+I think the, the core of it is that we're very focused on supporting the full, um, path of data through the application, right? We want to be, allow you to safely receive information and decode it into a structure, and then also allow you to send off information in a safe way. Um, and. Because we've made that like decision to support bidirectional encoding of information, we've been able to do some cool things.
+
+So, you know, classes and JavaScript get a bad rap. I think, uh, for like almost no reason, uh, I think classes and JavaScript actually have a, a very valid place. Um, you know, being able to have a type in for TypeScript specifically, being able to have a type, uh, and a runtime piece of information at the same time can be super valuable Plus.
+
+Classes are opaque, so if you hover over them, you don't see like a bazillion properties going on. And schema can create classes for you that allow you to do encoding and decoding off the class, but also Alize to an instance of that class. So you can attach methods to a, a schema class, a schema that you've declared as a class that allow you to have other information.
+
+Assigned to 'em. So you could imagine you have a user schema that decodes a first name and a last name, and a user id. But then you define a getter on your class that also gives you a full name just by, you know, concatenating, the first and last name together. Right? So there are some really powerful, like very simple, but very powerful things that schema gives you access to.
+
+It's just like one example. Um. Then obviously the other benefit of schema is first class integration into the effect ecosystem. So you can use it independently of effect if you want to. Um, but you get first class integration with effect, uh, as well. So, um, you can, we support effectful transformations with schema.
+
+So if you want to transform between two different schemas that you have, like maybe you have a schema that. Represents, I don't know, uh, a date time, or something like that, and you wanna transform it to some other schema. You can use effectful transformations to do that. So maybe a, a better example would be you have a user and you want to enhance that, uh, user that you've decoded off the wire with information from a database.
+
+Well, you could define an effectful transformation between those two schemas that. Kind of augments the user type with that information. So there are just a lot of like aspect, I think there are a lot of similarities between Zod and Sche effect schema and a lot of these other libraries out there. But I think the core difference, like I mentioned before, is you can end code information, not just decode it so you can have safe.
+
+Uh, persistence of information to a database. You can have safe persistence of an information to the file system. You can send information across the wire, you can send it between workers and it's all like type safe. Um, but yeah, I think there's always gonna be overlap. But the first class, inter integration at the effect ecosystem and the supporting, encoding as well as decoding, I think are the two big, uh, things about effect schema that I think are wins for us.
+
+**Justin:** So there's a lot of area that we could cover in just thinking about like what else to talk about, uh, and. Y you know, I think it sort of, uh, mirrors the, just comprehensiveness of effect, right? So we could talk about, uh, resource management, so like managing, like database connections and, you know, file handlers and stuff like that.
+
+We could talk about layers, uh, you know, ways to manage dependencies. We could talk about how effect handles structured concurrency, um. Uh, we could talk about observability, tooling and how that integrates. There's like so much here, uh, and we just don't have enough time to cover it all. So I think, uh, we want to get to talking about the future of effect, but before we move to that, um, what is, what is something that you think is important that we haven't covered yet that, that people should know about?
+
+Or like, uh, yeah, I don't know. Uh, I don't know specifically where to take this. Like~~ ~~
+
+**Maxwell:** ~~No, that's a,~~
+
+**Justin:** ~~go~~
+
+**Maxwell:** a great question. I,
+
+
+#### [00:39:03] Effect's Community and Support
+
+**Maxwell:** I think that, um, if I could express one thing to folks out there who are either using effect or who are evaluating effect, um, and want to get more value out of the ecosystem, it would be to join our community. I mean, we have, I've never been surrounded by a more talented group of individuals, uh, in my career.
+
+I know that my career is not the longest in the world, but that it goes back to even when I was working in the medical profession, our community is, I think, unrivaled in how many people are there that are passionate about effect, that are intelligent and want to help. So. If you are evaluating effect, um, or using effect and are not a part of the community, I would highly encourage you to join, um, and leverage the community, um, as much as you want or need.
+
+Um, because we've gotten feedback that it is, it is a great place to be that you'll get the help you need because we, we also recognize, like I mentioned before, that can sometimes be a hard pill to swallow. There's a learning curve, right? It is a different language inside TypeScript that you're writing, um, even though it is just plain TypeScript.
+
+Um, and so because it, it can seem daunting. Um, I think that the community and the folks that have sort of just shown up there over time, uh, is the place to be if you're, even if you're evaluating effect or, or wanna use it effectively. No pun intended.
+
+**Andrew:** Okay. Before we move on to the future questions, I do wanna ask about your guys' vs. 
+
+
+#### [00:40:48] VS Code Extension and Developer Tools
+
+**Andrew:** Code extension. I love talking about like the dev tools that these open source tools provide to like help you debug things and effect is doing so much. I'm sure that having a good developer tool alongside it really helps.
+
+So can you explain to us what the, what the extension does and like maybe what are some plans for the future?
+
+**Maxwell:** Yeah, absolutely. Um, so because effect. Is kind of difficult to get started with and, and sometimes it can be difficult to, um, like get into the ecosystem. We're trying to introduce as much dev tooling as we can to sort of smooth out that process. Um, the vs code extension is one aspect and we can talk about that.
+
+Um, the other aspect that has sort of recently been introduced within the last two months or so, um, is the language server plugin. Which I think is fantastic, and it augments the information that you get from the TypeScript LSP to be designed to improve the experience with effect. So, um, you can get, uh, informa a lot more information from your LSP than you would otherwise normally.
+
+Plus it also introduces a lot of like code actions that can be helpful. So you can, for example, like write an interface in TypeScript and then do the whatever the. Shortcut you have for code actions is, um, and just click to convert it to a schema. Um, and the code action will do that for you. Um, so there's been like a ton of work going into that LSP extension, um, just because we've gotten a lot of great feedback on it.
+
+Um, so shout out to Mattia for all the work he's put into that. Um, but. For the VS code extension, I think the focus is more on the observability tooling that we can provide with effect. So, uh, for those who don't know, effect does publish a VS code extension that kind of wires up like a small, uh, development server that connects your application running in vs code to the VS code extension itself. Um, and we can grab information from the application and show it to you in a little bit of a nicer format. Um, so for example, there's an observability view that you can get access to in vs code. So if you wire up the dev server in your application, you can see, for example, all of the, the spans and their attributes.
+
+So you basically get full tracing information in vs code. Um, and we have plans right now. It's just kind of like a simple. Tree view in VS code. So it's not like the prettiest, but you can still get like a lot of information that way. We've been working, uh, on a web view in VS code that'll open up a like proper trace viewer.
+
+So if you've ever visited our website and gone to the playground, for example, um, there's a trace viewer on the playground that we're planning on, that we're working on porting into a web view on VS code. So you can actually get like, kind of like a mini observability experience, uh, right within your VS code window, but it also publishes other observability information.
+
+So for, uh, with effect you can also declare metrics in your application, not just. Not just like spans, but also like publish metric information and the VS code extension will show you those as well as long as you have it registered again. Um, and there's a lot of other work that's being done to the VS code extension over time.
+
+I think, um, there, there's also, uh, the ability to debug effect context because we had gotten feedback that it's often hard to know what information's being provided to your program where. Um, like sometimes as with dependency injection, you start to lose track of like what you've provided and what you haven't yet.
+
+It is in the type system, but even with that, like it can sometimes get a little bit confusing. So with the VS code extension, you can actually inspect the context of your, uh, of your effects at different points in time to see what's currently in the context. Um. And there was, there's a lot of work that we plan to do for the VS.
+
+Code extension, basically to just try to smooth out the developer experience. Um, but one of the biggest things we have in the future is like trying to wire up that, uh, observability view because, you know, I think the, uh, observability story for effect is undersold on our website at the moment. Um, but it's just like so easy to add observability into your programs with effect.
+
+And then you just point it at whatever open telemetry backend or observability backend you have, and you get all of that information, uh, right away. Um, so yeah, that's kind of like why we have the vs code extension in the first place and what we're planning to add to it. But I would also say definitely check out the LSP extension.
+
+It's literally a one-liner install and a one-line config and UTS config, and you can get started with it. ~~So.~~
+
+**Justin:** Yeah. That's awesome. I'm excited to check that out. Um, so we like to wrap up every episode. By talking about like, plans for the future, future facing stuff. A
+
+
+#### [00:45:53] Future of Effect: Roadmap and Innovations
+
+**Justin:** nd, you know, maybe we can just start with, uh, talking about like, where effects at and like what's, what's on the roadmap. So, uh, in effect three, you guys tried to like really push towards, uh, api, API stability, just like, you know.
+
+Tightening things up. Uh, but like, what is, uh, what's on the roadmap for like effect four and beyond? Uh, do you, are there like any major paradigm shifts that you are, uh, cooking up is like any features that you're super excited about?
+
+**Maxwell:** Yeah. Um, there are a lot of things we're baking into 4.0 that I think will make it much more compelling for folks to evaluate the library if they haven't already. Um, there are kind of like unofficially three core components we went into 4.0 with, which is, um, make it smaller, make it faster, make it simpler.
+
+Um, so. From the perspective of making it smaller, um, one of the biggest gripes people have with effect, especially on the front end, is the bundle size. Even just like the core effect runtime, if you're using effect on the front end, can sometimes eat up like 50 k of space, which doesn't sound like a lot, but if you're trying to build a high performance website that can, that can often be the deciding point between adding a library to your front end and not.
+
+And we want to improve the front end story for effect over time. Right now it is very focused on backend use cases, but we think it can also be equally as powerful, uh, on the front end, um, for driving like high performance web apps. And so from the perspective of smaller. We're now very focused on bundle size metrics for effect in 4.0.
+
+So the default bundle size. I think right now we're hovering around like eight kilobytes for just the core runtime. And you know, oftentimes with with effect 3.0, if you like, add the core runtime and then do some streaming, and then do some schema stuff and you can start approaching like a hundred K that you're adding to your bundle and that becomes almost prohibitive, right.
+
+Um, with 4.0, um, you can add tons of features from effect to your app. And we're basically hovering right now around like 15 K to 18 K of space, um, even with streaming and schema and all of these other things introduced into the logic of your app. So from the perspective of making things smaller, we're like very focused on trying to keep things tight and very, very, like lean from the core perspective.
+
+Um, for making things faster, we've actually reevaluated the entire core fiber runtime. I know we didn't really talk a lot about the underlying runtime of effect and how it works with structured concurrency based on fibers and whatnot, but for those in the audience, just like super simply. When you run an effect, it runs in a fiber.
+
+And a fiber is kind of like a green thread that's meant to deal with all the concurrency aspects for you. Um, and we've managed to not only shrink the core fiber runtime quite substantially, but make it much faster in certain circumstances. So, for example, concurrent streaming, in effect four. Got something like 20 times faster.
+
+We've two x the performance of our HTTP server with these changes to the fiber runtime. Um, and even just like default like programs that we're running, um, we're seeing performance boosts just like with this new runtime that we've built. Um. So, yeah, speed was a, was a cons, was something that we always wanted to keep in mind.
+
+Um, and we did with 3.0, but we've managed to improve upon it with 4.0 as, uh, as well. And then the third proponent was trying to make things simpler. So right now, in 3.0, there are a lot of different ways to do the same thing, and we're trying to shrink that API surface in 4.0 to like a more manageable. Level, um, trying to reduce the, uh, the like, kind of same way to do the same thing, um, that we've seen kind of grow over time with 3.0. Um, and also. Improve the naming of certain things within our, like, within our core modules. Um, really taking a look at the functionality of different things, like what are things, what are, what is clear to people and what is not.
+
+Um, so that's kind of what I mean with like making things a little bit simpler is, you know, reducing the number of ways to do the same thing. Making the modules more lean, hopefully making the naming a bit more semantic for certain operations. Um, re encoding certain modules to make them simpler for folks to understand.
+
+Um, yeah, so that's kind of like the approach we've taken with 4.0. Um, and we're also like kind of. Taking a look at one of the other major problems with, with effect, but also like with any other library that introduces a runtime like React or anything like that. Um, which is kind of the peer dependency madness that comes along with dealing with libraries like ours.
+
+Um, so with 4.0, because everything is tree shakeable, by default, everything is going into one package right now. Um, so if you install effect. You get like everything, you get the HTTP server implementations, you get the ai, you get CLI, you get everything and everything will just be tree shaken away as long as you're using a bundler.
+
+Um, so we've taken like, and we're kind of name spacing modules to make that a little bit easier for folks to deal with. So a lot of experimentation in 4.0 right now around that. But the focus has really been on Simplicity and, uh, making things a lot leaner where we can.
+
+**Andrew:** Sweet. It, uh, that bundle size improvement seems like it's gonna be a, a big unlock for a lot of people. Uh, a hundred kilobytes is way too much for most. 
+
+
+#### [00:52:03] Effectful Technologies: Vision and Goals
+
+**Andrew:** Uh, before we go, I think we should talk about, uh, the company you guys have built around effect effectful technologies. Uh, what is the goal with that?
+
+What are you guys gonna ship?
+
+**Maxwell:** Yeah, it's a good question because, um, you know, making money o off an open source project is not really a thing. Um, so I can't talk too much about what we're working on at the moment, but our bet is kind of twofold. Um. As, as a company. So to be clear to the folks watching this effect is open source will always be open source and is totally managed by the community and the core contributors.
+
+So if you actually look at the effect organization, it's not owned by Effectful Technologies, it's owned by Mike and, and a couple of like key contributors like myself and a few other folks. Um. So while Effectful Technologies helps to maintain the libraries, it's not the owner of the libraries, it never will be.
+
+Um, the company itself, uh, kind of has two major bets. One is that TypeScript is going to become, if not already, is the default language for backends in general. I think that there are so many use cases out there where we're seeing TypeScript just take over on the backend. Namely ai. I think if you're building a backend that deals with ai, if you're building an agentic system, chances are you're using TypeScript because the tooling in TypeScript is just so great around ai.
+
+Um, and that, you know, not just from like a library perspective, but you know, TypeScript is the perfect language to be dealing with these primitives, um, and with these LLMs. So building agentic systems is like one example, but there are others out there. And I think the reason why we're seeing that shift is because the developer pool in the TypeScript marketplace is so huge and it's only growing.
+
+It's very easy to hire within that development pool. So, and if you hire a TypeScript developer, you have somebody who can develop on the front end and the backend. They may not be experts in both, but they have the capability to learn both. So that's kind of our first core bet. Um, and our second Corbett is that the serverless model in general was a mistake.
+
+Um, we believe that for the vast majority of applications, especially applications that we're seeing developed today, um, particularly again around ai, the serverless model doesn't work well. Long running servers are what folks want and need for ag agentic applications because ag agentic applications oftentimes function like durable workflows.
+
+You're dealing with many different LLMs, many different other API servers that you're trying to coordinate across many different machines. Um, you're dealing with these types of durable workflow esque environments that you need to put together. Um, and there aren't very many. Great ways to do that in the space right now, so I'll kind of leave it there.
+
+But, um, I can't really talk too much about what we're working on, but that, those are our kind of like two core bets.
+
+**Andrew:** Well, all that sounds really exciting. Uh, I'm, I'm chomping at the bit to see what you guys release, and I hope it goes well for you guys. But that wraps it up for our questions this week. Thanks for coming on Max. This is a really interesting dive into all things effect, which is a, a very deep ocean in and of itself.
+
+So thanks for coming on.
+
+**Maxwell:** Thank.
+
+**Justin:** Thanks for joining us Max. 
