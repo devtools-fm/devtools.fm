@@ -1,3 +1,5 @@
+"use client";
+
 import {
   MoreInfoIcon,
   NewWindowIcon,
@@ -7,7 +9,7 @@ import {
   ExportIcon,
   StylesIcon,
 } from "@devtools-ds/icon";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Navigation } from "@devtools-ds/navigation";
 
 export const NavigationTopBar = () => {

@@ -9,7 +9,7 @@ const scrapeSharePage = async (url: string) => {
     await page.waitForSelector("#MainContentScrollpane", { timeout: 1000 });
 
     const body = await page.evaluate(() => {
-      return document.querySelector("body").innerHTML;
+      return document.querySelector("body")?.innerHTML;
     });
     console.log(body);
 

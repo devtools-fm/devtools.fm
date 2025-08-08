@@ -1,6 +1,4 @@
-const withEsmCss = require("@design-systems/next-esm-css")(["@devtools-ds/.*"]);
-
-module.exports = withEsmCss({
+module.exports = {
   productionBrowserSourceMaps: true,
   async redirects() {
     return [
@@ -23,4 +21,4 @@ module.exports = withEsmCss({
       },
     ];
   },
-});
+};

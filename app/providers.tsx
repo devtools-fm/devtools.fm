@@ -1,48 +1,40 @@
+"use client";
+
 import React, { memo, useMemo } from "react";
 import { AutoThemeProvider } from "@devtools-ds/themes";
 import { QueryParamProvider as ContextProvider } from "use-query-params";
-import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import { Analytics } from "@vercel/analytics/react";
-
-import "tailwindcss/tailwind.css";
-import "../styles/globals.css";
-import "@reach/tabs/styles.css";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
   const { children, ...rest } = props;
   const router = useRouter();
-  const match = router.asPath.match(/[^?]+/);
-  const pathname = match ? match[0] : router.asPath;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const location = useMemo(
     () =>
       typeof window !== "undefined"
         ? window.location
         : ({
-            search: router.asPath.replace(/[^?]+/u, ""),
+            search: searchParams?.toString() ? `?${searchParams.toString()}` : "",
           } as Location),
-    [router.asPath]
+    [searchParams]
   );
 
   const history = useMemo(
     () => ({
-      push: ({ search }: Location) =>
-        router.push(
-          { pathname: router.pathname, query: router.query },
-          { search, pathname },
-          { shallow: true, scroll: false }
-        ),
+      push: ({ search }: Location) => {
+        const newUrl = `${pathname}${search}`;
+        router.push(newUrl, { scroll: false });
+      },
       replace: ({ search }: Location) => {
-        router.replace(
-          { pathname: router.pathname, query: router.query },
-          { search, pathname },
-          { shallow: true, scroll: false }
-        );
+        const newUrl = `${pathname}${search}`;
+        router.replace(newUrl, { scroll: false });
       },
       location,
     }),
-    [pathname, router.pathname, router.query, location.pathname]
+    [pathname, router, location]
   );
 
   return (
@@ -54,15 +46,13 @@ const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
 
 const QueryParamProvider = memo(QueryParamProviderComponent);
 
-function MyApp({ Component, pageProps }: AppProps) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryParamProvider>
       <AutoThemeProvider theme="firefox" autoStyle>
-        <Component {...pageProps} />
+        {children}
         <Analytics />
       </AutoThemeProvider>
     </QueryParamProvider>
   );
 }
-
-export default MyApp;
