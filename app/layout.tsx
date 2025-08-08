@@ -1,6 +1,5 @@
 import { Providers } from "./providers";
 
-import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import "@reach/tabs/styles.css";
 
