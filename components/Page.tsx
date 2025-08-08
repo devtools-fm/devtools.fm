@@ -1,3 +1,5 @@
+"use client";
+
 import { AutoThemeProvider } from "@devtools-ds/themes";
 import { LinkShieldList } from "components/LinkShieldList";
 import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
@@ -16,6 +18,7 @@ const FooterLink = (
 };
 
 export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
+  // Now that this is a client component, we can safely use Date
   const year = new Date().getFullYear();
 
   return (

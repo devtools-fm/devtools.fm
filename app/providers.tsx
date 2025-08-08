@@ -12,15 +12,12 @@ const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const location = useMemo(
-    () =>
-      typeof window !== "undefined"
-        ? window.location
-        : ({
-            search: searchParams?.toString() ? `?${searchParams.toString()}` : "",
-          } as Location),
-    [searchParams]
-  );
+  const location = useMemo(() => {
+    // Use a consistent location object for both server and client initial render
+    return {
+      search: searchParams?.toString() ? `?${searchParams.toString()}` : "",
+    } as Location;
+  }, [searchParams]);
 
   const history = useMemo(
     () => ({

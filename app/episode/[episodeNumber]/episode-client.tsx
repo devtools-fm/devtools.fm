@@ -158,8 +158,8 @@ export default function EpisodeClient({
       >
         <Navigation.Controls className="overflow-x-auto">
           <Navigation.TabList>
-            {
-              tabSections.map((tabSection) => (
+            <>
+              {tabSections.map((tabSection) => (
                 <Navigation.Tab
                   key={tabSection.type}
                   id="about"
@@ -167,11 +167,11 @@ export default function EpisodeClient({
                 >
                   {titleCase(tabSection.type.toLowerCase())}
                 </Navigation.Tab>
-              )) as unknown as JSX.Element
-            }
-            <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
-              YouTube
-            </Navigation.Tab>
+              ))}
+              <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
+                YouTube
+              </Navigation.Tab>
+            </>
           </Navigation.TabList>
 
           <Navigation.Right>

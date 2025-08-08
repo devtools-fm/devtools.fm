@@ -17,9 +17,9 @@ interface EpisodeParams {
 export async function generateMetadata({
   params,
 }: {
-  params: EpisodeParams;
+  params: Promise<EpisodeParams>;
 }): Promise<Metadata> {
-  const { episodeNumber } = params;
+  const { episodeNumber } = await params;
   const processedMdx = await processMdx(
     path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
     {},
@@ -64,9 +64,9 @@ export async function generateMetadata({
 export default async function Episode({
   params,
 }: {
-  params: EpisodeParams;
+  params: Promise<EpisodeParams>;
 }) {
-  const { episodeNumber } = params;
+  const { episodeNumber } = await params;
   const processedMdx = await processMdx(
     path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
     {},

@@ -40,7 +40,12 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
             </ColoredText>
 
             <DimmedText className="text-xs">
-              ({new Date(episode.postCreationDate).toLocaleDateString()})
+              ({new Date(episode.postCreationDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })})
             </DimmedText>
           </div>
 
