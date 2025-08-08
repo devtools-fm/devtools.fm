@@ -1,0 +1,37 @@
+[tools]
+node = "22.17.0"
+pnpm = "10.14.0"
+
+[settings]
+experimental = true
+
+[env]
+_.path = "node_modules/.bin"
+_.file = ".env"
+
+[hooks]
+postinstall = "pnpm install"
+
+[tasks.dev]
+run = "next dev"
+description = "Run Next.js development server"
+
+[tasks.setup-for-ci]
+run = "git remote add origin https://github.com/devtools-fm/devtools.fm.git && git pull origin main --unshallow"
+description = "Setup repository for CI"
+
+[tasks.build]
+run = "mise run setup-for-ci && next build && mise run build-rss"
+description = "Build the application"
+
+[tasks.build-rss]
+run = "node -r esbuild-register utils/generate-rss.ts"
+description = "Generate RSS feed"
+
+[tasks.start]
+run = "next start"
+description = "Start production server"
+
+[tasks.create-new-episode]
+run = "node -r esbuild-register scripts/create-new-episode.ts"
+description = "Create a new episode"
