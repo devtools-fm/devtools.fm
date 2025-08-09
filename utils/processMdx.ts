@@ -3,6 +3,7 @@ import { execSync } from "child_process";
 import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PromiseValue } from "type-fest";
+import remarkGfm from "remark-gfm";
 
 const hosts = ["Andrew", "Justin"];
 
@@ -116,6 +117,7 @@ async function parseTabs(raw: string, components: any) {
       showNotesTab.mdx = await serialize(mdx, {
         mdxOptions: {
           development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
         },
       });
 
@@ -154,6 +156,7 @@ async function parseTabs(raw: string, components: any) {
       transcriptTab.mdx = await serialize(mdx, {
         mdxOptions: {
           development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
         },
       });
 
@@ -177,6 +180,7 @@ async function parseTabs(raw: string, components: any) {
       mdxTab.mdx = await serialize(mdx, {
         mdxOptions: {
           development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
         },
       });
 
