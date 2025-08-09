@@ -1,22 +1,21 @@
-import { Navigation } from "@devtools-ds/navigation";
+"use client";
 
+import { Navigation } from "@devtools-ds/navigation";
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
-import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { H1, H2, H3, HR, P, Ul } from "components/system";
 import { Label } from "components/label";
 import { Input } from "components/input";
 import { Button } from "components/button";
-import { useIsClient } from "utils/useIsClient";
 
 const pastSponsors = [
   {
     name: "CodeCrafters",
     url: "https://codecrafters.io",
-    logo: "https://codecrafters.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.e38048e3.png&w=48&q=75",
+    logo: "https://codecrafters.io/images/logo.png",
   },
   {
     name: "Raycast",
@@ -25,24 +24,9 @@ const pastSponsors = [
   },
 ];
 
-export default function Episodes() {
-  const isClient = useIsClient();
-  const tags = (
-    <MetaTags
-      title="devtools.fm - Guest Info"
-      description="A brief overview of what to expect when you're a guest on devtools.fm."
-      image="https://devtools.fm/og-image.png"
-    />
-  );
-
-  if (!isClient) {
-    return tags;
-  }
-
+export function SponsorClient() {
   return (
     <Page>
-      {tags}
-
       <div className="mt-10 mb-12">
         <h1 className="flex justify-center mb-10">
           <Logo />
@@ -56,9 +40,12 @@ export default function Episodes() {
       </div>
 
       <Browser>
-        <Navigation index={2} onChange={() => {}}>
+        <Navigation index={5} onChange={() => {}}>
           <NavigationTopBar />
           <Navigation.Panels>
+            <Navigation.Panel />
+            <Navigation.Panel />
+            <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel className="py-10 mx-3 md:mx-6 focus:outline-none">

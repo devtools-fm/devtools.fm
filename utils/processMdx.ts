@@ -1,8 +1,9 @@
-import renderToString from "next-mdx-remote/render-to-string";
+import { serialize } from "next-mdx-remote/serialize";
 import { execSync } from "child_process";
 import matter from "gray-matter";
-import { MdxRemote } from "next-mdx-remote/types";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PromiseValue } from "type-fest";
+import remarkGfm from "remark-gfm";
 
 const hosts = ["Andrew", "Justin"];
 
@@ -26,12 +27,12 @@ function getGitCreationDate(filename: string) {
   });
 }
 
-const TAB_SECTION_REGEX = /^<!-- TAB: (.*) -->/;
+const TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*(.*)\s*-->|\{?\/\*\s*TAB:\s*(.*)\s*\*\/\}?)/;
 
-const TRANSCRIPT_TAB_SECTION_REGEX = /^<!-- TAB: TRANSCRIPT -->/;
-const SECTIONS_TAB_SECTION_REGEX = /^<!-- TAB: SECTIONS -->/;
-const SHOW_NOTES_TAB_SECTION_REGEX = /^<!-- TAB: SHOW NOTES -->/;
-const LINKS_REGEX = /^<!-- LINKS -->/;
+const TRANSCRIPT_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*TRANSCRIPT\s*-->|\{?\/\*\s*TAB:\s*TRANSCRIPT\s*\*\/\}?)/;
+const SECTIONS_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*SECTIONS\s*-->|\{?\/\*\s*TAB:\s*SECTIONS\s*\*\/\}?)/;
+const SHOW_NOTES_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*SHOW NOTES\s*-->|\{?\/\*\s*TAB:\s*SHOW NOTES\s*\*\/\}?)/;
+const LINKS_REGEX = /^(?:<!--\s*LINKS\s*-->|\{?\/\*\s*LINKS\s*\*\/\}?)/;
 
 function peekableIterator(array: string[]) {
   var i = 0;
@@ -62,12 +63,12 @@ function peekableIterator(array: string[]) {
 export interface ShowNotesTab {
   type: "SHOW NOTES";
   description: string;
-  mdx: MdxRemote.Source;
+  mdx: MDXRemoteSerializeResult;
 }
 
 export interface MDXTab {
   type: string;
-  mdx: MdxRemote.Source;
+  mdx: MDXRemoteSerializeResult;
 }
 
 export interface SectionsTab {
@@ -78,12 +79,12 @@ export interface SectionsTab {
 export interface TranscriptTab {
   type: "TRANSCRIPT";
   raw: string;
-  mdx: MdxRemote.Source;
+  mdx: MDXRemoteSerializeResult;
 }
 
 export type TabSection = ShowNotesTab | SectionsTab | TranscriptTab | MDXTab;
 
-async function parseTabs(raw: string, components: MdxRemote.Components) {
+async function parseTabs(raw: string, components: any) {
   const tabs: TabSection[] = [];
   const lineIterator = peekableIterator(raw.trim().split("\n"));
 
@@ -102,7 +103,7 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
         showNotesTab.description += `${descriptionLine}\n`;
       }
 
-      let mdx = showNotesTab.description;
+      let mdx = showNotesTab.description || "";
 
       for (const mdxLine of lineIterator) {
         mdx += `${mdxLine}\n`;
@@ -112,9 +113,12 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
         }
       }
 
-      showNotesTab.description = showNotesTab.description.trim();
-      showNotesTab.mdx = await renderToString(mdx, {
-        components,
+      showNotesTab.description = showNotesTab.description?.trim() || "";
+      showNotesTab.mdx = await serialize(mdx, {
+        mdxOptions: {
+          development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
+        },
       });
 
       tabs.push(showNotesTab as ShowNotesTab);
@@ -149,13 +153,19 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
       }
 
       transcriptTab.raw = mdx;
-      transcriptTab.mdx = await renderToString(mdx, {
-        components,
+      transcriptTab.mdx = await serialize(mdx, {
+        mdxOptions: {
+          development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
+        },
       });
 
       tabs.push(transcriptTab as TranscriptTab);
     } else {
-      const [, type] = line.match(TAB_SECTION_REGEX);
+      const match = line.match(TAB_SECTION_REGEX);
+      if (!match) continue;
+      const type = match[1] || match[2]; // Get from either HTML or JSX comment
+      if (!type) continue;
       const mdxTab: Partial<MDXTab> = { type };
       let mdx = "";
 
@@ -167,8 +177,11 @@ async function parseTabs(raw: string, components: MdxRemote.Components) {
         }
       }
 
-      mdxTab.mdx = await renderToString(mdx, {
-        components,
+      mdxTab.mdx = await serialize(mdx, {
+        mdxOptions: {
+          development: process.env.NODE_ENV === "development",
+          remarkPlugins: [remarkGfm],
+        },
       });
 
       tabs.push(mdxTab as MDXTab);
@@ -186,24 +199,22 @@ interface FrontMatter {
 
 export async function processMdx(
   filename: string,
-  components: MdxRemote.Components,
+  components: any,
   includeTranscriptAndDescription = false,
   includeSection = true
 ) {
   const { data, content } = matter.read(filename);
 
-  const [, number] = filename.match(/\/(\d+)\.mdx$/);
-  const [, youtubeId] = data.youtube.match(/\?v=(.*)$/);
-  const [, thumbnailId = null] =
-    (data.thumbnail || "").match(/\?v=(.*)$/) || [];
-  const [, spotifyEpisodeId] = data.spotify.match(/\/episodes\/(.+)/) || [
-    null,
-    null,
-  ];
-  const [, spotifyEpisodeIdAlt] = data.spotify.match(/\/episode\/(.+)/) || [
-    null,
-    null,
-  ];
+  const numberMatch = filename.match(/\/(\d+)\.mdx$/);  
+  const number = numberMatch?.[1] || "0";
+  const youtubeMatch = data.youtube.match(/\?v=(.*)$/);
+  const youtubeId = youtubeMatch?.[1] || "";
+  const thumbnailMatch = (data.thumbnail || "").match(/\?v=(.*)$/);
+  const thumbnailId = thumbnailMatch?.[1] || null;
+  const spotifyMatch = data.spotify.match(/\/episodes\/(.+)/);
+  const spotifyEpisodeId = spotifyMatch?.[1] || null;
+  const spotifyAltMatch = data.spotify.match(/\/episode\/(.+)/);
+  const spotifyEpisodeIdAlt = spotifyAltMatch?.[1] || null;
 
   const tabSections = await parseTabs(content, components);
   const showNotesTab = tabSections.find(
@@ -218,20 +229,22 @@ export async function processMdx(
 
   const guests = new Set<string>();
 
-  transcriptTab.raw.match(/^\*\*(.+)\*\*/gm)?.map((m) => {
-    const person = m.replace(/\*\*/g, "").replace(":", "");
+  if (transcriptTab) {
+    transcriptTab.raw.match(/^\*\*(.+)\*\*/gm)?.map((m) => {
+      const person = m.replace(/\*\*/g, "").replace(":", "");
 
-    if (!hosts.includes(person)) {
-      guests.add(person);
-    }
-  });
+      if (!hosts.includes(person)) {
+        guests.add(person);
+      }
+    });
+  }
 
   return {
     number,
     hosts,
     postCreationDate: getGitCreationDate(filename),
     guests: [...guests],
-    runTime: sectionsTab.sections[sectionsTab.sections.length - 1].time,
+    runTime: sectionsTab?.sections?.[sectionsTab.sections.length - 1]?.time || "0:00",
     youtubeId,
     thumbnailId,
     spotifyEpisodeId,
@@ -239,9 +252,9 @@ export async function processMdx(
     frontMatter: data as FrontMatter,
     tabSections: includeSection ? tabSections : [],
     description: includeTranscriptAndDescription
-      ? showNotesTab.description.split("\n\n")[0]
+      ? showNotesTab?.description?.split("\n\n")[0] || ""
       : "",
-    transcript: includeTranscriptAndDescription ? transcriptTab.raw : "",
+    transcript: includeTranscriptAndDescription ? transcriptTab?.raw || "" : "",
   };
 }
 

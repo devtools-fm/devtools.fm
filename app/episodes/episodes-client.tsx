@@ -1,40 +1,23 @@
-import { promises as fs } from "fs";
-import path from "path";
+"use client";
+
 import { Navigation } from "@devtools-ds/navigation";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
-import { ProcessedMdx, processMdx } from "utils/processMdx";
-import { MetaTags } from "components/MetaTags";
+import { ProcessedMdx } from "utils/processMdx";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { EpisodeRow } from "components/EpisodeRow";
-import { useIsClient } from "utils/useIsClient";
-import { LinkShieldList } from "../components/LinkShieldList";
+import { LinkShieldList } from "components/LinkShieldList";
 
-interface EpisodesProps {
+interface EpisodesClientProps {
   episodes: ProcessedMdx[];
 }
 
-export default function Episodes({ episodes }: EpisodesProps) {
-  const isClient = useIsClient();
-  const tags = (
-    <MetaTags
-      title="devtools.fm - Episodes"
-      description="A list of the the episodes."
-      image="https://devtools.fm/og-image.png"
-    />
-  );
-
-  if (!isClient) {
-    return tags;
-  }
-
+export default function EpisodesClient({ episodes }: EpisodesClientProps) {
   return (
     <Page>
-      {tags}
-
       <div className="mt-10 mb-12">
         <h1 className="flex justify-center mb-10">
           <Logo />
@@ -66,27 +49,4 @@ export default function Episodes({ episodes }: EpisodesProps) {
       </Browser>
     </Page>
   );
-}
-
-export async function getStaticProps() {
-  const episodes = (
-    await fs.readdir(path.join(process.cwd(), `pages/episode`))
-  ).filter((p) => p.endsWith(".mdx"));
-
-  const data = await Promise.all(
-    episodes.map((episode) =>
-      processMdx(
-        path.join(process.cwd(), "pages/episode", episode),
-        {},
-        false,
-        false
-      )
-    )
-  );
-
-  return {
-    props: {
-      episodes: data.sort((a, b) => Number(b.number) - Number(a.number)),
-    },
-  };
 }

@@ -1,5 +1,19 @@
-import { ObjectInspector } from "@devtools-ds/object-inspector";
+import { ObjectInspector as OriginalObjectInspector } from "@devtools-ds/object-inspector";
 import { ThemedLink } from "./ThemedLink";
+
+const ObjectInspector = ({ 
+  data, 
+  expandLevel = 1, 
+  ...props 
+}: any) => {
+  return (
+    <OriginalObjectInspector 
+      data={data} 
+      expandLevel={expandLevel}
+      {...props} 
+    />
+  );
+};
 
 interface HostData {
   twitter: string;
@@ -21,7 +35,7 @@ export const justin = {
   github: "https://github.com/Zephraph",
   site: "https://just-be.dev",
   location: "Brooklyn, NY",
-  employer: undefined,
+  employer: "Self-employed",
 };
 
 export const andrew = {

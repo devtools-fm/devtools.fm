@@ -1,37 +1,20 @@
+"use client";
+
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
-import { MetaTags } from "components/MetaTags";
 import { Link } from "components/system";
-import { useIsClient } from "utils/useIsClient";
 import { LinkShieldList } from "components/LinkShieldList";
-import { getLatestEp } from "utils/getLatestEp";
 import { ProcessedMdx } from "utils/processMdx";
-import makeClass from "clsx";
 import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
 
-interface SubscribeProps {
+interface SubscribeClientProps {
   latestEpisode: ProcessedMdx;
 }
 
-export default function Subscribe({ latestEpisode }: SubscribeProps) {
-  const isClient = useIsClient();
-  const tags = (
-    <MetaTags
-      title="devtools.fm - Subscribe"
-      description="A podcast about developer tools by the people who make them."
-      image="https://devtools.fm/og-image.png"
-    />
-  );
-
-  if (!isClient) {
-    return tags;
-  }
-
+export function SubscribeClient({ latestEpisode }: SubscribeClientProps) {
   return (
     <Page hideFooter>
-      {tags}
-
       <div className="h-full flex-1 flex flex-col justify-center">
         <div className="mb-8">
           <h1 className="flex justify-center mb-2 md:mb-6">
@@ -80,12 +63,4 @@ export default function Subscribe({ latestEpisode }: SubscribeProps) {
       </div>
     </Page>
   );
-}
-
-export async function getStaticProps() {
-  return {
-    props: {
-      latestEpisode: await getLatestEp(),
-    },
-  };
 }

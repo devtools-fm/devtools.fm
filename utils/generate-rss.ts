@@ -10,7 +10,7 @@ export async function generateRssFeed() {
     .filter((p) => p.endsWith(".mdx"))
     .sort(
       (a, b) =>
-        Number(a.match(EPISODE_REGEX)[1]) - Number(b.match(EPISODE_REGEX)[1])
+        Number(a.match(EPISODE_REGEX)?.[1]) - Number(b.match(EPISODE_REGEX)?.[1])
     )
     .reverse();
 

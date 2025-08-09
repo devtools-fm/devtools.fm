@@ -1,36 +1,20 @@
-import { Navigation } from "@devtools-ds/navigation";
+"use client";
 
+import { Navigation } from "@devtools-ds/navigation";
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
-import { MetaTags } from "components/MetaTags";
 import { NavigationTopBar } from "components/NavigationTopBar";
 import { H1, HR, Link, P } from "components/system";
 import { Label } from "components/label";
 import { Input } from "components/input";
 import { Textarea } from "components/textarea";
 import { Button } from "components/button";
-import { useIsClient } from "utils/useIsClient";
 
-export default function Episodes() {
-  const isClient = useIsClient();
-  const tags = (
-    <MetaTags
-      title="devtools.fm - Guests"
-      description="Apply to be a guest on devtools.fm"
-      image="https://devtools.fm/og-image.png"
-    />
-  );
-
-  if (!isClient) {
-    return tags;
-  }
-
+export function GuestsClient() {
   return (
     <Page>
-      {tags}
-
       <div className="mt-10 mb-12">
         <h1 className="flex justify-center mb-10">
           <Logo />
