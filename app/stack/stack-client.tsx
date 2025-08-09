@@ -24,9 +24,10 @@ export function StackClient() {
       </div>
 
       <Browser>
-        <Navigation index={2} onChange={() => {}}>
+        <Navigation index={3} onChange={() => {}}>
           <NavigationTopBar />
           <Navigation.Panels>
+            <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel className="py-10 mx-3 md:mx-6 focus:outline-none">

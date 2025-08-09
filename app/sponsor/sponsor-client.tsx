@@ -15,7 +15,7 @@ const pastSponsors = [
   {
     name: "CodeCrafters",
     url: "https://codecrafters.io",
-    logo: "https://codecrafters.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.e38048e3.png&w=48&q=75",
+    logo: "https://codecrafters.io/images/logo.png",
   },
   {
     name: "Raycast",
@@ -40,9 +40,12 @@ export function SponsorClient() {
       </div>
 
       <Browser>
-        <Navigation index={2} onChange={() => {}}>
+        <Navigation index={5} onChange={() => {}}>
           <NavigationTopBar />
           <Navigation.Panels>
+            <Navigation.Panel />
+            <Navigation.Panel />
+            <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel />
             <Navigation.Panel className="py-10 mx-3 md:mx-6 focus:outline-none">
