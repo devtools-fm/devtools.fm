@@ -26,12 +26,12 @@ function getGitCreationDate(filename: string) {
   });
 }
 
-const TAB_SECTION_REGEX = /^<!-- TAB: (.*) -->/;
+const TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*(.*)\s*-->|\{?\/\*\s*TAB:\s*(.*)\s*\*\/\}?)/;
 
-const TRANSCRIPT_TAB_SECTION_REGEX = /^<!-- TAB: TRANSCRIPT -->/;
-const SECTIONS_TAB_SECTION_REGEX = /^<!-- TAB: SECTIONS -->/;
-const SHOW_NOTES_TAB_SECTION_REGEX = /^<!-- TAB: SHOW NOTES -->/;
-const LINKS_REGEX = /^<!-- LINKS -->/;
+const TRANSCRIPT_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*TRANSCRIPT\s*-->|\{?\/\*\s*TAB:\s*TRANSCRIPT\s*\*\/\}?)/;
+const SECTIONS_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*SECTIONS\s*-->|\{?\/\*\s*TAB:\s*SECTIONS\s*\*\/\}?)/;
+const SHOW_NOTES_TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*SHOW NOTES\s*-->|\{?\/\*\s*TAB:\s*SHOW NOTES\s*\*\/\}?)/;
+const LINKS_REGEX = /^(?:<!--\s*LINKS\s*-->|\{?\/\*\s*LINKS\s*\*\/\}?)/;
 
 function peekableIterator(array: string[]) {
   var i = 0;
@@ -161,7 +161,8 @@ async function parseTabs(raw: string, components: any) {
     } else {
       const match = line.match(TAB_SECTION_REGEX);
       if (!match) continue;
-      const [, type] = match;
+      const type = match[1] || match[2]; // Get from either HTML or JSX comment
+      if (!type) continue;
       const mdxTab: Partial<MDXTab> = { type };
       let mdx = "";
 

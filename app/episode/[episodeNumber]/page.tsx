@@ -25,7 +25,7 @@ export async function generateMetadata({
     path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
     {},
     false,
-    false
+    true
   );
 
   const {
@@ -72,7 +72,7 @@ export default async function Episode({
     path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
     {},
     false,
-    false
+    true
   );
 
   const {

@@ -20,7 +20,7 @@ import { Browser } from "components/Browser";
 import { ColoredText } from "components/ColoredText";
 import { ThemedLink } from "components/ThemedLink";
 import { Page } from "components/Page";
-import { SectionsTab, ShowNotesTab } from "utils/processMdx";
+import { SectionsTab, ShowNotesTab, TranscriptTab } from "utils/processMdx";
 import Link from "next/link";
 
 const tabIcons = {
@@ -64,10 +64,18 @@ const SectionsPanel = ({ sections }: SectionsTab) => {
   );
 };
 
+const TranscriptPanel = ({ mdx }: TranscriptTab) => {
+  return (
+    <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-200">
+      <MDXRemote {...mdx} components={mdxComponents} />
+    </Navigation.Panel>
+  );
+};
+
 const tabPanelRenderers = {
   "SHOW NOTES": MdxPanel,
   SECTIONS: SectionsPanel,
-  TRANSCRIPT: MdxPanel,
+  TRANSCRIPT: TranscriptPanel,
 } as const;
 
 interface EpisodeClientProps {
@@ -93,11 +101,11 @@ export default function EpisodeClient({
   const view = searchParams?.get("view");
   
   const [activeTab, setActiveTab] = useState(
-    view === undefined
-      ? 0
-      : view === "youtube"
+    view === "youtube"
       ? tabSections.length
-      : tabSections.findIndex((t) => t.type === view)
+      : view
+      ? tabSections.findIndex((t) => t.type === view.toUpperCase())
+      : 0
   );
 
   return (
@@ -149,7 +157,7 @@ export default function EpisodeClient({
           const newView =
             index === tabSections.length
               ? "youtube"
-              : tabSections[index].type;
+              : tabSections[index].type.toLowerCase();
 
           searchParams.set("view", newView);
           router.push(`${pathname}?${searchParams.toString()}`, { scroll: false });
