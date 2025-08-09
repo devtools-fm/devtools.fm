@@ -78,6 +78,16 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
                 </ul>
               </div>
             )}
+            {episode.frontMatter.sponsor && (
+              <div className="flex space-x-2 mb-2 text-sm">
+                <ColoredText color="purple">Sponsored by:</ColoredText>
+                <span className="dark:text-gray-300">
+                  {Array.isArray(episode.frontMatter.sponsor) 
+                    ? episode.frontMatter.sponsor.join(', ')
+                    : episode.frontMatter.sponsor}
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <DimmedText>{episode.runTime}</DimmedText>

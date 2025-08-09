@@ -196,6 +196,7 @@ interface FrontMatter {
   youtube: string;
   spotify: string;
   date?: string;
+  sponsor?: string | string[];
 }
 
 export async function processMdx(
