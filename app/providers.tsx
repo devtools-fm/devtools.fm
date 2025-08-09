@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, Suspense } from "react";
 import { AutoThemeProvider } from "@devtools-ds/themes";
 import { QueryParamProvider as ContextProvider } from "use-query-params";
 import { Analytics } from "@vercel/analytics/react";
@@ -43,7 +43,7 @@ const QueryParamProviderComponent = (props: { children?: React.ReactNode }) => {
 
 const QueryParamProvider = memo(QueryParamProviderComponent);
 
-export function Providers({ children }: { children: React.ReactNode }) {
+function ProvidersInner({ children }: { children: React.ReactNode }) {
   return (
     <QueryParamProvider>
       <AutoThemeProvider theme="firefox" autoStyle>
@@ -51,5 +51,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Analytics />
       </AutoThemeProvider>
     </QueryParamProvider>
+  );
+}
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <AutoThemeProvider theme="firefox" autoStyle>
+        {children}
+        <Analytics />
+      </AutoThemeProvider>
+    }>
+      <ProvidersInner>{children}</ProvidersInner>
+    </Suspense>
   );
 }

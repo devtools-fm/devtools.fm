@@ -5,6 +5,7 @@ import Link from "next/link";
 import path from "path";
 import fs from "fs";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { SectionsTab, ShowNotesTab } from "utils/processMdx";
@@ -90,14 +91,16 @@ export default async function Episode({
   const episodeNumberString = `Episode #${episodeNumber}`;
 
   return (
-    <EpisodeClient
-      youtubeId={youtubeId}
-      tabSections={tabSections}
-      episodeNumberString={episodeNumberString}
-      title={frontMatter.title}
-      spotifyEpisodeId={spotifyEpisodeId}
-      spotifyEpisodeIdAlt={spotifyEpisodeIdAlt}
-    />
+    <Suspense fallback={null}>
+      <EpisodeClient
+        youtubeId={youtubeId}
+        tabSections={tabSections}
+        episodeNumberString={episodeNumberString}
+        title={frontMatter.title}
+        spotifyEpisodeId={spotifyEpisodeId}
+        spotifyEpisodeIdAlt={spotifyEpisodeIdAlt}
+      />
+    </Suspense>
   );
 }
 

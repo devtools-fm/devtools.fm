@@ -14,7 +14,7 @@ import { Navigation } from "@devtools-ds/navigation";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { titleCase } from "title-case";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 import { Browser } from "components/Browser";
 import { ColoredText } from "components/ColoredText";
