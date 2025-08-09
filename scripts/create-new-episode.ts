@@ -5,7 +5,7 @@ const episodeDirectory = path.join(__dirname, "../pages/episode");
 
 const createNewEpisode = async () => {
   const currentEpisodeCount = (await fs.readdir(episodeDirectory)).length;
-  const episodeNumber = currentEpisodeCount;
+  const episodeNumber = currentEpisodeCount + 1;
   const template = await fs.readFile(
     path.join(__dirname, "new-episode-tempate.mdx"),
     "utf-8"
