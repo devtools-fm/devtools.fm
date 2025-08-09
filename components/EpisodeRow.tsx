@@ -56,24 +56,22 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
           <div>
             <div className="flex space-x-2 mb-2 text-sm">
               <ColoredText color="gray">Hosts:</ColoredText>
-              <ul className="flex space-x-2 dark:text-gray-400">
+              <ul className="flex space-x-1 dark:text-gray-400">
                 {episode.hosts.map((person, index) => (
-                  <Fragment key={person}>
-                    <li>{person}</li>
-                    {index !== episode.hosts.length - 1 ? ", " : ""}
-                  </Fragment>
+                  <li key={person}>
+                    {person}{index !== episode.hosts.length - 1 ? ", " : ""}
+                  </li>
                 ))}
               </ul>
             </div>
             {episode.guests.length > 0 && (
               <div className="flex space-x-2 mb-2 text-sm">
                 <ColoredText color="gray">Guests:</ColoredText>
-                <ul className="flex space-x-2">
+                <ul className="flex space-x-1">
                   {episode.guests.map((person, index) => (
-                    <Fragment key={person}>
-                      <li>{person}</li>
-                      {index !== episode.guests.length - 1 ? ", " : ""}
-                    </Fragment>
+                    <li key={person}>
+                      {person}{index !== episode.guests.length - 1 ? ", " : ""}
+                    </li>
                   ))}
                 </ul>
               </div>
