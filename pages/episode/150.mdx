@@ -1,0 +1,438 @@
+---
+title: Bereket Engida - Better-Auth
+youtube: https://youtube.com/watch?v=OpVeRCArKts
+spotify: https://creators.spotify.com/pod/profile/devtoolsfm/episodes/Bereket-Engida---Better-Auth-e36mg4e
+tags: better-auth, authentication, open source, plugins, TypeScript, security
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we talk to Bereket Engida (Beka) the creator of better-auth. Better-auth is an extensible, open source authentication library that's taking the JavaScript community by storm.
+
+{/* LINKS */}
+
+- https://www.beka.et/
+- https://better-auth.com
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:00:35] Meet Beka: The Creator of Better-Auth
+[00:02:00] Beka's Journey with Authentication
+[00:05:11] The Birth of Better-Auth
+[00:07:39] Challenges and Solutions in Plugin Systems
+[00:11:03] Supporting Multiple Databases
+[00:18:31] Implementing Complex Authentication Methods
+[00:25:07] Challenges with Supporting Multiple Databases
+[00:26:37] Building and Improving the CLI
+[00:29:00] Open Source vs. Paid Features
+[00:34:00] Future of Better-Auth
+[00:46:19] Conclusion and Final Thoughts
+
+{/* TAB: TRANSCRIPT */}
+
+## [00:00:00] Introduction
+
+[00:00:00] **Beka:** I was using NextAuth, right? I remember going to their discord and asking like, Hey, there anything like, uh, clerk organization for NextAuth?
+
+And actually someone, uh, replied to me, uh, why don't you do to yourself? And I was like, okay, I'm gonna do it myself.
+
+[00:00:23] **Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-hosts.
+
+[00:00:30] **justin:** Hey everyone, uh, this is a really special episode. I'm incredibly excited for our guest today.
+
+
+## [00:00:35] Meet Beka: The Creator of Better-Auth
+
+[00:00:35] **justin:** So we have Beka on with us. So you created the better-auth Library, um, and I've. Used it in like four or five projects. Now it's, it's, it's a little addicting. I'm like adding auth to projects that don't need auth just so I can use the library.
+
+So we're incredibly excited to have you on to talk about your work around better-auth. Before we dig into that though, uh, we would love to just hear a little bit more about you.
+
+[00:01:00] **Beka:** Yeah. So, uh, I'm, I'm Beka . My full name is Bereket Engida . I am originally from Ethiopia. I, right now live in the San Francisco. I, uh, I learned programming actually like three, recently, I think years, four, five years ago. And I, I was studying computer science back home, but I dropped out on my last year of college before finishing, uh, my, my study.
+
+' cause I thought it would sound better to say like, I'm broke out than I finished, like, at some random school. But, uh, yeah, I, uh, I learned programming and I'm the creator of Better auth. And I also build another other like open source projects before. To name them, bitter Fetch, uh, bitter Cole to charge the two ones that are somewhat known.
+
+But yeah, that's me. I'm very excited to be here, by the way, like, uh, super excited to chat with you all as well.
+
+
+## [00:02:00] Beka's Journey with Authentication
+
+[00:02:00] **Andrew:** So authentication is something that I've tried to add to lots of apps. It's been hard to do. Uh, there's countless companies that offer it as a service. So can you tell us about what your experience like was like with authentication before you started writing better-auth.
+
+[00:02:17] **Beka:** Yeah, good question. Uh, so before, better-auth, I, so my first interaction with all. Was Django. So I was using Django for as my first like, uh, introduction to Wave Dave. Uh,
+
+so while I was using Django, they have like a built-in Django of, uh, it's a kind
+
+of package there. Uh, so that's, that was like my first interaction.
+
+And I think most of us when, when we learn programming, especially when we learn like how to make a backend service. auth is one of those things that needs to exist with your app, and it's something that you build, right? It's not really, like, even like, uh, I, I learned a program like four years ago, but even then, no one actually teach you like, Hey, you have to use a, a service or anything.
+
+Like for, to implement auth It was actually like something that you build yourself in your backend in service and if you, if you are using like something like Django or even Laravel or all the, like this, like full stack frameworks. Uh, backend like very, uh, mature frameworks. They already have like these primitives out of the box.
+
+So that was like my first interaction with them and that's like what's in my mind. Like, hey, all is something that you implement, uh, yourself. You don't outsource that. It doesn't make sense 'cause it's like it's integral to your app. Uh, then I came into nextjs and uh, my first interaction with NextAuth. Which actually was decent. Like I liked the abstraction. Uh, it was better than I would say, a Django. Django that only has the username and the password and like, because it wasn't a nice experience. But Next Auth was like much better experience for me. Uh, and then I tried like Clerk, uh, a third party service.
+
+I tried a, a passport. I, at my previous job, I was, we, we were using passport. I tried auth0 as well. Uh, and I also tried to roll our own auth on my previous job. Um, so I had like experience with this, uh, like different tech technology software, especially in the JavaScript ecosystem. I noticed there was like a huge shift to, uh, third party service, especially after like Clerk came into the scene.
+
+Uh. I remember like everyone was running NextAuth and just like after some time everyone was on Clerk. For me it never made sense to outsource my auth, like just, there are a bunch of problems with that. And then like, I just never liked that. So my experience with auth was like, I like NextAuth, but it had a lot of, uh, things that it lacked, uh, and a lot of things that to improve.
+
+And I think the team was not full-time working on that and like improving, putting off features. Uh, the docs were very lacking. Uh, but other than that, like, I like the abstraction. There was Lucia, I also tried to use Lucia out, um, because it just seemed like to NextAuth out, but I, it had even less features. Um, yeah, that was like my general experience with auth, uh, before starting, uh, better auth.
+
+
+## [00:05:11] The Birth of Better-Auth
+
+[00:05:11] **justin:** So what was the sort of like key motivator that pushed you over the point? It's like, all right, like this needs to be solved and I need to do it.
+
+[00:05:17] **Beka:** Yeah, I, I was working on a different project, uh, uh, it was, it was actually an open source project. I was doing a wave analytics platform, so basically I was similar to post hog or something like that. So I was doing something like that as an open source project, and I needed to implement multitenancy. So basically you have like the organization feature.
+
+If you ever use like clerk. Uh, you basically have this feature out of the box. Like you'll see like you can have organizations and inside them you have members and the members have their own roles, roles and uh, stuff like that. And they'll handle like, uh, sending invitation for, uh, the member and all that stuff will be handled for you.
+
+And like Multitenancy has been around for a while and every SaaS application you use probably have kind of setup like that. But when I was trying to implement that. I was using NextAuth, right? And there was literally zero solution for that, and I have to do it from scratch. I remember going to their discord and asking like, Hey, there anything like, uh, clerk organization for NextAuth?
+
+And actually someone, uh, replied to me, uh, why don't you do to yourself? And I was like, okay, I'm gonna do it myself. Uh, but I think I've built another project called the NextOrg. That basically adds, uh, this specific feature on top of NextAuth. But I keep just hitting wall after wall 'cause it was never built for that.
+
+Like it was never built to be extended. So at that point I had this idea of, hey, what if you build like a very good auth framework from scratch and has some kind of plugin system. So whenever you need these features, you just add a plugin and that would work. Like how you could do with that be. Uh, and I thought it would be easy, but uh, it took me like six months to work on, like to get you like a first version out. Uh, and then at the end, like, yeah, that was like the initial thing that can be started. A also, like I, I had like, somehow I came up with the name better-auth and I thought it was sick. Uh, but then I didn't think like it, it would be available on npm. So I go to npm and then try to look that, to look up the name and it wasn't taken.
+
+I was like, dude, this is all the same. I need to start working on an auth framework
+
+[00:07:27] **justin:** It's funny how many projects start because like somebody thinks of a good name and the name is actually still available, and you're like, oh, crap,
+
+[00:07:33] **Beka:** Yeah.
+
+[00:07:34] **justin:** have to do it.
+
+[00:07:35] **Beka:** Yeah. That's it. The universe gimme the sign to work on some the,
+
+
+## [00:07:39] Challenges and Solutions in Plugin Systems
+
+[00:07:39] **justin:** So, better-auth is built up around the plugin system, like you just said, and it's not necessarily easy to write a general plugin system. It seems like a hard space, uh, or, or not hard, like generally, but like nefariously hard. Like there are these little details that are hard to get
+
+[00:07:57] **Beka:** Yeah.
+
+[00:07:57] **justin:** So, uh, did you have experience implementing like plugin systems before or was this sort of your first time? How did you, how did you go to figure out like, okay, how do I build a good plugin system?
+
+[00:08:06] **Beka:** so I, I, I used to do music before starting programming and in the music world, plugins are, especially if you, if you produce music, uh, plugins are like very essential part of, uh, your workstation. So I like, I, I'm familiar with like having, like a good plugging system would have like a huge dividend down the line.
+
+Uh, and also will like help with abstraction. But I didn't have like, experiences of making plugins and, uh, can never have, I never made a, a library that had, that has plugins or anything like that. That the reason that it took me six months, right. To get the abstraction rate. Uh, more than anything that was like the hardest part.
+
+Like I'll build, like I rewrote the whole library four times. 'cause, and the four times was because like I needed to figure out how the plugin architecture would work. Like, I was just like, I would build the whole thing and then like, again, like I'll think of something that the plugins wouldn't be able to do.
+
+So now I have to do this from scratch and like figure out like how the plugins work again. So the plugins were like the hardest part I would say, like to figure out, especially since you have like a plugin system for the clients and the server. And those two things need to work. And when it comes to TypeScript, you have to also like think about like how type inference work and like how each plugin affects the type of system, uh, and all that stuff.
+
+Um, even like. For example, we have adapters. So whenever you wanna use your own database, you can bring an adapter and we need to figure out like how adapters would work, plug into plugin. And uh, most adapters before us were like implementing specific queries. Uh, so we need to figure out like a more generic adapters and, um, need to figure out like that, that obstruction as well.
+
+Uh, but yeah, I think, uh. That was my experience, plugins like, uh, it, it was a bit hard to make, but finally figured out a, a good enough obstruction that allowed us to build a bunch of things. Did you, did you take any inspiration from other plugin systems as you went through this journey? Because like what you ended up with is like very similar to like other plugin systems with like hooks and befores and afters and just find that interesting.
+
+I, I, I don't particularly call a specific one, but I remember looking into nuxt, N.U.X.T., the framework, they have a plugin system. I looked through their code. Uh, I actually took inspiration from a bunch of like Laravel. I looked through like every auth thing that they have.
+
+I work through even like a Ruby on Rails. Uh, I, I try to see like how, how they implement auth. But for plugin specific, I, I, I looked through like vite, V.I.T.E., Their, their plugin system as well. So those are like some of the inspirations, but there was no specific inspiration that like, but again, like I think the plugin system generally is like kinda similar. So yeah, we don't do anything like super different, uh, regarding plugins. Maybe like, 'cause we have like a very TypeScript specific thing. We do something interestingly. Other than that, it's like similar to the other plugin architecture.
+
+[00:11:02] **justin:** Yeah.
+
+
+## [00:11:03] Supporting Multiple Databases
+
+[00:11:03] **justin:** So what are some of the challenges of supporting multiple databases? That, I mean, this is a feature that I've used myself, so I've like hooked it up to prisma. I've hooked it up to drizzle. You know, I've, I've wrote my own and like. It seems like it's a hard thing to do to support all these, and if you're worried about like performance and security and all the other stuff, it's like
+
+making sure you get all those right seems, uh, challenging.
+
+So how did you do it?
+
+[00:11:28] **Beka:** Yeah, I think the common way to implement adapters before us, for example, the way NextAuth or Lucia Auth was doing adapters where they would like, uh, have an interface. For example, they would be, uh, an action called find session. So that will be implemented by each adapter. So like each adapter will have like a fine session.
+
+For example, you'd call Prisma to implement find session, you'll call. Drizzle to create find session. So you'll have like all these ORMs and all these like adapters to create their own find session, uh, like implementation. But for us, since we have plugins, we, we couldn't do that. 'cause like every plugin have their own, uh, you know, queries.
+
+So doing that for every plugin is gonna be possible, right? Just every plugin in for every adapter is unsustainable. Uh, so the way we did it was 'cause we built another ORM on top of the ORMs. So we have like another ORM that like unifies all the ORMs. So like we have prisma like, uh, ORM inside better-auth. So we use our own ORM and then we have the adapters convert those calls to the respective adapters.
+
+Uh, that was actually very interesting problem to solve as well. 'cause like there was nothing out there. Uh, have you heard, like, do you know about Fuma Docs? Fuma. Fuma Docs? They're a, a documentation framework. Have you heard of them? Yeah. Uh, yeah, they, they also like, have the similar use case.
+
+So we, we are actually collaborating with them to make these open source and, uh, have you worked for other people who wanna build these type of things in the future as well? Uh, but yeah, that's like mostly how the adapter.
+
+I've built a lot of plugin systems on TypeScript and it's not the easiest thing to do. Uh, you have to kind of be a generics wizard. To get the experience you probably want, uh, was, were there some challenges developing that part of it? Because personally, I've had lots of troubles trying to get that to be perfect.
+
+Yeah. Like, yeah, I'd say like that was one of the, the most challenging things about plugins. Uh, and I wasn't a wizard either, like when I started the project, I, like, I have very basic TypeScript knowledge. Like I know generics, but I, like, I just didn't know much about it. And also, like, it was, it is very hard to learn these things, right?
+
+Like there is no guide or anything like out, say out there, like to learn how, especially like when it gets complex, there is nothing out there to learn. Uh. So what I did was like, I built another project, it was called better-fetch. Uh, so that taught me a bunch of things. So like, it is a very TypeScript heavy, complex types, um, project.
+
+And while I was building that, I learned a bunch of things. And I think when it comes to like TypeScript generics, the only way to learn them seems to like to do it like yourself. Just like try to, you know, just figure out yourself. Otherwise, like, it, it is impossible to learn. Uh, like, I remember like going through every guide, you know Matt, right?
+
+Matt, Matt Pocock. I went through all his courses. Like I couldn't, I couldn't get behind of it. Like, I was like, what's happening? But, but then I built, like, that project ended up gave me like a bunch of insight and then I guess like I become a wizard.
+
+[00:14:43] **Andrew:** Yeah, that's definitely what it feels like when you're, you master TypeScript generics. It's I quite understand my code, but I know what's
+
+[00:14:51] **Beka:** I know that's Like Exactly, yeah. And like you, you're very proud of it. 'cause like, I think like seems very complex and you don't really also understand it, but you know, it's doing its job. So it's like, okay, I think I'm smart.
+
+[00:15:06] **justin:** Yeah, crazy how like TypeScript's type system is. It's just like the expression of these really complex types is sometimes just not intuitive at all.
+
+[00:15:17] **Beka:** Exactly. Yeah. Also, it's very hard to optimize. Like if we, we've had like a bunch of problems, especially initially like, uh, performance, right? So like hard to like, relearn, relearn a bunch of things to actually like improve the performance and get those things right. So that by itself is like challenging, like, especially like improving the performance, uh, even like getting the types to work. Also challenging.
+
+[00:15:42] **justin:** So you were building this out, um, what were the plugins that you thought were like most important to support? Like out of the gate, like, okay, these things have to be like the plugins we support. And I, I guess maybe a similar but like. Different question is like, how do you determine if you should build something as a plugin or just like bake it into the framework?
+
+[00:16:04] **Beka:** Yeah. Uh, good question. So the. The, the first thing I, I wanted to like, make work in the core, uh, like in the co library was anything, this was like my logic. So anything you'd get from NextAuth, like you have OAuth, right? And then maybe you don't have email and password, but that as well. I want them to be the part of core.
+
+'cause I don't want to introduce people to a concept of plugins, uh, from the get-go, right? Like if you just want to implement continue with Google. I don't want you to like know about, uh, plugins and all this complex stuff. So like, for those type of things, I wanted to like, to make it like a part of the core, but I say one of actually the things that I really wanted to make to, to make it work is, uh, I, for example, we have a two-factor plugin. So the two-factor plugin, like the sign up in the point doesn't, the sign in the point have no information about two-factor plugin. So all the logic regarding two-factor only exist in the two-factor plugin. So for example, the same, usually when you implement two-factor, it would be implemented in the sign-in point, right?
+
+Like whenever they're sign-in, then you'll check like if they either enabled two-factor and then you don't return the session, you either actually challenge them to complete two-factor. But in our case, I wanted to make like plugins very isolated. And then whenever they are added, they only add that logic. Inside that specific plugin only. So for example, in our sign-in implementation, there is no concept of, uh, two-factor that only exists inside of like the two-factor plugin. So we wanna do this for every plugin. I think the main one, like when I started was like the multi-tenancy. So I wanted to like organization work 'cause I wanna prove that guy like we did it.
+
+But the, the other one was like two-factor. Uh, the other really interesting one was like a multi session. So you can have like two sessions in one device. I always like wondered like how people do that. Like when you use Gmail, for example, Gmail has, you can like log into two different accounts at the same time.
+
+I always wonder like how that was implemented. Uh, so like I wanted to add that. And um, right now when we decide like whether to make something, a plugin or the part of the coin implementation is mostly regarding, like, it doesn't make sense to be a part of like a simple setup or. Is something that people want down the lane, uh, or if, when they have like a, a more complex app, that's mostly like where we are.
+
+[00:18:30] **Andrew:** Okay.
+
+
+## [00:18:31] Implementing Complex Authentication Methods
+
+[00:18:35] **Andrew:** Yeah, the, the first question, there's a, a big meaty one we can talk about. So, auth these days is nice and complicated. There are seemingly hundreds of ways to authenticate, like we have, uh, passwordless email auth, we have pass keys now. We have two-factor auth. We have something called web auth n uh, so can you walk us through the approach of like how you've added all of these different things to the framework?
+
+[00:18:58] **Beka:** Yeah. Uh, like most of things, for example, something like passkey is a part, is a plugin. So, uh, from, for much part, like, I'll just, like, whenever I need to create a plugin, I'll learn about that stuff as much as I can. Uh, if they have some kind of RFC that I can read, I'll go through that and I'll read like everything that I can give my hands on.
+
+Uh, and also I try to see implementations from other libraries or frameworks that already has done this. Uh, especially like when it comes to auth security is gonna be like a big factor. So you wanna get these things right, like you can't really, you know, have have a, like you have to actually get it right and get it, uh, correct.
+
+So like my, whenever I, I need to implement, for example, Passkeys. Actually our Passkey implementation relies on, uh, a library called SimpleWebAuthn. It's a, you probably have heard of it, but it's like, it's a popular as recommended, uh, uh, like library. So if, if there's something that we can rely on, we, we won't try like to reinvent something that already exists.
+
+So, uh, we try to rely on that. But for many things I would like try to learn to, to teach myself, like through a bunch of, uh, you know, and to go through if they have actual, especially if they have some kind of spec. I'll go through that and learn. Uh. And try to implement it from there, I guess.
+
+[00:20:20] **justin:** so earlier you were, you were saying that, um, you, you're really trying to implement parts of the flow in plugins and have them isolated So your, your your two factor, uh, is like in its own plugin. The interesting challenging thing is when you're thinking about testing for like an end-to-end flow that may rely on one and or more plugins and may be harder
+
+be harder to get a better understanding of like where possible vulnerabilities could happen versus like if you're looking at, you know, a simple linear, everything's in one file or like
+
+or whatever. So how does. Modularizing parts of auth into plugins change how you think about like security testing and just testing in general.
+
+[00:21:05] **Beka:** Yeah, that the, that's a very good question. 'cause like, again, as you said, if you have two plugins that they just having to plugs make cause a security issue, like maybe just having one of them that wouldn't. Uh, so this is like a more interesting problem that for us to solve. Uh, and, uh, like, I wouldn't say like, especially for the user side, uh, I don't think we figure like the whole way on how testing should work when they use our framework.
+
+Uh, but for us, like we, one of the decision to have, like right now, we distribute all the plugins, almost all plugins through the main package. So if you wanna, for example, import. Specific package. You don't install another package just inside one of the package. The reason through that was like, just, we wanna have everything there to be able to taste them and to be able, like, to see like, uh, how they can work together and like, it doesn't cause any problems.
+
+So that, like, that was one of the decisions that we did. Uh, just one package instead of like having a bunch of, uh, supported out. Uh, like that's one of the things actually we, we will support them out very soon 'cause. Let's say one day you, you have some kinda security issue with one of the plugins. We don't want you to update like the whole framework to be able to just fix one.
+
+Uh, so we, we we're gonna roll that out soon, but the challenge is mostly like, again, uh, a combination of plugins could create an issue that you would not normally get just by using one of the plugins. Uh, we try to solve some of that problem by like, really rac on the, uh, plugin architecture. Especially for v1, we like redo every play in architecture again.
+
+Uh, regarding, uh, I remember like there was an issue with like, some cookies would pass to the other plugin and the other plug, like I, I forgot, but like there was a huge problem there before v1. So we need to like, re-architect everything from scratch, uh, in order to be able, like to fix this like plugin-to-plugin, uh, communication.
+
+Uh, and also we try to avoid like, almost most, like 90% of the pluggings don't talk to each other, so like. There is no communication between plugins, so they only exist by themselves and only exist as, uh, one, like there's no like requirement dependency or anything between plugins. So they only exist as one isolated, uh, plugin.
+
+And that's what the reason, one of the reason for that was also like to avoid this, like interdependence issues that would arise later.
+
+[00:23:25] **Andrew:** What are the plugins that do have to talk to each other? That that's, that does seem like it might get pretty complicated.
+
+[00:23:30] **Beka:** Uh, for example, the, uh, we have an open ID provider, so there's OIDC plugging, uh, for example for the OIDC plugin. The JWT plugin need to talk to each other. The JWT plugin will has like a JW Ks in the point where you can get like the say to validate the A WT. So it will like ask the JT plugin to validate a token and stuff like that.
+
+So like those are the two plugins that I remember like that that has to communicate for the others. Just like more of like if there is a plugin there and then they'll just do specific thing. They just check like if they plugin exists or not. And do, for example, we have a Stripe plugin. So for Stripe plugin, if you have the organization plugin app, it will like add something specific instead of like adding.
+
+Something different, but only like those two plugins are have to actually communicate with each other so far.
+
+[00:24:28] **justin:** Nice. Nice. Yeah, that'll be a, I, I'm sure that it's a challenge to like keep it that way, but it's probably better for everyone as like things
+
+[00:24:36] **Beka:** isolated as possible.
+
+yeah. Like much better. Like we do, like for example for the Stripe plane, we do not, we have, uh. For example, we, we connect a Stripe customer ID with a reference. Id reference ID could be an organization ID or a user id. We could have done like a user ID and then org id based on the plugin that you add.
+
+But that will just create a bunch of problems for us, and that will just like, we want to avoid like the dependency between, uh, plugins as much as we can.
+
+[00:25:05] **justin:** Yeah, that makes a lot of sense.
+
+
+## [00:25:07] Challenges with Supporting Multiple Databases
+
+[00:25:07] **justin:** I wanna ask a very specific question. Uh, I, I, I'm kind of biased in this 'cause I've, this is the only like sharp edge that I've hit with better-auth.
+
+So one of the, the, one of the hard parts of supporting like multiple databases or whatever that, and, and the plugin system that you have is that a plugin may introduce a new table or a new column or something like that in the database, and you have to keep the schemas up to date. It despite not controlling the sort of like actual underlying schema or the, you know, meta architecture or whatever is being used. So it's like the prisma or drizzle schema or whatever.
+
+So better-auth has a, um, A CLI right now that you can run, like, migrate and generate, uh, to like generate like schema updates or like migrations and stuff. And this is the one area where I've found like some sharp edges, and this is like a common thing in the JS ecosystem in that. People do weird things with build, or, you know, end, end providers have like weird semantics. So one example is like Cloudflare has this virtual module called like Cloudflare colon workers. And I've found that like right now, the better-auth CLI. Like kind of breaks on that.
+
+Uh, but it's not the only one by any means. This is something I've sort of griped about a lot on Twitter.
+
+Uh, so when you're thinking about building tooling like that to like make things easier for people, how do you balance the just like kind of craziness that is the JS ecosystem?
+
+
+## [00:26:37] Building and Improving the CLI
+
+[00:26:37] **Beka:** Yeah, very good question. That's very crazy. Uh, I think when we build the CLI, uh, the first reason we built the CLI was, 'cause like, again, like I, I didn't like the idea of when I, when I was using NextAuth, you'd have to copy the schema, for example. They give you like a prisma schema, Drizzle schema and all that.
+
+You have to copy that to project. I like, never liked that idea. Like I, I would rather like run something and it would just like have the schema for me. And also since you have plugins now, like for every plugin you'd have to copy like every schema for every adapter. And it's just like not sustainable. So we need to, we, we actually needed to make some kind of CLI to make it work 'cause otherwise it's not gonna work.
+
+Uh, so for the edge-case for example, for, for example, for, uh, I think for Cloudflare we try to provide the CLI as a. I, I don't think we have it up on our docs, but for people who ask us every day everything, we'll tell them like they can use our internal API to call the CLI programmatically so they don't have to run the CLI.
+
+They just can call it programmatically and then they have their own thing. Uh, but that was like, I remember that was like the first thing that I hit as well. Like I, I think I was using like OpenNext from Dax. SST. So they also, like I was using Cloudflare and like I wasn't able to run the CLI, 'cause I don't have access to the environment where I was when I was using D1.
+
+Uh, so that was challenging. But I think we have work around there and I think the team so far has been just me. So like now, now more people will be involved and we'll have like more guides and how to do, like these small things get right. So hopefully like soon we'll improve, like on the small details, especially with the CLI, um, we wanna make it that much better, especially now with like shadcn, CLIs become more and more like, I dunno, powerful, like people wanna just run the CLI and do things for them.
+
+So we wanna like make distributable through say like, uh, comments in the future. So that would be something that to look for.
+
+[00:28:36] **justin:** Nice. Nice. Yeah, it's, it's a great tool. Uh, it's just like, you know, edge-cases and I think this is not, like I said, not the only tool that has had this exact problem. 'EM is like that, that Cloudflare module has caused me no end of pain, uh, even though it improves on a lot of the, the DX for Cloudflare.
+
+So I know it's a hard problem, but.
+
+[00:28:56] **Andrew:** Yeah. Cloudflare is interesting. S
+
+
+## [00:29:00] Open Source vs. Paid Features
+
+[00:29:00] **Andrew:** o you have some plugins in here that I would traditionally associate with like paid platforms, and they're just in your open source tool for free. So you have things like, uh. Organizations and teams, which that's, uh, a big hard feature. There's companies built around that. Uh, you have SSO, uh, which is again, something that like people pay for.
+
+So, uh, can you tell us like why you chose to include those in the base library? It seems like that's like your, that would be the first opportunity of like, let's make this a business.
+
+[00:29:34] **Beka:** Yeah, I know. Uh, I feel like I want, I wanted to prove like how much we can just put out as an open source free thing before, like, uh, so I always wonder like, what, what is not possible to make open source? That like I have to sell, like there's no way I could provide that as open source tool from a third party providers that they already charge you for. For example, one SSO connections, most providers will charge you for a hundred bucks per connection or something like that.
+
+So I was like, why is that like expensive? Like is there something that's technically challenging to implement as an open source? Like if there anything there? So I tried to like, try to find a thing that I can charge for in, like, the reason I charge you, I charge, uh, I ask for a charge is because I, I couldn't possibly make it as an open source thing.
+
+But literally I couldn't find anything. I can make everything, uh, as an open source thing and the world still makes sense. Like there's nothing there that actually requires me to ask you for money. Uh, like, uh, so like my goal is like, I'm gonna push this area as much as we can, like to just keep on adding these features.
+
+So my goal is like, hey, like anything that we can provide as an open source free thing. Like, and unless like any need, some kind of service, we'll just keep on doing that. Like, we'll, we'll try will not gatekeep anything, uh, by making you paid, if you can make open source and if it can be free and if it can be part of the library.
+
+So that was my goal. And like I, I want to see like if you can support SAML, for example, SAML is like something that big enterprise only want, then it's hard to provide or whatever. But uh, actually we just put out SAML, two days ago? I think on Friday, we brought SAML support. Uh, so the things they could, these things can be provided as free.
+
+Like there's nothing that's challenging technically that to do this. And I'll say like, there are actually companies that just provide SAML, right? Like this whole company that's just doing SAML. Uh, and for, for me it was like these things can done can be provided as library. Even like for Stripe for example.
+
+There, there are companies just as Stripe implementation or actually have a bunch of plugins that like Stripe implementations, right? I was like, what is the, like what is about Stripe implementation that we couldn't provide potentially through like the app? Uh, so like I, I still wanna push as far as I can through the open source and our commercial offerings gonna be like things that we couldn't provide within the open source thing.
+
+And that's like just impossible to, that.
+
+[00:31:55] **Andrew:** So you didn't find those types of authentication like particularly hard to implement. They were just like kind of a another, another bag, another trick in your bag of tricks.
+
+[00:32:05] **Beka:** No, I mean, they're hard, but like they, there is like nothing in particular that would make it, you know, a paid product. Like, it's just like, it, it just hard in the sense like you have to write the code for it. It just, other than that doesn't matter really. Uh, regarding like making you paid? Yeah. I.
+
+[00:32:22] **justin:** it's interesting that you say this. I, I feel like there's a lot of companies that they specifically have an information moat, right? It's just like they gate on difficulty and, and you could say, just hosted. Uh, authentication providers in general, this is what they're doing. They're like, oh, auth is hard.
+
+Don't do it yourself. We'll do it for you. Like it's, they're just gating on the difficulty. it's interesting as you like push further and further in this area, you're like, you know, no, this is like all very tractable. You can like do all this stuff. You don't actually need a bunch of specialized infrastructure.
+
+[00:32:53] **Beka:** Yeah. Sorry. That was like the idea, I was like, how far can we push these things without. I mean, like I say, like the messaging from a third party provider has been, hey, auth is hard to implement, you need to out-source it to us, right? And open source, uh, providers are not like really something you can trust.
+
+Uh, and there's no like a good thing behind them. And like there's a bunch of things that they'll tell you to not roll you on auth. Like my idea was like, what if you push this to the linkage, right? Like, what if you make open source, like as the only alternative, like as actual like ask Good as whatever third party services out there.
+
+Because like there was nothing that's like blocking other than like actually working the code. Like, it's just, there's nothing like, uh, like there are things that you actually need to pay for. For example, they say, I, I was creating a stripe, uh, for example, payment. If you create a stripe, stripe, like the actual stripe, you can't provide a source library.
+
+Really. You need infrastructure, you need to deal with banks and everything, right? So it's not like, it's not difficult in a sense that, um. The difficulty just code. It's not, it's not like that, right? Like there is like a bunch of difficulties outside of that. But for the other stuff, it's just mostly code, right?
+
+And then if you can distribute it this way, it makes more sense.
+
+
+## [00:34:00] Future Plans and Innovations
+
+[00:34:00] **justin:** So we talk to a lot of folks who are building businesses on open source software, have an open source component of their business. You know, it's a challenging, it's a challenging area. Um, a, a thing that we've seen, you know, a lot in the industry is like companies, like database companies will say, okay, well our, our database our product, but we want the database to be open source so people can interact with it.
+
+And then they just, these licensing things that crop up eventually we're like,
+
+oh crap. You know, Amazon is like hosting our database and like killing our hosting product. Um, so you just, uh, recently raised 5 million for your company around this, which congrats.
+
+That's, that's a huge, uh, milestone. Uh, as you're thinking about building a company around better-auth, how do you approach, you know, this trade off of like. We don't wanna do an information moat. We want to just make the things that can be done, you know, just with code that people can self-host. We wanna make those things free, but like, obviously at some point we have to figure out like, okay, what is a, a product offering that is not something that people can just do themselves?
+
+Like what is, yeah. How do you, how do you approach that?
+
+[00:35:08] **Beka:** Yeah. Uh, I think. The obvious way for us, like to monetize to, to create another third party service. So like, you know, if you wanna use a 3rd party service, we have that, but you can use a library, whatever like that. And we be competing with ourselves. But you know, that's like the obvious path to go. But for me it was like, actually wanna push this idea off. Hey, you can't roll your own auth and you don't, you don't need like these services to, and like, that's like kind of my vision. So I don't wanna like deflate that by creating another. Service that you have to pay for, like I said, a third party out provider. So my idea was like, what if we provide you, for example, security features that you need on top of better-auth right?
+
+There are bunch of security features you need. Uh, we have many people who migrate from better-auth to, for example, WorkOS. 'Cause they need a specific, like if you, if you, if if you, if you read of, like for example, the workplace have a, a feature called, uh, radar. Radar is like this, it will protect you from bot.
+
+And stuff like that. So many like special AI companies will migrate from us to WorkOS 'cause that they need specific security related features. So my idea of like, what if you provide them like a service, so like whenever you need those features, you don't have to like migrate from us. You can just like use our service.
+
+Right. And it would be very natural for you to migrate to like to pay for us. 'cause we earned the trust. And also like. Something that we, uh, like we provide a ton of value so it makes sense for you to, to now move whole auth provider just for that specific features. Uh, also the base offering is gonna be dashboard.
+
+So the first thing that we provide you is gonna be dashboard that you can manage your users. Uh, so we cannot provide like a very complicated dashboard within the library, but we can provide a service. So basically you would connect your framework to our dashboard. And you'll be able to create your one, one users, you know, unban, your, do all those stuff, admin stuff.
+
+Plus we also give you things like, uh, for example, if you see some kind of security feature that we just put out, or if, if there was some update you need to update your framework, we'll give you some insights like that. But on top of that, we'll give you a bunch of features that we couldn't provide within the framework as a part of infrastructure.
+
+[00:37:24] **justin:** Yeah, that's, uh, that makes a lot of sense. I think like, there are all of these, like out of the case. Or out of the box, like cases that you just like end up having to solve. And you know, there, there are things that you offer, like, um, the, the admin plugin, uh, for better-auth is like, is like really good.
+
+[00:37:41] **Beka:** I imagine that like if you start pushing into like doing a lot of custom authorization rules, right? Um, that could be kind of a challenging space.
+
+if your authorization rules like rely on, you know. Integration from a bunch of other systems and stuff. so there's like some interesting problems, just like up and down to auth stack. Uh,
+
+performance is another thing I was gonna ask earlier. Uh, have, you don't have OTEL integration, right? Open Telemetry?
+
+Yeah. We don't have integration. Actually. There's a PR for that. So we make this, we make this.
+
+[00:38:15] **justin:** Yeah,
+
+[00:38:16] **Beka:** at some point, things like that, you know, it's like understanding where the request flow is going and like what
+
+Yeah, exactly. Exactly. Yeah. I think there are many interesting problems solve, including that. The, the thing that we have advantage is like we have access to your, like, uh, you know, we, we can build a bunch of things 'cause we have access to your like framework and uh, have access to the user object so you can build a bunch of integrations.
+
+[00:38:40] **justin:** 'cause that's something that people really, it would be much easier for us to build a bunch of abstraction on top of that. So. I think there's a a lot to explore that, not that related to providing you another auth service 'cause there has been enough. I think the idea of, uh, a product as a plugin or a product as a series of plugins is really
+
+[00:39:03] **Beka:** interesting that, that like you could essentially package and sell like plugins specifically. It's like, oh, you need this feature. Here's this plugin. You pay for it and all you do is you add it to your better-auth config and oh, you go. Yeah, the, the, the dashboard is gonna be a similar itself, like you add the plugin and you will be able to like, give you a dashboard basically.
+
+[00:39:21] **justin:** Yeah, that's, that sounds super powerful. Uh, de definitely like the dream Auth library right here. I've, I've had my struggles with many other auth libraries and they just all don't go far enough and make like seemingly simple things very hard.
+
+[00:39:35] **Beka:** Yeah, like I think, uh, for example, framework agnostic, uh, auth framework, like there was nothing that was framework. I remember like trying to migrate a project from next J to, and it was impossible 'cause like there was nothing in this field that does the
+
+[00:39:51] **Andrew - 1:** same thing as next auth. I was like, how
+
+[00:39:54] **Beka:** are we in JavaScript, uh, land where like every, a framework will come like every week, but we don't have a way to do
+
+[00:40:00] **Andrew - 1:** framework agnostic auth.
+
+And like it was, it
+
+[00:40:04] **Beka:** was, I think a, like a fake complexity. It wasn't like when I implemented to make it, like when I tried to make it a frame diagnostic, there was not nothing that was like that challenging. It was just, I think this like, uh, it was like, uh, there was nothing that was complex about making it frame agnostic.
+
+It was just like people didn't care enough, uh, to make it there. I think. All in general is like a boring problem solve. So like that's why people don't really try, like, it just, it's better to create another Java good framework, uh, instead of like an auth library, I guess. But yeah.
+
+[00:40:38] **Andrew:** Yeah, there, there was definitely a period there in JavaScript times when everything became framework specific and like the, the notion of vanilla kind of just went out the window. So it's, it's cool to see you going back Uh, yeah, exactly. Yeah.
+
+[00:40:51] **justin:** Yeah, I think you've, I think you've done, you've done a lot of really good stuff with it. And, and I, I, I say this with all honesty. This is like the first time I've used an auth framework and be like, oh, this is delightful. This is nice.
+
+[00:41:01] **Beka:** Thank you.
+
+[00:41:02] **justin:** like, one of the things that I love a lot is like generating the. Both the, the routing for the server side and the client. So it's like, oh yeah, here's your client library. It's just like this auth client thing and you use it and it automatically is making the API request to the endpoints that are automatically generated. You don't have to think about, right. You're just like, here's the
+
+[00:41:20] **Beka:** Yeah.
+
+[00:41:21] **justin:** like, take care of it. That's so, so incredibly powerful. I mean, I had like a little stupid single page app that I integrated it in and it was like, it was just so easy and I was like, okay, yeah, this is, this is going somewhere.
+
+[00:41:35] **Beka:** I remember one of the biggest challenges to actually support hooks. So we have like a use use session hook. That useSession hook is actually like a, a framework agnostic. So you can use it like in every framework. It's not like react specific hook.
+
+Uh, so there were those type of, like even the client side, uh, specific problems like that. And also the type inference was a problem, right? Like inferring your plugins from the auth server and your auth client and stuff like that. Uh, so for example, the reason we have like, uh, client plugins is 'cause of that, right?
+
+Like we have. Client plugins that's to, starts to infer the, from the server to your auth client. Uh, and yeah, comes, it's been incredible to see like how people, uh, like I think one of the things that happened me was because like I, when I, when I started making the, the framework, I wasn't an auth expert, right? Like I, I wasn't like an expert to have like 10 years of experience working on auth or anything.
+
+So I was able like to see like from, uh, the other developer. View, like I was able to like see how the think and then like even our documentation was like in that mindset, right? Like if I had years of experience, it would be hard to come up with these, um, abstractions. And I think that was one of my advantage to, um, implement better auth.
+
+[00:42:55] **Andrew:** So you guys ship a lot of code. I'm looking at the change log here. They're very big change logs. Uh, what are you guys working towards in the future? Uh, is there a v2 on the horizon? Do you have stuff you wanna change?
+
+[00:43:07] **Beka:** Yeah. Uh, v2 is gonna be like soon, uh, not soon, but probably like, uh, at the end of this year, we'll have like v2, uh, before that, like for example, we'll have like a supported, uh, plugins architecture. So we cannot install like specific plugin at a specific version if you want to. Um, so we'll have something like that, but nothing particularly that like.
+
+Huge. I think as an auth library, you wanna like stay stable so you don't wanna like change a bunch of things like every day. Uh, so like we wanna like keep us compatible and us back, uh, as backward compatible as we can. And, uh, but we'll there are a bunch of small things that we need to fix and we need to get right.
+
+Uh, so we just keep working on them for a while. Also, we're working on the dashboard, the infrastructure side. So that would be our focus as well. So those two things, like getting the small details right and also, um, keep on building the infrastructure is gonna be our focus.
+
+[00:44:06] **justin:** Nice. That's exciting. Well, I mean, better-auth is an incredible library and it's been awesome to watch the progression and, and y'all are moving super fast. 'cause there's definitely been times where it's like, oh, I wish this feature existed in like, next week. It, it exists now. It's like, it's been, I don't know, just delightful to follow along on that journey.
+
+[00:44:23] **Beka:** Thank you.
+
+[00:44:24] **justin:**
+
+
+## [00:44:24] Exciting Developments in Authentication
+
+[00:44:24] **justin:** so just as you think about like, I don't know, as you think about like the future of this space, of like thinking about auth, are, any like major advancements that you'd like to see, or is there anything that you're like waiting for? It's like, ah, I can't wait for like, browsers to like, stabilize this API or like, I don't know, like, is, is there anything that you're particularly excited in the future?
+
+[00:44:45] **Beka:** I would say like, I'm excited about like how Agent auth would work. So like right now, uh, especially with the agent auth you, you still need humans to get involved with, with the MCP auth uh, spec. You need a human to actually authenticate and then they'll be able to store, uh, the access to, that's how it works.
+
+But I feel like there is a future where this wouldn't be needed, where like the agents can actually authenticate themselves. They can like, do stuff for you. Uh, especially after I saw, like recently the agent is, uh, really from OpenAI. They launched recently. Like I was like, you know, if when, when you, when you ask the AI to do something for you, if you have after, see during authentic for it, it would be, it wouldn't be nice, right?
+
+It would be much nicer if they can just actually authenticate there. So I feel like there is some kind of thing to be innovative there. Something, some kind of thing that needs to. Come out in that space. Uh, it could be us. Uh, so, or like it could be someone, but I, I feel like there's something there and that's something that I'm really interested in trying to explore these days.
+
+Um, yeah, actually like a very interesting take. This could be solved by someone, like one password instead of like an auth provider. Uh, like
+
+I was thinking in terms of that. But I feel like that is an interesting space to think about. Regarding like how agents will authenticate with, uh, for you and do stuff for you.
+
+[00:46:15] **Andrew:** Interesting. Yeah, that seems like there's a lot of hard problems to solve there.
+
+
+## [00:46:19] Conclusion and Final Thoughts
+
+[00:46:19] **Andrew:** Cool, well, that wraps it up for our questions this week. Thanks for coming on. This was, uh, a fun dive into better-auth, and I personally am excited to use it on a side project when I get the chance. So thanks for coming on and talking about it.
+
+[00:46:31] **Beka:** Thank you so much for having me. This was great.
+
+[00:46:34] **justin:** Yeah. Thanks, beka. This has been, it, it's really my, it's the first thing that I install on any serious project that I do now and, and like. That's as high as praises. I can give. I mean, it's been,
+
+[00:46:46] **Beka:** Thanks so much.
+
+[00:46:46] **justin:** like, oh, this is cool to like, oh, I must use this.
+
+So
+
+[00:46:50] **Beka:** Yeah. Thanks so much. Um, yeah, thanks so much. Yeah. Expect like more things from us and we'll keep on like, um, think active and shape more code going forward. Uh, yeah.
+
+[00:47:03] **justin:** Can't wait to see what you do next.
