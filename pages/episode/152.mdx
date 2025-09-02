@@ -1,0 +1,405 @@
+---
+title: Francois Best - Nuqs and URL State Management
+youtube: https://www.youtube.com/watch?v=2x5BsQ-UXQo
+spotify: https://creators.spotify.com/pod/profile/devtoolsfm/episodes/Franois-Best-e37kdcd
+tags: nuqs, url state management, react, typescript, open source, react-router, nextjs, remix, waku, astro, server components, key isolation, loader, query state, serializer, deserializer
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we talk to Francois Best, the creator of Nuqs, a library for managing URL state in React.
+We talk about the origins of Nuqs, the challenges of managing URL state, and the future of the library.
+
+- https://francoisbest.com/
+- https://bsky.app/profile/francoisbest.com
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:06:09] Introduction to NUQS and Its Origins
+[00:16:15] URL State Management and Migration Challenges
+[00:20:47] Serialization and Deserialization in NUQS
+[00:25:52] Community Contributions and Pull Requests
+[00:26:22] The Router Dilemma
+[00:31:11] Evolution of Nuqs and Adapters
+[00:35:55] Server Component Integration
+[00:42:34] Key Isolation and Optimizations
+[00:46:38] Future Plans for Knox
+
+{/* TAB: TRANSCRIPT */}
+
+**Francois:** There are enough good routers. Out there for now at least.
+
+If you can't build your application, you don't need another router, you need another job. It is like there, there are so many ways of building great applications with the things we have. ​
+
+
+#### [00:00:20] Introduction
+
+**Andrew:** Hello, welcome to Deb Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my cohost Justin.
+
+**Justin:** Hey everyone, uh, we're really excited to have Francois best on with us today. So Francois, you've done a lot of really cool open source tools. Um, uh, one kind of that I, is this, uh. Nukes or NQ or NUQS. Uh, I, I am always really interested in storing state inquiry parameters. Uh, so I'm excited to talk about this and a lot of your other work.
+
+But before we dive into that, would you like to tell our listeners a little bit more about yourself?
+
+**Francois:** Yeah, sure. So my name is Hanes. I'm a freelance software engineer from GR Noble in the French Alps. Uh, I've been building on the web for the last. Eight years or so. And before that I was working in the music slash pro audio industry, uh, building music software in c plus plus. And I think what got me into web development was the faster feedback loops that we can have with building on the web.
+
+Uh, even before we had like fast reload on styles or odd module reloading and react, um, you just had to reload the page and you saw your changes. In the native world, you would have to rebuild your program before you could see any change, and that took forever. And so having this fast feedback loop was really nice to have on the web.
+
+Not only that while you build, but also when you deploy once you want to see your changes on someone else's machine. You get, push some other server software, builds your application, serves it and gives you a URL that you can give to anybody and they can access it instantly. Whereas in, in the native world, you would have to build your software, put in an installer, ship it to users.
+
+Sell it to users usually, um, have them install this thing and then it would sit on their machine forever without potentially being updated. Whereas the web is always instantly, you always have the latest version of everything. And this was really cool. As a, as someone wants to build things fast, uh, there was, this was really the, the best platform.
+
+**Andrew:** Yeah, definitely. I, I, I have similar feelings, like the web's feedback loop is definitely addictive once, once you get going with it, and it's just like, so instant, so instant gratification. Uh, before we start talking about Knucks, uh, I was looking through your past projects and it seems like you had like a little bit of a focus on security tooling and you had some interesting security projects, so, uh.
+
+Can you explain to us like what those projects are and yeah.
+
+**Francois:** Yeah, so I think it came from. Around the pandemic, uh, time. Um, I had some privacy, um, concern, not concerns, but like I, I started being more interested in the privacy aspects of the, the applications we built. That came primarily from the Cambridge Analytica scandal that was revealed from Brexit, which impacted me quite a bit because my wife is British.
+
+And um, so I was started. Wondering how can we build applications that are more secure and more privacy preserving? And the best way, essentially to do this is end-to-end encryption. Um, and so I started tinkering with how does encryption work, what the ciphers are, which ones are good for what, how to compose these things, and how to make applications actually secure.
+
+This way, I want to make data secure this way, and I built a few. Open source things that I put on GitHub. This is usually what I do. Like I find an idea, I tinker with it, and whatever the result is, I put on GitHub because it is convenient and sometimes something sticks. Sometimes it's just abandoned and leaves, uh, left like this on the, on the archives of the web.
+
+But, uh, it's a great way to try things and see like learn in public essentially like building things. Um. So I would not necessarily recommend anyone using the things I built for security, uh, in production. But it was, uh, a proof of concepts that I had this in mind for. Yeah, Goodwill, which was to build a, a sort of SDK for end-to-end encryption in JavaScripts or Typescripts.
+
+But that could work on the front end of web applications. So that front end does the encryption, sends only encrypted data. And receives only encrypted data and then decrypt things locally. So this is local first, uh, at its heart with a layer of encryption on top. So the server does not see anything many times that I try to put this in actual practice.
+
+I always ended up in the problems that sometimes you need the server to do things, and if you don't have the data because it is encrypted, well that limits quite a bit what you can do, uh, in terms of applications. And so. When I've had like clients wanting to do this, I ask them, are you really sure?
+
+Because you won't be able to change your mind once it's in place. So this is always the, the, the double-edged sword of end-to-end encryption. I guess. You get good guarantees, but also you get less features out of it.
+
+**Andrew:** ~~Did you up having go. Go ahead, Justin.~~
+
+**Justin:** I was gonna say Ink and Switch, uh, is doing some research in this space on like local first encryption, and they have this project called Key Hive, uh, that they're trying to like, figure out exactly what this problem, it's like, well, how do you like, well, how, how do you get multiple people collaborating on a document and all, like doing encryption themselves?
+
+So they had, they had this like. Chain of trust with keys, uh, and, and a bunch of like, there's, I don't know, a bunch of gnarly challenges there, but it's, it's a, it's a super interesting space.
+
+**Francois:** Encryption is actually the easy part. The key graph management is the hard part. You transform a data problem into a key management problem when you start involving encryption, and that involves roots of trust, uh, PKIs, things like that. Uh, it's a lot of, um, yeah, it's, it's a different kind of space from just building applications with ClearTax data the way we usually do.
+
+Um, but yeah.
+
+**Andrew:** ~~You wanna kick off the questions about N~~
+
+**Justin:** ~~Sure, sure, sure. ~~
+
+
+#### [00:06:09] Introduction to NUQS and Its Origins
+
+**Justin:** So why don't we, uh, switch over and talk about, uh, n uh, NUQS or do call it nukes? What, 
+
+**Francois:** Knuck
+
+I, I, I use, I actually used, I used to call it nukes, uh, or n nukes in French. Um, but I saw pretty much everyone calling it knucks. So now it's stuck. It's, it's knucks. So, yeah, I. Like without the T.
+
+**Justin:** right. There you go. uh, what, uh. So like what was, what was the problem that originally motivated this? Like why was like URL state management important to you?
+
+**Francois:** ~~Um, ~~I think the initial use case that I had was on my website. I have, I use my website as a source of laboratory, laboratory for lots of little experiments and. One of them was a calculator for dovetail joints. So I, I learned woodworking during the pandemic and I wanted to have this little calculator where I could design the joints on my laptop and have a an SVG rendering of what it would look like, have all the measurements laid out.
+
+And when I wanted to go to the, the workshop to do the actual cutting, I didn't want to bring my laptop with me 'cause it's a lot of dust and all. So I wanted to transfer that to my phone and I was like. I could just copy, paste, put in a note, something like that. But what if I could have the actual application running on my phone as well?
+
+And how do I transfer things between that? I don't wanna have a server somewhere that I send the data to and save a project or something like that. I'll just put it in the URL because it's convenient. I can copy it. I can load it on the other side. That's fine. And this is actually how it started and I had this little, um.
+
+This little app that I actually never used to gut any dovetails with, but, uh, it was, it was like the, the starting point for, for this thing. And it needed a lot of different things that I think became the core of, uh, what is now nux. It needed, uh, values, which were numbers, not just strengths. So the type safety part, how do we transform the query string, which is a string into data types that are meaningful for our application. And because they were sliders, uh, I don't know if you've tried, but if you connect a slider directly to updating the URL, if you move it too fast, after 10 seconds, your application will crash because browsers rate limit UL updates and they will throw an error if you call it too fast. And so I ended up in this problem very quickly because I like tinkering with everything that I build and.
+
+This is like the first step that Nuqs took into becoming time safe rather than type safe or also being type safe, but also being time safe. That's a concept time safety that, um, is essentially makes sure that your application will work no matter what you're trying to do with it, at what state you're trying to update and what you are you connected to.
+
+So we have this, um, throttle queue internally, which deals with, uh, queuing updates to the URL and then feeding them to the browser at a rate that you will accept. 'cause not all browsers actually, uh, work at the same rate like suffering. And Firefox would be happy with a update every 50 milliseconds for.
+
+But saf, um, sorry. Chrome and Firefox are happy with 50 milliseconds. Safari needs about 120 milliseconds between updates to be safe. So that's much slower and you need to account for this because you don't know what browsers people will be on. And if you just throw all at the maximum rates, then your URL is less responsive when it could be more.
+
+So this is like a little bit of this time engine in Nuqs that deals with that. And we just recently shipped, uh, 2.5, which adds the bounce on top of this throttle queue, so you can now schedule updates further in the, in the future, I guess as you type for such inputs. It's really useful.
+
+**Andrew:** So it sounds like N is probably has. Like the, the URL is more of like a side effect, and then it's internally tracking the state. So those things like keep updating quick, right?
+
+**Francois:** Exactly. Yeah. The URL remains the source of truth, but it's the eventual source of truth. In on, on reads, the URL is always wins, always wins. But when you write, you have this temporary, optimistic state updates that that happens. While the, the, the URL update request is being queued and pending. So we have to track this, uh, optimistic state as well.
+
+But you have this be because Nuqs uses, um, it uses a Nuqs uses a use state, kind of like API and so you have the value and a function to change it, the state of data function. So the value is always instant. So you can con connect it to, uh, control components. But the, the URL itself, as you say, is a side effect.
+
+It's, there's, there's a few use effects in there that deal with synchronization. Yes.
+
+**Justin:** I just wanna call out that you have a really good article about this on your blog, the Ware, the URL type safety iceberg. I thought this was a a, a pretty fantastic greed.
+
+**Francois:** It's, um, a summary of a talk that I gave at React Paris. Uh, in March and they'll be giving again in React, advance London, uh, in November 28th of November. It's like, what are the dangers? That you don't really see with UL state, because I, I saw this happen with Redux, with Zhan, with state management in general, you give people a tool and they will try and put it absolutely everywhere throughout their application because it feels magical when you try the first time.
+
+It's, it's like really nice, but you have to bear in mind there are some constraints to the URL in terms of size, in terms of time, as I said, uh, in terms of a lot of things and. These things, this article and these points is like the, the accumulation of what I learned with this project of the things you probably should not do with your L State.
+
+And so I want to be able to give people a, a sort of backstop against, you can do this, but be aware of these, um, these issues and limitations.
+
+**Andrew:** ~~Um, ~~so kind of keeping in line with that, pushing things to the limit, uh, I've seen you tweet about this a little bit, is you want to give people the ability to ship knucks enabled components to NPM and kind of like have this state management solution, like kind of completely outside of the host apps control.
+
+I'm interested if you've like, explored that more and if you would recommend it.
+
+**Francois:** It is not really outside of the out the host apps control. It's sort of, um, a universal. Interface or abstraction layer on top of your components. So the great thing about React and the thing that made it scale, I think, is the encapsulation system. You have a component which contains, uh, presentation, uh, styles and behavior. So within one component, you can describe all these things, the content, the html that you generate, the styles with, uh, class names and styles, and the logic with hooks and effects and all these things. Um, but these. Uh, states essentially live inside the memory of that component, the memory representation of that component.
+
+So n what Nuqs can do is extract that to allow it to live in the URL in a descriptive manner. So you describe the search programs that your component will accept. You export those along with the component itself and those definitions that you've exported along with the components. You can reuse in server side with loader, or you can.
+
+Compose them with other things. In your page description, you can actually have this declarative way of telling. I have a component that, uh, behaves, um, that interacts with the URL. Here is what it needs. Here is, uh, what it can do, and here is how you link to it. How do you generate a link to a component that you've imported essentially?
+
+So you have this, uh, framework agnostic way of defining behaviors for URL state. That you can embed in NPM components or in a mono report, especially, for example, if you have like a shared library that you. Like I've had, I've had clients who had that, they had multiple, um, next JS apps for example, and they wanted to have one old React router, um, legacy that they wanted to pull to next js.
+
+And they had this monorepo of multiple apps and they had one design system library where they could have used your URL state with this unified, uh, interface, so they could have consumed those components. The same way they consume generally react components. You don't really think about, uh, the styles or the d html that's being rendered by components.
+
+You just compose them. So the idea with NEX is to do exactly the same, is to make it composable, to declare your search prime behavior and make it framework agnostic so you can load it in all the frameworks that we support. I have a little bit, a little thing that we can add to that, uh, clip. So if, if you want to build actually a library that, um, builds components with nux, one thing that I would recommend is something that actually need to write about is to add Nux as a peer dependency. Do not put it as a direct dependency.
+
+Uh, the same reason if you were to embed React Query, for example, a test stack query in, um, a library, you would have some context issues. So React needs to have the same context, um, object reference throughout your application to be able to connect the dots. And so Nux uses a context internally. And so if you wanna be able to use, um, those nux enabled components anywhere, it needs to be using the context of the application that you're loading it with.
+
+So loading, loading it in. So this is, uh, this is important.
+
+**Justin:** Something I wanted to ask about, uh, before maybe digging more into the framework specific stuff. 
+
+
+#### [00:16:15] URL State Management and Migration Challenges
+
+**Justin:** I was going through that, that blog post that I mentioned previously. And one thing that, uh, I've thought a lot about on my own personal site is the fact that there's a lot of link rot on the web. So it's like people will change URLs and URLs that someone else has linked to or bookmark or whatever, like no longer works.
+
+And, you know, something that I, I kind of always want to optimize for is just like making sure that things remain. And it's interesting that you've like. Tackle this as a first class thing, sort of acknowledging that if you're changing your query parameters, there's like this migration steps that you might have to go through.
+
+And so you have this like create your L migration task. Can you talk a little bit about like where that came from and, and you know, how you see it used and Yeah.
+
+**Francois:** It, it came from breaking your out, essentially. Yeah. Um, we, we had applications where we changed something and then we realized, oh, but then the old links that we've shared no longer work. Uh, it's a Tim Bonusly quotes, cool. Your eyes don't break or don't change. I can't remember exactly what it is. Uh, but you, you wanna make sure that the contracts that you have specified by using.
+
+A given path name and a URL state and a hash or something like the whole UL itself still behaves the same way throughout the lifetime of your application. And unfortunately, it's very easy to break things because it's very easy to change things and not very easy to see what you've changed. So this is, uh, the, the thing in the article is not actually an API that knocks, um, exposes.
+
+It's something that I have in mind that I want to build in the future. Um. It's a, it's actually two parts. It's like visualizing the changes and having an automated way of declaratively describing those migrations. Once you do a change, it's very similar to what you can have in, uh, database migrations because it's ex exactly the same, uh, the same system.
+
+If you think of the URL as a immutable static database that you've sensed out in the wild. And your application as the application server that needs to connect to those, um, databases. You have to run migrations to make sure that the logic that's inside your application can understand what's coming from those URLs.
+
+And so it's the same thing as, uh, database migrations, I think. So we need similar kinds of tooling for. Applying changes the way, um, we do in a declarative manner, the same way we do, uh, migrations in SQL, for example. It's not technically limited to URLs. It's a key value, uh, migration problem. You could have this, and I, I have had the same problem with Redis.
+
+For example, if you update the shape of adjacent object that you store in Redis, now you have to keep whichever versions are updated and you have to run migrations, data migrations, not necessarily schema migrations because there is no schema. In a lot of key value stores, but you have to run data migrations on whatever you receive to make sure that you can convert it to something that your application can understand.
+
+And so, yeah, this is likely the next venture I will go into in terms of, uh, open source. 'cause I really wanna tackle this, this problem, um, in a declarative type safe manner. Like, I've always been frustrated with the state of, uh, migrations in databases, and I think like, because of time, time itself is a problem because your application evolves through time.
+
+So you need to have a snapshot of. Every state of the schema that you have gone through time to be able to branch off. It's a bit like get, if you think about it, it's like it, you have to be able to branch back to a given point where you've been given A-A-U-R-L that matches that particular point in time of the, the schema and be able to retrace your steps by you rebasing or squashing whatever.
+
+Yeah. And I don't know if they're gi, um. Metaphor works really well, but it feels a bit like that. You have every snapshot of changes, and then you have to be able to walk that graph somehow when you do those migrations.
+
+**Justin:** Uh, you'd probably like, uh, data log, the time traveling database or whatever. Uh, there's, there's a lot of stuff in the, in the, like the, um, sort of closure world specifically where they, um, or Atomic is the database, sorry, but like data log is like the query language they make immutable databases and you can do like time traveling queries and stuff.
+
+**Francois:** Yeah. That's pretty cool.
+
+**Andrew:** ~~Um,~~ 
+
+
+#### [00:20:47] Serialization and Deserialization in NUQS
+
+**Andrew:** so the shape of the API is mostly like use query. State, the name of the variable you wanna put in the, the URL and then a parser. Uh, and then there's like lots of different parser combinations you can have. And then there's like a. Use query states where you can kind of build objects out of multiple parsers.
+
+Uh, why didn't you go for one of like the off the shelf parsing and validation libraries like Zod, where it could have been basically the same API relatively, where it's like use query state here and then a Zod validator slash parer to do all the heavy lifting for you.
+
+**Francois:** I've had this question many times. Uh, the short answer is that those validation libraries do not do the serialization part. Doug, once you have you, you can go from a string to an object, but if the transformation from that string to an object is not, uh, reversible with just a two string, for example, then you need to implement the counterpart serialization function.
+
+Um. To be able to go back and forth between the two representations in the URL and in memory. And so there are some, um, projects that do that, that actually reverse engineer the, the Z APIs to try and guess what data type is of what field and build the serialization that, uh, matches. It works until you start introducing transforms.
+
+And then you have to act, actually have logic to reverse that transform to be able to resize. And so
+
+n
+
+uh, gives you those objects, those parsers we call them, but that kind of parser and serializer, the best word for it is ser. If you've done, uh, rust, there is this beautiful crate in rust that's called ser, which does, um, serialization, deserialization, that's the where the name comes from and transforms.
+
+Pretty much any format into any data type. It's, it's really cool. And so those passers in Nuqs are a bit like that. They do serialization and passing, which are equivalent with each other. And you can build your own and make sure that you can have a beautiful representation in the URL for a given data type.
+
+So, for example, if you think about a date. Date objects. There are many ways to represent it. In the Uur L you can have a timestamp, which is just the number of milliseconds or seconds in, since uni epoch. In uni epoch, uh, you can have an ISO 86 0 1 representation of just the date or the date and the time or the date and the time with the time zone or without time zone.
+
+There are many, many ways. I can't wait for the temporal API to land 'cause that'll be much easier to, to build a. Things that have a more one-to-one match between, um, their represent serialized representation and the data type that is associated with it. Um, but yeah, you can see that there are, there is no one way, I guess to uh. Represents some data types as a string, and especially if you want to do it in a concise 'cause, the UL is limited in size. We wanna make sure that you represent it as short as possible so you can have enough states in the URL without, uh, reaching some limits and. And have a way to go back and forth. So this is why we have these objects in Nuqs.
+
+And you mentioned, uh, use query state being the, the main, uh, API. That's true. That's how it started. And generally how I suggest people. Discover URL States just 'cause it's the easiest way. It's like the direct one-to-one replacement with you states. You just add the key that you want in the URL and the data type.
+
+If you need, you can just work with a string that works fine. By default. Everything is a string. Um, it's a pass through, but once you start scaling your application. You realize that you need to link to components. You need to load them on the server. You need to do more. You need to to leave the component, the boundary of the components, and to integrate it tight.
+
+A bit tighter with the rest of your application. And this is where use query states shine because it takes this object as a, as an argument, which describes your search pros. So the, the key in the object is the name in the URL, the, the, the key name in the URL. And the value is the pasa to tell n how to deal with this.
+
+What is the data type associated with it, plus the options and all these things. And so this description object you can reuse throughout your application. In use gray states like to access the state and update it, uh, client site, but also in loaders to be able to load it on the server, whether it's, uh, in the page components in next JS or in loaders in, uh, react router, remix, and all.
+
+Um. You can also generate type safe links with this using something we call the serializer. So you have this dual way of going from string, from URL query string to type safe data types back and forth, and a hook that gives you this essentially a as a react, uh, react ee way.
+
+**Justin:** That's pretty awesome. Uh, I was gonna mention the other. Uh, schema, like transformer that does serialization and deserialization is affect schema. 
+
+
+#### [00:25:52] Community Contributions and Pull Requests
+
+**Justin:** And I see y'all actually have a community page that someone's like built something, uh, to
+
+**Francois:** Yeah. E Ethan Za did a, a pull request to, to add this and yeah. Thanks you, Ethan. And that's, that's pretty cool because Yeah. Effect can do this dual transform, so it's, uh, doable to connect it to, to Nuqs this way using, uh, the PaaS API
+
+**Justin:** I, I mean, 
+
+**Francois:** it's pretty
+
+it's pretty. It is pretty cool.
+
+**Justin:** yeah. That's awesome. It seems like you, you've built something incredibly powerful here. 
+
+
+#### [00:26:22] The Router Dilemma
+
+**Justin:** And guess my, my next sort of question is, is like, doesn't feel that far away from having like a full router. Uh, have you thought about going the, like rest of the way?
+
+**Francois:** I, I think someone asked me that on Twitter and I thought about it for 10 seconds and I was like, I, I saw the XKCD, you know, standards, uh, uh, in, in my head is like, no, I don't want to build a router. There are enough good routers. Out there for now at least. Um, honestly, between next JS 10 stack, router, remix, react, router, waku, all the big ones like this.
+
+If you can't build your application, you don't need another router, you need another job. It is like there, there are so many ways of building great applications with the things we have. Astro is one night also. Um. I haven't mentioned, but I, I would like to actually support Astro about the, the way they do islands is a bit, um.
+
+Difficult to support without any dependencies. You have to have this, uh, nano stores concept to be able to have these islands communicate together. But you, you can technically, um, use the React SPA adapter, uh, the NOx adapter in Astro if each island has one. Because the U is centralized across the whole application.
+
+They will each connect to it and, um, talk to each other. You won't have the, uh, what's it called? You won't have the optimistic updates, uh, across islands. So you would have a little bit of tearing between two islands, but it will work eventually it will synchronize, but that's, um, yeah, that's something that, no.
+
+So building a router, no, this is not in my plans at all. Uh, I trust that our much smarter people than me to do this job much better than I would, so I will. Happily supports, uh, people who build routers to try and build adapters for Nuqs. On top of, uh, the idea being with Nuqs to build a unifying, uh, layer for the React ecosystem rather than try and fragment it by adding more options and more fatigue on top of everyone's minds.
+
+So now it's more unified rather than fragment. So no router for me.
+
+**Andrew:** That's a noble goal, but having to deal with the, the router also controlling the URL must have, uh, yielded some hurdles for you while developing knuck. Uh, what have been some of the challenges integrating with all those different router frameworks?
+
+**Francois:** Yeah, that's a good question. Uh, there's, there have been some, uh, historically n was not supporting. All of these frameworks. It started just with next, uh, historically the name Nuqs comes from Next Used Query state, which was, it's for next, the whole called used query state. Let's put down an NPM with this name, Dal Do.
+
+And for two years I left it like that and it was not very well used, and it was fine, but when I started rebuilding my websites with the app router. To bene to try RSCs and all these things. Uh, obviously that started not working because it's completely different router within next, like this, those two routers, pages and app, and they did not work the same.
+
+And so I had to build, I had this question actually from the community, like people wanted to support the app router with uh, next use by then and. Th there was a choice, uh, a question at some points. Like, what do we, how do we do this? We can fork the project. Look, I have one use query, state hook per thing, and then just change the import or change the name of the hook. But that didn't feel really scalable because next gives you this, uh, progressive way of having both routers in the same application. You can build pages and you can move them along from one to the other. And I wanted to have this. Abstraction where you could have a component be completely agnostic of where it would run and be able to run either in pages or in app.
+
+And I managed to get that working, uh, against all odds because that was, I was using a lot of hacks and this was while the, the app router was being, uh, developed and stabilized. So there was a little bit of a chaotic moment in 2023 when this happened, but eventually it worked. And we had for a good while this, uh, this hook that was able to target both.
+
+And this is why it started becoming popular because people saw that they could use this pattern across those two routers. Uh, it was also targeting the app router, which was one of the first ways of abstracting UL state in the app router. You had the basic blocks use search paras and the two ways of updating, uh, search paras with the router or with, uh, the window history.
+
+API. But N gave you this declarative abstraction on top of that, and it also worked with the pages router. 
+
+
+#### [00:31:11] Evolution of Nuqs and Adapters
+
+**Francois:** It's just after a while that we realized that actually we could go further than next. It's just not, there's nothing technically specific about nex to the whole concept. The hook is a react hook. The APIs that it uses outside when you consume it are not specific to Next.
+
+And the whole concept could be scaled to other frameworks. And the main one that I actually needed for clients was the single page application, like the Google Old Way to Build React, the create React app, back then all these things. Now you slap it on top of these and you have a bundle that leaves. On a static CDN, and I wanted to be able to still have access to this because most, uh, CDNs don't really care about the query string.
+
+And so you can still pass a URL to a static page and you would still be able to have different behaviors based on the URL state that you passed. And we wanted to do this. And so this is where the adapters idea came out to be able to support other things. And so react router was the next, uh, obvious choice.
+
+Then Tana re uh, released, um, 10 Stack Router and was like, interesting. Now we have someone who actually takes Euro State as a first class citizen in a router, and that's where things became very interesting, like validation of the concept.
+
+**Andrew:** Yeah, I, I, uh, I have a Tan Stack router app and the way that it integrates with the routes and the, the search seems just like, like butter. And I'm probably, uh, this weekend gonna move to Knucks because right now I just have like a bunch of, like, I do all the parsing and I do a lot of assumptions in there.
+
+And having that be type safe would be, uh, very nice. I, it's, it's lazily coded in that uh, the, the, the, the tant stack, API for it. I've had, I've just hit some foot guns with it where it's like, it becomes like cumbersome to like type that portion or just like code it in general. But though the abstraction that you have where it's just like a function that I pass some stuff to, seems like super simple and like real, really hard to get wrong.
+
+**Francois:** Yeah, you might want to watch out before you change everything 'cause it's kind of experimental. The support for tent stack router because of the differences, um, in behavior and in ideology, I guess around, uh, the two ways that NOS and tent stack router operate, uh, for example. 10 Stack Router does, um, a global passing and serialization layer.
+
+So you can define that at the roots, I think of your router. You can specify two functions, how to serialize and deserialize. Uh, whereas Nuqs does it per key with potentially different ways. So if you have like a non, uh, Acky way of doing things in Xi will not interact very well with it, at least for the types c linking parts.
+
+Um, the, the hooks themselves, if they're used in isolation, they will work perfectly fine, but the whole point of using 10 stack router is the type safe routing. So you want to be able to declare the search prime definitions that you have in Nuqs to 10 stack router so that you can type safely, link to your components.
+
+And that's the other part. Um, 10 stack route defines the, the definition of your search programs invalidate search at the root level, whereas Nuqs does it more. It's not really opinionated where it does it, but the, the interface that you have with it is the hooks which live in the components, not necessarily inside the page itself, but even the components itself is not like literally part of, uh, where validates such is defined.
+
+It's like a component property of this, uh, defined route I think it's called. And um, so you have this de uh, decoupling in kn of where you define the search brands, where you consume them, whereas it's more centralized in. Uh, 10 stack rather different approaches to the same problem. Both are completely valid.
+
+You can actually mix and match both if you are careful of spreading the right things in the right place. Um, but it's, uh, yeah, it's two different ways of doing the same thing. I think.
+
+**Andrew:** ~~mm-hmm.~~
+
+**Francois:** But yeah, if you, if you are, if you have an application that uses 10 Stack that is based on 10 Stack Rotr, I would probably recommend to use the 10 Stack rotr APIs and see how to use them better rather than trying to cram nos into this.
+
+It's, it's, uh, the, the 10 Stack Rotr, um, adapter is more here for allowing other components. From the community, from NPM or repos to be loaded in 10 Stack router and being able to be used and potentially linked to if, uh, they are simple enough. So in those cases, it's more of a unifying, uh, again, layer in the community rather than trying to, um, fragment things.
+
+**Andrew:** ~~Justin, you wanna shoot a question~~
+
+~~off~~
+
+**Justin:** ~~Yeah. Um,~~ 
+
+
+#### [00:35:55] Server Component Integration
+
+**Justin:** so you've talked a little bit, like we've, we've briefly touched on, uh. Server integration or like server component integration. But can you kind of go, uh, more in depth about like, so you have this like, uh, nux server, uh, module itself and you can like create loaders and, uh, there's a several like utilities that people can use.
+
+Can you talk about like how it integrates with like rack server components?
+
+**Francois:** Sure. Uh, so yeah, the react slash server, uh, import only makes sense if you're using the app router or anything that can be loaded in the app router. So you might want, if you are building like, um. Framework agnostic library to use that, that thing. But it has to do with the used client directive. So the import from Nuqs has a used client at the top because it exports the hooks and everything else, but the hooks is back ported into this no slash server, which does not have the used client directive.
+
+That's the only difference. But otherwise it's the exact same code. Um. you can use everything from no server on the clients apart from this, uh, cache that we will talk about, uh, later, which is next specific. So with React server components, uh, particularly the next GS implementation, this is something that I need to check in the React server components implementation in React router that just came out.
+
+Um, but there is this concept of a cache function that exists in React that allows you to. Uh, it's a bit based like on async level, uh, async level. It's based on async local storage, I think, which is an API that allows you to pass context when you have a request that comes in to pass that context across different pages, even through, uh, promise chains.
+
+So that allows those, uh, async components in, uh, react server components to be able to have, have access to the same context, um, but be able to resolve later so it's not lost. And also it's scoped, I think, with, um, Lambda functions so that if you have two calls coming for a single bundle, you don't have a global variable, which would get polluted and changed by every call.
+
+Like with CELs, uh, what do they call it? Fluid compute thing where you can reuse a process and have multiple requests coming in. This thing would allow it to isolate, uh, those, um. Those contexts. So you can, you can see it a bit like a context replacement for, for React, uh, on the server side, which does not exist because contexts as a propagation of, of data is a client side feature.
+
+Um, so this is what we did. We essentially pass a reference to an empty object into that cache, and then we populate it once we have access to such brands. So in the page component in the app router. When you have this, uh, such promise, promise, once you wait it, you can pass the results and store the, that result into the subject, and then from the top down, after you've done that, you can render the rest of your application. And have every reactor components anywhere in the tree. Whether it is a, well, it has to be a child, obviously, of, of this page. Uh, but it will, doesn't have to be in the same page TSX components to have access to the same reference. It can get that reference from that cache, which, um, it works. But the problem with it, I think, is it breaks kind of locality of behavior like you allow.
+
+Things to be read from a different place where they are, uh, written to. And you don't have this common click way of jumping from one to the other. You have a way to jump to the cache and find references to where this cache is being used, but you cannot break this locality of behavior that's, uh. Makes things scale better in react.
+
+And also there was a tweet a while back, uh, by Sebastian Mark Page from the React team that said that this pattern of mutating an object that inside a react cache might break in the future. So I might not recommend using, uh, this pattern actually. Uh, one thing I could recommend though is passing the search pers promise, um, to your components by prop draining, and then passing them.
+
+Asynchronously so that you benefit from, um, what's it called? Partial pre rendering and a IO in, uh, a dynamic IO in, uh, react, uh, in next js. So you have like, um, more of the, the outer shell that is pre rendered and only where you actually need the search brands in your reactor complementary that has to wait for this to be available to become dynamic. I'm kind of doing the versatile pitch here, but it actually, it actually makes, I mean, the architecture actually makes sense once you really, once it clicks, it kind of makes sense.
+
+**Andrew:** for sure. Uh, that is a, a weird edge case though that I wish would get some API love 'cause like context is like such an integral tool on the front end. Uh, the fact that you can't use it in the server component environment is like kind of a brain breaker and it's like, ah, I have to go back to all this prop drilling again.
+
+And it just like, feels like the overhead of writing react code kind of goes up by a notch when you don't have access to that.
+
+**Francois:** Yeah, I think it comes from the fact that everything can be async and so things can happen out of order, so. just as a way to pass immutable data from the very top down might work. But if you start having context at the, A context defined, for example, at the layout level, which because layouts are not re-render, they might get stale data and so things render at different times and it would become, I think, difficult to debug.
+
+What data are you getting? Is it fresh? Is it stale? There are other ways I think to, to define this. The, the cache API actually works for immutable data. Very well, and, uh, I haven't actually tried yet the, the used cache thing to expose things like that to data cache. But it's, uh, yeah, I think having a context on the server would be cool, but potentially would expose you to a few food guns.
+
+So this is probably why they haven't, uh, exposed that just yet. They might be trying to find some edge cases and find a good API for it.
+
+**Justin:** Speaking of, uh, next and use context. Uh, so you just released, uh. Version 2.5 of
+
+cool. Uh, yeah, as we record. That's awesome. 
+
+
+#### [00:42:34] Key Isolation and Optimizations
+
+**Justin:** One of the features in there that looks really, really cool to me is key isolation, where you only re-render the components that are affected. By like parts of the query parameter, which I think is like pretty sick.
+
+Uh, but you have a note in here that it doesn't work for next JS because they use, uh, a single context to, to hold, uh, URL search programs. Uh, so I, I'm curious about like how this feature works in general. Uh, it seems like really cool, but, uh, it does sound like, yeah, some, uh, some interesting optimizations needing to happen under the hood for next.
+
+**Francois:** Yeah, the, the original idea was from, uh, 10 Stack Router. 'cause they have these, uh. Use location, use search. I think, uh, don't know exactly which ones, but you can pass a selector in there and return a subset of whatever this hook generally has access to. And so this hook will now only re-render when this thing that you return changes.
+
+It's like subscribing to change fine grape subscription, done calls, and it's really, really cool. And, um, I think it comes from in their implementation from the single store they have in, in place for all these things. Um, in my case in Nuqsy was a bit different because there is no single store yet. I might one day rewrite it to, to do this.
+
+Um, but. Every hook manages its own state by reading the his. It's part of the UL and is. It is dependent on how the framework gives us access to the UL search par object if it is one. And so most of these frameworks react router and next well remix, react Router and Next, uh, would give you. A hook that reruns every time the URL changes, which is fine because you guaranteed to have a fresh content, but then you potentially rerender things that might not be necessary.
+
+And so I experimented this first with the React single page application component because there is no framework there. There is no router. So I was free to do whatever I wanted and by caching some parts of this here are such prime objects I'm able to detect, which, um. Key value pair has changed when you do an update and only call the hooks that have changed in this case because when you do set states with the same reference, it does not cause a render.
+
+So by keeping the references in that set state, uh, state above data, data function, in that set state, uh, state of data function, it guarantees that you do not rerun the those parts. So. It's done like this and it does not actu it is something somehow limited to, um, shallow updates. Something we need to talk about as well.
+
+In Nuqs, it's um, the fact that Nuqs updates. The URL client site first, and then you have to opt out of this client site only, um, behavior to reach the server. In the case of React, SPA, there is no server. So this is actually the reason why Nuqs does this by default on the client. It's like you are guaranteed to have a client.
+
+You're not necessarily guaranteed to have a server, an SSR process listening to changes. So. If your application was certain on A CDN, for example, there is no need to do a full page refresh when you do a change because yeah, you'll lose the rest of your state that lives in memory. But you can do the updates client site only by using the history API to update it in your browser's, URL, so you can copy it and share it with others, but it does not do a network request when you do so and so this shallow prop in Nuqs is very important actually to control whether.
+
+The updates are local to your clients, or they go through the network boundary to a server. So a loader in the case of react router or remix or the get server side, props in the page, uh pages, router in next, or re rendering the React server components in the approach.
+
+**Andrew:** Cool. 
+
+
+#### [00:46:38] Future Plans for Knox
+
+**Andrew:** So wrapping up here, uh, we always like to ask a future facing question, so what's next for next? Do you have any cool plans for V three? Are you going framework agnostic? Can we start using it in our HTMX app soon?
+
+**Francois:** Uh, framework agnostic? I don't think so. Uh, view has already view router, which does something similar. Uh, someone forked nos to make it work with svet. Which I don't think is necessary. 'cause I think Svel Kit already also has, uh, a similar concept. Solid. I haven't actually looked at what it does with this, but No, I, I'm happy with the, uh, I'm, I, I build React applications and, uh, I would like to try the other frameworks, that's for sure.
+
+But I'm a React guy, so I'll, for, for now, I'll satisfy myself with just, uh, supporting the, the React ecosystem. That's a lot of work. Enough and, um. What's next in V three? Uh, there are some changes that I want to add. Uh, one of them being supporting native, um, key arrays. So the fact that you can repeat a key in the URL, so fu equals bar and fu equals buzz, and that gives you an array of fu and ba, uh, bar and buzz, sorry.
+
+And so we have this ba as array of, uh, passa. That composes with other parcels. So we can have like a raise in the UL in a shorthand way. So you have like the values separated with a separator character, which is a coma by default. Um, that's really compact. But there are backend frameworks. And legacy applications, they use this repeat of the key, um, pattern.
+
+So I wanna be able to support that. There are also other different patterns like the QS library, which encodes values, but encodes structure in the keys rather than the values, which makes it a bit difficult to work with Nuqs because no supposes that you know, ahead of time, statically what the keys are. So this, um. These are interesting challenges that I want to, to look into. Uh, another one would be validation. So adding a proper story for integrating validation libraries such as zobo archetype, uh, through the standard schema interface to validate at runtime, things that TypeScript can't tell you, like the range of a number, the fact that a date is before or after a certain epoch, things like that.
+
+Things that you can't represent just in the type system alone. And so there is a little bit of validation done by the passers themselves to make sure that the data type you get is valid. Like the date is a correct one, things like that. The number is not nan, things like that. Um, but you will might want in some cases add some more validation to this.
+
+So you can do it by adding it after the fact, but if it was built in, it would allow you to do this. Um, de serialize pass, validate. It's a, um. Part of the article, the, the iceberg article that, uh, where I explained that you need these steps in this particular order to have something that's safe and you might want to run the validation as well on right.
+
+When you update the value. So you then generate an invalid, uh, state in the U url and so that implies that the state of data function can now fail. And so we need to have a proper. Error handling mechanism and story around this, which will involve, I think, a breaking change on what's returned by this state of vector function.
+
+So this is, uh, likely going to be the main breaking change in V three.
+
+**Andrew:** Yeah, that's, that sounds like a, a hard API to contend with the, the. Query string parameters being erased sometimes like that trips me up in my own code when I, when the type system tells me about it. So I can't imagine how create, like trying to keep your current hook API and also supporting that will like definitely require a breaking change.
+
+**Francois:** Uh, maybe, maybe, uh, I think it'll be a type change that, that's for sure. Uh, but I think that we can probably do without a, a breaking change, it's, uh, more of a nightmare in terms of typing the whole thing internally. from a user's point of view, it'll still be passed as array of, it'll maybe be an option of passed as array of, but internally, the runtime aspect of this is actually very simple.
+
+It's the type parts to make sure that everything is typed correctly. That is, uh, that is harder. I mean, if you think about it, all libraries, all type safe libraries are a bit like this. It's easy to do something at runtime, but it takes you 10 times the time that it took you to write the runtime, to write the proper type safety.
+
+To express what you're allowed to do with the API and it, it's this classic, uh, thing. My types look like this, so your applications don't need to, it's like, but, but I like it. I mean, I came from c plus plus, obviously I like types. I I was born in types, so it's, uh, it's, it's fine. I act well, TypeScript is actually not as typed as I'd like it to be sometimes, but that's another discussion.
+
+**Andrew:** Yeah. We'll, we'll save that one for another episode. Uh, that wraps it up for our questions. Francois, thanks for coming on and talking to us about Knucks. It seems like a powerful little abstraction that can get you pretty far in an app, so thanks for coming on and talking about it.
+
+**Francois:** Yeah.
+
+thanks for having me. I've been big, big fan of the podcast for a while. Thanks. ~~I.~~
+
+**Justin:** Thanks, principal. 
