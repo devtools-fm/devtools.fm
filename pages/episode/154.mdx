@@ -1,0 +1,304 @@
+---
+title: Zoltan Kochan - PNPM and the Future of Package Management
+youtube: https://www.youtube.com/watch?v=2jS75ox1AL4
+spotify: https://open.spotify.com/episode/6jxpXh3AhiUpIYV69NvkiQ?si=MaqfMqOTQpuOzeCFfeTVjQ
+tags: pnpm, package manager, javascript, typescript, node, npm, yarn, bun, pnpm, package manager, javascript, typescript, node, npm, yarn, bun
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we talk to Zoltan Kochan, the lead maintainer of PNPM, a package manager for JavaScript.
+PNPM revolutionized the way we install dependencies in the JavaScript ecosystem with it's speed and focus on DX.
+Come join us as we talk about the origins of PNPM, the technical details of how it works, and the future of package management.
+
+- https://github.com/zkochan
+- https://www.linkedin.com/in/zkochan/
+- https://pnpm.io/
+- https://github.com/pnpm/pnpm
+- https://www.kochan.io/
+
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:02:58] The Origins of PNPM
+[00:11:55] Technical Deep Dive: Dependency Management
+[00:16:34] Advanced Features of PNPM
+[00:29:45] Security Measures in PNPM
+[00:40:58] Future of Package Management
+[00:44:18] Conclusion and Final Thoughts
+
+
+{/* TAB: TRANSCRIPT */}
+
+**zoltan:** I found this, ~~uh. ~~Project PNPM. ~~Uh,~~ and since then, my life changed for the better.
+
+I'm proud that I could solve it, but like I spent hundreds of hours to make it work.
+
+But now I'm proud that I, it worked out. 
+
+#### [00:00:18] Introduction
+
+**andrew:** Hello, welcome to Dev Tools fm. ~~This is a podcast about developer.~~ This is a podcast about developer tools and the people will make 'em. I'm Andrew, and this is my co-host Justin.
+
+**justin:** Hey everyone today we're really excited to have Zoltan joining us. Uh, so Zoltan is one of the creators, uh, and I guess the current project lead of PNPM which is awesome. I've been using P-N-P-M-I for a while. It's been my defacto I guess since like the yarn one days, uh, which is, uh, feels like forever ago, but I guess in, in relative history.
+
+It's not been that long. So we're really truly excited to have you on. And before we jump in and talk about your work on PMPM, we'd just love to hear a little bit more about you. So would you like to tell our listeners a little bit more about yourself?
+
+**zoltan:** Sure. Thank you for having me and I'm happy to hear that uh, you love PNP. So I'm Soan, I'm. In my mid thirties, I have two kids. I was, uh, learning applied math in university. Then I joined, uh, some outsourcing company, and mainly worked on with.net technologies. And, um, but I really loved, um, like Linux and open source stuff.
+
+So I at my next company at just answer, uh, looked into node js and I wanted to be like a popular open source contributor. So I was kind of trying to create open source stuff, for a couple of years and to contribute. ~~Um, ~~and then like, uh, I found this, ~~uh. ~~Project PNPM. ~~Uh,~~ and since then, my life changed for the better.
+
+~~Uh, I mean, ~~for a couple of years it was really hard because I had to combine my, ~~uh, ~~full-time job and, uh, ~~uh, ~~open source, uh, maintenance of PNPM. But then it really helped to boost my career and, ~~uh,~~ to find,~~ uh,~~ a better job and to do what I like. So now I work, ~~uh,~~ on bit, uh, on BIT Cloud, ~~uh,~~ which is, um, like GI guitar, Alterna, ~~uh, ~~which, um, helps you,~~ um, ~~develop compostable software and at bit, I, uh, work on dependency management and, ~~uh,~~ they support me,~~ um, ~~on the PNPM ~~uh, ~~stuff. ~~That's mainly, it's, uh.~~
+
+**justin:** That's awesome. I'm glad you got a, you landed a job that like helped support your work. ~~Um, ~~this is like something we talk a lot about on the podcast is about like open source sustainability, ~~um, ~~and there's like very few that just like get independent funding to be able to like, work on something full-time.
+
+Uh, and most of them still end up like going the, the sort of like VC route,~~ um,~~ or, you know, doing what you're, what you're doing and, and working for someone who supports you. ~~Um, ~~cool. ~~Let's, ~~let's dive into it a little bit. 
+
+
+#### [00:02:58] The Origins of PNPM
+
+**justin:** ~~So, um, ~~it's interesting to me that PMPM started this sort of like an amalgamation of a few different projects.
+
+~~Um. ~~So there's this issue where you had commented on Alexander Gull's, uh, IED project,~~ um,~~ and there's, uh, like Rico Star Cruz who was involved in this, and I don't know, y'all started collaborating and then, ~~uh, ~~kind of like PNPM came out of that. Can you, can you tell us a little bit about ~~the, ~~the lore there?
+
+Like how did that all come about?
+
+**zoltan:** So actually it started before me. ~~So, um, ~~I think, uh, I was, ~~um, ~~the way I found,~~ uh,~~ PNPM was, uh, we had, ~~uh,~~ huge,~~ uh,~~ monorepo,~~ uh,~~ at just answer, ~~uh, ~~I don't know if you have heard about just answer. It's a q and a,~~ uh,~~ website where, ~~uh. ~~verified experts,~~ uh,~~ answer your questions. ~~Uh, ~~so I worked at just answer and, uh, we had a huge monorepo for frontend components.
+
+And the way it worked was, ~~uh,~~ there was, ~~uh,~~ like a, a registry in the San Francisco office. ~~Um, ~~we were installing from, uh, Europe. And, uh, it was terribly slow. And, uh, also, um, it was a really, um,
+
+not sophisticated, I guess, uh, mono structure with, at that time it was like just, uh, a di ~~uh, ~~directory with, uh, ~~uh. ~~Dozens of,~~ uh,~~ package folders. Every package folder had like a packages on, and there was a shell script that was, ~~uh,~~ running NPM install in every single,~~ uh,~~ folder. And this wasn't,~~ uh,~~ super huge monorepo at that time, but still installation was taking up,~~ uh, ~~like 30 minutes. Yeah. And, um, disc space usage was crazy. Like I, I never had, ~~uh,~~ free disc space on my,~~ uh,~~ computer. I guess I was searching for something about this and probably, ~~uh,~~ that's how I found, ~~uh,~~ PNPM and I started reading about it. ~~Um,~~ I. About, uh, sim links about this new, uh, node mods layout, ~~I and ~~I and about speed.
+
+Yeah,~~ I,~~ I think, yeah, speed was the main concern. Probably I was, uh, googling how to make,~~ uh,~~ install faster. ~~Uh, ~~and it indeed PNPM was blazingly fast. Like at that time, uh, you know, it was before yarn version one came out. ~~Uh, and, ~~and PM was, ~~uh, ~~maybe more than 10 times slower than PNPM, maybe even 15. ~~So, ~~yeah, I tested it locally and it was awesome.
+
+So 30 minutes became. Like two minutes. ~~Um, ~~so it blew my mind. And also as I mentioned earlier, I really wanted to be like an open source, uh, person,~~ like, ~~because I was terrible at, uh, interviews. I don't like interviews. So this, I was planning to build my own, like brand to make it easier. ~~Uh, ~~and I started to look into PNPM because, uh, even though it was really fast, ~~uh, ~~it wasn't working after installation, it was like a proof of concept.
+
+~~Uh, ~~and a lot of stuff, ~~uh,~~ wasn't yet implemented. ~~Um. ~~I think it was like summer 2016. And, uh, I started contributing,~~ um, ~~fixing bugs. And after like three months, ~~uh,~~ recall stuck Cruz gave me, uh, all the privileges because he didn't, ~~uh, ~~want to work on it. ~~Um, ~~and yeah, as, as you mentioned, uh, you mentioned IED, so that was, ~~uh,~~ like the project, ~~uh,~~ that initially, uh, implemented this slinked, ~~uh,~~ idea. ~~Uh,~~ so IED was created by Alexander, Google, and, ~~uh.~~ The reason it was created,~~ uh,~~ was because he didn't like,~~ uh,~~ the flat or hoisted node modules that, ~~uh,~~ the NPM team chose to switch to in NPM version three. ~~Uh,~~ it's,~~ uh, ~~it was so long time ago that probably most of the people don't even know about this, but NPM two, uh, had like a nested, uh, not mod structure.
+
+And, ~~uh,~~ it had many issues, ~~uh,~~ mainly, uh, because of the, ~~uh,~~ long path issue, uh, on Windows. Because on windows you have a limit to the number of ~~characters, uh,~~ in a file name. And it was like, I guess at the beginning it wasn't an issue because, and PM wasn't so big. But then when. ~~Uh,~~ you started to have like hundreds of dependencies.
+
+It quickly, uh, escalated so they had to solve it somehow, and they came up with the, uh, flat mode maus, uh, layout, and that's when this alternative first alternatives appeared.
+
+**andrew:** Yeah, the summer of 2016 must have really been like ~~the, ~~the summer of mono repos. 'cause that's also when I got into it. It's funny 'cause our, the fir, the first episode we had on dev tools FM was talking about all of our, like ch our choice rec,~~ uh,~~ our choice picks for like monorepo tooling. And at that time, PMPM hadn't really like, scratched my into my view yet.
+
+Like during that 2016 summer, I didn't actually ever discover PMPM, I went directly into yarn. And with yarn V one, I felt like going from MPM in a monorepo structure to yarn V one in a monorepo structure was like a huge gain. ~~Uh. ~~And we saw like, that literally unlocked mono repos for us in that one project.
+
+Uh, but at the time you said you were disappointed with,~~ uh,~~ the structure of yarn and what it delivered. Can you like go into that a little bit and like how PMPM fixes what you saw wrong with yarn?
+
+**zoltan:** Yeah. So I think we are,~~ uh,~~ we are a bit mixed up on with the timeline maybe because, uh, when, maybe it wasn't 2016. Either me or you or is Ron, because Jan came out,~~ uh,~~ six months, approximately half a year after I started,~~ uh,~~ working on PNPM. ~~Uh, ~~so. It was already in development when I found PNPM, but it wasn't like publicly now.
+
+Nobody knew about it. ~~Um,~~
+
+yeah, and actually I was this,~~ uh, kind of ~~terrified when yarn, uh, became, ~~uh, ~~public because I spent really a lot of time on,~~ uh,~~ PNPM,~~ like, uh, ~~half a year and like really blew up,~~ uh,~~ in a few days. It got, ~~uh, ~~huge traction ~~in, ~~in the community. I thought PNPM is,~~ uh,~~ over, I got a little bit depressed. Uh, then I, think,~~ uh, ~~yarn was still slower than pm. Pm it was a lot faster than pm. ~~Uh, ~~but still slower than ~~pm ~~PM, maybe a bit, maybe probably more stable ~~than ~~than pm p, but,~~ uh,~~ because of the speed and because of the different layout I kept working ~~on, ~~on,~~ uh,~~ PP even after Yan came out. sorry, what was the question about Mons?
+
+**andrew:** Yeah, ~~I, ~~I was asking about like how you were disappointed with yarn. ~~Uh, ~~almost a little bit of a leading question because, uh, with yarn V one, uh, while it did improve upon MPM structure, it didn't have like the, the cash methodology that PMPM and yarn two went with. I feel like ~~the, ~~the real aha moment was for me was like, do I go to Berry or do I go to PMPM?
+
+And PMPM was like the way for me.
+
+**zoltan:** I think, uh. Maybe I was disappointed because they chose the flat node modules. ~~Um,~~
+
+**justin:** Yeah, ~~I mean, I, ~~I think ~~it's, ~~it's amazing that you like push through that moment and you're like, you know what, no, I'm gonna double down and I'm gonna build this. And then after all these years, ~~I mean, ~~that was, ~~you know, ~~whether yarn came out and ~~like. ~~I guess 2017 ~~or, ~~or whenever it came out. ~~Like that's, ~~that's still been, it's been quite a while now.
+
+And ~~I mean, ~~just to be, like, to validate your work. ~~I, ~~I pretty much, I don't know anybody who uses yarn personally, unless it is like a legacy Yarn One ~~project ~~project. ~~Uh, ~~and there are still some folks that I know who use like NPM just because it's like there and the default,~~ uh,~~ when they're installing Node.
+
+But like most everybody else is like PNPM and it's like almost become table stakes for Node and, ~~you know, uh, ~~I just think that like you've done a lot of work over the years ~~to, ~~to make that happen. And that's,~~ uh, it's, ~~it's a great job. ~~Kind of ~~looking back on that,~~ um,~~ it took you, it took y'all ~~a, ~~a while to reach version 1.0.
+
+~~Um, ~~it seemed like it was like a, about a two year effort. It was like a lot of push. ~~Uh, ~~and, and you'd sort of wrote about like how getting the the SEM link node module structure to work was like a, a particular challenge. ~~Uh, ~~so like what was the, what was the journey into that? Like SEM link structure or like rethinking how node modules are structured ~~and, ~~and what were the big challenges there?
+
+
+#### [00:11:55] Technical Deep Dive: Dependency Management
+
+**zoltan:** so I think the biggest challenge, I know the biggest challenge was, uh, cor ~~uh, ~~create,~~ uh,~~ resolving peer dependencies. ~~Uh, ~~because, you know, ~~um, ~~when you, when a dependency has a peer dependency, uh, you, you will get. You might get,~~ uh,~~ duplications of that,~~ uh,~~ package of that dependency because it might,~~ uh, ~~so this period is dependency might, uh, ~~uh, ~~be resolved from different versions of that period, dependency at different,~~ uh,~~ places of the dependency graph. ~~Um, ~~and if you,~~ uh,~~ open,~~ uh,~~ the.pnpm p ~~uh, ~~directory ~~in, ~~in your no modules, you can see that,~~ uh, ~~it basically,~~ uh,~~ it's a flat,~~ uh,~~ structure where every directory is,~~ uh,~~ the name of a package and the version ~~of, ~~of the package. ~~Uh, ~~however,~~ if,~~ if a package, uh, relies on peer dependencies, you'll see also, uh. Like a list ~~of, ~~of the peer dependencies there. So if, uh, uh, ~~uh, ~~so if,~~ um,~~ dependency has peer dependencies, it'll, it might have like duplicates, which is actually not good. ~~You, ~~you need to try to have,~~ um, ~~to reduce this. ~~Uh, ~~but we need to support it. ~~Uh, ~~and I actually, I'm not sure the first version, ~~um, ~~worked completely correctly with peer defenses because somehow every year peer defense become more complex. And I think,~~ uh,~~ the first time,~~ uh,~~ PNPM. Did it fully, correctly was version nine. ~~Uh, ~~and the reason this is so hard,~~ uh, like ~~was so hard,~~ uh,~~ is because,~~ uh,~~ peer dependencies can have peer dependencies of their own. So it ~~kind of ~~a recursive,~~ uh,~~ story. And basically we need to,~~ uh, like ~~build a peer dependency graph and then hash this graph and use it as, uh, directory name inside, uh, dot p pm ~~Um, ~~and also, you know, the peer dependencies,~~ uh, uh, like ~~can be also used inside sub dependencies of these dependencies. So it's ~~like, um, ~~very complex.
+
+**andrew:** Yeah, I've definitely hit upon that complexity myself. ~~Uh, ~~peer dependencies,~~ I,~~ I'd say no matter what package manager I've used, have been like a tough thing to deal with. But the way PMPM approaches it at least is ~~like, ~~it feels like one of the more sane ways where you can actually see like how the peers have resolved very easily and see the duplicates very easily.
+
+Whereas ~~like ~~if it's not all that flat, it's almost impossible to debug those issues.
+
+**zoltan:** Yeah, I think,~~ uh, ~~what lacks what we lack,~~ uh,~~ is,~~ uh, ~~ways to debug your graph. Like after you installed it, ~~uh,~~ have some. Some tooling to help you,~~ uh,~~ figure out what is,~~ uh,~~ happening inside mode modules. Because right now you ~~kind of ~~can run PNPM list, but it's very cluttered. Or you can, uh, ~~uh, ~~manually try to,~~ uh, ~~read your log file.
+
+But it's,~~ uh,~~ hard. Actually, ~~I, ~~I've worked on our ones ~~a, ~~a feature that might help with this.
+
+**andrew:** ~~ Uh,~~ since you've thought about it a lot,~~ uh,~~ do you think peer dependencies were a mistake? Do you think they're necessary? Is it like a bit of complexity? We've put in our own paths and just trip over constantly.
+
+**zoltan:** ~~Uh,~~ I think probably they are needed. ~~Uh, ~~I don't know if
+
+we could, uh. Re-architected without pure defense, maybe it would be possible. ~~Uh, ~~I don't think about it much because,~~ uh,~~ it's so baked in, into the ecosystems that it would be impossible to change. And actually the challenge,~~ uh,~~ was now the time over the it. I'm proud that I could solve it, but like I spent hundreds of hours to, to make it work.
+
+But now I'm proud that I, it worked out. ~~Um, ~~yeah, maybe all this recursive peer dependencies analysis, maybe what we could do is limit it a bit, ~~uh, ~~just to, because probably sometimes they are not needed, but people still use it, still use them. I don't understand why,~~ uh,~~ pure dependencies should have pure dependencies ~~of their, ~~of their own. I'm not sure. And also why some packages have like, ~~uh, ~~10 or more pure dependencies. ~~Uh, ~~so yeah,
+
+**justin:** Yeah, it was like, I feel like people either don't use them at all, or they use, they overuse 'em. It's like people discover them and you like, get in these projects and they're so many.
+
+**zoltan:** I don't ~~also, ~~also they are very hard because you basically publish ~~a, ~~a range and then
+
+it's complete chaos. Uh.
+
+**justin:** Yeah, for sure. 
+
+
+#### [00:16:34] Advanced Features of PNPM
+
+**justin:** Let's switch gears a little bit and kind talk about some of the in depth,~~ uh,~~ implementation of PMPM. ~~So, uh, you, you, ~~you ~~kind of ~~talked about the, like the difference that PMPM does in how it structures the node modules. So under the hood, y'all have this content,~~ uh,~~ content addressable storage model.
+
+~~Um. ~~So ~~like, uh, ~~like practically ~~sort of ~~like, how does that work? So you have this like dot PMPM directory and ~~the, ~~the packages under there and it's like, where are the actual links and like how does that resolve.
+
+**zoltan:** So we basically have, ~~uh, ~~two layers. The do,~~ uh,~~ folder is something that we call,~~ uh,~~ the virtual store. Someone also suggested to name it,~~ uh,~~ isolated Store. ~~Uh, ~~I'm still thinking about if it's a good idea to rename it. Virtual was chosen because it uses s. ~~Uh, ~~so inside this directory, ~~uh,~~ as I mentioned, every uh, version of every dependency has its own,~~ uh, ~~isolated,~~ uh,~~ directory.
+
+And if you open up this directory, every single directory will have,~~ uh,~~ no modules, subdirectory, and inside that,~~ uh,~~ directory,~~ uh,~~ you'll have,~~ uh,~~ the directory for that package,~~ um,~~ with like real files and all the other,~~ uh,~~ files in that node modus directory will be same links,~~ uh,~~ to other directories in the p pm folder. So this way,~~ uh, ~~you ~~kind of ~~get nesting. But in a controlled way, ~~I guess. ~~So ~~you, ~~you won't be, you won't have long pass issues. ~~Uh, ~~the, ~~uh, ~~content addressable store is not inside do PNPM. It's in a central location on the dis and,~~ uh,~~ these are files of all,~~ uh,~~ like extracted dependencies. ~~Uh, ~~and this,~~ uh,~~ files are stored by,~~ uh,~~ their,~~ uh, content, ~~content checks sum.
+
+~~So, ~~for instance, if you have two versions ~~of, ~~of loades installed on your system, probably most of the files will be the same in the two versions. Uh, so in this case, the similar files will be. Stored,~~ uh,~~ one time on the disc. And,~~ uh,~~ DD ~~uh, ~~differences will be,~~ uh, like ~~stored separately. This is very effective,~~ um,~~ and is used,~~ uh,~~ by many,~~ uh,~~ tools in programming.
+
+~~Um, ~~and the way it works,~~ uh, ~~is that,~~ uh, ~~dependencies inside,~~ uh,~~ your projects pn pm are,~~ um, ~~pointing to this,~~ uh,~~ central location on the disc to the content addressable store. And,~~ uh,~~ it's,~~ uh,~~ they're pointing with,~~ um,~~ hard things, Hard links or if the file system,~~ uh,~~ supports copy on right, then actually draft links because,~~ uh,~~ hard links have a disadvantage. ~~Um, ~~if you have ~~like ~~two projects and both,~~ uh,~~ projects use ~~load ~~load, let's say you want to debug something, you go to your non modules and you make a change in the, in your dependency in load. So you'll make this change in project one, but in, it'll be changed in project two as well because it's a hard thing. So it's,~~ uh,~~ the same file in every place. ~~Uh, ~~we actually revalidate the files when you install a again. So we, we'll,~~ uh, uh, like, uh. ~~I'm changing it back to its initial state,~~ uh,~~ state. But,~~ uh,~~ the better approach is to use,~~ uh,~~ this,~~ uh,~~ REF links because with the REF link,~~ uh, ~~when you make the change, the file system automatically,~~ uh, ~~copies the file and,~~ uh,~~ saves the modified version in your mode modules. So the central content addressable store is not changed, and you get the modification on in, in that single place. That's, I guess, ~~uh, ~~it.
+
+**justin:** ~~So, uh, ~~you had also re recently introduced like an experimental feature of having a global virtual store,~~ uh,~~ which is a parallel concept to ~~the, ~~the content addressable store, right? So ~~like. ~~From what I understand, instead of that like dot pmpm file that's like local to your node modules in your project, it's like a global sort of reference where everything is linked. ~~Um, ~~what was ~~sort of ~~the impetus ~~for, ~~for adding that?
+
+**zoltan:** Yeah, this was actually my dream from the very beginning. And actually in the early versions of PNPM, I was using it, but,~~ uh,~~ it was only working because we didn't have log file and I could go crazy. ~~Uh, ~~we,~~ uh, so, ~~so this feature is called, ~~um. Uh, ~~the global virtual store,~~ uh,~~ you can,~~ uh,~~ try it out. ~~Uh, ~~there's a setting to enable it.
+
+What is, what it does is basically,~~ uh,~~ it moves out. This do pnpm,~~ uh,~~ directory, your node module to a central,~~ uh,~~ shared location on the disc. ~~Um, ~~but because it's,~~ uh,~~ moved out, ~~um, ~~it, it becomes more complex,~~ uh, ~~because it, uh, ~~in, ~~in inside, in scopes, in scope of a project, we,~~ um, ~~every dependency can have,~~ uh,~~ only one set of sub dependencies. So if you have like web pack, ~~uh. ~~One ~~oh ~~oh installed and it has mini match,~~ uh, ~~with the range,~~ uh,~~ of one ~~oh ~~oh in your project. It'll be webpac will be,~~ uh,~~ always resolved to one version of Minim Match. ~~Um, ~~but in another project on the same computer, you might have run,~~ uh,~~ executed install later, and now you will have web pack with, uh, mini match,~~ uh,~~ version 1.2 0.0. ~~Um, ~~so locally it's not an issue. ~~Um, ~~but,~~ uh,~~ if you move out this store to central location, you need to,~~ uh,~~ have two web pack now. ~~Um, ~~one web pack with ~~um.~~
+
+One oh, mini much, one ~~oh ~~oh, and another one is mini much,~~ uh,~~ 1.2 0.0. So ~~if you, ~~if you check,~~ uh,~~ this global,~~ uh,~~ virtual store, you will see that, ~~uh, ~~instead of having directories with,~~ uh, ~~just, uh, package names and package versions, we'll have directories with package names, package versions, and,~~ uh,~~ a long, ugly hash.
+
+And this hash is, uh, the hash calculated from the dependency graph of that,~~ uh,~~ package. This is somewhat similar to what we have with what we do with peer dependencies, but now it's done for every type of dependency, not, not just for peer dependencies. Uh, and this. ~~I, ~~I really hope that we'll be able to ~~make, ~~make this like the default,~~ uh,~~ at some point because it makes local installation super fast. On ci, it's, it doesn't really make a difference because on ci,~~ you,~~ you have ~~like ~~a dedicated empty machine. ~~Uh, ~~so you won't have this hot cache in the, ~~uh, ~~central,~~ uh,~~ virtual store. But luckily, when you have several projects in your source folder,~~ um, ~~there's a huge, there's a big chance that most of the dependencies were already, uh, installed by some other project.
+
+So instead of,~~ uh, ~~all this, uh. File system operations to make, to create this,~~ uh, ~~pnpm folder from scratch. You need just to create a few,~~ uh,~~ sim link to this central directory and just for the direct dependencies of your project.
+
+**andrew:** Cool. Oh,
+
+**zoltan:** yeah.
+
+**andrew:** ~~uh, ~~moving on to some other things. P MPMs really packed with ~~like ~~a bunch of really nice developer centric features. Like we've already covered a few of 'em,~~ like, uh, ~~workspaces is really nice. ~~Uh, I, ~~I love that it's consumed some of the Monorepo workflow, so we don't have to depend on third party tools to solve that.
+
+Catalogs is also ~~like, ~~I love catalogs. ~~Uh, ~~it makes managing monorepo dependencies so much easier. ~~Uh, ~~but you recently introduced a new feature called Config Dependencies. Could you walk us through what those are and what they solve?
+
+**zoltan:** Yeah. ~~Uh, ~~conflict depends. ~~Uh, ~~I was inspired by,~~ uh,~~ actually by beat,~~ uh,~~ for conflict dependencies because in beat,~~ um,~~ we have like components and every component has an environment component, which is,~~ uh,~~ which, which contains all the,~~ uh,~~ configuration for this component. you basically,~~ it's,~~ it's really easy to share your configuration between,~~ uh, um, ~~your components.
+
+~~Uh, ~~when you have,~~ uh,~~ when you work with git repositories, it's really hard ~~to, ~~to do, you basically have to copy paste a lot of dot files. ~~Um, ~~so ~~I, ~~I thought it's a really cool idea and,~~ uh,~~ maybe we could,~~ uh,~~ make it simpler for PNPM users to,~~ uh,~~ share ~~the, ~~the PNPM settings between repositories. ~~So, ~~at least the, do the PNPM config, you can,~~ uh, ~~you can have a better solution for it, uh, than copying PNPM files. ~~Uh. ~~And yeah, so basically config dependencies, uh, are a new type of dependency, um, with a lot of limitations. Uh, like these dependencies, they cannot have, uh, dependencies of their own and they cannot have,~~ uh,~~ postin install scripts. And these limitations,~~ uh,~~ are necessary to,~~ um, ~~to make them,~~ uh,~~ installation of, of these packages, uh, really fast because they are, um, installed before the regular install, uh, at the very start of,~~ uh, the, ~~the CLI execution. And, uh, because it's so early on in the,~~ uh,~~ process,~~ uh,~~ you can, ~~uh. ~~Use it as a plugin for PNPM. ~~So, uh, ~~you can,~~ uh,~~ change the configuration object,~~ uh,~~ of PNPM,~~ uh,~~ from these conflict dependencies. ~~So, ~~for instance,~~ if,~~ if your organization have some specific,~~ uh,~~ settings that you,~~ uh,~~ use for PNPM, because by default PNPM is somewhat,~~ uh,~~ permissive, but there are some settings that you can,~~ uh,~~ use to make it more strict.
+
+So if you want to do that,~~ uh, ~~it's really easy not to do with,~~ uh,~~ this,~~ uh,~~ conflict dependency. Also,~~ um, ~~I think you,~~ uh,~~ you know that in version 10 we start to block,~~ uh,~~ it execution of, ~~uh. Uh, ~~scripts by default. ~~Um, ~~so it's really convenient to have ~~like ~~a config dependency with a list,~~ um,~~ of trusted,~~ uh,~~ dependencies,~~ uh,~~ that you trust in your organization, ~~uh, ~~or even Catal. You can, you mentioned Catal, so you can,~~ uh,~~ have ~~like ~~a config dependency with all the Catal and even share them between repositories.
+
+**andrew:** Yeah, that feature and being able to share patches just seemed like a huge, like win for people,~~ like,~~ especially the patches one, like I personally work on a design system in a separate repo from like the rest of the code at the company I work at. So if we wanna ship patches to some of our dependencies, it's ~~kind of ~~this like long process of ~~like ~~trying to shuffle code around and making sure it's in sync.
+
+But ~~with, ~~with this feature, that's like a thing of the past.
+
+**zoltan:** Yeah, you can be very creative with, I actually, sometimes I use it for stuff that I ~~didn't, ~~didn't,~~ uh,~~ think about it when I was coming up with the config. But it's so powerful that,~~ uh,~~ it's, it really, it makes it possible to change PNPM without,~~ uh,~~ changes to PM.
+
+**justin:** Yeah. That's really awesome. ~~Uh, ~~I do want to give a shout out also to just the patch feature. So our first guest on this podcast was David Show. Who wrote Patch package. ~~Um, ~~he was a, an old colleague of mine at Artsy and so like patch package, fantastic project, but having it built into p and PM has also been just like ~~really, ~~really cool because it's one of those things where it's, for better or worse, you get in these situations where something doesn't work as you expect and your options are either like fork it or, ~~you know, ~~figure out some other way to fix it.
+
+And the patch,~~ uh,~~ command is so great. And,~~ uh,~~ the little dx around the patch feature too is like really good. It's like being able to just create a new patch and ~~like ~~have it open in an editor, ~~like ~~do all this stuff and ~~like ~~have the commit command. I don't know,~~ it's, it's, ~~it's a really good experience and ~~I, ~~I,~~ uh,~~ I really appreciate it.
+
+**zoltan:** ~~Uh, ~~the funny thing is that I think we use a patched version of patch package in PP,
+
+**justin:** Oh, that's amazing. It's very meta.
+
+**zoltan:** ~~uh.~~
+
+**justin:** ~~Do you want me to ask that next one, Andrew?~~
+
+**andrew:** ~~Uh, yeah, let's do the lifecycle one since he just mentioned that a little bit. Good segue.~~
+
+**justin:** ~~Cool.~~ Yeah. Yeah. That's great. 
+
+
+#### [00:29:45] Security Measures in PNPM
+
+**justin:** ~~Uh, so, ~~so you just mentioned,~~ um,~~ in version 10, uh, PPM, you disabled lifecycle scripts by default. So it's like the post install script, for example. ~~Uh, ~~why was that change necessary? What was the thinking behind that?
+
+**zoltan:** you might have heard about Annex,~~ uh,~~ the annex incident recently. So this was actually not the first incident of this type. ~~Uh, ~~there were, I lost count how many,~~ uh,~~ and we had for years,~~ uh, ~~people asking for ways to limit,~~ uh,~~ script execution. I was ~~kind of ~~opposed to it,~~ uh,~~ because ~~I, ~~I was thinking that why does it matter if a package is,~~ uh,~~ compromised?
+
+~~Uh, ~~it can still,~~ uh,~~ run its code when you run,~~ uh, like. ~~Your tests or just start your application. ~~Um, ~~but then I got some counter agreements, and I don't know,~~ I,~~ I'm sure I remember all of them, but for instance,~~ uh,~~ they said, what if,~~ uh,~~ a dependency is not,~~ uh,~~ executed ~~in, ~~in the code path,~~ uh,~~ that you use locally.
+
+So there is actually some security in it. ~~It, ~~it won't solve all the issues, so it's just one way to reduce the attack vector. It's not a similar ballot, but,~~ um, ~~it's better than nothing. It was a really painful,~~ uh,~~ change. A lot of people were mad,~~ uh,~~ probably still mad,~~ uh, ~~but also a lot of people were happy about it.
+
+~~Um, ~~and we were not the first ones to do it,~~ uh,~~ because,~~ uh,~~ ban already did it. However,~~ there's,~~ there's a catch, but actually,~~ uh,~~ ships like,~~ uh, uh, ~~list of trusted packages, I think it's like the 500,~~ uh,~~ most popular packages. And Annex is actually in that list. ~~So,~~
+
+**justin:** Oh no.
+
+**zoltan:** yeah, so ~~I, ~~I was,~~ uh,~~ making the poll if people want to have the same in PNPM, if they want to,~~ uh,~~ PNPM to trust,~~ uh,~~ this 500,~~ uh,~~ packages.
+
+And the pole was still running when the NX issue came out. So now I'm really not sure if we,~~ if,~~ if it's a good idea. ~~Uh, ~~yeah, there, there's,~~ uh,~~ I was considering maybe to make it more strict. ~~Uh, ~~so the package also has to have provenance enabled. ~~You know, ~~this is ~~a, ~~a new feature from the n pm registry and GitHub that ~~you, ~~you can basically dis love, ~~uh. ~~Publishing,~~ uh,~~ using o tokens. And,~~ uh,~~
+
+~~uh, ~~basically this package that you enable provenance on,~~ um,~~ and you disable OTH token publishing. It can only be published ~~from, ~~from the GitHub repository that you link up with your NPM package. And ~~on the, ~~on the GitHub side, you can,~~ uh,~~ require,~~ uh,~~ an approval,~~ uh,~~ to actually,~~ uh,~~ run the release action. So this is ~~kind of ~~more secure, but I was thinking just today that maybe they have to also require one time passwords on the approval on GitHub, but looks, yeah. That's it.
+
+**andrew:** Yeah, it's,~~ uh,~~ there's probably so many different packages that are just like ~~available to, ~~available to be hacked right now just through their CICD processes. ~~Uh, ~~I'm, I didn't know about this Providence feature, but it does seem like a good step to try to fix that. But keeping key secure is ~~a, ~~a hard game, and it does not jive well with automated releases.
+
+**zoltan:** Yeah. I think we will work a lot on features to, to try to mitigate this. There's just today was, today that,~~ uh,~~ this popular packages were,~~ uh,~~ take an hour,~~ uh,~~ used by billions of,~~ uh,~~ like packages that have billions of requests of downloads per week.
+
+**andrew:** Yeah, that the one you're talking about is the debug and chalk
+
+**zoltan:** yeah. ~~Yeah, yeah, ~~yeah,
+
+**andrew:** The blast radius of that one is so, so immeasurably large.
+
+**zoltan:** yeah. So for that one,~~ uh, uh, ~~we got,~~ uh, ~~to,~~ uh,~~ add the feature to ~~pm ~~pm ~~uh, ~~to tell ~~pm ~~pm ~~uh, like, ~~to have a cool down for a release package. ~~Uh, ~~like you, for instance,~~ uh,~~ a release package has to be three days old,~~ uh,~~ to be installed to this way because this one rebuild is, they are,~~ uh,~~ detected really fast now. I think that ~~to, ~~to today's issue was detected in five minutes. DNX issue was also discovered in ~~like ~~one hour.
+
+So there will be a cool down, less people will,~~ uh,~~ install the,~~ uh, ~~infected packages, uh, before they get,~~ uh,~~ removed from the registry.
+
+**andrew:** Okay, so you've had ~~like the, ~~the node ecosystem is a very broad ecosystem, and when you're making a node packages. They might be installed in a multitude of places. We got electron apps, we got React native apps. There's ~~some, ~~some people store code on an NPM that is never intended to even be installed on a website.
+
+So what are some of ~~like ~~the most com common compatibility issues that you've found trying to get those projects to work and ~~how, ~~how do you try to address them?
+
+**zoltan:** To be honest,~~ uh, ~~I think,~~ uh,~~ in the past,~~ uh,~~ so there were two big issues. One with the phantom dependencies,~~ uh,~~ the second one with,~~ uh,~~ SIM link,~~ uh,~~ usage inside non modules. ~~Um, ~~I think with SX almost,~~ uh,~~ everything works by now. Um, maybe only Electron has issues with SX and there are some workarounds. ~~Uh, ~~I think this,~~ uh,~~ how it's called the Metro,~~ uh,~~ what is it, a bundle for Electron or what.
+
+**andrew:** Yeah, face, Facebook, s Bundler, Metro.
+
+**zoltan:** Yeah, so I think,~~ uh,~~ there's a workaround for Slink. ~~Um, ~~but I think the easiest solution is to just,~~ uh, ~~make PNPM installed the regular hoisted node modules without sling. So actually,~~ uh,~~ PNPM uses,~~ uh,~~ a library maintained by yarn,~~ uh,~~ for hoisting. So we use the same algorithm for hoisting as,~~ uh,~~ yarn. ~~Um, ~~and ~~if, ~~if you use,~~ uh,~~ PNP with some project that doesn't work with,~~ uh,~~ hoist, this hoisted,~~ uh,~~ symlink, not modules, or if the project.
+
+Heavily relies on phantom dependencies. You can,~~ uh,~~ set a node linker set into hoist it, and ~~it ~~it'll work because it's basically the same as,~~ uh,~~ what NPM creates or yarn with a hoisted ~~uh, ~~layout. The other issue, the phantom depend is we had,~~ uh, in, ~~in initial versions of,~~ uh,~~ PNPM, we had a lot of these issues and it was really hard to,~~ um, uh, ~~fix these issues because some maintainers,~~ uh,~~ of some projects, they believe that it's fine to use.
+
+So yeah, actually I didn't explain what phantom dependencies are. So when, ~~uh. ~~When,~~ uh, a, ~~a project uses,~~ uh,~~ node mo NPM,~~ uh,~~ which,~~ uh,~~ creates a flat node modules,~~ uh,~~ your code can basically,~~ uh,~~ import any,~~ uh,~~ dependencies that is in the root of node modules. So even if it's a sub dependency,~~ uh,~~ your code will work because not just doesn't care about,~~ uh,~~ what is in package on dependencies.
+
+It just cares what is inside note module. ~~Um, ~~so we call this,~~ uh,~~ a phantom dependency. So if you have a package in your dependencies,~~ uh,~~ and web pack has mini match in its sub dependencies, your code can import mini match and it'll work and it'll work even,~~ uh,~~ when your project will be installed by NPM because, ~~uh.~~
+
+The target,~~ uh,~~ not modules. Again, everything will be flat. ~~Uh, ~~but with,~~ uh, with, ~~with PNPM,~~ uh,~~ as I mentioned earlier, inside PN PM every,~~ uh,~~ dependency is isolated in its own,~~ uh,~~ subdirectory. And inside this subdirectory,~~ uh,~~ it's not a flat node modules, it's a,~~ uh,~~ limited node modules that only contains the direct dependencies of every,~~ uh,~~ package. So if you ha, if you were,~~ uh,~~ import, if you are importing mini much in your package and someone installed your installs, your package with PNPM,~~ it'll,~~ it'll break with,~~ uh,~~ no GSR during runtime 'cause no g will not be able to,~~ uh,~~ resolve many much. ~~Uh, ~~but yeah, it, it was, as I mentioned, uh, not all maintainers were willing to fix these issues.
+
+So we had no choice, but we had to add some workarounds,~~ uh,~~ to fix it on our side,~~ uh,~~ to ~~kind of, uh, ~~to add some workarounds on our side. And,~~ uh, ~~what we did was basically we created a,~~ uh,~~ node modules,~~ uh,~~ directory inside the route of dot p pm we create like a,~~ uh,~~ hoisted,~~ uh,~~ no module structure there.
+
+So with your code in your project, cannot,~~ uh,~~ import this, ~~uh. ~~Depe sub dependencies, but your dependencies ~~can, ~~can actually,~~ uh,~~ import ~~these, ~~these phantom dependencies because when no Gs ~~uh, ~~looks up for packages, it looks up in every repair directory. So it'll look up inside the dot, PNP, not mo use. So this works by default.
+
+~~Uh, ~~you don't have, you can actually make it more strict by,~~ uh,~~ turning off this,~~ uh, ~~this hoisted not mo use. And if,~~ uh,~~ in some edge cases,~~ um, ~~some tools actually don't work even with this, I don't know,~~ uh,~~ an example of such tools now. But in this case, you can either,~~ uh,~~ use, ~~uh. ~~The completely hoisted,~~ uh,~~ NPM like node modules with node linker hoisted. Or you can use,~~ uh,~~ the shamefully hoist,~~ uh,~~ setin.
+
+And what it does, it is basically moves up this do PNPM node modules to the root of your,~~ uh,~~ modules. So even your application code,~~ uh,~~ we'll be able to import,~~ uh,~~ quantum dependencies.
+
+**justin:** It's a great name for a setting.
+
+**zoltan:** Yeah.
+
+**justin:** It's like the The React internal thing. If you use this, you'll be fired.
+
+**zoltan:** yeah. I think I was inspired by React or some other tool. Yeah. But I took it from somewhere.
+
+**justin:** Cool. 
+
+
+#### [00:40:58] Future of Package Management
+
+**justin:** ~~Uh, ~~so we're getting ready to wrap up and ~~as, ~~as we do, we always like to ask our guests a forward facing question. ~~Um, ~~so you've been working on PNPM in the package management space for a while now. ~~Um, ~~and the node and JavaScript ecosystem is also changing. There are a lot new runtimes. ~~Um, ~~we're deploying JavaScript to a lot of weird new environments.
+
+~~You know, uh, ~~there's very slow movements inside of NPM, but there are a lot of new registries coming out. ~~Um, ~~so when you look forward to the next few years, especially as you're thinking about like your work on pmpm, how do you think the package and just JavaScript runtime space is going to change, and how do you think that'll affect your work?
+
+**zoltan:** ~~I don't know. Uh.~~ How it'll change, I would expect maybe some,~~ uh,~~ more registry alternatives. ~~Uh, ~~because all the money is on the registry side. Nobody pays for the client. ~~Uh, ~~so I would expect maybe, especially those that are like, ~~uh, like ~~have companies,~~ uh, ~~behind the,~~ uh,~~ clients, maybe they will have some motivation to,~~ uh,~~ create registries also, maybe some companies that have that run code,~~ uh,~~ because,~~ uh,~~ they could make their CI faster with the customer registry. And that,~~ uh,~~ takes over some of the logic. ~~Uh, ~~I have a lot of things ~~I would, ~~I would love to try out. ~~Um, ~~yeah, and I think,~~ uh, ~~in general, uh, companies that,~~ uh,~~ have CICD,~~ uh, ~~of their own,~~ uh,~~ they prob they might,~~ uh,~~ come up with some,~~ uh,~~ maybe even appropriate,~~ uh,~~ like closed source solutions to make installation faster. ~~Like ~~subsecond fast on my side,~~ I,~~ I, I have a like gym to,~~ uh,~~ to make PNPM work,~~ uh,~~ for different, ~~uh. ~~Language maybe, or for a different runtime. So ~~I, ~~I have actually,~~ uh, ~~added this feature to pm pm to be able to,~~ uh, ~~manage,~~ uh,~~ no just versions. So this is ~~kind of a, ~~a step into that direction. And I added,~~ uh,~~ a way to manage,~~ uh, ~~Dino and Ban. So it would be, I think it would be great to be able to use,~~ uh,~~ PPM for Dino projects,~~ um,~~ or even to something like, I dunno,~~ uh,~~ Python, lot of, I know Python now has a really great package manager. ~~Uh, ~~so the competition is there is really,~~ uh,~~ strong. So maybe some other language, but I would be open even just even for installing Vem plugins because when you Yeah,
+
+**justin:** Maybe you're just the UV ~~of the, ~~of the node space you.
+
+**zoltan:** but ~~I, ~~I'm even open to rewrite in it to Rust if it makes it faster. ~~Uh, ~~we did some experimenting with that, but we couldn't figure it out how to make it fast, because yeah, I think, uh, there's more possibilities on,~~ uh,~~ the registry side, currently.
+
+**andrew:** Interesting. 
+
+
+#### [00:44:18] Conclusion and Final Thoughts
+
+**andrew:** ~~Well, ~~that wraps it up for our questions. Thanks for coming on. ~~Uh, ~~this was a really interesting dive into all things PMPM and I know both me and Justin have used PMPM just like relentlessly in our ever thankful for the work that you do,~~ uh,~~ and the community that you support. So thanks for coming on and talking about it.
+
+**zoltan:** Thank you for having me.
+
+**justin:** Yeah. Thanks so much, Anne. ~~Uh, ~~your work is fantastic and,~~ uh, I hope, ~~I hope you're able to continue to enjoy it going forward. I know that open source is often a thinkless and challenging,
+
+**zoltan:** Yeah, it's very competitive. Yeah. Yeah. I think I already achieved, uh, something that, uh, I can be proud of, even if it,~~ uh, ~~if it fails at some point, but I hope it won't fail. Like I know there are projects that live for decades. I hope will be such project,~~ uh, like, you know, VIM, ~~VIM exists for, what, 40 years?
+
+I don't know. It would be cool.
+
+**justin:** absolutely. 
