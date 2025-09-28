@@ -1,0 +1,406 @@
+---
+title: Nathan Flurry - Rivet - The Future of Serverless is Stateful
+youtube: https://www.youtube.com/watch?v=gkx2-pJveVU
+spotify: https://open.spotify.com/episode/1An4Bz5NTeZ9RjYQRCrWNo?si=KhbTnZAHS5WQnwL-QO2QKw
+tags: rivet, serverless, stateful, actor, framework, tooling, cloudflare, integrations, libraries, saas, programming, open source
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we talk to Nathan Flurry, co-founder of Rivet, a platform for building stateful serverless applications.
+Rivet started as a platform for building multiplayer games, but has since evolved to be a general purpose computing platform.
+They're actors are a first class primitive that makes it easy to build stateful serverless applications.
+
+- Rivet GitHub: https://github.com/rivet-gg/rivet
+- RivetKit: https://github.com/rivet-gg/rivetkit
+- Documentation: https://rivet.gg/docs
+- Nathan's Twitter/X: https://x.com/NathanFlurry
+- Nathan's GitHub: https://github.com/NathanFlurry
+- Y Combinator Profile: https://ycombinator.com/companies/rivet
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:01:10] Nathan's Journey from Gaming to Rivet
+[00:03:00] Rivet's Evolution and Transition
+[00:09:23] Rivet's Actor Framework and Use Cases
+[00:13:06] Rivet Inspector and Tooling
+[00:20:51] Cloudflare and Integrations
+[00:30:48] Libraries and SAAS
+[00:41:58] Conclusion and Final Thoughts
+ 
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Nathan:** I have a lot to say about libraries versus sa I believe that a lot of the best, like open source companies that we'll look at, over the next 10 years will be shipped as libraries and not as,~~ um,~~ SaaS. And so some of the common ones would be like better off Autumn.
+
+and Rki is library first approach as opposed to a SaaS first approach. 
+
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. ~~Uh, ~~we're really excited to have Nathan Ple on with us. Uh, so Nathan is the co-founder of Rivet. ~~Uh, ~~I'm really excited about this episode because I've been trying to get Nathan on for a long time. ~~Uh,~~ I've been playing around with Rivet, ~~uh, ~~or. Uh, I was playing around with Actor Core, which is, ~~uh,~~ an open source library.
+
+This year we're working on, which is now called Rivet Kit, and I'm, ~~you know, ~~I can't wait to talk about that. But,~~ uh,~~ y'all have done a lot of great work and,~~ um,~~ yeah, just excited to dig again more. But before we go talk about Rivet,~~ uh,~~ would you like to tell our listeners a little bit more about yourself?
+
+**Nathan:** For sure. ~~Um, ~~yeah, I'm Nathan. ~~Uh, ~~I,~~ um,~~ oh man. Where do you start with these things? Go all the way back to, to where I was born? 
+
+
+#### [00:01:10] Nathan's Journey from Gaming to Rivet
+
+**Nathan:** No,~~ um,~~ I,~~ uh,~~ had previous life building a lot of, uh, multiplayer video games. So I, high school, I worked on game called Kroner io. ~~Um, ~~if you're under 24 and you're a guy, you probably recognize it.
+
+If not, you're probably like, what is this like. Cheesy little audio game. ~~Um, ~~and through that process, I, I did a lot of work with like infrastructure and real time applications. ~~Um, ~~and that's kind of what led into Rivet, which is what we're doing now for like staple real time workloads.
+
+**Andrew:** Yeah. Was it you that your parents said, no video games unless you built them?
+
+**Nathan:** ~~Yeah, yeah, ~~yeah. It was me. ~~Um, ~~it was,~~ uh,~~ my dad was a software engineer in ~~the, ~~the nineties. ~~Um, ~~he was like an old school tech bro. It's like sometimes you hear some of the stories and you're like. Dang, like nothing has changed. but he also did a,~~ uh,~~ a media company called Media Station late nineties.
+
+And sadly it went under during the the.com bubble. ~~Um, ~~but when I was, I think I was seven, he was like, I'm gonna start teaching. I, they wanted expose us as kids to as many things as possible, so like music, art, programming. And he was like, I'm gonna teach my,~~ um,~~ Nathan to program when I was like seven. And so I started building games when I was really young.
+
+~~Um, ~~but I also started playing a lot of video games. And ~~so, um, ~~I think around fifth grade they were like, this is a problem. So ~~they, ~~they banned video games in the household. There was no tv, there wasn't anything else. So ~~like, ~~what else you can do to build the games? Like, I would, I would hang out with friends as a kid and like, we would just like design and build video games for fun.
+
+And I, I didn't realize like how weird that is in hindsight. But,~~ um,~~ I really enjoyed it and it, it was a really fun, like, creative medium back in the day
+
+**Justin:** So did you and Nicholas, your co-founder, go to high school together?
+
+**Nathan:** we did, we went to middle school together, so we've known each other a really long time. Um. We grew up in a town called Prescott. It's like a little, it's bigger now. They have like an REI and like more than one movie theater. But when we were a kid, it was like, what do you do? It's like you go hang out at the Denny's or like you go to the one movie theater to see what's in town.
+
+And so we just, we love, ~~you know, ~~PDA games, we love building things. Um, and so we just kind of hung out and like listened to, to bad techno music and, and build stuff for fun.
+
+
+#### [00:03:00] Rivet's Evolution and Transition
+
+**Justin:** So when you were starting rive. Sort of infrastructure for games for like multiplayer games. That was, that seemed to be sort of the pitch. It's like, we're gonna, we're gonna make it easy for game developers to build multiplayer experiences. ~~Uh, ~~but it seems now you've transitioned to more of a general purpose computing platform. Can you walk us through sort of what the transition from, ~~you know, ~~pitching YC to like where you're at today?
+
+**Nathan:** Yeah, for sure. ~~Um,~~ so, so coming off, ~~um,~~ working on Kruer and a bunch of other IO games, like if I had my fingers in most big Doo games like d io and, and a bunch of other like Moo and stuff like that,~~ um,~~ in some way, shape or form. And so through doing that, it was really easy to start a gaming infrastructure company because I was doing what I was effectively doing as a consultant.
+
+~~Um. ~~And now just transitioning that into a product of seeing the problems I've seen over and over again. ~~Um, ~~and those problems in gaming are, are very straightforward. It's like you need servers that are high performance, low latency,~~ um,~~ and don't get shut off randomly. And so that also requires things like UDP,~~ um,~~ which a lot of platforms surprisingly don't support.
+
+~~Um,~~ and the most important part is like the elasticity. So if you have a surge of players, you need to make sure those players aren't getting turned away.~~ I mean.~~ Most games have downtime when they launch, ~~um,~~ which is their most important time. so that was our focus and we were very focused on like running like unity builds, dropping in a container, being able to scale up, ~~you know, ~~on the cloud,~~ um,~~ and being able to do it in your own cloud and stuff like that.
+
+Um, over time,~~ uh,~~ we started getting more and more people asking for similar use cases outside of gaming. ~~Um,~~ this idea of like having a stateful compute is what we call it. So anything where you have like a unit code that needs to be running to do something. ~~Um, ~~such as a realtime, like think about like a realtime whiteboard.
+
+Like you need to have subunit code that is actually like processing the logic for that. ~~Um,~~ we got more and more clients kinda asking for that type of thing. And so eventually we started looking at like, uh, where should we be focusing our effort? And ~~um, ~~I guess in parallel, uh, we also spend a lot of time working at gaming services and we had built a lot of technology on top of Redis.
+
+~~Um,~~ I don't know how deep you've gone into Redis, but we can. We, we were writing these crazy, like multi-thousand line Lewis scripts and running it on a reticent instance to get like complex real-time logic on Redis. ~~Um, ~~at that point I had tried like an earlier version of durable objects, cloud first durable objects, um, which seemed to be like a much more mature alternative to this.
+
+~~Um, ~~and I mean, it, it was, it was crazy just like migrating thousands of lines of Lua to like. A couple hundred lines of code and being faster and getting edge support and all this other stuff outta the box. ~~Um, ~~so it's kinda the combination of like being durable object build, if you will. ~~Um,~~ and also having more and more people asking for something alike, durable objects, but open source and on-premise that was kind of obvious, um, to shift what we had built in gaming and actually make it more generalized for other applications.
+
+~~Um,~~ and so outta that came what's called rivet actors, which is. Uh, built on the same like really high performance tech that we built for gaming, but for general applications. ~~Um, yeah,~~
+
+**Andrew:** ~~So in,~~ so in that transition, did like the API just change completely or was, were there still like the like smatterings of the current API back then?
+
+**Nathan:** ~~yeah, yeah,~~ yeah. It was, it was really funny doing the API migration because if you looked, if you look in the cloud, you'd see like. Project, what we called name spaces and then,~~ um,~~ what we called actors, but like on the API of the hood, you would have games and then you would like game spaces. And then like there's all these like gaming specific terminology.
+
+~~Um,~~ and eventually we, we started adding aliases to like not make it to your calling, like why am I creating a game server? It's like, I don't know what a game star is. ~~Um, ~~with our B two, we have like a clean, a clean API slate and everything is called an actor under the hood. ~~Um, ~~yeah. But, uh, oh, in terms of actual, like, support, like a lot of it was,~~ um,~~ there was a lot of overlap.
+
+One of the interesting components, which,~~ uh,~~ I'll, I'll go deep on some of the infras stuff. One of the interesting components is what we call rive guard is like this. It's effectively a mesh network that handles all the traffic routing through the Rivet backbone. ~~Um, ~~so we try and abstract it from you completely.
+
+Like you don't know that there's any fancy networking going on under the hood, but when you run a container on Rivet, you need to have a bunch of extra things like DDoS mitigation. ~~Um, ~~how do you handle things like container migrations? How do you handle like, downtime with containers? How do you handle like surge traffic?
+
+~~Um, ~~there's a lot of other edge cases. Like say you send a bunch of requests to a bunch of,~~ um,~~ actors, you need to be able to spin up those actors in demand. But if those aren't running yet, then that request is gonna fail. So, ~~um,~~ river Guard just acts as like this magic thing that runs behind the hood that was really important in gaming and is now also very important for what we do now.
+
+**Justin:** Maybe it'd be a good time to ~~like ~~take a step back and talk about ~~like ~~what Rivet is building so as. I don't understand it. You have ~~like, uh, ~~two main like compute products. You have,~~ uh,~~ container service, so it's like you're running like docker containers ~~or, ~~or something similar. And then you have this like actor framework and actor service.
+
+So actor like the Ling actors, uh, folks are familiar with that. Or like durable objects that people have heard about it. So can you kind of describe more of like what an actor is in this context and what it looks like in your product?
+
+**Nathan:** For sure. ~~Um, ~~yeah, I, I'm definitely getting in the weeds here a lot. ~~Um, ~~high level, uh, we call ourselves ~~uh, ~~a staple compute platform. ~~So, um, ~~what we consider staple compute is anything that, ~~um,~~ needs to be like long running. ~~Um.~~ Or it has real time or has like durable state. and so under those, under that definition, ~~um,~~ you have something, uh, more like actors, which is,~~ um,~~ I'll get to that.
+
+And then like containers of just like a straight up like docker container. ~~Um, ~~the most basic concept of what we call an actor, like, hold on, let me rewind a bit. ~~Um,~~ the, we kind of, we we're very focused on the idea of like actors of like. An actor basically has a start and a stop and it can go to sleep.
+
+And so for example, if you're running an AI agent,~~ um,~~ the usual process command or some event happens and the agent needs ~~to, ~~to take a step. It's going to wake up, process that step, sit and wait for some more commands for a bit, and then go to sleep. ~~Um, ~~and during that process, you can actually do things like, do a bunch of real time connections, open web sockets, publish messages to other things.
+
+A lot of really interesting logic. ~~Um, ~~and if you extend that to containers, it's a lot of the same logic of like a container has a start and a stop and some form of assistance being the file system. So naturally it all kind of fits together. And when you start gluing that together, it gets really interesting because you can start doing things like having your brains and your, your RIVET actor.
+
+So this is like what's going to be orchestrating all of the agent logic and then attach a container to do things like running arbitrary, like no JS processes or something like that, like secure things. And when you put those two together, it's a really interesting pattern that there's a lot of people building,~~ um,~~ use cases around those technologies nowadays.
+
+**Justin:** ~~Cool. Andrew, do you wanna, you wanna take one or you, me, to lead it in?~~
+
+**Andrew:** ~~Uh, yeah, I'll, I'll take one. Uh, so I was reading through your docs and you guys kind of first kind of build yourselves as, uh, a durable objects, sorry. Somewhere in the docs. I, I can't, don't have my question fully formed. Justin, you, uh, you go for it. I'm gonna try to~~
+
+**Justin:** ~~Yeah, yeah. No worries. No worries. Um, so let's see. I don't wanna, I don't wanna get into CloudFlare too early. Let's see. Uh, I. ~~
+
+
+#### [00:09:23] Rivet's Actor Framework and Use Cases
+
+**Justin:** Okay, so ~~you, ~~you started in the gaming world,~~ uh, and, ~~and you've, you're sort of like building this platform with containers and actors,~~ uh,~~ have your existing customers, if you still have like folks who are like building with you in the beginning are, have they moved over? Are you seeing like people using the tools that you've built to like, make games?
+
+Uh, and I'm just curious of like what sort of like use cases have come out of that and how that's, ~~uh. ~~Pushed or your prioritization for what you build.
+
+**Nathan:** For sure. Yeah. ~~Uh, ~~yeah, we still have a lot of gaming customers. ~~Um. We, ~~we kinda make sure that they're still, uh, able to be served by the current platform. ~~Um, ~~but the use cases is, I mean, it's very similar and I think it's, it's really important to root how we build our technology of like, if it's not, we build everything we build to be fast enough for game.
+
+And so if it's fast enough for game, it's probably fast enough for everything else and it's gonna be probably be cheaper and way more efficient. ~~Um, ~~and so everything down to, like the way we do binary coding, the way we do like network traffic, ~~um. ~~You know, the core is written entirely. Rust, uh, all that stuff is very, very hyper optimized so that you can't build a game.
+
+~~Um, ~~and I, I think that's, that's, especially in the world of JavaScript, like I think it's good to have like really good core and then put the logic in JavaScript. ~~Um,~~ and so I hope that as people try rivet,~~ they'll,~~ they'll ~~kind of ~~see that performance in practice.
+
+**Andrew:** Yeah. So my, my question, ~~uh, ~~is getting towards ~~the, ~~the cloud flare of it all,~~ uh,~~ in,~~ uh,~~ the, in your guys Y Combinator page, like ~~your, ~~your byline is open source, cloud flare workers and durable objects. That seems to be. Different than what we've talked about so far. We've talked about an actor framework. If I go through your homepage, I can see like you support many different backends, so like including durable objects.
+
+So like what, where does that come from? ~~Like, ~~are you guys re-implementing a lot of ~~like, ~~what those other services do? So it works with all the services? Like ~~how, ~~how does that shake out?
+
+**Nathan:** For sure. ~~Um,~~ yeah, we're very focused on like the rivet actors or like an open source durable objects alternative,~~ um,~~ to the point where like we think we built some really cool features that can actually run on top of durable objects that makes. It's just, I mean, I've used durable objects so many times, I just know the things that you write over and over again.
+
+~~Um, ~~and so the, those features,~~ uh,~~ apply to durable objects, but also apply to all other platforms. But one really important thing that we is, especially in our, our Rivet B two launch that we find really important is actually the flexibility of your infrastructure. ~~Um, ~~when we launched our B one back in January for rivet, for rivet actors,~~ um,~~ we kind of mirrored like the CloudFlare architecture of.
+
+RIV is a platform for you where you deploy your JavaScript code and we have our own,~~ um,~~ VA isolate platform that, ~~you know, ~~runs your code inside of our stuff. ~~Um, ~~and then we have all sorts of optimizations to scale up. The problem is that what you're asking people to do when you're doing that is to really bend over backwards to support your platform.
+
+~~I mean, ~~most people have everything in Kubernetes or their own, ~~you know, ~~cloud of choice like railway or AWS or whatever, and private networking. And so it just becomes really difficult for people to adopt. And so the options are either like. Create like all sorts of security issues with running your code externally from your infrastructure or try and run all rivet internally on your infrastructure.
+
+So now Rivet B two is actually a little more, um, it's much more lightweight if we don't actually run your code on top of Rivet. Uh, what we do is Rivet is a bit more, you can think like more like Kafka, where it's a service that orchestrates. Everything that's connected to it, but you can connect what we call runners to rib it from anywhere.
+
+So that lets us support, um, platforms like railway, like, ~~um, ~~Kubernetes. ~~Um, ~~we have Elle coming very, very soon. I don't wanna put a timeline on that just yet. ~~Um, ~~you know, and serverless platforms,~~ um, ~~and I, I mean just like seeing the, the responses after B two and the amount of people who are actually like tourists as opposed to like actually getting something real running.
+
+Just over the past week,~~ um,~~ we launched eight days ago now, uh, ~~is ~~is pretty impressive and I'm, I'm really glad that we made this shift, even though it was like a lot of work on our end to rework it. But ~~I, I'm, ~~I'm happy that this is happening.
+
+
+#### [00:13:06] Rivet Inspector and Tooling
+
+**Justin:** One of the things that y'all are working on that I like a lot is you call it the Rivet inspector. ~~Um, ~~so I, I've done a lot of things in like durable objects and for people who are listening who might not be familiar with like a durable object, think of like. Lambda AWS Lambda with state ~~kind of, ~~it is ~~kind of ~~like that, right?
+
+~~Uh, and, ~~and your actor framework ~~is, ~~is ~~kind of ~~the same thing. It's just like JavaScript function ~~sort of, ~~and it has access to state. ~~Um, ~~this all like really resonates me with me 'cause ~~uh, ~~when I was doing the membrane startup, it was like,~~ uh,~~ this very similar sort of problem domain. But anyway, you, so you have this rivet inspector, which allows you to ~~sort of ~~like.
+
+Peek into the state of any of your actors in the network. And it's ~~like, ~~one of the things that can be hard about durable objects is ~~like, ~~if you've got a lot of them and they all have different state, it's like understanding,~~ like, you know, ~~people,~~ uh,~~ we had,~~ uh, ~~we had, ~~uh, ~~a previous guest on talking about ~~like ~~having ~~a, a, ~~a single database for every user that you have.
+
+And the, the problem with that is like. It gets hard to tell what's going on at scale and do migrations at scale and all that stuff. And, and durable objects and actors and all that can have those same sort of problems. So like, good, tooling visibility ~~is, ~~is important. ~~Uh, ~~I guess like a question for you is like, ~~what, ~~what sort of inspired that interface and like are there any other tools that you think you can build around this space to make it, uh, look even better?
+
+**Nathan:** ~~Yeah, for sure. Um,~~ the inspiration was, we talked a lot of people who used durable objects and ~~uh, ~~I have seen. I've never seen more internal dashboards, like crazy internal dashboards just for rebuilding the exact same thing. Everyone, like almost every serious use of durable objects has built an internal, like Jason, editor, Jason viewer of the state, and then like a couple buttons to trigger actions.
+
+And,~~ um,~~ it's one thing to be like, oh, it'd be cool for an inspector. It's another thing to see everyone rebuilding the exact same thing. ~~Um, ~~so the RIV inspector is like, we, we call it chrome dev tools ~~for, ~~for rivet actors. ~~Um,~~ and so. Uh, like you said, like it lets you inspect state. It lets you actually see the state updates in real time.
+
+So like, it's a really fun demo to be able to like run an agent and then see the messages, update in real time and see it thinking in real time in the state, and then actually go back and like edit the context and then keep running the agent. It's pretty cool. ~~Um, ~~but we also have a bunch of other things, like you can actually call what we call actions directly on it.
+
+So imagine we have like a little JavaScript console at the bottom where you can just run code inside of your actor. Um, and I mean, in practice it's, it's really great for, for both debugging and in production,~~ um,~~ kind of on your database per user point. I, I have a lot of thoughts on that. I,
+
+I think it's interesting to hear like the back, the, the, I don't think all databases should belong in durable objects. I don't think durable optics is like a one size fits all. ~~Um, ~~and rivet actors, of course. ~~Um, ~~but I do think that in most large deployments, like you end up with something that looks a lot like durable objects in some way, shape or form.
+
+That being, ~~um, ~~usually you're gonna be running something like Dyna DB or Cassandra and in a large scale deployment. ~~Um,~~ and what those do is they basically partition everything by partitioning key. ~~Um,~~ so all data for like a chat will be in like a chat message key. ~~Um, ~~or like a user's like shopping cart will be in a shopping cart key.
+
+And when you look at that, like that looks a lot like what a durable object is. ~~Um, ~~and so I think when you talk about database for user, I think it's, it's, if you come from a background having used Cassandra or Dynamo dv, I think it, it makes a lot more sense of like why most applications end up doing this in practice.
+
+~~Um,~~ and the cool thing that I really like about,~~ um,~~ rivet actors and by association durable objects. Is that compared to how you do in Cassandra, where you have like just a single column or just a single um, table for each partition key, you can actually have a full single light database for every single one of those shards inside of durable objects and private actors.
+
+And so that's really cool 'cause now you can take like a chat actor,~~ um,~~ and have like an infinite amount of chat actors that don't have any contention between each other,~~ um,~~ but have complex relationships within those actors with things like members and chat messages and stuff like that.
+
+**Andrew:** ~~Uh, ~~so in all the examples,~~ like,~~ I love your guys' homepage. It's like you, you ~~kind of ~~just get out of the way. You're like, here's a bunch of code, figure it out. ~~Uh, ~~and one of those examples is like a chat room. ~~Uh, ~~but one thing that isn't all that clear to me is like, how does like data persistence happen?
+
+~~Uh, ~~reading through the drops a little bit, it seems like it's stored within the actor container, but could you expand upon that a little bit?
+
+**Nathan:** ~~Yeah. Yeah. Um,~~ so we, the. When you're running rivet, like in production, there are two components. ~~Um, ~~there's your runner, which is like your drop script process that you deploy to a OS, to Kubernetes, to railway, to wherever. And then the rivet engine, which is like the core brains of rivet. ~~Um, ~~and the rivet engine.
+
+Uh, we have a cloud, uh, version coming out very soon. ~~Um,~~ but right now we also recommend self hosting. Like we have a great one click railway deployment for, ~~um.~~ When you deploy a runner, uh, the Bria engine, uh, basically manages which runner is running your code. ~~Um,~~ so there's a lot of, you know, edge cases you have to handle, like, ~~you know, ~~failover and, uh, what happens to the runner crashes, what happens in the split brain scenario?
+
+~~Um,~~ when you make a change to your actual state? ~~Um, ~~there is like a, a, it doesn't have to be persistent to a separate,~~ um,~~ machine, similar to like database failover for example. ~~Um, ~~so there is like a mechanism internally for how we handle. Uh, state updates to automatically persist. ~~Um,~~ we also have special like, ways of controlling.
+
+How frequently is that persisted? If you're doing like a real time game, you can actually tune that down to like de bounce to like a max of like one second. If, if that's what you wanna do. ~~Um, yeah.~~ And then like when you get to sq l light, we we're sq l light is coming up very soon, but there's a lot of really fun tricks with the sq l light.
+
+Write a head log, uh, when you're doing this type of thing, so you don't have to like snapshot the whole sq l light database or anything like that.
+
+**Justin:** One question I'd had about this and ~~a ~~a, a challenge that I've had on durable objects is so ~~like, ~~let's say you have a durable object and it has a SSL. Light database as a backing store. ~~Um, ~~it's got a schema. The sq l light database has a schema, and if you like, deploy and update a change to the code, you may have to run a migration on that.
+
+And ~~so, uh. ~~In a durable object they have just like this convention, there's this like place, I forget which hook it is, but there's this place where you can ~~kind of ~~define your migration or whatever that needs to happen. And it's like ~~kind of ~~weird 'cause it's like all this like just logical code to ~~like ~~control the migrations.
+
+But when you're thinking about like an actors, it's a staple thing that's deployed somewhere. If you update the code that like relies on new state or different state, how do you handle migrations?
+
+**Nathan:** I am sorry. Can you repeat the last bit?
+
+**Justin:** yeah. ~~How do you, ~~how do you handle migrations with actors if you're, like, changing ~~the, ~~the schema of the state, I guess right now you don't have sq LL you don't have sq LL yet,
+
+**Nathan:** ~~We,~~ we do, but we've been,~~ we've been, we've been~~ very, quite a very SQL light support. We have SQ l light, you can go in, install, rotate, get SQ l light working. If you merge the right branches in the ribbon engine, you can get sea light working. But it's, ~~I mean, ~~when you're dealing with people's data, like I don't.
+
+This is not something you just ship like willy-nilly. Like ~~we're, ~~we're pretty careful about shipping SQL light when it's ready. ~~Um, ~~uh, yeah, so the way we have it internally is we, we, I feel funny talking about things that we haven't even released yet, but I'll talk about it because we've thought a lot about the problem.
+
+~~Um, the, ~~the implementation is not too different from durable objects of, you do have like a migration hook. ~~Um.~~ And we've gone all the way to provide first party integrations for drizzle migrations and,~~ um,~~ with Prisma, with their V seven V seven, yeah. Their V seven types crypto only version coming soon. ~~Um,~~ and those migrations are done lazily when an actor wakes up.
+
+~~Um, ~~so actors have like a, an important thing to understand about actresses. They go to sleep when they're not in use. And so the cool thing is you can, you can, you're not paying for this, this like staple compute when you're not using it. But it's pretty much automatic when it like starts and stops for you.
+
+~~Um,~~ again, going back to like our, our magic networking layer is ~~we can, ~~we can detect when you're about to make your network request to an actor and then start it and then send the request from the actors awake. ~~Um, ~~so in the context of a, a database migration, for example,~~ um,~~ if your actor is sleeping and you do a migration,~~ um,~~ next time it wakes up, it's going to do that migration.
+
+And we assume that the migration is gonna be a pretty quick migration because you're. SQLA databases are not gonna be like terabytes of data.~~ Um, yeah.~~
+
+**Justin:** Nice.
+
+
+#### [00:20:51] Cloudflare and Integrations
+
+**Andrew:** ~~Um, so, uh, we've, you,~~ you mentioned it a few minutes ago,~~ uh,~~ that there were some things in cloudflare's, durable objects that you felt could be improved. ~~Uh, ~~what are those things?
+
+**Nathan:** ~~Um, I,~~ I wanna be clear, like I, I very much love durable objects and I think that the team working on is great. I, I talk ~~a lot, ~~a lot of crap on Twitter, but, uh, ~~um, ~~yeah, I, I, I think that there are a lot of patterns that,~~ um, ~~I think CloudFlare and us see a lot of the same, ~~um. ~~Areas of improvement,~~ um,~~ like they acquired the outer base team. So clearly the database team is, is working a lot on, um, like front end stuff for, for the durable objects. Uh, I would be surprised if they didn't have a version of ribbon inspector coming out soon.
+
+~~Um, ~~but on the more developer facing side,~~ um,~~ durable objects is like the core probative and so. What CloudFlare did is they,~~ um,~~ well Sunil built party kit,~~ um,~~ 'cause he had the ForSight to see like, hey, we can take some of these, these like difficult sharp edges with durable objects and just like, make it really easy to do just real time.
+
+And then, you know, CloudFlare obviously saw that and was like, let's bring that into the core. ~~Um, ~~agents, same thing. It's like, it effectively started as just a subclass of, of uh, a durable object and they called it an agent. ~~Um, ~~but they've been adding some more and more features ~~over the, ~~over ~~the, ~~the years to, to make it more agent specific.
+
+~~Um.~~ For us, we think that the primitive of like a, an actor needs a couple extra things to become more powerful. ~~Um, ~~one of the most important ones is lifecycle management,~~ um,~~ with durable objects. It seems to, I don't know how it's implemented in the hood, so I don't want to put the words into anyone else's mouth, but it seems like durable objects seem to, they leaned to the durability of it and kind of let shut off your objects as needed.
+
+And so if you're building something like a game server or realtime, or a long running job, like it's not suitable for those use cases. ~~Um, I, ~~I recommended a, uh, durable Objects to a friend to build a, a realtime game a bit ago. ~~Um, ~~and it's been a nightmare for him. And I, I, I kind of regret doing that. ~~Um, ~~but with Rive, on the other hand, like we care a lot about Lifecycle.
+
+~~Um,~~ so the engine is responsible for a lot of complex logic with like, how do you handle ACT actor migrations, actor upgrades. ~~Um, ~~of course actor failover. ~~Um,~~ and we, you can configure the, to like leave your actor running until you, you are ready to actually like move it over. ~~Um, ~~so kind of tying back to our roots in game servers is like, we can't shut off game servers.
+
+You just, that's a terrible idea. And so we take that so you can actually do things on drove objects like long running, um, image conversions. Like you could hook it up to Ffm peg and do like a hour long conversion that's totally doable. On, on, on rive actors. ~~Um, ~~same thing for game server, same thing for like background jobs.
+
+~~Um,~~ that's one. Um, and along with that you get some things like lifecycle hooks. ~~Um, ~~another one that I, ~~um,~~ I feel pretty strongly about is, ~~uh,~~ integrating durable objects is, takes a lot of context. You need to like, really know how the cloudified worker platform works. ~~Um,~~ so their platform requires you to have a fetch handler, um, in the middle.
+
+So when you make a request, it goes to fetch handler and the fetch handler routes it to a durable object. ~~Um,~~ with Rivet, that is still an option. Um, a lot of companies as they get more mature, go towards that, but when you're starting, usually you're like, I just want a Rivet actor, and I just wanna talk straight to it.
+
+I don't need anything else in between. ~~Um, ~~so we actually provide like react integrations. We provide like native client integration, so we even have a rust integration that can work with like Python. ~~Um,~~ and so you can just on your client, say get or create an actor,~~ um,~~ and then it'll give you an actor and you can talk to it.
+
+~~Um, ~~I'm going on, so I'm gonna rapid fire a couple other things that we, ~~we, ~~we like a lot. ~~Um, ~~another one, input state. You can pass input state to your durable object or to to rib actor. ~~Um, ~~and this extends to durable objects. ~~Um, ~~there's no idea of a constructor and a durable object. ~~Um, ~~we have full type safety on the a PII think they've been catching up on that.
+
+But, um, all the way down to your client, your full type safety. ~~Um, ~~let's see. You can get your actor key within the rivet actor. So durable objects, it's hard to know what your durable object is actually doing. You kind of have to like, add all sorts of metadata in every single request. Uh, we have a metadata object that can see you, everything from your name, your key, your input, your,~~ um,~~ your, uh, yes, I'm pulling a blank.
+
+The last one. ~~Um, ~~let's see. Uh, rivet itself, lets you define which region your act your actors run in. So Rivet is a multi-region deployment. This is something I, I don't talk enough about. We have a really cool system for handling like multi-region scaling. ~~Um,~~ and so you can actually say, Hey, I need this actor to run over here.
+
+~~Um,~~ CloudFlare has a lot of limitations on that. ~~Um,~~ let's see. connection, persistence is another big one. So on the, the topic of failover,~~ uh,~~ most people don't handle web socket, disconnects and stuff like that correctly. ~~Um, ~~on durable objects, we handle that for you. So if you open a web socket from the client, ~~um,~~ your actor could upgrade.
+
+It could migrate, and the web socket could be uninterrupted. ~~Um, ~~I'll leave it there, but there's a lot of small things like that that we include in the core primitive that I think are important for. 90% of use cases. ~~Um, yeah.~~
+
+**Justin:** Yeah, the web socket thing in particular. Oh, please.
+
+**Nathan:** Yeah. ~~Last ~~last one is events. We have a native concept of events. ~~Um, ~~and so you can actually ~~like, ~~do real time is dead simple in rivet.
+
+~~Um,~~ and that also means that we also provide an abstraction over web sockets service and events and HT p to just choose the right protocol for you. I'll quit.
+
+**Justin:** Yeah. No, that's awesome. ~~Uh, I was, ~~I was gonna say, one of the things in derm objects that can be hard is,~~ uh,~~ just like handling web sockets in general, but ~~like, there's a, ~~there's a, like a really subtle case is so they have this special what. A SOE handler where they'll like it, like safely allows the durable object to go to sleep.
+
+And if you don't use it or use it incorrectly, it can ~~like ~~keep your durable object open for a long time, which actually it gets ~~very, very, ~~very expensive, very fast. So it's like a good way to get a surprise bill if you're not, ~~you know, ~~architecting it correctly, which is,~~ uh,~~ unfortunate.
+
+**Nathan:** the point you're making ~~is ~~is another really interesting one. ~~Um, ~~and something I think Cloudflare's done very well, but they're also very quiet about is the fact that Cloudflare's not cheap at all. They ha they're really, really good about making it like, seem cheap to the user. Like the value you get outta the platform is much, much higher than like what the actual compute costs.
+
+~~Um, ~~but if you go run the numbers and compare it to a VPS, it's ~~like. ~~Their margins are nuts, and I like more power to 'em. But,~~ um, it's, ~~it's interesting to see like ~~the, ~~the disconnect between the actual price of what you're paying versus like, ~~um, uh, ~~yeah, the price you're paying versus like the value you get out of it.
+
+Because to your point, if you leave a durable object on and it doesn't go to sleep, then it's actually really expensive. ~~Like, ~~you know, you might as well be paying for like a, a VM at that point. ~~Um, yeah.~~
+
+**Andrew:** ~~So, uh, I, ~~I'm doing one off the cuff. ~~Uh, ~~so when I look at this, a PII see state, I see actions. ~~Uh, ~~ever since our episode with,~~ uh,~~ X State, I see X State everywhere and X State in the cloud seems like a really cool proposition. So have you guys like. Tested the waters with that of ~~like, ~~done some like tech demos of ~~like, what, ~~what would a state machine be here?
+
+'cause it looks like you're like, like two fifths of the way to state machine.
+
+**Nathan:** Yeah. ~~Um, ~~we have a lot of ideas. ~~I, I mean, ~~I have ~~like ~~a linear project where I just dump ideas. ~~I mean, ~~they've got like a great name, which is like press C send idea, and ~~it's, ~~it's so many. ~~Um, ~~there are a couple integrations that I ~~really, ~~really wanna do. ~~Um, ~~but like our focus has been primarily let's get like self hosting the open source.
+
+The best experience possible. And I ~~really, ~~really ~~like ~~what we did with version two. ~~I mean, ~~it's literally like a docker run. You download a binary and then you just say, here's what the engine runs, and it just works now. ~~Um, ~~so now we're actually able to start tackling some of ~~the, ~~the fun stuff. So to, to list off a few that I'm really excited about.
+
+~~Um,~~ live Store number one, like for local first sync with,~~ uh,~~ Ractor is like a really great use case. ~~Um. ~~The second one being effect,~~ um,~~ and effect workflows. I think that makes a lot of sense for actors to your point. ~~Um, you know, ~~because tying it back to the staple compute, it's like an effect. Workflow can be running for a long time.
+
+~~Um,~~ but you also need the durability in case your, your machine crashes. Um, X State, I haven't messed around with as much, but I, I've looked at it a couple times and like, it seems like there's a lot of overlap in terms of that type of thing. ~~Um. ~~Yeah, that's, see, other, other integrations off the top of my head.
+
+I'm trying to remember. Uh, of course, better off. We have a better off integration and we have a better one coming soon. ~~Um, ~~I'm pulling a blank on so many, there's so many cool ideas I have. ~~Um,~~ like local first, uh, driver workflows and, um, real time stuff. ~~I, ~~I haven't thought about, like adding s AI support ~~just, ~~just for fun.
+
+**Andrew:** Yeah. Yeah. ~~You, ~~you certainly aren't lacking for integrations. Even though you guys don't have all that many, you still have quite a lot, like you list like every major JavaScript thing ~~I, ~~I know about it.
+
+**Nathan:** It's, it's because I, ~~I, ~~I see re actors as like an undervalued, primitive in the TypeScript ecosystem. ~~Um,~~ if you go to Java, if you go into C, go to Elixir, like they all have their own versions of. What rive actors are. So in, in C ~~um, ~~they have the Orleans framework,~~ um,~~ and specifically virtual actors is like the closest one for one comparison.
+
+~~Um,~~ ACA and Java, and of course like Elixir and OTP. ~~Um,~~ and I think it's interesting that this hasn't caught on in, in JavaScript at all. ~~Um, ~~and I, I, I wanna asterisk that because I think job script developers are, ~~um. ~~I think everyone has to like thank JavaScript developers for like being willing to try a lot of new ideas and being able to like, innovate and everything.
+
+But it's, it's interesting that like the actor pattern just never really made its way into JavaScript until durable objects like really popularized the idea. ~~Um,~~ yeah, and so, so I think the reason that we're like so focused on so many integrations is because, ~~um,~~ I don't wanna say every single, I don't think every application needs that rivet actors, but I think it is definitely a primitive that replaces.
+
+A huge swath of complexity in most applications. ~~Um, ~~like most applications are trying to rebuild what ribbon actors make. Simple with like event sourcing with Kafka,~~ uh,~~ you know, trying to use temporal, which is ungodly difficult to use. ~~Um, you know, ~~real time stuff. You're setting up pub sub servers and all sorts of like, crazy persistence mechanisms.
+
+You know, all the stuff that Redis is trying to ship. ~~Um, ~~like it becomes dead simple and rivet. And so, so I think that there's a lot of opportunities for us to work ~~with, ~~with these other tools.
+
+**Justin:** ~~I, ~~I wanna talk a little bit about ~~your, ~~your strategy here. ~~Um, so. ~~Y'all, y'all have this,~~ uh,~~ this like saying that you think that libraries are the future and ~~like, you know, ~~open source SaaS is ~~kind of like, ~~like dead in the water. ~~And, ~~and I'm curious about ~~like, ~~expanding on that philosophy, but also it's like the core of your product is, ~~you know, ~~you ~~sort of ~~build it as ~~like, ~~we're gonna. a durable objects like primitive, make that open source, make itself hostable. ~~Um, ~~but of course, you're also like a YC backed company and you need to be,~~ uh,~~ very financially successful. So ~~I I, I, ~~I would love to hear like how you think that whole thing plays together. It's just like, how, what is the future where like people just choose open source libraries and also we can build, ~~you know, ~~sustainable software companies.
+
+**Nathan:** Yeah. ~~Um, ~~
+
+
+#### [00:30:48] Libraries and SAAS
+
+**Nathan:** libraries is, is an interesting topic. As you know, I have a lot to say about libraries versus sa ~~um. ~~I believe that a lot of the best, like open source companies that we'll look at, uh, over the next 10 years will be shipped as libraries and not as,~~ um,~~ SaaS. And so some of the common ones would be like better off Autumn.
+
+Um, and Rki is a, a library first approach as opposed to a SaaS first approach. So when I say library first, what I mean is,~~ um,~~ step one and payment install step two, import step three. It works as opposed to almost every other open source SaaS nowadays, as you. Sign up for their service, or you download a binary, you write a config file, then you connect your application and then you get it working.
+
+~~Um, ~~and once you get it working,~~ it's, it's, ~~it's great. But ~~the, the, ~~the in, like the integration time goes up and,~~ um,~~ running it also becomes more difficult and just the development environment you end up ending with like Kubernetes setups just to run someone, source tool, whatever. ~~Um, ~~the two reasons that I think libraries are, are going to win over the next couple years is one, ~~um.~~
+
+The most important one is that agents are picking libraries now instead of,~~ um,~~ humans. And so instead of googling like durable workflow engine and then seeing temporal has like all the best SEO right now and then picking temporal,~~ um,~~ you're going to be going into Codex or cloud code and being like,~~ um,~~ my billing pipeline is failing.
+
+Please fix. Um, and then the cloud code is gonna go be like, oh, it's crashing mid request, so we need to go add a durable workflow engine and cloud code when it's. The agents are incentivized to get the fastest working solution as fast as possible. ~~Um, ~~and agents can't sign up for SaaS services and it's really difficult for them to like orchestrate setting, you know, installing a binary in the background, yada yada, yada.
+
+~~Um,~~ it's going to opt for the simple MBM install and then get the whole thing working,~~ um,~~ right off the bat. And so agents is a big reason why I think that libraries will work in the long run. ~~Um. ~~Better off, I think is also probably seeing a similar thing already. ~~Like ~~there's a ton of code on GitHub for better off already.
+
+~~Um, ~~and it's probably making its way to training models. ~~Um,~~ but when I say add off, like it's probably gonna offer better off instead of telling me to sign up for other services. ~~Um, ~~the second reason is just that I, I think a lot of developers prefer simplicity in the application. ~~Um,~~ I think that. developers are wary of complexity and adding more and more like critical components to the applications.
+
+~~Um,~~ and so when you install a library, there's something about that where just there's less complexity and less moving parts. ~~Um,~~ tying that to like revenue and actual like, ~~uh, ~~deployment, scaling, ~~um. ~~We do have the rivet engine, which is effectively, like, it takes the library component and then it kind of supercharges it.
+
+So you can run rivet kit without any external services, ~~um,~~ on a single node. But like once you're like, I am reaching a certain scale and I need to like really go crazy, then you can pull in the rivet engine and that's going to be like a drop in a one line, ~~um,~~ and point for where to connect engine. And then you're gonna be able to, to scale horizontally.
+
+~~Um.~~ And so, uh, as, as a, as a company, um, ~~our, ~~our bet is that people will build more and more with rive actors. ~~Um, ~~and as you invest more into it, then there are certain enterprise use cases that a lot of people don't need. And so we're technically an open Gore company, if you were to, to get into technicalities.
+
+~~Um,~~ as in we feel strongly that our core should be Apache two, so permi, permissively licensed,~~ um,~~ and be usable for like a huge amount of use cases. ~~Um,~~ but we can make money off,~~ um, you know, ~~more traditional enterprise deployments. Things like Databricks, for example, or like comparable to Databricks with Spark, for example.
+
+~~Um,~~ and with our cloud, we can provide a managed solution for people to, to run without having to self-host. ~~Um,~~ but ~~I, I, ~~I strongly like I. I like this company a lot because I think it's a company where we can have a very strong open core and a strong open source velocity and a strong investment in libraries.
+
+~~Um,~~ as opposed to trying to kind of walk a fine line of doing things like licensing A GPL and then like, not really being open source, but calling ourselves open source, uh, or follow a HashiCorp. ~~Um, ~~and I, I, ~~you know. ~~I hope I don't buy my words in, in, in a couple years, but I'm fairly certain that like this is gonna be, this is actually going to work.
+
+~~Um,~~ if you look at companies, yeah, there's a lot of companies I can list. You have made this work. We're a lot quieter than ~~the, the, ~~the people that people point fingers at.
+
+**Andrew:** ~~That was, ~~that was my next question. Do you have any like examples of companies that you would put into this category? Like I was trying to think through it and like for sell ~~kind of ~~is one it like they provide next js, it's a free open source thing that anybody can run. Then they su supercharge it on their platform just like they would on rivets cloud.
+
+**Nathan:** Oh, for sure. Yeah. No, first sale, I think is ~~the, ~~the, ~~um,~~ the number one example of like a library that, that really work. And then taking their, like, their more advanced thing to like supercharger, like you said. ~~Um,~~ they've had some controversies of course, but I think that they've, they've dealt with it pretty well.
+
+~~Um, uh, ~~we actually used to, to say like, ~~uh, ~~the, the first version of,~~ uh,~~ of actor core, which is our library version. Over a bit,~~ um,~~ was effectively, it was next JS for something. I don't remember what he said, but it was like, next js for something. So it's like exactly what you said is, is, is right under the mind.
+
+**Justin:** ~~So. We've,~~ we've talked a lot about like features of actors and what RT provides,~~ uh,~~ but ~~like ~~given your current users and like what you want to see people using it for, if you had to just ~~like ~~talk to the developers listening to this, ~~like ~~what would you say would be the single best reason why they should try rivet?
+
+**Nathan:** ~~Uh, ~~to be incredibly, ~~uh, ~~simple to the answer. I would just say simplicity. ~~Um, ~~it's something that. I think if you have touched Kafka or touched a lot of like Pub Hub or realtime tools,~~ um,~~ and you try Rivet and you just give it like five minutes, you'll like, you'll immediately understand why things are so much simpler with actor Pattern and why other industries have adopted this so widely.
+
+You know why WhatsApp was able to sell a billion dollars,~~ uh,~~ company with 35 engineers because the actor pattern, ~~um. You know, ~~some of the most,~~ uh,~~ core use cases, which I think will benefit from this are of course agents very timely for ai, ~~um,~~ in terms of managing state, managing complex actions and long running tasks.
+
+~~Um,~~ other ones being real time. So, ~~you know, ~~real time is just like built into the core of, of rivet itself. ~~Um,~~ and then anything with like durable or long running tasks, ~~um. ~~So if you're touching like Redis, Kafka, or Nats, there's a good chance that Rivet will probably significantly set. Simplify your application.
+
+**Andrew:** Yeah,~~ it,~~ it seems like when you start from a JavaScript point of view, you have a much different view of developer experience. Like when I try to go outside the JavaScript ecosystem and I'm reading like docs and setup guides, it's ~~like, ~~it's all, it's like a whole different ball game than I go back to JavaScripts and they're holding my hand the entire way.
+
+I'm like, oh, okay. This all makes sense now.
+
+**Nathan:** Yeah, I, so I, I spent a lot of time writing actually, uh, iOS apps. Like I was like a three time W-W-W-D-C scholar. I,~~ some,~~ some people will know what I mean by that. Other people will. ~~Um,~~ but, uh, I think that's like one of the, I think there are two things that a lot of great engineers could do is one, like start by building games.
+
+'cause you're gonna learn about performance and like. What low level actually means, and like how low can you take a code? And the second one being,~~ um, ~~build with iOS ecosystem. ~~Like, ~~not because you need to ship iOS apps, but Apple has put so much care into the developer tooling that like, ~~um,~~ both on like the actual developer experience side just talked about, and also that as an engineer you're basically forced to read their humanitarian guidelines, ~~um,~~ which is their, like their design language.
+
+And so even if you're just like a. The worst iOS engineer is probably considered a pretty decent design engineer by like most other standards. ~~Um,~~ and ~~I, ~~I think that like having built r and doing a lot of developer pacing tooling with a r inspector and then like building,~~ uh,~~ like the developer experience.
+
+I, ~~you know, ~~it's very like, egotistical to say this, but I think that a lot of that has transferred over and I think, yeah, ~~I mean, it, ~~it seems to be showing so.
+
+**Justin:** Yeah. I think,~~ uh,~~ an interesting point here, this is just like some broad conjecture. ~~You're, ~~you're talking earlier about how like actors haven't really caught on in the JavaScript space and ~~you know, ~~there are a lot of ~~like. ~~Programming ecosystems, like any language that runs on the beam like Ang ~~or, ~~or Elixir or Gleam or whatever,~~ um, you know, ~~they have access to this o tp, this like native,~~ um,~~ actor framework, ~~sort of ~~there and every other like ecosystem.
+
+It's pretty much, it's a. ~~You know, ~~it's a service. ~~It's a, ~~it's a thing that you have to run. ~~And, ~~and classically like ~~the, ~~the historically, the JavaScript ecosystem has been ~~kind of, um, ~~like shying away from running its own infrastructure. Although I think ~~that ~~that's like really. a lot as we see the sort of fatigue of all of these services trying to, ~~you know, ~~these hosted services, trying to bite out every little part of your application.
+
+And ~~like, ~~now you can't like, build anything without signing into five different dashboards, ~~you know, ~~for ~~like, ~~whatever. ~~Um, ~~so I don't know. ~~I, ~~I think this is ~~like, ~~it's very timely and also, ~~um. ~~We just haven't seen other people handle this well, especially not in a way that can be self-hosted. So I'm excited about what you're all building.
+
+~~Um,~~ and I think, yeah, I don't know. I think this is the right moment for it too. ~~So.~~
+
+**Nathan:** Appreciate it. Yeah. ~~Helping, ~~helping spread the word of, of actress actor, killing everyone.
+
+**Justin:** Yeah. ~~Well, ~~cool. ~~As we, ~~as we get close to wrapping up here, we always like to ask our guests a future facing question. ~~Um, ~~and ~~I, ~~I've got a few here and I'm trying to figure out which best one will be to ask you. ~~Um hmm. ~~So what do you think? When you think about like the infrastructure today and how we build apps,~~ um,~~ and then the infrastructure that you want to introduce with Rivet, what do you think will need to happen to, to make a shift to be closer to the world that you wanna see? ~~Uh, ~~and what do you think that like y'all are gonna do to help ~~like, ~~win that market?
+
+Like what does that look like for you?
+
+**Nathan:** ~~Um,~~ let's see. So the, the, the first part being like, what do I think needs to happen to see the shift close to the world? I wanna see, so I, I feel like I should start by defining the world I wanna see. ~~Um. ~~In my opinion,~~ um, uh, ~~like the concept of actors, you know, this like 30, 40-year-old concept,~~ um,~~ simplifies a lot of things.
+
+I mean, like you're, you are simplifying a way, a lot of like your pops up infrastructural, your Kafka, your double compute, your like crazy database complex transactions into like, just using an actor. Just have one, ~~you know, ~~50 line script that you write that just implement all your complex logic ~~as, ~~as a script.
+
+~~Um,~~ I think the world I wanna see is like. Actors are the default thing that you reach to if you need something that will do any sort of like complex logic beyond just a stateless web request. ~~Um, ~~and so again, like Kafka pops up real time. ~~Um.~~ And I think the way that we get there is right now we're focusing on just like really, really painful infrastructure being agents in real time.
+
+~~Um,~~ like things where you see a post every couple days in hacks of like, we rewrote everything on our agent infrastructure from scratch,~~ um,~~ because of X, Y, and Z. ~~Um, ~~and the only people not suffering from this are people building on durable objects,~~ uh,~~ until they need to go on platinum. Then we talk to a lot of those people, but that's a different story.
+
+~~Um,~~ so the way I see that getting there is like, start with the pain points of the things that like actors really, really help solve. And then I think enough people will start realizing,~~ like,~~ understand the core primitive that's available to them. And then as they start using more and more,~~ um,~~ building more and more things, it's kind of like actors become the first thing that they consider to try and build with and then realize that, oh wow, at the end of the day, my application is significantly more simple.
+
+~~Um,~~ like one of the most common, ~~you know, uh, ~~we had a customer for example, that, that, ~~um. ~~I was doing something like this where like they were starting with just basic, I think it was just like a basic agent, but then they started realizing they needed like some sort of background job. And so then they realized like, oh, actors can go to sleep and wake up on an alarm.
+
+And so now they start using actors for like a separate, ~~um. ~~Background drops of schedules. ~~Um,~~ and then, you know, as you, you can imagine like extrapolating is like, okay, now we need to add like image conversion with F-F-F-M-P. Like that's a drop in rive. And I assume that I would be surprised if someone didn't ship like an FM peg like library ~~for, ~~for rivet at some point because it just runs anywhere.
+
+~~Um,~~ yeah. So start with same points, the pain points, ~~kind of, ~~people understand the primitive and then realize like how much, how flexible it's for their future use cases.
+
+**Andrew:** Sweet. ~~Well, ~~
+
+
+#### [00:41:58] Conclusion and Final Thoughts
+
+**Andrew:** that wraps it up for our questions this week. Thanks for coming on, Nathan. This was a really interesting dive into the thing that you've built. ~~Uh, ~~it's come a long way and it seems like a very useful tool. I'll definitely be giving it a try the next time. I need,~~ uh,~~ something that does that. So thanks for coming on and talking about it.
+
+**Nathan:** Awesome. Thanks a lot. I'm glad we, glad we finally made this happen.
+
+**Justin:** Yeah, super excited we made happen. ~~Uh, ~~I'm big Rivet fan, as ~~you know. Uh, ~~so yeah, excited ~~to ~~to see which our build,~~ uh,~~ continue to build. I'm excited ~~for, ~~for SQL Light support and yeah, I,~~ uh,~~ I can't wait to see what y'all do next.
+
+**Nathan:** Awesome. Appreciate it. 
