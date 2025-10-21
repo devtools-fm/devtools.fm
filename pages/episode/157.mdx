@@ -1,0 +1,442 @@
+---
+title: Oliver Medhurst - Porffor - JavaScript Ahead of Time Compiler
+youtube: https://youtu.be/TPYMqiv9hhM
+spotify: https://open.spotify.com/episode/6dFi0Ihtz5Cylw5U4q93eZ?si=mwgWIVWsR9ayFEcL6rNEzA
+tags: javascript, webassembly, compiler, porffor, oliver medhurst, goose, goose.icu, javascript ahead of time compiler, javascript engine, javascript compilation, javascript optimization, javascript performance
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we have Oliver Medhurst, the creator of Porffor.
+Porffor is a JavaScript ahead of time compiler that compiles JavaScript to WebAssembly.
+We talk about the technical details of how it works, and the future of JavaScript engines.
+
+- https://x.com/canadahonk
+- https://porffor.dev/
+- https://github.com/CanadaHonk/porffor
+- https://goose.icu/
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+00:00:00 Introduction
+00:02:51 Starting with Porffor
+00:04:08 Technical Deep Dive: JavaScript Compilation
+00:17:41 Practical Applications and Use Cases
+00:20:13 Technical Details and Future Plans
+00:23:32 The Role of Ahead-of-Time Compilation
+00:27:57 Security and Sandboxing in Wasm
+00:29:31 Developer Experience and Tooling
+00:34:58 Test Suites and Performance Metrics
+00:38:47 Future of JavaScript Engines
+00:48:08 Concluding Thoughts and Future Directions
+
+{/* TAB: TRANSCRIPT */}
+
+**Oliver:** Jets are great for browsers, but ahead of time. It's great for say server side because like for example, there's no startup time, there's no cold start. You just have a binary already. There's no I've gotta start the entire runtime and warm up the jet to be fast or anything.
+
+
+#### [00:00:14] Introduction
+
+**Andrew:** Hello. Welcome Tom. This is podcast about developer tools and the people who make 'em. I'm Andrew and this is my co-host justin
+
+**Justin:** Hey everyone today we're really excited to have Oliver Medhurst on Oliver, did I say that correctly? Just wanna make sure. Great. So Oliver, you are the creator of Porffor which is a, and hopefully I also said that right. Uh, a JavaScript like ahead of time compiler, which. Blows my mind. I am like really excited to dig into like how I didn't even think this was possible.
+
+So it's, it'll be interesting to just learn more of the technical details, but before we start talking about that, we'd love to just learn a little bit more about you. So would you like to tell our audience a little bit more about yourself?
+
+**Oliver:** Yeah I guess I have a very untypical developer background where I was just doing it my free time since I was like, think 11. My first full-time job was I joined Mozilla working on Firefox stuff when I was 18, and then I quit that just over a year ago now to do this full time. ~~So~~
+
+**Andrew:** This is very much
+
+**Oliver:** like most of my adult life is this project for better, for worse.
+
+**Andrew:** So you started at 11, were you like Al and got hired by Mozilla at 18? Were you already like in browser internals by that point?
+
+**Oliver:** No, so like the way I got into browsers and more, 'cause I was doing web dev like most of my like actual development stuff. Like I did some part-time like contracting things. So I just thought it was fun. And how I actually got into it was just, I think I felt a book while working on some open source thing, like me and one of the person was using and then.
+
+The the person triaging was like, oh, you can fix this. It's five lines. And I was like, oh, I don't know. Then I did it and I just got addicted to fixing more and more bugs.
+
+**Justin:** That's cool. Were you working on like the JavaScript engine? What part of the browser were you working on?
+
+**Oliver:** Yeah, so when I was doing bugs, I was just doing basically where a rifle was. Interesting. Like I think I did a lot of remote debugging stuff, then some CSS stuff, and then I settle into the dom, which is just like the JavaScript engine and the browser talking to each other. So like every, basically every API exposed in a in every API exposed in the webpage is basically Dom, like everything of documents, elements, CSS, and that's how, that's what I got hired to work on.
+
+So I settled there.
+
+**Andrew:** Yeah. 
+
+
+#### [00:02:51] Starting with Porffor
+
+**Andrew:** So for the project we're talking about VO four. How did you get into that? Like I looking at your website, it looks like your previous project was you trying to create a browser with just JavaScript and I feel like I can connect one to two where you're like, oh, I'm making this thing, oh, I want it to be fast.
+
+And then you went down the engine pipeline.
+
+**Oliver:** But yeah, I started that mostly as a joke. I think I was joking to someone in person of oh, no one's made a browser engine in the JavaScripts. Everyone. It's like it will never be actually like anything you use, but it's just fun. It's I think I got like pretty basic webpages working, but it's only, I wanna say like 5,000 lines of js, which is pretty understandable. And that's not like anything fancy, like the entire, like for example, like passing HTML is very well specified. You just read a long document, pretty easy to translate into js. So yeah, from there I was like, oh, it'd be really cool if I added a JavaScript engine too. I kind of thought interpreters so boring. Even though like I've never actually written an interpreter, but like I've seen them done like for, I think I made a toy language once, so it's used one a while ago and I was just like, oh, ahead of time. It's really cool. Everyone says it's impossible for JavaScripts. They might as well waste my free time on something people say is impossible.
+
+So it's something innovative, something interesting. And I just got sucked into doing that in my free time.
+
+
+#### [00:04:08] Technical Deep Dive: JavaScript Compilation
+
+**Justin:** Maybe to really like lay the groundwork for our listeners and people who might not be like fully like steeped in, in compiler terms. Uh, can you kind of explain how like JavaScript normally, compiles like with just in time compilation and then like how what you're doing is different.
+
+**Oliver:** Yeah. So typically today, basically everything is just in time compiled or interpreted. Browser JS engines will have, I think like V eight has free just in time compilers now and interpreter. 'cause like you can have a really fast jet compiler which will make your code like machine code level fast.
+
+And that also might take a second to compile, like react 'cause it's such a big JS file for example. And so it, it would suck if every website had a five second delay loading, just compiling. So yeah, ahead of time. It's basically you do just in time, but you don't do it just in time. That's my like best explanation.
+
+Where on the developer's machine, like a bundler or the dev tools, you just take that JavaScript, make it into web assembly or like a native binary, like anything in between.
+
+**Justin:** ~~Next. The next one, Andrew.~~
+
+**Andrew:** ~~sure. ~~So that's all and good. But like I've never used a ahead of time compiler. What are like some of the benefits versus the just in time compiler?
+
+**Oliver:** Yeah, essentially, because most JS engines are built for browsers, they're very browser orientated, which is great and like mostly translates well to server side stuff or say embedded things like there are a bunch of JS engines made just for embedded devices because you have say half a mega of RAM instead of gigs, which you would have for browser to use to every JS engine people use today is like 99%.
+
+V or like maybe JavaScript core if you're using Bon or Safari. So it is just, yeah, basically Jets are great for browsers, but ahead of time. It's great for say server side because like for example, there's no startup time, there's no cold start. You just have a binary already. There's no I've gotta start the entire runtime and warm up the jet to be fast or anything.
+
+I did a benchmark where I got AWS Lambda running with the like managed node, which is really fast 'cause it's cashed well, I think like specifically optimized for it. And I have Paul four just running like a hello world HT TP thing. And I think my call starts with I think 15 milliseconds and nodes with 200 plus.
+
+So just that demonstrates that. It's just like you are writing seal or something, but it happens to be in JavaScript. For the most part it translates pretty well. There are some difficulties doing ahead of time stuff like say I don't support eval 'cause that's dynamic, which you just can't analyze at compile time.
+
+But for now, I like haven't really hit that limitation and like I hope at least in like 2025 that most people aren't using EVA. 
+
+**Justin:** That was gonna be one of my follow on conversation or questions is I guess there are just like some really dynamic behavior in JavaScript that is just gonna be impossible to represent maybe like dynamic imports that have a variable string. Could be hard to, I know this a problem for like bundlers too, right?
+
+So if you have a variable in a dynamic import statement.
+
+**Oliver:** Some stuff which seems odd is surprisingly not that bad. Say proxies for the most part. It's just an object with some special attributes. Then there are, there's certain, there are some other things which seem really easy, which is surprisingly difficult, say closures, which like 99% of developers don't to think about, which is just like, oh, I can share variable between these two functions like nested functions.
+
+Which seems really trivial, but then actually doing that fast is its whole own problem.
+
+**Justin:** Yeah, I was gonna ask about this. So I did recur Center again. N last year and there was like a lot of people working on making their own languages or working on languages, and I was learning about like closure hoisting and specifically in Wasm world. And I know you have a Wasm compiler, so it'd be fun to talk a little bit more about that.
+
+So like what are the difficulties with closures when you're like compiling it?
+
+**Oliver:** Ches is probably my most iest thing right now, which I'm like in the middle of rewriting at this moment, just because I guess when I started I took a very naive approach of oh, I don't need like full closures. I can just do like local variables and things. But yeah, if you have say like functions nested between each other.
+
+So say like right now, if you try and access a variable in like function through, and you have a, in a function bar, it just won't, it will just throw like a reference error. I didn what this variable is. So that's one thing I'm working on, which is it's both trivial and also very hard to actually do nicely because like you could just do, oh, every like variable is in say what?
+
+What some memory somewhere, which is really easy to do, but then also very slow because. It's like a memory access for everyth thing. So yeah, a lot of it is just thinking of like existing approaches, but slightly tweaked to both be nicer from ASM because it has like interesting limitations, which are typically pretty nice.
+
+**Andrew:** So we started this conversation off with the supposition that building a ahead of time compiler for JavaScript is an impossible task. What, like, why do people think that and what was the aha moment that made it possible?
+
+**Oliver:** So a lot of people say that and still say that, which like, I don't really blame them because ahead of time it's oh, I have a really strict language like say rust or c plus and just having it. But basically the stricter you have it, the easier doing it is and the faster it is. So like basically my like dream is to just.
+
+JS works, but some stuff might be really slow and some stuff might be really fast, where there's no limitation inherently of what you can do. It's just trade offs of you can do, I know, I'm trying to think of something really nasty, but like you can have like as much code as you want.
+
+Not running the fastest, but it will still actually compile. ' cause even if it's something like. I'm running this node project and it has this dependency, which I can't remove, and that dependency is like a hundred k lines of code. Every line of that has to work well, if it doesn't have to work that fast.
+
+Yeah, I guess I never really had an aha moment. It's just that doing it and I was like expecting to come into a wall, but like the wall wasn't there and I was just like, oh, this isn't actually impossible. It's just to a degree. It's just a menial task of I have to implement all of JavaScript again from nothing and in its own like strange ahead of time way.
+
+**Andrew:** Yeah, it's almost the same problem as like the TypeScript team solved. Like they had to add types to JavaScript, the dynamic language, and like that ended up with people writing a subset of of JavaScript. I think the same thing is true here is if we got to the end of your development journey here, we'd end up in a place where it's like, oh, this subset of things, this is like the happy path.
+
+And you might support those non happy paths, but they'll be like way de optimized. Yeah.
+
+**Oliver:** So a nice thing is I support transcript natively. There's no, there's not even like a trans or. Any step in between. So like I have an opt-in mode, so like I can use those types. It's like compiler hints to be like, oh, this will always be an integer. Like just don't bother checking your like two numbers added together will always be a number.
+
+I don't have to be like, oh, are these two strings? I have to like string and cut or add a number, which is it's great because you can just get that for free. But also I trust you to have sound types, which is a trust, which is why it's often. But yeah, like I can, so like I support passing TypeScript natively and also have that optionally and yeah, a lot of it is just, I hope to have a kind of, not linter, but if you use the compiler and you do something obviously known to be bad, it just give you a warning of please rewrite us to be slightly nicer so they can optimize it better.
+
+Stuff like that where it's like. People aren't aware of the code being like not nice to compile, like something could look really nice and be horrible.
+
+**Justin:** Yeah, this reminds, this project reminds me a little bit of we talked to the, to a guy who'd like. Built doom in TypeScript types like entirely. And it was like he ended up like building a, like a wasm, like interpreter or something in TypeScript types that like, then he wrote Doom and Wasm and it's just he was like, yeah, I don't know. It just kept going until I just figured like I would hit some like thing that would say no, this is impossible. He is but like that never happened, and I feel like this is the same thing. You're just like maybe I'd hit a roadblock, but eh.
+
+**Oliver:** Yeah, because like even it's compared to over existing compilers, mine is still very dumb. There's so many optimizations I just haven't done because. I don't have to care about them yet. And it's still I think in most benchmarks I've tried twice as fast as quick Gs, which is a really popular, like c plus small, nice interpreter.
+
+And that's I have no fancy oh, I'm gonna do uh, SSA to optimize like, oh, this variable is always this number. I can just delete that. Or like any more fancier compiler techniques.
+
+**Justin:** Yeah, it's cool. So when you're doing compilation you have, like on the homepage you have two things. So you do compilation to waso and then compilation to native. Um, Are you planning to retain both of those targets and can you talk a little bit about the difficulties in supporting both and it's are they like, do they have feature parity?
+
+Are there some things that you can do in one that you can't do in another, et cetera.
+
+**Oliver:** So Wasm is my primary target and like native is a secondary, but it's more to the point of like right now I'm focusing on Wasm just because it's like my, it's like the way the to native kind of workflow works is you compile to Wasm and they have another compiler, which is Wasm to see, and you just give that to GC or clang or.
+
+Even if you have some word special compiler for embedded stuff, it should work nicely. So for now I have to, the only kind of pain is maintaining that wasn a C layer, but it's pretty easy. It is just more of I guess it's more of a bag fault right now, just because I'm just focusing on like getting awesome stuff, nicely working like first and foremost.
+
+**Justin:** Makes sense.
+
+**Andrew:** one interesting you made in building this is you wrote all of this in JavaScript itself. Most people wouldn't use that to build something like this. I happened to do a similar thing in college where I built a toy language on top of JavaScript. It was hard. Why did you make that choice and has that like yielded benefits for you?
+
+**Oliver:** Honestly, it was just when starting, it is the language I know the best and it's just 'cause like I know some bu plus, I know some rust, I know some others, but it's just like I can write list the fastest in JavaScript, so I'm gonna use JavaScript. Also, there is like the added like dream goal of one day I can compile with itself for now.
+
+That's still varied outta scope, 
+
+**Andrew:** Yeah, I was gonna ask is Porffor compiled by Porffor, but that, that would probably like
+
+have code like far too much point.
+
+**Oliver:** Sadly, not yet. Hopefully one day. But yeah, a lot of it's just it's what I know the best I can just crank the code out. Not having to care about 'cause like I think Roast is great for like production software, but like this is a like prototype and a research thing first and foremost.
+
+It's like I'm intentionally not being like, please use this tomorrow. It's like production ready. I'm just like, this is cool, but like you shouldn't use this. You should be excited, but you shouldn't rush to use it. But I'm getting to a nice stage where like people can try it and please shout at me if you have any books.
+
+But for now, it's like I expect most banks not to work yet just because it takes some matter of time. To just support all of jazz.
+
+**Andrew:** ~~It does indeed. We'll wait for, we will a, I'll ask a fun question. Oh, wait. Justin's done now?~~
+
+**Justin:** I'm in a common area, so it might be a little bit louder, but I'll try to stay muted as much as can.
+
+**Andrew:** Yeah. You wanna take the acorn question?
+
+**Justin:** Sure. You're using ACORN for parsing the JavaScript itself that's being compiled. But like most everything else you've done or a lot of it's just written from scratch. So what was your, what like motivated the decision to use that?
+
+**Oliver:** Yeah, so I guess my main thing is like passing JS is a solved problem already. Like I couldn't really anything else. To make it better or innovate that like Acorn isn't like Acorn is fast, but like I could definitely write my in person and probably be faster because I can just optimize for my use case and not care about anyone else.
+
+But yeah, it's nice 'cause right now I have it. So like any ES tree, which is like the like compatible format for the, like JavaScript app abstract syn text, treat any part of those like I support right now. So you can even use OXC. Or Yeah, so if I'm compiling, yeah, if I'm taking in TypeScript, I'll use BS Passa because they have full TypeScript support and also have a compatible syntax tree, which is really nice.
+
+So I will change the PASSA betting on what you're doing, which is really nice to have because like B support's much more features, even like some proposals which are really early, but also is about twice as slow just because it's doing more work. It makes sense.
+
+**Andrew:** But that's like one of the nice trade offs of ahead of time is where when you're doing just in time, like parsing in that analysis and loading the JavaScript is. Much a higher cost. So if you add more to that, like that's bad for ux. But if you add more compiled time, like maybe a developer will complain, but you'll still have better UX in the end.
+
+**Oliver:** Yeah I still think like compile time is really important for dx, but in my experience, i'm still worried about it, but in my experience so far, I think the longest compared time I've seen is two seconds and most of that was flying, so
+
+
+#### [00:17:41] Practical Applications and Use Cases
+
+**Andrew:** where do you think that where do you think Porffor should be used? Like I can see benefits for using it for like your website, but is that the main use case?
+
+**Oliver:** that isn't the main use case right now. I am like the. sad reality, but like the truth is like I will probably never be faster than fi eight's fastest just in time compiler, just because that has, I don't know how many millions and hundreds of people working on it because that makes sense. So my goal is just basically instead of, so like my like short term goal is just, this is a better interpreter where it's like faster and smaller and everything else.
+
+So say you're doing GS to web assembly right now. The only way you can do that is you bundle your source code with a interpreter like Quick Js or Spider Monkey, which is great because it like just works, but also your Wam binary, like at least two megabytes or something. And also it's like very slow because you're interpreting, which isn't that fast to start with in Wam, which just makes it even worse.
+
+So like in my testing, I've seen 50 times smaller sizes and speedups just because. It's ahead of time instead of interpreting. And also because Wasm is its own format, you're basically interpreting an interpreter, is, yeah not, not great for performance. But yeah. And then there's so many use cases I never even thought of, which like people approach you with and I was like, oh, that's makes sense.
+
+Say Serverless, AWS Lambda stuff. You just don't have cold slots because it's already compiled. Or say if you're making a game engine. If you want JavaScript TypeScript as your scripting language, game consoles don't let you ship jets. Don't game consoles don't let you ship jets for security reasons.
+
+So your only choice is an interpreter, which isn't great if you need five milliseconds per frame. So if you can just compile all of that ahead of time and take that down to 0.5 milliseconds. That's really nice.
+
+**Justin:** I wonder if there's a use case where you could do. Both like use Porffor for some ahead of time for like certain parts of a program and then defer to like V eight for Jet, for some other aspects. So if you could apply some heuristics to figure out oh yeah, this will just benefit from ahead of time.
+
+**Oliver:** Yeah, it's definitely say you have eval or something. My hope is like further down the line is I can just fall back to an interpreter for eval. So even that works. But yeah, for now, that isn't a priority. Yeah. There's also stuff like, say you are working on like a capture and like you want that kind of protected and not really z reverse engineer.
+
+You could compile that to m instead of just shipping like minified Gs.
+
+**Justin:** Yeah. 
+
+
+#### [00:20:13] Technical Details and Future Plans
+
+**Justin:** One other question I had I know m semi-recently this, the spec for like version three landed. And they've been working on a garbage collector inside of Wasm. Are you using that when you compiled a wasm or are you just doing, are you writing your own garbage collection?
+
+**Oliver:** Okay, so right now another limitation is I basically just don't have garbage collection right now because in my testing. It's basically just like I will test something and the first limb I reach, I'll work on that and like luckily for now, I've hit over books before garbage collection, but it's definitely like coming up pretty soon.
+
+So my hope is to have like free modes, which is like you can just turn off garbage collection if oh, this will run for five milliseconds and then die. Say Lambda, you probably don't even need garbage collection most of the time. But yeah, then I hope that you can choose between asm GC and my own gc.
+
+'cause say I was shipping to embedded. That won't support M gc or if you're going to see, I'll need my own implementation anyway, but then say you're shipping to a browser, you can use M gc or say you are shipping like a M blob to node on the backend for some reason you can use M GC there.
+
+**Andrew:** ~~Just going through the questions, finding another, where do you think we should go?~~
+
+**Justin:** ~~Yeah, maybe. Maybe you can start talking about like standard stuff like TC 39 and stuff like that.~~
+
+**Andrew:** ~~Yeah, sure. ~~So you are on some big old committees like congratulations again. You're like, you are very young and that's quite an accomplishment to be on, like the technical steering committees of JavaScript itself. So good job there. Does that work influence your work on Porffor at all?
+
+Like how do you think about browser standards? Like I, I saw on, like I saw on the website or some posts that you're like, yeah, we're not even like implementing any specs. So just see what works.
+
+**Oliver:** Yeah. So like for now, I think I have, oh yeah, I think I have zero web APIs or say, set time out or like request? Response. I just haven't done yet because I haven't gotten to it yet. But it's interesting of like just how web adjacent some things which seem integral to languages.
+
+Say set timeout. I think probably the average well, would think is just in the JS spec, even though it isn't that just most people don't know or say like fetch. Has nothing to do with js. Actually, it's like a, it's like a web thing, but it's gone to the ni. I like, it's a nice thing that people can just run that in Node or D know or Bond or like in the browser and it just works everywhere.
+
+I remember the days of installing Axios or some fetch package, which this is much nicer than, but yeah, like I would support those inevitably, but. Like the main thing now is just like the kind of run time you bought isn't there? But it's definitely like a necessary thing.
+
+**Justin:** Yeah, so yeah, I guess that's interesting. Can you make like network calls at all, or are you just like really focused on runtime? Yeah.
+
+**Oliver:** Yeah. Right now it's just the engine, the compiler. So I have a few bits of IO like file system things, but that's it. But it's really interesting that like I have FFI for example. So in theory you can do anything you want by just calling any C library, is really nice for the short term of if someone wants to do network stuff, they can just use Cool.
+
+Even though that isn't the greatest developing experience, but it's like a nice short term solution. Accidentally, yeah. Is like very important of there were a bunch of things just being on TC V nine, just being able to review things, being like, oh, like you could tweak this episode society and it'd be a hundred times nicer to ahead of time.
+
+
+#### [00:23:32] The Role of Ahead-of-Time Compilation
+
+**Oliver:** Compile.
+
+**Andrew:** Have you provided any of that feedback? Like now that you're the edit you're the ahead of time compiler guy, are you like.
+
+**Oliver:** I, yeah. I am the head of time compiler guy I think. To be fair meta have the, have Hermes and they're starting to do ahead of time stuff, but I think that use case is still like 99% react native, which makes sense. But yeah, it is nice to just be able to comment on things and it's very cool if like your opinion is respected, even if I'm not, like I have zero uses I'm shipping to, but like my opinion is still respected nevertheless. So yeah, it's nice to just be able to. Review things and just talk to people.
+
+**Justin:** I'm sure that you're like going down a non-traditional like execution path, right? And you're thinking about problems that they're not necessarily thinking about. But I'm that perspective is valuable. 'cause it's like JavaScript itself is like such a widely used language and it's only gonna continue to grow.
+
+And like thinking about these like other use case, the performance sensitive use cases in particular, which ahead of time lends itself to I think is like an important like. Important thing to think about as language develops, I think.
+
+**Oliver:** There are so many things which like seemingly would have no impact, but are like not ideal to a head of tanker pile. Say instead of a say instead of a function taking two arguments, it takes one argument, which is an object. It's like both those arguments in one. Like you need to allocate the memory for the object and do memory read and writes for that object.
+
+But if it was just two arguments, that's just like two things on the heap. So yeah, there were a bunch of things like that where like a, like even one tiny line of code in like user code could make one function run 10 times. So sadly, like I had one optimization I did the other day, which is doing like a rate up prototype dot push. Because I can take in any number of arguments. It's just a rest array internally, like a rest argument. And before I would allocate a new array every time you called it, which like works per second is fine. But then also that's a memory allocation every time and like a really hot path.
+
+I changed that to oh, it's like an internal function. I know, oh, and reuse this. I can like statically allocate this ahead of time. So like instead of allocating once per call, it allocates once. That's it. And I think it made this benchmark like 10 times faster just with that one change because allocating memory is really slow, but like sadly, JS does a lot, which you just can't really help.
+
+**Andrew:** ~~Justin, you wanna ask the winter CG versus winter TC one.~~
+
+**Justin:** ~~let's maybe skip that one. I feel like it's probably a little bit niche for this conversation. ~~So just thinking about this a little bit there, I can definitely see like some. Pretty like niche cases for JavaScript, where this would be like absolutely a perfect use case for, so you had mentioned embedded previously, like embedded, like this seems like a great target for embedded.
+
+What do you think needs to happen before or what do you need to finish before, like use cases like that, like embedded use cases could really like start being used for something like production grade or whatever.
+
+**Oliver:** Yeah, good question. I think there's basically just two bits, which is make money. 9% of JavaScript being around just work. No oh. Say I have an issue with closures. Oh, tweak this line to not use something outside the function. Just have it work reliably. And then also have a, like a runtime thing to just let you do IO to be like, oh, like anything from write this stupid open to do this network call.
+
+Just have a nice like runtime layer, which is just it's pretty easy to do because so like for embedded, you'd be compiling down to a native. So complaining to see, it's pretty nice to just have an abstract ish interface to just be like, do any of these IO things, like regardless of the operating system.
+
+So yeah, it should be, it's, I think like it isn't hard, it's just time is very limited.
+
+**Justin:** You. For Weso, are you thinking about using like weso time for like IO and stuff or something different?
+
+**Oliver:** Yeah. So Azi is really interesting and. I have some mixed feelings of I know it's a generalist thing, so like it can never be perfect for any use. So like I'll probably support it, but like it's the, I'm hesitant because since I started this, there's already been like one big version change and like as far as I know, the interface is completely different.
+
+So I'll probably just wait for that to settle first before doing that, or at least get a bit more stable.
+
+**Justin:** might be waiting a while.
+
+**Oliver:** Yeah, we'll see.
+
+
+#### [00:27:57] Security and Sandboxing in Wasm
+
+**Andrew:** so with Wasm, you have some interesting security implications. Most of the time, since everything is sandbox, that lends itself to having some nice properties throughout, are there any extra benefits that Porffor ga gains from? Does it have any extra security, like hurdles within it?
+
+**Oliver:** Yeah, the sandboxing is actually really nice because, so one of the biggest innovations with just running JavaScript on the server is like CloudFlare workers, for example, they don't have like dock containers or virtual machines. They just isolate via V eight. They just basically trust the V eight sandbox completely and isolate based on that.
+
+It's like with sm, you can basically do that but can lower down where you don't need a container per user, like a virtual machine per user. You can just have. Here is my wasm process running this Wasm. 'cause Wasm is like very well sandboxed. So like you can very easily control like both what the user does.
+
+And also just having that security like Wasm is so say like V eight has a bunch of security bugs, like inevitably 'cause it's such a big project. But as far as I knew, wasn is, wasn't, has much less just because it's less of a surface area. It's like infinitely simpler than JavaScript to actually write for.
+
+So there's much less security issues there. So yeah, just having that like layer of protection and also like layer of isolation to be like, oh, I can just run like say instead of running like two virtual machines, which might each take up say a hundred mix of round, I can run 20 processes, which each take 10.
+
+
+#### [00:29:31] Developer Experience and Tooling
+
+**Justin:** One of the questions I wanted to ask is a little bit about developer experience. How does, how do you think about debugging pro four programs? It's are you gonna try to replicate some of the tools that browsers give or like, what will that work?
+
+**Oliver:** Yeah, so definitely like I've already, I think a few months ago I wrote like a basic debugger thing, which is just like ACL I, which just you can like. Step over JavaScripts, like a kind of like very rudimentary chrome dev tools. They can just do like breakpoint and stuff. So yeah, it's definitely possible.
+
+It's just like nothing exists. So yeah, I'll also have to make that all, which is fine. It's just, yeah, I think for the start it will be not easy to develop for, but I just got like better and better over time to like stuff like debugging or even just inspecting. To just be like, oh, like this job with script compiler, this web assembly.
+
+It's nice 'cause I've had to make some of those tools myself just for like my own DX making it. So it's nice that like I have that kind of dog feeling.
+
+**Andrew:** Yeah, I could imagine there's many different tools that you might wanna build for this, since it's like almost like a blank slate environment where you can use nothing that's off the shelf, right?
+
+**Oliver:** Yeah, like I'm still surprised that this is my rant of the day of there's still no, like just, oh, I want to debug. Wasn't, there's just no way to do that of just I wanna like step by step. This wasn't. Chrome depth tools has it, but then also like I don't wanna run in the browser, but there's no just like GDP like thing, for example, for Wasm, because yeah, wasm is still like both, there's so many things to do, like there's so many tools to use it with, and also there's so little at the same time.
+
+**Justin:** Yeah it's wild. It's been around a while, but it's like the tooling space around it is like moving really slow.
+
+**Oliver:** say there's like probably five Azim times, but then there's zero ASM debug is so it's very like the tooling is in not the wrong place, but a lot of the tooling is focused on one area and another area might just be completely just empty.
+
+**Andrew:** of all just get, it's nice 'cause like I don't have to worry about that because like other people too, I just I'd even love M for the web aspect.
+
+**Oliver:** Just having it as a nice IR layer of just like I want something which can run easily and be translated to other things easily. There's basically nothing else like it. Like the most similar thing is probably like LVM and that's like much not nicer to use. That's just Nova words. So just it's.
+
+Much more just like abrasive, lower level, which makes sense. But just having ASM is like a nice, if I give you asm, you can probably do what you want using some combination of tools. Or if not, then if I give you C, you can definitely do what you want.
+
+**Andrew:** Yeah, probably the portability of Wasm there is like the shortfall there. It's like it can be in so many places. So what are you exactly writing a debugger for?
+
+**Oliver:** Yeah, it's very yeah, I think both having both WM and C is like the most possible thing you can possibly do. So that's basically why I targeted those two things.
+
+**Andrew:** ~~Justin, you wanna talk about the web playground or should we move on to limitations and roadmap?~~
+
+**Justin:** ~~yeah, we can we talk about the web playground for a minute? I think that's interesting. ~~So on the website you have a web playground where you can just write some JavaScript and run it like, so how does that work? Are you actually I guess because it's written in JavaScript, you can just in the browser.
+
+**Oliver:** that's a really nice thing. It's for the JavaScript. I literally well, it's like the website is the same repo as the project, and I think I literally just a wait import compiler, and then just works because it's in the JavaScripts. And then 'cause output's web is one, you can just run that too.
+
+And that's like the best it's like the best and most unreal, unrealistic use case of it, where it's just can just compile it. It basically acts like a legit compiler. Accidentally. Yeah, I literally just import it like index html and it just works. It's like I would not want to be anyone else doing that of say like GCC or clang in the browser.
+
+**Justin:** It is so interesting 'cause you could just post some JavaScript to an end point and have that return a wasm
+
+**Oliver:** But you could even like. It probably not, it probably wouldn't be that fast. But you could probably just like cloud flow worker for like free tier here is a wise and blob from your JS source.
+
+**Justin:** That's really.
+
+**Oliver:** Yeah, that is one very nice thing of having a J Rena js is to like, as long as you have node installed or a browser, you can just run it. I've used some compilers before. It's please compile LVM 14.5 0.6, and that takes two hours compile. And you're like, oh, okay. But it's also nice 'cause even say I wanna make a change, it's just it's just JavaScript.
+
+There's no, like some words c plus from five years ago. If you touch this line, everything breaks. It's like another. Kind of Underrated feature I never really realized until someone told me was just like, it's like I passed just over 60% of the entire like test suite for testing every spec feature.
+
+And it's like 25,000 lines of JavaScript and Typescripts. But of the ENT engines are like, like I think even quick js, it's is named Quick Js because it's quick and like it's pretty small and it's just like c plus. I think that's 80 k lines and supports, like 85%. So just being able to, just having a small thing to work on, it's just so much easier and nicer to maintain versus V eight, which is I think well over a million lines of c plus and much more.
+
+
+#### [00:34:58] Test Suites and Performance Metrics
+
+**Andrew:** Yeah, so you just mentioned it there, but you the main metric for your development so far has been like completing these test cases in this text test 2 62. So what is that that test case thing? Like, where does it exist? And what has like the road been on completing this test suite? Because I think I saw a blog post from you from a year ago where you're like, at 35% how long are we til away from a hundred?
+
+**Oliver:** Yeah, so Test two 60 was named after Ecma two 60, which is the actual J spec. So both were written by TC 39, which is the committee who assigned to make JavaScripts. So it's basically just every single thing in the spec or like almost every single thing is just tested where some tests will just be like, here is a fall loop.
+
+Does it run five times? And some tests might be like, what is the order of. Properties and this internal object and like really more niche stuff. yeah, it's like anything from that or anything like even let's say like temporal, I think it's like a solid, like 10 to 20% of the entire test suite just because it's such a big proposal they have, they like need a big number of tests.
+
+So yeah. So right now I'm at like 60% and yet my goal is probably like 90, very long term. 'cause that's where like most big JS engines now. I think the I also I will supplement, I run a website, which is just testing every J Ascension in existence against it, which I will say it's like, to a degree as difficult an engineering challenge, just getting every J Ascension working nicely in ci. Yeah. So the highest right now is Spider Monkey, which is at 98%, which is like very good 'cause they have like temporal and everything new basically. See, I hope to be up there eventually. Yeah. I hope, like I know, I feel the, like beginning of next year, I can stop worrying about the test suite and just be at like a nice stage where I'm like, I pass like over 80%.
+
+Or it's like most things don't work now because oh, someone's using node APIs and that doesn't look, versus someone's using niche JS feature, I'm just like, oh, I don't support that.
+
+**Justin:** It must be really nice though, having that extensive test suite to just like bang against, because you how many other languages do you like writing or you have a test for everything.
+
+**Oliver:** Yeah. It's like the most, it's like the nicest thing to work on because like I had my own test suite when I was beginning and I ended up just deleting it because. Like even, I think almost every commit, it's like every commit, I run it in CI testing against the entire suite, which is like 50,000 test files, even more like excisions.
+
+So I just have, it's like I get a nice diff every commit or every time I run it testing where it's just oh, five new files passed, 10 new files failed. I can just look in each one like, oh, this test is testing this. This test is testing this. To it. Like some of them are very granular, some of them are very does does temporal exist on the global namespace?
+
+Yes or no? And some of them might be like, does this specific regex feature work? Or so many more niche things, which is really nice because it's like a busing on a curve of there's an infinite to-do list. So like one of the hardest things is just prioritizing oh, I should add this JS feature next, or. This JS thing next, it's really nice to just be able to test and also have like regression testing. If I'm like, oh, here's a new optimization. I wanna make sure I didn't break any JS 99% of the time. If the test suite changes, I'll know oh, I broke something. It's like a random unrelated change. So it's really nice.
+
+
+#### [00:38:47] Future of JavaScript Engines
+
+**Andrew:** So once you get to the end of that road, are there any optimizations you want to make that aren't possible with traditional JS engines?
+
+**Oliver:** I guess a lot of it's just like parody with say vi eight's best chicken compiler. But there's just so many more advanced techniques, which I just haven't gone around to say A SSA, which is like every variable or so internally, every variable can then be assigned once where it's like on its own, isn't that helpful?
+
+But then just being like, oh, this variable is only 52. Then if someone has if this is 52, you can just delete that entire if statement. For example. There are so many things, but if you apply that to types, it's oh, this variable is always a string. I can just delete any code checking if it's a number or a big end or anything like that. One nice thing you get for free with ahead of time is you basically just get treat shaking for the JS engine and the JS run time. Say you don't use biggin, I just shipped zero code in your binary, which is about bigot, so I can just know what you use. Basically.
+
+**Justin:** Yeah, I can see that as being really cool. I also think, if you get to the point where like IO stuff is externalized, that's like pretty big for, if you're building like a durable execution engine or something, you have to make sure that all you like. Make all IO deterministic in some way.
+
+So it's like seed random and make sure that it like produces the same value on the same run or whatever. And I think there are like some really interesting opportunities to 
+
+**Oliver:** especially with M because Wasm is also completely deterministic. So yeah, there bunch of like new things, which is just like previously impossible because it's just like either econ or in V eight or like a big engine for some reason, or like that just doesn't feel a use case.
+
+**Justin:** Yeah, I mean on this topic so was working in a startup previously, or I started one with one of our former guests, Juan Kapa, working on this product called Membrane, which was using. Quick Js. And as we were exploring the space, AWS had a quick JS runtime that came out called the Light Lambda Runtime, and there seems to be a lot of people like exploring JavaScript, but like at a, this like a smaller faster scale, do you think we're just gonna see like more use cases like this, like more embedded use cases, more like need for ahead of time and besides like Hermes, do you think there are gonna be more people exploring this space?
+
+**Oliver:** think it's definitely like having this, definitely like two sides to the coin of both. So many people want to use it already and also I think so many more overlap appear and you can just use it and it just works well. Like I say, like probably every month I hear about a new use case and I'm like, oh, that makes.
+
+Total sense, and I never thought of that before. yeah, there's definitely, I think probably more people will explore in the future. But for now it's just like professionally, pull four is a gamble. Like for all I know, I will hit a wall in a week and then give up, like it's 99% unlikely, but who knows?
+
+But like I was just like in the state of my career in life where I was like, I'll do this full time, just. Do it because like why not? Yeah. Like I say, like first and foremost it's still just like a research project of what, like how far can you take ahead of time? A JavaScript, so like even if this isn't, even if it doesn't end up being like what people use in five years, like I hope the teachings from it will be used basically.
+
+**Andrew:** what are those teachings you think? Are there any like lessons that people could take from PO four and apply to like existing JavaScript engines?
+
+**Oliver:** I think a lot of it is that like I, I can't really think of one big thing, but there's just so many niche things where it's just like some things are surprisingly fast, some things are surprisingly slow. One really nice thing is say like strings. Because like I'm in a safe environment, I'm in Wasm and like I can control the chairs engine.
+
+I can just write to strings even though they're unreadable in JavaScript, like internally, say like I'm Concatenating five strings in like some internal function. I can just write a string, like a string builder, other languages instead of having to like, oh, I need to allocate five strings or do a rope string or something.
+
+I can just read and write to memory as a memory how I want. So there's just a bunch of things which like typically wouldn't be possible, but you can just do because you can do it internally, which like existing JS engines do. But like you could do that and use the online JS if you really wanted to. Like I have a intrinsic built in which you can just do inline web assembly because I use that internally.
+
+You can use that too. Like it's safe. Why not? It's if you have extremely performance critical. Good. For some reason you could just write in web assembly.
+
+**Justin:** So if you could. Change JavaScript, the language in one, in some way to make it easier to do ahead of time. What would you change?
+
+**Oliver:** Good question. I am, I'm biased right now 'cause of what I'm doing, but I would say closures because right now I'm doing that and I despise it, but. I would say probably longer term like eval with new function, any dynamics of, probably not even just deleted, but just have it optional to be like, you don't have to support these because like theoretically it's required on the spec and if you don't do it, you're not spec compliant, which like makes perfect sense.
+
+It's just like unfortunate. But yeah, I would just say most dynamic stuff. It makes sense for some use cases, but should be like extremely heavily discouraged. It's like a multitude of reasons, like security, performance, everything. Then yeah, it'd be nice to have a in a way, like a linter, which is just like this.
+
+JavaScript has slowed this JavaScript as fast. Generally, I think some stuff has existed, like I think the TypeScript team did some like mono modernization. Like checking stuff, which is just oh, if this object is always the same shape, you get 10 times faster, like property log up and V eight. it would be really cool to have something like that, like Universal, even though every JS engine works differently, so that would never happen.
+
+But like in dream, just more stuff like tooling where it's just like stuff that works between engines and it's just generally useful.
+
+**Andrew:** ~~Justin, you wanna do the last question? We'll wrap up.~~
+
+**Justin:** ~~Yeah, sure. ~~So you, you mentioned that there were like some edge compute use cases here which is like interesting to explore. Do you think like the work that you're doing here. Will be something that we see more in is this like somewhere where you actually wanna take the project or is this like specifically for like edge runtime use cases?
+
+And then I guess more broadly, when you think about this sort of constrained JavaScript space, be it embedded or performance constrained how do you just see this space evolving? Will it just be more wasm, will it be more ahead of time compilers, or are we just gonna get better smaller V eight.
+
+Know, what do you think that future looks like?
+
+**Oliver:** I think there's definitely just like I could just say it's like impossible to predict, but like I think especially with serverless stuff, like I've spoken to multiple companies who are like very interested. So I think definitely it'll be like one of the biggest avenues, especially because a lot of the time in like serverless, like Lambda, like stuff, you'll already not using that much GS to start with. It's already like smaller, faster things generally anyway. So because like Amazon already working on their own like JS engine, not, or like JS engine and runtime, but that's just like a full quick js. It's like just interpreted. There's no J or ahead of time stuff going on, which makes sense because that's like question mark millions of investment to get something that works nicely. They, I think the future, like I could see, I I see many paths and honestly, I don't know which wins. Like I could see everyone sticking to V eight and just being happy of like how things are, or I could see like V eight adapting somehow, but at least for the most part I might be completely wrong, but like J Engine innovation has stagnated in a way.
+
+I think the newest thing we saw was like VA adding another legit compiler a few years ago versus that there's no huge like big thing like VA is probably adding tiny optimizations every week. There's been no like two times performance bump in like the past few years. 'cause of some massive innovation.
+
+Like I think it'll probably remain that way. Like B eight is it's a monolith of it will probably say the same would be used for like tens of years, which is great, but I think eventually people will be, fed up in a way of the like, VA is great and it works, but like VA is VA eight. I don't like, it'll probably just remain the same-ish, probably slowly faster over years, but. I think V eight is way too, like if, like in a good way, it's way too stable on like production use to just do radical optimizations, say ahead of time, but maybe I'm wrong. Like I'm not trying to replace V eight or even quick js. I just want to be like a new, I just want like a new option of this is ahead of time and it works for like it works well for 10% of use cases in total, but in that 10% it works. A thousand times better than every other possible use for like file size or like memory usage or performance or anything in between.
+
+
+#### [00:48:08] Concluding Thoughts and Future Directions
+
+**Andrew:** Okay. That wraps it up for our questions. Thanks for coming on. Oliver, you are embarking on a large journey, a very ambitious journey, and it seems like you've made some good progress and it's very exciting. So thanks for coming on and talking about it.
+
+**Oliver:** Thanks.
+
+**Justin:** Yeah. Thanks Oliver. This is a really exciting project and I'm excited to see where you take it.
+
+**Oliver:** Which will see. 
+
+​ 
+
+

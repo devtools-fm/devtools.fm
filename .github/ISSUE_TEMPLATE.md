@@ -5,7 +5,6 @@
 - [ ] Editor Handoff
 - [ ] Andrew Pass
   - [ ] Generate Chapters
-  - [ ] Generate Clips
   - [ ] Generate Stinger
   - [ ] Intro
   - [ ] Outro
