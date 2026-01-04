@@ -1,0 +1,306 @@
+---
+title: Jeppe Reinhold - Storybook Modernization
+youtube: https://www.youtube.com/watch?v=BgydLnSwrUg
+spotify: https://open.spotify.com/episode/4j1RodEscMwkIVZ02ErGLE?si=jTNyP538QduC56fscYzt0g
+tags: storybook, frontend, react, angular, svelte, css, html, javascript, frontend, programming, coding, developer tools, typescript
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we have Jeppe Reinhold, a core contributor to Storybook working at Chromatic.
+Jeppe shares how Storybook has evolved from a slow, complex tool to a fast, modern development environment through major architectural changes like Vite integration, ESM migration, and dependency reduction.
+We talk about the Component Story Format evolution, framework agnosticism challenges, local testing improvements with vitest integration, and how Storybook is integrating with AI and LLMs through MCP servers to help coding agents understand and use component libraries.
+
+- https://reinhold.is/
+- https://bsky.app/profile/reinhold.is
+- https://storybook.js.org/
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:01:42] Evolution of Storybook
+[00:05:51] Component Story Format and Authoring Experience
+[00:13:38] Framework Agnosticism and Integration Challenges
+[00:29:19] Enhancing Storybook for Local Testing
+[00:36:43] Integrating AI and LLMs with Storybook
+[00:51:15] Future of Storybook and UI Development
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Jeppe:** Maybe you can hear that from the way I talk about it, but it just feels so magical when you see it. I just did this like a, an hour ago, and I, needed to test something out, something completely unrelated, and it replied to me, here's the stories that I wrote for you. they just worked. And like there was play functions and all that jazz. because it's now pulling in this information from the MCP server.
+
+**Andrew:** Hello, welcome to Deb Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Ype Reinhold on with us, uh, of the chromatic team. We haven't had a conversation about storybook since 2021, uh, like episode number five. It was a long time ago. So we're really excited to, to revisit this topic and, uh, yeah, just figure out. Where the chromatic team is and what's new in the storybook world. Uh, but before we dive into that, yep. You want to give our audience a little bit of an intro?
+
+**Jeppe:** Yeah, so I'm, uh, I'm Ybe. I, ~~uh,~~ have been at, in the store book team for three years now, um, working at Chromatic. So Chromatic is a company that f funds and powers the store, book team. Um, and, uh, so I'm a core contributor to storybook. I work in open source every single day. It's a lot of fun. ~~Uh, ~~I'm from Denmark and uh, I joined just when Storybook seven was in the works. And if anyone that knows storybook, they know that this shift between storybook six and seven was sort of two different planets. So that was a lot of fun. Um, oh yeah. So that's me in a nutshell.
+
+**Andrew:** Sweet. 
+
+
+#### [00:01:42] Evolution of Storybook
+
+**Andrew:** So yeah, a lot has changed in the world of storybook since we last talked, uh, to a member of the storybook team. 2021 was a very long time ago, and there's been six major versions since then, and ~~a lot. A lot of, ~~a lot of things have changed in those. So like back, back then, like, uh, builds were kind of like a, a hard thing.
+
+Uh, they, they weren't very fast with storybook, kind of the whole ecosystem was slow, but storybook's done a lot of work to make that experience far, far better. Like I start up storybook every day and I'm amazed at how fast it starts up now. It's almost instant. So can you tell us a little bit about that journey of how you as a team took storybook from what it was to what it is now?
+
+**Jeppe:** So I think, um, I think the, the speed boost definitely started with the shift from web pec to feet. ~~Uh, the,~~ the vite integration was originally a, a community integration maintained by, uh, some awesome folks. And then we saw how important that was. We saw how fast that was, so we brought it into store core and made it ~~a, ~~a, a core experience.
+
+~~Uh, so,~~ so you can. Use store book either with Webpack or Vite today, but we are trying to push everyone towards the Vite experience. Even, even if you today have your, your app, uh, built with Webpack, we still suggest that your store book is built with Vite because it's just so much faster and there's even more features now.
+
+It's not just about performance anymore, it's also about features that will come into later. Um, so that was of course the, the, the big shift. Um, and then we just had a, I think. There was just a lot of, of feedback from storybook users on Reddit and Twitter and whatever, um, about storybook being too slow because, because the applications were starting to get fast, but storybook wasn't keeping up.
+
+So that was like super annoying to, I should say, startup storybook. So that was just like a huge focus on, from the core team, like, okay, we need to fix this. This is, this is bad. And it started with the, with. Cutting, like making things more lazily loaded so that we can start up and then immediately show you something and then starting to render, and then that turned into also slimming. Store book down, making it smaller because that's smaller, is faster. ~~Uh, ~~and just keep doing that over and over again over multiple, uh, releases to where we are today, uh, which is different. And so I think ~~the, ~~the shift was also major in that the store book core team grew a lot. So back in 2022, it grew from being three engineers to now we are eight. Uh, with the managers.~~ Um,~~ and so we just had a lot more, uh, manpower to, to focus on these nitty gritty details that the users love instead of just pushing out feature as a feature,~~ as a feature. Um,~~ so yeah, that was like the high level answer to this, to the performance boost,
+
+**Andrew:** ~~Oh, go ahead.~~
+
+**Jeppe:** ~~Um, ~~so one of the, the, the things that we've, we've done for the past few years has been the, the. The size. We started with store book eight, I believe, uh, where we were like, okay. Starbucks is this massive beast built in this old way of thinking. I mean, it wasn't old at the time, but if, if you, if you've been around j for a few years, you know how babble works and how Webpac works.
+
+It's a lot of, a lot of, of, of packages talking to each other. And stor was built the same way. 'cause that was how you built big systems back then. But then. new, new, uh, packages showed up like vite and others. It showed that you can do this with just one package. You don't have to have a gazillion imports all over the place. ~~Uh, ~~and so we started to really take that in and slim the store book Core down to be just like, okay, uh, what if Starbucks is just the bare minimum packages that you use or that. Cuts the size in half. What if we really look at our dependency tree and the dependency sizes, and then we can see, oh, we can actually remove 90% of the dependencies that we have, um, and doing that over and over again.
+
+Keep, keep hacking at the, the next low hanging fruit, uh, is where we are today with storybook 10 and, and the ESM only migration that we've just done.
+
+
+#### [00:05:51] Component Story Format and Authoring Experience
+
+**Justin:** So one of the things that's really striking to me is like how much the authoring experience for writing a story is. So for anyone listening who hasn't like actually used storybook, which I think maybe is a good, uh, frame of reference here, it's. This project where you sort of define a story for your UI component, react components, fault component, whatever it may be. Um, and you can, you know, add a lot of plugins and, you know, have like controls for example, to control like prop, different prop values or like display component in different states or give docs or whatever. Um, and so for The last several
+
+Major releases. Uh, there's been this, uh, c component story format.
+
+~~When, ~~when was that introduced
+
+**Jeppe:** over three years ago, maybe
+
+four or five years ago.~~ yeah. ~~
+
+**Justin:** Yeah. Um, so, so that's been a, a, a big thing, uh, um, for a while. So let's just talk kind of about like how that's evolved, because I'm sure that's like a part of the performance story as well, right? It's like how you actually author a story, like matters a lot in terms of like data loading and everything else.
+
+**Jeppe:** Oh yeah, for sure. So, so the biggest shift was definitely the change from storybook six to storybook seven. It in terms of, of the component story format. ~~Um, uh, and,~~ and the, the initial format was like these imperative function calls we would call like. Stories off, and then you'll write whatever code you wanted to to register new stories. And that was a great flexible authoring experience, but it was impossible for us to optimize. We couldn't, we couldn't look at that on the server side and just be like, oh wow. We know exactly what stories you have so we can immediately spin up those. You would have to actually execute your code, and that was extremely slow when you had a lot of, like, when you have a thousands of stories and so. That's why the component story format one, two and, and later version two and three came into play was essentially how can we define A, a JavaScript, well, a set of JavaScript constructs that, that we are able to, in a performing way, analyze upfront using static analysis, uh, to make it so that we know exactly what storage you have, uh, without even having to execute your code. And so that's where the, the, we call it CSF, uh, comes in. And the latest, uh, CSF three that everyone is using now is really just like, well, you have to export your stories as an export. Cons something. And because in JavaScript that way of writing is very restrict, um, restricted. You can't dynamically export anything from a module.
+
+You have to statically export something that really helps us out because that means that. You're limited in the way that you write the stories so that we can analyze them and, and show them immediately. ~~Um,~~ of course, like these changes in format, ~~uh,~~ especially for teams that had a thousand, 2000 stories was a big shift.
+
+They had to migrate a lot. ~~But,~~ but that just really pushed us to write these auto migrations, which is like one code model run. And then you really started~~ to,~~ to use these new formats, um. Do we should, should I introduce a bit more about what storybook is, or just assuming that people know what it is and what stories are?
+
+**Andrew:** Whatever context you think is, is good. ~~So, uh, we, we,~~ we like to explain everything from like the base ~~for~~
+
+**Jeppe:** I see. I think it's important to note that Storybook is like this companion app that, that you built alongside your front end. ~~So, so,~~ so you have your application in xts or whatever, and then you have storybook on the side. And, and storybook is a way for you to develop your components in isolation. So ~~you, you, you,~~ you write these stories, which are these files that we just talked about, which references your components and so that you can see how does this card component work? Without being in the application itself, but just being isolated so that you can work on the props specifically, or you can work on testing the component without it being in the application. So it's very much like, like a, a unit view of your components. And then you can, a component is whatever you define a component to be.
+
+So it can also be like multiple, it could be a, a leaf button or it can be a full form or even a page. An an, an XTS page is also a component behind the scenes. Uh, so, so storybook is that workbench, and then you can use storybook to document your components. ~~Um,~~ and you can also use storybook to test your components, which is something we've, we've improved a lot over the past few years, uh, with the new storybook testing. Component testing, we call it with V test. Um, and, and what I think sets storybook apart from a lot of the other tools is that store book very visual because your UI is visual, so you want to use storybook in the browser where you can see the component. Uh, you don't want to just be in the terminal, uh, seeing locks about what happened.
+
+You want to actually see, uh, and interact with ui. So that's storybook in a nutshell, I guess.
+
+**Andrew:** Yeah. Yeah. Going, going back to not that, uh, in my current workplace we have a mix of like, things are in stories and things are not in stories. When things are not in stories, it is like, it's pulling teeth to like even try to understand how do I get this thing to display in the ui? That, that alone is like sometimes jumping through hoops.
+
+~~Uh.~~
+
+**Jeppe:** I think the classic example is, is when you have this, uh, you have this form that opens in a modal. And you are, you're doing development on it, but like to get to that state in the application, you have to click four buttons. And whenever you reload, you have to click these four buttons again to open the modal.
+
+And that's just super annoying. Whenever you, you, you want to iterate on your ui, right? And so if you put it into storybook, you, you control the state, you control what it does, uh, so you can immediately see the changes. I think that's the, like the, the flagship use case for that.
+
+**Andrew:** So that ESM journey and like the changing of the API really enabled a lot of stuff. Like, uh, I don't think you could do the same type of testing if you were going in that, like the imperative, like. Side Effectful way that you used to, uh, do stories. So, uh, what are the different types of testing that got enabled by moving to CSF?
+
+**Jeppe:** ~~Um,~~ so again, ~~this,~~ this ability to being able to, to seeing the stories upfront was a, has been a big boost for us. Um, if you look at playwright or if you look at, at, again, even v test, UI mode, which like, they're great teams, but the way you write test is imperative. So when you open up playwright. It doesn't know what stories you have.
+
+It has to like load all your code or it doesn't know what test you have. And so, and then it loads your code and then it sees, oh, these are the tests that you have written. And so then you can see it in ui, right? Whereas for storybook, we immediately populate the sidebar with all your stories and, um, because we, we do that analysis upfront, and, and that same holds true for testing. So because the tests are visible in the sidebar, immediately you are able to. To just like click that you can, you can click the context menu of a story and say, I wanna run tests for this specifically. And you do that. Uh, or you could do like for a whole component or everything. ~~Um,~~ and I think that's, uh, that, that's just like ~~the, the,~~ the powerful, uh, ~~of, of,~~ of the format. Uh, we work on a new CSF. Factory functions we call them, um, which is slightly more imperative, but, but not, uh, not in a way that it, it breaks down anything that just said, but it just improves type safety for your stories so that it becomes more like these, this factory pattern, the biller pattern where you define your meta, uh, as a function call.
+
+And then from that you define your stories as function calls, um, so that you have, uh, you, the typing system, the type two system knows exactly. Which, uh, properties are available in the story and then can give you more hints, ~~uh, ~~even from add-ons and such. ~~Um,~~ so it's sort of like we're getting into this hybrid mode that still gives us the, the performance abilities without giving you the constraints of, of the language itself. ~~Um, yeah.~~
+
+**Andrew:** S
+
+
+#### [00:13:38] Framework Agnosticism and Integration Challenges
+
+**Andrew:** o one of the things that Storybook does is it's not just for one framework, it's for like basically all the frameworks under the sun. So like that must present a whole host of challenges when it comes to like trying to create that format so that it serves all different use cases.
+
+**Jeppe:** Very much. Uh, so we try to make the format itself to support, uh, all the, the frameworks because we want storybook to be framework. As an agnostic, it's not always doable. Uh, with React, you have JSX, so in React you can write your components directly in. Your JavaScript, but for a view you, you probably want to use like view components in a view file where you can't define JavaScript next to it.
+
+The same for spelt. And so there's these, these, um, these other frameworks where you, you actually want to use, ~~uh, the, the,~~ the view or the spelt language. But, uh, But, that doesn't really play well ~~with, ~~with this, ~~the, the, the,~~ the components or format. And in those cases, uh, for selt, we're, we're maintaining an add-on called selt, CSF, which is essentially what would it look like if, if you were able to write stories in selt? So you, so instead of writing JavaScript, you, you write a SELT component and, and then ~~you,~~ you define your mark, you all your mark markup,~~ uh, as,~~ as these cell story components. And then whatever you put inside them will be rendered. Um, and. We got there because essentially some of these PHE constructs, uh, like snippets or, or back when slots with this thing, they were like almost impossible to support impure JavaScript.
+
+You had to be in this PHE component. Um, and so the authoring experience is just way better when you're in that framework, native language. Of course, that presents problems because it means like when we're developing these new factory functions for CSF, we have to build. Do them first for JavaScript and then also for sel.
+
+And then also, uh, even for View, like there's a community, I dunno for view as well. Um, and that's, that's more work than the student wants. ~~Um,~~ but we also know how big of a difference it makes. Like I, I per, I, I write a lot of SEL code and I would not write pure JavaScript, uh, stories in SEL because that's just a bad experience. So sometimes we just need to adapt to the language. ~~Um, and,~~ and that's just how it's.
+
+**Justin:** I think this is an interesting point and I'm gonna like pull it back to like this historical context. I. We were sort of talking earlier about like how, you know, annoying it is to like see a component in a particular state and like back in the say when Webpac was sort of the height of the tools that we're using and you know, there weren't any many meta frameworks.
+
+You know, a lot of times when you were like building like a full stack React app, you were kind of cobbling sort of things together. It wasn't easy. Without like someone who's like an expert in frontend infrastructure to say, oh, I'm just gonna add like a new sub app here, or like a new route that's like isolated or whatever.
+
+It wasn't like, yeah, just create a new file. No, it was like really hard. And you know, at the time, storybook like came in as like, we'll be this sidecar, you do this format, write your component, how you always write your component. We'll render it in this like nice little ui. Um, and yeah, there was like an integration cost, but it was like a one time. Did it, and then, you know, whatever. Um, the world has changed a lot. Uh, now a lot of the front end world is sort of ruled by meta frameworks. So the next js, the nos, the spelt kit, you know, astro, et cetera, et cetera, et cetera. Um, spinning up sub apps or like sub routes or whatever is like a lot cheaper.
+
+Like, so displaying components, uh, in, in a lot of ways is a lot cheaper. Um. So I, I'm curious like how the, the change of the sort of like state of the industry and how the change of the state of like how we build UI has like impacted like spel or the storybooks sort of adoption. 'cause like as you were saying, to get people from different communities who like build components in different ways into using storybook, you have to sort of like meet them where they're at in all these different use cases.
+
+And that seems like a really hard problem. ~~Um. Um,~~ on the sort of like headwinds of people just being able to throw together new UI really easily. ~~Um. ~~
+
+**Jeppe:** ~~I th I, ~~I think I, I definitely see what you mean. I think we've all. Been in that place where we just, ~~we, we,~~ we added that, uh, slash test route and we just dumped in components and, and just used that as a way to like, look at my components, right? Uh, un until we got to the place where a lot of our users are at where like, okay, this is not. Sustainable anymore. I need to have a more, ~~uh, ~~um, a structured way to, to have a catalog of my components essentially. And then that's where they read for storybook. ~~So,~~ so the value of storybook is not necessarily the, that is just set up and works because as you say, that is also true for meta frameworks today. ~~Um,~~ the value is more about having this. This opinionated way for you to, to see your, and document your, your components, um, especially in the era of LLMs, where that's even more important. ~~Um,~~ but ~~it, it,~~ it has also forced us to, uh, to integrate more deeply with these matter frameworks that we have. We have store book slash next as a package. When we detect that you are starting up storybook in an next Ds uh, thing, we immediately just integrate with that. We pull in all the configs that you had in your next DS. We pull that into storybook as well so you don't have to redo all that. We do it for V as well. We do it for spell kit. Um, uh. React native, all that.
+
+Right?~~ And, and,~~ and that's necessary now because ~~you,~~ you as a user expect that when you start up, when you use A-A-C-L-I to create a a, a project, it just works from day one. And so start, we've had to adapt and also do that. Uh, so you don't have to configure VE and web pack all the time. ~~Um,~~ there is still an upfront cost and that's, I think that's our biggest issue today we have with store book is that, um, getting to those first. Five or 10 stories takes some time because like maybe you have in React, you have like a global auth provider that all your components need. And of course that's already set up in your next S app, but it's not set up in store book. And so you need to set that up. And then you also need to set up your theme provider and, and like there is some upfront cost and we are hoping to improve that, uh, sooner or later, but, but once you get over that initial bump, then. Just spitting out story after story is, is becoming way easier. And I think that's the, um, I think that's the selling point. Um, it also, because so many people use store book, like across teams and companies, like when you switch from company A to company B, you know, storybook. And so you take store book with you. And so you can use storybook to collaborate with your designers as well. And because they also know storybook, um, and I think that's, that's, uh, that's also one of the. The upsides of using store books instead are like building your own bespoke component catalog. Um, but of course there's also always trade offs.
+
+**Andrew:** So I'd love to dig into like the optimization of storybook a little more. There's like two really big pieces in there. There's the ESM story, uh, and there's also the I or the E 18 E story, uh, how you guys eliminated all those dependencies. Maybe let's start there. ~~Uh, you guys,~~ you guys boast some like, uh, crazy numbers.
+
+Like you posted the graphs everywhere. Like it went from like a spider's web of half the MPM ecosystem down to like. Nothing. So like what were the things that you eliminated? Like what, ~~where,~~ where was the web of dependencies coming from?
+
+**Jeppe:** ~~Right. So, so we, ~~we early on started a collaboration with the EATE community, uh, to like figure out where do we begin, right? And then we had this huge project, multiple projects actually, to figure out what are our issues. And, and it was, luckily for us, it was a couple of main, um, dependencies that, that, like contributed to that huge spider web graph. It was expressed. Was like over half of that. It, it's graph, but that also was a very integral part to our, our our work and our code and architecture. It wasn't just like, oh, now we just need to pull out express. It was actually a lot of work to, to find a replacement for that. Um, and, and then, um, there was a lot of, I guess, legacy compatibility.
+
+Um. We would, in the old days, we would like add a bunch of dependencies to make sure that your browser bundle worked fine, both in node and in the browser and such, which doesn't make sense to do anymore in 2025. So we removed those things, which was of course breaking changes, but nobody really cared because they had already moved on. ~~Um, ~~it was, uh. I can't even remember what the other big ones were, but like there was like two or three big dependencies that once we removed those, the, the spider web of, of dependencies really shrunk and there was just like hacking away at each. Uh, so that was, that was about the, the dependencies size, uh, decrease. But then there was also in general about our, our package distribution size. So the bundle code that we bundle in, uh, and of course our dependencies. And so, um, uh, We consolidate a lot of our packages into one, um, which, which meant that we had less duplicated code. ~~Uh, we, uh, ~~we removed CJS, uh, just recently from storybook 10, which actually brought down the size considerably because we had already optimized storybook for CJS and ESM and let dual, uh, distribution.~~ Um,~~ but even still removing CT s from that part ~~was,~~ was a big chunk of. Stuff removed and we actually took that as an opportunity to say, okay, Starbucks actually so small now that we don't have to, uh, minify it anymore. And maybe that's like a very nitty-gritty detail of only the, the most hardcore power users.
+
+But Starbucks code being minified was always a shorter debug, not just for me as a core maintainer, but for the US user. Getting an error in storybook, and then it's like, okay, what's going on? I have no idea because I can't read this code. So we unmodified our code, which of course added kilobytes or megabytes back, ~~but, ~~but storybook was still smaller even though we, we did that. Um. Uh, and I, I, I can't right now, remember, what are the other big contributors to the size? I know that there was something with prettier, we optimized. We also had babble five times, which we were able to say, okay, maybe just have that half ~~of, of,~~ of one. Uh, and so it was really a lot of technical depth getting cleaned up as well, uh, and just focusing on it.
+
+**Justin:** Yeah. And ~~the,~~ the blog post where y'all talked about this, this was like the storybook nine release, I think you talked about like pre-B bundling. ~~Um,~~ just like, like pre-op, optimizing a lot of the dependencies.
+
+**Jeppe:** Yeah, ~~so,~~ so we, we had actually done pre-B bundling for many years, but now we were being more explicit about looking at East dependency and saying, okay, is this prefund? And it's a, it's a. In this certain circles the hot topic, should you pre-B bundle your your package code or not? We decided to do that because we saw that a lot of the dependency we had our users would not have because they were like very library specific, so. That de-duplication that you lose when you pre-B bundle. ~~Um,~~ as a package like storybook, we wouldn't have that de-duplication anyway because they don't have the same packages. But, but, but you could look at, um, let's say low dash and that would whether be like four megabytes of download. But when we pre bundle in the four functions that we were using, uh, that became 10 kilobytes and just doing that pre bundling all over again, uh, for every single package that was possible also, like shrunk down the size, notably. Are some package that you can't pre, you cannot pre bluntly is built 'cause it's a native dependency. ~~Um, and,~~ and that's like totally fine.~~ Uh uh,~~ but so, so it's not just like we had to be really testing everything out whenever we change one dependency from being, uh, a regular dependency to depend,
+
+**Andrew:** N not to mention going from CJS to ESM, that must have been a journey also like. We're, what are we like 10, 15 years into the CJS, the ESM, uh, migration. Uh, it's, it's still not simple. So were there any hurdles there?
+
+**Jeppe:** Oh, there was plenty. ~~We, we,~~ we, it was like a more than a year effort of like trying out, just like spiking, can we do it like this? Okay. Yes. Then we wrote a long document of learning and then six months later, maybe we could do it like this, and then, oh, learnings more. And then finally we feel like, okay, now we actually know what we can do here.
+
+And so, so it was like an eight week project of two. Full-time engineers, uh, just getting rid of CGS. ~~Um,~~ and it was a lot of like, uh, importing, uh, this module over here now has to get a path. 'cause on windows, uh, you can't do absolute path anymore. Like all of these very, very tiny annoyances. That we will just run into day in and day out.
+
+I, I don't envy anyone doing that work. ~~Um,~~ but we got there in the end, uh, and that was, that was pretty amazing. We are lucky in that store book is the, is the, is the runtime like you start store book. CI Starbucks, not something that you put into, uh, someone else. So we control, uh, if you start up as CTS or if you start at CSM, and so we can really take it from there and, and just go down and like when you will load your code.
+
+We load the CSM and then we keep loading everything in CSM and then finally the whole tree of modules. We don't have any cts in there anymore. ~~Um.~~ But there was a lot of, like, I, I have too much knowledge about CGS. No one should have that amount of knowledge because like, it's just so annoying. I, yeah.
+
+**Justin:** I am glad you're pushing on it though, 'cause it's like, it feels like more of the ecosystem needs to get a little bit aggressive about it. 'cause you know, we're in our, it's like definitely kind of like the Python two to three sort of like era. But like at this point, haven't we been going longer than the, you know, it's like, it's still, you know, it's still hard to see the light at end of tunnel there.
+
+~~And so, uh, I am,~~ I'm, I'm very grateful for no, for the no team, uh, adding support for require ESM, 
+
+**Jeppe:** uh, to no 20. That they, they did a huge amount of work, not just adding support in no, 24, but then backporting it to 22 and then backporting again to 20. And I like that backporting work that they did to something so fundamental as module loading. I can't imagine how hard that must have been. But the fact that they did it means that now any package can market to ESM only without breaking anything. 'cause Node supports both ways. Uh, and I think that's a huge, uh, opportunity for everyone to just go ESM please now.
+
+**Andrew:** Yeah, it's, it's never been easier since, since the introduction of those flags.
+
+**Jeppe:** Yeah.
+
+**Justin:** ~~Maybe we can, uh, shift conversations a little bit.~~ So, um, storybook has been, you know, since its inception, this like sort of playground for your components. ~~Um,~~ and then, uh, chromatic, the, the sort of company funding the development. ~~Um.~~ Is, uh, a company that like helps enable visual snapshot testing, which I, I wanna talk about that soon.
+
+But that has also, that was like a very early part, and like a very obvious part is like, you have these stories, you have your components in all these different states. You can like, you know, test like screenshots of them, basically between versions. And there's a lot you can learn from that. But more recently you've done the v test integration.
+
+So you have this like first class, like. Testing sort of behavior and inter interactions, um, inside your stories. And I'd love to just hear more about like, how that came along. Like how, I mean, what made it feel like, oh, well, storybook's, like the obvious place for like these tests to live. ~~Um,~~ yeah. Just tell us a little bit more about that story.
+
+**Jeppe:** ~~So, right. ~~
+
+
+#### [00:29:19] Enhancing Storybook for Local Testing
+
+**Jeppe:** So I think it, we had a, we all had a feeling for a very long time that storybook was great for testing your components. We, we all used it chromatic, which is like. The place where you test your components. But, but that was always in ci it was in the cloud, right? You also wanted to test your components locally. Uh, we've had the test runner for many years, but it, it started to get chunky and clunky. Uh, the test runner is this, the, this, um, uh, separate CLI that we are building that, that you can use to like, run on your stories and then that will test your stuff, but it's, it's kind of slow. And so what we also saw. Was that no matter what we said, no matter um, what we did, people will always say, oh, storybook. That's the thing for the science systems. We knew that that wasn't true. Like we, we knew that Storybooks also works for your application components on your full application. Because we saw one of our, like many of our biggest users and teams, they were using Storybooks successfully to build out their whole sites. It's not just for the science systems. I mean like, why won't people understand this? Well, what is it that they, that they want in, in education development that they. Don't necessarily need in, in design systems. It's not documentation because you don't necessarily need to document your, uh, login page, right. Uh, but you want to test it. And so we were like, oh, we need to improve the testing experience of storybook. And we saw ~~that,~~ that all the testing tools out there, they were very, as I said in the terminal. So whenever ~~you,~~ you have your UI and the test is failing, what you get is a, is an H tml tree, and it just says. This doesn't exist. And you're like, well, what do I do? I have no idea. What do I do? But in storybook, you can actually just interact with it. You can see, oh, well of course the button doesn't exist because you did, you submitted the wrong data, whatever. And so you edit it. So through storybook as a debugging, uh, platform, it's just. Uh, great. We think. And so we added~~ the, the, the, ~~the whole component testing setup, which is essentially, uh, an integration into Vite test. We're, we're collaborating with the Vite test team and they're awesome guys, where you now have like this small play button or run button at the bottom of storybook ui, and when you press it, it tests all your stories.
+
+It navigates through all the stories, like behind the scenes, uh, and runs the. The interaction test or the play functions and then shows you in the sidebar you had five failures.~~ Um. And,~~ and you couldn't do that before, before you had to manually go into a story, see that it was failing. Next story. See, it was failing, right?
+
+But now you can do this in a matter of seconds and you can even enable the watch mode. So it's instant, right? Um, and when we tried that on our own work, we saw like, okay, that's actually pretty magic, and it's actually also pretty fast. Uh, and it, it works in a real browser. It's not just Dom or something simulated. ~~Um, ~~so that also makes it. More true. And then we added accessibility testing into it. So there's like a, a checkbox if you enable accessibility, you're not just getting failure filling test, you're also getting accessibility violations reported in all your stories. Uh, and that's also a huge boom for our users.
+
+~~Uh,~~ usually ~~when,~~ when they do this and they have 500 stories, they'll have. 5,000 accessibility violations. That's the unfortunate state of our industry today. Uh, but at least it's a number that they can hang on and make, get smaller and smaller and smaller. Uh, and we see them doing that. Uh, and so with that integration, we also added the visual testing integration so that you run chromatic in that same, um, experience. It just ships your stories to the cloud, takes the snapshots, and then get it back. So you get like this snapshot of your, your stories in the same environment, uh, as ever. ~~Uh,~~ and then coming back to what I started saying was like, it's actually a very viable, um, tool for your application developers to start putting your components into store instead of just having your application.
+
+Only because, because you are, uh, with your application, you are. You are constrained to using playwright as like the end-to-end testing, but that's like slow and getting all to, you probably only test the heavy states, but when you have it like on a component level, it's way easier to to write up all your failure states and, and get better test coverage essentially, uh, from that. Uh, and that's it with nine for any vet based frameworks. And that also pushed us to say, okay. Oh, a, a huge part of our user base is next year, uh, but next year is not built on v what do we do? We build Vite Mock of next year so that our users can migrate to that next year's V framework and, uh, they're pretty happy about that because it's also way faster.
+
+So win-win, I guess.
+
+**Andrew:** So one hard edge to storybook testing that I've met is there is only one play function right now. Uh, if I wanna write a test, uh, and it's different, uh, from the play function, I have no options really. Uh, other than to create another story, copy, copy the entire thing, or do a whole bunch of structure stuff to get me to a place where I'm like just testing this one thing and then multiple ways.
+
+Are you guys planning on adding anything to help with that?
+
+**Jeppe:** Yes. And we call
+
+it dot test. Uh, so essentially, uh, the factory CSF functions that I talked about later where you had like, uh, the meta call and then you can call, uh, the story and add in properties. What we're adding is that on a story you can call test, uh, and then. There you can say, I, I want to run these interactions.
+
+So you define a story that is, this is the modal with the form, but you, maybe you have five tests for that modal form. So you like write, uh, the call test function, um, five times with different interactions. ~~Um,~~ we're still not 100% satisfied with how that API is shaped. Uh, but it is, uh, out there if you're using React, you can use it today.
+
+It's experimental. Uh, and we are not gonna. Take it away from you. We're just still trying to figure out what's the best ergonomics for you, essentially, which is why it's, it's experimental. ~~Um,~~ not necessarily because it's unstable or anything. ~~Um,~~ and so what that gives you also in the sidebar we have lot of stories, is that now the story is not the lowest level of component.
+
+Now each story has a test. Uh, also if you want multiple tests for a single story, um, because. As you said, it's annoying that you have to write five or 10 stories just, which essentially shows the same thing, but they assert differently and that's just annoying. Right. Why isn't it just a test and it is, uh, coming very soon?
+
+**Andrew:** Yeah,~~ I'm,~~ I'm looking at one of the discussions on the test mess method for CSF factories and the, the fact the factory function market improvement. ~~Uh, I've,~~ I've said for a long time that the best type script is no type script. Uh, you shouldn't see it. ~~Uh,~~ and this really gets you over that line, like not having to, uh, satisfy meta or do any,
+
+any weird TypeScript gymnastics to get it all to work.
+
+That's, that's a huge win.
+
+**Jeppe:** Yeah, just the fact that you can just, like, you import something from your global preview and then you just get the types from that because that's how type three works. Uh, I think that's, uh, that's gonna be great when, when that gains more adoption. We're working right now on, on expanding the adoption to other frameworks that react. Um, so that should hopefully be stable soon.
+
+**Justin:** That's definitely lighting. 
+
+
+#### [00:36:43] Integrating AI and LLMs with Storybook
+
+**Justin:** Uh, I wanna shift the conversation again, so. We've talked about how storybook has like lived through the era of sort of JavaScript maturity of, of the maturity of how we build, uh, web products. But we're in a new era now. Um, how we write code is changing and how we think about code is changing with the sort of like advent of AI and LLMs and, you know, this sort of new strange reality we find ourselves in.
+
+So, um. Storybook is obviously you, your team has proven yourself to be very adaptable. And how are you thinking about integrating into this new world with its new tools and its new paradigms? It's like, what are, what are the opportunities that you see? Um. Yeah.
+
+**Jeppe:** ~~Um. ~~We've been thought, we've been thinking a lot about it. I think we are slow out of the gate. When, when talking about integrating storybook to to LLMs, um, last year everyone was out of the gate and we were still thinking like, what does this mean for storybook? Uh, and we didn't really know. And then we, we kept getting more and more. Demand for it. Like, uh, big customers of Chromatic would ask us repeatedly, when are you doing integrations? And we'd also have a bunch of users. And then in the end we saw that users were just building the integrations themselves because they were tired of waiting on us. And, and then we, during the summer, uh, this year, we were like, okay, we have to do something. Uh, because now they actually want it. Right? It is not, it's not just a hype cycle anymore. Or maybe it's, but it doesn't look like it's right now. ~~Um.~~ And so what we've been thinking is that we really want to integrate with where the users are, and so. Our users are engineers and developers. They're using coding agents today. Uh, we're not gonna be building our own storybook coding agent because you won't be using it. You will be using cloud code or copilot or whatever. And so we want to integrate, integrate with that. Um, and the way you do that today, which I is something that I, I think is, is pretty cool, is you do MCP servers.
+
+So we're building an MCP server for storybook as well. Um, and, and from initial reactions, it's pretty powerful. Essentially the biggest problem that people are having today when they're building ui. Um. With their LLM or agents is that their agents are ignoring their system components. When you ask the agent, can you please build me this, uh, e-commerce, uh, page, then they'll do that using base tailwind classes.
+
+And next is it'll completely ignore your components. Uh, a lot of the time, especially if those components live in a design system package that is. Not in your repository, but just like, uh, dependency, uh, it, it will often not know to use the components directly. And so that's what we keep hearing is why can't it know to use the, the thing that we've already built.
+
+We spent years on designing it in Figma and on having our design system teams. Why can't it just reuse that Please instead of going off the rails. Um, and so that, that's the first thing we're solving. Uh, whereas, um, if you're building your design system or anything in a storybook, um, and you've done that for years, what you've done essentially is you've poured in a ton of information into your storybook. You have all your components in there. You have all your stories, which are essentially examples of every component. Uh, this button renders these five different ways. You, maybe you're writing docs in MDX. To document for other humans, uh, this is how to use my components. And so you, you put all this information in the storybook, but you've never been able to get it out again. And we've, and like even if you dis, if you, if you disregard the whole MCP stuff, that request from users has always been there. Like, I want to get the information out of storybook because I want to show it somewhere else on the docx website or whatever. So that's our first step is. It we're, we're enabling you to get that information out.
+
+We're doing what we call component manifests. So now when you build store book 10.1, which was just released a week ago or two, what you also get if you enable this feature is that you get this JS file out that is essentially all of your components with usage, usage examples from the stories, not just CSF. In the js, but actual, like we're converting the CSF to be a react component with JSX and like as a component, um, and all of the descriptions. So if you have JS doc descriptions on your components, we get that out. Uh, uh, we get, um, prop types out because store book automatically refers prop types today from your components, um, just by looking at your type code. And that data is also available in this component manifest that you get out. ~~Um.~~ So that was sort of like step one. And then step two was, okay, let's build an MCP server that consumes this and shows it to the, the LLM. Uh, and so what it does is that it exposes a few tools and some instructions for the, for the agent.
+
+So when you're using your copilot agent and you're saying, I wanna build a car component, what it'll also do is that first it'll call the store book MCP and say, what are the components available? List all components. Just get a list of all the components with a summary, and then it'll say, oh, I need documentation on those four components because they seem relevant to the task at hand. And then it'll ask a store P for for that. So it'll get usage examples and it'll get prop types, documentation. It'll get the written documentation for your components, and then it will use that information, uh, to build out the UI instead. Um. And then in the end, if you're using store book, ~~you can,~~ you can use the store and with or without store book, as long as the. The design system is built with storybook. Your consumer can use it without storybook, but if you're using storybook, it'll also say, um, okay, now I've built these, these UI components. Now I'm automatically gonna write stories for it because the MCP server told me to write stories for my new UI. And, and it will get the URLs to the stories to show you at the end of the task. Here are the four stories I, I, I wrote, here's how I can view them. Um, and once. And so I've been working on, on this specific topic a lot. Maybe you can hear that from the way I talk about it, but it just feels so magical when you see it. I just did this like a, an hour ago, and I, I, because I needed to test something out, uh, something completely unrelated, and it replied to me, here's the stories that I wrote for you. And they just, they just worked. And like there was play functions and all that jazz. ~~Um,~~ because it's now pulling in this information from the MCP server. Um, and of course then you can host this MCP server on chromatic, so that. ~~Um,~~ when you publish your store book, uh, online for a design system to to be used, anyone can also just connect to that MCP server. ~~Um,~~ in the future, we are hoping to add testing capabilities. Also, uh, we have some proof of concepts so that not only does it write your stories for you as it does today, but it also knows that it should run the test for those stories via the storybook MCP, which is. Way faster because it's all, it's a run term that's already running.
+
+It doesn't have to spin up. A CLI store is just running. And then story will reply with, uh, yeah, those two stories, they're now failing because you change the color to blue or whatever and then it will iterate. The agent will, will know to iterate and then keep improving the stories or the UI and then come back and, and, um, we're not quite there yet with that testing story, but that's what we're seeing today. Uh, so really just taking the, the three pillars of storybook. We select development, documentation and testing and seeing like how does that work in a. A coding environment. And what we realized is that, well, we need to make the same avail, like the same content available, uh, with the MCP server. ~~Um, yeah,~~
+
+**Justin:** Cool. That's exciting. Um, I, I'm like so interested in how CPS are developing and like what the shape of that looks like. It seems like there's obviously it, there's still rough around the edges and a lot of stuff to, to, to mature there, but it is, it's pretty fascinating to see. Um. To shift to conversation one more time.
+
+~~Um,~~ I, I think it would be, um, it'd be good for us to just talk about, uh, the sort of funding force, uh, behind storybook, the open source project.
+
+So the company that you are employed by is Chromatic. Um, and Chromatic sort of started as a hosted storybook platform that ran snapshot visual tests. Um, it's been. Several years since I've actively used chromatic, um, at a since I've been at a company that's used it. So I'm curious about like how the product, uh, and the company has evolved and you know, what new features you're working on and what are you thinking about and. ~~Yeah.~~
+
+**Jeppe:** Yeah, so I think the, uh, the cool thing about Chromatic is that it has grown with store book. And, and we, we always say the chromatic is built by the team that built storybook and that, and that is true. It's not, it's not just because chromatic hired five people and then they just sit over here on the side.
+
+Like we're actually the same team building the same things. ~~Um,~~ so the, the integration with s storybook has gone way deeper for chromatic the factory few years. We have the visual. Uh, testing add-on now. So you don't necessarily have to go to chromatic.com to see your, um, your, your visual tests. You can see them in the add-on panel inside the store if you want to, um, and also run them. ~~Uh,~~ a big push that we've done at CHROMATIC over the past year has been accessibility regression testing. Um, so essentially similar to. You have your visual baseline, you take a snapshot of all your stories and like this is the screenshot. You do the same thing for all your accessibility violations because, uh, you you don't start from zero violations.
+
+No one does that. Uh, unfortunately, you maybe, maybe you have thousands of violations. And then chromatic says, okay, this is your baseline of violations. This story has exactly these accessibility violations because like the contrast is bad. And so then, and then when you make changes, chromatic will tell you, oh, um. You have a new violation that's bad. Uh, ci I is getting blocked on this because you don't want to merge in this new violation. Then you're getting that count at least to stay, stay like stable and hopefully also decrease it over time. Uh, that's at least what we're seeing, uh, from some very interesting teams that are using this accessibility system.
+
+Chromatic essentially. 'cause there's this chart that anyone can see of the violations and we just seen it's a burn down chart that's going down and down. And that's, uh, that's very magical for me to see, like that we actually make an impact on improving the accessibility of the web today. ~~Um,~~ and so, and then Chromatica has also expanded, like to support multiple browsers.
+
+~~Uh,~~ there's also a, a, um, we did a recent webinar on a feature called Steady Snap, which is essentially,~~ um.~~ We're not just taking a screenshot of the story, we're taking multiple screenshots to figure out if it's a flake or not, or if it's because if you take a screenshot of like text in a browser, the int analyzing will like change it from slightly gray to very much gray, and that's just. So annoying on a pixel level, you don't want to deal with that. And that's, that's what most people run into when they do. Like we, there's a lot of people that build their own visual request in testing setup like you can do to match snapshot in playwright or where wherever you want, right? But then they run into this. The flakiness and the, oh, this is unstable, and oh, now the date changed from being December to November, so now there's a new snapshot because of that. Right? And all those things is what we're trying to solve in chromatic directly. So you don't, you don't have to deal with that. Um, uh, and that's really the value add over just building up your own, uh, testing suite essentially. ~~Uh,~~ we are also doing, um. Turbo snap. It's been there for a few years, but that's essentially whenever chromatic decides to take snapshots of your storybook, it looks at what are the GIT changes compared to the module graph and then say, we're not gonna take snapshots of all the stories because that will be too expensive for you. We can see that your GI changes only have changes to these five stories because you only changed the button component. So we're only gonna snapshot those and we're only gonna bill you for those five snapshots. ~~Um.~~ So that's, uh, it's really just about optimizing also the speed, of course, to make it way faster. Uh, and that's what people they enjoy, I think. ~~Uh,~~ and then of course, building something on top of the store. Bring MCP server. ~~Uh,~~ there, there are different value add when you can have that, uh, hosted, uh, for you at, at the click of a button. Uh, and we are very excited to see where we're gonna take this. We don't quite know yet, but, uh. I'm sure you'll see at some point.
+
+**Andrew:** Yeah, those, those two things. Steady snap and turbo snapp. Like I've, I, as you said, you can build out your own testing snapshot infrastructure and you will run into these things and having a thing that like just does that for you and you not having to worry about that and build it yourself. Pretty cool.
+
+I also love that you can do selective testing. 'cause that was like at my last company, Descript script. That was a huge problem. We had thousands of tests, thousands of screenshots, and running them all. Was very cost and efficient and very slow. ~~Uh,~~
+
+**Jeppe:** ~~Yeah.~~
+
+**Andrew:** yeah, pretty excited for you guys. That MCP thing seems super cool.
+
+Uh, just one, one thing before we move on to our last question. Uh, if I, if I wanna use chromatic, but I don't use storybook, can I?
+
+**Jeppe:** Yes, you can.
+
+Chromatic has an end-to-end integration. Um, we always, ~~uh,~~ propose that you use it with storybook because you have more lower level components, so your screenshots are more stable, but you can integrate it into Cypress and playwright. So there's a chromatic, uh, slash. E two e playwright package, I believe it's called. And that allows you to, at the end of any playwright function or in the middle of any playwright function, call take snapshot. Um, or if you can also make it the default. So all your play playwright tests, they just do that automatically at the end. And, uh, that will generate the snapshots put into chromatic, and then you get the exact same experience as if it was store book. The little known detail is, in fact, those snapshots generate storybooks. ~~Uh, so, and,~~ and this, and it, it doesn't just take a screenshot, it takes a snapshot of the dom as well, so you can inspect it. And, uh, it's not interactive 'cause you can't take a snapshot of JavaScript, uh, memory. But it's, it's like, it has HT melan, all that stuff, and it looks exactly it's supposed to do. Um. Uh, which again for me is a way more powerful than just having playwright traces because they, they're like these videos and recordings. Whereas for chromatic, uh, the E two E snapshots are actually the dom that you can inspect in your, uh, browser. So yeah, we do support playwright and strip press.
+
+**Andrew:** Sweet. 
+
+
+#### [00:51:15] Future of Storybook and UI Development
+
+**Andrew:** So, uh, looking to the future, we've already done a little bit it, bit of it, but what's next for storybook and at a larger, more generic scale, what do you think's next for UI development?
+
+**Jeppe:** So what's next for Storybook right now, uh, is definitely trying to make it easier to get to those first five or 10 stories. Uh, getting over that initial hurdle of setting up your storybook, uh, maybe doing automatic integrations to the. the. biggest, uh, styling providers like Tailwind. So you don't have to set that up.
+
+Or maybe we will be running, uh, uh, some stories for you in the background and see how they fail and then fix those failures before you even have your s books set up. Uh, but definitely that is the, the biggest issue we see today is is people, ~~uh, ~~sometimes choke on even just setting up the first story and then they don't get any further. ~~Um,~~ we're also experimenting with, uh. Right now we call them ghost stories, but essentially what if we generate stories for all your components, uh, in the sidebar, but they, they didn't exist on the file system. They were just there. So you could look at them, oh, this is a story for this component I haven't even written yet, but I can see it being written and I can click save to file and then it's on the file. So, so both getting to those first five stories, but also going from. A hundred stories to 5,000 stories to just to get coverage for the components. I think that's where we want to help people and really improve the, the experience to just make it easier to, to get your store book running, uh, ui. Development in, uh, in general. I think, uh, well, of course AI is gonna be part of that. ~~Uh,~~ somehow what we're seeing right now is that everyone is building the same websites because AI loves purple. Uh, and so we're building purple websites. I think we're gonna see a shift away from that, uh, both by the model.
+
+Builders like Geminis and stuff, they're gonna have to figure out how to, to do that. Uh, less generic, but also there's gonna be tools that show up that enables you to, to be more, uh, personal with, with how you build your ui. ~~Um,~~ we have, I, I person, I love Spelt. I would love to see spelt just grow. Uh, like a ton. Uh, 'cause I think it's just a way better authoring experience. But I, I don't think that we're gonna see major shifts in frameworks usage, uh, over the next few years because people that just tend to use what they know, uh, which is fair. I also do that. Um, I don't think I have any hot takes on UI development.
+
+I think we're gonna stay with our components and, and as I said, uh. Com, like documenting these components and, and having great, um, a great structure for components is gonna be very important for your AI understanding them. Uh, and so I think. Investing time into that. Of course I'm biased 'cause I'm on the store team, but we see that when you invest time into that, the alarms just get way better at using, uh, the components.
+
+So you don't get into these back and forth, Hey, please use the component correctly. I think that's gonna be a, a big push as well.
+
+**Andrew:** Well, sweet. Thanks for coming on. This was a a, a fun talk about storybook. You guys have been at it for a really long time and it's constantly improving, so thanks for coming on and talking about it. I'm also really excited to dig into the MCP server stuff.
+
+**Jeppe:** Mm-hmm. It's, uh, we have a, we have a sneak peek, uh, blog post about the MCP server stuff, uh, where you can also sign up for early access.~~ Uh, so I don't know if there's any way we can share that.~~
+
+**Andrew:** ~~Uh, we can include a link at the, in the show notes. So cool.~~
+
+**Justin:** Cool. Thanks, y this is awesome. Uh, it's, it's so, it's exciting to watch story. Uh, like develop. It's just been such a cornerstone of the front end development community for such a long time and, uh, I'm glad you know that it's that y'all have evolved so well and adapted so well because of how much everything has changed since it started.
+
+Like
+
+the industry feels very different than, than what it did. And,
+
+uh, it's, it's awesome to have that one like stable tool that we can rely on. So, good work.
+
+**Jeppe:** Thanks. 
