@@ -1,0 +1,418 @@
+---
+title: Peter van Hardenberg - Ink and Switch, Automerge
+youtube: https://www.youtube.com/watch?v=BgydLnSwrUg
+spotify: https://www.youtube.com/watch?v=9f2owS3nDHs
+tags: automerge, ink and switch, pvh, peter van hardenberg, distributed systems, collaborative editing, open source, programming languages, software development, computer science, technology, innovatio
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Peter van Hardenberg (PVH), director of the Ink and Switch research lab and co-author of the seminal Local First Software paper.
+Peter shares the origin story of local-first software, from his realization on a San Francisco train to his work at Heroku and beyond.
+We dive deep into Automerge, Ink and Switch's local-first sync engine built on CRDTs (Conflict-Free Replicated Data Types), exploring how it enables real-time collaboration while keeping data on your computer.
+We discuss the technical challenges of building distributed systems, the philosophy behind local-first software, and how projects like Key Hive are pushing the boundaries of decentralized data access.
+Peter also shares his vision for the future of computing, where software ownership and interoperability become fundamental principles rather than afterthoughts.
+
+- https://www.pvh.ca
+- https://www.inkandswitch.com
+- https://automerge.org
+- https://github.com/automerge/automerge
+- https://github.com/pvh
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:02:21] The Birth of Local First Software
+[00:12:09] Challenges in Local First Software
+[00:28:40] Auto Merge
+[00:31:17] Key Hive: Decentralized Data Access
+[00:44:09] Future of Local-First Software
+
+{/* TAB: TRANSCRIPT */}
+
+**Peter:** We want things to be available from every machine. We want things to have real time collaboration. We want people to be able to ~~like ~~share a link can get up to speed, we want you to be able to decide, am I gonna upgrade? And most importantly, if someone can take something away from you, it's not really yours. 
+
+#### [00:00:26] Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone, uh, we're really excited,~~ uh,~~ to have,~~ uh,~~ Peter joining us. Peter, you run, or PVH as folks may know you online, you run, uh. The in and Switch lab, uh, you have helped coin the local first paper. I see you a lot at the, uh, local first conferences. Uh, ~~I'm so, ~~I'm so excited to have you on the podcast to chat with you about all the things that in Can Switch is working on.
+
+And in particular, we are gonna talk, uh, about Autom mech today. Um, but before we dive into that, uh, would you like to tell our listeners a little bit more about yourself?
+
+**Peter:** Yeah, sure. ~~Um, ~~let's see. I work as the director of a research lab today. My background is pretty,~~ uh,~~ wide ranging. ~~I, ~~I like to say I ~~kind of ~~move like a night through the industry, like jumping up and landing in weird, unexpected places. ~~So. ~~I've worked in Arctic oceanography as a research support programmer.
+
+I've done game development. I wrote a physics engine for the Game Boy,~~ uh,~~ DS using fixed point math. That's, that was a fun challenge. ~~Uh, ~~I worked doing desktop software building songbird, which is like a media player. And ~~like, ~~I think I one point broke a lot of people's,~~ like,~~ ID three tags 'cause I shipped a bad release of tag lib and,~~ uh,~~ what else have I done Then ~~I, ~~I was at Heroku.
+
+Which is a platform as a service ~~kind of ~~in the Ruby on Rails era. And ~~uh, ~~that was a ton of fun. We scaled from like nothing to very big. And then,~~ uh,~~ I got out while the Geting was good and joined this weird research lab. And we've been doing,~~ uh,~~ local first software ever since. ~~Um, ~~among all these other things.
+
+And,~~ uh,~~ sometimes I joke that like my research is ~~sort of ~~like atonement for having,~~ uh,~~ built the cloud, right? It's like we built the cloud and then we realized what was wrong with that. I was like, oh no. Like now I'm trying to ~~like ~~fix the problems I helped to create, which is maybe the classic like mistake people make.
+
+But ~~uh, you know, ~~hey, we're doing it.
+
+**Andrew:** ~~So, ~~yeah, about that. ~~Uh, ~~
+
+
+#### [00:02:21] The Birth of Local First Software
+
+**Andrew:** in 2019, you had this big, nice, long,~~ uh, uh, ~~blog post about local first software. How did you get to that point? And like ~~where, ~~where did it start? Where you're like, okay, local first might be the shift that we need in software. Did it start there at Heroku?
+
+**Peter:** ~~Um, ~~I.
+
+I was on a train the end Juda in San Francisco, coming from like Ashbury, where I lived at time, into town. And,~~ uh,~~ if you've ever been to San Francisco and taken the end Juda, ~~you know, ~~it's above ground sometimes, and then below ground. And then above ground. So it ~~kind of ~~goes in and out of the tunnels.
+
+And I was listening to,~~ uh,~~ music on RDO, which was ~~sort of ~~like. ~~You know, ~~it was a competitor to Spotify at the time that had some friends who worked at, and whenever it went in the tunnel, like I'd lose reception and then I'd ~~like ~~wanna listen to the, so I'd have to put my phone into offline mode. But offline mode had like radically different bugs and features then online mode.
+
+And it was ~~kind of ~~like a gong went. ~~I mean ~~this is a little bit of ~~like ~~recreating. The eureka moment I think is an expectation of this, but ~~it, ~~it is definitely the case that I had this feeling that something was wrong and I had this feeling that like,~~ why,~~ why could I not browse my playlists offline That I was literally just looking at,~~ like,~~ you flip it into offline mode and the song you're listening to stops.
+
+And the playlist you were looking at disappeared. And the reason was like really obvious if you're ~~sort of ~~a software developer in modern world is like that data was all in the cloud and like the version that was cached and downloaded was like a separate code path, right? And it was a separate sync system ~~and, ~~and all this kind of stuff.
+
+And I just had this like really uncomfortable feeling that like we were doing something really structurally problematic and ~~like ~~a lot of other events ~~sort of ~~reinforced that over time. ~~Um, you know, ~~at Heroku we. Basically gave away, ~~you know, ~~millions of apps to people and, 'cause we could do it for cheap.
+
+'cause we had this sort of dino thing that would start and stop your app, ~~you know, ~~in this sort of modern functions of services. Similar equivalent using the technology of the day. But,~~ uh,~~ at some point those apps, there were too many of them, and our corporate overlords wanted to like, cut costs. And all of this software that we'd worked so hard to keep running for years started to just ~~like ~~disappear from the internet.
+
+My, ~~you know, ~~my,~~ uh,~~ colleague getting Inkin Switch and our designer at Heroku, Todd Matthews had this like recipe for making eggnog. And as we record this, it's ~~kind of ~~like ~~the, ~~the time of year where you might be making eggnog and it was just eggnog.heroku.com for a long time, but it's not there anymore.
+
+It's gone, but it's still there on his GitHub profile. So I can read the source code to the eggnog recipe. I can no longer see the recipe, the way he presented it. 'cause it runs on some ancient ruby stack and like this combination of like why don't things work offline, but also like why are things, why are the things that I care about falling off the internet and disappearing?
+
+Those two things ~~kind of like ~~combined in my head and made me really start to question like the software architecture and the whole kind of approach and philosophy that we have about building software.
+
+**Justin:** Was the, um, was the sort of like lead up to the lab, like going from, ~~you know, ~~you sold Heroku, you have some time. Space and Monte Dale sort of like reevaluate what's important. Was the lead up those like things that had been building up over time of like these like, um, software experiences or, or whatever, or did you just like see an opening in the industry where you're like, you know, we don't have like a modern Bell Labs, you know, ~~the, ~~the same like group as it existed.
+
+~~I mean, ~~I mean, there is a modern Bell Labs, but you know, the
+
+Xerox par of.~~ ~~
+
+**Peter:** ~~We didn't, ~~ we didn't have that kind of, um, ambition or arrogance,~~ uh, to, ~~to, I would never, ~~would never~~ dream of trying to start a modern Bell Labs. I, kudos to anybody who has the, for that. ~~Uh, the, ~~the actual story is ~~I, ~~I'm not a Heroku founder. I was an early employee and joined,~~ um,~~ near the beginning at ~~like, uh, ~~as the lucky 13th employee.
+
+I think. ~~Um, ~~at least that's how I remember it. And after, ~~after~~ Heroku. The founders of Heroku ended up leaving Salesforce for one reason or another over time, and they got together and they were saying like,~~ well,~~ what should we do next? And ~~I, ~~I love the story 'cause they were basically like, look, society's on the ropes man.
+
+~~Like ~~no one trusts the journalists. Science has a reproducibility crisis, like democratic institutions are in decline. Like around the world. We have ecological crisis. Like all things are rough out there. I think that's absolutely still the case today, if not more ~~so. ~~And. But what can we do? We're just software guys, right?
+
+Like we're tool makers. We're not physicists or ~~you know, ~~like journalists or whatever else. And so the idea behind in can switch was like,~~ well,~~ let's get together. We'll spend ~~like ~~six months to a year and a half. We'll ~~like ~~come up with a theory about how we wanna approach this problem. And then we'll start a startup and we'll try and build a thing and ~~like.~~
+
+Analysis was like,~~ well, you know, ~~there's like a lot of,~~ um,~~ there's a lot of like opportunity because the operating systems of the day are not in great shape in terms of ~~like ~~supporting the needs of creators. Apple is more interested in like making sure you can get your Netflix then being the preferred platform for Photoshop.
+
+~~Right. ~~Microsoft is like some kind of funhouse carnival of ~~like. You know, ~~you click on the start button to open an app and you see some news with ~~like ~~Donald Trump's face. Talking about something like that is not conducive to like deep thought and Linux, ~~you know. ~~Maybe next year is the year of Linux on the desktop, but it's not this year.
+
+And so it ~~sort of ~~felt like there was this gap in the computing ecosystem where ~~like ~~nobody was actually incentivized to think about scientists, to think about journalists, to think about the people who we need to solve these problems. And so the theory was that like in can switch, could try ~~and ~~and figure that out.
+
+Now I joined about a year into that effort ~~or, ~~or maybe a little longer ~~kind of ~~in that ballpark and. Then we spent a year trying to figure things out and it ~~kind of ~~turned out that the problem was a lot harder than we expected. ~~You know, classic, classic, ~~classic kind of thing. And in fact, ~~you know,~~
+
+**Justin:** how it goes.
+
+**Peter:** yeah,~~ Adam,~~ Adam did spin out,~~ um,~~ muse, Fromkin Switch was a great,~~ um,~~ apple tool, but ~~like, ~~if you compare the kind of like ambition of income switch in the large.
+
+To like what we were able to attack with Muse in that spin out with Adam and Marco Branigan and Julia Rockets and ky and, ~~you know, it's, ~~it's still going under,~~ um, uh, ~~other Adam's ~~uh, ~~leadership. ~~Um, ~~and like the, ~~you know, it's, ~~it's out there and ~~it's, ~~it's a great product and you should use it if you,~~ uh,~~ if you need an infinite canvas.
+
+Like it's a great ideation system. But ~~like, ~~it was very much just the smallest part of what we were trying to accomplish. And so it just became clear that the lab was gonna have to basically be, ~~you know, ~~a permanent institution. And so when Adam spun out to,~~ uh,~~ start m it was ~~kind of ~~like we looked around the table at each other and me and the other members of the labs, it was like nobody else was willing to like.
+
+Take up the paperwork. So it felt me, I've been having to do the paperwork ever since, but,~~ uh, you know, ~~it's not, I don't think it as my lab, I think of it as our lab. And I'm just ~~the, ~~the poor guy who has to like, ~~you know, ~~make sure the taxes get filed each year.
+
+**Andrew:** Cool. ~~Uh, ~~with that, let's set the stage,~~ uh,~~ of what Ink and Switch is. Some of our audience might not know what it is, so you can. Could you explain to us like what you guys do there and how it's funded?
+
+**Peter:** Yeah, so Incan Switch is an independent industrial research lab, and our field of study is tools for thought. And what that means is that. Tools for thought are ~~kind of ~~the instruments of intelligence amplification, the original vision of the computer as the, ~~you know, ~~bicycle for the mind or the memex, right?
+
+And ~~like ~~all this stuff dates back to ~~like, you know, ~~late stages of World War ii, ~~you know, ~~Vannevar Bush's Memex project and so on, and carries through Doug Engelbart and Alan Kay and like all Bonnie Nati, all these wonderful people's work. And we're trying to carry on that tradition and ~~sort of ~~say in a modern context, ~~you know, ~~within the modern ecosystem, how can we.
+
+Help build tools for thought. What do they have to look like? What kind of tools do we need? Who needs them? How should they make them? And I think the thing that kind of differentiates our work from past efforts is that we are both looking with one eye to the future, but also ~~kind of ~~aware of the broader movement of, ~~you know, ~~there is a modern software industry with millions of people working in it, lots of people trying things.
+
+And so rather than just ~~sort of ~~saying ~~like, well, ~~we're gonna invent everything new. We wanna be able to invent anything, but we also ~~kind of ~~wanna think about like, how do we fit into the existing world so we can actually influence it. ~~Um, ~~so when I say industrial research, I mean that like pie in the sky, high concept stuff.
+
+Like sometimes you gotta do it, but that's not what it's about. What we wanna do is change the practice of software, like as it is built over time. So we look less on a 20 year horizon and more on ~~like ~~a five to 10 year. And then,~~ uh,~~ independent means we're not owned by any corporation. We're not owned by any university.
+
+We're not directly,~~ uh,~~ funded by any single entity. And our funding comes from a mixture of like private,~~ uh,~~ funding from people who care about these problems and want to see the world. ~~Uh, ~~improved,~~ uh,~~ from government contracts and philanthropic contracts. We work with places like the Endless Foundation,~~ um,~~ and we're working with the Advanced Research and Invention Agency in the uk and we've done other partnerships in the past and also with companies like we've partnered with Notion,~~ uh,~~ for example, for the Parex project,~~ uh,~~ a number of years ago.
+
+And so we kinda have those three planks, private individuals like philanthropic and public interest, money, and. Private industry. And I really think it's important that we're funded by that broad base because that means that, ~~you know, ~~we're not, ~~you know, ~~we're still beholden to industry outcomes, but we're not just ~~like, you know, ~~some companies think Tank.
+
+We, ~~you know, ~~are able to do weird experimental stuff that might not pay out for a long time with our private funding. And then we have this like public good money that comes from places like the EU governments and on that grant, which really lets us like. Have a mandate to do things that are like open source or like public interest.
+
+So ~~I love, ~~I love having that spread, but it does lead to a lot of paperwork.
+
+
+#### [00:12:09] Challenges in Local First Software
+
+**Justin:** So we talked a little bit at the beginning about local first and ~~sort of like ~~moving into that,~~ uh,~~ and ~~sort of the, ~~the, tense. That you were filling with technology,~~ uh,~~ that you and others were filling technology that sort of ~~like ~~led to that seminal post on Local First and ~~sort of ~~introduced it. So, uh, we might just like for ~~our, ~~our listeners, just explain like what Local First is ~~and, ~~and how that plays into the lab's, like vision of technology. ~~Uh, ~~yeah. Let's actually just start there.
+
+**Peter:** Yeah, so first full credit,~~ um,~~ I'm a co-author on that paper. ~~Uh, ~~the lead authors were Martin k Clapman and Adam Wiggins. And ~~our, ~~our fourth co-author was Mark GaN, all of whom are good friends ~~and, ~~and longtime collaborators. ~~Um, ~~and,~~ uh,~~ but yeah,~~ the,~~ the basic idea behind local first software is ~~like, ~~your software should run on your computer.
+
+~~It's, ~~it's not really rocket science, right? ~~Like, ~~like you, you've got a program and it should be on your computer. Now, there are times that doesn't make sense and, ~~you know, ~~we're not saying those don't exist, but the idea behind local first software is like when it would make sense to have the program on your computer.
+
+It should be there. Now that's not controversial and ~~you know, ~~there's a simple way to do that. I wonder if I have any in this room. I probably have a floppy disc somewhere here in my sort of like archive ~~of, ~~of old stuff. And that's not what we're suggesting. We're not saying, oh, we want to go back to the old days and ~~like, you know, ~~have like dial up modems.
+
+~~No, ~~no. The idea is we want to have the benefits of the cloud. We want things to like. Be available from every machine. We want things to have real time collaboration. We want people to be able to ~~like ~~share a link can get up to speed, but we wanna pair those benefits with the benefits of more traditional software, which say we want it to run on your computer.
+
+We want you to be able to decide, am I gonna upgrade? And most importantly, if someone can take something away from you, it's not really yours. ~~Right? ~~So if you've installed a piece of local first software, that means that if that company goes outta business. By golly, it should keep working. ~~Right? ~~It's, ~~you know, ~~and these are,~~ um,~~ to be clear ideals that I think many people working in the local first,~~ uh,~~ space agree on.
+
+But they're very, ~~you know, uh, ~~very real reasons why despite those aspirations, we're not all the way there yet in a lot of cases. And I don't wanna discourage anyone from, ~~uh. ~~Pursuing those goals, even if we're not able to reach them entirely. But that's the basic idea. It runs on your computer and it works with other people.
+
+**Justin:** ~~I, ~~I think a big part here though is. It's in the name local first,
+
+so it's not like the desktop software, like the nineties where you installed it and then it was like local only.
+
+~~Um, ~~it's this new world where it is local first, but you are still connected and it's collaborative and that poses pretty significant challenges as, as you've sort of alluded to.
+
+So. In this world where you wanna feel like you, or you want to own your data, you want to have more autonomy over the software that you run. You want it to be available even if you're not available online. Uh, but you also want to, you know, share things with friends and family and collaborate with people.
+
+Like how do you, how do you bridge that gap? How have y'all been thinking about it?
+
+**Peter:** ~~Well, ~~the short answer is that you move the program and the data to the user's computer. Okay? Pretty straightforward. Now, if you've got the program and the data, you just need to figure out how to connect it to other people. Now we have what sounds like a simple problem. So really what we've done is taken a problem that was like a complex architectural pro problem and reduced it to ~~like ~~a very simple thing, which is like, how do you synchronize data?
+
+Cool. So all we really need is a good sync engine. That's sort of a lie though, right? Because like actually we need ~~a, ~~a sync engine and we need ~~like ~~a really different way of thinking about software. So like the technical problems ~~are, ~~are real and they're difficult and they're interesting, but there's also a lot of interesting, like socio-technical problems and design questions.
+
+And I'll give you a really like simple example, which is ~~like, ~~okay, great. So let's imagine that you have Google Docs offline. Okay. Yeah. I mean like you can ~~kind of ~~do that now, right? But ~~like ~~if you have Google Docs offline and you work on some, I don't know, spreadsheet on an airplane, then you come back online.
+
+Somebody else has edited the spreadsheet. ~~Well, ~~Well, what should happen? I can tell you what happens in Google Docs. Last time this happened to me, it popped up an error message that said, your document has diverged too much from the ~~uh, ~~version in the cloud. Click okay to reset all your changes. There was not an option to say No thank you, and all that work got lost.
+
+that's obviously not ideal and I think it's interesting to contrast ~~kind of ~~like that experience to something like any software developer would recognize, which is like working in Git, right? And so like when I'm working on a patch on my machine, I get it working and then I like do a GI push and like now it's available for other people.
+
+But until then I can work offline. But like when I go to GitHub. I can't look at the issues. I can't see what I'm supposed to be working on. I can't tell what the plan was. 'cause all that stuff is on the web. There are very good reasons why GIT is not a good database. Most of those are the reasons that our auto merge open source work exists.
+
+~~Um, ~~but it's telling that ~~like ~~there is so much benefit to being in the cloud around collaboration that we're willing to put up with this like weird heterogeneous mix of like local first. History, preserving data for source code and then this like crud app, ~~you know, ~~web interface for the like actual coordination work.
+
+Like ideally what we want is actually both for both. I wanna ~~like, ~~it's ridiculous, it's ludicrous. It's insane that if I want to pair a program with you on a task, I'm gonna come on a video chat and we're gonna stream the pixels of my screen to you. Doesn't that seem it's plain text? ~~What are we, ~~what are we doing?
+
+How is this? The way we collaborate as programmers, it's humiliating. Writers can go in Google Docs, they can select text, they can copy paste, they can point at things, they can comment. You want to comment on a patch, you gotta go to the browser. Select what is happening. And then meanwhile, the writers look at us with Git and they're like, ~~I mean, ~~aside from the fact that you don't wanna use Git, no one's dumb enough to wanna use Git.
+
+It's impossible. But they look at our ability to work in private. They look at our ability to like make revisions without the editor reading over their shoulder and to work from the cab, coming back from the place where the news broke and not worry that the CMS is gonna lose their data. They want what we have and we want what they have, but no one has figured out how to allow you to both work offline.
+
+And collaboratively and bridge that gap and that fundamentally is what our research in local first software is trying to do.
+
+**Andrew:** So that's a great transition into the technology. So auto merge is your guys' solution for, for this. Can you tell us what auto merge is and uh, like how it works at a high level?
+
+**Peter:** Yeah, sure. So Auto Merge is a local first sync engine. So what that means is that it's ~~uh, ~~it's kinda like a database. It's not a database, but it's kinda like a database in that it stores data and you can fetch it and it's local first. So you store the data on your machine, and then if somebody else wants to see it, you synchronize that to them.
+
+How does it work? It's really easy whenever you make a change. We just write down what the change. That's it, right? ~~Like ~~there's a lot of technical magic that goes into making that work and making it fast, but ~~that's, ~~that's ~~kind of ~~it in a nutshell. So ~~like, ~~if you're typing on a keyboard, when you press a key, we just make a note of where you were in the document when you pressed it, ~~you know, ~~the rest is all performance optimization.
+
+~~You know, ~~there's a little bit of like finesse here, right? Which is ~~like ~~if I'm typing in a place in the document and you're typing in the same place in the document, what should happen? ~~You know? ~~And this is where we start to get into something called CRDTs. Should we talk about CDTs for a minute?
+
+**Justin:** Yeah, yeah, yeah. Absolutely.
+
+**Peter:** Okay.
+
+CRDT is an acronym that stands for conflict Free Replicated Data type. And there's a great bunch of really cool computer science research around this, and I don't like to lead with it because CRDTs. There's a lot of blog posts out there. It ~~kind of ~~sounds like magic. People get really confused and ~~kind of ~~nervous about all the computer science terminology.
+
+But again, it's really simple, right? The idea is that when people make changes to this data structure, no matter what order they make changes in, when you mash it together, you should always get the same result. So there's like ~~a, ~~a really simple way of doing this, right? So imagine that I have A-J-S-O-N document and you have A-J-S-O-N document.
+
+We both edit the document and then we put it together. We just delete the document. Then nobody has any data that's technically A-C-R-D-T, right? Because you guarantee convergence, you do all the work and then you throw it away and everybody has the same result. That's not a very useful CRDT, right? ~~That ~~that's the thing.
+
+So ~~like ~~there's other things we could do, right? Like we could record all the data and then we could merge it together and we could do what Dropbox does, which is just give you two copies and let the user figure it out. Like that, I think technically qualifies under the same, ~~you know, ~~you gotta ~~kind of ~~squint a little, but it's technically qualifying the CRDT as well.
+
+So really there's ~~sort of ~~two problems to building A-C-R-D-T. One is figuring out how to represent data that users are collecting at their different locations. And then the other one is how to merge the data to produce some useful output. There's lots of different approaches to this, right? The early research was really focused on saying ~~like, ~~what's the least amount of data you can keep and still converge, right?
+
+And ~~like, ~~really interesting study of that. And other,~~ uh,~~ CRDTs out there are focused on ~~kind of ~~that task, which is like, what is the smallest, fastest,~~ um,~~ way to merge together two data sets. Our approach is actually ~~kind of ~~the opposite, which is to ~~sort of ~~say ~~like. ~~What if get but real time, right? So instead of saying ~~like, ~~we're gonna try and figure out the least amount and throw everything away, but still be able to merge together, we're gonna say, we're gonna keep everything in really high fidelity and then be able to materialize that into the state that you need quickly.
+
+And ~~it's a, ~~it's a very different mindset on the problem than most other projects have taken. And it's why we're able to do all of the interesting version control work. ~~That ~~that is what motivates us. And I don't wanna say you can't do these things with other CRDTs. ~~There's, ~~there's a lot of great work out there, but that's ~~sort of ~~our home base and our focus and what our APIs and system are designed around.
+
+So that, does that kind of cover it? There's a lot of like deep technical detail we can get into about how we make things fast,~~ um,~~ which is really the hard part and how we make things small so it doesn't take a lot of like memory or disc space to do this.
+
+**Justin:** Yeah, I mean, I, I think that would be an interesting topic. So. You, you mentioned a lot of folks have put a lot of time into making CDTs efficient. So it's like either what you're communicating over the wire, which would be important to real time or like what you're saving on disc. It's especially important if you have like a low resource device.
+
+Maybe you have an old Android phone, you like wanting to make software for folks, uh, you know, who have like less modern devices. Some of this would be an issue, but some of it wouldn't be. And so I'm curious, like when you think of auto merge and the sort of,~~ uh,~~ use cases, you, you, you say, yes, absolutely use auto merge for this.
+
+This is like our bread and butter. This is what we want you to use it for. And like, here are the use cases where, you know what, this isn't necessarily the thing that we're optimizing for. Um, and maybe figure out a different technology, you know, whatever. Like what is your sweet spot? Like where does automotives like really land Well.
+
+**Peter:** Our interest as a research group is in helping scientists, journalists, writers, ~~you know, ~~the kinds of people who. We're hoping we'll solve the many problems that exist in society, right? ~~We wanna, ~~we wanna make their lives better. We want them to work faster, more confidently, be able to more reliably deliver the right answer.
+
+~~Um, ~~so for me it's more about small group collaboration on creative work. That's home base in terms of our interest and where we put the most engineering in. It turns out there's a lot of adjacencies to that, but like an example of something that would be a great fit is like a code mirror editor for a law tech document or like a to-do list for a project you're working on and where you might be able to do it, but it might not be a great fit, is where you really wanna have scarcity.
+
+Because the sort of one of the technical consequences or maybe design consequences of this like local first idea, ~~you know, ~~we always say,~~ um, you know, ~~no one else's computer being unavailable should stop you from working. ~~Right? ~~And so that means it's not a great way to model a bank account. 'cause like actually, ~~you know, ~~the bank, if the bank is offline, the ATM should stop spitting out money.
+
+You know what I mean? Or ~~like ~~if you think you're buying a particular seat to Taylor Swift concert, it'd be real unfortunate if the merge happened and then suddenly you paid the money, but you didn't have the seat you thought you did. So like real time, yes. Collaboration, yes. But like CDTs are not a natural fit, at least the way we use them from modeling scarcity.
+
+Now it is possible and ~~like, you know, ~~I could cite some papers, but like it's. There are better, there are more obvious ways to solve the problems when like what you wanna have is like only one of something, even if you can do it on top of A-C-R-D-T.
+
+So I think the other part of the question was like, how does, how do we make it fast? Is that right?
+
+**Justin:** Yeah.
+
+**Peter:** So if you think about what I was saying earlier. How does auto merge work? ~~Well, ~~we write down the things that you do and then we replay them. ~~Right? It's not, ~~it's not rocket science, but if you imagine what we're writing down, we're writing down like every keystroke that goes into your document, who made it and when, and we're doing it with enough metadata to be able to interleave it with changes from other people.
+
+That's a lot of data. So a naive implementation. In fact, the earliest versions of auto MERG would record ~~like, ~~like 300, 350 bytes per keystroke of data. So we just naively encode it to A-J-S-O-N like object and chuck it in index db. You stick it on the disc somewhere, then we'd replay them all one at a time.
+
+Very slow,~~ uh, very, ~~very slow. And not only was it slow, it used a lot of memory. So at some point,~~ um,~~ Martin Kleitman had this ~~like, ~~pretty good idea. It was very obvious in retrospect as good ideas so often are, which was like, you're doing a lot of the same things, right? If you think about this as ~~sort of ~~a database table, what we had was a model where ~~like ~~each row encoded all the data.
+
+Of that object, who wrote it, when did they write it? What did they, what operation was it? And we ~~sort of ~~had this idea that if you ~~sort of ~~rotate that table 90 degrees. And what we do is encode along the columns. This is called a column encoding in database literature. I don't know if you guys have database people on here sometimes, but the idea is ~~like, ~~hey, look and actually jpeg or sorry, gifts work this way.
+
+You can say if you have a run of things that are all from the same author, you can say, look, the next 300 characters. They're all from this one actor, so we don't need to write that down. We just write down this actor ID and we can say the next 300 are all that same person. Similarly, like we have sequence numbers, which is how we determine the order of things.
+
+So we can say, you know what? The default for this column is increment by one. So all of the, we can just say, yeah, there's 300 more entries. They're all just the next one. It doesn't matter. For text, we can say by default you insert it right after the last character. So we can actually take the whole string of all those individual characters being typed in and just say, all of these are now represented as just a string in memory.
+
+So all the insertion after one place. What you end up with is a record that looks, ~~you know, ~~it's ~~sort of ~~spread out across the columns, but it looks a lot more ~~like, you know, ~~Justin at starting at this time typed in this whole string. And in fact, that's how. Other CRDTs would represent it natively, right?
+
+But the benefit of our representation is that because we have this run length in coding, you can actually encode a lot of different kinds of runs and different kinds of data in this super efficient way. And the result of all this,~~ um,~~ in coding and careful, ~~you know, ~~binary format design ~~and, ~~and everything else is that, ~~you know, ~~on a recent piece that we wrote, we had I think a hundred K of text real human, ~~you know, ~~edited text.
+
+The auto MERG document containing all that text with all the provenance, all the version control, history, all the timestamps, everything was 140 k, I think it was 138 to be exact as the numbers are in the auto mech blog post. So I apologize if I remember, but I remember it being 38% overhead in terms of disc size.
+
+That's pretty good.
+
+**Justin:** Yep. It's pretty solid.
+
+
+#### [00:28:40] Auto Merge
+
+**Peter:** And so the Caler trick is good, but then we had this problem where, okay, ~~well ~~then we'd store it on disk like that, but then we'd load it in memory and we'd have to spread all these operations out again in order to be able to query them. And then that was really slow. So like our auto Merge three release was all about, ~~you know, ~~working with the Caler format natively in memory, and then also using that to send things over the network.
+
+We have a lot of,~~ uh,~~ cleverness in the network sync protocol for auto merge as well. Along the same lines, we use bloom filters, which are a fun computer science thing that nobody ever, everybody thinks they might want to use and then nobody ever does. And actually the next version of auto Merge will not use bloom filters again.
+
+We found a way that simple, faster,~~ uh,~~ turns out calculator is expensive for large documents, but. Over the years, we've ~~kind of like ~~climbed up the ranks of performance, right? From ~~like ~~the very first prototypes we did six, seven years ago, eight years ago now. It was like if you had a thousand operations, ~~you know, ~~like your electron app would start running outta memory and crashing and ~~like, you know, ~~start to get n squared performance problems and your laptop fans would spin.
+
+And,~~ uh,~~ this morning before my,~~ uh,~~ like first morning meeting, I popped into the auto merge,~~ uh,~~ discord channel. Someone was like, I have this document that's taking 12 seconds to load. ~~Is that, ~~is that surprising? And I was like, okay, ~~like ~~let's look at the stats here. And they had 10 million operations in their document and I was like, oh,~~ um,~~ are you maybe replacing the entire document on every keystroke?
+
+And it's, this is Jevons paradox, right? Which is ~~like, ~~you give people more performance and they'll just ~~like ~~use it up and come back ~~and, ~~and tell you that there's a problem. ~~Um, you know, ~~there's some probably some way to ~~like ~~manage that. But,~~ uh,~~ yeah,~~ we,~~ we now are very comfortable in the,~~ like,~~ millions of operations to tens of millions of operations in a document, though,~~ uh, you know, ~~no matter what system you pick,~~ uh,~~ if you abuse it hard enough,~~ uh,~~ it will start to slow down.
+
+And,~~ uh,~~ Orion Henry and Alex Good are ~~sort of ~~lead maintainers or, ~~you know, ~~they love getting performance bugs. And Orion's whole jam is just like taking a gnarly performance bug. And then ~~like. You know, ~~flame graphing it out and then fixing the problem in the rust code by writing new kinds of like indexes and optimizations.
+
+That's his, as far as I can tell, that's his favorite thing in the world.
+
+**Justin:** It's good to have that kind of person working in your project.
+
+**Peter:** We would not be here without him. Yeah.
+
+**Justin:** There are a lot of other challenges. ~~Uh, so, ~~so this sort of solves the like collaboration and storage, persistence. Like, you know, how do we work on something locally and like sink it across? But when we think about like all the responsibilities that. Cloud service normally handles like one of the big ones is off, right?
+
+Like, who has access to see my data or this data or like, you know, maybe I have kind of a complex document and somebody can see pieces of it and other people can see other pieces of it. ~~Um, ~~
+
+
+#### [00:31:17] Key Hive: Decentralized Data Access
+
+**Justin:** uh, and I know y'all have done some really great work on, uh, this project called Key hiv, uh, and I would love to. Maybe talk a little bit more about that.
+
+**Peter:** Yeah, absolutely. And you should have Brooke Lanka come on and talk about this once this thing ships, because it is such a cool project and it is so interesting and exciting. ~~Um, so. ~~Historically, ~~you know, ~~our answer has been like, off. Yeah, you could figure that out, right? And ~~like, ~~look man, we give you the database.
+
+You, you gotta just put some off in front of it. ~~Um, ~~which is a total cop out. And ~~like, the, ~~the truth is, as a research lab, it's ~~like, well, you know. ~~We just don't tell anyone the URL of the documents and that's ~~kind of ~~okay. We run our own sync server, um, and people have done, ~~you know, ~~great things in sort of traditional ways, which I guess actually it is pretty straightforward.
+
+Like you have a web, API A request comes in for a document. You look at the id, they're requesting you check some table to see if that user can have the data, and then if so, you give it to them. If they try to send you a new version of the document, you do the same thing. If they're not allowed, you say no, you hang up.
+
+~~Right? ~~Like it's standard web stuff. Uh, Brooke's big idea with Key Hive was,~~ uh,~~ I love the way she describes it, which is like every piece of data has a little backpack with its auth included. And ~~so, you know, ~~right now with Auto Merge, what we do is we say on the server, ~~you know, ~~we unpack the data and we load it into memory as A-C-R-D-T and we say, ah, okay, what data do you have?
+
+Okay, what data do I have? Alright, let's figure out the diff between those and I'll send you just the bits you need. And then, ~~you know, ~~you ~~sort of ~~do perimeter authentication. So you say ~~like, ~~is this user cool to fetch this data? And the idea behind a local first au, again, let's go back to the original idea.
+
+No one else's computer being offline should make your data unavailable. So if that's true, you need to be able to ~~like ~~change the sharing rules offline. And if you and me are collaborating like over a Bluetooth connection on an airplane or. ~~Like, uh, ~~via carrier pigeon or whatever, the system should still work, right?
+
+Like why should some central server decide who has access? So the idea behind Key Hive is that when you make data, you write down who should have access in terms of public keys, and then we use an extension of the signal,~~ uh,~~ protocol. Similar to MLS, which we've decentralized to remove the central server requirement to be able to encrypt all this data in ways where anyone who has the right key will be able to get the decryption key and get the contents of the documents.
+
+And anyone who doesn't have a public key that's associated with the group will not. ~~Right? ~~And so the whole system now goes from ~~like, ~~oh, we have to have this central server that decides who can get in and who can't. Data as place. To this model where the auth becomes a thing that travels with the data and all the server has to do is if someone dials up and asks for a copy of the data, which they can't read because it's encrypted.
+
+They look and they check the certificate and say ~~like, ~~is this user able to demonstrate that I should send them a copy of this data? And if the server says, yep, like I can see from your pub key that you know, there is a pub key somewhere in the hierarchy of this system that. Should be allowed to fetch that.
+
+Cool. I'll give you the bits. They're still encrypted. The Sync server doesn't know, right? Like I can sync data with you that I can't read because I can tell by looking at your pub key,~~ like,~~ oh, is this person allowed to have access to this sort of like topic, even if I don't know what it's about? And that's really cool.
+
+Definitely it's some inspiration from other projects here. The Secure Scuttlebutt project. Which the sort of vision,~~ uh, you know, ~~there was like, imagine a bunch of sailors with peer-to-peer networks and it's like you pull into the anchorage and you like fetch and exchange data from each other. All the like social messages and private messages, but they're all encrypted.
+
+So you're ~~sort of ~~carrying mail for other people and then you sail to the next Anchorage and you swap with other people. And now everybody who, ~~you know, you, ~~you've been become the inadvertent carrier of messages for some other people at the next Anchorage where they can decrypt those that you couldn't, but you ~~sort of ~~trusted the sender enough to be willing to carry the bits for them.
+
+And that's the kind of, ~~you know, ~~definitely an inspiration in the design of the system.
+
+**Andrew:** Cool. So slightly different topic. ~~Uh, ~~so auto merge enables this like ~~kind of ~~infinite GI history, but it only seems for, it's focused on JSON objects and their values. ~~Uh, ~~mainly on the website. On your Ink and Switch website, you explore universal version control, which is version control for things outside of that, like images video, 3D models. Have you guys like gone into ~~like ~~any projects on ~~that ~~that are notable?
+
+**Peter:** ~~Yeah.~~
+
+It is amazing what you can encode in JSON. That's a, that's the starting position, right? So step one, what if you just put it into JSON 64 encode it, what could possibly go wrong? ~~Right? ~~A lot can go wrong now. ~~Um, ~~we are working on a project with the endless foundation to bring,~~ um,~~ real time collaboration with branching kind of patchwork style version control.
+
+To the Gado game development engine. So that's like an active work. We've got ~~like ~~two and a half people working on it today. Right now it's an open source thing, Gato and patchwork. ~~Um, ~~and people are using it in classrooms and we're hoping to ~~like ~~mature it to the point where like community members with small teams can just ~~like ~~grab it ~~and, ~~and work on it.
+
+And that's a good field trial for these ideas. ~~Um, ~~I think diffing of binary files is hard. In like very fundamental ways. Um,
+
+our current strategy for things like 3D modeling is to diff and ~~like, ~~it doesn't necessarily, it's ~~what, ~~what we call JSON is ~~kind of ~~a lie really. It's more like pojo,~~ like,~~ they're just like JavaScript values. And so the way we're approaching this for like 3D modeling is to say, ~~you know. ~~Use like USDJ, which is the JSON version of the USD Universal Scene description format.
+
+And then, ~~you know, ~~we can load that and put that in. ~~Uh, it, ~~it's interesting, I think about, forgive the digression here. I think about ~~the, ~~the size ~~of a, ~~of a document as being ~~kind of ~~like ~~a, a ~~a three dimensional,~~ uh,~~ rectangle shape, like a rectangular prism. What is there a name for that? It's not a cube, a rectangle cube.
+
+Whatever, but ~~like, you know, ~~I think of how many changes there are to the file as being ~~kind of ~~its depth, right? So if you just had ~~like ~~a counter that flipped between true and false every second, and you ran that thing for 10 years, you'd have a lot of values, but you have a very narrow document in a very short document.
+
+A OID that says, yeah, great oid. I love it. ~~Well, right. ~~If you had a very deep history,~~ right,~~ you might have a very small document, but it has very deep history and that has certain challenges. The nice thing with a document like that is like if you can figure out how you could just get the current value and you don't need the rest,~~ right,~~ to be very small one bit.
+
+There are also documents that are like very wide. Like a scene graph for a 3D ~~uh, ~~scene is one of these. There could be millions or tens of millions of individual keys, right? ~~Like, you know, ~~lots of triangles and paths and ~~you know, ~~everything else. And so ~~those are, ~~those are challenging in a different way 'cause you just have ~~like ~~a lot of stuff to like manage.
+
+And then there are documents that are tall. And so like a good example there would be like if you put a perfectly legal Linux ISO that you wanted to watch into ~~like ~~an auto me value. Then you wanted to like stream parts of that Linux ISO so that you could watch it on your device. ~~Like ~~that's like a very tall value.
+
+And we ~~kind of ~~just punt on that because ~~like, you know, ~~you can watch your Linux ISOs with other existing,~~ uh,~~ solutions. ~~Um, ~~and, but on some level, like it is a, ~~you know, it, ~~it's useful. And it's ~~sort of, you know, ~~the old joke about like databases is ~~like, don't put, ~~don't put JPEGs in your database. It's ~~like, ~~but everybody does, right?
+
+~~Like, ~~and so we have a certain amount of support for, ~~you know, ~~just having binary data in auto merge documents. And in fact, the way we model this in,~~ um,~~ our sort of lab system that uses auto merge is we just have ~~like ~~a file document, which is like a static object that has a binary array of data that doesn't change.
+
+Could it change? Sure. Will that probably break if you merge? Absolutely. ~~Right. ~~Maybe you're clever and you can do it in a way where it will work. I,~~ that's,~~ that's above my pay grade to figure that out. ~~I, ~~I dunno. People say AI at this point and wave their hands and I No. Politely, and we move on to another topic.
+
+**Justin:** Yeah. So there, there's like some intent, you know, that's like not captured in the binary output of something, you know, and you know, some question about like, could you like have a binary file and then layer on some like metadata on top, you know? And.
+
+**Peter:** Great example, right? Is ~~uh, in, ~~in music and movies, what you have are called stems. Those are your unchanging things. So the way I think about how to build apps in this ecosystem around that is you have data at the bottom that's like binary data. That doesn't change, or when ~~it changes, ~~it changes like as a unit.
+
+But ~~like ~~if you recorded a video of an actor through a camera on a day, that's just how it is, right? The ultimate video that you like look at through your Linux. ISO, like it's gonna go through a lot of transformations to get from point A to point B, and I think of each of those as being ~~kind of like, ~~like I think of changes in auto emerge as being deltas, right?
+
+~~Like, ~~oh, this value goes from A to B, this value goes from C to D. I think of that kind of way of working as lamb does. You have these stems and then you run some code that produces a new version. Then you run some code that produces a new version. Like Photoshop layers have a very similar vibe. And so I think if I were gonna build a local first native, like image editor or ~~um, you know, ~~video mixer, I would build it up on this foundation of ~~like, ~~stems that are, ~~you know, ~~either unchanging or low flux.
+
+And then almost like a build system that compiles 'em up into the eventual like final product. And,~~ uh,~~ if you're interested in reading more about that, we did do a paper on this where we explored some of these ideas through the lens of like scientific. Writing and astronomy, and that's the JA Card paper on our website in Can switch.com/.
+
+**Justin:** Nice. Awesome. Yeah. For folks who haven't went to the Ink and Switch website, you definitely should. ~~Um, ~~there's so much, so many good papers, so much good research there.
+
+So to help people get a, a, like a fuller understanding of auto merge and like how it works under the hood. Uh, we've talked about CDTs a little bit, but like, how would you. Compare and contrast like auto merge to a traditional database.
+
+Okay. 
+
+**Peter:** so ~~in a, ~~in a traditional database, you have ~~a, ~~a table of things that can change over time, right? ~~Like. ~~The current,~~ uh, you know, ~~are we going for lunch for tacos or pizza? ~~You know, ~~you would call, use SQL and call, update and replace the value. And then there's this whole idea called acid, right? ~~Uh, ~~atomic. Oh geez, I durable, ~~uh.~~
+
+Whatever. You can look it up on the Wikipedia page if you need to know. I'm past all that. Now we're into,~~ uh,~~ into calm land. ~~Right. ~~And ~~it's, ~~it's consistency is logical. Mono tenicity. ~~Right? ~~And so the idea is that instead of being acid, you're calm. And so when you want to make a change in a normal database, you have to grab a lock and you make an edit, and then you return the lock and there's lots of ~~like.~~
+
+~~You know, ~~view serialization code, and I come from like Postgres land personally ~~in my, ~~in my engineering background. And so ~~like, ~~there's a lot of effort that goes into making sure that things happen in the, in a single order. But if you're doing things on different computers and someone might be offline, you don't have that option.
+
+So the idea behind this, like logical modernity. Is, ~~you know, ~~monotone means always increasing or not never decreasing ~~in, ~~in the computer science literature. And so what happens is over time, if you want to change that value, what you do is you say, I'm replacing this value, I'm adding a new value at a new point in time.
+
+'cause you can't change the past, right? So you're just changing, you're introducing a new thing. And so the idea behind this kind of auto merg view of data is that rather than saying, I am editing the document. You say, I am proposing a new value for the document at this point in time. And that means that at any point in time, you can go back to earlier versions and you can actually rewind history and say ~~like, ~~what did the document look like at this point in time?
+
+And because you have this sort of,~~ um,~~ like distributed system thing, what we do is we use something called similar to a lampor clock. Leslie Lampor is a distributed systems writer. Maybe still is, I'm not sure if he's retired or not, but,~~ uh,~~ lampor clocks basically say ~~like, ~~this thing happened, not at this time on the wall clock.
+
+'cause you can never get two laptops to agree on a point in time. What you do is you say, this thing happened after that thing. So I don't know if we should get, ~~you know, ~~from the computer science perspective, I don't know if we should get pizza or tacos, but ~~like ~~if you said we should get tacos and then I said,~~ no,~~ no, I saw that and I think we should get pizza.
+
+That means something very different than if we both propose those things simultaneously. And so a lampor clock lets us order things logically so that when you have conflicting values, you can detect it. Because what you're doing is you're always saying, I've seen this and now I'm adding that regardless of what the time on your,~~ uh,~~ laptop says.
+
+And so ~~that's the, ~~that's the core idea behind building up like an offset based CRDT. Is that rather than replacing data, you're just adding new data. You can never undo what's been done. Time. Time just grows, man.
+
+**Justin:** Awesome. ~~Andrew, do you wanna do the future question?~~
+
+**Andrew:** ~~Uh, sure. Um, ~~so look into the future, which we love to do. ~~Uh, ~~
+
+
+#### [00:44:09] Future of Local-First Software
+
+**Andrew:** it's five years since that local first EPIs, it's five years since that local first essay. ~~Uh, ~~where ~~do you think ~~do you think the movement has been a movement, and where do you think it goes from here?
+
+**Peter:** ~~Uh, ~~wow. It's five years. That's great. ~~I mean, ~~bill Gates famously said,~~ uh,~~ people always. Overestimate what they can do in one year and underestimate what they can do in 10. And so almost 10 years ago now, ~~you know, ~~we started doing this work and said ~~like, you know, ~~the world could be different, computers could work in different ways.
+
+We could have a group of people, a community of people who are building technology, who are taking their time, who are dedicated to solving problems that will really help. Not just advanced distributed systems, but specifically advance science and communication, collaboration and help us, ~~you know, ~~be smarter both as individuals and as a society.
+
+And ~~you know, ~~when I see ~~the, ~~the progress that we've made, the fact that there's a local first conference sync conf and this community of people around the world, in Europe and North America and in and o other places all around the world that are talking about these issues. That just gives me so much hope about where we're going and so much excitement about how much progress we've made.
+
+But I think these are just the opening moves. I think local first software, ~~you know, ~~like ~~it's, ~~it's an important technological step, right? The ability to have privacy is huge. The ability to work offline and ~~like ~~remember offline doesn't necessarily mean that your wifi is off. It might just be like when you're working in Git, where it's ~~like, ~~actually, I just want to be left alone.
+
+Like I need to type in this text buffer by myself and not have anybody else typing in here. I'm trying to write some software or have my LLM write me some software or whatever, right? Like it's about creating pools of progress and then being able to bring things back together rather than all being slammed together all the time.
+
+But that's the beginning, right? Once you have that, great. Now we can do the interesting work, which just starting to say ~~like, ~~so why is there only one copy? Discord. Why can't I add features to Discord? Why is it that I can check source code into Git, but I can't check my TL draw drawings into Git. Why can't I version ~~my, ~~my figures?
+
+Why can't I, ~~you know, ~~share,~~ uh,~~ other kinds of medium, my Photoshops right? Inversion on that? And ~~like, ~~there have been small point-wise attempts to solve these problems. But the issue is that. Before we had these kinds of like local first foundational technologies. Everybody had to invent that whole stack underneath them for each app that wanted to do this.
+
+And so my hope is that five years from now, we're all taking local first for granted. I hope we don't talk about CRDTs at all. I hope there's a thriving community of people who are. Like in, in love with these things and who are spending their time eking out, ~~you know, ~~like fractional improvements with ~~like ~~the L one cache for, ~~you know, ~~whatever.
+
+Microcontrollers great. But I hope that most people just ignore it the same way. We don't think about, ~~you know, ~~how web RTC works or how, ~~you know, ~~batteries get charged. I wanna live in a world where that stuff is just taken for granted and where the conversation for most of us has moved forward. To these more social questions, which are like, how can we take advantage of this new ecosystem where we have these, ~~you know, uh, ~~superpowered ~~uh, ~~computing agents where we have people with real problems to solve?
+
+And where we have these systems that can be updated and modified. I wanna see a very different computing ecosystem than the one we live in today, where a small number of designers in very expensive California cities make all the decisions on behalf of the rest of us. I wanna see the power move back into the hands of individuals the same way.
+
+If you buy cheap furniture at Ikea, you can take it home and paint it a different color, or you can hire an artisan to design you a beautiful piece for your front hall. I want software to have that same culture of craft and not an exclusion to mass produce software. One where people can own the things that they have, where they can change them to meet their needs, whether they're personal needs for their own, ~~you know, ~~aesthetic preferences, whether they're organizational needs for contractual compliance, or just like business operations and where we're not in this world, where we're all beholden to a small number of big companies who own everything.
+
+So that's the dream. ~~We are, ~~we are embarked on this quest. ~~We're, ~~we're deeply engaged in this work and I'm ~~really, ~~really excited about all of it. And I really hope that,~~ um,~~ everybody who listens to this gets a little bit of that enthusiasm and starts to ask themselves, not just like, why don't I have my data on my computer?
+
+But like, why can't I, why can't I interact with computers the way they do in science fiction? Why can't I make things? For myself as easily as talking about it and where everybody has the ability to do that, whether they're software engineers or anybody else. So that's where we're going.
+
+**Andrew:** I certainly resonate with that vision. ~~Uh. ~~Like we, we live in a society of walled gardens and ~~I, ~~I wanna see those walls come down 'cause it'd be so cool to see what hap, like what will bloom when all of that is gone and when interoperability and local first is ~~kind of ~~like ~~the, ~~the first reaction.
+
+So thanks for coming on and talking about it. It is, it was ~~a, ~~a very fun time delving into these topics and learning more about them. So thank you again for coming on.
+
+**Peter:** Hey, cool. Thanks for having me. It's been a blast.
+
+**Justin:** Yeah, thanks Peter. ~~Um, ~~in and Switch has been, ~~you know, ~~and the work and the research that y'all do has been pretty fundamental in how I've been thinking about. Both the software industry and, and like my place in it. And I've had the great pleasure of going to all the local first comps and, you know, seeing you in, in this pretty tight-knit community, uh, in all these spaces.
+
+And I would again just encourage listeners to sort of like, if this is a space that you're interested in, if these kinds of things or things you talk, think about, definitely check out the Ink and Switch website, ~~like ~~check out the conferences and stuff ~~that ~~that run. ~~Um, ~~there's still a lot of work to be done in this space and y'all are doing a lot of great work and you know, it. It takes someone both putting a, a name to the thing that we want to build and making progress on it. So you are doing double duty in that, that regard. But, uh, yeah, I think ~~there's, ~~there's still so many challenges to solve in this space and I really just hope to see more people like chipping away at it.
+
+**Peter:** ~~Well, uh. ~~Everybody's welcome. Water's warm. Come on in. 
