@@ -1,0 +1,314 @@
+---
+title: Mike Samuel - Google Calendar, Temper Language, Web Standards
+youtube: https://www.youtube.com/watch?v=PsNo8LZkZEg
+spotify:
+tags: mike samuel, google calendar, temper, programming languages, web standards, tc39, w3c, security engineering, cross-language compilation, transpiler, java, javascript, closure compiler
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Mike Samuel, creator of Google Calendar and a programming languages expert who has spent 17+ years at Google working on security infrastructure and web standards.
+
+Mike shares the fascinating story of building Google Calendar in 2006 during the early days of Ajax and JavaScript-heavy web applications, when there were no module systems and teams were building bespoke tooling to make Java developers productive at producing JavaScript.
+
+We dive deep into Temper, Mike's ambitious six-year project to solve the "disconnected language islands" problem. Temper is a programming language designed from the ground up to translate well to multiple target languages, allowing developers to write libraries once and support all major programming language communities.
+
+Mike also discusses his work with TC39, W3C, and CalConnect standards committees, his tenure on Google's security engineering team supporting 10,000+ engineers, and his vision for the future of cross-language software development in an increasingly multi-language, AI-assisted world.
+
+- https://bsky.app/profile/mvsamuel.bsky.social
+- https://github.com/mikesamuel
+- https://temper.systems/
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:02:00] Building Google Calendar in 2006
+[00:10:00] Early JavaScript Ecosystem and Closure Compiler
+[00:17:00] Security Engineering at Google
+[00:20:00] The Kaja Project and Object Capabilities
+[00:28:00] WebAssembly and Runtime Philosophies
+[00:35:00] The Problem of Language Multiplicity
+[00:40:00] Introducing Temper: Cross-Language Translation
+[00:50:00] Language Design Constraints
+[00:58:00] Literate Programming and Developer Experience
+[01:08:00] AI, Security, and the Future of Software Development
+
+{/* TAB: TRANSCRIPT */}
+
+# 159
+
+**Mike:** [00:00:00] our goal is really, allowing developers to support many language communities with libraries and libraries need to have idiomatic interfaces, and I think any overarching framework would not capture kind of idiomatic.
+
+​ 
+
+
+## Introduction
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people who make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. We're really excited to have Mike Samuel on with us. Uh, Mike, you're another Google powerhouse. It feels like we've had a few of those on lately. Uh, so, I mean, you're. Pretty legendary. Uh, you created a Google Calendar, uh, which I use every day, uh, sometimes much to my chagrin, but not because of your work.
+
+It's, uh, it's a wonderful tool. Uh, and I, I have, my life is filled with colorful blocks, uh, [00:01:00] and I'm really excited to talk about that and some of the other work, uh, that you're doing now. Uh, but before we dive into all that, why don't you give us a little backstory? Uh, how did you get to where you're at?
+
+**Mike:** yeah, thanks so much for having me on. I'm a programming languages person. I, yeah. Did Google Calendar, obviously partly 'cause I have a strange relationship to time and the only way I can keep myself organized is, externalize that.
+
+Um, but yeah.
+
+I. Uh, am a programming languages person.
+
+I've dived into, you know, web development, but I keep always circling back to, uh, to programming languages. Partly it's, you know, do something that's not programming languages. Do something that's not developer tools related. And find out something that really, really annoys me. And then at some point, you know, the, the urge to kind of go fix that problem takes over and, dive back into languages and dev tools.
+
+And then, hope sometimes I solve a problem, [00:02:00] sometimes I don't, but do something else interesting and, and end up, you
+
+know.
+
+and so my outer loop is kind of, do get very frustrated with thing. Try to fix that frustration. Maybe you bat 300 and that's pretty good. But yeah, I've done some things that people have over the years.
+
+**Andrew:** Cool. Let's, let's start at the top. 
+
+
+## Challenges of Building Google Calendar
+
+**Andrew:** Google Calendar, big one. You built it in 2006. Uh, building that at that time, like was, it was a different era of the web. What challenges came with trying to build like such a full featured calendar in the web? Because back then, like, it's hard to believe these days people didn't look at the web like they do today where it's like a bunch of apps, Gmail and Google Calendar and a lot of other Google products kind of. Changed the, the vibe there. So like ~~how,~~ how was that developing it back in the day?
+
+**Mike:** Yeah, so I think it might have been Google's third JavaScript heavy web application. And, and people were, Ajax was the big [00:03:00] term at the time, asynchronous JavaScript and xml. I, I think XMLs forgotten. Um, but yeah. Um. It was very much roll your own. And so there were no large JavaScript libraries. I think jQuery was probably a glean in somebody's eye. ~~Um,~~ but~~ uh,~~
+
+JavaScript.
+
+did not have a module system and so it was very much kind of like trying to build these large JavaScript applications. ~~And, and,~~ and what did we have? We had a lot of people who knew. Nominal typed languages like Java. And so it was a lot of bespoke tooling to try to make, people writing in static languages like Java, productive at producing JavaScript ~~and, and,~~ and Google and the other, players.
+
+Yahoo was very big at the time. Um, Microsoft as well, obviously, were. Up an ecosystem, bootstrap that ecosystem. Um, and so, it was very [00:04:00] interesting, um, I think a precursor of, uh, we had a precursor of types which kind of had overlaid a. A Java like type system on top of what we were doing. But of course, there was no class syntax at the time, so you were still, making, uh, classes and trying to model your problem domain. By by, by tacking pieces onto functions. Right? And so, I, I think, uh, a lot of where we are in a much better place ecosystem wise today than we were then. But, uh, but yeah, I think a lot of, i, I and, and others working with me on, on Calendar and, people at Microsoft and Yahoo were doing and, and obviously the, the Gmail and Google Maps people, I think we uh, figured out an awful lot of like what is missing from the JavaScript ecosystem.
+
+And though we didn't actually fill those gaps, that what kind of [00:05:00] came out of that discussion was how do you take, dynamic languages where you're shipping the source over to the browser and build good tooling around it. Bundlers type checkers, linters all those and, experiment frameworks.
+
+All of that kind of grew out of, of a lot of the experiences that we had.
+
+**Justin:** So is that sort of the start of the closure compiler? 'Cause I, I think that come close. The closure compiler was like released like in 2009 or something, but I assume that it started well before then.
+
+**Mike:** Yeah, so closure compiler, actually I, I believe an early
+
+version of Gmail shipped with the closure compiler using the closure compiler. And so you think of closure compiler as this combination of. Code quality checker.
+
+It does some type checks and bundler and unifier all in one. Actually, the first version of Gmail shipped with it as a dynamic [00:06:00] just in time bundler. So, uh, Gmail started off with an experiment framework. Maybe, if you are in Google, you're opted into certain pieces of, javaScript and, and web content. ~~Um, ~~and it, you know, it was part of our localization story, right? You get strings for your locale. So if you're, if you're using Gmail in, Canadian French, then you're going to get those translation strings.
+
+Those actually would appear as just lists of strings in the JavaScript. Um. So we're taking all this content from various places, uh, CSS translation strings, Java Script, smushing it together. Um, and, mapping identifiers that appear in code, in and in CSS together, taking all these things, taking some experimental code that your account has opted into, compiling it all into a bespoke. Of [00:07:00] JavaScript just for you and sending it down the wire. So, yeah, it actually started off not as an ahead of time bundler, but as a, just in time Bundler specifically built for Gmail, and then it got factored out and that is what finally made it into, um, the open source, ~~uh, uh,~~ closure compiler tools.
+
+It was actually just called JS compiler inside Google. And then eventually the, the term closure became our branding for that ~~and, and,~~ and some template languages.
+
+**Andrew:** Cool. 
+
+
+## Transition to Security Engineering
+
+**Andrew:** So after that, uh, you went into the security team, you looked at everybody's code, seemingly at Google and did a lot of interesting things. Is that where you started to gain the vision of what you're working on today by like seeing these cross-cutting problems across this enormous company?
+
+I.
+
+**Mike:** Yeah. So, um, I think, kind of, I actually did a, a left turn, like you said, from Google Calendar into security, uh, engineering. And, and that was partly driven by Google Calendar. So I was thinking we've got, we're building [00:08:00] this heavy, interface for calendaring. Um. A lot of people have very kind of task specific understandings of time, so, lawyers have dockets, doctors have rounds. People who, they may not speak any English, they're not well served by the web as a whole. They probably have other ways of doing things, village life in, in, in some, place with, ~~you know,~~ poor internet connectivity. Right. It doesn't make sense to have a Silicon Valley. User experience designer paid several hundred thousand dollars. The economics just don't work. So could we democratize to some degree the. Interface to, to calendar. Um, and it turns out that very much depends on, security concerns. Can we allow somebody to create a craft, a custom user interface that [00:09:00] serves, some small user community that they understand really well? Without opening people up to abuse. Right. Their personal data.
+
+getting phoned home and that kind of stuff. Um, and so this isn't, yeah, I, I got into security engineering from there and, and never did solve that problem. 
+
+
+## Exploring the Kaha Project
+
+**Mike:** Um, but that kind of led to the Kaha project, which is a, uh, object. It's a programming languages object capabilities version of, of kind of the web stack language. Um.
+
+**Justin:** I'd love to talk a little bit more about that. I hadn't, I hadn't heard of that problem. Um, I, I was thinking, being that you're, you're, uh, a pl guy, I was thinking about, uh, the fact that like, when I've come into the, the web world, there's, it, it's easy to see it as a compilation target and we treat it that way, and, and if you think about like how people are writing a lot of, like, web applications today, a lot of folks are using like, let's say, like [00:10:00] React and tailwind and, and things like this, and they're, they're distilling it down to almost this, um.
+
+Single language. That's, that's, uh, a rough approximation because, it's, uh, JavaScript and a bunch of other, other things into the hood. But it's interesting that we have like H-M-L-C-S-S and JavaScript of these like, compile targets. So I'm curious, like this project that you're mentioning, how you were like thinking about that and what the shape of that was.
+
+**Mike:** So, uh.
+
+**Andrew:** haha. Uh,
+
+**Mike:** it's,
+
+it's a programming language approaches to security kind of project and, and, and just kaha in in Spanish, it means, um. Strong box cash register, something, you know, a box that you use to protect something valuable. I think it's, it's cognate with kaisha in Portuguese, which I think means bank. Um, and
+
+so it, it's, it's,
+
+we
+
+named the project after
+
+these kind of, the idea of containerization [00:11:00] within the browser. And so we ended up.
+
+of the browser, and that allowed us to, you want multiple independent pieces of code, uh. Operating together without, each being able to protect, protect their security properties from the other. Um, and, and so, object capabilities are an approach to that. It's the idea you can have objects that they have some private state, they. Maintain their own in variance. Right. These things are true no matter what methods you call. Um, and you can hand off authority, right? The right to write, the right to render something into some dom subtree is, linked to some object and I can deny access to, pointers, right? By reasoning about how values flow through the [00:12:00] system. A, a skill programmers develop just in the course of like learning languages and debugging programs. So, by following how values flow through the system, you're also modeling how authority and privilege flow through the system. Um, and, and so, we. Scott, like, I think we were successful in our language design goals. We were not successful in getting this adopted by, the developer community at large. Um, but what we did, I think spawned a huge amount of kind of web security research. ~~So, it,~~ I think ~~as a, as a, as a,~~ as a programming language project, I, I think. We failed as a, making the web safer for, people, their privacy, all that kind of stuff. Um, I think we did a lot of, really good work. So,
+
+**Justin:** So the language was mostly as much about like exploring security on the web and like how you build things for the web in like a safe way. ~~Um.~~
+
+**Mike:** [00:13:00] yeah, and, and I think if I, I was, obviously younger than, um, how time works, but maybe~~ if,~~ if I had to go back and tell my younger self something. Um, I think object capabilities are a lovely approach that, that I use in my own work. I'm a, a big kind of. Reliable systems are my jam, right? Um, but I think it's not for everybody. I think, you know what I would go back and tell myself, if I could, is focus on, crafting languages and tools so that blue teamers, right? ~~The,~~ the security folk who, focus on defense and on supporting developers so that blue teamers can. Audit, large amounts of application code efficiently and help, assist developers in, in the kind of security properties that they're interested in. Um, so focus on making best practices, [00:14:00] the easiest practices, and also in smoothing interactions between, developers and, DevOps and, blue teams.
+
+Um. So, um, I think that's yeah, ~~the, the, it's,~~ it's very hard to impose discipline on large groups. There's a lot of kind of friction there. And until you've got a developer community that has bought into your goals, you're not gonna be able to buy fiat, use this jo this language instead of, this.
+
+other language 
+
+
+## WebAssembly and Its Implications
+
+**Andrew:** Yeah, while we were talking there, a lot of what you're saying reminds me of Wasum, like we have this containerization, primitive now it's a a little more heavy handed than I think what Kaha did. Kaha seems like it's a little more fine grained to your application. What are your thoughts on, uh, wasum after doing all that stuff.
+
+**Mike:** ~~Um, uh, I,~~ I do the Knackle, ~~uh, uh,~~ NACL native client, um, about the chemical symbol for salt. Um, and, and so they were very much doing, [00:15:00] um, object capabilities from the point of view of instruction sets. And I think, then Mozilla came up with ASM js, which is we can pick a subset of JavaScript that has ~~where,~~ where the semantics of it. Like it's a JavaScript, but you're, you're using, doing things with numerics where it's very clear what you know, that this variable only holds a number. Right? And so, you're not saying it's a number, but you're doing things like oring things with zero. So only a number could come here. Now we can use that to do. Very efficient, uh, compilation. And I think their experiments with that led to Wasm, which I think they were like, we're not doing native client, we're not gonna standardize that. Instead let's standardize this ASM js. And then they're like, oh, we learned so much from this. Now we're gonna standardize something that looks an awful lot like native [00:16:00] client. Um, and I think they ended up with a wonderful, uh, kind of instruction set. Have very interesting things to say about how do we do cross platform kind of compilation. I think the was and runtime is interesting. I'm less I find the containerization aspects less interesting. I think, you know your claims about the containerization. You can use an external kind of system called interception facility and get. Everything that you want, but you know, there is to some degree value in being able to run, like a was and runtime alongside something else. I think it's, other than that, I think it's, it's like growl, like here's a really good runtime, um, with kind of an instruction set definition that solves all of your kind of cross-platform [00:17:00] problems. And we can run multiple things next to each other. Um, but a lot of times you don't have control over the runtime. Um, and so it's, it's not a broad based solution to. Like if you're doing a programming language and you're gonna compile the binary and you control your runtime, wasm is a, is I think, a wonderful choice, um, for, for kind of building your runtime.
+
+But ~~I, I,~~ I think these, one runtime to rule them all approaches. You, I think they're interesting.~~ I, I,~~ I don't think they're actually them all right. I think gonna win, I think greater penetration, market penetration than, than it has.
+
+**Justin:** Yeah, it's, uh, I think anytime you, you sit out with a project like that and you're trying to solve, like everyone's problem, you're techn.
+
+Either gets like so overloaded or you [00:18:00] know it like you, you have to compromise somewhere, right?
+
+**Mike:** Yeah, and I, I think, kind of the, the one thing that Wasm doesn't have and, and it's an intentional choice, I think probably the right choice is it doesn't have an object model. Um, and I, I think the WM interfaces, I think there's, there's a sub project, WY or something, which is, is, is, is trying to address that problem.
+
+And, and, and it's a very difficult problem that they're, they're biting off, right? You've got small string optimizations, you've got like big end optimizations, which. What am I, what is this data? It could be a pointer, it could be something else, right? Um, and so there's low level problems with having an object. And by an object model, I mean, you've got some value and you need to be able to ask it questions, call methods, get properties out of it.
+
+And so, a question might be like, what is the third [00:19:00] character in this string? And you, that that's a question that doesn't make sense across programming language definitions at high level semantic levels. And, you can't just, and, and many language runtimes at the low level, they also have different ways of answering that questions.
+
+Again, small string optimizations, for example. Um, and so, you, it's not trivial to just say, I'm gonna have. Rust, traits, um, so yeah, like, ~~I, I,~~ I just yeah. Wasm is a very, is a solution to a very specific problem and is a very high quality solution. ~~I, I, I,~~ I sometimes hear people and they seem to think that it's, it's solving more kind of programming language stack problems than it's actually, claiming to right.
+
+**Justin:** Totally. And I think that's a good transition. 
+
+
+## Introduction to Temper Programming Language
+
+**Justin:** So let's talk about what you've been working on more recently. Uh, so you have this. [00:20:00] Uh, company sort of around this, uh, uh, I'll say programming language, uh, temper. Um, I would love to learn more about like what motivated you to start that. Uh, starting a business around a programming language.
+
+Uh, it seems like a, a, a tough thing to do, uh, just like starting a business around a database. You know, these are like, when you have very technical products, uh, the, the, the business side can be hard. But I would love to hear like sort of what your motivation is and, um. Maybe, I dunno. Tell us more about temper.
+
+**Mike:** yeah. So, um. I guess we, uh, talked briefly about my tenure in, in Google Security Engineering group, and I think the last, ~~uh, uh, ~~I was at Google for 17 years and I, I left six years ago. My last kind of chunk of time there, I was on a team that was, I think there were 10 of us, and I think. Between us. Between us, we do a ridiculous number of programming languages.
+
+It's, it's the, if you're doing security [00:21:00] engineering work, you can't just learn JavaScript, the good parts. You need to learn the sneaky parts and the really, really bad parts, right? This is all defensive code, um, and, and so when I say, I know a language. ~~Uh, uh,~~ as a security engineer, it's, it's ~~you're, ~~you're focusing on, if Python as a security engineer, you write code and you're like, okay, uh, Python two, what, how the string, what the strings are depends on, w car flags passed to the compiler. So ~~it's, it's,~~ it's these little, strange things that you you're, you're always cognizant of, of, uh, corner cases. So we had 10 people who knew an inordinate number of languages used within Google. Despite Google's best efforts, to top down, say. These are the supportive languages. ~~Um,~~ and we were tasked with taking on kind of infrastructure projects, writing library code, improving, DSLs and build systems [00:22:00] and, and, and static compiler checks. Um, and, yeah, we had to be incredibly tactical. 'cause can you maintain. 10 parallel versions of a library that does some incredibly important task. and the answer is yes, but these, these teams are hard to staff. Right. Um, and the more I thought about it, I, the more I thought if we had one way of specifying a solution, ~~Um,~~ we could provide so much more value. And then I started looking into it, Hey, I'm maintaining this. Library in Java, which in HTML sanitizer, which is used by the, Android and iPhone Gmail apps, the, the iPhone, uh, app by, some J two objects, uh, Java to objective C translation, right? Um, there's nothing about H TM L sanitization that is specific to j the Java language, [00:23:00] right? The definition of here's the HTML. Grammar. Here's what makes HTML safe, right? I can take an email body HTML email body and turn it into something that's safe to render in the browser without risk of xss. That's just a string to string transform. Like I could have solved that problem for the entire open source community if I didn't have this language multiplicity problem. And as one does, you recognize a problem and you obsess about it. And if you're a little weird like me, you start seeing that problem everywhere. Um, and so, uh, I left Google for a host of reasons, um, on good terms. ~~Um. Uh,~~ but you know, mostly due to do with where I was in my life, right? Um, but, uh, I left Google and I started looking into it and digging around and, and doing comparative programming, language linguistics, [00:24:00] which, not really a thing. Um, and I started to look at like what is actually preventing us from writing a library once to solve a problem. I want. People who think deeply about a particular problem to be able to support all the programming language communities. And, and so part of it was just really crystallizing that goal. But also I did a lot of this comparative linguistics and realized, no, I, I think there actually is a, usable language in the middle of all these kind of, intersecting. Con. Um, and so that's what I've been working on. Yeah. Just a programming language designed from the ground up to translate well to all the other languages. Kind of going back to, rather than having one runtime to run all the languages, this is one language that kind of works by translation and fits into any runtime. ~~Um,~~ and so it, it, to some degree it's, it's the flip, right? I'm not trying to solve the same [00:25:00] problem as spam, um. I'm, I'm solving something else, but, but the real goal is, allow everyday programmers to who, understand some problem domain really well, to support all the other programming ~~language,~~ language communities with a library that kind of encapsulates their knowledge about that problem.
+
+**Justin:** So this is, this is so fascinating. So you're, you're sort of building this, the highest level language that just like trans compiles or compiles into target languages in, in all the different places. Um, are, are there things that you explicitly like. Hey, Elling, to like this kind of language is like, this is outta scope.
+
+You know? I'm like, not trying to, hit everything, ~~but like.~~
+
+**Mike:** And, and so, yeah, I mean, I think broadly we talk about language paradigms, right? And ~~there's,~~ there's functional paradigms and there's object oriented paradigms, and then there's logical paradigms. ~~And, ~~And, I think, if you did, uh, a programming languages [00:26:00] course in university, you probably heard about prologue ~~and, and,~~ and the, ~~and, and, and,~~ and prologue gets.
+
+It's a full fledged programming language, but you're probably not gonna write, um, doom in it. Right. Um, I mean, somebody probably has, but, um, it, it's, yeah, it's, so there are, I think we fit squarely into the kind of light object oriented, right. Uh, but with functional affordances, um, scheme. Kind of imperative functional language where you've got mutable state, we can do that well, so we can do your lists, we can do, uh, JavaScript is, is, functions as values. It's functional in that sense. Pure functional languages, it gets a bit harder. Often they have very particular constraints around things like effects.
+
+Right? And so, uh. And a language like effect is probably gonna be [00:27:00] harder for us. But you know, I I, it actually turns out functional languages. You can there are ways you can bolt this on object oriented languages like Java and C um, easy for us, uh, JavaScript and Python. You've got classes you can change.
+
+Those classes, we just translate to classes that~~ we don't, ~~we don't use that extra dynamism. Right? And so that's also a sweet spot for you. The emerging consensus, it, it went from the seventies and eighties where maybe we have languages and we built the database in, um, or very memory oriented languages like COBOL and Fortran where you're like, I think about how I'm gonna lay stuff out in memory and how I'm gonna move data through the memory and transform it, and I don't really think about values, pre value orientation languages. Uh, surprisingly, I think, we have something useful to say there, but, but yeah, they're very different ~~and,~~ and require kind of~~ a, a, a,~~ a somewhat different approach. 
+
+
+## Designing a Multi-Paradigm Language
+
+**Mike:** But yeah, [00:28:00] that, that's what we're aiming at is, uh, a language that is very familiar to everyday, programmers in the, combination of, of functional and object oriented, uh, that I think, ~~uh,~~ Martin Osky, uh, described very well with Scala. Um, but you know, we're not aiming at ATS user base.
+
+**Andrew:** So when designing this, like this language of languages, like are you constrained by the languages you compile to do those languages influence decisions you make in temper?
+
+**Mike:** Yeah, and so that's one of the reasons why I spent years doing comparatives was just to understand, and I think that's what differentiates us from. Uh, it's a JVM language that [00:29:00] calls itself a multi paradigm language. So it's, it's very functional, but it also interfaces with Java Code. Well, that's object oriented. Um, and, Scala works on the JVM. It also translates to JavaScript. There's a lot of languages out there that translate to JavaScript.
+
+I think, uh, even some of the new Beam VM languages, like Ang and Gleam uh. What they don't do though is they don't tend to take the next step and like there's a lot of Python code out there and it would be awesome if we could just interact with, a data scientist's Jupiter notebook, right. They don't do that, and that's Python, uh, for a variety of reasons is just harder. Right. Um, and, uh, Scala tried to get running on the.net runtime. So C for example. Right. I mean, you would, you would think F sharp and Scala actually seem to have a lot in common. [00:30:00] Already interacts very well with Java programs, right?
+
+You can make mixed programs from Java and Scala run them in the same vm, no problem. It turns out, C, the net runtime, uh, I don't wanna get too jargony, there's, it has a limited form of mono, which complicated that incredibly, and especially the way like. To things like integer, and interactions with that ~~and, and,~~ and so despite putting quite a bit of effort into it and never. Run the runtime. So yeah, if you wanna run inside many, many, many runtime, you need to look at these and make very specific choices and bite some uncomfortable bullets, um, early in your, your language design process. And so that's what, that's really what differentiates us. We've designed specifically with this goal in mind.
+
+**Andrew:** So [00:31:00] at the start you had like a set of languages that are like, these are the ones we'll support. And like, it's not, I, it'd be infeasible to fold in more after the fact since you've already made all these decisions.
+
+**Mike:** Yeah, there's, there's, there's no kind of real, it would be nice if there was some, overarching theoretical framework where we're like. Now, we, we've described each of the existing programming languages in this overarching theoretical framework. And now here's, the language design falls out of that theoretical framework. And, and that's, it's, it's not how language, the way language semantics are done. It, it, it just, there is, and I think our goal is really, allowing developers to support many language. Uh, communities with libraries and libraries need to have idiomatic interfaces, and I think any overarching framework would not [00:32:00] capture kind of idiomatic. And so what we really are doing is picking a set of definitional elements that translate well, and then doing some ALS and, and augmenting that with, um. Some very careful API design so that we can get consistent semantics around weird strings, right? They started off as a raise of bites, and then we realized, hey, the world doesn't just speak English and a little bit of Greek, right?
+
+I, I forget exactly what's in the extended asce, but, um, and, and so strings went from a fixed, wicked ENC coating. UCS two, another fixed width in coding just twice as large to UTF 16 and UTF eight, which is variable length in coding. Right. So, yeah, we're [00:33:00] combining, very specific design choices around language definitional elements, um, to that map well to the 20 most popular industry programming languages today. Hopefully 10 years from now, they'll still serve the 10 most widely used programming languages. Um, and so that's, that's kind of our, our goal And, yeah, an understanding of our user community. You shouldn't need to understand the idiosyncrasies of memory management in 10 programming languages to be able to, uh, write libraries with us and then that focus on, on idiomatic. Um, and, and so that's, yeah, it's, it's, it's kind of like, is there any reason can you construct a language or can you pick an existing language that, that we can't translate to? Yes. Yeah, sure. But you know, it's, it's by analysis of programming languages, understanding the trends in programming, language development so that we can try to, abstract that out [00:34:00] and, and produce something useful. And I think if we're successful, to some degree. ~~Uh, ~~we will shape our own future. Right? So, one strategy is, is get big enough, fast enough so that, um, you affect the conversation in ways that, uh, continue your value forward. Right?
+
+**Justin:** Yeah, absolutely. So if like. Enough folks are using temper and writing libraries in it. Then the downstream language is like, okay, you know, I'm thinking about these constraints or adding these features, but this is actually gonna make it harder for people to interrupt with. So like, maybe I'll like take a different path or simplify or something.
+
+Yeah, that's definitely a a, an interesting strategy and I. We kind of see that in, in some places too, of like, especially like compiling to JavaScript, which you mentioned being like this thing that sort of ends up shaping how people are thinking about programming, language and design, which is so fascinating to me.
+
+
+## Literate Programming and AI Integration
+
+**Justin:** Um, [00:35:00] I want to talk a little bit about the experience of writing a library in temporary. Um, so I've noticed just like digging through some of the, the samples and some of your, your past talks that, um. A lot of the expression of, of temper code right now is, sort of an illiterate programming style.
+
+You have this markdown where you have like your, uh, this sort of like pros, your, your sort of description of what's happening. You have your, your temper definitions for, for logics or the logic or types. And then like even tests, sort of like being co-lo coded in this, in this like markdown file for this feature.
+
+Um, talk a little bit more about like the explicit design, um, and like sort of. I don't know the, the, the experience you're going for here and how you, how you think, like people writing temper, like what, what it looks like for them.
+
+**Mike:** Yeah. And so, ~~um,~~ I think ~~uh,~~ there's a, you can write a file and if it ends with it's, it's just code in a language that. Like I said earlier, looks a [00:36:00] lot like TypeScript, right? We wanted, I, I'm not interested in doing syntax design. I, I want people to be able to read it easily. Um, but yeah, you can also, uh, write a.md file and if you indent your code by, four spaces, then that's an UNFENCED code block and we just pull that out. Um, and so yeah, the idea here is. I think programming goes back to, uh, is it kth with, uh,
+
+**Justin:** Yeah, it's got a long history.
+
+**Mike:** yeah. And so, I think Kth had some very explicit goals. ~~Um.~~ Some of which worked and some of which didn't. So I call it semi literate programming. ~~Um, ~~Knuth wanted a, a set of macros that would allow for natural language style coding. That was very much back in the day. That was an interest. And, COBOL obviously build itself is, here's a [00:37:00] language that. Enough to English that a project manager can read the cobalt code. Now it turns out cobalt is also incredibly verbose. So you can read it, you probably wanna read 50 pages to, where ~~a, a,~~ a two paragraph English synopsis would serve, but you know, you could. So yeah, it, it's, it's jettisoning those goals. And the idea here is. Libraries have a narrative structure, right? It's not a program which starts at a particular point and ends at a particular point. A library is a toolbox, right? And so you can start off in your markdown by explaining, here's the problem we're trying to solve and why, right?
+
+And then you indent some code. Here's a definition, here's how we're expressing. And so, the, the natural language pros. ~~Um, ~~what and why the code gets into how, and then for example, and now we've got, [00:38:00] uh, some unit tests and so that, ~~it, it's,~~ it's kind of the, the goal here is allow for storytelling, right? ~~Um,~~ and, ~~uh, yeah. Um. ~~We just pull out the code parts, uh, reorder them based on some dependency analysis and then translate them. But the markdown is really a first class part of the ecosystem. So I, I think I refer to Jupyter Notebooks, I is a huge amount of interesting stuff on how data scientists, I think, uh. We could learn more from how data scientists work in, in, in producing, languages for, more traditional developers, but. Uh, Jupyter Notebooks are not a first class part of the Python ecosystem. You can't go from a Python file and import a notebook, right? Um, and, and so I think, we made a very intentional decision design, the module system, the library system, the packaging ~~and, and,~~ and these high level, uh, [00:39:00] groupings upfront. And make sure you know where we're doing this embedding. It's also a first class part of the ecosystem. It works with imports, it works with our dependency analysis stuff. Um, but then I think there's another
+
+goal here and,
+
+you know, we want problem solvers to be able to solve a problem.
+
+comprehensively across, you know, the open source ecosystem. Or across a closed source organization. Right. Um, a, a silly example, it's, it, it seems trivial. How many weekdays are there between these two dates as far as the organization counts. Right. You know, that's kind of something. You should be able to solve, you might be able, you might need to do that in a Monte Carlo simulation, you know, very fast in, in Python. You probably need to be able to do it in your customer management system when you're computing things about coupons. Right? Maybe that's written visual basic. Um, and you know, you probably need to do it in backends and maybe [00:40:00] on your customer facing mobile apps, right? So, kind of solve that problem. That requires input from developers and subject matter experts. Right. Um, I had, you know, the subject matter experts who do not have computer science degrees, you know, often their lawyers or their business development folk. Um, and so, the way I see this working
+
+is.
+
+is. 
+
+You draft out a document in markdown or maybe a more traditional standards format, like, bike shed or EC markup or respect, right? One of these formats, um, maybe the subject matter experts contribute. Most of the pros, the, their eng, their, their engineering point of contact is going to write the code that implements that. Sides might be implementing tests. Right? Tests tend to be pretty formulaic. It's actually, I I, I I worry about the overuse of AI [00:41:00] methods in, in producing code.
+
+So, our translation is all power methods based, right? Um, I, I think there's opportunity, but I think one opportunity for it is, a, uh, a subject matter expert. Maybe they're a social scientist. Uses AI to, to turn their description of a corner case into a unit test. Maybe that unit test compiles, maybe it doesn't, but they can add it to the doc. Um, and they can say, here's in,~~ in, in ins in~~ in human language. I don't wanna be too English ~~in, in,~~ in pros. Here's why this corner case is important. Then, indented four
+
+Things test. 
+
+**Andrew:** So the literate programming style. See, like I love how you, you talked about Jupiter, like it's odd to me now that I think about it, that we don't have these environments that kind of match how we would want to develop things. Like it makes a lot of sense. Like I'm writing a library, it needs [00:42:00] documentation. All one file. And then that being like the unit of, of thing that like is really cool to me and an interesting idea. Uh, but the literate program style also seems to really go well with like AI and what we have today. Like you just being able to describe a thing and then like that's the first thing you do.
+
+Then the second thing you do is implement. It's like, it feels like that feedback loop is probably pretty powerful within temper.
+
+**Mike:** Yeah, ~~if,~~ if you want to be able to use AI tools, um. Refactor code or extend it or add to it. Um, having that context about why we're doing things right there. Right. I don't have to assemble like my documentation, I, I think. Documentation does get out of date even where it's, when it's living right next to the code that implements it.
+
+But, I think, yeah, um, having, having that documentation that is, is readable by the subject matter experts, but [00:43:00] also by AI tooling and by the compiler, I think, um, gets you that, that. The, the, the context that works on multiple levels. The why, the how, and yeah. Like also just rerun these tests internally. Um, uh, when you are doing your, uh. Stuff afraid up, speed on techniques, but of theology, I, I've never really seen crisp definitions of what,
+
+**Justin:** Yeah, and the space is moving so fast too, that it's like, unless you're like really working in it every day, it's hard to stay on top of. 
+
+
+## Future of Software Development with AI
+
+**Justin:** I wanted to, I mean, we're on the topic of AI and usually as we're wrapping up, we always like to ask a future facing question and, um. You have this long story career working across, uh, large applications, across security domains [00:44:00] where you have to go deep on languages.
+
+You're thinking a lot about how people write. And share logic across ecosystems or do you know, security audits across ecosystems and you're building this language that can transpile itself into a, a bunch of other target languages and trying to think about languages and ergonomics and everything as you're doing that.
+
+Um, and this is like an incredibly interesting and valuable tool. And at the same time, there's this sort of like. Shift in the industry about how people are writing and thinking about code? Some of it good, some of it not good. Um, a lot of folks are using AI as a translation layer between, libraries.
+
+Um, so they'll be like, oh, I, I see this Python library. I want JavaScript. I'm gonna like throw it in Claude and ask it to do a thing. And it like, spits out something. Um, the, the thing is there's a separation and a divorce between like intent and knowledge and like. The thing that jumped out to me earlier as you were talking about, like, as a security engineer on a language I'm thinking about [00:45:00] like how to string allocation work, at the baseline level.
+
+Because there are those things that you can use a language like in a very valid way, and it's like unsafe, uh, because you have to know some of those underlying semantics. And then I'm just curious about like, as you think about. How we build software going forward. How you want to see us build software going forward and like maybe the, the trends that AI are pushing us in, like, um, what are the opportunities that you're excited for with temp or just like the industry and like what, like worries you, uh, about some of these shifts.
+
+**Mike:** So what worries me about the direction the, the software practitioner in kind of
+
+our industry.
+
+is, is headed as a whole or.
+
+**Justin:** Yeah. Yeah. If you had to, if you think about like, well, let's just start with opportunity. Like, so you're working on temporary, you, you, it seems like there's this fantastic opportunity to sort of like help people write you reasonable code. So let's, let's just start there. Like what is the, what is the opportunity for us going forward, uh, when [00:46:00] we think about how we write software?
+
+**Mike:** Yeah. And.
+
+so, I mean, I think, um, you, you mentioned security ~~and, and,~~ and this is something obviously ~~it's,~~ it's on my mind because it
+
+it has, it's a life that I, i've lived. ~~Um, and,~~ and I think, ~~um, you know, the~~ the bear in the room is ai, so uh, elephant in the room, uh, it's in the room with us. ~~Um, you know,~~ and I think, uh, AI for coding is a lot less problematic than the effect of AI on, for example, elementary school education or, uh,
+
+artists and musicians who
+
+who create copyrightable works for a living. Right. So just ~~I, I, ~~I think, um, but we do wanna encourage responsible AI use, and I think today's. Systems. The systems we build, they're multilanguage systems. We've got, you mentioned like JavaScript heavy apps. When I was working on Google Calendar and. It was not app based. You had a website. You visited the website. The website [00:47:00] talked to a server, the server talked to a database, we're all friends, right? Um, but you know, today's languages are even more multi-language than before. We've got, data scientists. Working in Python, we've got the web stack. He is heavily centered around JavaScript and Wasm. ~~Um,~~ we've got backend languages used, usually done in a language like Java C where you can get, hundreds of people working on essentially the same program, um, or lots of people building microservices, right? These, the, our, our, our systems are multilanguage systems glued together by Js, OH. This is not where any, distributed systems academic would've predicted we would end up with, but it is what we're dealing with. And so I think, I think the, the where temper can really add value is we can produce more robust systems. Like for software to be good for people, it needs [00:48:00] to reliably do a thing that. We can produce more reliable systems, better serve our end users, if we can share across all those nodes in a system. If you know the data scientists simulations, their results are in fact accurate because their simulations of logic are actually using the same definitions that we're gonna deploy in production.
+
+Right? If, you know our mobile devices can operate in offline mode because. They can accurately simulate and, some of what the backend will do, if they were connected, right? Um, if you know all these kinds of, if we have the same type definitions on two sides of a network pipe and the encoding and decoding logic have some useful relationship between them, now we've got type guardrails. Maybe we can extend our static analyses, right? Our static analyses right [00:49:00] now, I'm analyzing your Python program, but it just gets a value from one web service and sends it off to another, right? Like that, that code that I'm analyzing, it's, it's, it's a, it's a little disconnected island. Can we start to stitch together our analysis if we have these common reference points? Um, and I think, to some degree. What are AI best practices? Nobody knows what those are gonna be yet. I think a lot of people are making predictions, but if one of the things that we seem to agree on is somebody who understands how systems fail, needs to look at the systems we're producing.
+
+If we're producing code in multiple languages, and we can get some of that. Uh, in a language that translates reliably to the other languages, that's reducing the manual review burden, right? If we can write tests and test all those translations by translating our unit tests, that gives us confidence about the system.
+
+And so I think, um, [00:50:00] as we figure out what are the ways, ~~what,~~ what, well. Software practitioners. What will software development look five years from now? Um, I think temper's value proposition is not like use this language instead of another one. Um, it's use it alongside these other ones and support, the larger development.
+
+But I think even within the most code is written by AI scenario, which, like, I mean. You ask AI to translate, a specification into code. Now, are you maintaining that specification and the code in Git? Or do you, like it's the code, right? Like, um, if you're translating something into five
+
+languages using ai. Are you now maintaining five things times as much in gi? No, I, I think, traditional compiler methods combined with AI are the probably only feasible [00:51:00] path towards like semi reliable software that kind of comes out at this ongoing discussion that we're having. And I think temper fits very much in that multiplier for kind of traditional compiler methods.
+
+
+## Conclusion and Resources
+
+**Andrew:** Well, it seems like you've built something really cool here. Uh, it's a grand vision. I hope it plays out. I'll be watching from the sidelines, but thanks for coming on and talking about it. This was a really fun and enlightening conversation around all the different language things that you've been around.
+
+So thanks for coming on and talking about it. 
+
+**Justin:** Yeah. Thanks Mike. Uh, temper's incredibly interesting. Uh, if folks wanna learn more about temper, where would the, where would you like to point them to?
+
+**Mike:** Oh, uh, I should probably have had that available. ~~Um,~~ so, uh, MV Samuel at On Blue Sky is where I, chat with people. Um, let me just drop you a, a link in the chat, um, with, uh, our, and we're getting to the point in the language where, um, it's still early adopter style, but it's getting to be a fun [00:52:00] language to work in. And, uh, yeah, that GitHub io slash tld, that's language documentation.
+
+**Justin:** Nice. Awesome. Well, thank you so, so much, Mike. This has been, uh, an absolute pleasure, uh, and excited to learn more.
+
+**Mike:** Alright, 
+
+​
