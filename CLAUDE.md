@@ -6,21 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 devtools.fm is a Next.js 15-based podcast website built with TypeScript and Tailwind CSS 4. The site features episodes stored as MDX files with structured content including show notes, sections, and transcripts.
 
-## Development Commands
+## Getting Started
 
-```bash
-# Development
-pnpm dev                    # Start Next.js dev server (port 3000)
-mise run dev               # Alternative via mise
-
-# Building  
-pnpm build                 # Full build with RSS generation
-pnpm build-rss            # Generate RSS feed only
-
-# Content Management
-pnpm create-new-episode   # Create new episode template in /pages/episode/
-pnpm publish-episode      # Publish episode (see PRODUCTION_PROCESS.md)
-```
+See [README.md](./README.md) for installation instructions, prerequisites, and available development commands.
 
 ## Architecture
 
@@ -56,10 +44,6 @@ Uses Tailwind CSS 4 with new CSS syntax:
 ```
 
 Dark mode is handled via `prefers-color-scheme`. DevTools DS themes (Firefox theme) are integrated for theming.
-
-### Environment Configuration
-
-The project uses mise.toml for environment management with Node.js 22.17.0 and pnpm 10.14.0. The configuration includes path setup for node_modules/.bin and automatic .env loading.
 
 ## Important Context
 
