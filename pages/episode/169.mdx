@@ -1,0 +1,351 @@
+---
+title: Paolo Ricciuti - Svelte, TMCP
+youtube: https://www.youtube.com/watch?v=2r25fPn95M8 
+spotify: https://open.spotify.com/episode/6dhVjzA4yVicT3Wfd6LCCj?si=tHoZz5iXQRKANBGrZu2sqQ
+tags: svelte, tmcp, javascript, programming, coding, developer tools, devtools, software development, web development
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Paolo Ricciuti, a Svelte maintainer and the creator of TMCP.
+We talk about his journey into the world of software development, his work on Svelte, and his new project TMCP.
+There has been a lot of changes in the Svelte ecosystem since we last talked to Rich, so we're excited to hear about the new features and improvements in Svelte 5!
+
+- Website: https://ricciuti.me
+- GitHub: https://github.com/paoloricciuti
+- Bluesky: https://bsky.app/profile/paolo.ricciuti.me
+- SvelteLab: https://sveltelab.dev
+- TMCP: https://github.com/paoloricciuti/tmcp
+- sveltekit-search-params: https://github.com/paoloricciuti/sveltekit-search-params
+- Speaking: https://ricciuti.me/speaking
+- Mainmatter: https://mainmatter.com
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Intro
+[00:02:13] From Fan to Maintainer
+[00:06:45] Svelte 5 and Runes Explained
+[00:16:22] Async Await and Remote Functions
+[00:29:41] Why Build TMCP
+[00:40:38] Better MCP Server Design
+[00:44:37] Svelte Custom Renderers
+
+{/* TAB: TRANSCRIPT */}
+
+**Paulo:** Data loading is probably the biggest hurdle for every framework. So like for every web app, that's the thing that you have to worry about. If a framework can help you nail down, the data loading pattern, that's a good framework.
+
+#### [00:00:25] Intro
+
+**Andrew:** Hello, welcome to Dev Tools fm. This is a podcast about developer tools and the people make 'em. I'm Andrew, and this is my co-host Justin.
+
+**Justin:** Hey everyone. Uh, we're really excited to have Paolo on with us. So you're of the Svelte team members, uh, kind of working a lot in that area. It's been a while since we've talked to anyone working on spelt. We had Rich on long time ago. Um, it's, it's been really a long time ago now, so excited to hear how things have changed and, and what you are cooking up. Uh, but before we dive in, dive into that, I'd love to hear a little bit more about yourself.
+
+**Paulo:** Yeah. Uh, I'm Paulo, uh, I come from Italy as the name might suggest. specifically I come from Campo Bus, which is a very small city in Italy, uh, that almost no one knows, even in Italy like. They jokingly say that, um, cent like Mo is my region, and they jokingly say that Cent that we don't exist, uh, because we're very small.
+
+Um, I work like, I lead the, this belt team basically at main matter, which is, uh, the company that employs me. Uh, we are basically a consultancy. Uh, we do. Uh, basically a lot of vel, rust, Ember, uh, we are like a high hand consultancy in the sense that we are not just like there to like do feature development.
+
+We also do that sometimes, but we mostly help you, uh, like. Even hire, like if you don't know how to hire, we can help you hire. We, we do what's called team augmentation, so we basically like join your team, like we work literally with you. We you make your code base better so that we can leave and you can maintain your code base in, in a better state.
+
+
+#### [00:02:13] From Fan to Maintainer
+
+**Andrew:** So is that how, what led you to being a spelt maintainer was, felt like one of those tools you, you reached for in those situations?
+
+**Paulo:** It's actually kind of the opposite, like in the sense that I actually found out this job because I love S Belt. So like they had, uh. They had a, um, a listing for veto developer and I, I, I, I actually discovered ve uh, I was in line for my COVID shot, so like in 2020. Um, and so I discovered Asel actually.
+
+Kind of late in the sense that like, when it started gaining popularity with VE three, so like, I, I re, I still remember I'm a huge nerd, so like, uh, when I, in my free time, I usually watch conference talks and stuff like that. So I was watching the, the, the, the conference talk, rethinking reactivity from Rich.
+
+like the moment he, he mentioned the fact that like, you can have a compiler. Do the work at Build Time for You. My mind was blown and I say like, why nobody else was thinking about this. And so like I decided to, uh, give Vel try. I used it for some side projects and I really, really liked it. And so then I participated in the Belt Hackathon with Belt Lab.
+
+Which is like a, a rapport to build application. And we won. And so like, I basically started to be, uh, always more involved inside this belt ecosystem. And at this point I usually joke the fact that like if it has the words belt in it. I'm probably involved in some way. So like for example, uh, I built this belt feed for the blue sky, uh, like the blue sky feeds.
+
+Like I try to be as much like, as much, uh, helpful as possible whenever I'm in a community. And so I saw the, the listing for this job and I said, yeah, that's my job also, because like it was a very interesting job. Um. We at, at wind matter, we also do a lot of open source. Like we have basically 20% of our time we can dedicate it to open source because we, we love to give back to the ecosystem that we drive on.
+
+So like, we build the libraries, we build, uh, like even just blog posts, like educational stuff and stuff like that. So like that was also one of the most interesting bit for, for me. And so I decided to apply. And then, yeah, I basically just, uh, being inside this wealth community, I, I was as wealth ambassador before, uh, which is basically a small circle of people that just talk about wealth all the time.
+
+And like this wealth ambassador is basically the inner circle. So like it's the first. Line of defense against a bad API basically, because whenever we came up with a, with an with some API, we tend to like give this API to these belt ambassadors so that they can like try out and obviously like get feedback.
+
+And so when I was this belt ambassador, I got access an early access to, there's about five and rooms, reactivity and stuff like that. And. I was, I in the past I built for fun a small, uh, signal based reactivity system. And so I said, you know what? I maybe can try to contribute a bit. And I started contributing.
+
+And I, as usual, like I, I am very deep on open source, like I loved contribute and so. I started contributing more and more and more and more. And then in the end they, they, they almost had to like, they say, okay, I really don't want because you suck. Now I'm joking. I don't think they, I, I hope they don't think that about me, but like, yeah, we, I, they invited me to, to be a maintainer, which obviously I said I'm more than honored.
+
+**Justin:** That's an awesome story. Uh, I, I, I am always struck how many, like open source stories are very similar and like often just very interest driven and you like get involved with the community and like start doing more and more and then like before you know it, you're helping maintain. 
+
+
+#### [00:06:45] Svelte 5 and Runes Explained
+
+**Justin:** Um, so it'd be great to talk a little bit about Svelte five.
+
+Uh, I mean, Svelte has seen a lot of, You know, changes over its life. I mean, we're on five, that's a, you know, pretty, uh, large amount of like major versions. And it, and I think it like, really reflects the learning and the iteration in the space. And like, the thing that I've really always admired about Rich is like, you know, his, uh, capacity to sort of like, learn from what other framework authors are doing instead of like incorporate the best of that into, into spelt.
+
+Uh, while still having a very opinionated core. Um, and so Sveltet five introduced this notion of runes, um, and it was a, it was a pretty big effort to get it shipped. Uh, so yeah, just, just tell us a little bit more about that. Like what's new in Swet five, what's this run thing all about? And maybe
+
+walk us through some of that journey.
+
+**Paulo:** Five was released basically like, uh, I think almost one year and a half. More or less. And it was a, a, a substantial rewrite of the, the whole compiler logic, the whole, like even the re the runtime logic because, uh, that four was more, uh, like all the reactivity was at compile time. Um, there was obviously a, a very small runtime, which was mostly like helpers method to create an element to like.
+
+Get an element to set the text of an element, but like this was just basically to avoid that extra boilerplate of writing the, the to, to the component. But all the reactivity was mostly done at. At compile time. Uh, however, like during the years of use, uh, like there were some limitation about the compile time reactivity.
+
+Uh, obviously there were not like very big limitation, but there were some limitations, especially when you reached a certain level, like a bigger code basis was like kind of difficult to work with reactivity. Uh, there was also another problem, which was that, uh, you. Couldn't use the, the compiled time reactivity in a TypeScript file because, uh, obviously like on the on ave file, we can act easily on a TypeScript file.
+
+You can't really interject like in, in between of the actual TypeScript compiler. So like, um, it, it was problematic in, in that sense. Uh, also because, for example, uh, for a reactive, like a label statement, we use like the, the label, which is an actual syntax in JavaScript. So that was like a very nice thing.
+
+Like it was very short, very nice, very easy to to remember, but also like you could not. Type that with TypeScript, if you wanted to put that inside a TypeScript file that was problematic and stuff like that. So like, uh, we, and I mean mostly them. Like I joined the kinda late in the spring towards Vault five.
+
+Uh, so like I gave some, uh, feedback as an ambassador and then I contributed a bit during the last. Throw off the sprint, but, uh, obviously, uh, the rest of the team did actual, the actual big work and, uh, like they, they went along like a lot of iteration on can we do to make this work? Even outside valve compiler, uh, can signals, which is like something that was popularized by solid and like.
+
+Basically every framework except React now has, um, in some way, like can signal help with the, the, the runtime part that we want to have. Uh, and in the end it turned out that yes, it can help. Uh, and so basically like it was a, a pretty big rewrite. Um. Technically, like you could have with the signal based reactivity, you could have the same syntax before because like effectively you can use the same syntax before Instar five, in a legacy component.
+
+Um, but we explicitly said, okay, bye. can make it better, like we can change some stuff that might feel a bit weird initially. Like if you approach it Isal four, uh, it is a bit weird in the sense that like Sal four, you add just let X is equal to zero. And that was, was it. And now you had to have dollar sign state, which, uh, maybe I don't want like the initial, like the very initial gut response.
+
+From everybody, like even myself, like as soon as I saw it, I said, ah, I don't know if I like this because now I have to, to annotate this. But then like, the more you spend time with it, the more natural it feels first thing first, and then the more you realize how much better it is. Because it's a silly thing, for example.
+
+But with drones, you can actually have a variable that is not reactive. So, uh. It's not always that you need it, but when you do need it, it is a very nice optimization and, so like, it's everything. It's more explicit. Everything is more like mature, I would say. So like, it's, it's, it's a, it's a thing that like you like write better code, even read better code.
+
+So, uh, 
+
+**Andrew:** Um, so it's been a while since then. Uh, there was initially some like, uh, objections to the syntax. Uh, do you think it's sh shaken out well in the end? Do you think,
+
+uh, like
+
+you think the simpler model has merits or like, like there really sh should have been this from the start.
+
+**Paulo:** Yeah, like the, the usual, the usual like, um, discourse when whenever you present about five to someone, if it is new to they just like it as, as usual because at the end of the day, if you, if you take a look at like the. Amount of changes that you have to make from a, that four component. They're very minimal.
+
+Like it's mostly at the declaration side. So instead of declare let X is equal to zero, you need to declare let X is equal dollar sign state to zero. Instead of doing colon, like dollar sign label, lower sign colon, uh. is equal X times two, you have to do cons. XX is equal dollar sign derived X times two.
+
+So like there's not a huge amount of changes. Um, so people that are very used were very used to that four initially, like the first thing it was like, oh, I don't like this. And then they tried it for one week. They say, oh, I, I love it. Like that was the usual arc that I, I myself went through. But it, it, it was the usual arc.
+
+Like you start using it and it feels different from, well, four. And so there is an initial friction, but then when you start using it, you realize that it doesn't change too much. And then. You realize like how much possibilities it actually opens up. So even just the fact that you can now use reactivity, the same reactivity outside of as well component.
+
+In a TypeScript file that's already, uh, like a huge win. And in terms of like runtime reactivity, that allows you to have like deep automatic tracking so you can read something inside a function and. That's something actually became a dependency of an effect, for example, that's just wonderful. Like it's something that you could have not done before.
+
+So you had to like resort to some, some kind of tricks. So like if you have some, uh, utility function in that four. You always have to accept the reactive variables inside that utility function, because otherwise the compiler was not able to see inside the function. And so right now, that's not a problem anymore.
+
+So like there, there was a lot of small, uh, small cuts. You, you can say that, uh, were. By is about five. And so usually like you see it and you like, it's different from what you already know and it's there is a bit of friction and then you start to using it and everything goes away because it's just so much better to use and it's also much, much faster.
+
+**Justin:** Hmm. I think my favorite part about it is it's like so much more explicit. It's like easy to say, okay, this thing starts with a dollar sign. It's reactive. Um, the, the inline syntax, the like dollar colon, the label syntax that was in spelt before was like. You know, it's like a, a reappropriation of syntax and it's kind of magic.
+
+And like I remember like people like being like, oh, what is this? And like, how does this work? And like kind of, you know, having some like questions about it and then it's like, ah, yeah. You know, it works pretty well. But like my always, I had this problem with it is like. There's like this discoverability problem and like trying to, you really have to keep track of like, okay, what's, what's reactive and where is it reactive, whatever.
+
+And I think there's this like mental overhead. So I think this like hits that sweet spot of like still giving you the ability to make things reactive, but like making it very explicit without being overly verbose. Um. It was pretty nice. 
+
+
+#### [00:16:22] Async Await and Remote Functions
+
+**Justin:** Uh, another big change that y'all did last year, um, was introducing, um, like async, felts and remote functions. Uh, I'd love to hear a little bit more about that. Uh, what was the sort of like, uh, motivator for that and how has it changed things?
+
+**Paulo:** I mean, um, the main motivator is actually that obviously I think. Data loading is probably the biggest hurdle for every framework. So like for every web app, I would say, like, that's the thing that you have to worry about. So like, if a framework can help you nails down the, the nail down, the data loading pattern, that's a good framework.
+
+Uh, and so. We started exploring, like, how can we do that? Uh, like what, like what would be the ideal API, and this is something that like we always do when we start, uh, like. Theorizing about some API, uh, and I think one of the superpower that belt has is that being a compiler, we can most of the time do this.
+
+Like we can just say, okay, what would be the ideal API? And then we walk backward from there and we say, okay, how, how do we make this happen with the compiler and I, with how, what kinds of, of stuff we have to do to make it, to make it happen? And so. The ideal word would be that inside your component you can just outweigh things.
+
+So, uh, we said, okay, can we do it? And we worked backward from there. So, uh, and I think, like, and again, I say we, in this case, I was involved like during the, the meetings for, uh, figuring out the, the API and we give like obviously each one. Made our, like we, we make our parts, but obviously like, uh, rich was, rich, Dominic, uh, was, um, rich.
+
+Dominic and Simon were like working full time on it. And obviously like the moment you can work full time on a project, you have a much more, uh, a much bigger impact. So they did a lot of the work and I would say that it turned out wonderfully. Like we have to do a bit of, uh, compiler magic to make it work because especially with signals, uh, like it's very easy.
+
+Like, I dunno if you ever used another signal based reactivity system, you know that the moment you await something, you have lost your reactivity. Because the way signal works is that. More or less, like basically whenever you read something inside an effect or inside a template effect and stuff like that, uh, the signal is basically keeping track of, okay, now I am inside this effect.
+
+So you know that you are inside this effect, and so you store that effect. In your list of subscribers and that basically can't work the moment AWAI is involved because the moment you await something, the a function that you are in is basically like cleaned up before you actually can, before you read a value from a signal.
+
+And so we had to do basically like some sort of, okay, before every await, we store every information, every context, like the context that you are in right now. And then after they await, we restore that thing. But obviously. All of these in, it's in a huge machine that is the whole system. So like you have to keep track of what happens.
+
+For example, if, uh, while I'm changing, like I'm changing some value and this triggers, uh, and a weight like so, and a synchronous reactivity pattern, what happens if I change that value again? And what happens if I change another value again? So like, there's all these branches that, uh, goes from with the moment you introduce a synchronicity in your reactivity system.
+
+Uh, like it, it's a, it's a huge deal and. Uh, so that's also why we released it as experimental because obviously like we wanted to get feedback from the users because like for this kind of stuff, you gotta use it. Like there's no way, uh, even if you are designing it, even if you are writing a huge test to it.
+
+I love this Delta test suite because like we have over seven K tests. So like there's a lot of tests. And this absolutely saved my, uh, I don't know if I can use, I, they absolutely saved my bottom part, uh, multiple times because when you are making changes, uh, especially in a, in a web framework, uh, you make some change and you don't even take told about that edge case that it's only available in like safari and it's messing these things up.
+
+Um, so like they saved. A lot of time. But even if you have a huge test to it, and even if you plan to write a huge test to it, there's literally no way you can figure out every single possible way people are using that feature. And so the only way is that actually you need to put it out as experi, as experimental, and then people will.
+
+Report a bunch of bugs. And so like, that's exactly what we did. And so we, uh, it is now under an experimental flag, uh, that right now, like it's mostly the, the main focus of the belt. So like we are ironing out the, a sink in a weight stuff so that hopefully we can remove it from experimental, you know, when it's about six lands, uh, which.
+
+Will be in a bit. So, but yeah, that's the main, uh, the main goal. And the moment we added this new pattern, basically, we also realized that we could, could have done something also on the vault kit side to make things much, much better. So like, um, and that's basically remote function that are also on experimental feature right now in Valki.
+
+And so right now in Val Kit, basically when you have to load data, you have a separate file. That's something that we, like, we care a lot about this. Like there are a lot of, uh, meta framework right now that basically allow you to load data within the component, but to load data within the component. Um, like you are kind of mixing client side and server side, uh, stuff.
+
+Right. And so like, something that is felt, it was always very keen on is the fact that server side needs to be like, there is, there needs to be a file boundary between the client and the, and the server. So that. You can actually be sure that you're not leaking some stuff and, and adversely, even if they are in the same file, you can transform it to remove it.
+
+But then you either have to disable source, map or expose the, the secrets. So that's not a good trade off. And so like we, uh, right now in ate you. A plus page server, ts file with a load function exported from it. And you, whenever you return from this load function, it's available as a prop of your plus page belt file.
+
+Uh, and that's nice to be fair, like it's not a, a, a bad pattern, but we realize that we could have done better with this new. Especially with the new await, uh, expression, uh, syntax. And so that's where remote function can comes in. So, uh, is an experimental flag once again. But with this experimental flag, what you can do is that you can have a a dot remote s file, and this file is executed on the server basically.
+
+So I, you can export function from these files. And it's basically RPC. So like you export file from these functions. Um, and these files, like on the clients is a fetch call to an endpoint that gets created for you and on the server it is just literally invoking the function. Uh, we also obviously. Put in place a lot of, uh, uh, like I think the security aspect of this is very important because obviously like you are exporting a function, but in reality you are creating an edge point which everybody can call.
+
+And so that's why, for example. We, uh, use standard schema, uh, so that you can bring your own validation library so that you can actually validate the stuff that you get. Uh, you cannot call, I think by default you can't call, uh, a remote function from a domain that's a different origin from your or origin.
+
+So like there's a lot of of things that obviously gets into place, uh, because obviously you want to make sure that like. Not everybody can just invoke a function on your, on your server. Um, so yeah, that's also another like very nice announcement for first Be Kit. and I've been building with them a bit.
+
+Uh, and like it, it is really again, like I'm a belt guy, like I love belt, but even more. I like, what got me really hooked into the belt was belt kit. Like I really, when I, uh, like started looking into the belt kit, I was impressed by the amount of care that, uh, reach and, uh, the rest of the team put into the belt kit.
+
+with remote function, it's even like, it's, it's just almost magical. Like you just create a function, you await directly inside the template. Like it's so. Like it's all, it's everything so natural that it's just wonderful.
+
+**Justin:** Yeah, I, I really like the remote functions. Um, and there's this like, you know, it's been kind of a big trend of, um. You know, this backend for front end, like how can we make the integration between the server side and the client side, like more seamless, like, feel like you're working on one service, kinda abstract the distributed systems problem a little bit. Um, but you know, we've also seen that like calls problems. Like there was the, you know, famous like React server, uh, component, uh, security vulnerability. I think there, there was a, a pass on. Uh, I know that Sveltet had some. but like different issues were like, I think the research security researchers in the space started realizing, hey, all these like full stack frameworks are like adding these implicit RPC interfaces and these are like a security target. Post, um, kind of all of that happening. I know you just talked about security. Um, how are, how are y'all feeling about how remote functions are landing out and how they're sort of like positioned just like in this, like more like security conscious
+
+time of thinking about these RPC, like.
+
+**Paulo:** Yeah, I mean, to be fair, like is uh, like. It's always good to be fair when we receive some security vulnerability, uh, which is actually like safely disclosed. So like, um, the React, uh, debacle recently, like the, uh, reactor to Shell, if I remember correctly the name, um, was a huge thing. But that also s spotted a bunch of, uh, like security resources that said, okay, let me look at something similar in other frameworks.
+
+Now that obviously s spotted a bunch of security vulnerability in every single framework. Uh. I would say like, luckily, most of the, uh, security vulnerability that we got in ve were minor respect of, like, I mean, react to Shell was pretty bad because like you, you actually gained, uh, access to the server itself, like remote execution on the server.
+
+So like, but, so we got some easier to, to. Not only easier to fix, but also like way less, uh, way less powerful vulnerability. And that's actually good. Uh, actually recently, um, Versal, which again, it's paying for like rich, uh. Simon to work on the and and Elliot to work on the on Vel full time. Uh, Versal also published like a Hacker one, uh, campaign.
+
+So like you can actually get bug bounties, uh, to like report, uh, security vulnerability for ve and that actually like is paying off, like we, we are getting some report. We are, uh, like fixing stuff obviously as soon as possible. And. So like, I think it is paying off and we ourselves like obviously are also looking into this thing with a, with a keen eye.
+
+Right. Okay. That, that, given that that thing happened, like let's check if we have something similar or let's see if we can exploit remote function in some way. Um, for the moment it seems to be like secure.
+
+
+#### [00:29:41] Why Build TMCP
+
+**Andrew:** So, switching gears a little bit here, uh, looking through what you've been working on lately, you've been working on MCP servers a lot. I have too. Uh, it's an interesting topic and I kind of think is where a lot of the future lies. Uh, but can you fill us in on what TMCP is and like why you built it?
+
+**Paulo:** Yeah, so TMCP is uh, another library that I started writing, and it's a library about, uh, building MCP servers. So, uh, the, my main, uh, issue, like the reason why I started writing it, it's because of Belt As, as usual as most things in my life. They, like, they're derived from belt, but the point is that obviously we started looking into like.
+
+usual, whenever I start to look at something like, for example, uh, blue Sky Feed, the first thing that I that like do is, okay, can I build this with VE kit? Uh, and this for two reasons, but because I like building with VE kit and also because I want to see what's missing Inval kit, like if I, if there's something.
+
+That, uh, is missing is Velt Gate. I want to add that thing to Vel Kit so that you can also build, like users can also build stuff for that. And so when I started looking into how to implement an MCP server. I guess like if you search how to build an MCP server, like 99.9% of the staff will recommend the Modern Context Protocol slash TypeScript, SDK, uh, which is the official SDK from the Modern Context Protocol.
+
+So obviously everybody's recommending that, I have to say like it is getting way, way better, but when I started looking into it, it had several problems like it. The client and the server were all one single monolithic package. Um, there was like an, an abundance of dependency that like there was, uh, a JV for, uh, parsing stuff, but they also had a hard dependency on ZO V three.
+
+So you wanted to use ZV four, you couldn't. Um, they also had. some weird API like, for example, if you want to create a resource template, you had to use a class. But then if you want to use a normal template, you have to use a string. So like they had all this kind of like, kind of a weird API, to use because you had to do a lot of yourself, a lot of it yourself.
+
+Uh, it was also like using. Uh, no requests and no response instead of web requests and web response. And so that was like kind of a big deal for Valki, because in Valki we use fetch requests and fetch response. Like it's, uh, it's, it's more like using the platform, like the modern platform. Um, there were ways around it.
+
+Like for example, there was an adapter from Vercel that basically under the hood like creating a fake. response and then writing all the information to a web response. But like, it was a, a lot of extra work. And so when I started to looking into how to create an MCP server, I said, okay, I, I can literally do this with like two sets just to keep track of my tools and like adjacent RPC stuff.
+
+And so I started building it. Even just for fun. And then like the more I looked into the official SDK, the more I said I really want to, I really want to build something. And so I started to building TMCP, which basically a way lighter, like way light waiter alternative to the official SDK. Uh, I would argue it's also like with some nicer API, like I try to design the API so that it's always, um.
+
+Expectable, like in the sense that like if you are building, I don't know if you're doing server tool and then I do server resource, I would expect more or less the same shape and not a completely different shape. Uh, if you use a class to, to generate the server, I would expect the class to generate the transport for, I don't like there, like there's a lot of stuff.
+
+Uh, and also I wanted to build, to build something that was very, very modular. So like if you are using the HTTP transport, not bound to also install the dependencies for the S-T-D-I-O transport. And even worse, the opposite. Like if you are building an S-T-D-I-O transport, you don't want to install express like you like, like they were doing it.
+
+Now, as I say, like the optional is decay. It is getting better and better by the day because obviously there are a lot of people that are contributing to it. So obviously like, like people have the same complaint that I have and like more people are complaining about some stuff, obviously like it, it'll get fixed more like.
+
+Hopefully, I think TMCP is still a very good alternative and like, um, I'm maintaining it for fun because I, uh, it also helps me keeping up to date with the MCP world also because like, uh, I've built these wealth MCP server with it so. Uh, I, like, I am attached to, like, I, I, I actually have a dependency on it, so like, I want to, to make it better.
+
+Uh, it's also being used a bit like, uh, storybook. It's using it for its own NP server. So like it's, there's some people that are starting using it, so I'm happy about it.
+
+**Andrew:** While, while building it. Was there anything like that you learned about MCP that kind of surprised you? Like when I was reading through your docs, like you call it out and I didn't even realize it, that like resources are a very particular and specific thing that aren't just like automatically injected into context.
+
+There's like very specific situations where those get used.
+
+**Paulo:** Yeah. Yeah, I mean, like I, I learned a lot about DMCP protocol in general, uh, which I also think like it has its own problems. So, for example, something that right now I'm working on the new version of the protocol because, uh, on November it was released, the, the new version of the protocol, and I support or three things, like there's something missing.
+
+Uh, from the new version of the protocol in TMCP. And the reason it's missing is because I hate it, that that's not like, but the point is, like, one of the things that I don't like about the protocol is that they're trying to make the protocol. Stateless like it should be, in my opinion. then there are a lot of stuff that are actually stateful.
+
+So like, uh, for example, like right now tasks, which is a new thing that you cannot to do a sync work, uh, easier, those are fully stateless. And that's a huge issue because I try to make stuff that can be, uh, server from a serverless platform, for example. So like, uh, to, if you want to have. Uh, like some stateful, you need to hook it up to something like Redis or Postgres, and that's, that adds a lot of complexity to the whole system.
+
+Uh, so yeah, and obviously like in the meantime, I also learned a lot of like about, uh, MCP in general. So like, for example, I don't think a lot of people are, uh. Using the full potential of their MCP servers because, uh, like most MCP servers are just, oh, is my tool, and that's it. While you can have, if, for example, prompts are one of the best tools inside your MCP arsenals, in my opinion, because you can literally instruct the LLM on how to use your MCP server.
+
+In a very easy and portable way. And, uh, for example, even a lot of client don't support it because. It's just like, uh, yeah, I support tools. That's it. Uh, my personal client, like not my personal client, the client that I use for my work, which is open code, was not supporting it, uh, initially, and I, that, that, that was the reason why I couldn't switch to open code like I was using plot code because I wanted to use my prompts.
+
+And then I said, wait a moment, I can just contribute to it. So I contribute the drop and code, and now they have prompts. And so I switched, drop and code.
+
+**Justin:** That's pretty cool. Uh, did, uh, are you using standard schema for the, like schema input? Uh, we had the, the Valley bot author on not too long ago. Um, and I was like noticing that you do have like different, uh, packages like for the validation libraries. This is great. But
+
+I was wondering if like, does like, is standard schema making that easier?
+
+**Paulo:** Oh, absolutely. Yeah. And that was one of the, the things that I didn't like about the istic, the fact that they didn't support standard schema. Um, and I wanted to support standard Schema because I wanted for you to use the validation library that you already have. So like I, I love the Valley Bot because it's smaller.
+
+I can use it on the client. It's through Shakeable and stuff like that. And if I'm building my application and I want to, and I already have valley bot, I don't want to also have a dependency on Z just because I'm building an MCP server next to my application. So like that was something that I really wanted to have.
+
+Uh, there, there is this small issue that is the fact that right now it's kind of solved by the fact that. Uh, right, right now there's also a js o schema, a standard js o schema, which is like an another spec basically, which is how that also tells you how to convert. Z schema to Json schema and a valuable schema to Json schema stuff.
+
+So like, it's basically another type library and you can use that if you need to convert a schema to js o schema. So I could use that if not for the fact that I don't like how volley bots did it, because, uh, in volley, if you want to do it, you need to install a separate package and then. That separate package, uh, is to JSONs schema, and you need the user needs to manually convert to JSON schema, and that works bought as a schema live validation and bought as a, as a, so like, I didn't like this thing and so I'm sticking with my adapter pattern, which I like more so that you can just install TMCP value bot adapter and get everything from that.
+
+and yeah. It's absolutely helping and I, I love standard schema.
+
+
+#### [00:40:38] Better MCP Server Design
+
+**Andrew:** Uh, so you said that you created the official spell MCP server. I'm sure you had some lots of iteration there, getting it to a place, uh, that worked for you guys. So like what, what's kinda like your design approach? What did you find worked? Is there anything like interesting or unique that you put in there?
+
+**Paulo:** I think the, um, I mean, not to brag and also it was not just my work, but I think the, the Delta M CCP server is one of the best M CCP server out there. And I look, when I tried to design an MCP server, I tried to follow some rules because. A lot of people also say that, ah, MCP is a bloated, and, uh, I, I use skills because MCP server is bloated or bloated, and that's partially true, but I think MCP server are bloated if you design them wrong, the point is.
+
+If you fill your MCP server with like 200 tools with like 30 line description, that will be bloated. So like when I try to design an MCP server, you need to think about the minimum amount of stuff that you need to make the LLM more capable. One of the very. Nice thing about DMCP server, deve MCP server is that, so Belt has kind of a problem with AI and that's the fact that Belt five migration introduced a lot of like syntax changes and all the LLMS trained on old.
+
+Data, uh, on old dot four data. And so like it older LLMs now is getting better, but older lms were struggling to produce Belt five code and so like this Belt MCP server, it's a night for that because we have this Belt to fixture tool. is very clever in my opinion, because we don't fix the code for you. We just analyze the code that the LLM creates give suggestions in natural language.
+
+So like the suggestion is actually a suggestion for the LLM because, uh, we perform basically static analysis on your code. And we are good at that because we are a compiler. So like we have to, this the abstract syntax we can navigate and stuff like that. syntax analysis can only get you as like, as far as like there is a limit on how hard you can go on syntax analysis, but LLMs don't have that limit.
+
+Like if you return a a sentence, like maybe this is not the right approach, but think about it, it'll not just. like that approach 100% of the time. It'll actually reason about, is this the good approach? And then decide if that's the right approach or not. Uh, and uh, this, I think it's a very, like, for example, um, with this approach.
+
+The optimization of running your, like, I don't know if you know about code mode, which is the, the proposal from, I think CloudFlare came up with this. That's a very interesting approach to MCP server, but that only works, in my opinion, if you didn't design your MCP server Very good. Because the point is it for that to work, you need to design your MCP server in a way that.
+
+It's more like code, like it's more like if you are running a function or returning something to a developer and not if you are returning that function to an LLM. So like if you think about the fact that you are returning information, you're returning context to an LLM. That's where, in my opinion, you are designing a good MCP server when the response is not for code, is for the lms.
+
+Like you need to talk to the LLM, even with the MCP server, in my opinion.
+
+**Justin:** Yeah, it's, it's pretty cool. I think it's an area that's still evolving and definitely needs a lot more attention for sure. But it's cool to, um, definitely wanna check out your library 'cause I've been working on an MCP server myself. 
+
+
+#### [00:44:37] Svelte Custom Renderers
+
+**Justin:** Um, another thing I'd love to dig into is, so you've done some work around custom renders in sslt, and this is like one of my favorite, uh, aspects of our new frameworks.
+
+So like, uh, react has for a while had like custom renders and there's like libraries like React Ink to like let it render to a tuy. And I think this is like, it's a such a fun abstraction to like, let. People use the tools that they're building for the web to build for other platforms. And, um, so yeah, I, I'd love to hear a little bit more about your work around, uh,
+
+customer renders first felt and like what the state of that is and kinda what you think the future there would be.
+
+**Paulo:** So, um, basically, uh, this is actually something that like I'm very happy about, like this is like circling back to my job because, uh, as I've said, that may matter. We love to give back to the ecosystem that we. We thrive on, right? We are working with valve. We love to give back to this valve ecosystem.
+
+Uh, and so we had literally a moment when we said, okay, what can we give back to this valve ecosystem? And uh, I started exploring a bit and I realized that like there was this framework links, which just, just came out, uh, which basically it's like, uh, an agnostic version of React native. Um, to make it work, you have to have a, a custom renderer.
+
+And now a custom. What is a custom renderer is a, is an interesting question. Is, and is basically what allows, as you said, uh, a framework to render to something that is not, uh, HTML. So, uh, for example, uh, react has, uh, react custom, uh, sorry. Um. It has, react, uh, native, obviously it has ink, uh, to render to, uh, to render, to, uh, to the terminal, for example.
+
+and so the, basically the reason why it works is because React only concern itself with DING algorithm more or less. And then is the renderer, like they have a separate package to render that. Virtual dom two, two, a three, uh, like to, to an HTML tree or to the terminal and stuff like that. was always built basically to render to HTML.
+
+So like we didn't have, we, to be fair, like we don't have as a custom renderer right now. And so since you needed a custom renderer to build a native app with links native application is also something that, uh. Like a lot of clients, like they search for it. Like they say, okay, I want, okay, I want to build this application, but I also want to have a way to build, uh, a native app with it.
+
+Uh, and so I started exploring a bit links, we said, okay. Maybe we can build the custom renderers. so main matter actually sponsored me. Like I worked for basically three months, uh, full-time on belt to try to build, uh, this belt custom renderers first belt. Uh, now obviously like that's a huge, like, it's a huge thing to build.
+
+So like we actually built a POC for it, which I was very hyped, like the, the moment I got to actually render some links element. And so I, I could actually see a native app built with ve was like emotional. Uh, I built a, a simple to-do app because obviously you're gonna build a to-do app to, to demo something.
+
+Um, and, it worked. And so we launched basically the, uh, wealth Custom renderers initially. So like they sponsored me for those three months. Uh, but then we basically opened, opened it for, for the community. So like we say, it. If you have some. Like if you have the need for as well, native application, um, or even for something else, because I also built, uh, a custom renderer for the terminal.
+
+A very like cheap one. Like it's not as, as advanced as. uh, because ink is also using yoga under underhood to do like layout and stuff like that. Like I've built a very small terminal render. But, uh, like obviously you can render to everything. Like you can render to canvas, for example. You can render to web gel, you can render to uh, like your own custom thing.
+
+You can even have, I don't know, ave component that renders two string. You can build your own weird stuff like, and you can build JavaScript to with that. So like, it's a, it's a very powerful paring. I.
+
+We launched this thing. So like, and by the way, if you're interested, you can go to custom renderers uh.com, uh, to, to read to learn more about it. Or if you want to go to main matter.com, it's also leaked from there. Uh, and we got it to a point, like obviously I was working with Rich and Dominic and uh, Simon.
+
+The rest of the team to, to figure out the right. API. So, uh, basically the point that we are right now is that we have a pretty good idea of the API that we want, like as a, as a small spoiler. Uh, what we want is that we want. You probably to define I mean, not you, you, like, you would probably just install your own custom renderer.
+
+But if you want to create a custom renderer, you basically have to export from a module, uh, and uh, create renderer functions like you can do export default, create renderer. this create renderer function will basically accept as an object with a series of operations that ve means. For, to create something in your words, like, once you use your, your custom renderer, uh, what we do, what we will do is that basically at compile time, we will.
+
+Import your model, and we will give the, the custom renderer to this vault runtime. And so this vault runtime under the hood, instead of doing like document create element, it'll do renderer create element. So like the end of the day, basically the, uh, we will call into your function. And so it's kind of up to you to define how you want to create your element in your world because obviously we kind of need this.
+
+make it fully customizable because knows how to create a links element. So like the only way for veto to create a links element for links the creator of the links renderer to determine how to, to create that. So, again, this is basically what I have in my POC. Uh, recently come back together because we had a bit of funding already, and so I started working a bit more on this.
+
+and we came together once again with the maintainers to say, okay, let's see if like we, the updated a think away stuff. Like, we, we need to rethink how we built this. I think, well, we slightly changed, uh, how. how it was, it was gonna work. initially what we told was, we have basically two separate runtime, right?
+
+We have the client dome runtime, and in the client dome runtime, we are doing a bunch of weird trick that you can just basically do because you are in the job. Uh, one of the very initial idea was. We could try to, basically when you do create custom renderer, we create inside this function, dome basically.
+
+Uh, and then we just invoke the dome whenever we do stuff. The problem is that the dome is. Weird, like very, very weird. Like there are so many quirks in the dom that once you start trying stuff out, start figuring out like, okay. For example, one of the tricks that we use inside wealth is that if we want to empty a node completely, like remove every single node inside another node, you can just set text content is equal to Sring and that will actually.
+
+Invoke the remove. Remove from every single do instead of looping over every children and removing it. So that small thing, obviously we would have to build that query inside our DOM implementation. And we also had to keeping, keeping, keep it up to speed basically. Like whenever there is a new quick that is introduced because of a change in the dome, we have to also include that, that quick in our implementation of the dome.
+
+So we discarded this information, like with this like, okay, let's not follow this route. And so we, we moved to this other idea. Um, and, but the problem is that we are still using this kind of tricks inside ve and these tricks are one of the reason why Vel is fast. So like, if we just forego this tricks and we just literally remove every single node.
+
+That will make the experience worse for everybody that is not using the custom renderers. And so what, what we initially told of doing was, okay, let's actually split the two run times so that if you are using a custom renderers, we import a a completely different runtime, which is much more minimal because we don't have to care about hydration because.
+
+Obviously hydration is something that only works when you are server site rendering and you cannot server site render in the terminal or in a, in a, in a native application. And, and so we have this two separate work basically. And the idea was once we have those two separate, completely separate word.
+
+When we are developing, we are aware in which word we are. So like we have literally two separate folder in the repo so that. If I'm making some change, I know that I can use some dumb trick or not because like in that case, I, uh, like it'll be fine because I mean in the dumb runtime. Otherwise, I'm in the customer and I cannot use that.
+
+once I try, I started implementing this run. We realized that there would be so much code that is literally copy pasted and most importantly, like it would have to be like just slightly different from one another, and that would be a hell to maintain. So like right now, like in the phase we are right now is that we know the API, we know how we want to build it.
+
+And now what I'm trying to do, I'm building. Into one single runtime, which will be slightly different to maintain in the sense that we need to find also a way to prevent ourselves to just access these, uh, like we probably need to write some link through for this belt code base, so that you can't actually just do text content is equal to empty string without checking if there is a custom renderer before.
+
+Um, but otherwise, like, it'll be slightly different in that sense to maintain, but way better because we don't have to duplicate code.
+
+**Andrew:** Okay. So, so much interesting stuff. Yeah. Custom renderers, that's a, a hill to climb right there. Uh, that wraps it up for our time and our questions on this week's episode. Uh, thanks for coming on, Paulo. It was a lot of fun talking about all things felt and getting us caught up.
+
+**Paulo:** Yep. Thank you for having me. And once again, just like to to remind in case like if you want to join the custom render initiative, go to val custom renderers.com or visit ring matter.com. obviously if you have any issue or any like suggestions, feel free to reach out on Discord Blue Sky for me. It's fine.
+
+~~Thank you very. ~~
