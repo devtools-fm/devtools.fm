@@ -1,0 +1,377 @@
+---
+title: Sam Goodwin - Alchemy
+youtube: https://www.youtube.com/watch?v=MtKHzAH6uXM
+spotify: https://open.spotify.com/episode/5ny1n279qB7Eqsq4ahU1ug?si=Uj4NWwXiRYOYrwLm0EfumA
+tags: infrastructure as code, ai, programming, development, technology, cloud, cloud computing, cloud native, cloud development, cloud development kit, cdk, terraform, pulumi, cloudflare, vercel, netlify, nextjs, react, javascript, typescript, nodejs, deno
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Sam Goodwin, the creator of Alchemy.
+Alchemy is a tool that allows you to create and manage your infrastructure as code.
+The current state of the art is built on all the tech debt of the past 10 years, Alchemy is a new approach to infrastructure as code that is more aligned with the modern web.
+
+- https://v2.alchemy.run/
+- https://github.com/alchemy-run/alchemy-effect
+- https://github.com/alchemy-run/distilled
+- https://alchemy.run (v1)
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Intro
+[00:01:34] Alchemy v1
+[00:04:45] Why Effect and Distilled
+[00:11:59] Ad
+[00:15:07] Infrastructure as Effects
+[00:27:12] Outputs and Bindings
+[00:30:08] Testing Real Infrastructure
+[00:33:42] Cost and Local Emulation
+[00:38:45] Monetization and AI Future
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Intro
+
+**sam:** what if we had infrastructure as code and bindings for the whole cloud?
+
+Well, now the cloud is a library. That's it. Like that's, that is the conclusion. The whole cloud becomes a library, and now the only thing stopping you from using the whole cloud is which accounts you have. That's it. 
+
+**andrew:** ~~I had two kids. Uh, ~~hello, welcome to Dev Tools FM. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host, Justin. 
+
+**justin:** Hey, everyone. Uh, we're really excited to have Sam Goodwin back with us. Uh, Sam, it's been a little while. Uh, so last time we talked about Alchemy, this infrastructure as code project that you were working on. Um, a lot of cool stuff you were doing back in the day, and you've just recently released Alchemy v2, and we're really excited to talk about that. Um, but before we get-- dive in, would you like to refresh our listeners and give another introduction to yourself?
+
+**sam:** Uh, sure. Yeah. Uh, Sam Goodwin, been working on a product called Alchemy for the last two years, but my background is very much just cloud software. Spent roughly eight to 10 years at, at M- uh, Amazon. Nearly said Microsoft there. Uh, Amazon, uh, AWS, you know, building stuff with the cloud. So I've just been, like, doing that for so long, and I've always been opinionated about how you should do that.
+
+Uh, so that eventually led into starting my own company. Lots of different iterations on ideas, eventually landing on Alchemy v1, which got a bit of a, bit of a spark going with some users, and now Alchemy v2 takes it to the full fruition of what I've been dreaming for the cloud. Yep.
+
+**andrew:** Sweet. 
+
+
+#### [00:01:34] Alchemy v1
+
+**andrew:** Just to fill our listeners back in who might not have been with us back then, can you fill us in on what Alchemy v1 was and, like, what it set out to do?
+
+**sam:** Yeah, so it was a infrastructure as code tool built natively in TypeScript. So if you've used infrastructure as code before, it's always multiple different layers, right? You're either working with a service like CloudFormation, or you're working with another tool chain called Terraform, which is its own custom language, uh, for infrastructure. And then there's tools on top of that, like Pulumi, uh, SST, and they build on top and y-you just end up in this complexity explosion. And so I built Alchemy v1, was like, "Hey, look, this is not that hard. Let's just write some functions that stitch together infrastructure." And that's what I built there, and it was all about async code. Um, and it threw away one of the most important things of infrastructure as code, which is planning. And I think that was both a good thing because people love just, like, ripping, but also a bad thing. I think it, like, limits the scale of the product. So Alchemy v2, which we can talk about a bit later, uh, fixes some of those problems while keeping it still native TypeScript, uh, but takes it a lot further, uh, and really goes into the AI story.
+
+In v1, I was experimenting with... Like, the idea was infrastructure as code is all in these old tools because no one wants to go build all the resources That just takes so long and it's boring work. But at that time, AI was just getting good enough to the point where it could write them. Uh, and it wouldn't write them perfectly, but it would do a pretty good job. So that was when I pushed into that. I was like, "Hey, let's just build our own resources. Let's do away with the past." Uh, and that has now become supercharged with Opus 4.6, 4.7. Resources really do print themselves now, so, uh, taking things further in, in the new version. 
+
+**justin:** And when we're talking about resources here, it's like really APIs to whatever service you're deploying to.
+
+**sam:** Yeah, I really should clarify. Uh, resources mean like configuration of what's called your control plane. It's like, oh, I- I've got a database with these settings. I've got this many EC2 instances with this much memory or, you know. It's all the work you have to do to go configure that is what we call infrastructure as code, or they're cloud resources. But a resource is really just anything that has a create, update, delete life cycle. That's what it is. Um, and traditionally, it's really annoying to stitch those together, so people built infrastructure as code tools that automate the stitching part. Uh, and then everyone built on top of that, and now I think we burn that to the ground and we build up again, uh, with, with AI because we don't need the, uh, we don't need the past anymore because that breadth of infrastructure as code can be covered with AI now, and now a few people can build it.
+
+Yeah. 
+
+**justin:** ~~You want me to take the next one, Andrew? I can, I can, I can dig in. I keep digging in. ~~
+
+**andrew:** ~~g-go ~~
+
+**sam:** ~~wanna go into v2? Do we wanna go into... Yeah, what, what's~~
+
+**andrew:** ~~At least go for the next question, Justin, or wherever you wanna go.~~
+
+**justin:** ~~Uh, let, let's keep the company question for, for later. Let's just go, go into v2.~~
+
+**sam:** ~~Okay.~~
+
+**justin:** ~~Um, ~~so y- you've, you've been at this for what? About a year-ish? 
+
+**sam:** I think Alchemy v1 was February or March of 2025. 
+
+**justin:** Nice. Nice. 
+
+**sam:** Cloudflare oriented and sort of got my wedge in there. Yep.
+
+**justin:** Yeah, very, very Cloudflare-oriented. That was, like, one of the things that, that sort of caught my attention, uh, when you were first releasing it. Um,
+
+now you're, like, hitting a lot more, um, like cloud targets. Um,
+
+
+#### [00:04:45] Why Effect and Distilled
+
+**justin:** and also, like, another big change of v2 is you're building it on Effect. And maybe, maybe we should just talk about Effect, uh, first,
+
+because, like, that's a really important baseline for this.
+
+So
+
+s- what is Effect, and why are you using it?
+
+**sam:** I kind of buried the lead there. Yeah. Alchemy, Alchemy v1 we call Async Alchemy. Uh, it's not v- v1 is like, you know, o- one generic way to say, but honestly, we call it Async Alchemy internally. And then there's Alchemy Effect, which is rebuilt on, obviously, Effect. What is Effect? Okay. Geez. Uh, got... been asked that question a few times.
+
+I, I don't know if I'm the guy to say, but, you know, it's, it's- almost its own programming language within, uh, within TypeScript, but it's, uh, for modeling concurrency safely is what I would say. So it's-- an effect is basically a promise. You can think of it like that. It's an analogous, uh, but it has more information about it.
+
+It's got a return value, just like a promise, but it's also got errors that can be thrown. So you know at the type level which errors can be thrown, uh, which means you can get instant feedback for like AI. If you don't handle an error, it's a type error instead of a run, instead of a runtime error, and that's obviously better for feedback to the AI. And it also has information about its requirements. So it's like, oh, in order to run this effect, you also need this database, you know, or you need this logging system or whatever. So you can model all that with an effect. And, and it has this concept also called layers, which are a way to sort of compose little components together, and then you stitch it all together into an effect and you can run it, and that's effectively your program, right?
+
+Um, so there's a lot of great things in there that we really need. So first off, Alchemy V2 is really all about AI, and effect is a nee- is something we need to do AI well. We're calling the, like the whole tagline is zero to production right now, which is like how quickly can you go from a blank screen to actual production ready discipline, you know?
+
+Uh, we're streamlining all of that, and the one big part of it is AI needs to be able to iterate really quickly, and for that it needs feedback. So that's all about pushing as much of it into the type system as possible, uh, and then building good tools, tools around that. So Effect allows us to model more in the type system that you just can't do with async code. But also it allows us to build really, really good resources because most of the time when we're building Async Alchemy, you're flying blind. You're working with a cloud provider, you call some API, and they never model the errors. You just never know. You never know until you run it what the error is gonna be. Um, but with Effect, what we started doing is we built this other project called Distilled, which is where we're using AI to generate Effect native SDKs for every cloud provider we can think of, and it goes and patches all the errors. And once you have all that, you can just ask Opus to build you a new resource, and it will use the distilled SDK and gets all the feedback, and it can do the really annoying things like retries. One of the biggest things you need to handle in infrastructure as code is eventual consistency, which is basically, "Oh, I tried to do this thing and then do this other thing," but It hasn't propagated yet, so I need to wait. Or I got a little error here that blipped, let me just retry that. Let me retry it on this policy. In Alchemy v1, that was all generated, like just while loops and crap from AI. Uh, with, with Effect, they've built those primitives into the framework. So you can just be like, this Effect, retry with this policy while this error, and it becomes declarative. So you take something that's really complex, like retries, schedules, Jitter, all these things, and you put it into one declarative function call that AI can just use everywhere. So all the code now looks the same. Call this Effect with this retry policy, call this Effect with this retry policy. And now the resources just work so much better, and that's the, that's like the big lift we get. Like that Effect Native SDKs generated by AI is our pipeline to then AI generated infrastructure as code. If you can solve Effect Native SDKs, you can basically solve infrastructure as code and generate the whole surface area. So we're going for GCP, Azure, AWS, Cloudflare, everything, and we're doing it by generating distilled and then propagating that up to Alchemy. So there's a lot I could talk about with, with why we use Effect, but that's like the first thing is like it's just really good for building reliable applications. Yeah.
+
+**andrew:** Yeah, it seems like the, the errors are probably a huge part of that too. Like I've found that in my AI f- AI coding journey is that the feedback loop needs to be super tight and
+
+being able to model those errors, that, that seems like it was probably a huge lift. Like distilled sounds like, uh, to, to my untrained ear, like just an enormous amount of code.
+
+So like how much are we talking there? Like h-how much code have you been pushing with AI?
+
+**sam:** Uh, too much that TS-- like you can't compile it with TypeScript, you have to
+
+use TS Go. You have to use TS Go, uh, and Cursor chokes, so you gotta move to Zed.
+
+**andrew:** Oh, man.
+
+**sam:** Uh, so it's a big repo. The, the, the insight there was everyone's got like these codegen tools, and they work for the one spec they've been tested against, and then you realize that like there are these things called OpenAPI specs, but they're not even real.
+
+Like people-- They're, they're not actually real specs. People just make it up as they go. There's no standards. Most companies don't put their errors in there, but most people don't even model APIs the same way. You know? They really just... It's a, it's a, it's a suggestion. It's not really a spec, in my experience. So like these tools like Stainless and stuff like that, they, they, they don't work that well. So but, but the realization is you don't need them. Like the code generator is AI writing code, so all we do is we just have a script that will go and get the spec, throw it into an agent that we've like sketched out, like we've basically built this little script, um, that will generate the SDK.
+
+And it will deal with all the edge cases like, oh, this API models things in this way, and it just like adapts to it. So each one is like custom handwritten That's the thing is like you don't build one code generator and then go apply it to every SDK. No, you just build a custom one for every SDK, and that's what actually is needed. So like there's millions-- I think I had like a 3 million line PR once in there. Uh, there's... But like that's not all AI generated, that's deterministic code. We're using AI to generate code that then generates code. It's like double lift, right? So you get this double leverage of... And that's how you get into the millions of crazy lines of code. Uh, but yeah, that has been really cool to see happen, and again, just reconfirms my idea that like breadth is solved by AI. Like I've got, I've got a process right now where I'm improving 50 resources at the same time. One prompt, 50 resources at the same time. Usually before AI, it'd just be me sitting there working on one resource, like, "Okay, I gotta get this retry logic a bit better 'cause it's not working."
+
+Now I can do that, but scaled to like 50, scaled to 100. Uh, yeah. 
+
+
+#### [00:11:59] Ad
+
+**justin:** Software engineering is a challenging job and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead when really we just want to be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers. And it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available. So if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you want to extend it, feel free. The back end is rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just like starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast, it's fun, it's a better way to build. Sign up at macro.com and get $100 off your subscription using DEVTOOLS100.
+
+So it, it seems like Distilled really is the underpinning of success for Alchemy. I mean, you need that connection to these resources, to these, like, services or whatever to, you know, have infrastructure as code be a useful utility. Um, and there's a lot of code there. Um, so you've talked about the code generation strategy. Um, how do you test all of that? Or how do you, like, you know, w- how do you... What, what gives you the guarantees that it is, like, reasonably correct?
+
+**sam:** Well, we have a process called error discovery, where AI will basically use the a- the APIs and run into all the errors and then patch them. And it does that, it does that interactively, and then it writes tests for each of the errors that it finds to guarantee that it finds, that it finds the errors. But we also have-- We work backwards from Alchemy now.
+
+It's like now that we've got it to a step where we've got SDKs generated pretty well, I actually just have AI work on Alchemy, and then when it finds bugs in Distil or missing errors, it submits a patch back. So you get this like beautiful working backwards from requirements experience. Like we don't have to go cut the whole problem. It's like just work backwards. Uh, so Alchemy sort of paving the way there. We do the best we can, and then we just have a f- a flywheel that just continuously improves, continuously improves. And you run the Alchemy tests, and that's basically the h- it's exercising everything you could about a resource, right? Create in this way, and then I update in this order, and I did that first and that second. Like all those different edge cases are captured in Alchemy, so we run into those errors all the time, and it really just battle tests and hardens Distil. You can get by without Distil. Like, I wouldn't say, uh, you know, we couldn't build Alchemy without it, but it does pay to have a really beautifully typed performant effect native SDK rather than every, every time you have to go figure out how to bolt on to some existing API.
+
+One's generated with Stainless, one's generated with some random thing. They're all weird, and they, they never really help you that much. Uh, so, so, yeah. 
+
+
+#### [00:15:07] Infrastructure as Effects
+
+**sam:** Uh, the-- I don't know if we wanna move on to it straight away, but like, which j- for now, we've just talked about infrastructure as code, but Alchemy v2 is far more than infrastructure as code.
+
+We actually call it infrastructure as effects, uh, which has a whole new meaning in my mind. Uh, which basically conf- it merges runtime code and infrastructure code into one, is what it does, uh, in a way that's principled. So it builds on top of infrastructure as code, and then you layer on the application code, and then you, you basically get inferred infrastructure from your application code.
+
+So the feedback loop for AI is the type system is guaranteeing your infrastructure is correct. So that whole class of problems is erased. Now it's if it compiles, the infrastructure's correct, and then you can just instantly run the tests, and that tells you the runtime's correct as much as you can. And now you're already pretty close to production, and then you generate resources for observability and monitoring, and you turn on observability and effect.
+
+Something I forgot to mention, uh, is OTel comes for free almost, in Effect. If you were to do OTel without Effect, it's so much work, but in Effect, you c- like, we can already give you spans. We automatically give you all the spans, and then you can just annotate it with data. So we have beautiful metrics now.
+
+So that's all part of production, right? Production is not just writing an app and getting it out there and getting it deployed. It's maintaining it, it's monitoring it, you know, that kind of stuff.
+
+**justin:** Yeah, having OpenTelemetry support in effect is pretty cool. 
+
+Um, yeah, I wanna, I want-- This is, like, a thing that I wanted to ask you about very explicitly. So to kinda recap what you said, we have infrastructure code, which if you've used Terraform or any other infrastructure-as-code product, you've, you've written that.
+
+And then we have application code that's, like, your, you know, Express handlers or whatever. And, and what you're saying is you've married them together where it's, like, in the same file or whatever, potentially. You have this infrastructure code, and inside that infrastructure code, you have the application code.~~ ~~
+
+**sam:** ~~Mm-hmm. ~~
+
+**justin:** ~~Um,~~ and you get these, like, type guarantees from infrastructure all the way down to the application level, which is, like, really cool.~~ ~~
+
+Um, is that, like, a hard requirement? Must you, like, have these things together? Um, and what are the sort of, like, ramifications for, like, application-level code?
+
+**sam:** Right. So I would say what we've done with Alchemy is we've built the right layers, right? Like, we're not the first tool to marry them together, but I think we're the first tool to marry them together in the right way. So if you use other tools, um, I would call them walled gardens. You know, like they've...
+
+Encore or Nitric, they've gone out and they've solved this narrow set of problems, and they've married infrastructure and runtime, and if you stay within that walled garden, you know, you'll have a great time. But like, like any application, you never stay within the walled garden, right? So but like, so our foundation is the pragmatic infrastructure as code. So you can deploy Rust, you can deploy Python, you can deploy anything. It do- it's not-- you don't have to go and use this sort of married environment, uh, to get value out of Alchemy. Like the bottom of that is just async Alchemy with yield\* instead of await is, is really what it ends up looking like. You get the same thing. You can still write your normal code, your normal way, whatever. Um, but then you can up level and you can be like, "Okay, let's move into, instead of working infrastruct- writing infrastructure and then going and writing my runtime code, let me just write my runtime code and have that define my infrastructure." Uh, and we do that via what's called an effect. It's called-- I learned recently, I just went on their podcast. It's called the constructor pattern. This pattern is like magic. I think if you go and learn effect, it might take you a few times, but if you really start to grok like just the flexibility and the repeatability of the constructor pattern, uh, you'll understand Alchemy v2. It's bas- that's what a la- it's another word for a layer. But basically, it's an effect that when it runs, in the closure of the effect, it declares its dependencies. So s- basically think of it like setting up its state, and then it returns the implementation. Very similar to like a React component where you'd be like, use effect, use callback, whatever, and then you'd return the DOM that reacts to it, right? Kind of the same shapes. Like, okay, declare my dependencies, return the implementation of the service. We do that. So you just declare your dependency like database, read access, write access right there, and then you use it, and then just throw that in Alchemy, and Alchemy will automatically deploy and configure all those bindings and infrastructure and policies and things like that for you.
+
+But all you did was say, "Give me read access, call read. Give me write access, call write. Set up my database connection, use my database connection." Everything reduces to this very simple-- It's very-- like it- the best analogy is probably a React component. You're creating a function, declaring dependencies, using them, returning them.
+
+Yep. So that, that, that's been, like, that's what allows us to basically generate least privilege policies. Like AI naturally generates code in this order. Like it'll like declare my dependency, use it, declare my dependency, use it. Now you don't have AI going over to a Terraform script and being like, "Uh, star.
+
+Star policy, permissions for everything. There you go. I have solved your problem, sir." You know, you don't have this problem. It's like the, the code just the, the permissions and the infrastructure emerge out of AI writing the application naturally. Yeah.
+
+**andrew:** Are there other benefits that come from tying those two things together? Like in Alchemy v1 you didn't have that, so I'm sure a lot have emerged as you guys have built this out.
+
+**sam:** Well, you can-- the, the, the best thing that I think is what comes out of it is components. Like, so we, we package up better-auth as an npm library. You just install it and you go, "I want better-auth on D1," or, "I want better-auth on Postgres," or whatever. And that brings infrastructure and business logic as a component that's basically like an embedded service.
+
+That's what people love about better-auth, is they can just embed that in their application. Well, let, let's take that to the absolute extreme. I want to distribute whole components of b- of applications. Everything that's a SaaS right now can become a layer, and I can just plug that into my Effect program.
+
+So that's, that's really the unlock. With Alchemy, you couldn't do that. You could have a component with some resources, and then you'd have to go and wire up the inf- you know, the application code. Like, they're just disconnected. You couldn't do them together. Uh, now I think we, we, we call it SaaS as npm. I think I was talking about that last time, but this really makes it real, right? Uh, I can ship policies, application code that can be customized, configured just like any component. The benefits that you get from shadcn, for God's sake, you know, in, uh, in UI. Look at that. You can just spin together a UI because of something like Shad. Well, we're gonna do that for backend. Now think about, like, AI sits down and goes, "Generate me a company with payments and DNS and email handling and authorization and blah, blah, blah, blah, blah.
+
+Oh, and make sure it's production ready and give me auth." You know, Alchemy is probably the only tool that could realistically do that in one prompt, uh, and it's because of this model.
+
+**justin:** That's pretty awesome. The, um, other thing that I, that I liked from your tweets about this was the, like, making sure you had the right permissions. Like, you've set up the correct, like, IAM permission for some AWS resources. Like, it would actually,
+
+the type check would fail if the policy was wrong or something. That's, like, pretty interesting
+
+**sam:** Yeah. Well, I've, I've b- I s- I went into a deep rabbit hole on that design, um, and ultimately went down the wrong road and then had to flip it on its head. But it's still the same result, is you literally just can't do the thing that you want to do. For example, you try to get an object from a bucket that you don't have permission to.
+
+It's just physically impossible in, in Alchemy Effect. You have to declare the dependency or else there's no function to call, you know? And by declaring the dependency and getting the function, you get the permissions, you get the infrastructure. So, like... And, like, I w- really wanna, uh, hammer down is, like, the order of those operations is what AI loves. AI, I brought this up on Effect Podcast too, or Effect Office Hours. AI likes to declare utilities first and business logic second, is what it likes to do, and it annoys me so much. It'll always declare these shitty little insignificant functions at the top of my file, and then the real thing at the bottom. So this leans into that. There's like sign- in-insignificance helpers and bind it dependencies at the top, and then use it. So it really aligns with that sort of left to right, uh, generation that AI has. So it just iterates. Uh, and then also our test suites just automatically deploy and rerun the test. So AI can just sit there and just edit the code. The infrastructure builds itself, builds itself, builds itself. The tests are running, it's responding to the errors, and boom, now you have a production-ready service pretty much, right? Um, on our website, we have a prompt you can copy. Just drop it at, like it's-- the b- the getting started button is basically a copy button.
+
+It'll copy a prompt, paste it into your coding agent, it'll just interact with you, ask you what you wanna build, and you can build. It'll build, it'll build the whole thing. I've seen on day one, like we had like 50 people jump straight to CI/CD. Like I've never seen this. Like straight away our metrics are showing there's already all these projects in GitHub CI, 'cause it's because our tutorial, they've just gone all the way through to the bottom. Uh, so I'm gonna add onto that, and it's like next I'll add observability, and then suddenly they'll als- they'll all have observability. It's like s- it's like scripting this little o- open source community. Like we put out tutorials and tools and then their AI is integrated and it's like, it's incredible what, what's possible these days.
+
+**justin:** So o- one of the things that you mentioned earlier from the big difference between v1 and v2, so in Alchemy Async, you were sort of just like imperatively setting up like services, right? You're like... It was just basically a, a fancy wrapper around the APIs. Um, so it's like, "I'm gonna set up a R2 bucket," or whatever. And then, you know, that's set up and you move on things. And Terraform I'm not sure if Terraform really is the one that, um, made it famous, but like all, pretty much all the infrastructure as code products now have these like plans. So it's like, here's the things that I'm gonna set, do to set up in this order, and like, you know, like gives you a chance to like see what's gonna happen, and then it like does it in this like sequence. Um, and so you mentioned like in V2 you have some sort of plan mechanism. So what does, what does that look like? 
+
+Um, and maybe as a follow on, like how did it affect and/or your new approach, like make that easier or possible or, yeah.
+
+**sam:** Yeah. Well, you're right. Like it's an older idea. Alchemy just did away with it, uh, because we, we, we leaned into like, if you await the resource, you can get back the actual values. If you look at things like Pulumi or SST or CDK, because it's all planning based, you weren't able to get the string. Like, oh, I've got the worker URL. Well, in Alchemy, Async Alchemy, you would await the worker and you'd get it back and you could just print it. It was there. Uh, but of course That came with the da-- I had, I had this massive assumption that everyone would know how to control their own concurrency, and I, I looked at everyone's application.
+
+It was literally just await, await, await, await. I'm like, "Oh, okay. That's a, that's a problem," because that, those things can run in parallel, right? So they're not running things in parallel. And then when they would destroy, because there's no plan, it would just blow it all away, right? Uh, which I think was very appealing to a certain group of people, like very hacker-minded people, because you can put that in an API and you can just like await promise all and do really interesting scripting stuff, right?
+
+But it ultimately ends up being a huge problem where, one, you're writing suboptimal infrastructure as code that's slow and could be quicker if you knew the-- if you did parallelism right. Um, but also we love to be able to tell you what we're gonna do before we do it so that you can review it, because otherwise, whoopsie-daisy, deleted the database.
+
+
+#### [00:27:12] Outputs and Bindings
+
+**sam:** You know, that's a very real thing. But with Alchemy, you know, we, we leaned into... We didn't innovate here, we just copied the output model from Pulumi, which I think is the right one. CDK is different. This is the right one. It's basically like it's output of T, it's a boxed container, and it's a value that you can't get until deploy time. But you can use it to string together the dependencies. Like you can say, "The property out of this resource goes into the property of this other resource," right? So it lets you model that connection, but then it only actually flows, uh, when you run the planning and run you-- and when you run the engine. Uh, but that allows us to see the graph and then tell you everything that we're gonna do. Um, we extended it a bit with our concept of bindings, so we extended infrastructure as code. There's not just resources, resources also have bindings. Um, and bindings can be circular, so we also solve the problem of circular dependencies. Uh, like, so imagine having two workers depend on each other. In every infrastructure as code tool like CDK, Pulumi, you can't really do that.
+
+You have to work around it. Um, in Alchemy, we designed spec- V2, we specifically designed for circular dependencies. I wouldn't say Effect helped us with, with any of that. Uh, Effect helped with, um, replacing AsyncLocalStorage. So like if you yield a bucket, it's yielded in some stack, it's yielded in some context, right? But where does that context come from? Well, Effect luckily allows us with the-- they have a concept of Effect context. We can just use that to model, hey, which stack I'm in. The Effect can just grab it and it knows what stack it's in. in. Async Alchemy, we used AsyncLocalStorage for that, but that doesn't run in the browser So it was like straight up just like, oh, okay, now we're coupled to Node. But like my dream infrastructure as code tool should run anywhere that JavaScript runs, and with Effect we can do that now because we can do these complex context and we can decouple from the underlying, underlying platform and give you something that could run in a browser, right? Um, so yeah, I don't Went off track there a little bit, but like that just went into planning, uh, old school output model but then extended the engine for circularity and bindings. Like really borrowed the word binding from Cloudflare. I love their binding system, but it's really annoying that it's just for their Cloudflare system. Alchemy v2 is basically bindings for the whole cloud and between any component of the cloud. You can bind an S3 bucket to a Cloudflare worker. You can bind an R2 bucket to a Lambda function, to an EC2, and it all looks the same, right? So taking that all the way is like, what if we had infrastructure as code and bindings for the whole cloud?
+
+Well, now the cloud is a library. That's it. Like that's, that is the conclusion. The whole cloud becomes a library, and now the only thing stopping you from using the whole cloud is which accounts you have. That's it. Um, yep.
+
+**andrew:** Cool. 
+
+
+#### [00:30:08] Testing Real Infrastructure
+
+**andrew:** Let's move on to talking about testing a little bit. On your homepage, you got some big claims there. No mocks, no fakes. Uh, I'm assuming this is 'cause you can tear everything-- uh, you can build everything up and tear it all down really quickly. But can you, uh, go into some of like the nice properties that Alchemy, uh, sh- has for testing and like how much, how fast is it?
+
+How much does it cost in practice? That sounds like a lot of doing stuff, and doing stuff ain't cheap. 
+
+**sam:** Yeah. Uh, you're, you're right. Like we-- the-- because the, the way that you create a stack is you export default it from a file. But because it's Effect, the thing that I should mention about
+
+Effect is Effect is pure, which means when you call a function that produces an effect, it does nothing. Which is great because now I can put them anywhere and I can import them and I can refer to.
+
+them.
+
+In Async Alchemy, you couldn't do that, right? It wasn't pure. If you would, if you imported it, it would do stuff, you know? That's not good. Uh, so we can just, we just import that and you just literally go before all deploy. Maybe I should, maybe I should show the screen. I don't know. Uh, no.~~ All right. I'll stick away from that. Yeah. Okay. Yeah. Let's-- I don't know. Let's, let's just try it because I don't know. I'm talking about code and I've always found like p-people aren't good as, that good at like listening to people talk about code. Um, let me pull up, let me pull up one of my examples here just to, just so I can speak to it.~~
+
+~~So ~~
+
+**justin:** ~~I think re-~~
+
+~~re-- like, before-- when you get to the point where you're ready to share it, like, redo the intro to this, to this section and be like, "Uh, I'm gonna... For people watching video, I'm gonna show, like, a quick thing," and that way folks know to, like... ~~
+
+~~Um, but make sure you describe, uh, what you're showing in good detail. ~~
+
+**sam:** ~~Yeah, no worries. Uh, okay, one second. Let me get it all good. Uh. Okay. So like we'll reintroduce. ~~So yeah, so Alchemy has a testing feature that allows you to sort of import your stack, and because it's an effect... See here, this is our stack. Uh, this is just an effect. It's pure, which means calling this function doesn't do anything. It's just a data structure, which means if I import it now into my test, nothing happens. You know, I have more control. In Async Alchemy, you would import the stack, and it would run the stack, and we had to do all these hacks to work around it, and it's not good. In Alchemy Effect, it's just pure. I can import it, and then as you can see here, I can call this beforeAll function, which has a return value, which is probably uncommon for what people are seeing, but it, it makes a lot of sense. This gives you a return value, which is just another effect that will give you the output properties of this stack. So if you see this stack here, we're returning URL, branch ID, hyperdrive ID, right? Uh, that's what comes out of this beforeAll, are your properties. It's the result of this deployment. And then in your test, you can just yield that. So you can write a test, very normal, with an effect, and then you can just get the values and, for example, f- assert that it's a string, but more interestingly, uh, make requests against it, right? So here I am making requests against the, um, against the real infrastructure. And if I run bun test, and hopefully I'm logged in, you'll see that it starts creating the infrastructure as part of that command, and it will run requests.
+
+Maybe it'll succeed, maybe it'll fail. Um, and then it should tear it down, and you'll see that the teardown is happening in the afterAll. So I give you control over, um, when it runs. So like if you don't want to destroy at the end of every test... So here we've got two tests that passed. We created all this infrastructure, and we destroyed it afterwards. But if I'm like, "Oh, you know, I'm iterating. Please don't destroy it," as a user, I can just set up this convention of no destroy, run it again. It'll redeploy the infrastructure, and this time it won't destroy it, which means on the next run, it's quicker, right? It's just doing an update. Um, so that's like nice little control you get, uh, out of just everything being effects.
+
+So very quickly build your stack. All the infrastructure's correct. Very quickly put together a test, test its behavior, start running it, right? So if I run this again, it'll, it'll update this time. Yeah. S
+
+
+#### [00:33:42] Cost and Local Emulation
+
+**sam:** o you asked about cost. Cost is always going to be use case specific Right. Um, if you're using Cloudflare in the way that I am here, this is Cloudflare and Neon.
+
+So I'm deploying a Neon database, connecting, uh... managing it with Drizzle, and using Cloudflare Workers. The cost of this is very, very low. So a dev stack, probably zero, actually. I think it might be close to zero. But if I was deploying an EC2 instance per test or per developer, you know, it could get more expensive.
+
+But that's where you sort of progressively choose to simulate things locally, right? Like, oh, for my tests, I'll just run the Postgres database locally instead of Neon, instead of PlanetScale, right? Because at the end of the day, it's the same behavior from Drizzle's perspective. So that, you know, you can take some of those heavy things, and we can help you emulate them locally. We started with less emulation this time because it's just so much easier to test in the cloud and, and our use cases are very cloud-friendly. But as we get more into AWS and these expensive services, you know, we'll probably need some simulations for things like that. Yep.
+
+**andrew:** And I'm sure that'll require a lot of AI agents making a lot of simulated local things, right? 
+
+**sam:** Uh, yeah. Well, I have plans to turn every-- Can I get-- When AI gets smarter, once we have Drizzle, if we've got Drizzle as, like, the perfect spec of every cloud, well, the next step is, like, implement the APIs. So then we just go, and we jump straight to, like, generating local stack, generating local emulation. That's kind of the dream there. I think a- as AI gets smarter, we'll do more stuff like that. It's like, "Hey, take the Cloudflare Drizzle SDK and build a local version of every API." You know? Something like 
+
+**justin:** you mean distilled
+
+for that?
+
+**sam:** yeah, sorry, just did I say, did I not say Distilled yet?
+
+**justin:** said, you said Drizzle. I was like...
+
+**sam:** I someti- uh, yeah, you, you're right. I sometimes say that.
+
+I don't know why. I g- it's, it's such a similar word, I guess. Uh, but yeah, here, here's Distilled, uh, what it looks like. Um, uh, I did a lot of speaking about code, but maybe I should just jump in and show you what I meant by, like, the bindings because I feel like it, it's probably not that clear if you're not looking at it.
+
+So for the people who are on video, let me just show you what a binding looks like. This is a binding here. We have a hyperdrive, and we just bind it to the worker. So the way that you do it is you just yield star the binding, and now you have it. And then you just set up your database connection with Drizzle.
+
+So this is our Drizzle Postgres connection. So this is like, remember that constructor pattern? Declare your dependencies, return the implementation. That's what this is, dependencies, implementation, and here I can just select this, and I get this nice type-safe users object, right? So that's all the infrastructure just flows for free there. Um, the application code can't be written if you misconfigure it. Like, if I comment these out, instant error, right? Uh, so I just wanted to just quickly touch on that. We can go deeper if you'd like, but for now, I'll stop sharing the screen. Um, did that help you understand what I mean by the testing story, like against real infrastructure and possibly local emulation if you need it?
+
+**andrew:** Yeah, definitely.
+
+**justin:** you know, you, you have this problem often, is that your tests are usually a simulation of reality, and it's, like, hard to say w-w-will... You know, it's not a true end-to-end test, I guess. You know? It's not really testing, like, is th- would this work in the service? So having
+
+it, y- an infrastructure set up do your tests on actual infrastructure, tear it back down, is a 
+
+very interesting approach
+
+**sam:** And you can do that in CI- sorry, go ahead.
+
+**justin:** No, no, no. Go ahead.
+
+**sam:** Oh, and you can do-- and that same test run in CI/CD, and you get, uh, and you get a different environment per pull request. So you write all your tests locally, iterate, iterate, iterate, and then put it up in a pull request, and that'll run in a GitHub action, and it can deploy the infrastructure, and it can, you know, um, run all the tests and then tear it down when the pull request merges or closes. That's the setup that we have right now. And then when you go into main, you know, off it goes to production. Uh, and that's where we can get into things like blue-green deployments and phased rollouts and all that good stuff, which is things we plan to automate with Alchemy. Um, everything that you would expect a good disciplined production team to do will come for, uh, come included in Alchemy v2 for you. 
+
+**justin:** That's awesome. I think maybe this is a really good point, too, to transition to. So you started this journey, Alchemy, um, v1, this open source, um, uh, toolkit for just, like, d- uh, imperatively, like, deploying infrastructure is very simple, sort of from scratch. You've learned a lot. You've adopted Effect. You're, like, leaning into AI.
+
+You've done a lot more generation. You have a lot more coverage. It's safer. It's more buttoned up now. Um,
+
+so it sounds like y'all were getting to a good point with the sort of like core of like what Alchemy is. 
+
+
+#### [00:38:45] Monetization and AI Future
+
+**justin:** Um, and it sort of begs the question, it's like, so this is a, this is a startup. You've, you've raised some, some money from VC. Um, what is the, what is the next step here? How do you... Yeah. Where are you taking this? Next
+
+**sam:** economy collapses, and I don't have to worry about it anymore, right? No. Uh, I don't know. It's a very funny story. Like, I think it's, it's, it's so typically me, but, like, there's something about Alchemy that is almost anti-money in a way, you know? Uh, not that I want it to be that way, but, like, if you reduce every SaaS application to a library, what are you left with, right?
+
+Um, you have to find something that you can provide to users that adds value by being managed. 'Cause most SaaS that I've seen is like, oh, it's self-hostable, but like It's not really. Like, it's self-hostable if you're willing to spend like 100 steps setting it up and blah, blah, blah. But with Alchemy, everything that we build, we'll build with Alchemy, and then I'll be left with the question of like, well, do I open source it or do I put it on a managed service and charge for it, right? And how do I answer that question? Like, what's the just-- Like, there could just be, "Well, I wanna," you know? Like, "I wanna, I wanna make money." And, and that might be a fair answer because, you know, for a good tool to survive, it needs to make money. But also there should be things that can add value by being managed.
+
+Like for example, secrets, I think, is one that could add value by being managed. We have a concept called profiles where we sort of let you set up profiles with all the auth credentials saved for each of your cloud providers that you're using. Um, but at the end of the day, it's still hard to onboard teams, and you've got to go out and reach for something like Doppler or some other secrets management thing. People get by with OnePass. I think we could integrate that directly into Alchemy as a service, so like your application, your code, and its secrets are all one unit, and we could sell that as a service. And then sure, I could give it to you as a library, but there's still always the responsibility of managing secrets properly, um, which could be something that, you know, like...
+
+And then compliance and all that good stuff, right? Of like making sure that this is actually a working secrets manager is something that is worth paying for and outsourcing the liability to, rather than like, "Oh, I just installed some library and, you know, oops, I lost the master key and now they're all gone."
+
+Or, "Oops, I leaked it and someone has it." So like, that's an example. Uh, I'm pretty interested in building my own observability stack as well. Uh, I'm using Axiom right now. It's, it's okay. It's good. But I think given that we have so much built-in understanding of your application's inf- architecture in the code, I think we can do-- build a really great observability story, um, and just stretch that across all your cloud services, all your accounts, and just integrate it into Alchemy. Uh, so like those are like your, my sort of stable, steady sort of ideas that I think, you know, if you got 10,000, 100,000 users and then like 1% to 5% of them paid, you know, you, you probably got a s-sustainable business. Uh, not sure. I have radical ideas, uh, that I've spoken to with a few friends, but remember how I said once you reduce everything to a library, the only boundary between you and the cloud is your account? It's like, well, what if you could get rid of the account? Uh, so like I, I'd love to sell a managed service that allows you to just... You know, like you saw Cloudflare just released. AI agents can create accounts, you know? Uh, that's gonna happen more and more with MPP, X402, these sort of like online payment services, where like what if, what if Alchemy just took care of all the accounts and now you can just use the cloud. Oh, I want PlanetScale, use PlanetScale. Oh, I want AWS, use AWS. Uh, that could be really cool. You know, if I imagine this world of AI generating Alchemy apps and infrastructure and the whole, you know, economy is built on these autonomous applications, it's like, well, someone has to manage connecting all those things together in some way. Um, is everyone gonna manage their own accounts or is there something that could be built there? Like a wa- a cloud wallet, you know, a wallet for my API keys, for my, for my access to, um... Interested, interested in that area. W- Gonna let it evolve a bit more, see how it goes, but that, that could be a really interesting, interesting product, just an ephemeral cloud.
+
+Just like-- Oh, sorry, ambient cloud that's always there and all you need is one account, which is the Alchemy account, and now you can just use it. Yeah. But to be honest, I don't know. Uh, like this feels like... I talk with my wife about this all the time, but AI feels very like destructive and deflationary. It's like, what-- where do you, where do you make-- Who makes money when there's an i- an AI that can build anything within a few days? You know, we're not quite there, but I think it's... I'm, I'm an AI maxi. I believe it's happening. I think you can see it happening. You know, the things that we're just doing with AI is progressively more. Where's the value in anything at that point? 
+
+**andrew:** Yeah, that's been a big issue. Uh, I was listening to "The Hard Fork" podcast, and they had Andrew Yang on, and I had forgotten that, like, he had run on the premise of AI is gonna take all of our jobs and we need U- UBI to fix the problem. He was just kind of like, just really just like three years ahead of the 
+
+**sam:** He was on it, 
+
+**andrew:** He was on it. It was like
+
+perf- perfectly accurate. It's like I feel like that's like the end goal of all this is a much different looking world than we currently live in, and that's where a lot of the fear lies with me, for sure.
+
+**sam:** Yeah, and I, I-- and then there's my product, which is just straight up like, you know... Like my, my product makes so much more sense in a world when you sell CDs, you know, when software was distributed in a box, right? It's like, why, why don't we go back to that world? Like, why does everything have to be a subscription?
+
+Why don't you just pay a license? Like, what's wrong with licensing software? Um, this open source is so strange. It's like it's where so many brilliant people come together and just give away their work for free. Uh, is that sustainable? Like, what, what... These people need to get paid, right?
+
+**andrew:** I, I, I think we found unequivocally, no, it's not sustainable. After 160 episodes, no, n- nobody's found the sustainability curve yet. Yeah.~~ ~~
+
+**sam:** ~~Yeah, which is ~~
+
+~~so-~~
+
+**justin:** ~~though... Sorry. ~~
+
+**sam:** Where's the carpenter that's like just you go to his house and you can just grab the... He's like, he's putting out tables and you can just go snag them. You know, it's fr- like, ooh, that's what, that's what GitHub is, right? It's like, "Oh, I spent two years working on this." "Oh, thanks bro. Cheers." And now with AI, it's like, "Oh, cool. Uh, I'll copy that. Off I go," you know? Uh, I don't know. It's very odd to me. Like, but these like, uh, this online payment stuff is interesting. Like, maybe things will change. Maybe people will pay to like visit a website to download a package. Like, maybe everything just gets micro payment and everyone's okay with it because there's no other way to make money. You know, like, oh, npm downloads are actual money. Like, why not? They- 
+
+**justin:** Maybe, yeah. I, I think that, like, m- there's always gonna be, uh, the space to get paid so that somebody doesn't have to worry about something, you know? That, that you are taking care of something, that they can trust that you are, you know, taking responsibility. Um,
+
+and I think, like, in the, in the infrastructure space, it's like, okay, so me as an amateur dev, you know, I come through and I, like, s- use Alchemy and I use AI, and I, like, spin up the service and it's deployed to AWS, do, do, do. No idea what I'm really doing. Um, and then, you know, at some point that bill comes due. It's configured poorly. Like, there's some major thing, there's some sharp edge, and I think the thing that you have that's interesting is, like, this sort of intrinsic knowledge of all of these platforms and their sharp edges and, um, that's a thing that, like, is valuable, right?
+
+And it's, like, this interesting opportunity for you to figure out, like, okay, I have this tool that, like, makes interfacing with these cloud services basically go to zero. But, like, it does not reduce the pain of being on the cloud services, you know? And there's, like, there is this sort of, like, trust and, um, help me, like, get that last mile of like, yeah, I wanna build a service online and I wanna, like, make a digital business or whatever.
+
+But also I, like, need to trust that I'm not gonna get, like, a $10,000 AWS bill in,
+
+uh, you know, a f- a few
+
+weeks or something.
+
+**sam:** you know, we thought-- There's other ideas we kicked around, like the idea of selling, um, uh, like support agent, like on-call as AI, right? It's like, hey, what about like reviewing the infrastructure, man- maintaining it, responding to alarms, things like that. It's like, sure, you could get Claude Code to do that, but like maybe, maybe we can do something beyond, beyond that.
+
+Or, you know, going all the way would just be like, well, I know everything about all these cloud providers, and I know how, like, terrible they are in many ways. Like- Build your own, you know? You know, build, build your own on top of existing infrastructure. That's what Vercel did, and then-- or pull a Railway and then go raise 500 million and build your own hardware.
+
+You know, like there's, there's, there's, things you can do. Like, you know, I was talking about it with Michael Arnalle. It's like, let's just get Cloudflare but Bun instead of Workerd. Just go build that. That's, uh, you know, build-- g- could just move into infrastructure as well. But the problem is like the limitations are just like endless.
+
+Uh, like where's the... I-- for me, like just focusing on production-ready services, getting like a really core use- user base, both like open source, but also building some like relationships with teams that I'm working with, which can translate into like support plans to help, you know, they keep me alive, and then I keep them alive. And then from there emerges like monetization ideas like observability, secrets, compliance. I think we could do... Compliance is a big one. You know, like I can give you types and op classes that help you build compliance systems, but what about like guaranteeing compliance? Some of these, some of these contracts that you see thrown around to like build a compliant thing for the Department of Defense or whatever are pretty, pretty crazy.
+
+But could I, could I build you a system of tools and services that go zero to FedRAMP? You know, like just, "Hey, I wanna build a FedRAMP thing," and in healthcare or in government, Alchemy should be like the greased rail to get there. And there's gonna be so many ways to, to find ways to monetize and add value to that, to that chain. That's not just libraries, I believe.
+
+**andrew:** Yeah, that all sounds exciting to me. The observability stuff sounds exciting. I found it very helpful in, like, my side projects just to have, like, a, all that stuff in one place and I have AI ask it stuff and,
+
+like, my problems are just kind of magically solved. It's a, it's a crazy experience. Crazy world we live in.
+
+But thanks for coming on the, the podcast and talking to us about Alchemy v2. It seems like you put in a whole lot of work. It's a, a big new vision, and I'm personally excited to try it out. So thanks for coming on and talking about it.
+
+**sam:** Yeah. Thanks, Andrew. Thanks, Justin. 
+
+**justin:** Sam. Love to see all the work and how far y'all have come, so it's cool. Keep it up
+
+**sam:** Thanks, man. 
