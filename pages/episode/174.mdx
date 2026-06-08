@@ -1,0 +1,417 @@
+---
+title: Rita Kozlov and Steve Faulkner - Cloudflare
+youtube: https://www.youtube.com/watch?v=i7wO6ipU8mg
+spotify: https://open.spotify.com/episode/6o8OL82H6Mwx5pcLyxQKFt?si=Ct-w5keTQmWwYb4ETvIDnQ
+tags: cloudflare, devtools, devtools fm, podcast, javascript, typescript, programming, development, technology, vite, astro, workers, agents, ai
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Rita Kozlov and Steve Faulkner, the co-founders of Cloudflare.
+The big news of the day is that Cloudflare has acquired Vite.
+This is a big deal for the JavaScript ecosystem and for the future of developer tools.
+We talk about the acquisition and what it means for Cloudflare and project.
+
+- https://www.cloudflare.com/
+- https://workers.cloudflare.com/
+- https://blog.cloudflare.com/
+- https://x.com/rita3ko
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:01:59] Cloudflare Beyond DNS
+[00:04:34] AI and Agents on Workers
+[00:08:31] Cloudflare Acquires Vite
+[00:12:31] Ad
+[00:13:34] Devtools M&A Strategy
+[00:17:57] Vite in the AI Funnel
+[00:31:59] Infrastructure and Free Tier
+[00:42:26] Future of Agents and Wrap Up
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Rita:** this really, really core technology that's literally the foundation of, like, every framework that's built right now. The pressure is on us to be a, a good steward o-of it a-and make sure that it continues to be available to the community and improve.
+
+
+
+**Andrew:** Hello. Welcome to the DevTools FM podcast. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host, Justin.
+
+**Justin:** Hey, everyone. Uh, so we're really excited to have Rita and Steve with us today. Um, so y'all are coming from Cloudflare, uh, and Cloudflare had some big news recently. You had acquired Voidzero, so I'm really excited to talk about that. Also, early in, earlier in the year, you acquired Astro, um, which is also super exciting, like some of my favorite technologists all in the same place.
+
+Um, and y'all have just been shipping a lot of really cool stuff lately. So before we dive into it, I'd love to give each of you an opportunity to sort of introduce yourself and let our audience know what you do, and then we'll dive into it. ~~Uh, Rita, you wanna kick us off?~~
+
+**Rita:** Sure, happy to. Hi ev- hey everyone, I'm Rita. I'm the VP of product for Cloudflare's developer platform. Actually, tomorrow will be my t- 10 year anniversary at Cloudflare on the dot, um, which i- is blowing my own mind a little bit e- every time it comes out of my mouth. Um, but yeah, I, uh, I oversee and lead product kind of across things that relate to compute, storage, AI, developer experience
+
+**Steve:** Uh, and I'm Steve Faulkner. I'm the senior director of engineering in charge of Workers, but also our containers product, um, like our agents SDK, all of our framework integrations, uh, things like the Vite plugin, Astro, uh, our Wrangler CLI tool. So it's kind of grown in scope beyond that, and now, uh, the, the Void team as well and all of, uh, the stuff around that and Vite
+
+​
+
+
+#### [00:01:59] Cloudflare Beyond DNS
+
+**Andrew:** for listeners who still think of CloudFlare as the DNS DDoS company, what does your world actually look like now? You guys have so many different services, and really it seems like you can do everything. So how did we work from DNS company to where we are today?
+
+**Rita:** I, I think every time we hear Cloudflare described as the DNS DDoS company, um, a, a, a part of my soul dies just a little bit because we do so much more now. Um, uh, uh, d- and don't worry, like, uh, w- we, we do hear this quite a bit. Um, and, and what's cool is, um, that that is the foundation that, that's allowed us to build the platform that we have today, right?
+
+Um, we, we built this massive network, uh, through which Cloudflare sees more than 20% of the internet today. Um, but our goal is to make it possible for developers, you know, whereas I think a lot of people originally came to Cloudflare to put Cloudflare in front of their applications to help protect it, make it faster, cache things.
+
+Today, we're excited to let developers deploy their applications directly onto Cloudflare's platform. And so we try to offer as many of the different tools as you need, you know, again, from storage, compute, um, to like, yeah, you do actually need DNS, um, to, to have your application publicly on the web a- and help them connect all of those 
+
+**Steve:** ~~Yeah, Cloudflare,~~
+
+**Justin:** ~~all... Oh, sorry, go ahead, Sue~~
+
+**Steve:** I'll say I, I've only been here for two years, um, so I've got a little less time than Rita, but it is wild how far we've come in two years and how many products we've added. I mean, it is-- it, it's the full featured thing. You need to build an entire application or an agent now, right? And so, um, we've kinda got everything that you need
+
+**Justin:** Yeah. It's been, it's been really fascinating watching the platform develop. I mean, r- I remember when like Workers was sort of just being socialized around like tech Twitter and kind of watching that development. It's been a while now. Um, and then being like, "Yeah, this is cool, but now I have to like connect to all these other external services to like do all this other stuff."
+
+And like over time, y'all have really eaten that, and it's like kinda all the basic primitives you need. I mean, R2, the like S3 equivalent, was such a big, uh, deal when it landed. Also, I think the-- So y'all have this feature where you can, uh, incrementally move off of an S3 bucket by just like passing through requests to it, which I think was like incredibly brilliant, uh, so smart.
+
+Whoever did that, I hope they got a raise. Um, I don't know. It's, it's been really cool watching the platform come together and like provide all these sort of base primitives. 
+
+
+#### [00:04:34] AI and Agents on Workers
+
+**Justin:** And it's also been really interesting to watch y'all like really actively move into the like AI and agent space a little bit. I'm curious if you could talk a little bit more about like how you've been thinking about that and that story and how it fits in your sort of like current product offerings.
+
+**Steve:** I,
+
+I can jump in there. So this is something like everybody else, you know, it's starting like kinda last year, right? We just saw how the world was changing, and we saw how people were changing what they were working on with AI, and this just has been accelerating since kind of, you know, this like December, January timeframe, right?
+
+Um, and even internally, the same thing was happening, right? You know, we were seeing how we were writing code, how we were writing our own applications, and how we were using these tools, right? Uh, and I, I think it was pretty cool to see that some of the primitives we had really like met the moment of AI, right?
+
+Where we came in and, um, you know, we, we didn't build things like workers and durable objects intending for them to be used with AI. We built them as cool primitives 'cause we thought they had, you know, unique properties and unique technology. Uh, and then AI just happened to need a bunch of these things, right?
+
+And so seeing between those two things and then containers, right? Like, tons of people coming to us and building agents on top of us and building all of these like other platforms, right? Like, we're the place people are building their agents for, you know, their internal use, their external use, like all this stuff.
+
+It's been, it's been really, really fun and interesting to see. And, um, every, every day I, I, I-- seems like I come to work and hear about some new launch that's like, oh yeah, that's using durable objects behind the scenes, right? I'm like, "Whoa. Wow. That's pretty cool." So
+
+**Rita:** Yeah. To, to Steve's point, um, s- so much of it happened organically and, uh, a lot of origin stories for a lot of products at Cloudflare come out of, like, someone being like, "Oh, I ne- I needed this," and they end up building it, and we realize that it's useful to more than just us, so we, we make it publicly available.
+
+There are, you know, th- there are some products where obviously we have to be a bit more intentional, like Workers AI, which is our inference product. It allows you to run models like Kimi-K 2.6, uh, directly on, you know, GPUs running on Cloudflare. Um, th- that, that's not something that, um, you know, we just kind of vibed into existence.
+
+Um, we had to, you know, go and get GPUs and get them installed across o- our network, and that was based on demand that we were seeing. And Cloudflare is always at its best when we lean into a moment, um, and, you know, we, we get those industry tailwinds. I think that's one of the things that, um, one of the ways that we compete...
+
+If, if you think about Cloudflare's competitors, like AWS, GCP, Azure, th- they're much, much bigger than us, but the advantage that we have is that ability to be really nimble and move really fast and rise to the occasion so that, you know, even... I, I think about a good example of this was when MCP came out, we were the first ones to basically have a server-side implementation ready to where today, I think practically everyone deploying MCP servers is deploying it on us 'cause it's the canonical e- example that, um, that you come across.
+
+But yeah, the, the, the kind of very funny thing is, uh, a- as Steve was saying, you know, I mean, Workers is, like, nine years old this year, which is crazy. Um, but it turns out that it's kind of this very, very perfect primitive for what you need right now. Um, and, you know, for, for now that LLMs can generate code so quickly and so efficiently, and you do need all these sandboxes to execute relatively little code sometimes, right?
+
+Um, containers turn out to be a, a very, like, o- an overly heavyweight solution for that, and Workers, which are so lightweight, you know, we, we... I'm not gonna say that we predicted this nine years ago, that agents were gonna come around, but it did turn out to be, like, this just very perfect, um, uh, shape that, like, fit into just the right 
+
+**Andrew:** Sweet. 
+
+
+#### [00:08:31] Cloudflare Acquires Vite
+
+**Andrew:** So let's move on to the, uh, the big news of the day. Uh, you guys bought Vite and the enti- the-- basically in the entire ecosystem. Uh, nowadays every, uh, meta framework is kinda based on Vite. Some of your competitors use Vite even, which will probably, uh, lead to some interesting things. Uh, what does it mean for Cloudflare to now be the steward of this tooling that is, like, the entire ecosystem, and how does that kind of fit into your guys' strategy?
+
+**Steve:** I, I think it means that expectations are very high, and we have a lot of responsibility to, like, live up to what we've said publicly, right? You know, in the, the blog post that Evan and I wrote, uh, which is that, you know, all this stuff remains open and usable everywhere, right? And, you know, still powers every framework and still remains, uh, MIT licensed, right?
+
+Like that... When-- Even when, um, I started talking about this deal internally, right, you know, months ago, I, at pretty much every meeting, I think people were getting annoyed with me just repeating this, this point, that this is, like, the most critical thing, right? What Vite has built is amazing, and it is valuable because it is, you know, so agnostic to where you deploy these applications.
+
+Um, so that's, that's what we're gonna do next. We're just gonna keep doing that. Um, uh, and we're gonna figure out how to make it, make it good for everybody 'cause that, that's the way this is successful, so
+
+**Justin:** Rita, did you wanna add anything to that?
+
+**Rita:** ~~Uh, I I,~~ mean, I I think Steve is completely spot on. May-maybe the thing that I would add is, um, yeah, that there's this s- really, really core technology that's literally the foundation of, like, every framework that's built right now. So the, the pressure is on us to be a, a good steward o-of it a-and make sure that it continues to be available to the community and improve.
+
+Um, but the... I feel like the bonus that we got out of it, obviously, is also a really, really incredible team, um, uh, of truly, um, superstars. And, uh, I, I mean, obviously Avenue is, I, I think one of the most prolific, um, a-and accomplished, um, I, I don't even wanna say developers. I, I would say, um, uh, kind of front-end technology visionaries, um, where, you know, he, he's the person that's been behind Vue, which is one of the biggest frameworks and, um, obviously Vite.
+
+So really, uh, really excited to, um, have the team and also see, you know, um... Actually, with a, with a lot of Cloudflare's acquisitions, um, uh, you, you never, you never know what direction things are gonna go in. Um, uh, some of them, you know, we, we acquired the company thinking one thing, and then we got some major wins out of it, but in a completely different dimension.
+
+And so, um, you know, I, I, I'm excited to see, um, what, what innovation comes out of that, you know, and I expect that some of it is gonna continue to be in kind of more of the front-end space, but some of it also is likely to be in more of the agent space and like, you know, we're talking about frameworks.
+
+What, what do frameworks look like, um, in a more agentic 
+
+**Steve:** I, I'll just double down on the team. I, I, uh, I got to meet the whole team through this process, right? And sort of chat with every single person, and that was something that I learned along the way as we were going through this, right? Was just like how awesome the team they've assembled is, right? Like the-- Some of these people, you know, they're, they're not vocal on Twitter, right?
+
+You wouldn't recognize them online. Um, but just hearing some of the things they've built and, you know, building these like building blocks that everybody uses and making them fast, right? Um, you know, I, I'll-- One of their developers, I, I remember he told me a story all about how he, uh, he basically just stumbled upon Oxc by accident, and he needed a, a parser, and then he just did a PR that made it six times faster, and they were like, "Well, may-maybe you should work here," right?
+
+Like, "That would be a really great idea." Um, so some of these people that have just like some incredible talent. Um, so very excited to be working with them
+
+**Justin:** Yeah. I mean, arguably, you, you've really got some of the best developers in this space and industry. I mean, that Evan had put together like a very heavy-hitting team, not, you know, to discount his own contributions for sure.
+
+
+#### [00:12:31] Ad
+
+**Justin:** Software engineering is a challenging job and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead when really we just want to be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers. And it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available. So if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you want to extend it, feel free. The back end is rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just like starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast, it's fun, it's a better way to build. Sign up at macro.com and get $100 off your subscription using DEVTOOLS100.
+
+
+#### [00:13:34] Devtools M&A Strategy
+
+**Justin:** I think just some meta commentary, it's like a very interesting time for developer tools in this space.
+
+Um, it's always been a hard, uh, industry to be a part of, um, as a company trying to make tools, especially like small, smaller focused tools for people in the industry. And I think AI is making that even harder, and we're starting to see more of these large acquisitions. So, I mean, think of all the interesting dev tool or a lot of the interesting dev tools that I can think of recently.
+
+So like Bund's acquisition to Anthropic, uh, Astral's acquisition to OpenAI, um, you know, the Void Zero team. I would say Astro previously, um, we'll go back to Sounil Pai's Partykit, which I think is another, let's not discount that 'cause he's a superstar. Uh, but you know, it's happening a lot over the space and I'm... Vercel of course we have to talk about because they have, you know, hired a lot of the framework authors, um, who are kind of like working the space and it's like done a lot for their ecosystem. So I'm curious how y'all are thinking about the, the dev tool space as it comes to things that like interface with Cloudflare.
+
+So, you know, these front end tools or JavaScript tools or like other things in the space and like are you trying to sort of develop an acquisition strategy where you're looking at like complementary pieces of technology to sort of like, you know, foster dev tools and open source and Cloudflare's brand?
+
+Or is it like you're just trying to be really strategic about, you know, certain tools or teams that you're, that you're wanting to take on?
+
+**Steve:** ~~You know, I,~~ I think it gets back a, a little bit. I mean, this is gonna maybe sound a little corny to some folks 'cause they, you know, you talk about corporate mission statements, right? But, um, our corporate mission statement is, right, to help, help build a better internet. And actually, very frequently people will leave off that word help, um, and they will just say, "Build a better internet."
+
+And, and you'll get corrected internally when you do that because it, it really is about, like, what, what's good for Cloudflare is, like, this healthy, open place. I mean, we, we want you to come host applications with us now. We've built all the tools to do that. But we also do well when we, you know, sit in front of your application hosted elsewhere, right?
+
+Like, that's the unique thing about Cloudflare is because of, like, the breadth of what we offer and, you know, the, the s- suite of products we have, it is, you know, it is a good thing for us, right? Our interests are aligned with you doing things other places as well, right? You know, we don't wanna be the entire internet.
+
+We wanna help build the entire internet, and we wanna be a slice of it. And so for us, it's really looking for these teams that also have that same feeling, right? Like, that's where, you know, the Vite team is not trying to be the best and only framework. They're trying to be the thing that powers all the other frameworks, right?
+
+And so I think that's where for us, like, we kind of think strategically about, you know, how, how do we have, like, lined up missions when it comes to those kinds of things.
+
+**Rita:** And then I, I think, uh, we approach M&A in general with a lot of discipline. Cloudflare has his- historically hasn't actually been a particularly acquisitive company. Um, uh, a, a lot of, a lot of tech acquisitions go wrong. Um, a, a lot of products never actually get fully integrated. Um, e- especially w- we have, um, um, you know, w- when you run 20% of the web, um, it, it's a very unique scale to do things at, and we do have a very unique stack.
+
+Um, it, you know, i- if you built things somewhere else, um, it's very hard to then import that, uh, in a way that runs in our stack. Um, so there's kind of, you know, generally w- when it comes to, uh, other acquisitions, we, we do tend to favor things that are already built on us because it makes that integration process so much easier.
+
+Um, but one, one of the, you know, o- one of the big things is definitely alignment with mission, which Steve just talked about. And the, the second thing that we, I know we already talked about too is a- again, teams. Um, it, that it's just such an important element of the whole thing, right? Um, f- for both, um, you know, for both for us, like is there going to be a culture fit, and then also for the long-term success of, um, of the team that we're acquiring and making sure that, um, you know, they, they really find a home here and are able to be successful.
+
+
+#### [00:17:57] Vite in the AI Funnel
+
+**Andrew:** So, uh, one thing that comes to mind with this acquisition is Funnel. Uh, I was reading the Supabase, uh, announcement yesterday for their new round of funding, and they included some pretty crazy stats in there. Uh, when AIs are picking like developer tools to pick when building a project, 60% use Neon or 80, some high number.
+
+They all-- They're all choosing Supabase. They're all choosing Vercel. Was that a little bit of the thinking here too? 'Cause like when I start a project, it's probably gonna reach for Vite, and if Vite is part of you guys, I feel like it would steer developers more and more towards CloudFlare in that sense.
+
+**Steve:** Yeah, I definitely think so, right? Like we, we just like everybody are realizing this like, you know, sort of, uh, getting agents to choose us is a good thing. Um, so we've seen the numbers of Vite growing. Uh, and w-- you know, I, I track this pretty closely myself around all different frameworks, around which frameworks are getting, you know, tracked and, and downloaded more by AI, which aren't.
+
+Um, I would say that, that was a little bit of like, uh, if you look at the, the graph from the blog post, it shows that, you know, we went from something like roughly zero to fourteen million downloads in the course of a year on our Vite plugin. Um, that's not because of this acquisition, right? It just sort of happens to nicely line up with something we thought was already true, right?
+
+And so we sort of had this belief, we had this thesis that this is what's gonna happen, and, uh, frankly, it sort of caught up to us, right? It happened way faster. I thought I would be talking about ten percent of Vite downloads, you know, a year from now. Uh, and instead, here we are talking about it, you know, a few days after the acquisition.
+
+So, um, so I can't claim that we, like, knew that was gonna happen, but at the same time, we, we definitely were, like, betting on that kind of future, right? Uh, so I, I think just like everybody else, we think it's important to, you know, be the best place that agents can build, and that's like, you know, getting in with the technology stacks that agents are already picking and then, like, guiding them, you know, to the path that leads them to Cloudflare.
+
+**Rita:** I think the really interesting thing about Vite is, um, a- and one of the things that we've been talking about in general is, uh, i- if you think about the, the purpose of frameworks, right? Um, frameworks are a layer of abstraction that, that's intended to make it a lot easier for the vast majority of developers to build applications because, um, you know, ho- hopefully you don't have to like assemble a toaster every time you want toast.
+
+Um, you know, you just pop it in there a- and it works, and th- that's, yeah, the whole point of frameworks is they, they take care of all of the boilerplate. The-- But now in the age of AI, um, the, the thing with frameworks is, you know, th- there's always a trade-off, right? You take a lot of opinions, um, that help you out with the fact that you don't have to do things from scratch, but then sometimes you disagree with those opinions and you kind of have to concede on them.
+
+A- and the really interesting thing with AI is, um, y- you know, the, the cost of writing a lot of that cruft and that boilerplate ha- has gone way down to where, you know, in some cases you might actually not reach for a framework or for a package. You might just say like, "Hey, I'd rather build this from scratch.
+
+It's totally built, um, to my custom need. I, I don't have third-party dependencies." And with, um, with Vite kind of being this lower level, more underlying technology, um, w- we thought that that was, uh, um, uh, you know, now in 2026, uh, an interesting, ~~um, ~~uh, approach to, uh, top of funnel, um, compared to, you know, ju- just thinking about things at the framework 
+
+**Steve:** When I, um, when I wrote the blog post on, on vNext, right? Which, you know, we did a few months ago, I talked about this, right? There, there is some line, right? That is now shifting where sort of the software matters or doesn't matter, right? And so for us, Vite is a, a, a f- a bet that the line is lower down the stack, right?
+
+Um, so we'll, uh, g- we'll have to come back on in a year and you can all tell if us we were right
+
+**Justin:** Yeah. Speaking of vNext, uh, the, the collaboration with OpenAI with the Codex sites was pretty exciting to see. Um, and I think that uses vNext under the hood. That was, that was an interesting thing to, to, to watch develop. ~~How did that, uh... Sorry, go ahead~~
+
+**Steve:** Yeah, no, it, it does. Um, so it's, uh, it's, they were-- it's not super publicized, but it is-- does show up in the docs in a few places, so I feel like we can talk about it. Um, so yeah, if you, uh... It depends what you're doing. They, they have a few different starter packs, but it will actually generate a Vuex site for you.
+
+Um, yeah, that was a, a really cool thing to see happen. Um, that was, uh, the, the Codex team, uh, was evaluating different things they wanted to do, and they're the ones that selected that. Um, it was, it was pretty cool to see something that literally came about two months ago sort of already being used in production in that way.
+
+It just speaks to the, the s- the velocity of which we can build software these days. It's pretty wild
+
+**Rita:** Has it even technically hit 1.0?
+
+**Steve:** ~~We're shooting,~~ we're shooting for a 1.0 here in about a month. Um, so we, we actually hired, um, somebody full-time to work on vNext. Uh, and, uh, you know, I, I, I have limited time as a, as a person with like 100 reports, and so we've got somebody working on it full-time, and we're getting close to the 1.0
+
+**Rita:** But that's actually, um, uh, the, the other cool story, I mean, o- obviously it was really cool to see, um, Codex Sites launch on, um, on Vite Next and Vite and Workers. Um, similarly, Lovable has been, um, doing a lot with TanStack, which is also a Vite-based framework. Um, Claude.ai in and of itself is also a TanStack app, so it, it's cool to see a- all of the traction that's happening in the space right 
+
+**Justin:** A question that I have sort of been wanting to ask someone inside of Cloudflare, um, is, like, just around product strategy. So y'all have been shifting, um, to cover, like, higher and higher up the stack. So we, we started the conversation saying that, you know, like, originally you were probably almost seen more like an Akamai competitor than, like, a AWS competitor in the, in the sense as, like, it's, like, networks and, and stuff, and y'all have moved well beyond that now.
+
+The Workers platform has, like, all the sort of core primitives, uh, that someone would expect. So you have, uh, your runtime execution with Workers itself, you have your storage with R2, databases with D1, all these, like... Basically all the primitives that you need to build most modern-day applications. Um, and then there's also this, like, meta layer that y'all are pushing into, and, and a lot of it seems like it's like you're taking these primitives that you have that you're offering to customers and also trying to build, like, extra product on top of those.
+
+So some recent examples would be potentially, like, the agents framework, um, that you're building to sort of, like, make it easy to make agents. Um, Code Mode maybe we can, like, lump into this with, like, dynamic workers and the capabilities that you're shipping there. Uh, but also things like Artifacts, which is this, like, Git, hosted Git feature on durable objects that, um, that some of the folks have been working on there.
+
+I'm just kinda int- interested to hear, like, when you are thinking about, like, core infrastructural capabilities versus, like, product add-ons, like, like, things that you offer on top of the infrastructure, how do you sort of, like, navigate what is the space that we wanna get in and what is worth, like, trying to sell?
+
+And yeah, I don't know. What does that, what does that look like for y'all?
+
+**Rita:** Yeah, I mean, generally we do think of ourselves fundamentally as an infrastructure company, so that's, that's always the l- layer and the level that we start with. It is the primitives. And, um, from there we, we try to keep an eye out for, um, you know, when there's a sidewalk, but then you look at the lawn and there's like, you know where the real sidewalk is, where, where people have been walking?
+
+Um, I, I feel like you kind of notice these patterns with, um, with software development as well, where eventually you see a lot of people leaning into doing the same thing over and over. And so at that point, you know, we think about where do we lean in and kind of offer something a bit more vertical. And every time we do this, there's a lot of internal discussion that goes on about, you know, what, what's a managed product and what's maybe a, you know, a library or a framework that we put out there instead to, you know, let people determine their own path a little bit more.
+
+Um, uh, Pages, which is now part of Workers altogether, kind of started out this way, where we provided initially just a CLI tool, tool to do things, and then we kept getting more and more customers that were like, "I really just wanna deploy sites on you. Like please make that easy for me and automate that like end-to-end cycle with GitHub."
+
+And you know, whereas previously we were like, "But we gave you all the building blocks and like we documented it. You can do it yourself." And they're like, "You're my provider, like do it for me." So, you know, then we would lean in a- and do it. Um, uh, but yeah, th- this is, this is something that's actually an, an active discussion for us every time and, uh, a, a lot of it is, uh, again, driven out of also, um, i- internal experimentation.
+
+Dogfooding is really, really core to our strategy here too. Um, a- and um, yeah, and then, you know, I, I mentioned this before, but we really do kind of, um, try to pay attention to, uh, you know, what, what's happening outside of us and what are gaps that are left out there that, you know, we see an opportunity.
+
+And sometimes, um, it-- we see our customers leaning into those gaps really hard, and so we'll kind of stay out and say, "You know, actually, you guys are better off just using the tools that we're providing you." As an example, we get asked often, "Are you guys going to launch a vibe coding platform?" And there are so many great vibe coding platforms out there already.
+
+A lot of them are built on us. We're, we're happy to, you know, defer on solving that problem. But then, you know, something like Artifacts, uh, we kept having customers that were asking about, you know, um, especially in the age of agents, the whole model for like how do you do versioned, um, storage, uh, is coming up more and more.
+
+Uh, so again, that, that, that's exactly the kind of primitive where we wanna lean in and solve it for as many people as possible in one go.
+
+**Steve:** Ar- Artifacts is a great example where we, we made the choice to sort of lean into something we thought was going to be very important, right? And we had customers telling us that. Um, and Artifacts came about in just a few weeks, and part of the reason is because it's built entirely on the primitives that we already have, right?
+
+It, Artifacts is, it built entirely on durable objects, and so we, we could do it in three weeks because we had all the pieces already, and we just had to sort of package them together into a thing that made sense, so
+
+**Andrew:** Good primitives are always powerful. Um, so to think about, uh, the licensing a little bit, all of these projects are open source projects, and one of the big fears from a lot of people that I've been reading about on, like, Hacker News and social media websites is the stewardship of those projects, and that can go a bunch of different ways.
+
+I can point to a few different examples, like Svelte's a great example. It was bought five years ago, and I don't think there's one Vercel fingerprint on it. But maybe React, there's some API changes that might have served Vercel mi- more than they might have served others. So when you guys are thinking about how are, how you're gonna manage these projects going forward, how much, uh, how many fingerprints of Cloudflare are we gonna see on it, or is it gonna be more of a hands-off approach?
+
+**Steve:** Uh, it, it's interesting you bring up those examples because, you know, Svelte... I, I agree. You know, Svelte has, has been, done great. Um, uh, but, uh, to be clear, you know, React is not owned by Vercel, right? In any real way, right? You know, so, so it's, it speaks to the fact that these projects can be steered and influenced even without any technical ownership, right?
+
+You know, so there's, there's like lots that can happen there. Um, as, as far as us, uh, I, I, I've said it a, a bazillion times and I'm gonna keep saying it, you know, everything remains, uh, open source, MIT licensed. Everything remains community-driven. Um, this is something kind of as we got closer to being, uh, done with acquisition, you know, we were, we were involved with some of the Vite community, just making sure that, you know, there were no, you know, hiccups there as well.
+
+You know, Evan was very helpful with that. Uh, we really want these to continue to just be like these really healthy projects. I think if you look at our background here, right, with Astro, uh, I, I, I hope people feel like Astro has lived up to the promise we've made, which is, you know, we said it would be continue, and they've already done another major release.
+
+They've got another one planned. Um, very much not, you know, that we're not adding Cloudflare-specific APIs or doing anything like that, and that is not our plan with Vite 2, right? Um, we, we do want Vite... I, I think the, the one thing that we, we said in the blog post, we want Vite to become more full stack, right?
+
+We sort of want it to take on a little bit more scope in what it's capable of doing. Um, but in order to do that, we have to do it in the right way, and we have to do it with the Vite team, with the Vite community, using the normal RFC process, right? It's not gonna just like show up and be, you know, these, these new features in Vite without anybody, any input from anybody else.
+
+**Justin:** Yeah, it makes a lot of sense. I, I think like selfishly because I deploy all my stuff to Cloudflare anyway, uh, sometimes it is nice to see some of these projects, uh, have closer collaboration 'cause I know the support will be better. Um, I, I had that feeling when y'all bought Astro 'cause I use Astro for a lot of projects and the Cloudflare plugin sometimes had some issues and I saw those issues get ironed out and I was like, "Ah, that's
+
+**Steve:** That's good to hear. Uh, yeah, I, I get the hesitation people have around all this. I mean, I, I've been in the industry long enough too, and I've, I've... There's been many jobs not working at Cloudflare, so I've seen what it's like when some of these big companies acquire things, and so I, I know how it can go.
+
+Um, so I, I understand why people get nervous about this. Uh, and I, I think the thing, you know, people just have to, have to trust us a little bit and sort of judge us based on, you know, what we actually do going forward.
+
+**Rita:** Yeah. I mean, to, to, to be fair on, on the collaboration piece, um, uh, we, we have a frameworks team and, uh, a, a lot of these frameworks we've been collaborating with kind of long before we even started any of these acquisitions, which is what made them feel so organic because, um, you know, to, to our team, the new team members are the same team members that they've been, you know, reviewing PRs from and, and responding to messages to for maybe, you know, several years 
+
+
+#### [00:31:59] Infrastructure and Free Tier
+
+**Justin:** I wanted to ask one other question about like how Cloudflare's like growth has evolved. So y'all are an infrastructure company. You have a lot of infrastructure and a lot of data centers that you own or rent presumably. Um, and you've had like very distinct kinds of workloads on those for a long time.
+
+And Workers is like such an interesting product because it's running in V8 isolate, so you can do that pretty like compute efficiently. Um, it was really interesting watching the sandbox, uh, sort of functionality come out. It was like, okay, this makes total sense that y'all would wanna release this. And the first thing that happened in the back of my head is like, I wonder like how this is like stressing the infrastructure.
+
+So it's like you have this like edge runtime and you have this, I'm assuming, just like growing compute needs at the edge. And that's not even to think about like Workers' AI, which is, you know, it's its own thing entirely. Um, I, I'm curious how the growth and evolution of your platform has actually like stressed or had y'all to have to like change how you think about strategy from like a pure infrastructure perspective of like how you are, you know, allocating, I don't know, data centers and like, you know, how like that part of your business has changed, 'cause I'm sure it's been significant.
+
+**Steve:** ~~Rita,~~ Rita, you wanna take this one or should I take it?
+
+**Rita:** ~~Um, ~~let let me take a stab at it and feel, feel free to fill in. Um, I'm curious actually if you have a, a different perspective. Um, I, I, I mean, Cloudflare has been doing infrastructure at scale that I think first of all most people can't quite wrap their head around for a very long time now. Um, and, um, we have an incredible infrastructure team that, um, that can make things happen very, very quickly because we've been working with many of these providers for over a decade, um, and, and have these existing relationships.
+
+Um, the, the, the interesting thing about Cloudflare is, um, uh, the way that our stack is built. Um, basically f- for the most part, every single machine at Cloudflare, uh, runs practically the same exact stack. You know, I, I've had people ask me like, "Oh, does, does Workers only run in some data centers or in some machines?"
+
+And actually like no, every single machine that you hit, um, will, will have Workers running on it. Um, but, uh, you know, the, there are conversations that we end up, you know, we, we do regularly catch up with, uh, with our infrastructure team and are constantly reevaluating. Um, you know, it's less about, oh, is Workers or containers putting stress on the system because the system is designed to be able to handle a lot of stress, but more are we seeing different profiles of traffic now, and how do we think about maybe the next generation of, um, of infrastructure that we invest in, um, in that context, especially, you know, a- as the mix of, um, compute and storage and network, um, th- these things shifts, um, towards more full stack workloads.
+
+**Steve:** I'll say that this, this comes up a lot internally. So, uh, you know, we, we talk about this all the time about some of these new things that are happening. And it's, it's not just about containers, although that's definitely part of it. But, you know, Workers is part of it. Um, some of even stuff around R2 and storage and what we're doing there.
+
+Um, so we're, we're like constantly looking at this. I think memory is becoming a bigger thing for us than it was in the past, right? You know, before it's like network and CPU are really the things that you need, the levers you have to pull for DDoS protection, for DNS, things like that. Um, but now suddenly, you know, these more stateful workloads, memory becomes more of a bottleneck.
+
+And so, okay, we need machines with more memory. We need more memory in general. Memory is super expensive right now, in case you hadn't heard, right? So, um, but our infrastructure team is really, really good and collaborative and helps us work through some of this stuff. So, um, but yeah, it's, it's like this constant tension, right?
+
+That we're always trying to sort of like resolve. But part of the reason that we have something like Workers in the first place is because it is so compute, uh, efficient, right? I mean, you, you said that yourself, right? It is, um, like a fundamental bet on this technology as just being like a better primitive that we can operate better, right?
+
+And that is, like provides a better experience for customers
+
+**Rita:** And, uh, you know, I, I think Cloudflare is a strong believer in constraints breeding innovation. Uh, that, that is the origin story of Workers, um, that, that we had this constraint of having to be able to run untrusted code in a way that didn't introduce practically any latency to a request. If, if we didn't have that constraint, we probably would've built containers yet again.
+
+Um, and so it, it's actually a- always interesting to see, uh, what innovation comes out of, you know... Uh, some problems are gonna be solve- solved at the hardware la- layer, but we are constantly coming up with new innovation on the software layer to optimize, whether it's for CPU or memory or disk, uh, a- and do things in a more clever and more efficient way.
+
+And often those innovations end up in products or features or, um, uh, innovations that are better for our customers or allow us to some, it, to, in some ways pass those costs down to our customers or other benefits, whether it's security or performance or other things.
+
+**Justin:** Yeah. The, it's, it's so interesting to hear. It's like something I think about probably too often is just like, what does
+
+that look like? Is that your Roman Empire? 
+
+yeah it is. It, it kinda is actually. Um, the, I don't know, V8 isolates really interesting, but thinking how like, okay, we have this like very particular workload.
+
+Now we have like containers that we're, you know, shipping to all these like edge services. I don't know. Anyway, um, I have a follow-on question to this that's another interesting thing. So Cloudflare is known for having a very, very generous free tier for things. Um, it's like almost a meme on tech Twitter now about like, "Oh yeah, you know, I like run all these things, and I like pay like three cents this month," or whatever.
+
+Um, and as you... I mean, I, I'm sure that it's like helped with adoption and helped people like sort of like adopt to the new mental models. But as you like sort of work on making Cloudflare feel just like another, you know, application platform where people have all the primitives that they need, and it feels, you know, similar to any other thing that they may be used to, and traffic grows, and memory gets more expensive, do you think that you're going to have to reposition how you think about those like entry tiers?
+
+Um, or is that s- like some fundamental like, uh, I don't know, a goal for you to like keep that entry tier pretty low so that people can try, um, and can, you know, experiment until, you know, committing to like a larger spend?
+
+**Rita:** The... I can say one thing for sure, which is there will always be a Cloudflare free tier. That- that's so core to the way that our business operates. If you go back and read Cloudflare's S1, the free tier is talked about in there as one of the things that powers the, um, the self-serve flywheel. I, I mean, the, the, the way that, um, the way that so much of our adoption has worked, and I can't tell you the number of times that I've had this conversation where, you know, this really large deal will get closed, million-dollar deal, and it's the, the beginning of the deal started out with the CTO or an engineer being like, playing with something on, on the weekend on the free tier, maybe DM'ing one of us and being like, "Oh, can you increase this limit for me?"
+
+Or, um, "Oh, I'm, you know, looking to, to try this out for my project at work," and it, it, it bubbles up from there. So, um, you know, the, the way that developers try thing... The, the way that developers learn things is, is by trying them, and, um, we always want that option to be, um, to be available to, to developers.
+
+There are products where it's trickier for us to offer that due to different abuse factors. Um, so there, you know, might be some areas where we limit that or are a bit more thoughtful or have tighter limits. Um, but generally that, that's always going to be the case. Um, I mean, you know, Steve was just talking about the cost of memory going up, um, you know, as, as the cost of everything, uh, around the world increases.
+
+Um, Cloudflare, you know, we've, um, done incremental price increases on, like, our plans in the past. Um, but, uh, I can tell you that e- every time that we do that, it's always going to be with a lot of caution and consideration and, um, uh, it, it's not something, um, that we at all take lightly, but the, the, like, that experimentation, um, you, you'll always see us le- leaning into that.
+
+**Andrew:** So with both Astroid and Void, they were like actual products, like making money, trying to do that with also open source offerings. But there's a lot of other like products out there. Like I just looked at TanStack, you guys are the top sponsor of that, and that seems like a s- a framework similar to Astro.
+
+So like where is your guys' line of like that seems like an acquisition and that seems like a sponsorship? 'Cause it's not all that clear to me.
+
+**Steve:** It, it's highly dependent on the-- what is the, the, like, mix-up of the team and the people and what's needed and, you know, some of these places have raised venture capital, some of them haven't, right? I mean, there's, like, so much, like, that goes into this, right? I think it's like the, the synthesis of all that makes us determine, you know, what we may or may not do, right?
+
+Um, I think with, uh, with Vite specifically, right, you know, the, the attractive part to us is, you know, it is this lower level thing, right, that then powers everything else, right? Ev-everything you just mentioned is built on top of Vite. Really, at this point, the only thing that's, you know, not built on top of Vite is this Next.js, right?
+
+Um, so that-- what's-- that's what makes Vite unique, right? Um, as far as these other things, right, it's, it's working with the founders, working with the creators to understand what their motivations are, what do they wanna do, where do they wanna go with these tools? Is it better to be inside or outside? Um, and I'll just, I'll just say we have healthy relationships with literally every one of these people.
+
+Like, I, I talk to them on a regular basis and say, you know, like, "How's it going? How can we work better together?" Right? Like, "What do we need to do to support you all?"~~ So~~
+
+**Justin:** ~~Awesome. Uh, Andrew, do you wanna... Should we do a wrap-up question? Um~~
+
+**Andrew:** ~~A wrap up? Uh, well, l-let's, uh, let's query the crowd. Uh, do we wanna talk about, uh, anything else before we wrap up? Well, we had some questions here about agentic cloud. Um, didn't really cover any of that, uh,~~
+
+**Justin:** ~~so usually we ask like a, a forward-facing question, like a future-facing question. If there's another topic that you would like to move into, the future-facing questions can sort of expand, so I like to give enough time for those. Um, but is there another topic that y'all would like to cover before we move on to talking about the future?~~
+
+**Rita:** ~~I mean, I feel like future-facing question and Agenda Cloud are kind of go hand in hand with each other ~~
+
+**Justin:** ~~Cool. Uh, cool. Let's ro- roll into that one~~
+
+**Andrew:** ~~Uh, which one do you think we should do? The acquisit- acquisition shape gap or the one-year out one? Probably that one, right?~~
+
+**Justin:** ~~Yeah. Let's... Yeah, here, I- I'll, I'll roll it out and we can, we can go with it from there. Um,~~ s
+
+
+#### [00:42:26] Future of Agents and Wrap Up
+
+**Justin:** o it's, it's been really fun to watch, uh, all the things that y'all have been shipping and, and it's accelerated, it seems like. Uh, I was kind of joking with my partner the other night. It's like, I feel like Twitter is just like Cloudflare feed.
+
+That's all I see now is just like it's just a bunch of Cloudflare developers. Not convinced that Twitter isn't just, like, three Cloudflare engineers in a trench coat. But, um, so as y'all are sort of, like, building these primitives and shifting your business, thinking more about AI, thinking more about, like, the agentic cloud and adapting to this new future, expanding sort of the markets as you hit, obviously thinking very strategically about open source and front-end frameworks and that whole ecosystem, um, where do you see your business going over the next year, two years, three years?
+
+And, like, how m- pivotal do you think the sort of, like, recent developments are in that story?
+
+**Steve:** ~~I, I, I--~~ You, you asked like this question about one, two, three years out. I don't know if I could tell you how software is gonna be written next month, right? Like, it, it does feel like we are living through this just massive revolution. I mean, and I, I, I sort of came up in software during, you know, when mobile was first coming around.
+
+And even that, I mean, it took a while for everybody to get, get a device in their hands that they could do these things with. And now you have the latest AI, uh, model when everybody else does, right? You know? There's no lag. So, um, I, honestly don't know what it's gonna look like to build software in like a year from now.
+
+And I think it's gonna look very different than what we do today, right? Um, just, you know, we're just scratching the surface of how powerful these things are. And, and probably in both good and bad ways, right? Like a, a bunch of software is gonna get released that's gonna be pretty, pretty, uh, vibe coded and, you know, you see this already and it's gonna be full of security things and, you know.
+
+Um, we're gonna figure out how to, how to deal with those consequences too, right? Um, but it's a, it's a wild time. I'm excited. I'm excited to be a software developer right now. Um, but it is also like a little bit terrifying
+
+**Rita:** Yeah. I, I think to your point, I've been thinking about, um, uh, I was coming up at, uh, at a similar time, um, with the mobile era being a big thing, and the really interesting thing about that is that the, the cloud just barely preceded model m- mobile, right? Um, AWS really launched in like 2006 with S3, and the iPhone came out in what?
+
+2- 2007, 2008. Um, and it I wonder, it, it, it makes me wonder if, you know, if the cloud would've happened actually without mobile, because the, the big shift that happened was we went from, uh, being able to access the web only when we were at, at our computers to like now we were accessing it all the time, and these devices were a lot cheaper, so like so much more of the global population got connected to the internet.
+
+So internet traffic kind of rose overnight. And also because people were accessing it from these new devices, it opened, it ushered in this new era of like a new type of software. Like there was no much such thing as... We talk about mobile apps so casually now, um, but there was no such thing as a mobile app in like 2005, right?
+
+Um, so people, like Uber didn't make sense in 2005, but like all of a sudden in 2009 you had to build it, and the only way that you could build it was on the cloud. So it was kind of this perfect combination of things. Um, but we are entering one of, another era that feels, I feel like even more novel in some ways than mobile, because using mobile is not that different from using your computer in some ways.
+
+Um, the way that agents are gonna in- interact with the web and, you know, replace us in, i- in, um, taking on certain tasks, like I, I don't really know what it will look like. But, um, I think we are going to see a similar explosion of like web traffic because agents don't sleep. Um, agents can do stuff when I'm in a meeting, agents can do stuff when I'm at dinner.
+
+And, um, what we are already seeing actually is that they do require a new set of primitives, um, to be able to do all this stuff. That this is, you know, what the, uh, uh... That's what makes me really excited about code mode. It started out as kind of a maybe niche thing that we were talking about, but I actually don't see a way for agents to get really productive without this ability to be able to write code and execute it on, on the fly.
+
+Um, and so dynamic workers, I mean, re- really it's workers, dynamic workers is just a new API, um, that, that's available for workers. It is a really critical element in that. I, I think durable objects similarly, we've been building a lot of agents internally, is a really, really critical primitive. Um, we're seeing the way in which, yeah, artifacts, which wasn't even on our radar at all a year ago, now again, every customer we have that's building agents at a certain point approaches us and is like, "I need this."
+
+Um, so yeah, I don't know what the next ones of these will be, um, because to Steve's point, I, I don't have a crystal ball in everything. I mean, I feel like a year ago in this moment in time, things kind of felt a little bit figured out for a second and we're like, "Okay, agents. Sure." Uh, and then th- with the model advancements that happened in November s- December, we're like Oh shit, agents.
+
+Um, this is a whole different ballgame. I can y- you know, I, I can, uh, I can fork, um, Next.js in, you know, a couple weeks. It's, like, completely different. Um, so I, I'm interested to see, like, what the next wave of model advancements will look like, what the next wave of agentic ad- advancements will look like.
+
+And, you know, I, I think that there's so much still up for grabs and up for figuring out, you know. Are, are chats the, like, end-all be-all of interfaces? Um, I, I don't know. Um, I know that Steve is very bullish on voice.
+
+**Steve:** Uh, yeah. Let-- I can-- Let me rant about voice for a sec, right? So, um, I have to thank my son because he was born right around the time, like, maybe like, uh... So he's, he's three now, right? So I, I switched to voice-to-text very heavily during that era because I was, like, carrying a baby around all the time. So I developed a really good workflow around that.
+
+And then when agents came out, I just started doing voice-to-text for all this stuff. And, uh, I-I'll, I'll halt myself up a little bit here, which is, you know, there are people that have said: "Oh, you know, what's your workflow?" And they're, like, trying to understand who's using agents well, who's using them not quite as well, and, like, what the difference is in our workflow. And one of the things I, I actually realized just about maybe a month or two ago is actually voice. Like, I almost exclusively talk to my computer now, and the people who are sort of not getting the same results from me, that's actually one of the big differences, right? And, and I was like-- It didn't click for me.
+
+I was like: "Why aren't you-- Why isn't this working for you?" And that's like, because I'm just ranting at my computer to get results. Um, and it turns out agents are really good, uh, at taking unintelligible garbage that comes out of my mouth and understanding it and saying: "I know exactly what you want me to do," right?
+
+So, um, voice-to-text, huge part of my workflow. Um, and I just think I got a little lucky there that I, I sort of already switched to that workflow in advance, so.
+
+**Rita:** But yeah, to summarize, I don't think any of us know what the future will look like. I think we are in early innings of it and are kind of starting to see some patterns shape up that are really exciting, and I think that if you're a developer, um, you know, everything's game right now. Um, so should, like, try building stuff and experiment.
+
+**Steve:** That, that's-- When, when pe-people I'll ask you too, they're like, "What, what works? You know, what do you use? What is that? What's this tool?" And I'm like, "It all works. Everything works. Everything." So just, like, use anything, and it will probably... You'll learn something from it, right? Like it's, it's, it's a magical time
+
+**Rita:** I mean, honestly, you know, what, what I've found is, uh, that I'm not that creative sometimes. Um, and maybe it's because, uh, I, I'm realizing I, yeah, maybe I'm mobile era, but I, I'm not agent native. And so, um, one of the things that I found to be a, a big unlock is sitting down with new grads, um, some interns, some of the most junior people on my team, and being like, "All right, show me your workflows."
+
+And they come up with things that just wouldn't cross my mind, um, in terms of, you know, c- n- not just being more efficient at coding, but in human interactions and, like, how they summarize conversations and pick them up and able to, like, u- use AI to understand things very deeply. Um, uh, yeah, I, to me that's, um...
+
+I think learning from other people i- is such a big way to get, to get inspired.
+
+**Justin:** Absolutely
+
+**Andrew:** Well, that wraps it up for our questions this week. This was a great conversation. I'm super excited about where y'all are heading. Uh, I'm excited to see that these projects are getting funded in these significant ways and won't just die on the vine like so many other projects have. Uh, so thanks for coming on and talking about it
+
+**Steve:** Thanks for having us
+
+**Rita:** Thank you for having us. It was our pleasure
+
+**Justin:** Yeah, it's great having y'all. Um, huge fan. Uh, love everything you're doing. Uh, maybe I'll come up to the 88th floor one day and we can have coffee. But, uh, yeah, um, really excited to see what y'all release next 
+
