@@ -1,4 +1,5 @@
 import { Providers } from "./providers";
+import { getSequoiaPublicationUri } from "utils/sequoia";
 
 import "../styles/globals.css";
 import "@reach/tabs/styles.css";
@@ -13,8 +14,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const publicationUri = getSequoiaPublicationUri();
+
   return (
     <html lang="en">
+      <head>
+        {publicationUri && (
+          <link rel="site.standard.publication" href={publicationUri} />
+        )}
+      </head>
       <body>
         <Providers>
           {children}

@@ -46,6 +46,39 @@ pnpm create-new-episode     # Create a new episode template
 pnpm publish-episode        # Publish an episode
 ```
 
+## Standard.site
+
+This repo now includes a Sequoia-based `standard.site` publishing workflow for
+episodes, following the same pattern as `hipstersmoothie.com-2`: a checked-in
+`sequoia.json`, site-wide publication discovery in the root layout, and
+document verification tags rendered by Next.
+
+### Setup
+
+1. Install dependencies: `pnpm install`
+2. Initialize Sequoia in this repo:
+   - `pnpm exec sequoia login`
+   - `pnpm exec sequoia init`
+
+This creates `sequoia.json`, which the app reads at runtime to emit the
+`site.standard.publication` link tag.
+
+### Commands
+
+```bash
+pnpm standard-site:prepare-content   # Generate Sequoia-ready episode markdown
+pnpm publish:dry                     # Preview what Sequoia will publish
+pnpm publish                         # Publish to standard.site
+```
+
+### Notes
+
+- The source of truth remains `pages/episode/*.mdx`.
+- A generated mirror is written to `.generated/sequoia-content/` for Sequoia to scan.
+- Published `atUri` values stay in the generated Sequoia content, not the source MDX.
+- This app uses manual verification tags on episode pages instead of `sequoia inject`,
+  which is a better fit for the Next.js deployment model used here.
+
 ## Project Structure
 
 ```

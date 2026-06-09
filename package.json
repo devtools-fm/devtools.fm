@@ -8,10 +8,17 @@
   "scripts": {
     "dev": "next dev",
     "setup-for-ci": "git remote add origin https://github.com/devtools-fm/devtools.fm.git && git pull origin main --unshallow",
-    "build": "pnpm run setup-for-ci && next build && pnpm run build-rss",
+    "build": "pnpm run setup-for-ci && pnpm run standard-site:prepare-content && next build && pnpm run build-rss",
     "build-rss": "node -r esbuild-register utils/generate-rss.ts",
     "start": "next start",
-    "create-new-episode": "node -r esbuild-register scripts/create-new-episode.ts"
+    "create-new-episode": "node -r esbuild-register scripts/create-new-episode.ts",
+    "backfill-descriptions": "node -r esbuild-register scripts/backfill-descriptions.ts",
+    "backfill-publish-dates": "node -r esbuild-register scripts/backfill-publish-dates.ts",
+    "fix-malformed-spotify-aturi": "node -r esbuild-register scripts/fix-malformed-spotify-aturi.ts",
+    "revert-spotify-lines": "node -r esbuild-register scripts/revert-spotify-lines.ts",
+    "standard-site:prepare-content": "node -r esbuild-register scripts/generate-standard-site-content.ts",
+    "publish:dry": "pnpm run standard-site:prepare-content && sequoia publish --dry-run",
+    "publish": "pnpm run standard-site:prepare-content && sequoia publish"
   },
   "dependencies": {
     "@devtools-ds/icon": "^1.2.1",
@@ -46,6 +53,7 @@
     "isomorphic-fetch": "^3.0.0",
     "postcss": "^8.4.27",
     "puppeteer": "^9.0.0",
+    "sequoia-cli": "^0.5.7",
     "tailwindcss": "^4.1.11",
     "title-case": "^3.0.3",
     "type-fest": "^1.0.2",

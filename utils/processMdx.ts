@@ -195,8 +195,12 @@ interface FrontMatter {
   title: string;
   youtube: string;
   spotify: string;
+  publishDate?: string;
   date?: string;
+  description?: string;
+  tags?: string | string[];
   sponsor?: string | string[];
+  atUri?: string;
 }
 
 export async function processMdx(
@@ -244,7 +248,7 @@ export async function processMdx(
   return {
     number,
     hosts,
-    postCreationDate: data.date || getGitCreationDate(filename),
+    postCreationDate: data.publishDate || data.date || getGitCreationDate(filename),
     guests: [...guests],
     runTime: sectionsTab?.sections?.[sectionsTab.sections.length - 1]?.time || "0:00",
     youtubeId,

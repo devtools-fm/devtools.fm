@@ -9,6 +9,7 @@ import { Suspense } from "react";
 
 import { ProcessedMdx, processMdx } from "utils/processMdx";
 import { SectionsTab, ShowNotesTab } from "utils/processMdx";
+import { getSequoiaDocumentUri } from "utils/sequoia";
 import EpisodeClient from "./episode-client";
 
 interface EpisodeParams {
@@ -68,6 +69,7 @@ export default async function Episode({
   params: Promise<EpisodeParams>;
 }) {
   const { episodeNumber } = await params;
+  const documentUri = getSequoiaDocumentUri(episodeNumber);
   const processedMdx = await processMdx(
     path.join(process.cwd(), `pages/episode/${episodeNumber}.mdx`),
     {},
@@ -91,16 +93,19 @@ export default async function Episode({
   const episodeNumberString = `Episode #${episodeNumber}`;
 
   return (
-    <Suspense fallback={null}>
-      <EpisodeClient
-        youtubeId={youtubeId}
-        tabSections={tabSections}
-        episodeNumberString={episodeNumberString}
-        title={frontMatter.title}
-        spotifyEpisodeId={spotifyEpisodeId}
-        spotifyEpisodeIdAlt={spotifyEpisodeIdAlt}
-      />
-    </Suspense>
+    <>
+      {documentUri && <link rel="site.standard.document" href={documentUri} />}
+      <Suspense fallback={null}>
+        <EpisodeClient
+          youtubeId={youtubeId}
+          tabSections={tabSections}
+          episodeNumberString={episodeNumberString}
+          title={frontMatter.title}
+          spotifyEpisodeId={spotifyEpisodeId}
+          spotifyEpisodeIdAlt={spotifyEpisodeIdAlt}
+        />
+      </Suspense>
+    </>
   );
 }
 
