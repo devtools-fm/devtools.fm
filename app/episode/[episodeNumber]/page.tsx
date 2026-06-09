@@ -29,12 +29,7 @@ export async function generateMetadata({
     true
   );
 
-  const {
-    youtubeId,
-    thumbnailId,
-    frontMatter,
-    tabSections,
-  } = processedMdx;
+  const { frontMatter, tabSections } = processedMdx;
 
   const showNotesTab = tabSections.find(
     (tabSection) => tabSection.type === "SHOW NOTES"
@@ -43,22 +38,21 @@ export async function generateMetadata({
   const episodeNumberString = `Episode #${episodeNumber}`;
   const title = `${episodeNumberString}: ${frontMatter.title}`;
   const description = showNotesTab?.description || "";
-  const image = `https://i.ytimg.com/vi/${thumbnailId || youtubeId}/maxresdefault.jpg`;
 
+  // og/twitter images come from the opengraph-image.tsx file convention,
+  // which renders a branded card from the publication profile + document.
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      images: [image],
       url: `https://devtools.fm/episode/${episodeNumber}`,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [image],
     },
   };
 }
