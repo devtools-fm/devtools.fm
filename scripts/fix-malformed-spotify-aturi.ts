@@ -10,8 +10,13 @@ const MALFORMED_FRONTMATTER_REGEX =
 function repairMalformedFrontmatter(raw: string) {
   return raw.replace(
     MALFORMED_FRONTMATTER_REGEX,
-    (_match, spotifyPrefix: string, spotifyStart: string, atUri: string, spotifyEnd: string) =>
-      `${spotifyPrefix}${spotifyStart}---${spotifyEnd}\natUri: "${atUri}"`
+    (
+      _match,
+      spotifyPrefix: string,
+      spotifyStart: string,
+      atUri: string,
+      spotifyEnd: string
+    ) => `${spotifyPrefix}${spotifyStart}---${spotifyEnd}\natUri: "${atUri}"`
   );
 }
 

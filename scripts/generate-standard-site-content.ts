@@ -113,7 +113,6 @@ async function main() {
     const body = buildDocumentBody(parsed.content) || processed.description;
     const generatedPath = path.join(SEQUOIA_CONTENT_DIR, `${match[1]}.md`);
     let existingAtUri: string | undefined;
-
     try {
       const existingGenerated = matter(await fs.readFile(generatedPath, "utf8"));
       if (typeof existingGenerated.data.atUri === "string") {
