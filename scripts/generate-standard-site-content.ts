@@ -3,12 +3,17 @@ import path from "path";
 
 import matter from "gray-matter";
 
-import { processMdx } from "utils/processMdx";
+import { parsePodcastSections, processMdx } from "utils/processMdx";
 import { SEQUOIA_CONTENT_DIR } from "utils/sequoia";
 
 const EPISODE_FILE_REGEX = /^(\d+)\.mdx$/;
 const TAB_MARKER_REGEX = /^\{?\/\*\s*TAB:\s*(.+?)\s*\*\/\}?$/;
 const LINKS_MARKER_REGEX = /^\{?\/\*\s*LINKS\s*\*\/\}?$/;
+const JSX_COMMENT_REGEX = /^\{\/\*[\s\S]*\*\/\}$/;
+
+function isEditorialComment(line: string) {
+  return JSX_COMMENT_REGEX.test(line.trim());
+}
 
 function toPublishDate(value: string) {
   const date = new Date(value);
@@ -42,7 +47,20 @@ function compactMarkdown(markdown: string) {
     .trim();
 }
 
-function buildDocumentBody(content: string) {
+function formatSectionsMarkdown(sectionLines: string[]) {
+  const raw = sectionLines
+    .filter((line) => !isEditorialComment(line))
+    .join("\n");
+  const sections = parsePodcastSections(raw);
+
+  if (sections.length === 0) {
+    return compactMarkdown(raw);
+  }
+
+  return sections.map(({ time, title }) => `- ${time} ${title}`).join("\n");
+}
+
+function buildDocumentBody(content: string, transcript = "") {
   const lines = content.split("\n");
   const showNotes: string[] = [];
   const sections: string[] = [];
@@ -71,6 +89,10 @@ function buildDocumentBody(content: string) {
       continue;
     }
 
+    if (isEditorialComment(line)) {
+      continue;
+    }
+
     if (currentSection === "SHOW NOTES") {
       showNotes.push(line);
     }
@@ -81,15 +103,23 @@ function buildDocumentBody(content: string) {
   }
 
   const showNotesMarkdown = compactMarkdown(showNotes.join("\n"));
-  const sectionsMarkdown = compactMarkdown(sections.join("\n"));
+  const sectionsMarkdown = formatSectionsMarkdown(sections);
+  const transcriptMarkdown = compactMarkdown(transcript);
+  const parts: string[] = [];
 
-  if (!sectionsMarkdown) {
-    return showNotesMarkdown;
+  if (showNotesMarkdown) {
+    parts.push(showNotesMarkdown);
   }
 
-  return compactMarkdown(
-    `${showNotesMarkdown}\n\n## Sections\n\n${sectionsMarkdown}`
-  );
+  if (sectionsMarkdown) {
+    parts.push(`## Sections\n\n${sectionsMarkdown}`);
+  }
+
+  if (transcriptMarkdown) {
+    parts.push(`## Transcript\n\n${transcriptMarkdown}`);
+  }
+
+  return compactMarkdown(parts.join("\n\n"));
 }
 
 async function main() {
@@ -110,7 +140,9 @@ async function main() {
     const raw = await fs.readFile(sourcePath, "utf8");
     const parsed = matter(raw);
     const processed = await processMdx(sourcePath, {}, true, true);
-    const body = buildDocumentBody(parsed.content) || processed.description;
+    const body =
+      buildDocumentBody(parsed.content, processed.transcript) ||
+      processed.description;
     const generatedPath = path.join(SEQUOIA_CONTENT_DIR, `${match[1]}.md`);
     let existingAtUri: string | undefined;
     try {
@@ -122,6 +154,9 @@ async function main() {
       existingAtUri = undefined;
     }
 
+    const sourceAtUri =
+      typeof parsed.data.atUri === "string" ? parsed.data.atUri : undefined;
+
     const output = matter.stringify(body, {
       title: processed.frontMatter.title,
       description: processed.description,
@@ -131,7 +166,9 @@ async function main() {
           processed.postCreationDate
       ),
       tags: toTags(processed.frontMatter.tags),
-      ...(existingAtUri ? { atUri: existingAtUri } : {}),
+      ...((existingAtUri || sourceAtUri)
+        ? { atUri: existingAtUri || sourceAtUri }
+        : {}),
     });
 
     await fs.writeFile(generatedPath, output, "utf8");

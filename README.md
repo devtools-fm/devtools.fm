@@ -29,11 +29,14 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 All commands can be run through mise for consistent environment management:
 
 ```bash
-mise run dev                # Start Next.js dev server
-mise run build              # Build for production (includes RSS generation)
-mise run build-rss          # Generate RSS feed only
-mise run create-new-episode # Create a new episode template
-mise run publish-episode    # Publish an episode (see PRODUCTION_PROCESS.md)
+mise run dev                         # Start Next.js dev server
+mise run build                       # Build for production (includes RSS generation)
+mise run build-rss                   # Generate RSS feed only
+mise run create-new-episode          # Create a new episode template
+mise run standard-site-prepare-content # Generate Sequoia-ready episode markdown
+mise run publish-dry                 # Preview Standard.site and Markpub publishing
+mise run publish                     # Publish to Standard.site and sync Markpub content
+mise run sync-markpub-content        # Sync at.markpub.markdown content to published records
 ```
 
 Alternatively, you can use pnpm directly after running `mise install`:
@@ -69,13 +72,16 @@ This creates `sequoia.json`, which the app reads at runtime to emit the
 pnpm standard-site:prepare-content   # Generate Sequoia-ready episode markdown
 pnpm publish:dry                     # Preview what Sequoia will publish
 pnpm publish                         # Publish to standard.site
+pnpm sync-markpub-content            # Sync at.markpub.markdown content to published records
 ```
 
 ### Notes
 
 - The source of truth remains `pages/episode/*.mdx`.
-- A generated mirror is written to `.generated/sequoia-content/` for Sequoia to scan.
+- A generated mirror is written to `.generated/sequoia-content/` for Sequoia to scan. It includes show notes, sections, and the full transcript.
 - Published `atUri` values stay in the generated Sequoia content, not the source MDX.
+- Episode content on ATProto uses the [Markpub.at](https://markpub.at/) lexicon (`at.markpub.markdown`) in each document's `content` field. Sequoia still publishes plain `textContent`; `pnpm sync-markpub-content` runs after publish to attach the structured markdown record.
+- Markpub metadata uses GFM flavor with `remark-gfm` rendering rules and YAML front matter extracted from episode metadata.
 - This app uses manual verification tags on episode pages instead of `sequoia inject`,
   which is a better fit for the Next.js deployment model used here.
 

@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 
 const hosts = ["Andrew", "Justin"];
 
-function parsePodcastSections(raw: string) {
+export function parsePodcastSections(raw: string) {
   const sections: { time: string; title: string }[] = [];
 
   raw.split("\n").map((line) => {

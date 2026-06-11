@@ -21,7 +21,7 @@ run = "git remote add origin https://github.com/devtools-fm/devtools.fm.git && g
 description = "Setup repository for CI"
 
 [tasks.build]
-run = "mise run setup-for-ci && next build && mise run build-rss"
+run = "mise run setup-for-ci && mise run standard-site-prepare-content && next build && mise run build-rss"
 description = "Build the application"
 
 [tasks.build-rss]
@@ -35,3 +35,19 @@ description = "Start production server"
 [tasks.create-new-episode]
 run = "node -r esbuild-register scripts/create-new-episode.ts"
 description = "Create a new episode"
+
+[tasks.standard-site-prepare-content]
+run = "node -r esbuild-register scripts/generate-standard-site-content.ts"
+description = "Generate Sequoia-ready episode markdown"
+
+[tasks.sync-markpub-content]
+run = "node -r esbuild-register scripts/sync-markpub-content.ts"
+description = "Sync at.markpub.markdown content to published records"
+
+[tasks.publish-dry]
+run = "mise run standard-site-prepare-content && sequoia publish --dry-run && mise run sync-markpub-content -- --dry-run"
+description = "Preview Standard.site and Markpub publishing"
+
+[tasks.publish]
+run = "mise run standard-site-prepare-content && sequoia publish && mise run sync-markpub-content"
+description = "Publish episodes to Standard.site and sync Markpub content"
