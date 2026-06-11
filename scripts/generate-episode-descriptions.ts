@@ -1,5 +1,4 @@
 import { promises as fs } from "fs";
-import fsSync from "fs";
 import path from "path";
 
 import matter from "gray-matter";
@@ -12,7 +11,10 @@ import {
   generateEpisodeDescriptionsWithLlmBatch,
   resolveDescriptionProvider,
 } from "utils/generateEpisodeDescription";
+import { loadEnvFile } from "utils/loadEnvFile";
 import { processMdx } from "utils/processMdx";
+
+loadEnvFile();
 
 const EPISODE_DIR = path.join(process.cwd(), "pages", "episode");
 const OUTPUT_FILE = path.join(
@@ -22,37 +24,6 @@ const OUTPUT_FILE = path.join(
 );
 const EPISODE_FILE_REGEX = /^(\d+)\.mdx$/;
 const TAB_MARKER_REGEX = /^\{?\/\*\s*TAB:\s*(.+?)\s*\*\/\}?$/;
-
-function loadEnvFile() {
-  const envPath = path.join(process.cwd(), ".env");
-
-  if (!fsSync.existsSync(envPath)) {
-    return;
-  }
-
-  for (const line of fsSync.readFileSync(envPath, "utf8").split("\n")) {
-    const trimmed = line.trim();
-
-    if (!trimmed || trimmed.startsWith("#")) {
-      continue;
-    }
-
-    const separator = trimmed.indexOf("=");
-
-    if (separator === -1) {
-      continue;
-    }
-
-    const key = trimmed.slice(0, separator).trim();
-    const value = trimmed.slice(separator + 1).trim();
-
-    if (!(key in process.env)) {
-      process.env[key] = value;
-    }
-  }
-}
-
-loadEnvFile();
 
 function parseArgs(argv: string[]) {
   const batchSizeArg = argv.find((arg, index) => argv[index - 1] === "--batch-size");

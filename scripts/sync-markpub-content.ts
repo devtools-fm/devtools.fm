@@ -6,8 +6,11 @@ import path from "path";
 import matter from "gray-matter";
 
 import { createAuthenticatedAgent } from "utils/atproto-auth";
+import { loadEnvFile } from "utils/loadEnvFile";
 import { buildMarkpubFrontMatter, buildMarkpubMarkdown } from "utils/markpub";
 import { SEQUOIA_CONFIG_FILE, SEQUOIA_CONTENT_DIR } from "utils/sequoia";
+
+loadEnvFile();
 
 const MARKPUB_STATE_FILE = path.join(process.cwd(), ".markpub-state.json");
 const SEQUOIA_STATE_FILE = path.join(process.cwd(), ".sequoia-state.json");
@@ -19,6 +22,7 @@ type MarkpubState = {
     {
       atUri: string;
       contentHash: string;
+      description?: string;
     }
   >;
 };
@@ -37,12 +41,15 @@ function parseArgs(argv: string[]) {
     dryRun: argv.includes("--dry-run") || argv.includes("-n"),
     force: argv.includes("--force") || argv.includes("-f"),
     verbose: argv.includes("--verbose") || argv.includes("-v"),
+    episode:
+      argv.find((arg) => /^\d+$/.test(arg)) ||
+      argv.find((arg, index) => argv[index - 1] === "--episode"),
   };
 }
 
-function hashMarkpubContent(content: unknown) {
+function hashSyncPayload(payload: { content: unknown; description?: string }) {
   return createHash("sha256")
-    .update(JSON.stringify(content))
+    .update(JSON.stringify(payload))
     .digest("hex");
 }
 
@@ -111,15 +118,15 @@ function toTags(tags: unknown) {
 }
 
 async function main() {
-  const { dryRun, force, verbose } = parseArgs(process.argv.slice(2));
+  const { dryRun, force, verbose, episode } = parseArgs(process.argv.slice(2));
 
   if (!fs.existsSync(SEQUOIA_CONFIG_FILE)) {
     throw new Error("No sequoia.json found. Run `pnpm exec sequoia init` first.");
   }
 
-  const files = (await fsPromises.readdir(SEQUOIA_CONTENT_DIR)).filter((file) =>
-    EPISODE_FILE_REGEX.test(file)
-  );
+  const files = (await fsPromises.readdir(SEQUOIA_CONTENT_DIR))
+    .filter((file) => EPISODE_FILE_REGEX.test(file))
+    .filter((file) => !episode || file.replace(".md", "") === episode);
 
   if (files.length === 0) {
     console.log(
@@ -156,15 +163,17 @@ async function main() {
       continue;
     }
 
+    const description =
+      typeof parsed.data.description === "string"
+        ? parsed.data.description.trim()
+        : undefined;
+
     const markpubContent = buildMarkpubMarkdown({
       markdown: parsed.content.trim(),
       frontMatter: buildMarkpubFrontMatter({
         title:
           typeof parsed.data.title === "string" ? parsed.data.title : undefined,
-        description:
-          typeof parsed.data.description === "string"
-            ? parsed.data.description
-            : undefined,
+        description,
         publishDate:
           typeof parsed.data.publishDate === "string"
             ? parsed.data.publishDate
@@ -173,16 +182,26 @@ async function main() {
       }),
     });
 
-    const contentHash = hashMarkpubContent(markpubContent);
+    const syncHash = hashSyncPayload({
+      content: markpubContent,
+      description,
+    });
     const previous = markpubState.posts[relativePath];
 
-    if (!force && previous?.contentHash === contentHash && previous.atUri === atUri) {
+    if (
+      !force &&
+      previous?.contentHash === syncHash &&
+      previous.atUri === atUri &&
+      previous.description === description
+    ) {
       skippedCount += 1;
       continue;
     }
 
     if (dryRun) {
-      console.log(`Would update ${file} (${atUri}) with at.markpub.markdown content`);
+      console.log(
+        `Would update ${file} (${atUri}) with description and at.markpub.markdown content`
+      );
       updatedCount += 1;
       continue;
     }
@@ -200,6 +219,7 @@ async function main() {
       rkey,
       record: {
         ...(existing.data.value as Record<string, unknown>),
+        ...(description ? { description } : {}),
         content: markpubContent,
       },
       swapRecord: existing.data.cid,
@@ -207,7 +227,8 @@ async function main() {
 
     markpubState.posts[relativePath] = {
       atUri,
-      contentHash,
+      contentHash: syncHash,
+      description,
     };
 
     updatedCount += 1;

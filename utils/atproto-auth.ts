@@ -4,7 +4,10 @@ import path from "path";
 
 import { AtpAgent } from "@atproto/api";
 
+import { loadEnvFile } from "utils/loadEnvFile";
 import { SEQUOIA_CONFIG_FILE } from "utils/sequoia";
+
+loadEnvFile();
 
 type AppPasswordCredentials = {
   type: "app-password";
