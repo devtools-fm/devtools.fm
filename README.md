@@ -72,7 +72,7 @@ This creates `sequoia.json`, which the app reads at runtime to emit the
 pnpm standard-site:prepare-content   # Generate Sequoia-ready episode markdown
 pnpm publish:dry                     # Preview what Sequoia will publish
 pnpm publish                         # Publish to standard.site
-pnpm sync-markpub-content            # Sync at.markpub.markdown content to published records
+pnpm generate-episode-descriptions # Generate one-line descriptions via Cursor Agent CLI
 ```
 
 ### Notes
@@ -81,6 +81,7 @@ pnpm sync-markpub-content            # Sync at.markpub.markdown content to publi
 - A generated mirror is written to `.generated/sequoia-content/` for Sequoia to scan. It includes show notes, sections, and the full transcript.
 - Published `atUri` values stay in the generated Sequoia content, not the source MDX.
 - Episode content on ATProto uses the [Markpub.at](https://markpub.at/) lexicon (`at.markpub.markdown`) in each document's `content` field. Sequoia still publishes plain `textContent`; `pnpm sync-markpub-content` runs after publish to attach the structured markdown record.
+- Episode descriptions can be regenerated as one-liners with `pnpm generate-episode-descriptions` (uses Anthropic when `ANTHROPIC_KEY` or `ANTHROPIC_API_KEY` is set in `.env`, otherwise the Cursor `agent` CLI).
 - Markpub metadata uses GFM flavor with `remark-gfm` rendering rules and YAML front matter extracted from episode metadata.
 - This app uses manual verification tags on episode pages instead of `sequoia inject`,
   which is a better fit for the Next.js deployment model used here.

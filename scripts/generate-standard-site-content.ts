@@ -47,6 +47,18 @@ function compactMarkdown(markdown: string) {
     .trim();
 }
 
+function buildYouTubeEmbed(youtubeId: string) {
+  return `<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 1.5rem;">
+  <iframe
+    src="https://www.youtube.com/embed/${youtubeId}"
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+  ></iframe>
+</div>`;
+}
+
 function formatSectionsMarkdown(sectionLines: string[]) {
   const raw = sectionLines
     .filter((line) => !isEditorialComment(line))
@@ -140,9 +152,17 @@ async function main() {
     const raw = await fs.readFile(sourcePath, "utf8");
     const parsed = matter(raw);
     const processed = await processMdx(sourcePath, {}, true, true);
-    const body =
+    const documentBody =
       buildDocumentBody(parsed.content, processed.transcript) ||
       processed.description;
+    const body = compactMarkdown(
+      [
+        processed.youtubeId ? buildYouTubeEmbed(processed.youtubeId) : "",
+        documentBody,
+      ]
+        .filter(Boolean)
+        .join("\n\n")
+    );
     const generatedPath = path.join(SEQUOIA_CONTENT_DIR, `${match[1]}.md`);
     let existingAtUri: string | undefined;
     try {

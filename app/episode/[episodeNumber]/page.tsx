@@ -8,7 +8,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 import { ProcessedMdx, processMdx } from "utils/processMdx";
-import { SectionsTab, ShowNotesTab } from "utils/processMdx";
+import { SectionsTab } from "utils/processMdx";
 import { getSequoiaDocumentUri } from "utils/sequoia";
 import EpisodeClient from "./episode-client";
 
@@ -29,15 +29,10 @@ export async function generateMetadata({
     true
   );
 
-  const { frontMatter, tabSections } = processedMdx;
-
-  const showNotesTab = tabSections.find(
-    (tabSection) => tabSection.type === "SHOW NOTES"
-  ) as ShowNotesTab;
+  const { frontMatter, description } = processedMdx;
 
   const episodeNumberString = `Episode #${episodeNumber}`;
   const title = `${episodeNumberString}: ${frontMatter.title}`;
-  const description = showNotesTab?.description || "";
 
   // og/twitter images come from the opengraph-image.tsx file convention,
   // which renders a branded card from the publication profile + document.

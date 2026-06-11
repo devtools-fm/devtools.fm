@@ -5,6 +5,8 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PromiseValue } from "type-fest";
 import remarkGfm from "remark-gfm";
 
+import { buildEpisodeDescription, normalizeEpisodeDescription } from "utils/episodeDescription";
+
 const hosts = ["Andrew", "Justin"];
 
 export function parsePodcastSections(raw: string) {
@@ -257,9 +259,13 @@ export async function processMdx(
     spotifyEpisodeIdAlt,
     frontMatter: data as FrontMatter,
     tabSections: includeSection ? tabSections : [],
-    description: includeTranscriptAndDescription
-      ? showNotesTab?.description?.split("\n\n")[0] || ""
-      : "",
+    description:
+      typeof data.description === "string" && data.description.trim()
+        ? normalizeEpisodeDescription(data.description)
+        : buildEpisodeDescription({
+            showNotes: showNotesTab?.description || "",
+            sections: sectionsTab?.sections || [],
+          }),
     transcript: includeTranscriptAndDescription ? transcriptTab?.raw || "" : "",
   };
 }
