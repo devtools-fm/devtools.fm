@@ -78,6 +78,10 @@ const tabPanelRenderers = {
   TRANSCRIPT: TranscriptPanel,
 } as const;
 
+const sponsorLogos: Record<string, { src: string; url: string }> = {
+  Macro: { src: "/macro-logo.png", url: "https://www.macro.com" },
+};
+
 interface EpisodeClientProps {
   youtubeId: string;
   tabSections: any[];
@@ -85,6 +89,7 @@ interface EpisodeClientProps {
   title: string;
   spotifyEpisodeId?: string;
   spotifyEpisodeIdAlt?: string;
+  sponsor?: string | string[];
 }
 
 export default function EpisodeClient({
@@ -94,7 +99,12 @@ export default function EpisodeClient({
   title,
   spotifyEpisodeId,
   spotifyEpisodeIdAlt,
+  sponsor,
 }: EpisodeClientProps) {
+  const sponsors = sponsor
+    ? (Array.isArray(sponsor) ? sponsor : [sponsor])
+    : [];
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -124,6 +134,28 @@ export default function EpisodeClient({
       <h1 className="text-xl md:text-3xl mt-2 mb-8 md:mb-12">
         {title}
       </h1>
+
+      {sponsors.length > 0 && (
+        <div className="flex items-center gap-3 mb-8 md:mb-12 text-sm dark:text-gray-400 text-gray-500">
+          <span>Sponsored by</span>
+          {sponsors.map((name) => {
+            const logo = sponsorLogos[name];
+            return logo ? (
+              <a
+                key={name}
+                href={logo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center"
+              >
+                <img src={logo.src} alt={name} className="h-6" />
+              </a>
+            ) : (
+              <span key={name} className="font-semibold dark:text-gray-200 text-gray-700">{name}</span>
+            );
+          })}
+        </div>
+      )}
 
       {spotifyEpisodeId ? (
         <iframe
