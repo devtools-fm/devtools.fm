@@ -92,6 +92,7 @@ export default async function Episode({
           title={frontMatter.title}
           spotifyEpisodeId={spotifyEpisodeId}
           spotifyEpisodeIdAlt={spotifyEpisodeIdAlt}
+          sponsor={frontMatter.sponsor}
         />
       </Suspense>
     </>
