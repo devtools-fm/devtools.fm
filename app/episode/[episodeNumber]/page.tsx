@@ -75,10 +75,6 @@ export default async function Episode({
     frontMatter,
   } = processedMdx;
 
-  const showNotesTab = tabSections.find(
-    (tabSection) => tabSection.type === "SHOW NOTES"
-  ) as ShowNotesTab;
-
   const episodeNumberString = `Episode #${episodeNumber}`;
 
   return (
