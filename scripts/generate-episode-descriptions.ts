@@ -169,7 +169,7 @@ async function main() {
     existing = {};
   }
 
-  const pending = [];
+  const pending: Awaited<ReturnType<typeof loadEpisodeContext>>[] = [];
 
   for (const file of files) {
     const episodeNumber = file.replace(".mdx", "");
