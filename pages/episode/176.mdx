@@ -1,0 +1,420 @@
+---
+title: Jacob Miller - DiffUI
+description: "Jacob Miller discusses the creation of DiffUI, an AI-driven UI design tool."
+youtube: https://www.youtube.com/watch?v=wu00N4PWBFk
+spotify: https://open.spotify.com/episode/5rejOK7NvN1UuOSWTUkAbE?si=fN1pc5MPQBKQzL3GiTAXaA
+publishDate: 2026-08-16
+tags: ai, design, ui, design tools, design systems, design systems fm, podcast, javascript, typescript, programming, development, technology
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Jacob Miller, founder of DiffUI, an AI-driven UI design tool.
+DiffUi uses diffusion models to generate UI designs, and then uses a large language model to convert the designs to code.
+Jacob is a design systems expert and has a lot of experience with design systems, and that's baked right into the product.
+
+- https://x.com/pwnies
+- https://diffui.ai
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:00:56] Jacob’s Path to DiffUI
+[00:05:25] Diffusion vs LLM Design
+[00:07:46] Ad
+[00:08:50] Models and Rich Web UI
+[00:15:09] Workflow and Canvas Editor
+[00:20:42] Consistency Brands and Tokens
+[00:23:39] Design Systems Are Changing
+[00:41:51] Pricing Billing and The Future
+
+{/* TAB: TRANSCRIPT */}
+
+# 176 - Free
+
+**jacob:** When I first set out to create this platform, I was thinking I was gonna make a tool for designers to move at the speed that engineers are moving at.
+
+What I actually found is that something like 60% of my users are hardcore engineers.
+
+#### [00:00:25] Introduction
+
+**Andrew:** Hello. Welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew and this is my co-host Justin
+
+**JUSTIN:** Hey, everyone. Uh, it's been a minute. Thanks for joining us. Um, our guest today is Jacob Miller. Uh, Jacob, uh, we chatted briefly on Twitter, but saw that you're working on DiffUI, um, your AI-driven UI design tool. Really excited to chat about that. Um, and you have this other project, non-IO, which I'm really excited to chat about.
+
+But before we ~~dig,~~ dig into those things, would you like to tell our listeners a little bit more about yourself?
+
+
+#### [00:00:56] Jacob’s Path to DiffUI
+
+**jacob:** Yeah, absolutely. Um, hello everyone, I'm Jacob. Uh, I've had a very long history in tech with a bunch of different roles. Uh, I've been a designer, I've been a developer, I've been a prototyper, I've been a design manager, I've been a product manager. I am now a founder. And then before that, I was an oper senior, heavy machinery operator, all these things under the sun.
+
+Uh, and I am here now, uh, founding my own company, uh, Diff UI.
+
+**Andrew:** Yeah. So take us through what you were, uh, like let's get to the journey to DiffUI, 'cause I think a lot of your experiences before that contributed to where you're at today.
+
+So like what type of stuff were you working on at Figma?
+
+**jacob:** So yeah, over at Figma, I was there for about five years, and I was primarily lo- primarily looking over all of their design systems features, as well as I was able to lead on the product side their first prompt to design feature. Um, and so through that experience, one of the things I really got exposed to was, A, the enterprise demand for how these larger companies wanted to have AI utilize their design system, and the issues that came about with that as well.
+
+In addition to that, doing the prompt to design feature, I was able to go pretty broad early on, trying to understand, well, what approaches can we use to actually get to the point where we're doing proper prompt to design that has creative outputs? And really early on in that process, one of the things that I was really kind of thinking about and battling with is, uh, when I was, I was talking to Dylan Field, their CEO, and I was like: Hey, I think there's two main approaches that we can take here.
+
+One is we can use a large language model to basically write code as a representation for design, which is really the default that we have today at this point in time. It's what everybody under the sun does. You know, Cloud Design is doing this, Vercel is doing this, Lovable is doing this, everybody else, even Figma Make.
+
+And that was the safe option because we knew it would work, it was really structured. There was a lot of investment into large language models at the time. But the downside to that is it wouldn't utilize Figma's huge corpus of data that they were sitting on. And so one of the other things that I was thinking about really early on was, well, what about diffusion models?
+
+Because diffusion models, at that point in time, were only targeting consumer level GPUs. And so they really hadn't unlocked that scaling aspect that large language models went through, where they're like, "Hey, let's deploy these on data center GPUs and scale them up," which is really what gave them that, uh, element of intelligence.
+
+And so the thought there was, "Hey, let's take a risk on this. We have the data for it. We can do the training for this, and we may get better outputs." We eventually went with a large language model route because it was safer. We were doing this, you know, five months before Config, Figma's bigger conference, and so we were like, "No, we need to do the thing that has a clear path to victory."
+
+Um, but it kind of just sat in the back of my mind. And even at that time, I had been using diffusion models, and this was like back in stable diffusion, uh, days, so very early on, to do basic layouts, color usage, as well as just like general look and feel of the thing that you were trying to design, and I was using those as exploratory starting points, and then I was converting them into Figma files manually.
+
+And at that point in time, I was still like, "Man, this is doing layouts better than I am," and so maybe there's something here. The blocker was that it couldn't do text, it couldn't do things like icons or any finer details. But over time, what I was seeing was a slow increase in capability of these diffusion models.
+
+And so right around December of last year Uh, I decided to quit Figma, and in January I was like, "Okay, what am I gonna make?" And that little thought in the back of my mind of, "Hey, diffusion models is, are untouched right now. Let's build a UI editor that is diffusion model based." And so that was really the start of DiffUI.
+
+It's this kind of portmanteau of, you know, diffusion and actually FUI instead of UI, which is that like fantasy user interface that's out there, with the goal of like, hey, can we get more creativity out of these AI tools that are present? And so I was building things out. I was training my own models, and then eventually GPT Image 2 came about, which was really the bigger unlock that kind of proved this as like, hey, this is actually a viable thing.
+
+It can do UI. It went from being like cool research project to, oh wow, this actually works overnight. So that's kind of the, the origin story of how I got here.
+
+
+#### [00:05:25] Diffusion vs LLM Design
+
+**Andrew:** There must be some trade-offs with that though, right? Like with sta- with a diffusion model, you're getting an image as the output, and yet there has to be some form of translation of going from image back to my own code, right? It's kind of like the classic problem we've had with design tools of designer-developer handoff.
+
+**jacob:** 100%. Like you choose your paper cuts along the way is really what it is. But what I found is that if you're just using like a large language model, um, for a lot of these platforms that are online, uh, if they aren't working in your agents directly, they're outputting code that is generally like very opinionated.
+
+It is React code, it's on the web. Like if you're using Figma Make, for example, you're not gonna output an iOS app. You're gonna do a React version of that iOS app and then do a conversion afterwards. There's still a conversion process. But the other aspect with large language models is they get their context windows overloaded by all the context that you need for your design system.
+
+And Andrew, I'm sure that you're well familiar with this kind of working on the DS side, where a lot of times these LLMs, if you include your full design system, they'll still go and implement a Tailwind button at the end of the day. And a lot of that is because of how these large language models are trained.
+
+They're trained to write consistent code. But the problem is because they express designs through code, they're also creating consistent design. They're aligning on that mean of design, and because of they pull in those things like Tailwind or shadcn, the things that they're trained on. And so you still have this like conversion layer afterwards, which is like, okay, let's take the first output of it and let's align it to our code base as a final step.
+
+In the same way, we definitely have, as you pointed out, you know, you have your image and you have to align that to your code base afterwards. But what I've at least found is that by generating that image first, you're basically providing an architectural plan to the builders, these engineers that are on the LLM agent side.
+
+And so it gives them more guardrails and more knowledge of how to closely and more accurately express your brand. So yeah, there's definitely a trade-off there. You do have to do that post-conversion process. But at least what I found is that through doing that conversion process, the final end state is actually closer than what you would get with LLM alone.
+
+**JUSTIN:** That's really cool.
+
+
+#### [00:07:46] Ad
+
+**JUSTIN:** Software engineering is a challenging job and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead when really we just want to be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers. And it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available. So if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you want to extend it, feel free. The back end is rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just like starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast, it's fun, it's a better way to build. Sign up at macro.com and get $100 off your subscription using DEVTOOLS100.
+
+
+#### [00:08:50] Models and Rich Web UI
+
+**JUSTIN:** Um, how have you found like... I haven't really kept up with the state of diffusion models and like what's happening in that world. So, um, in the LLM world, the, a lot of the like frontier models are multimodal, and you can like have them generate something. They're probably potentially using a diffusion model under the hood.
+
+I don't actually know how that's working. Um, what, like what sorts of models are you using now to sort of do this exploration and like what's the state of those? How has it progressed since, you know,
+
+**jacob:** Yeah. I'm gonna touch on two things. The first thing you said was, uh, they're using these under the hood. I think GPT's, uh, like OpenAI's Sites feature is actually using it under the hood in its thought process. So it actually doesn't present the image to the user, but it goes out and renders an image first and then uses that as a reference point to create the design and the output.
+
+Now, to your point around what am I actually using diffusion model-wise under the hood for what I'm doing, it depends on what stage of the process you are at. What I found is that I've trained my own model, but the reality is GPT Image 2 is better than mine. Uh, now I have it balanced on my site where basically I will defer to the model that is ranked best at any given time.
+
+Uh, and so I think GPT Image 2 is, has like a 99% weight right now versus my own post-trained model. Um, I'm hoping to get that at a better state obviously. But that is the, the king right now, like without a doubt. That said, there are still things that are really beneficial to use at other stages of the process.
+
+So all said and, uh, done, I think I use about seven different diffusion models depending on what it is that you're doing. The biggest thing is in that handoff to the large language model. So as part of that process in converting that design to code, there's a lot of things that you want to render out as assets as part of that build.
+
+Those being things like hero images, and for that you want a higher quality image model that can render things out really accurately at a high fidelity. But you may also have avatars where, you know, they're small little things, you wanna just render that cheaply to get a little proof of concept out there.
+
+You wanna do that quickly, cheaply, done. Cool. That's good. In addition to that though, there's also things like patterns, background patterns, and textures. And this is something that I'm really excited about with diffusion, is it means that the web can be a little bit more rich. So part of what I've been experimenting with are things like natural textures for things like divs.
+
+So instead of being just, you know, a pure white fill, it is a soft paper texture. Or instead of a dark background, it's actually like a na- natural slate tile that is repeated. The other really fun thing with diffusion is that you can make the web a little bit more rich during that build process. So one of the things that I put out there as an example was actually using diffusion models to create normal maps, depth maps, and roughness maps for the assets that you're creating.
+
+And the cool thing about that is you get a little bit of a parallax effect through an actual, like, depth effect as you are interacting with the screen. But you can also do dynamic lighting in all the elements on the screen itself, which just, just adds like a richness. I think there's like that classic quote out there of like, "Oh man, I want the web to look like Evangelion."
+
+And I think doing that requires pushing beyond just the constraints of CSS. We have to stretch things a little bit further. And so that's why I use this wide combination of diffusion model, is to allow you to have those more kind of magical interfaces.
+
+**Andrew:** So one, one part that must be hard about this is kinda capturing those interactions. So like design systems have many interactions, like animations when you open up menus or like that lighting effect that you just mentioned there. How... Like, since it's all image-based, it seems like it might be harder to capture that in, like, the design intent.
+
+**jacob:** I mean, that's always the case, and it's always been the case for any sort of like animation, right? Is it's a question of who owns it. Because for designers, they're working in things like Figma, which is hard to express animations in. They now have their motion product. But even still, it's always been something of like, oh, does a designer ow- own this, or does the actual code implementation own this?
+
+It ends up being something kind of in between. And the way that I think about it isn't, oh, diffusion is the only thing to use. It is use the best tool for the job at any given step of the process. And I think what we've found is that aligning different AI models to the different roles that they're representing at the company ends up being the best way to imagine this.
+
+So for the product manager, absolutely an LLM makes total sense describing these specs, the needs, the wants, the desires of the product itself. After that, hand it off to a diffusion model, which acts as your designer. Now, after that, it's that interplay between the designer and the engineer, another LLM, that decides things like the animation, in the same way that a designer would work directly with an engineer in the past to actually create these things.
+
+The other thing, though, is a lot of times those animations are baked into the design system itself, either through, uh, notes in your design MD about how things should react, or they're actually pre-baked into the components themselves. And so that really leads into the thought of actually allowing for brands to be expressed through this diffusion process.
+
+And that's why I've created this brands feature that I have, which basically recreates the look and feel of what it is that you're creating through just uploading screenshots. But it also connects it to the elements that are in code, so that when you do that handoff, the agent knows, oh, this button that you drew here in this image is probably my design system button, and thus it should have a pressed state, it should have all these other things.
+
+And I'm gonna code it up by using that button element itself rather than recreating something from scratch. So yeah, there's a lot of interplay there in terms of at what stage do you do different things. I also have found that a lot of times making small changes is easier in code. A small change to copy, for example, is easier to do in code than it is to do, uh, in a design.
+
+And I think that's true in Figma as well, uh, where these days I w- I wouldn't go back to Figma and change like a text string and then go back and export it to my, uh, developer to change that thing. I would just ask an agent, "Hey, can you change this text string?" And you're done. So optimize for the best tool for the job is really what I say here.
+
+
+#### [00:15:09] Workflow and Canvas Editor
+
+**JUSTIN:** I'd love to just learn a little bit more or describe a little bit more for our audience the, the shape of the product of DiffUI. So, um, kind of on the homepage, you have this like graph-like experience where you're like putting in a prompt, you're doing a generation. There's like a node that, that is connected to that, that has like the image or images that, that show up.
+
+Is this kind of the actual experience and the product of like kind of connecting it in a visual editor? Um, and if so, sort of why, like what inspired you to go that route?
+
+**jacob:** Yeah. Um, it, it 100% is the experience. So it really ties into the experiences that I've had, you know, working on Figma, where you have this kind of canvas-based interaction. But also I think that we gravitated towards these kind of node-based structures for a lot of AI editors. And the reason for that is knowing what your inputs are into anything is really, truly important.
+
+One of the core flows that I've found, uh, that people are using DiffUI for is just for creating new webpages. Uh, and so they don't have a design system yet. They just wanna go in and create a new site from scratch. What I do when you actually put in your prompt is I generate a bunch of options all at once.
+
+'Cause what I found is that designers tend to want to go broad first and then narrow things down. And doing that visually I think is really important. And I think it's one of the things that while cloud design will present you like three options, it takes a long time to present those options to you. One of the advantages of s- of diffusion is I think my end-to-end time from you hit submit to, hey, you have all of your like up to eight options in front of you is 90 seconds.
+
+So you're not waiting a long time to get to that exploratory stage. And then you kinda fan through those n- uh, eight options that you have and you decide, okay, I really like maybe option six or something. And then what you can do from that point is you basically create some output nodes from that original, uh, option that you selected and you say, "Well, show me the about page.
+
+Show me the billing page. Show me the projects browsing page." And you're using that original design as input. One of the fun things about diffusion and the, is that they're really good at style transfer. We've seen a lot of things online of like, "Hey, turn my, uh, picture into a Studio Ghibli character." Well, you can really do the same thing with the look and feel of a web design.
+
+So you can say, "Hey, show me this billing page in the style of this original page that I've created." And one of the things that I've done with the harness of DiffUI is to make sure that it repeats and reuses the shareable elements. So if you're generating something, it'll generate like a header with a bunch of navigation options at top.
+
+For that next page that you create, it'll have that same header with maybe the page that you went to actually highlighted. And so it allows you, by using this input-output system, to basically go from I have no design at all for my webpage to I have a fully made site in, or at least designed site, in about, eh, five or six minutes.
+
+Um, and I think that's a really powerful part of this experience and why I've created that exploratory aspect of that canvas.
+
+**Andrew:** So with the canvas, is it kind of like comfy UI where like there's like my base at the start where I have like my brand and maybe I have a whole app generated and I can change the brand and it kind of like filters through the graph?
+
+**jacob:** No, I, I think that Comfy UI, uh, goes a little bit hard on the complexity side, and I think that that is helpful when you have the demands of rapidly changing ecosystems. But Comfy UI is not a comfy product by any means. I think it is a very poorly named product in that sense, in that each of those nodes in Comfy UI is an expression of a code block, uh, realistically speaking, and there's so many things that can go wrong with that.
+
+What I found is that a lot of people using Diff UI are either designers, obviously, or they're engineers that aren't familiar with a design product. And so because of that, simplifying that experience I think is really important. Weavy really focuses on this concept of, you know, like maintaining state and doing flow through of state.
+
+So if you change something upstream, it changes something downstream. What I found is that one of the hardest things that I was working on was when I was at Figma is conveying why things changed to a user, and that was always something that really confused people. I think there's a classic example for designers out there that are listening, uh, of, you know, you copy maybe like a design that you have that's in an older file version.
+
+You paste it into a new file, and the look and feel doesn't change, but you may have two variables side by side, one in a newer design, one in an older design, and the colors don't match. And that is because, you know, we're not absorbing and updating those colors dynamically, and that was a very purposeful choice from Figma.
+
+Versus if you had done that in code, it would actually absorb the CSS variables, and it would change immediately. Whenever you're using a visual editor, maintaining state and understanding I think is a really important thing. And if you want to go upstream and change something, I made it easy for you just to duplicate that entire stack and go through that flow again.
+
+I think with the commitments of it only being five or six minutes to do that full site design, I think because of that, you can go and explore a lot of these in tandem, in parallel, or go back and change something, and it's okay if you need to make a change.
+
+
+#### [00:20:42] Consistency Brands and Tokens
+
+**Andrew:** So you mentioned that it kind of keeps this consistency through the screens. How do you actually accomplish that? Are you storing like prompts for the, the nav bar and then like some examples? Like, like is there like a kind of a memory system built in that like remembers all the different metadata about the, the decisions you've made?
+
+**jacob:** Yeah, that's exactly what it is. Uh, so under the hood, all of these images are backed by a semantic JSON structure, and that has things like, oh, here's the subjects that are on the screen itself. There's a header, there's this, like, hero image, there's this card item, that sort of thing. But also your color palette is inside of there, uh, the reference to the actual design system npm package if you have that, the original prompts, the intents, all that stuff is maintained.
+
+And so when you go and create another node, it'll look and say, "Okay, well, here was the previous page that I had," and this is one of the inputs. "Of the elements of this previous page, what makes sense to include in this new page?" And then by combining the JSON that I actually use as a prompt with the images as inputs, you're able to create that consistency.
+
+The other main thing that I do is I have this concept of a brands feature, which every time you generate an image, you can add it to that brand corpus. And what it's essentially doing at that time is it's actually refining the brand more and more. It's training that brand so the brand knows, "Oh, this is what dashboards look like in your language.
+
+This is what a marketing page looks like. This is what your SaaS tool looks like." And it has a bunch of screens of examples of those. So then when you go and create another, say, dashboard page, it'll dynamically include context of like, "Hey, here's other dashboard pages that you've created, as well as here's the context of your design system."
+
+So then you actually have that consistency that actually gets better over time the more and more you use it
+
+**JUSTIN:** Since we're on the topic of design systems, you, you may have, have covered this, and I may be missing it, but, um, so this is a really awesome tool for, like, as you said, starting with visuals, like seeing a bunch of options, um, seeing variations of something. So starting with a brand, seeing your pricing page and your about page and, you know, whatever else you may wanna have for your site.
+
+Um, and then there's this translation layer. So you, you get to a thing that you're satisfied with and, um, there's like two ways that you could approach this is like, one is like, I want to generate a design system from this, like very much like Cloud UI design, uh, style, right? Or I just want to build this site, which I guess is like, could use a design system, could not, as, you know, some people just starting don't need a design system.
+
+So, you know. Um, does that fit into the product journey th- of what you're trying to accomplish with DiffUI, or is it like you're just trying to give like a graceful exit point of like at the point that you have the design that you want, here's the, the context that you need to sort of like, you know, start on your code journey?
+
+
+#### [00:23:39] Design Systems Are Changing
+
+**jacob:** Oh man, I have, I have so many thoughts on this side. Uh, that, that is a great setup. I think there are two main things here that I would say. The first is maybe a spicy one, which is, you know, I'm wearing my, like, Figma design is dead hat right now, but I think traditional design systems as we know them today are dead.
+
+And that, that may be a spicy thing to say coming from somebody that was running a lot of design system streams. But the reality of it is, if you look at the purpose of a design system, there are really two main ones that we go for. One is speed of execution, so by providing these shareable, reusable components that I'm able to more quickly utilize and capture them.
+
+I don't have to recreate them every single time. The other is brand consistency, making sure that my product looks, feels, and behaves like what the brand should be I think for the first one, that has been solved by AI. We're moving so quickly on the engineering side that it does not matter if you have to create a new button from scratch, especially with these new, uh, like hyper-accelerated models, like running a Cerberus that are out there.
+
+Like creating that button component or dropdown component's gonna be milliseconds as an addition to your process. So that part is solved. The other part of this is the brand consistency side, and I think when we created design systems, one of the things that we were always battling with was how much do you allow designers to diverge from the design system versus adhere to it?
+
+And there's people out there that are like, "No, it has to be 100% consistency," and there's people out there that are just like, "Go YOLO. I mean, as long as it looks and feels like the brand, life is good." And I think if you actually look at the best brands in the world, the ones that are most recognizable, they're not the consistent ones.
+
+They're actually the ones that go explore and take risks. If you look and see a Coca-Cola sign, without a doubt you know that that is a Coca-Cola ad. They've done such a good job at actually creating that look, feel, and expressiveness of that brand, but every single one of those billboards is going to be entirely unique.
+
+It's not gonna be a fixed set of just like, "No, here's your billboard variants. These are the only ones you can use." They allow people to explore. I think with a lot of AI tools that are out there, it is raising the floor of design, and because of that, what it means is that pretty much everyone can now design in a way that feels consistent with a brand.
+
+Given that, I actually think that second category of what design systems for is also solved, and that you don't need that super rigid, dogmatic consistency out there with your general original design system, as long as it looks, feels, and thinks like your system. And so part of this was, okay, well, given that future, what would a tool look like that maintains the look and feel of your system without enforcing every single pixel?
+
+And so that was one of the reasons for kind of pushing this. The other thing though that you had mentioned was this concept of creating a design system, uh, which I still think it's valuable to create shared components, absolutely, because shared components improve the performance of your site, et cetera, et cetera.
+
+But one of the things that I've observed from people that are creating a site from scratch is they often will say, "I'm gonna create the landing page." And then they create this landing page, and then they go and they actually go and create their tool, and what they found is a lot of the elements that they've created in their landing page don't apply to the actual tool that they've created.
+
+And so they went and created all these elements of their design system for this landing page, and then they went and created their tool and realized, "Oh shit, I actually have to go back and redo a bunch of things and change things up." Uh, and so part of the goal of this product is to allow you to create multiple pages at once before you hand it over to a LLM to build.
+
+And a large part of that is so that I have a shared understanding of the different components that are actually shared between each of those pages that you've designed. So then you're not re-architecting the page or the set of design system components that you have every single time you create a new page.
+
+It's, "No, here's the full plan up front. Okay, now let's extract the shared components from those." So I think we're just changing the process of how we think about design systems. They are emergent elements that we're actually extracting out of the architectural plans rather than something that we create up front as a starting point.
+
+**Andrew:** Yeah, I de- I definitely agree on a lot of those points. Uh, it's-- I've been getting the feeling that, like, the design tokens are really the most important part, and then maybe a design MD. Like, if you have those two things and then, like, a good headless component library, like, what's the point in restricting how, how people define a select or a combo box?
+
+Like, there's an infinite combination of those two things and how people might expect them to behave. Like, if it looks like the brand and is using the brand in that way, I think it's become fine. 'Cause as you said, like, the cost of making these things has become zero, so it's like, why, why, why restrict the creativity?
+
+It's always been the meme in design systems for me is that, uh, it allows you to be more creative in some senses, but a lot less creative in others. And I think those other cases might now just be served by AI.
+
+**jacob:** It's funny that you mentioned tokens. Uh, under the hood for that semantic JSON layer that I was telling you I maintain between each of these pages, there's only two things of your design system that I include in context for these prompts, uh, aside from just screenshots, which is your design tokens, because having those hex colors is really important, and your typography ramp.
+
+So seeing visually what that type ramp actually looks like, as well as knowing the name of the font is something that I maintain between each of these contexts. But otherwise, I don't need to know, like, the npm package of your actual button or anything like that. What I need is just like, what does the rest of your system look like?
+
+Uh, and so yeah, those are the-- I highly agree. Tokens, so important
+
+**JUSTIN:** Um, uh, going back to one of the things you said that I thought was really interesting, and I've seen this myself. So if you start with a landing page and you base a design off of that, then you go and you implement another page. Let's say, like most of your app is just like a dashboard or something. It's like y- you end up with something that's, like, not great because it's like, "Oh, I've got this, like, massive headline text on my dashboard."
+
+It says, like, "Dashboard" in like 72-point font or something, you know? And it's like, well, obviously that's not what we need. I w- was noticing, like, there are similar patterns that show up like that, which could be more intentional in the examples, uh, on the homepage of DiffUI. So like, there's this, like, i- in your homepage, you have this really nice, uh, example of like a jazz, um, like a jazz app and like the lineup page and the schedule page and, and how they vary.
+
+But i- in some of those iterations, you can see the same, like a similar sort of thing. It's like taken the headline copy, um, from the landing page and like started adding it to, um, like other pages in, in the site. And obviously for like, um, artistic, um, sites, like a music site or something like that, that actually might be like the correct brand desi- uh, uh, direction.
+
+But I guess as you're thinking about what you generate for the brand and how you, like make that, are you really just sort of like leveraging the user's taste? So it's like you as a designer using this system should know that like, oh, if you're like generating a dashboard and you're using the landing page, you're probably gonna get something that's like not congruent with actually what you wanna see, even in just like the, the, the sort of images of the design.
+
+Um, or are you like trying to bake in some of that as, as, you know, maybe a meta layer or like analysis layer? It's like, ah, well, you know, you've generated a landing page here for your brand, um, and I'm gonna like... and you've requested a, a, a dashboard and I'm gonna like give some like extra guidance to, you know, this underlying diffusion models that go by the way, you know, don't, don't do major headlines from the dashboard or whatever.
+
+Just, just curious if that has been like intrinsic in your thought process in the tool.
+
+**jacob:** Totally. Um, the way that I think about it is like brands represented on a page are kind of like, uh, alcohol by volume almost. And it's almost like this like brand by volume, where a marketing page, a landing page is gonna be like high brand by volume. Uh, it's gonna be like a distilled spirit where you are hitting it punchy.
+
+It is the front and center thing of what you're doing. A dashboard on the main page of your like, uh, app once you sign in, that's gonna be like kinda like a medium beer basically. And then, you know, maybe like a legal, uh, page that you have on the side or something is gonna be like a NA or something. And that's really kind of what is encoded into the product manager side of the step that I'm kinda walking you through.
+
+So when you actually enter into a prompt and you actually say, "Hey, create me a landing page for blah, blah, blah, blah," or, "Create me a dashboard for da, da, da, da, da," what I'm actually doing first is I'm handing it off to a large language model to expand on that in detail. Okay, what elements do we want on this screen?
+
+And what I found is that these large language models are really good at extracting context and understanding that, oh, on a dashboard we shouldn't have a huge hero image with like a big header block or something like that, but for a marketing page we do want that. Whereas for a legal disclaimer page, it can be, you know, super subtle, da, da, da, da, da.
+
+Cool, it's this company, but we don't want it in des- any design on this. And so these things are nuanced. They understand context now. And going back to like the using the right tool for the right job, you can chain these things together to make sure that the outputs are what a human would expect
+
+**JUSTIN:** ~~Andrew, you wanna take the next one?~~
+
+**jacob:** ~~Muted. But it, y- the enthusiasm was huge~~
+
+**Andrew:** Thank you. So on the homepage, uh, you say design without the slop. I've released a lot of apps in the past year, and I do it all on Blue Sky, and people have a sniffer for, uh, AI design like no other right now. Like, I can t- I can just list off the tells: eyebrows, serif fonts, monospace, lack of border radius, like just the spacing of elements.
+
+Like w- a, a meme of design has emerged where it like, it's good-looking design, but if you view a lot of them side by side, you go, "Oh, I see the pattern," and then the pattern's just there to you, and you see it in every website that this tool has touched. Uh, how does your tool kind of work around that? I know you probably don't have the same, like, system prompts that produce a bunch of eyebrows throughout my app, but you probably have the same similar mechanism in yours.
+
+**jacob:** Yeah. I mean, it goes back to how these things are trained. Uh, I think earlier on I was telling you, like, LLMs are trained to write consistent code, and because they express design through code, they end up with consistent implementations of design. So you get a lot of these, as you mentioned, like AI-isms, eyebrows, little, like, stars, that sort of thing.
+
+And one of the interesting things that I found is that even in that handoff process, sometimes LLMs will actually introduce these things and, like, shove them in there. Like, "No, I really need these eyebrows in here." The fun thing about diffusion is that it has been trained on images. And what I will say is that a lot of what it's been trained on for web design are screenshots of things that are out there on the web already.
+
+And so there are established pages, uh, through our entire history of creating web pages that have been shoved into this context-wise. And diffusion models are much better at going more broad and high temperature than large language models are. So it gives you an escape hatch by using that diffusion model as that architect to at least sidestep some of the major issues that are present.
+
+That said, a- and the, the big caveat here is I think what's gonna end up happening is these diffusion models will be trained on screenshots of these other AI sites that are out there, and slowly what we're gonna see is actually a gravitation towards more and more of this kind of like slop with these.
+
+So I think there's actually value in having, like, a preserved state of, okay, here it's only trained on designs that are, like, pre-LLM explosion. Um, or maybe, you know, this will be something that we solve by creating more rich world models that have an understanding of image as well as code output, so they actually have this diffusion aspect as part of their internal thinking.
+
+Um, I think that'll also help in this area. But yeah, it's really just the using of c- uh, different models in combination that helps you sidestep.
+
+**JUSTIN:** Yeah. That's r- I mean, that's true of like generation to like text generation. It's like having a multi-model task can get you better results than just having like one model and one training set. Uh, and we have all been... Yeah, exactly. Exactly. And we've all-- I like that analogy. You've got a lot of good analogies.
+
+Uh, also like the, um, you know, we've all, we're all thinking about like what happens with the future of training data as like more and more things get trained on generated outputs. It's like, does it like progressively degrade? Um, something I've been thinking a lot about and I would love to talk to you about, um, so the challenge with building, um, you know, a, a product that's based on LLMs or diffusion models or whatever, like AI-based product is, um, its strength is its weakness, so it's variable.
+
+You know? It, it is non-deterministic by design, um, and that gives us all this like amazing opportunity to build sort of these like wonderful, delightful, uh, products that can surprise you and intrigue you and all these other things. But quality and, and testing and ensuring like, you know, for your product, is this a good design, is a, is a challenge, right?
+
+It's like, um, you know, there's some part of this that is obviously subjective, but like there's obv- there's like other parts of it that would be like more deterministic. So for example, is the text here actually human readable text or is it that weird like AI glyphs that like kinda get generated sometimes where it like looks like an approximation of English but it's like not?
+
+Um, how do you think about like testing and verification and quality of your product? Um, are you s- just sort of, kind of just using it a lot yourself right now and using your own taste or do you have like a more, um, uh, like, I don't know, a, a more intense method, evals or something that you're using to, to test quality?
+
+**jacob:** Yeah, I think there's kind of three things with this. Um, the first is, is it the correct output for what it is that I actually prompted inside of here? The next is, does this actually look good? And that is a subjective thing. And then the third one is how do you improve both of those things over time? For that first one around did it do the correct thing, as well as the second one, honestly, I'll batch the-- both those together.
+
+My thinking here is allow the user to fail quickly. Because these things are non-deterministic, what I want to do is provide a system that is cheaper to use than large language models that can provide you more options all at once, so that as the user, you know, you get four responses back, you flip the-- through those things.
+
+It takes you five seconds to say, "No, no, yes, no. Cool, we're gonna go with option three here." Because things are non-deterministic and things are subjective, so even if you do the correct thing, it still may not be right for what the user wants. And so going broad, I think is the way to kind of address that problem, and allowing that user to have choice is the way to really kind of solve that.
+
+But I think it's also something that you can eventually train better and better models to really create a system that knows what the user intends to do. And so on that last end, one of the benefits that I have, uh, in terms of a flywheel effect for DiffUI is when you generate a bunch of options, from a data standpoint, I know which of those was the correct option that you chose.
+
+And so for that specific user, I now know, okay, well, these are the things that they don't want. This is the thing that they do want, and I can gravitate away from the things that they don't and reinforce the things that they do. So hopefully over time, going back to the, you know, the brand story around h-the-- how those get better over time.
+
+In the same way to what I hope to do is actually have an image model that grows and adapts towards, hey, this is how user subjective taste actually, uh, evolves and h- what they actually want. So it's building that corpus of data to really get it to the point where it refines further and further down the line.
+
+**Andrew:** Do you think that would be like a, like a post-trained model or a LoRA or something like that? Or just like kind of an ad hoc context system? What, what are you thinking there?
+
+**jacob:** Yeah, I think a post-train model is the way to go here. I mean, certainly you can train one of your own models from scratch by any means, but you're devoting so much effort to really doing that when what you really want is a model that understands your domain better. And so with that, doing a post-train makes a lot more sense.
+
+You're basically conditioning it for the environment that you're in. And that's what I was doing originally for my first model. It was a post-train checkpoint of Flux2 Dev. I think in the future we're gonna see better and better, uh, open source models dropping, which then we can post-train on the data that we already have, uh, and allowing them to express, okay, well, this is gonna become one of the best models for web design because we've reinforced it with these best options that people have chosen.
+
+**Andrew:** That's super cool. 
+
+
+#### [00:41:51] Pricing Billing and The Future
+
+**Andrew:** Uh, one thing I wanted to touch on was pricing. You said it's a lot cheaper. How, how, how is it-- how much cheaper is it? How do you get it cheaper? Like, what, what's the cost comparisons here?
+
+**jacob:** Yeah. It, it really depends on, uh, which of the tiers you're going for, um, on the system that I have right now. Um, I'm just about to launch like my Teams and Enterprise feature. But for the individual user, I charge API pricing. Uh, it's a 0% margin style, and really it is purely usage-based pricing. I think it's the way, uh, in the, uh, forward in the future because so many agents are gonna be using these sites as well.
+
+You don't wanna do these kind of seat-based pricing models. But the other aspect is diffusion is just cheaper in general than using large language models to write a ton of code to represent your design. I think like one of the things that has shocked a lot of VPs of design in the industry is the pure cost of things like Claude Design.
+
+It costs a lot of money to get you from zero to one for a design. For DiffUI, it is 13 cents per image is what I charge for each design. And generally what I find is that doing a full page app experience, you generally spend around 30 or so images basically creating that and getting that to a point where you're like, "Okay, well I've designed all the pages that are present here."
+
+And even at that point, you know, you're paying less than $4 for basically a full site design. Not just a single page, but the entire site design experience. Uh, and so it ends up being a lot cheaper in that sense. The other thing is I don't have to overload the context with the full knowledge of your design system and the code implementation that it has.
+
+And so because of that, you're actually providing less input into the system. The only thing that you're providing as input is the knowledge that it needs at that point in time, which is how does your brand look and feel? And to your point earlier, uh, what are the design tokens that we're using? And that's all the context that I'm shoving into this, which keeps costs really low.
+
+**JUSTIN:** Uh, as a slightly, like, nuanced technical question, like billing is hard generally. Uh, but billing small increments is, is pretty hard. So usage-- any usage-based pricing model for folks who haven't had to implement this before can be like really tricky 'cause with Stripe or whoever your payment provider is, they have like this minimum fee plus like some percentage of the transaction.
+
+So doing like, you know, a 13-second or a 13-cent charge on a credit card is like not a thing that you'd wanna do. Uh, this is a random technical question, but I'm, I'm interested in how you think about that, um, with like humans or are they buying credits upfront, so like a prepay model, or are you like, um, amassing things and doing like a, you know, a charge at a certain point in time?
+
+And are you thinking about agent-like transactions? Like, um, what, what is it? X.403 is like a big thing that's happening right now where there's like, uh, agent APA, API, like based transactions. Like curious how you're kinda thinking about that technical detail.
+
+**jacob:** I'm gonna, I'm gonna, uh, distinguish the thing that you said here a little bit more, which is that metered billing is very hard, but top-up billing is actually quite easy. For that, you're literally saying, "Hey, the user has deposited $50 into the wallet. I'm gonna pull cash out of the wallet for every sort of action that I do based on the price that it actually, uh, costs to do this."
+
+That is tremendously simple to do. You're just creating a financial ledger basically and updating that. The reason why a lot of people don't want to do that is it doesn't create an ongoing subscription charge for the user, and there isn't a constant reinforcement of, "No, you're paying for this tool, so you should go ahead and use it," type of thing.
+
+And I think that there are a few platforms out there that are doing this kind of top-up based solution. Uh, OpenRouter I think is one of them. Fal.ai does this as well, and it basically just says, "No, just deposit stuff into your wallet." You can do an auto top-up if you really want to, to basically make sure that things never fall through.
+
+But to me, that is the future more than anything else. Then you're not incurring these like small little random charges on your credit card of like, "Oh, great, it was a 13 cents fee. I'm gonna pay 25 cents on top of that for the credit card transaction." Uh, the other advantage of these kind of wallet-based structures, and I think the whole like credit thing is kind of just weird where you're creating this like artificial currency as an in-between.
+
+Just use dollars. Uh, that's what I'm doing at least for DiffUI as well. And it then it doesn't matter if you have agents that are using the system, 'cause we charge them the exact same rate that we do for the humans. It doesn't matter what is using the system. The matter-- The only thing that really we care about is, okay, what are you generating?
+
+What's the cost of those generations? And so I charge for you creating these designs. Also, when you're actually handing it off to an agent to implement, during that handoff process, I provide a bunch of APIs for the agent to do things on the platform, generating those hero images, iconography, patterns, that sort of thing, which I hand off to the agent like, "Hey, here's the price, uh, s- sheet for all these things as well."
+
+And it knows and understands what your wallet capabilities are as well. Um, so I think that's actually something that is easier to do as long as you're willing to give up this like nagging subscription cost to a user or these other ongoing charges that people really just don't want anyway.
+
+**Andrew:** Cool. So wrapping up here, we always like to ask a future question, and I think I got a spicy one for you.
+
+Uh, as AI comes into prominence like it is now, uh, the s- the lines between our jobs, uh, in the traditional product development work cycle seem to kind of just be going away. There used to be very st- static product manager, product designer, engineer. Uh, where do you see the ball going with all of this? Do you see them combining into one role? Do you see them staying where they are and kind of just being enhanced by AI? Or what do you, what do you think the future's gonna look like here?
+
+**jacob:** We're all gonna become members of the technical staff at OpenAI. Um, no, it's, it's-- the reality of this is we are becoming generalists because the barrier of entry to all of these roles is lowering so much. When I first set out to create this platform, I was thinking I was gonna make a tool for designers to move at the speed that engineers are moving at.
+
+What I actually found is that something like 60% of my users are hardcore engineers. They're the ones that are wanting to use this 'cause it's like, "Hey, this is a tool that lets me actually design at the level of a designer." And so it's been interesting seeing that the audience was not the one that I thought it would be up front.
+
+It's all the non-designers that are really gravitating towards this being like, "Oh, I can actually output a really good design now." Um, so I think that is true in the future as well, where we see a lot of designers, they are now coding. Uh, and because of that, you know, product managers are also jumping into code.
+
+Everybody's coding right now 'cause it's accessible to do. And I think we are just entering the point where design is becoming accessible as well. And as AI refines more and more and more, it's gonna open up all of these avenues to us. Um, like just I think that you're working on, uh, like legal systems, it's gonna make legal stuff more accessible to users as well.
+
+So I think we all become generalists at the end of the day. It's been a ton of fun being a founder right now because I do get to literally do everything and I get to experience all of this, and it is so much easier to do things today than it was five years ago. Founding a company, Stripe Atlas, I'm using that right now.
+
+It was so easy. It was just like boop, boop, boop, done. Okay. Wow. Okay. I thought there was gonna be a headache and I have to hire a lawyer and do all this stuff. It is really lowering the bar across the board and I'm, I, I personally am just so excited 'cause it means that people won't have these blocks of creativity, which is like, "Oh, if only I could do this, I'd be able to actually do this dream that I have."
+
+Now everyone can do that, and that part is just so cool to me.
+
+**Andrew:** Yeah. A common theme on our podcast is, uh, rising tide lifts all boats,
+
+and, uh, it definitely has done that here. Uh, there's more opportunity for slop, but I think there's also more opportunity for greatness and for people to, like, burst into something that's, like, unique and creative and useful to other people
+
+**jacob:** 100%, and I'm just, I'm so excited for that future. I just wanna say thank you all so much for the chat today. It was an absolute delight being on the pod. Um, Justin, Andrew, y'all are great
+
+**JUSTIN:** ~~Yeah, Jacob, great. ~~
+
+**Andrew:** ~~Go ahead~~
+
+**JUSTIN:** Yeah, it's great to have you. Uh, I mean, DiffUI is, is, is pretty awesome. I'm, I'm excited to kick the tires and yeah, I don't know. Uh, I, I love to see just like more tools enabling people to make more things. That's like why we started the podcast to begin with, just 'cause like we like making tools and, um, I think this is kind of the moment.
+
+I don't know. Uh, if, if, uh, with the state of the world, you know, let's, let's make things that can help people make things, and that's, that's kind of fun.
+
+**jacob:** Can I, can I flip the question over to all of you a little bit? Given that you are on this kind of podcast and you get to see so many of these really cool kind of dev tools that are out there, what are like maybe the top kind of two tools for each of you that you've seen over the past couple of months that you've been talking to people with?
+
+It's like, man, this was such a good tool that people should be aware of, that they should be using, that really kind of changed my mind on something.
+
+**Andrew:** Um, I got, I have one. Uh,
+
+it's another design tool. Uh, I, I like the thinking behind it. I don't know if I like the execution all that much. Uh, it's called Impeccable Design. It's just a bunch of skills. Uh, that's kind of the approach we're taking at work with it, and I just like the, the holistic experience of it all.
+
+Uh, like from the skill to like their UI mode. I think those are all very interesting and can like fit into existing stuff. But, uh, I'm really also excited to try Diff UI now 'cause like I've been a heavy user of Claude Design. I hit those token limits like very, very easily. Uh, and just having something where e- exploration is easier is, seems much better than having a design to- tool get type checking to pass.
+
+Like,
+
+**jacob:** I, I like that you said Impeccable as well, 'cause I think, uh, Paul Bakaus is the person that's actually working on that. Um, he literally just shipped, uh, a, like, image to HTML conversion flow as part of Impeccable Design, I wanna say like a week and a half ago. So I think that it's, it's another tool that's out there that's kind of making a bet that, hey, Diffusion actually has some really cool legs on the design side. Justin, what about you?
+
+**JUSTIN:** Um, this is, uh, I'm, I'm gonna go for an old one. Uh, but as like resurge for me, um, I, I think we're in a moment where taste matters more than ever and is valued more than ever. And, uh, I rediscovered this site called Arena. Um, Arena is just like, you know, uh, think of it as like a, I don't know, very artistic version of like Pinterest or something.
+
+Just like a way, a place to like store images and, and documents and stuff. And I just find so many people on there that I just randomly stumble across have such great taste, um, in arts and culture and design and, and whatever else. And I think I'm gravitating more and more towards the places where I can be immersed in good taste.
+
+And so that's been, uh, a thing I've just been using a lot lately and spending a lot more time on as an alternative to my otherwise like pretty doomscrolly behaviors.
+
+**jacob:** No, I think it's totally true in that we need another kind of Dribbble for this modern era, which is just like this site that is collecting inspiration. Especially because the web is so dynamic right now, you need more than just a static image to really see some things. There's been some really cool creative interactive examples that are out there for design that are just so inspiring.
+
+**Andrew:** Cool. Well, that's it for the pod. Thanks for coming on, man. This was a, a really interesting conversation. I'm definitely gonna be take, uh, taking the time to check out the tool, so thanks for coming on
+
+**jacob:** Cheers. Thanks y'all
+
+**JUSTIN:** Thanks, Eric 
+
