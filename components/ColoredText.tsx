@@ -1,25 +1,13 @@
 "use client";
 
-import { firefox, useTheme } from "@devtools-ds/themes";
-import type { ColorScheme } from "@devtools-ds/themes";
 import makeClass from "clsx";
 
 type ColoredTextColor = "blue" | "purple" | "gray";
 
-export const coloredTextTheme: Record<
-  ColorScheme,
-  Record<ColoredTextColor, string>
-> = {
-  light: {
-    blue: firefox.light.blue03,
-    purple: firefox.light.pink01,
-    gray: firefox.light.gray06,
-  },
-  dark: {
-    blue: firefox.dark.blue03,
-    purple: firefox.dark.pink02,
-    gray: firefox.light.gray02,
-  },
+const coloredTextColors: Record<ColoredTextColor, string> = {
+  blue: "var(--theme-blue)",
+  purple: "var(--theme-purple)",
+  gray: "var(--theme-gray)",
 };
 
 export const ColoredText = (props: {
@@ -27,8 +15,7 @@ export const ColoredText = (props: {
   className?: string;
   color: ColoredTextColor;
 }) => {
-  const { currentColorScheme } = useTheme({});
-  const color = coloredTextTheme[currentColorScheme][props.color];
+  const color = coloredTextColors[props.color];
 
   return (
     <span

@@ -118,7 +118,7 @@ export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
     <AutoThemeProvider
       theme="firefox"
       colorScheme={colorScheme}
-      autoStyle
+      className="theme-root"
     >
       <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
         <main className="flex flex-col flex-1">{children}</main>

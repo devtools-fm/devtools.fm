@@ -1,17 +1,15 @@
 import makeClass from "clsx";
-import { firefox, useTheme } from "@devtools-ds/themes";
 
 import { ColoredText } from "components/ColoredText";
 import type { ProcessedMdx } from "utils/processMdx";
 import styles from "../styles/episodes.module.css";
 
-const DimmedText = (props: React.ComponentProps<"div">) => {
-  const { currentColorScheme } = useTheme({});
-  const color =
-    currentColorScheme === "dark" ? firefox.dark.gray01 : firefox.light.gray05;
-
-  return <div {...props} style={{ ...props.style, color }} />;
-};
+const DimmedText = (props: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    style={{ ...props.style, color: "var(--theme-dimmed-text)" }}
+  />
+);
 
 export const EpisodeRow = (episode: ProcessedMdx) => {
   return (
