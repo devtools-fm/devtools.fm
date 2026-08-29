@@ -9,6 +9,9 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [react()],
   vite: {
+    build: {
+      sourcemap: true,
+    },
     plugins: [tailwindcss()],
   },
 });
