@@ -15,21 +15,21 @@ A podcast about developer tools and the people who make them.
 curl https://mise.run | sh
 
 # Install project dependencies and tools
-mise install          # Installs Node.js 22.17.0 and pnpm 10.14.0
+mise install          # Installs the configured Node.js and pnpm versions
 mise run install      # Installs npm dependencies
 
 # Start development server
 mise run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the site.
+Open [http://localhost:4321](http://localhost:4321) to view the site.
 
 ### Development Commands
 
 All commands can be run through mise for consistent environment management:
 
 ```bash
-mise run dev                         # Start Next.js dev server
+mise run dev                         # Start Astro development server
 mise run build                       # Build for production (includes RSS generation)
 mise run build-rss                   # Generate RSS feed only
 mise run create-new-episode          # Create a new episode template
@@ -42,7 +42,7 @@ mise run sync-markpub-content        # Sync at.markpub.markdown content to publi
 Alternatively, you can use pnpm directly after running `mise install`:
 
 ```bash
-pnpm dev                    # Start Next.js dev server
+pnpm dev                    # Start Astro development server
 pnpm build                  # Build for production
 pnpm build-rss              # Generate RSS feed only
 pnpm create-new-episode     # Create a new episode template
@@ -51,10 +51,10 @@ pnpm publish-episode        # Publish an episode
 
 ## Standard.site
 
-This repo now includes a Sequoia-based `standard.site` publishing workflow for
+This repo includes a Sequoia-based `standard.site` publishing workflow for
 episodes, following the same pattern as `hipstersmoothie.com-2`: a checked-in
-`sequoia.json`, site-wide publication discovery in the root layout, and
-document verification tags rendered by Next.
+`sequoia.json`, site-wide publication discovery in the shared Astro layout, and
+document verification tags rendered by Astro.
 
 ### Setup
 
@@ -84,23 +84,23 @@ pnpm generate-episode-descriptions # Generate one-line descriptions via Cursor A
 - Episode descriptions can be regenerated as one-liners with `pnpm generate-episode-descriptions` (uses Anthropic when `ANTHROPIC_KEY` or `ANTHROPIC_API_KEY` is set in `.env`, otherwise the Cursor `agent` CLI).
 - Markpub metadata uses GFM flavor with `remark-gfm` rendering rules and YAML front matter extracted from episode metadata.
 - This app uses manual verification tags on episode pages instead of `sequoia inject`,
-  which is a better fit for the Next.js deployment model used here.
+  which fits the Astro deployment model used here.
 
 ## Project Structure
 
 ```
 devtools.fm/
-├── app/                    # Next.js App Router pages and API routes
-│   ├── episode/[id]/       # Individual episode pages
-│   ├── episodes/           # Episode listing
-│   ├── guests/             # Guest information
-│   ├── sponsors/           # Sponsor pages
-│   └── api/                # API endpoints for forms
-├── pages/episode/          # Episode content (MDX files)
-│   ├── 1.mdx              # Episode 1
-│   ├── 2.mdx              # Episode 2
-│   └── ...                # Episodes 3-148+
-├── components/             # React components
+├── src/
+│   ├── layouts/             # Shared Astro document layout and metadata
+│   └── pages/               # Astro pages and form API endpoints
+│       ├── episode/[id].astro
+│       ├── episodes.astro
+│       └── api/
+├── pages/episode/           # Episode content (MDX files)
+│   ├── 1.mdx               # Episode 1
+│   ├── 2.mdx               # Episode 2
+│   └── ...                  # Remaining episodes
+├── components/              # React UI components hydrated by Astro
 ├── utils/                  # Utility functions
 │   ├── processMdx.ts      # MDX parsing and processing
 │   └── generate-rss.ts    # RSS feed generation

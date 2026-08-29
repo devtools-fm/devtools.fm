@@ -1,0 +1,25 @@
+---
+export const prerender = true;
+
+import { promises as fs } from "node:fs";
+import path from "node:path";
+
+import EpisodesPage from "components/pages/EpisodesPage";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { processMdx } from "utils/processMdx";
+
+const episodeFiles = (await fs.readdir(path.join(process.cwd(), "pages/episode"))).filter(
+  (file) => file.endsWith(".mdx")
+);
+const episodes = await Promise.all(
+  episodeFiles.map((file) =>
+    processMdx(path.join(process.cwd(), "pages/episode", file), false, false)
+  )
+);
+episodes.sort((a, b) => Number(b.number) - Number(a.number));
+const description = "A list of the devtools.fm episodes.";
+---
+
+<BaseLayout title="devtools.fm - Episodes" description={description} canonical="/episodes">
+  <EpisodesPage episodes={episodes} client:load />
+</BaseLayout>

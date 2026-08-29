@@ -1,10 +1,8 @@
 import makeClass from "clsx";
-import Link from "next/link";
 import { firefox, useTheme } from "@devtools-ds/themes";
 
 import { ColoredText } from "components/ColoredText";
-import { ProcessedMdx } from "utils/processMdx";
-import { Fragment } from "react";
+import type { ProcessedMdx } from "utils/processMdx";
 import styles from "../styles/episodes.module.css";
 
 const DimmedText = (props: React.ComponentProps<"div">) => {
@@ -17,12 +15,12 @@ const DimmedText = (props: React.ComponentProps<"div">) => {
 
 export const EpisodeRow = (episode: ProcessedMdx) => {
   return (
-    <Link
+    <a
       className={makeClass(
         "grid grid-cols-[1fr 2fr] gap-4 py-4 items-center",
         styles.row
       )}
-      href={`episode/${episode.number}`}
+      href={`/episode/${episode.number}`}
     >
       <div className="w-full h-[fit-content]">
         <img
@@ -90,6 +88,6 @@ export const EpisodeRow = (episode: ProcessedMdx) => {
         </div>
         <DimmedText>{episode.runTime}</DimmedText>
       </div>
-    </Link>
+    </a>
   );
 };

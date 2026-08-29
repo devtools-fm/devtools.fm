@@ -1,6 +1,7 @@
 "use client";
 
-import { firefox, useTheme, ColorScheme } from "@devtools-ds/themes";
+import { firefox, useTheme } from "@devtools-ds/themes";
+import type { ColorScheme } from "@devtools-ds/themes";
 import makeClass from "clsx";
 
 type ColoredTextColor = "blue" | "purple" | "gray";

@@ -1,0 +1,54 @@
+---
+import Analytics from "@vercel/analytics/astro";
+import { getSequoiaPublicationUri } from "utils/sequoia";
+
+import "../../styles/globals.css";
+import "@reach/tabs/styles.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  documentUri?: string;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.pathname,
+  image = "/og-image.png",
+  documentUri,
+} = Astro.props;
+const canonicalUrl = new URL(canonical, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+const publicationUri = getSequoiaPublicationUri();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {publicationUri && <link rel="site.standard.publication" href={publicationUri} />}
+    {documentUri && <link rel="site.standard.document" href={documentUri} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+  </head>
+  <body>
+    <slot />
+    <Analytics />
+  </body>
+</html>

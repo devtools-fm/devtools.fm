@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-devtools.fm is a Next.js 15-based podcast website built with TypeScript and Tailwind CSS 4. The site features episodes stored as MDX files with structured content including show notes, sections, and transcripts.
+devtools.fm is an Astro 7 podcast website built with TypeScript, React islands, and Tailwind CSS 4. The site features episodes stored as MDX files with structured content including show notes, sections, and transcripts.
 
 ## Getting Started
 
@@ -32,8 +32,8 @@ Content is organized using TAB markers:
 ### Key Processing Logic
 
 - **utils/processMdx.ts**: Parses MDX files to extract metadata, tabs, guests from transcript, and creation dates from git history
-- **app/episode/[id]/page.tsx**: Renders individual episode pages
-- **app/episodes/page.tsx**: Lists all episodes with pagination
+- **src/pages/episode/[episodeNumber].astro**: Prerenders individual episode pages
+- **src/pages/episodes.astro**: Prerenders the episode listing
 
 ### Styling Approach
 
@@ -48,7 +48,7 @@ Dark mode is handled via `prefers-color-scheme`. DevTools DS themes (Firefox the
 ## Important Context
 
 - **No linting/formatting setup** - Consider adding Biome or similar before making large changes
-- **TypeScript strict mode disabled** - Be cautious with type assumptions
+- **TypeScript strict mode enabled** - Keep Astro and React props serializable across island boundaries
 - **Git-based dates** - Episode creation dates come from git history, not frontmatter
 - **Guest detection** - Automatically extracted from transcript content
 - **RSS generation** - Runs as part of build process, generates feed.xml

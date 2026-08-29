@@ -1,6 +1,5 @@
 import { Browser as BrowserWindow } from "react-window-ui";
 import { useTheme } from "@devtools-ds/themes";
-import endent from "endent";
 
 interface BrowserProps {
   children: React.ReactNode;
@@ -27,14 +26,7 @@ export const Browser = ({ children }: BrowserProps) => {
       boxShadow={
         currentColorScheme === "dark"
           ? undefined
-          : endent`
-            0 1px 2px rgba(0,0,0,0.07), 
-            0 2px 4px rgba(0,0,0,0.07), 
-            0 4px 8px rgba(0,0,0,0.07), 
-            0 8px 16px rgba(0,0,0,0.07),
-            0 16px 32px rgba(0,0,0,0.07), 
-            0 32px 64px rgba(0,0,0,0.07)
-          `
+          : "0 1px 2px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.07), 0 4px 8px rgba(0,0,0,0.07), 0 8px 16px rgba(0,0,0,0.07), 0 16px 32px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.07)"
       }
     >
       {children}

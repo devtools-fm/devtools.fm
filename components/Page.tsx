@@ -1,6 +1,8 @@
 "use client";
 
 import { AutoThemeProvider } from "@devtools-ds/themes";
+import type { ColorScheme } from "@devtools-ds/themes";
+import { useEffect, useState } from "react";
 import { LinkShieldList } from "components/LinkShieldList";
 import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
 
@@ -41,7 +43,7 @@ export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
         )}
 
         <p className="text-sm mb-8">
-          Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>
+          Built with <FooterLink href="https://astro.build">Astro</FooterLink>
           {", "}
           <FooterLink href="https://github.com/intuit/devtools-ds">
             devtools-ds
@@ -83,6 +85,26 @@ export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
   );
 };
 
+const usePreferredColorScheme = (): ColorScheme => {
+  // Keep the server and initial client render identical, then apply the
+  // browser preference after hydration. This avoids stale inline light-theme
+  // styles when Astro hydrates in a dark-mode browser.
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateColorScheme = () =>
+      setColorScheme(query.matches ? "dark" : "light");
+
+    updateColorScheme();
+    query.addEventListener("change", updateColorScheme);
+
+    return () => query.removeEventListener("change", updateColorScheme);
+  }, []);
+
+  return colorScheme;
+};
+
 interface PageProps {
   children: React.ReactNode;
   hideShields?: boolean;
@@ -90,8 +112,14 @@ interface PageProps {
 }
 
 export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
+  const colorScheme = usePreferredColorScheme();
+
   return (
-    <AutoThemeProvider theme="firefox" autoStyle>
+    <AutoThemeProvider
+      theme="firefox"
+      colorScheme={colorScheme}
+      autoStyle
+    >
       <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
         <main className="flex flex-col flex-1">{children}</main>
         {!hideFooter && <Footer hideShields={hideShields} />}

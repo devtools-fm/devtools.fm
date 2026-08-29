@@ -16,7 +16,7 @@ export async function generateRssFeed() {
 
   const data = await Promise.all(
     episodes.map((episode) =>
-      processMdx(path.join(process.cwd(), "pages/episode", episode), {})
+      processMdx(path.join(process.cwd(), "pages/episode", episode))
     )
   );
 

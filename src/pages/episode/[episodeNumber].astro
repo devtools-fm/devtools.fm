@@ -1,0 +1,63 @@
+---
+export const prerender = true;
+
+import fs from "node:fs";
+import path from "node:path";
+
+import EpisodePage from "components/pages/EpisodePage";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getSequoiaDocumentUri } from "utils/sequoia";
+import { processMdx, type ProcessedMdx } from "utils/processMdx";
+
+interface Props {
+  episode: ProcessedMdx;
+}
+
+export async function getStaticPaths() {
+  const episodeFiles = fs
+    .readdirSync(path.join(process.cwd(), "pages/episode"))
+    .filter((file) => file.endsWith(".mdx"));
+
+  return Promise.all(
+    episodeFiles.map(async (file) => {
+      const episodeNumber = path.basename(file, ".mdx");
+      const episode = await processMdx(
+        path.join(process.cwd(), "pages/episode", file),
+        false,
+        true
+      );
+
+      return {
+        params: { episodeNumber },
+        props: { episode },
+      };
+    })
+  );
+}
+
+const { episode } = Astro.props;
+const episodeNumber = Astro.params.episodeNumber!;
+const episodeNumberString = `Episode #${episodeNumber}`;
+const title = `${episodeNumberString}: ${episode.frontMatter.title}`;
+const image = `https://i.ytimg.com/vi/${episode.thumbnailId || episode.youtubeId}/maxresdefault.jpg`;
+const documentUri = getSequoiaDocumentUri(episodeNumber);
+---
+
+<BaseLayout
+  title={title}
+  description={episode.description}
+  canonical={`/episode/${episodeNumber}`}
+  image={image}
+  documentUri={documentUri}
+>
+  <EpisodePage
+    youtubeId={episode.youtubeId}
+    tabSections={episode.tabSections}
+    episodeNumberString={episodeNumberString}
+    title={episode.frontMatter.title}
+    spotifyEpisodeId={episode.spotifyEpisodeId ?? undefined}
+    spotifyEpisodeIdAlt={episode.spotifyEpisodeIdAlt ?? undefined}
+    sponsor={episode.frontMatter.sponsor}
+    client:load
+  />
+</BaseLayout>
