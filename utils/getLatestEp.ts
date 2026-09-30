@@ -9,7 +9,6 @@ export async function getLatestEp() {
   const latestEpisodeNumber = episodes[episodes.length - 1];
 
   return await processMdx(
-    path.join(process.cwd(), "pages/episode", latestEpisodeNumber),
-    {}
+    path.join(process.cwd(), "pages/episode", latestEpisodeNumber)
   );
 }

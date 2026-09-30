@@ -1,4 +1,3 @@
-"use client";
 
 import {
   MoreInfoIcon,
@@ -9,11 +8,12 @@ import {
   ExportIcon,
   StylesIcon,
 } from "@devtools-ds/icon";
-import { useRouter } from "next/navigation";
 import { Navigation } from "@devtools-ds/navigation";
 
 export const NavigationTopBar = () => {
-  const router = useRouter();
+  const navigate = (href: string) => {
+    window.location.assign(href);
+  };
 
   return (
     <Navigation.Controls className="overflow-x-auto">
@@ -21,28 +21,28 @@ export const NavigationTopBar = () => {
         <Navigation.Tab
           id="about"
           icon={<InfoIcon inline />}
-          onMouseDown={() => router.push("/")}
+          onMouseDown={() => navigate("/")}
         >
           About
         </Navigation.Tab>
         <Navigation.Tab
           id="episodes"
           icon={<DataIcon inline />}
-          onMouseDown={() => router.push("/episodes")}
+          onMouseDown={() => navigate("/episodes")}
         >
           Episodes
         </Navigation.Tab>
         <Navigation.Tab
           id="guests"
           icon={<StylesIcon inline />}
-          onMouseDown={() => router.push("/guests")}
+          onMouseDown={() => navigate("/guests")}
         >
           Guests
         </Navigation.Tab>
         <Navigation.Tab
           id="stack"
           icon={<ClipboardIcon inline />}
-          onMouseDown={() => router.push("/stack")}
+          onMouseDown={() => navigate("/stack")}
         >
           Stack
         </Navigation.Tab>
@@ -55,7 +55,7 @@ export const NavigationTopBar = () => {
         </Navigation.Tab>
         <Navigation.Tab
           id="sponsor"
-          onMouseDown={() => router.push("/sponsor")}
+          onMouseDown={() => navigate("/sponsor")}
         >
           $ Sponsor
         </Navigation.Tab>

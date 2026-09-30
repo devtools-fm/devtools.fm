@@ -151,7 +151,7 @@ async function main() {
     const sourcePath = path.join(sourceDir, file);
     const raw = await fs.readFile(sourcePath, "utf8");
     const parsed = matter(raw);
-    const processed = await processMdx(sourcePath, {}, true, true);
+    const processed = await processMdx(sourcePath, true, true);
     const documentBody =
       buildDocumentBody(parsed.content, processed.transcript) ||
       processed.description;
