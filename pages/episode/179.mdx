@@ -1,0 +1,350 @@
+---
+title: Boris Tane - Polylane
+description: "Boris Tane explains how Polylane maps your whole stack so agents can catch, investigate, and fix production issues before anyone gets paged."
+youtube: https://www.youtube.com/watch?v=rhgqus9bBLA
+spotify: ""
+publishDate: 2026-10-19
+tags: polylane, observability, on-call, incident response, sre, agents, ai, cloudflare, cloudflare workers, baselime, pagerduty, datadog, code review, pull requests, preview environments, clickhouse, devtools, devtools fm, podcast, programming, development, technology
+sponsor: Macro
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Boris Tane, founder of Polylane and previously founder of Baselime, the observability startup Cloudflare acquired in 2024, where he went on to lead Workers observability.
+Polylane builds a live topology map across your cloud, observability tools, and repos so an agent can detect, investigate, and fix production issues before anyone gets paged.
+We talk about why bolted-on AI tools fail for on-call, how Polylane's memory systems work, using trajectory analysis to vet pull requests before they merge, and what happens to the on-call rotation as agents write more of our code.
+
+- https://polylane.com
+- https://boristane.com
+- https://x.com/boristane
+- https://boristane.com/blog/on-call-is-now-theatre/
+- https://www.cloudflare.com/press/press-releases/2024/cloudflare-enters-observability-market-with-acquisition-baselime/
+- https://www.openstatus.dev
+
+{/* LINKS */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:01:07] Boris's Path from Aerospace
+[00:06:44] Scale and Agents at Cloudflare
+[00:13:09] Why Bolt-On Tools Fail
+[00:17:15] Ad
+[00:18:19] Onboarding and Topology Discovery
+[00:21:20] Memory Systems for Agents
+[00:27:19] Trajectory Analysis for Pull Requests
+[00:33:06] Auto-Merging and Review Trust
+[00:38:51] Preview Environments and Feature Flags
+[00:44:58] Status Pages and External Outages
+[00:47:35] The Future of On-Call Work
+[00:51:13] Uneven Future and Wrap-Up
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Boris:** And being on call absolutely sucks. Like, there is literally nothing worse than, "Hey, uh, it's such a day, my friends are going to the park to have a picnic, but I can't go because I need to be at most three meters away from a laptop just in case PagerDuty decides to ping me," right?
+
+**Andrew:** Hello. Welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host, Justin
+
+**Justin:** Hey, everyone. Uh, we're really excited to have Boris Tane on with us. Uh, Boris, you and I met back when you were still at Cloudflare, sort of after they had a- acquired your previous startup, Baselime. Uh, and it's great to have you on. Uh, I tried to get you on when you were at Cloudflare to talk about some of res- observability stuff, and I'm excited to now talk about the startup that you're working on.
+
+But before we dive into all that, would you like to tell our listeners a little bit more about yourself?
+
+#### [00:01:07] Boris's Path from Aerospace
+
+**Boris:** Cool. Yeah, absolutely. Thank you so much for inviting me. Um, I'm Boris. Uh, I'm building Polylane now. Um, I've been at this for what? Six, six months, seven months now. Uh, before that I was at Cloudflare. I spent two years at Cloudflare. Um, I was leading the workers observability team there. So you know, everybody that has used Cloudflare workers, it has logs, metrics and traces now and all the kinda developer experience around that.
+
+Uh, my team built that. Um, I mean, the first version. The guys are, are kinda moving forward with that since I left. Um, before that, I was the founder of a company called Baselime. Uh, we were in London. Uh, we were an observability startup. Uh, we, we did that for about three years, two years and a half. Um, it was super fun because we started with, you know, observability for serverless.
+
+Um, and then we kinda drifted more towards everything on the edge, everything kinda... We c- we used to call them Neo clouds, but I think now Neo clouds is more for the GPU, uh, people. But you know, all the Vercels, the, the Cloudflare, the Render, things like that. Um, so yeah, for the past, what, five, six years I've been building developer tools.
+
+Um, fun fact, I actually started my career as an aerodynamicist. So I studied aerospace engineering, started in aerodynamics, did that for a few years, and then joined a startup, and that's when I discovered that, you know, software engineers actually have no idea what's happening on the application. Because in aero, if you fly a drone or you do some wind tunnel testing, you cannot go and tell your boss like, "Hey, I don't know what's going on."
+
+Whereas software engineers are very capable to tell you, "Hey, like we have an outage and I have no idea." Um, so when I made that discovery, that's when I was like, "That's probably one of the most important problems." I've been doing this for what? Six, six, seven years now, and it just keeps getting worse, uh, because now we have agents.
+
+So yeah, that's a little story about me.
+
+**Justin:** So you took that, that background in like aerospace and like very, what I'm assuming is like very rigorous measurements and like, you know, having to, to really deeply understand data about, you know, whatever the aerodynamics of like some craft that you were working on and brought that over to software engineering?
+
+Is that kind of the, the idea of like just making it more kind of rigorous and scientific?
+
+**Boris:** Yeah, exactly. So when I joined, uh, the company I was working at, um, you know, a few years ago, um, the logs I think were going to Loki, and they were kind of disappearing in CloudWatch, things like that. That's when I started playing with Kibana and Prometheus and Grafana and all of that, and later Datadog, right?
+
+Like when I, I started working some place that could actually pay for this. Um, and despite using all of these tools, I was just like, "I still don't understand what's going on," right? Like I pay thousands of dollars, but it is still opaque. Like I just have a bunch of logs, some metrics that are barely telling me anything.
+
+Um, but if I want to know which user is affected by this problem that is on this route, it's pretty much impossible. Um, you know, around 2021, that's when I started playing with ClickHouse, and I discovered that, hey, actually, you can use an OLAP database, um, for the observability problem if you kinda do your, um, your, um, data schemas not too terribly.
+
+Uh, and then I started reading, uh, the writings of Charity, Charity Majors at Honeycomb, and I was like, "Okay, there is a world here." Built, you know, a few versions of that at the places I was working at, and decided that this should probably be its own company that, you know, is offering this to many, many people.
+
+And at the same time, there was the kind of, um, evolution of the serverless kind of paradigm. Everybody was, um, on Lambda and Fargate and SQS, all of these kind of primitives on AWS. And I figured, you know, there is a world where you can make, uh, observability work for those kind of workloads much, much, much better.
+
+Um, but yeah, that's how I went from, hey, when I was an aerodynamicist, I literally had to measure everything. Like even if you had to write it by hand on paper, you needed to have, like if you're doing a flight test, you need to have the air speed, everything at, at like insane granularity on literally every, you know, millisecond.
+
+You cannot-- And you can-- You need to be able to slice and dice that data against all the kind of pilot inputs, et cetera. You cannot turn to your boss and be like, "Hey, we forgot to measure this, so we need the pilot to go and fly the plane again such that we can have that data." No, you need to have that, your plan beforehand.
+
+But because of the way software kind of gets deployed, it's continuous, so you don't really have the time to kind of plan this ahead. It needs to be baked into the solutions that you're using.
+
+#### [00:06:44] Scale and Agents at Cloudflare
+
+**Andrew:** So you spent a lot of time at Cloudflare steeped in those problems. What, what learnings and observations did you have there that kind of led you to this new place with Polylane?
+
+**Boris:** Yeah. I think the one thing that always... I, I, very few people can understand about Cloudflare is the scale. Um, before joining, I knew that, okay, you know, like, yeah, I, I don't know, is it 20% of the internet, 40%? I don't remember the exact number. Um, but I was like, "Yeah, that's, that's a lot, but that's fine." And then I joined, I was like, "Yeah, it's not fine."
+
+Um, it's a lot. It's a lot. Uh, just our platform, like the observe-- the Workers observability platform, um, it was observability only for Workers. And as you can imagine, Workers is a subset of, you know, Cloudflare traffic, and then only the people that kind of enabled observability were kind of pushing data to us.
+
+But it was still, know, impossible to kind of wrap your mind around the amount of data that we were processing, um, and also the amount of usage that we were getting, right? Like, um Any, any developer on building on Workers was, was using Workers observability. Um, and what then became super interesting compared to before, when I was at Baselime, we were kind of a small startup.
+
+We had a few thousand kind of customers, but, um, I had the kind of mental model of the problems that pretty much everybody was having. The thing is at Cloudflare, because of that scale, the type of problems that each customer has is very, very, very different. Um, and it became clear that just asking people, "Hey, instrument your application better and spend your entire day into your observability dashboard," is not the answer.
+
+And then we had, um, Claude Code, first of all-- I mean, Cursor, first of all, but that wasn't too much of a problem. Claude Code was a big problem, but the massive problem was, um, kind of November, December 2025, when these things started being able to just output real applications, um, front-end, back-end, database, all the connections all at once.
+
+Um, people now had... You, you could not say, "Hey, get a better logger," or, you know, "Add open telemetry to your app," because people didn't even know the routes that they had, right? So that's when it became clear to me that something, we should be able to use some of this intelligence that we have literally on a tab to help people that are really, really struggling with what the application is doing once it's deployed.
+
+Um, and the problem is kind of split a little bit between applications that are semi-critical and critical, and applications that are hobby projects. Like your hobby project that has four users, including your little brother, it doesn't really matter if you don't fully understand what's going on in there because while worst case scenario, your brother has an issue with it, messages you on, on iMessage, and you can fix it.
+
+But when you have an application that, you know, has hundreds, thousands of users out there, you are on call for it, right? And being on call absolutely sucks. Like, there is literally nothing worse than, "Hey, uh, it's such a day, my friends are going to the park to have a picnic, but I can't go because I need to be at most three meters away from a laptop just in case PagerDuty decides to ping me," right?
+
+Um, what if I was just like, what if we used a little bit of this intelligence to allow and enable people... You probably still need to be close to your computer, but you don't need to be on edge, right? You can actually relax a little bit because the worst case scenario is going to be covered, and the agent is going to let you know only when it's like, "Yo, I actually can't fix this because you need to go and change this flag that is only a human that can change that in the dashboard."
+
+But by the time it tells you that, it, uh, it has already kind of figured out what the problem is and the solution. You go and you make the change. Whereas before, you kind of had to kind of do all of that by yourself. Um, so all of these things compounded for me to be like, "Okay, this is not something that should be kind of bolted on an existing solution.
+
+It needs to kind of live on its own such that it can do whatever it takes to solve this problem of on-call."
+
+**Justin:** So that's your goal with Polylane is to eliminate or reduce on-call, uh, responses?
+
+**Boris:** Yeah, absolutely. Um, it's to remove the misery of being on call, right? Like, um, if on call can be 20% better, I think every software engineer in the world is going to be 50% happier. Uh, and if we can drop that to, you know, you can actually stop being on call, you know, probably with the capabilities of today, probably not.
+
+But if we look at the slope of the models plus the slope of the harnesses, plus how much data we are able to kinda work with, there is a world where in like three years, most applications don't need, you know, human on call
+
+#### [00:13:09] Why Bolt-On Tools Fail
+
+**Andrew:** So, uh, you just said that like bolt-on solutions don't work. So how does Polylane actually work? How does it, how is it not just bolted on and like in your system in a, in a more enhanced way?
+
+**Boris:** Yeah The main thing is in order to be on call as an engineer, you need access to pretty much every tool that is used by your team. You need access to the code base, you need access to the telemetry data, you need access to the cloud, you need access to the alerts, you need access to the Datadog dashboard.
+
+You maybe even need access to Slack so that you can ask, you know, the other team, "Hey, um, what did you change last week to kind of create this problem?" Um, and the thing is, every provider today is trying to leverage their data, right? Like if I'm Datadog, I'm trying to leverage all the logs and the metrics that are already in Datadog.
+
+Um, I have very little incentive to, um, connect to Sentry, for example, right? Because an alert, like a problem, the trigger can be a Sentry alert, uh, but the answer is in a trace in Datadog, right? Um, and in order to fix it, you need to submit a pull request to GitHub. Um, even before that, you maybe need to also look at the, um, on-call rotation to understand, hey, if I can't fix this, who should I kinda forward it to, right?
+
+And that on-call rotation will be on PagerDuty or something like that. Um, existing solutions don't have, like, the incentive to make those connections between all of these things, and that's why Polylane being semi-neutral into, into this, we will not say, "Hey, we're not connecting to..." I don't know, Honeycomb, right?
+
+Like we will connect to Honeycomb, and we will connect to Datadog, and we will connect to Vercel, and we will connect to Cloudflare such that we can fix a problem holistically instead of relying only on, on the existing data. Um, and the reason in my opinion is very simple. Um, the legacy platforms, quotation marks, they run the risk a little bit of becoming glorified databases, right?
+
+Like Baselime started because I discovered that, hey, I can kind of hack my way around ClickHouse and, you know, store logs and traces in there. Um, if you build an MCP server on that, well, what's up with all the developer experience that we spent two years building at Baselime, right? Like all of that becomes meaningless if an agent can just access it via MCP or API.
+
+Baselime becomes a glorified database. Um, that's why they're trying to build those on top and also protect the data. Like if you try to access the Datadog API via MCP or directly via the API, it is extremely rate limited, right? Like long gone are the days where you could just ping it every, you know, 10 minutes.
+
+Now it's actually very much rate limited because otherwise, well, you- you're hitting them really hard, and they're not getting any of that value. So that's kind of the top process there. We need to build this topology. Um, somebody said maybe we should call it ontology. We need to build this topology map of everything that you run from your cloud, your observability provider, your GitHub, your teams, right?
+
+Like we need to know this, this person owns that service that talks to that other service. Um, and only when you have that, that you can hope to replace on-call
+
+#### [00:17:15] Ad
+
+**Justin:** Software engineering is a challenging job, and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google Sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead, when really we just wanna be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers, and it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available, so if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you wanna extend it, feel free. The back end is in Rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just, like, starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast. It's fun. It's a better way to build. Sign up at macro.com and get $100 off your subscription using devtools100.
+
+#### [00:18:19] Onboarding and Topology Discovery
+
+**Justin:** So is this something that, like, you discover, uh, as people are, like, setting up Polyplane or Polylane, like where the different systems are by just like connect, like the connections that you expose? Or do people actually have to go through and like sort of like describe kind of the context of like who owns what and what's deployed where, and sort of like give you s- uh, some like heads-up information about like, "Okay, here's, here's our setup."
+
+Um, what does that like initialization phase look like?
+
+**Boris:** Yeah. One thing I, I discovered, uh, building, uh, Baselime and spending time at Cloudflare is that people are lazy, uh, and developers are probably lazier than the average kind of person out there. And it's not a bad thing, right? Like when you're lazy, you look for optimized ways to do things. Um, but it means that if the first screen of Polylane is tell me the entire story of your app, nobody's going to do it.
+
+So we ask you to connect one thing, right? Let's say you connect your Vercel account, and then we discover that in your Vercel account, there is, um, an environment variable called PlanetScale URL. Probably use PlanetScale. We send you an email and a Slack message saying, "Hey, we discovered that you use PlanetScale to con-- to talk from this Vercel service.
+
+You probably want to connect that so that Polylane gets a better understanding of your system." You connect PlanetScale, and then we discover that there is some Hyperdrive configuration in your PlanetScale, means that you're using Cloudflare. We keep doing that such that over time, we build that, you know, map that spans across all your services.
+
+Um, we look at the environment variables, we look at DNS, um, uh, whatever the name is. Uh, we look at all of these signals such that we are able to kinda prompt you when relevant instead of asking you beforehand to kinda give us everything. And because we can kinda query, um, your telemetry data, we are able to also build dependency map between services, right?
+
+This, uh, Cloudflare worker talks to this Lambda function. We are able to discover that, hey, in the traces of this worker, there is always a span that has Lambda with this URL, and this URL is connected to that Lambda function or that Neon database. We're able to do all of these things, which is essentially how an engineer will learn about a system when they join a new team, right?
+
+Like you don't-- I mean, some teams have like a kind of white paper that explains but gets out of date within a couple of weeks. So as a new engineer, you have to go and kind of poke at things to understand how things work. That's exac-exactly what Polylane does.
+
+#### [00:21:20] Memory Systems for Agents
+
+**Andrew:** So to do that, like to be an engineer like that, it must be like managing some sort of memory to like know that, uh, this, this service, this environment variable and like kind of creating that chain. Is there something like that built in?
+
+**Boris:** Yes. So There are multiple levels of memory, uh, in, into Polylane. So the first thing is a topology map. It's like, we don't call it memory, it's like a map of all the things that are there. Um, there is kind of user memory, right? Like when you interact with Polylane, you ask questions, you kinda, you leave review comments on the PRs that it submits, and you say, "Hey, I don't like when variables are named like this."
+
+Uh, it learns that about not only you, but also your organization. So these are two kind of separate memory systems, and there is also the kind of post-investigation memory, which is, hey, we found the problem, we investigated it. We discovered that, um, the ClickHouse database always takes at least three seconds to respond.
+
+We add that into those learnings such that next time there is an increase in latency on a trace, we check those memories to say, "Hey, is there anything special about this system that we should know about?" And it says, "Yes, ClickHouse always takes at least three seconds to respond." And then we can stop the investigation without going deep into the rabbit hole, because we know that that is kind of a false positive, even though that latency looks like it's high.
+
+Um, so there are multiple memory systems like that to make sure that Polylane can operate autonomously. Same thing on Slack, for example. If you add our Slack agent, um, it has a memory of the Slack channel, right? So if today you ask a question in there, and then in a week you come and you say, um, you say something about that question, it's not going to kind of start from zero again.
+
+It's going to remember that, hey, we discussed this last week, last weekend, something like that. Um, so multiple memory systems, but we try to One thing that is super important for us coming from a developer experience world, which is now agent experience, is those memory systems should be opaque to the user, but if they want to, they can go and make changes to it, right?
+
+Like when you open the Polylane dashboard, there is no big bang memories that you can click on and start reading the memories. But if you really want to via the API or by asking the agent, you can tell it to forget things. Um, so, and it goes into the memory and it removes it. Um, so we always try to create that balance where as a user, you, you're not overwhelmed because it's really easy with those agents to just spit out millions and millions and millions of tokens that are essentially slop, uh, to most people.
+
+But you also don't want to build a platform that is not configurable, that is a black box that people don't understand, um, because developers like to tinker with things. They like to touch it, they like to feel it, they like to change it, they like to customize it the way they want it
+
+**Andrew:** So with me... with memory systems, they can go wrong also. Like, it can investigate the wrong thing and actually make a problem worse. So, like, is there some sort of management involved in that where it's like it edits the old memories to be like, "Oh, I w- I was actually wrong there. Maybe let's drop this so it doesn't pollute context further"?
+
+**Boris:** Yeah, so The two memory systems that-- I mean, I mentioned a lot, but there are two that are kind of key men- uh, working that way. The kind of workspace and user-specific memories and the learnings from previous investigations, those get superseded by new information, right? Like every... The user and the workspace memory system work in very interesting ways where there are actually two memory systems into those systems.
+
+There is the kinda, um, how do I call it? Like, there is a word for it. I forgot the name that we use internally, but it's the ground truth, right? Facts. Uh, we use ClickHouse, we use Vercel, we use Cloudflare. Those are facts. Uh, and then there is, um, things that may change on a daily basis. Um, this worker is at 30% error rate.
+
+This, um, database, um, is slow on the, on these type of queries, right? Um, the ones that can change on a daily basis get recycled every day. Um, and the agent only loads the memories for the past two, three days when it's doing some work. Whereas the ground truth, it loads it kinda every single time because, you know, you run Vercel, it's true, right?
+
+Um, it's also gets updated continuously, but not discarded. Like the first type, they actually get discarded and replaced by kind of newer information
+
+#### [00:27:19] Trajectory Analysis for Pull Requests
+
+**Justin:** I think that makes sense. I'm curious just to like walk through like what the traditional flow of the product would be. So let's say, you know, you have a issue in production, like where does, uh, Polylane come in, and then all the way to like we wanna ship a fix. Like what does that flow look like?
+
+**Boris:** Yes. Um, before I talk about that flow actually, um, there is something, it's a, it's an experiment that we did about a month ago, and it's starting to become the most used feature on Polylane very surprisingly. Um The problem it's trying to solve is how do I know that this pull request is not breaking my app, right?
+
+Like I took a screenshot from a support ticket, pasted it in Codex, asked Codex fix it. It worked for 30 minutes and submitted the pull request. Okay, that's cool, but if I press that merge button, I become responsible for the health of the app based on code I barely saw, I barely read. Um, so what we do is we take that pull request and we run it through what we call trajectories.
+
+What are the possible implications of this pull request in production, right? We come up with five, 10 trajectories, go and investigate them deeply, and figure out which ones of those trajectories may potentially have a negative impact on production. It may increase error rates, it may increase latencies, it may toast the app completely.
+
+Um, and then we post a comment on the pull request saying, "Hey, you probably don't want to merge this." Um, and that's the thing that people are actually finding very, very, very interesting over the past kind of four, four weeks that we've had this in production. Um, so that's that feature. Uh, now there is a problem in production.
+
+How does Polylane, first of all, know about it? I think people forget that the biggest problem is actually not fixing, because once you know the problem, you can just ask Codex, and it's gonna give you a PR. But how do you know about it? As people, we have relied on alerts and SLOs and monitors and things like that.
+
+Um, but the fundamental problem with alerts is that you need to know what the problem is before you can set up an alert for, right? Like if you don't know that... I'm gonna take a real example. Um, I swapped models, um, today, and one of the models that I put it, it was for like a, you know, side, side, um, side agent doesn't support, um, um, images, right?
+
+Of course, I didn't read the entire description of the model to know it doesn't support images. So I swapped the model, um, and I tested it, and well, it didn't work. Um, just imagine a world where I pushed that to production. There is no way on Earth I would have set an alert for, you know, if user puts image, alert me, right?
+
+But Polylane can find that because Polylane is continuously looking at all the telemetry signals that your app is producing, right? Um, when we get the topology map of all your cloud resources, we first of all identify the resources that are critical. So your database is critical. Um, the, the Lambda function that sends you a Slack message when somebody signs up is probably not critical, right?
+
+We find all the critical things. The critical things, we are going to check them every five, every 10, every 15 minutes. The less critical things every two hours, every six hours, right? Um, we look at all the metrics, all the logs, all the traces, send them to, you know, a chain of models. They do the triage.
+
+They identify, hey, this-- these metrics are not looking great. These logs are not looking great, and then they start the investigation. That's one of the key pieces in the detection kind of area. Uh, of course, we listen to your, your Datadog alerts, your Sentry errors, all of those things that emit signals as well.
+
+One interesting data source that we, we are seeing people really, really liking is actually CI. So when your CI fails, uh, Polylane can get that signal and submit a pull request, uh, to fix your CI, right? Because typically it's like stupid stuff, uh, that makes CI fail, but who wants to write YAML? Absolutely nobody.
+
+Who understands all the, you know, branches and whatnot that you can have in these gigantic YAML files? Absolutely nobody. But the agent is never gonna get tired at looking at that. So that's another kind of area that we are seeing people really liking.
+
+#### [00:33:06] Auto-Merging and Review Trust
+
+**Justin:** So you mentioned a lot of, um, like particular scenarios where an agent can, can step in and like make a PR. So like this one you just discussed is like CI fails. Uh, so Polylane's like acting on a signal and creating a PR. I was looking on your, um, just on the marketing page, and there are like, uh, you know, a few like general cases that you cover that you would expect like a tool like this to cover.
+
+So like, uh, you have this impact analysis or like s- some signal come in, you, you get an error, or you ha- let's say you have a monitor or something that's already set up for like Datadog or for Sentry or something, um, that gets triggered. Uh, Polylane like sees it, starts investigating, gives you a Slack message says, "Hey, here's all the stuff."
+
+Um, and then potentially now you can also follow on and it can like fix it for you. I'm kinda curious like I think part of the premise here of like a, an on-call, like automation that, that solves itself is something that can take it from like alert to a fix and then merge to like a solution. Um, are you seeing people actually like do that full deployment where like when Polylane like suggests a PR that it's like auto-merged?
+
+Um, and yeah, like, I don't know. Uh, there's, there's a lot of conversations about reviews happening in the, in the industry right now, and this is like a kind of interesting case, 'cause this would be like something that potentially happens after hours where it may be hard to get a review anyway. Um, and curious about like what you've seen in the space and how your customers are using this and et cetera.
+
+**Boris:** Yeah. Yeah. So when I started in March, um W- w- the very first prototype I built actually did not submit the pull request. It was working only on Cloudflare and Vercel, and it will deploy to prod, right? It will find the problem, fix it, deploy to production, because those platforms you can deploy via API.
+
+Just deploy to prod and let's go. Like, problem is fixed. You don't even need to worry about it. Um, the world is absolutely not ready for that. Um, that's why, you know, we are adding the step of, hey, you still got the PR, you can still kind of look at it yourself. But That is, I, I really don't like this word that people are using a lot, bottleneck, but that is just shifting the bottleneck, right?
+
+Like, it used to be that, oh, engineers are expensive, so, you know, we don't have that much code. The problem is we have feature requests, we have bug reports, but nobody can fix them. Uh, now that is gone and the bottleneck is on, uh, review because, hey, we cannot just YOLO to prod. Um, I think that is the result of one, distrust in the tools, right?
+
+Like people don't trust that code written by the models is better than code written by people, which is very questionable in, you know, late 2026. It's very questionable that I don't think I write better code than, than a model if given the right instructions, right? Like the issue is when you don't give the right instructions and then they're going to do whatever.
+
+Um, that's number one. Uh, number two, the people that are Successful with Polylane right now are the people that have some sort of trust in their, um, code review agent. Um, because Polylane, you can tweak it. You can say, "Hey, don't submit pull requests for things that are not critical," and then all the kinda lower stuff is just gonna file them.
+
+But the ideal world is even those low-level bugs, you still fix them, like they are still bugs. Um, but if you enable that and you have a really large code base with thousands of users, it is likely that Polylane is going to be sending you 10, 15, 20 pull requests a day, right? Because every piece of software out there has problems, like that's factual.
+
+Um, if you have zero trust in your review process or your review agent, well, now you need an army of engineers doing the review such that you cannot have-- such that you can avoid having engineers being on call, right? Like that's, that's, that's not working. Um, so yeah. I, I've seen a lot of teams that have a coding a- a review agent that they trust, uh, and it auto-reviews it.
+
+Um, the Polylane, uh, production impact also comes in and says no production impact and then auto merge. Um, I have seen very few people have the kind of auto deploy. I think people still want to click to deploy, um, so that they get control over, you know, if it's really, really bad, they're at least awake when it's really, really bad.
+
+Um, but yeah, that's kinda the type of people I've, I've been seeing being most successful with Polylane.
+
+#### [00:38:51] Preview Environments and Feature Flags
+
+**Andrew:** Yeah. I, I think it's really that there's like a, a, an extra thing there that's missing. Like in my AI development, uh, journeys, I've found that getting PR deploys to be as close to prod as possible is like very important for me to be able to merge things with confidence. And I can imagine in a, a Polylane situation where the agent has all the context in the world before the PR, uh, to create the perfect solution, it then has no ability to actually debug it once it's in a PR environment, uh, if you aren't like set up correctly. Does Polylane work in like that type of situation? Like if I have a PR deploy, uh, of my app, I click around and like see... like try to verify the issue, can it like then go, "Oh yeah, we did verify it. We can see in the PR deployments that everything wired through correctly"?
+
+**Boris:** Yes. So this is a use case that keeps coming up over the past kind of two months. Um, today  Polylane kind of treats your, you know, preview environments as low priority, and you kind of have to manually ask the agent, "Go and check these preview things." It's not going to automatically treat it as it's treating, uh, production.
+
+But there is a world where we figure out how once a PR is, you know, either merged or in review, it focuses on its preview environment. The main challenge is, um, the way people do preview environments is the Wild West, right? Like, uh, everybody has a different setup for preview environments. Um, maybe we start recommending like best practices such that-- Because the main challenge is if everybody's doing something different, how do you kind of guide the agent so that it's still able to be, you know, agnostic of your stack and your cloud provider and your observability provider, et cetera.
+
+Um, these are problems that we will need to tackle by the end of this year because it keeps coming up that, hey, I want you to be able to go and look at specifically this preview environment and tell me if that is fine.
+
+**Justin:** Yeah. I think even in the isolated context of like Polylane itself has suggested a fix to potentially like something that would've triggered on call or some, you know, some production error. Uh, if you have some deeper validation step, maybe being able to test it. Although really, uh, the problem with a lot of these, uh, you, you alluded to it, like people have different, um, different preview deploy environments and also some of the, the bugs that you fix, uh, they're only experienced at scale and like you can't, you like, you do load testing maybe to like regenerate it, but like you're probably not going to.
+
+Um, I, I'm curious, uh, one of the things that, uh, you, you, you may see is like you are investigating an incident, you see some code, you have a conjecture that this may be wrong, um, but you aren't fully sure, and there is like some risk to making the change. And like in these scenarios, it's like if you have a feature flagging system or something like that, um, what you may do is like add a feature flag and then scale up traffic and, you know, just like validate that the assumptions that you're making are actually correct, and especially as you get to scale.
+
+Um, is that something that you've thought about at all, especially like integration with like feature flagging systems, or is that sort of like Yeah. out of scope?
+
+**Boris:** Yeah, the, you know, the road ahead is like very long. There is, there is a lot of stuff that we need to, to still kind of figure out before we can get to a world where you can be in the park having, you know, a laugh with your friends wh- when you're supposed to be on call, right? Um, integrating with feature flags, integrating with, um, uh, what's the name?
+
+Session recordings, integrating with product analytics. You know, those are tools that when you're on call, you will reach out to, to kind of understand what's going on. And when you submit the fix, you probably want to, "Hey, let me test it only internally first, and then only to 5% and then only to 20%." These are the sort of things that, you know, within the next few months, Polylane will kind of expand into covering.
+
+Um, but something very interesting that you mentioned is how do we know that the fix that we are submitting is, is good? And, you know, we, we write tests, we run all the tests, you know, all the typical stuff. But the most interesting and funny thing to me is when Polylane submits a pull request, and I've seen it even on our own account because we use Polylane to build Polylane.
+
+Even on our own account, I've seen, um, a couple of times Polylane submitting a pull request, and then the PR kind of trajectory analysis agent takes that PR, goes through all the trajectories and says, "Mm, not sure you want to merge that." And it's like Polylane saying, you know, "Here is a PR." And then Polylane is like, "Mm, you probably don't want to merge that."
+
+And they keep arguing, you know, for like a few minutes, and then ultimately they get to a point where the PR is quotation marks good to be merged.
+
+**Justin:** Yeah, that makes sense. 'Cause I mean, that's also how it can, like, work in, you know, typical software development scenarios, right? It's like
+
+**Boris:** Precisely
+
+**Justin:** you get pinged for on-call, you like do a hotfix, you're about to like merge it, and somebody's like, "Wait, wait, wait, wait, wait. You're gonna like, you're gonna slam a-- or us with a bunch of traffic if you do that.
+
+You should do like X, Y, or Z." And then you kinda go back on those iterations before you kinda get to something.
+
+**Boris:** Exactly
+
+#### [00:44:58] Status Pages and External Outages
+
+**Justin:** Uh, uh, random question, but this just kind of popped into my head. Are y'all also doing like integration with like status management? That's something that ha- that's kind of annoying on call is like knowing when to like update the status of a service on the status page like people know if it's down or something.
+
+Is that something you are thinking about tackling as well, or?
+
+**Boris:** Yeah, yeah. So I've been-- It's, it's very funny. Um, I'm sure you got the op- you know the OpenStatus guys? Uh, we've been friends for, for a few years. They were like: Yo, we gotta try, uh, uh, Polylane. And I let them, like, in the, in the beta, and they loved it. And then we needed a status page, so we used OpenStatus, and then we had the same problem.
+
+We were like, "Oh, crap. Now we need to update this thing." Uh, and you know, one of the guys on the team has been kind of hacking on figuring out how to enable Polylane to do that, but still giving, you know, the kind of person driving it control over what's going on because you don't want your status page to start, you know, having some slop essentially.
+
+Um, so there are, there are a lot of things there, but that's an area that we're investigating. And speaking of status pages as well, not necessarily status pages, status of kinda, um, uh, external services. Um, how does Polylane know when it's making an investigation that this CI is not failing because GitHub is down again, right?
+
+Uh, it can spend hours and hours investigating a thing when the cause is GitHub is down. Um, but are we going to give it access to the internet? Probably not. Are we going to have special tools for every potential, uh, status page there, out there? Probably not. So that's another question that we are kind of working on.
+
+We have a prototype internally. We're using it. It was, works pretty well, uh, but needs a little bit of refinement such that if there is a problem, Polylane can stop and say, "Hey, is this because of the underlying platform or is it because of the application?"
+
+**Justin:** I was gonna say that makes a lot of sense. It's, it's pretty annoying to get pinged with a non-con thing, and it's like you spend like 30 minutes, uh, trying to debug it at like 2:00 AM, and it turns out that like your service provider's down.
+
+Uh, AWS is having an issue and, uh, you know. Yeah.
+
+#### [00:47:35] The Future of On-Call Work
+
+**Andrew:** So, um, you wrote that the software development life cycle is dead. Uh, AI agents have come here and have, uh, made us all very worried about the future. Where do you see this all going? Do you think that there will no longer be that on-call guy? Will there no longer be a DevOps guy?
+
+Where... What, what do you think is gonna happen? Where, where does the
+
+on-call rotation go?
+
+**Boris:** I mean, predicting the future is probably the worst exercise in the world. Um, but It is factual that everything about how software engineers work has changed over the past two years and is going to keep changing even faster. Uh, I don't know if it's gonna take two years, five years, 10 years, but it's going to keep changing, like dramatically.
+
+Um, I've been writing software since I was a child and, you know, from, you know, downloading my first C\+\+ compiler and writing "Hello, World" to deploying Cloudflare Workers a few years ago before the AI thing, it was different, but not that different. You opened an IDE, you typed, you compiled or transpiled, and you figured out the way to distribute your application, whether it is emailing it to your friends or deploying it onto, uh, a platform.
+
+Um, but now
+
+The-- I mean, I will say easily 20, 30, maybe 40% of how we, we build software in  Polylane , like in the team, is on Slack, right? You-- somebody says, "Hey, it doesn't work." You copy it, paste it on Slack. You ask, uh, one agent to fix it, uh, and then one of the teammate comes and says, "Hey, actually, I was looking at that yesterday.
+
+Don't worry about it. I, I got this." And a third agent comes and says, "Hey, like that PR that you thought was fixing it is actually not fixing it because A, B, and C." Like a huge portion of how we build software in the company is like that now. Um, it's totally different. Like you had told me this in 2024, like when we were using, uh, GitHub Copilot, I would've been like, "What are you talking about, bro?
+
+Like Slack? Like what?" Um, but that's the world we live in. And now code review is like the thing that everybody's talking about. Um, the people that are a little ahead of the curve are not talking about it anymore, right? Like they have figured out how to have Devin, Cursor review and Claude Code review kinda do those reviews for them.
+
+Um, now the step after that is, hey, it's in production, now it's my problem. And what we are trying to do with  Polylane is transform how that step also happens, right? Like building software is completely different now. We need to close the SDLC with the kinda post-deployment phase of operating software. Um, does it mean that there are not going to be DevOps and on-call people anymore?
+
+don't know. But if there are still people, what they do is going to fundamentally be different from what they do today
+
+#### [00:51:13] Uneven Future and Wrap-Up
+
+**Justin:** I think, uh, it's such an interesting topic, and there's gonna be a lot of churn between here and, like, the future, 'cause I, I do feel like maybe the models get good enough fast enough that they can just adapt to sort of any environment. But there are definitely code bases that are written in ways that are not very um, LLM friendly.
+
+You know, like we were talking about, like preview environments. If you have a preview environment, that's already so much better than if you don't, right? And, uh, the-- I think as, as is always the case, the future is unevenly distributed. Um, and, you know, some people are gonna be living in a very futuristic world, and some people are gonna be living in a very painful world.
+
+**Boris:** Yep, absolutely. I had, um, I had someone call me to like, potential customer was on a call with them today, and they were like, "Hey, we run this Java Kotlin monolith that the tests take an hour and a half to run." And I was like, "Bruh, we're probably not going to be able to help you today." Um, like just loading that in a sandbox, I'm not sure it's going to work.
+
+Um, and you know, these people are going to have a very painful time. Um, and that's one of the reasons I'm sure you saw  Polylane is really like, hey, if you're on Cloudflare, you're on Vercel, you're on Render, you're on Fly.io, you're on Railway, these are the code bases that are-- I mean, not all of them, but the majority of people building on those kinda more modern platforms are in a position where they can actually leverage the tools in the most efficient way possible
+
+**Andrew:** It's a, a scary future we're presented with, but an exciting one nonetheless. We're building more than ever and debugging more than ever. Thanks for coming on and talking about it, Boris. This was a really fun time talking about all things observability
+
+**Boris:** Cool. Thank you so much for inviting me
+
+**Justin:** Thanks, Boris
+
+**Boris:** Let's do it
