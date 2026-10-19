@@ -57,5 +57,5 @@ Dark mode is handled via `prefers-color-scheme`. DevTools DS themes (Firefox the
 
 Detailed episode production process is documented in PRODUCTION_PROCESS.md, including:
 - 3-pass editing workflow
-- Multi-platform publishing (YouTube, Buzzsprout, website)
+- Multi-platform publishing (YouTube, Spotify for Creators, Patreon, website), automated by the `publish-episode` skill and `scripts/publish/`
 - Asset management and content creation guidelines

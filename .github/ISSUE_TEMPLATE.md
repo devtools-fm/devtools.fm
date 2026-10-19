@@ -16,7 +16,6 @@
 - [ ] Full
   - [ ] Publish + Download
   - [ ] Audio 1 Channel (Patreon)
-  - [ ] Audio 2 Channel (Apple Subscribers)
   - [ ] Vtt
   - [ ] Text
 - [ ] Free
@@ -49,7 +48,6 @@
   - [ ] Upload
   - [ ] Add description
   - [ ] add txt transcript
-- [ ] Announce
 
 #### Spotify Podcasts
 
@@ -79,12 +77,3 @@
   - [ ] Add Tags
   - [ ] Add end screen
   - [ ] Upload Transcript
-  - [ ] Manually launch at 9pm before launch day
-
-#### Apple Podcasts
-
-- [ ] Upload paid (Can't do until spotify goes live)
-
-#### Twitter
-
-- [ ] Create next ep twitter header
