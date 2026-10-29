@@ -93,7 +93,7 @@ devtools.fm/
 ├── src/
 │   ├── layouts/             # Shared Astro document layout and metadata
 │   └── pages/               # Astro pages and form API endpoints
-│       ├── episode/[id].astro
+│       ├── episode/[episodeNumber].astro
 │       ├── episodes.astro
 │       └── api/
 ├── pages/episode/           # Episode content (MDX files)

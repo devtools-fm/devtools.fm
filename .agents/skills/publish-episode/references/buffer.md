@@ -31,7 +31,7 @@ The posts themselves are in `.generated/publish/<N>/social.json`. There's one pe
 
 This runs after go-live, because the posts need the public Spotify link.
 
-1. Buffer fetches media from a public URL at post time, and there's no upload endpoint. So commit the re-encoded clips to the site as `public/clips/<N>/s1.mp4` … on `main`, and wait for the Vercel deploy. They're stored in Git LFS (`.gitattributes`), and Git LFS is enabled on the Vercel project. If a deploy fails in webpack with `WasmHash._updateWithBuffer … reading 'length'`, that's a stale build cache: redeploy with the cache off (`VERCEL_FORCE_NO_BUILD_CACHE=1`, or "Redeploy" without cache in the Vercel dashboard). The URLs are `https://www.devtools.fm/clips/<N>/sN.mp4`. Use the `www` host, because the apex domain 308-redirects. Check with `curl -I` that each one returns `200 video/mp4`.
+1. Buffer fetches media from a public URL at post time, and there's no upload endpoint. So commit the re-encoded clips to the site as `public/clips/<N>/s1.mp4` … on `main`, and wait for the Vercel deploy. They're stored in Git LFS (`.gitattributes`), and Git LFS is enabled on the Vercel project. If a deploy fails after adding clips with an error that looks like a stale build cache, redeploy with the cache off (`VERCEL_FORCE_NO_BUILD_CACHE=1`, or "Redeploy" without cache in the Vercel dashboard). The URLs are `https://www.devtools.fm/clips/<N>/sN.mp4`. Use the `www` host, because the apex domain 308-redirects. Check with `curl -I` that each one returns `200 video/mp4`.
 2. In `social.json`, set `links.spotify` and `schedule` (`start` is the launch date, plus `time` and `timeZone`). Clip *i* goes out on the *i*-th weekday from `start`.
 3. Run these:
 
