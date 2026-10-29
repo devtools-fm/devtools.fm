@@ -1,0 +1,468 @@
+---
+title: Scott Lanoue - CoMail
+description: "Scott Lanoue discusses CoMail, a cooperative email service built on the AT Protocol."
+youtube: https://www.youtube.com/watch?v=xEMaj7mucJc
+spotify: https://open.spotify.com/episode/125lgaTqazwySL4YcLQyXi?si=GXjcpc_ESja9u6hgHs3eVg
+publishDate: 2026-09-13
+tags: atproto, at protocol, bluesky, atmosphere, email, smtp, jmap, pds, decentralization, self-hosting, co-ops, devtools, devtools fm, podcast, javascript, typescript, programming, development, technology
+sponsor: Macro
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Scott Lanoue, the creator of CoMail, a cooperative email service built on the AT Protocol.
+Getting a self-hosted mail server to actually land in the inbox is a months-long slog of warming IPs and building domain reputation, so CoMail pools that reputation across everyone sending through a shared relay.
+We talk about how atproto identity lets CoMail vend out trust instead of spam scores, what it means to store your mail in your own PDS with spaces, and why a co-op might be a better shape than a startup for a protocol with no moats.
+
+- https://comail.at/
+- https://scottlanoue.com/
+- https://bsky.app/profile/scottlanoue.com
+- https://tangled.org/scottlanoue.com/atmosphere-mail
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+00:00:00 Introduction
+00:01:25 Why Email on ATProto
+00:05:15 Deliverability and Trust
+00:11:42 Ad
+00:18:41 Spaces and Future Vision
+00:27:09 Modernizing Email With AT Protocol
+00:29:15 Data Ownership Made Relatable
+00:34:23 PDS Messaging And Paying For Identity
+00:40:49 Building Businesses Without Moats
+
+{/* TAB: TRANSCRIPT */}
+
+**Scott:** I think that there exists a way to formulate email as a service, but as a co-op instead of a business, A co-op honestly makes a lot of sense because one person can't just decide that this is how email should be, and instead it has to take everybody to agree that this is what the future of this email should look like.
+
+#### [00:00:26] Introduction
+
+**Andrew:** Hello. Welcome to DevTools.fm. This is a podcast about developer tools and the people who make them. I'm Andrew Lazowski, and this is my co-host, Justin
+
+**Justin:** Everyone, uh, really excited to have Scott Lanoue on with us. So Scott, you are the creator of CoMail. Uh, it's a mail service related to atProto and Atmosphere Mail. I'm really interested to hear more about what that is and what it provides. But before we dive into that, would you like to tell our listeners a little bit more about yourself?
+
+**Scott:** Yeah, definitely. Well, first of all, thank you both for having me on Devtools. This is really exciting. Um, I am a software engineer living in Seattle, Washington. Uh, we fortunately blessed with some beautiful weather today. Um, but I, I love App Proto. I got, I think, on App Proto on January of 2025, and since then I kind of just got really inspired by small pet projects.
+
+And then recently, you know, as we'll get into, I've kind of fallen in love with my, my CoMail, my project about, uh, let's, let's kind of build email on App Proto, ~~and how does that look?~~
+
+**Andrew:** W
+
+
+#### [00:01:25] Why Email on ATProto
+
+**Andrew:** hy mail on app proto? Like, what, what does this solve? Why are we putting one protocol on another, smooshing them together? 
+
+**Scott:** Right? Like it's, it's honestly, it's like the first question that people ask me. They're like, "Why email? Like, that's crazy. Why would you do that to yourself?" And I still ask myself that all the time, "Why am I doing this to myself?" Um, but I think there's a lot of different answers. Like the, the very personal answer is that genuinely I was spinning up my own PDS for the first time, and I got to the step of having to have an email provider, right?
+
+Like the default PDS implementation, you, your only, uh, default for 2FA or account recovery is an email address. Um, which means that as a PDS operator, you need some way to send out emails to your users. And I immediately got into this state of like, okay, well if I'm hosting a PDS, what if I self-hosted email, right?
+
+~~Like, ~~
+
+**Andrew:** ~~it. Uh,~~ so let's just hop straight into CoMail. Uh, so why CoMail? What brought this idea about? Why smash one protocol into another?
+
+**Scott:** ~~Cool ~~Yeah. Yeah, definitely. As a, uh, as a person, I kinda just got into the idea of self-hosting very early on this year. With LLMs, it kind of became very easy. You know, you could just kind of ask, "Hey, computer," like, "spin up this thing locally on old hardware that I have right next to me." Um, and that was kind of just like an endless sea of possibilities to me, and I had just kind of started to get it into at Proto Development, and I was like, "Okay, well, I should spin up my own PDS," right?
+
+With a PDS, you have to have an email contact or a way to send out messages to your users. Um, and I didn't really like the fact that I had to go out and spend money to a provider or spend, I guess, time reading a contract with Resend, Mailgrid, any of these off-the-shelf providers that, you know, they arguably do a great job of what they offer.
+
+Um, but in my opinion, email is a very old technology, much older than myself, and it's kind of been co-opted into this, like, paradigm where these big core providers have these rules and these dates and these processes that they expect everybody to follow, which is arguably good for the end user, right? It means that more spam is probably protected and, you know, not actually getting to the end user.
+
+But it means that for a person like me who wants to spin up a mail server, there's tons of work before I can actually ensure that most of my mail passes that spam filter. Um, and then in that same kind of idea I was getting into, uh, on at Proto, just the idea that self-hosting kind of is selfish, and, and sometimes, some cases that's okay.
+
+But I think it's really cool to challenge that notion as, as much as you can, right? So while I was kind of meshing these two ideas of, okay, well, I've got my own mail server so that I can send my own email. What if I don't just make this self-hosted? What if I can extend this out to others and also allow a way for them to send their mail through?
+
+You know, so hopefully that nobody else has to spend time, you know, bashing their head against the same thing. Like, in full disclosure, I think I've sent myself over 6,000 emails since the beginning of this year, and I've tried to reply and interact with as many as I can because that's how, that's how reputation is built and rewarded.
+
+That's what these providers are looking for, you know, without directly telling you that, hey, your Google account from 10 years ago is carrying a lot more weight than if I were to spin up a new Outlook account and try to spam it with, you know, 1,000 emails, right? So it's kind of a very loosey-goosey paradigm where there's a lot of written documentation on how to get your reputation built up.
+
+Um, but that beast in itself is kind of a, uh, a deterrent to most people, right? If you're a business, you wanna start sending email immediately, right? Like, I don't wanna have to spend time and say, "Oh yeah, you know, we'll send emails in a month when we can." Um, but I have the ability to do that, and now we're fortunately at a place where you as an end
+
+user can spin up, you can join Comail, and your email should theoretically reach the inbox on day one on your first a- send.
+
+**Justin:** 
+
+
+#### [00:05:15] Deliverability and Trust
+
+**Justin:** For email, I always thought that like deliverability, um, or, or just like making sure that an email like doesn't get blocked by like a, uh, maybe a provider like Gmail or something, um, it really kind of hinges on the kind of service that's like sending the email. Maybe it's like IP based or maybe it's like something else.
+
+And why a lot of these companies like Resend and others are very strict about what you can and can't do because like one bad actor can ruin all of their reputations. Um, is that true? And how are you thinking of that in terms of like getting other people using sort of like the setup with Comail? 
+
+**Scott:** Yeah, absolutely. That's 100% the case. It's kind of reputation is built up on, like, twofold. It's a domain-level reputation and an IP-level reputation. Um, and building both of them up at the same time is good, and it means that more mail will reach the inbox and not hit the spam filter. Um, but it does mean that as an, as a user or a business that signs up for Comail, the thing that you can take with you is partially your domain's reputation.
+
+You obviously can't take that whole IP reputation with you. Um, and then the point of poisoning the well, I completely agree. I feel like I use that idiom all the time because, uh, Comail is very small right now, and to ensure that it isn't an open relay, right? I, I want to make sure that as many people or whoever wants to use it can, um, but I have to be very careful about that, right?
+
+That means that one person can't just decide that, you know, I'm gonna send 1,000 emails and whatever happens, happens. Like, no, that unfortunately means that everybody else could potentially be impacted. Um, and in that instance, I fortunately have a lot of things going on behind the scenes to make sure that, like, again, one bad apple can't poison the well.
+
+Um, which honestly is where I spend a lot of my time in implementing right now is those safety mechanisms. It's, it's very easy to ensure that, like, myself as a PDS operator, you know, I send maybe five emails a week maximum, but my PDS is very small, right? Compared to something like the Atmosphere community discourse, which I recently helped migrate over to Comail, um, which has been awesome.
+
+It's a lot more email coming through, which helps build the reputation, but at the cost of the fact, like, there's a lot more operational work for me to, you know, ensure that everything is going smoothly. Um, yeah. Providers, it's, it's like a f- it's like a constant game of, like, Whac-A-Mole to an extent, right?
+
+Like, before I even felt comfortable welcoming anybody to use the service, I went through all of the, you know, the written documentation of compliance, and then you sign up for, uh, like postmaster services basically with all of these providers. You say, "Hey, Microsoft, if you get an address that has, you know, a relation to Comail, this is what you're gonna contact.
+
+This is who you're gonna contact if there's an issue," right? Um, which, you know, fortunately, hopefully should save me the benefit of, like, not having to, like, I don't know, warm too many things, but it, it, it's, it's still constantly just like a game of cat and mouse, right? Um, even when I first onboarded, I realized that I hadn't onboarded, um,
+
+iCloud or Apple addresses, so those just completely got sent to the void.
+
+I was like, "Ah, I
+
+have to fix that immediately." So it's fun though.
+
+**Andrew:** So as it grows bigger, does it kinda like shield itself more from like those bad actors? Like, and d- do you need like larger, like progressively larger people to come on? So like for my, for what I, I've been building, uh, I built Standard Reader and I have like a newsletter part of it where it sends out all your unreads as a newsletter.
+
+Is like, is there a point of users where it's like, oh, I might not be able to go to CoMail at this point because like that reputation hasn't grown enough? 
+
+**Scott:** I, I don't know if I would, like, back it to reputation as much as just, like, the, the severity of the emails, right? Like, the discourse from the community forum was, like, a perfect, like, testing bed, right? 'Cause the majority of those emails are digests where if one is missed or-- I mean, that's usually the, the worst-case scenario, but if one is missed, it's like, okay, well, I'll get the next one kind of thing.
+
+Um, but I, I also, like, the challenges are that I have a single, or actually I've, I've two warmed IPs at this point right now, which is a very precarious position to be in, right? Like, um, one of the Blue Sky team members actually called this out when they had heard about the project in that it's very vulnerable if one person does poison that well, I don't really necessarily have a great mechanism to shed traffic, right?
+
+Um, but that kind of brings about a greater question about what is the future of Comail? How do I bring o- bring on bigger providers? Like, a very classical story would probably be buying a massive range of IPv4 addresses on the secondhand market and then trying to warm those up. Um, but that doesn't necessarily, like, mesh, I think, with my ideas of not necessarily trying to seek out venture funding for 
+
+**Scott:** ~~No, I think we're still here. Cool. Um, yeah, I, uh, I...~~ The, the co-op mentality of Comail, I mean, co-mail, co-email, right? The co-op itself right now exists because you get to help build that reputation, and that reputation helps serve you, right? But extracting the idea of a co-op, I think that there exists a way to formulate, like, email as a service, but as a co-op instead of a business, right?
+
+Instead of answering to just strictly shareholders on how do we provide more, I don't know, whatever options, I think that a co-op honestly makes a lot of sense because, you know, one person can't just decide that this is how email should be, and instead it has to take everybody to agree that this is what the future of this email should look like.
+
+And I think... Sorry, now I'm just gonna keep talking about it, but I think that the, uh, the next feature that I'm really excited to share and launch, um, which is the, the personal inbox, right? A replacement for Gmail, um, using your Atmosphere account. I think that will really hopefully bring a lot of, um, excitement, vision, and also just other people hopefully recognizing the vision of Comail in that I don't wanna just be, you know, Fastmail or ProtonMail or anything like that.
+
+Like, the, the mission is truly that you own your email. We all own it, right? And you have to have a control and a say in what that looks like.
+
+
+
+
+#### [00:11:42] Ad
+
+**Justin:** Software engineering is a challenging job and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead when really we just want to be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers. And it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available. So if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you want to extend it, feel free. The back end is rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just like starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast, it's fun, it's a better way to build. Sign up at macro.com and get $100 off your subscription using DEVTOOLS100.
+
+So something I don't have a clear vision of necessarily is like what is stored on at Proto? Like what, what's actually, what part of the email or, or the service is actually like on, uh, at Proto? Um, and I guess the follow-on question to that is like, you know, emails are, are by their nature like relatively 
+
+private things in a lot of cases and, um, is that preserved and what does that look like?
+
+**Scott:** Yeah, definitely. It's, it's an interesting question because I think we have so many interesting apps in the atmosphere that take just extreme, like, I don't know, just they take the, the protocol to the extreme, and it's really cool to see what people are able to do with the protocol. And I think that Comail is by an extension, the same sort of idea, right?
+
+Like, I don't think most people see App Proto and are like, "Oh, yeah, let's apply that to email," right? But I was kind of, of the idea that like the first thing that I wanted to do was build that mail relay, right, for myself, and then sharing it among others. And then that's naturally to my head where the App Proto kind of connection came in because I could basically vend out trust.
+
+I could vend out trust by saying that this is Justin. Justin is a good actor, and I'm gonna label their DID, right? So Justin now has access through their DID to send through the relay, and right now that relay is, you know, owned by Comail. There's only one relay. Further on along in the project, hopefully there's a federated instances of relays where people are all just kind of sending their mail through and things like that.
+
+And in that same instance, that same case, you need the ability to say, "Okay, Justin, Andrew, these are good senders," right? They should have the ability to send X amount of mail through these relays without having to do further validation or things like that. And I think overall, like right now, it's kind of limited to just looking within the Comail space.
+
+It is like, like a manual human decision in that I literally see your account come in, I do like a quick analysis. I'm like, "Yeah, but you know, this is a human. They're gonna hopefully, I think, send it correctly." Or if it looks like, oh, there's no information, you know, I reach out, I do some due diligence. Um, but all of that I think is like a, a current state, but I think the end state is looking at activity across the atmosphere and using that to kind of like build a signal on the account, which then can be used, I guess, to like provide access to the relay. 
+
+**Andrew:** Yeah, I didn't, I didn't realize that there was like basically that vouching system in there. I find that re- a really interesting concept that's emerged in App Pro to at large. Like it's with Tangled also, they have their own vouching system for saying whether a contributor to a repo is good or bad and like kind of listing some stuff along that.
+
+And I do think that like in the grander scheme of things in like this age of AI, like vouching systems and webs of trust are gonna become more 
+
+paramount for us to having like real human interactions online.
+
+**Scott:** Yeah, absolutely. I mean, I'm with Cocore, uh, the exact same thing. You know, I, I think that there has or there, there implicitly is the, the graph that says that, you know, this is, this is good behavior, right? And they can continue to have-- do that, right? Um, it's, it's a very interesting thing to think about because it's, again, like I said, it's really cool to see all of the Atmosphere apps and the, the creators like, you know, really bending the protocol and what that means.
+
+But I also think that like just trust and vouching and answering some of these like fundamental concerns are also really important, right? Like I guess I didn't really ever get to this point, but like email is fundamental, right? Like it's super old. We've all got an email account. It was one of the first things I think I signed up for, and it's just crazy that that has been kind of given to these big providers and, you know, why not try to challenge it?
+
+Why not at least, you know, poke it? Let's see what can happen. 
+
+**Justin:** So do you actually store anything, like do you have a custom lexicon? Do you store anything on that? Or is it really just the kinda like using the DID identifier or the, yeah, the decentralized identifier and other mechanisms from Blue 
+
+Sky just to like, or, or from Appro to just sort of like verify who you are and, you know, your activity and stuff? 
+
+**Scott:** I do have some lexicons. Honestly, I've been so, uh, in my prototypes of, uh, the, the spaces work right now that, like, that's where, that's where a lot of my lexicon work is, 'cause that's a much more interesting story, I think. Um, but there were some lexicons that I created that, uh, do something exciting in the actual sending relay initially.
+
+Um, but yeah, the, the spaces implementation I think is a much more interesting answer to that question because it kind of like, you know, the first question is: where is the email actually stored, right? Uh, your PDS is the answer, right? Like, if you can have that ability to, um, that's, you know, the question that I was answering.
+
+Like, if we're gonna store everything in our PDS, why not throw email in it as well? Um, and with that, we kind of got into, or I, I got into Stalwart and Bulwark, which are, like, really cool open source, um, implementations using JMAP. Are either of you familiar with JMAP? So sick, just like IMAP, really old technology, really old protocol for helping email, right?
+
+But what if we threw JSON on top of it, right? Like, it's just, like, beautiful. And then you throw App Proto into this, like, lovely soup and it kind of just, like, it feels very synergynistic. Synergynistic. I love it. Um, and with all of that, it was kind of like, okay, wait, so I can actually store all of the information actually as blobs or records within a space and then rewrite an email and read it directly in an email client.
+
+Like, that's that's really nice. And honestly, I think that it will hopefully bring a lot of more interest into Comail.
+
+
+#### [00:18:41] Spaces and Future Vision
+
+**Andrew:** I wanna dive more into the spaces part. So for people who are not constantly on Blue Sky, they probably don't know what @Proto spaces are. It's also a new name deemed yesterday. 
+
+**Scott:** Yeah. 
+
+**Andrew:** Uh, so, uh, with @Proto, all information is public, uh, but the main focus of the company right now is bringing about private or permissioned or spaced data, uh, where only select few people actually have access to it.
+
+So, like, what, what does that look like with CoMail, and is that, like, is that what unlocks the personal service?
+
+**Scott:** Yes. Yes, exactly. So, well, I guess first thing I realized that I didn't do a great job of answering Justin's question on this last part in that the relay right now, we don't store anything about the emails that are going through. We store the absolute minimum that I have to, which is just like the rough metadata of the, the recipient address and then the domain that you're sending it from.
+
+Um, but you know, one of the goals overall is that I don't wanna be an email custodian and, you know, what does that mean? That means that I don't wanna actually be in the business of being responsible for your emails, right? And I think this naturally kind of beautifully segues and answers your question, Andrew, in that how do you provide email as a personal service without being a data custodian, without being an email custodian?
+
+Well, you make the user, you know, kind of have to choose, right? But if they're not consciously choosing and it's in the back of their mind, right, they've already signed up for PDS, they're part of, uh, BlueSky or BlackSky or NorthSky, whatever, right? Then their, this data custodianship, that email custodianship is a relationship and a question between them and the PDS operator, right?
+
+Rather than me, which is amazing because it means that I can provide email as a service, inbox as a service without having to be responsible for your emails, right? I'm responsible for making sure that your emails gets delivered to your spaces in a timely fann- in a timely manner so that you can actually read them.
+
+But yeah, you know, hopefully, knock on wood. But hopefully it means that I will never be h- like, called to testify on the contents of somebody else's emails that are being sent through the relay, right? Like historically we've, we've seen what that has caused. Um, and literally I am alluding to like the 2016 presidential election when like that was a massive debate, right?
+
+And it would be cool to completely avoid that if I can while still offering the rest of this. 
+
+**Justin:** So can you, can you tell us about like what your like larger vision is here? So you're providing Comell, uh, you have this sort of like, um, cooperative-- these cooperative SMT relays. So you have like one right now with the two IPs that you mentioned. You kind of have this vision of the future where like potentially there can be multiple relays in the network.
+
+You have this like trust verification model, which sounds like it might be like relatively manual right now. Um, but I'm assuming that's something you wanna scale in some way. So what is the, what is 
+
+the larger vision for this? What does Comell in the future look like?
+
+**Scott:** Yeah. I I love that question because I still don't honestly know. I'm, I'm definitely, like, in the, the depth of trying to figure out what exactly that looks like. I'm trying to, you know, formulate the business plan, evaluate whether, whether or not I, you know, should be doing this. Uh, I, I don't think I've ever publicly announced this, but I am working on CoMail full-time.
+
+Um, and you know, that's been awesome. I completely love that. It's been since, uh, the end of May or something. Um, but I do have to also recognize that like, you know, life is life and, uh, I, you know, I cannot just work on this for, you know, this satisfaction of doing it. Um, and to that end, that means that I have to figure out, you know, can I make this a sustainable model that potentially isn't necessarily just venture capitalist backed, right?
+
+I don't wanna say, no, I don't s- I don't know what that looks like, right? Um, and yeah, as to the technological features that I wanna implement, there's, like, so much, right? Like, the tech debt is already there. And it's cool that I have an LLM to help me, you know, talk about tech debt, things like that, but I also recognize that over the last month, I spent a lot of time building, building, building.
+
+And I think right now in at Proto, just in general, like, building in public and being very vocal about what you're building, like, it just opens up so many more doors than just kind of like, just like incessantly building things and not sharing. Um, like I, I had recently shared with all of these pieces, these building blocks, I was able to prove this, like, rough Atmosphere OS, which is kind of funny, kind of cringe, but the idea was basically like, what if I could have Graphene OS, um, but using my Atmosphere account as like the device level identity.
+
+Um, and you know, that kind of was building off of the backbone that now I have my Atmosphere account as my email with Comail, which the extension of that is that it also provides groupware, which are things like notes, you know, files, contacts, calendar, things like that. But kind of just like the building block technology, right?
+
+If I have all of that, well then I don't need an Apple, an Amazon, whatever account on my phone. Um, and I proved that and it was, it was really cool. I mean, I, you know, it was like, "Oh wait, now I can also go extend the rest of these native apps like, uh, Blue Sky that does have a social app that is native," right?
+
+I can add my own, you know, mechanisms, OAuth mechanisms to grab that credent- credential from the device and use that without having to do another password ask. Um, and I don't know if that's something that I necessarily want to offer, you know, full-time with Comail. I'm not gonna say that Comail OS is the future and what I'm building towards or anything like that.
+
+But I think it does prove that the Atmosphere account that we're all, you know, everything that's centered around, it, it has so much more potential than to just being like the micro blogging platform or whatever other small things are, you know, existing off of that, right? Like I, I just wanna continue to try and challenge everything, right?
+
+Like we should look at all of the pillars that tech has provided for around us and like really try to question, is it as decentralized as it can be? Is it like robust enough to s- withstand whatever? So a lot of building to do, for sure. 
+
+**Andrew:** Yeah, the b- b- back when crypto was abuzz and, uh, we did our one crypto episode, uh, the one takeaway I had was that decentralized identity is really interesting, and it was a shame that it was attached to crypto. Uh, and I think that's what in- inspires me about, uh, @Proto so much, is that it feels like what Web 3.0 was selling itself as.
+
+Uh, like digital objects and owning things, that sounds great. Uh, the implementation of me having to pay gas fees 
+
+to do all that, not so great.
+
+**Scott:** Absolutely. Yeah. It, it-- I agree. I mean, I feel like I definitely had a bit of that kind of like crypto buzz because I liked the, the, the thinking, the, the process of like, "Let's challenge everything that we've kind of like already gotten to with Web 2.0." Um, but I also do agree that like the, the answer wasn't necessarily like a solution that actually I think was applicable.
+
+But I think App Proto feels very different. App Proto feels much more akin to like, "Oh, this is, this is an open space where things are actually making, making moves." Yeah, 
+
+**Andrew:** Yeah, I don't, 
+
+I don't want my identity to be a, wa- to be a wallet.
+
+That's a little on the nose. 
+
+**Scott:** You didn't sign up for a, uh, a Cloudflare wallet? 
+
+**Andrew:** I did not. I did not claim my Cloudflare wallet. 
+
+**Justin:** How is your-- uh, just generally, it, it's, it's been interesting. We've had a lot of folks, uh, on the podcast at this point who've been, like, building things on AppProto, and obviously Andrew is doing a lot of stuff in the space. I'm just curious about, like, how your experience has been so far. Um, so, you know, you're building, uh, email, very old service.
+
+Uh, you're meshing it with PDSs and, and, uh, atmosphere spaces, which is like? very, very, very new, very fresh. Um, what is your 
+
+experience like? Uh, yeah, 
+
+how is it going?
+
+
+#### [00:27:09] Modernizing Email With AT Protocol
+
+**Scott:** I mean, it's-- I think it's interesting because email is an old technology, it's kind of, it's, it's not-- Like the email protocol itself is like well documented, right? It's, it's been written, you know, hundreds of thousands of times probably. Like, I think it used to be fun for people to like recreate their own mail server from scratch.
+
+Maybe that still is fun for somebody. Um, but I think that that mixed with like this very modern tooling, very modern like protocol, like you said, like cutting edge, it's, it feels just cool. It's like, yeah, why don't we just take something that, you know, is kind of ubiquitous and apply this new standard to it?
+
+Um, I had also recently started playing with, uh, I think it's Freek, Freek's AV protocol, which is... It's really cool. It's, it's built on top of IRO, which is like peer-to-peer, device-to-device communication, which is amazing, right? Like I think we've always, I don't know, I've always had the idea that like that should be easier, but like for somebody else to have actually solved it and to sh- you know, share it has been amazing.
+
+But what it allows us to do then is to take that Atmosphere OS that I, you know, just talked about, and we can now actually call that device without having to rely upon big telco, right? Or whatever, right? I could just be attached to a Wi-Fi network and receive a phone call, um, using my Atmosphere account.
+
+Uh, and I think that's just like one of the possibilities where it's like, this is really cool. You know, like looking at all of the possibilities while still trying to challenge these ubiquitous communications protocols. Like, I think that's where we're gonna find like a lot of movement because we can't just like push something brand new onto people and be like, "Look, this is how things are now," right?
+
+Like instead meeting them where they are and being like, "Hey, you know, like you have a Gmail account. We all have a Gmail account. That makes sense. That's awesome. But what if this Gmail account was a little bit more owned by you?" And then kind of explaining what that means. That's, that's for everybody else who's all in this space of like, what is an Atmosphere account?
+
+I know a lot of people are working on things like that. 
+
+
+#### [00:29:15] Data Ownership Made Relatable
+
+**Andrew:** Yeah, it's, uh, it's hard to explain it all and not just like drown somebody in information. Like you 
+
+got 
+
+**Scott:** It is genuinely 
+
+**Andrew:** data ownership is not a thing that peop- like we don't have a muscle for it, I'd say. Like everybody's been conditioned by what the internet is to be like, "Oh, that's not a thing. Why would I..." Or like, "I can't even reason about like owning my data."
+
+But like if you relate it back to real 
+
+world things, it's like, "Oh, why, why do they have my stuff? I want my stuff."
+
+**Scott:** Yeah. Exactly. Yeah. It's, it's interesting because I think it's a lot of convenience that has been traded, but it's subconscious convenience, right? Like no one, I think - I don't know. I don't think people were like, "Okay, I'm signing up for Gmail and I'm giving away all of this to Google because that's what I want," right?
+
+Um, but somehow it's like we have to get people to realize that without, you know, being too technical about it or being too, you know, just pretentious, I guess. Um, and I, I think it's a difficult challenge, honestly. It's, it's communication 
+
+**Andrew:** Yeah. It's, e- email's a great, like, a, a great parallel because, like, it has so much of that technology and so much of that history and, like, as I, I have to admit, I don't know anything about that stuff. Like, I am so far gone. Like, I'm like, "I signed up for Gmail. Great, I have email now." But, like, it has this whole storied history of, like, these open 
+
+protocols that kinda just went away out of 
+
+nowhere and, uh, just very odd.
+
+**Scott:** Yeah. Genuinely, right? And I think it's fun, right? Why not like poke at the 
+
+history and be like, Well, does it actually have to be like this way?" And it was honestly the first time that I got to spin up my own personal, like Scott@co-mail account and like receive an email sent to myself. It was like, wow, okay.
+
+Like the sending relay was really cool, seeing email actually going forth, back and forth. But, you know, opening in a mail client that's attached to my Atmosphere account and being like, "Oh, huh, this is, this is really, really cool." I, I'm, I'm excited for what that means. Like there's, I don't know, everybody does email in their own different ways, and they all have their preferences on how they want it to exist, right?
+
+So I'm curious to see what it will actually feel like once other people start interacting with it. Um, but overall fun. It's, it's just an interesting space full of a ton of challenges constantly.
+
+**Justin:** Can you just email, uh, Did directly? 
+
+**Scott:** I mean, loosely, yes. I, I will put that in my notes to make sure that, like, I can do that later because that sound-- like, that's such a cool demo, right? Email. Like, I was calling it, I think for a little bit, like, DIDs as addresses or something. But yeah, this is like the, the fuller vision of that 
+
+**Andrew:** Yeah. That, that'd be a cool demo. You, you call a did like that. L- 
+
+love that. 
+
+**Scott:** Exactly. Yeah. 
+
+**Justin:** Y- you made that, that comment about Iro earlier, and their thing is like, "DAO, DAO keys, not IPs." And this is like one of those things. It's like, well, wait, can I just like send an email to a DID if it's like, uh, associated? I-I-- Also a weird thing because like if you have your own-- If you have your DID mapped to your own domain, it's like, you know, mapped to the domain, right?
+
+to the to the subdomain or whatever. And usually you have to have a, a
+
+handle on top of that. But I don't know. it's interesting. to think 
+
+about.
+
+**Scott:** Yeah. It's, it's interesting. I, I mean, I, don't know. I think probably there has to be some conversation about how much centralization do we put in an Atmosphere account, but I think that's for individuals to decide what they wanna do with each Atmosphere account, right? Like, I don't know. It's a different problem to have, I think 
+
+**Andrew:** Yeah, I think that's the point of the decentralization of AppProto that a lot of people kind of get tripped up on. They're like, "But I have one account in one place and it's one server." It's a much different model than like say Mastodon or like really oth- a lot of other decentralization things. It's like it feels like a very centralized point of failure because it 
+
+kind of is.
+
+**Scott:** Mm-hmm. Yeah. Yeah. I, I wasn't honestly very big on Mastodon, but it's interesting to read about it now that I'm, you know, where I am in the App Proto space because some of the, I don't know, the, the technical implementation of it and, like, the, the governance that it's created because of that is really, really intriguing to watch from the outside.
+
+Um, but I also love the fact that there's so much integration like Bridgy and things like that to, like, still keep it decentralized, right? It's like, even if we don't have to agree on, you know, the exact protocol that we're doing, like, we still fundamentally agree that we should have decentralized technology as, like, you know, the, the front runner rather than, like, the laggard 
+
+**Andrew:** Yeah, it does feel funny there are silos of decentralization where it's like, "Come on, guys. Like, they're all open port protocols. Let's bridge over the wire." It's, cool, to see all the work 
+
+that the Bridgy team has done 
+
+**Scott:** yeah. Yeah. I mean, I don't-- It's, it's cool, and I'm sure there's so much more that I'm unaware of, but yeah. It's, it's really cool. 
+
+
+#### [00:34:23] PDS Messaging And Paying For Identity
+
+**Justin:** Uh, uh, maybe I pose a question for kind of both of you. So decentralized, like from a technical perspective and just from like data ownership and data sovereignty, especially as like people who write software, we're like, "Oh yeah, this is like great." Like we understand what data means. Like actually these are like bytes that's stored on databases and someone can query this and like they can see all your stuff, you know?
+
+And that's like not great. But for the average person, like the notion of like hosting their own thing is pretty out of reach for most people. So the most data sovereignty decisions that people make are like kinda based on providers. So email is such a great example 'cause like, yes, you can get a Gmail and it's really easy to do, but like Google is an advertising company and they probably are like scanning all your emails for like what they can advertise to you.
+
+Like that's a thing that's probably happening. Uh, whereas you could go to like Fastmail, which is another provider, you know, it's another company, um, but they make different guarantees about your data. Um, they're still managing it for you on your behalf. You're not thinking about it, but, you know. Um, and then, you know, Scott, maybe what you're doing with Comail is like maybe you become another option as like, hey, you can come to Comail and it is more decentralized and maybe like we help you maintain that in some way.
+
+We make that easy where you can sort of have more confidence about your data. Um, but I'm just curious, how do y'all think about like how do you get 
+
+people interested or invested in this space and like how do we make 
+
+it easier? Like, 'cause it seems hard.
+
+**Andrew:** ~~Uh,~~ I'll, I'll go first. I think, uh, Blue Sky made a big mistake in the way they've branded PDSs versus their app. When you're... I got tripped over, up over this the first time I did OAuth, uh, 'cause I was looking at URLs. When you're on the app, you're on bsky.app. Uh, when you're logging into your account, you're on bsky.social.
+
+Those are two different things. Uh, the app is what we view as Blue Sky. The bsky social is the PDS layer, and I think the PDS has almost been downplayed too much in, like, the current, like, advertising of App Proto to where, like, the common use... Like, a lot of people wanna, like, just wish it away, I think, with login, where it's like, oh, it's just, like, a thing the, the app hosts.
+
+But, like, in the true vision of App Proto, if I make an account on some random thing and that just happens to be my first Atmosphere account someplace, it kinda just doesn't make sense that that service owns it. So, like, I think it, there is a messaging problem h- here where, like, there does need to be PDSs as a service.
+
+It needs to be viewed as, like, a separate thingy. Uh, the, uh, like, as you were saying, da- data and, like, explaining data to people is hard, but we used to have data. They were called files. Uh, I think if we just explain to people, this is just a way to store your internet files. Internet files doesn't have to mean anything.
+
+Internet files just means JSON. Uh, but, like, if we bring it back to that, it like, oh, I, I may want this service where I go to view my files and my stuff. Like, iCloud, I guess, is a good example of that. I can just li- log into iCloud and look at my photos on the web app and all my stuff. This does require a layer that doesn't exist right now.
+
+Uh, right now there is data in App Proto, but rendering data is not a solved problem. Uh, the platforms that ingest the data know how to render it, but, uh, Joe Schmo PDS can't come along and go, "Oh, look at this nice little recipe right here. I know how to render that." Uh, just not gonna happen. So it's like, I feel like there's a big missing piece that has, should, should've been pre-explained in the pitch.
+
+And if that's in the pitch, like, people can see, oh, my, my files. I get my files back, and I can, I can do all the things I did with files. I'd say the hole in that argument is that there's a whole generation of people that don't know about files now. So, like, So, like, 
+
+**Justin:** I was gonna 
+
+**Andrew:** that. 
+
+that ex- that explains what we get back to Millennials plus, but, uh, it kinda misses what Gen Z 
+
+understands as digital. That's my answer. 
+
+**Scott:** That's a really good answer. I, I think I kind of agree, like fully. I, I think that like there's-- it feels like a zero to one and we're missing everything in between, right? Like, I do think that there-- it will make sense at a certain point for most users to just be paying for a PDS or access to their PDS. I think that will probably be the default in, in most cases.
+
+Um, but I think before we get there, it will have to be a lot more clear to users why they're paying for that, right? I think that like right now, if that were to happen, you would have the majority of 43 or 45 million people asking, "Why would I pay $5 a month for Blue Sky? That's insane. Are you crazy? What is wrong with you?"
+
+Right? But I think, you know, to Andrew's point, once it's much more about, you know, this is where all of your digital identity and your life and your like... You know, you pay for iCloud, that's 10 bucks or whatever, how much you pay for that. Stop paying for that, and instead all of this data is now here and you have like control to an extent, right?
+
+Like I still think that's a communication problem that, you know, maybe I'm not the best to solve, but I, I think that that's, that's like the missing piece. And without that, yeah, you're just gonna have a lot of people very confused being like, "Wait, you're paying for Blue Sky? What's wrong with you?" Um, and maybe, maybe it'll be more like commonplace to understand for like the lay folk that like you pay for an Atmosphere account because you're always kind of paying for it in, you know, in one way or another.
+
+Uh, I don't know. 
+
+**Andrew:** Yeah. It's, uh, like I was going through the publishing platforms that are on App Proto and seeing like what, what are they making me pay for? Like, they all have like a paid plan, and I think two of the three of them basically just charge for storing your media, which is like the, the main cost of running a PDS is just storing all of the images that come along with it.
+
+Uh, and it's a lot more than you'd think. Like when you post a post in the embed, the embed captures the Open Graph image and stores it in your PDS. So 
+
+like you just have like, if you post a bunch of links, you have countless Open 
+
+Graph images just in your PDS 
+
+**Scott:** Thank you for the reminder that I need to go back and clean out my PBS right now. Probably after this 
+
+**Andrew:** Cool. 
+
+
+#### [00:40:49] Building Businesses Without Moats
+
+**Andrew:** Uh, so since you've been building in the space, uh, I certainly have opinions on this. What parts of building 
+
+App Proto apps do you think are easy? What parts do you think are hard and can use improvement? 
+
+**Scott:** That's such a really good question, honestly. 
+
+I think that-- I think there's a couple things. I think, like, one, I think it was Stels maybe posted this, but it, it was something akin to, like, there's a lot of people right now building on the atmosphere that are building projects, not businesses. And that's cool.
+
+That's completely fine, right? Like, projects are-- I, I love building projects. I have so many of them. Um, but I think the, the, like, missing piece for a lot of the businesses to be built is kind of just a lot of, like, help understanding community, like, resourcing, kind of. Like, there isn't really an established path on how to go from like, "Hi, this is something that I've built on AppProto, and I think it's cool," to like, "Hi, this is something that exists on AppProto, and therefore it's like a, a thing," right?
+
+Uh, I think Tessa and team have been awesome in germ, in trying to, like, proliferate some of that information down to everybody else. Uh, but I think there's a lot more in, you know, helping people work together on these things, right? Like, AppProto succeeds because all of these apps succeed, not because BlueSky becomes...
+
+I, I think this was one of the things that really came away from the most recent, like, BlueSky is dying discourse, in that BlueSky and blogging, microblogging, it is what it is. But the atmosphere, I think, is really what's going to bring in the next billion users. And for that to happen, it has to be really easy for builders to take a project and actually make it into something meaningful or a meaning-- like, an established business that exists for a long time, basically. 
+
+**Andrew:** Yeah, there's a lot of different parts moving there currently. Uh, like the stuff that Joe Basser's been doing with Atmosphere money is really interesting, but I do think he's gonna get Sherlocked by Blue Sky itself. Uh, I was, I was listening to the recent interview, uh, with Tony on The Verge, uh, and there's like, there's this one segment where they're talking about the long-term plans and it's, and like people getting paid, and it kind of sounds like they're thinking about bringing some sort of funding model into this, where it's like if somebody, if you go to a publisher based on a link, uh, in Blue Sky, that, that relationship is known and can be compensated somehow.
+
+So I'm very interested, interested to see where that goes, 'cause I think in general, like investing in App Proto projects is a hard bargain for a lot of people. Uh, like there's, there's lots of co-ops on App, App Proto, which is like very interesting compared to normal folk. Like I, I, I don't think that's a thing, a, a thing you hear about elsewhere, and I think it really speaks to how f- like gate- making money off these projects is a whole different ballgame.
+
+Uh, when you take down the walls around the garden, like c- someone else capturing your audience or like Sherlocking your entire app away from you in like a night because your users can move away in an instant, it like totally goes against like current tech and like capture and like trying to box you in so that, that you, they can make money off of you.
+
+So I think there's this real tension with that idea of products, because products in App Proto are things that can like just vanish overnight. Like we could have the best, uh, like meeting or event app in the atmosphere, and then all of a sudden one of the big players comes along and goes, "Oh, we're just that now," and drains all the energy for other apps in the space.
+
+That's one one fear I have with, with these 
+
+open protocols is it allows these bigger players to kind, kind of come in and just sweep the field.
+
+**Scott:** Yeah, definitely. I, I, I have 
+
+also for sure heard the same thing in multiple conversations that it's kind of scary, right? Like, the moat is that there's no moat, and so what does that mean for establishing, like, long-term things, right? Um, I, I, you know, I don't have a great answer for it other than, like, I do think that we kind of just all have to keep, like, yeah.
+
+Co-ops make sense because co-ops can help other co-ops form things, right? Like, I don't have to worry about other people, you know, trying to beat me to email, right? But instead, I can help other people that, you know, need email kind of thing. And I think that there's so many areas like that that we can help build and hopefully push us all towards success.
+
+But I think that that, yeah, it still depends on funding and resourcing and things like that. I, I agree Atmosphere money, I think, is going to be a very huge integration. Um, and yeah, I, I, I fully expect Blue Sky to try and plan on, you know, their own form of monetization for the Atmosphere, for their micro-blogging platform and things like that.
+
+Um, Sherlocking is, like, an interesting-- It's, it's, like, it, it's almost like a, it's like a complimentary thing, right? Like, you built something cool enough that the people who created the thing are like, "Oh, we should do that too." Like, that's obviously it's com-competition and, like, there might be a, a leg up or anything, but I think to an extent it's also kind of just, yeah, it's, it, it can be viewed as praise but, you know, knock on wood, it's never happened to me and I, I assume that if it did happen to me, I would probably have different opinions. 
+
+**Justin:** Yeah, I think there's an ebb and flow of decentralization to centralization, and, and protocols themselves, even if they're designed very well to be dester- decentralized, don't have opinions about that kind of thing, you know? Uh, so I mean, we've talked about email this whole time. It's like email from the very beginning is just like something you can host, but over time it's invol- it's evolved to the point where there are just like a few big players in the space because honestly, it's a, it's a pain, Scott, as you know very well.
+
+Uh, and trying to, even though the protocol was like designed to be just like pretty open, um, how it's evolved over time has, has definitely changed. And I guess, Andrew, to your point, I think like, uh, App Proto is, is one of those things where I feel like it's probably gonna go through those evolutions as well, 'cause yeah, you, the small player makes, uh, an events app and it, it like pops off and then, you know, Blue Sky's like, "Hey, yeah, you know, we wanna do events," and like there's already a good start.
+
+There's a great community here. We'll just bake it in. And, um, I, I think the nice thing is, uh, about this space is that y- there is like a certain, a bit of like interoperability, so that app that was maybe started, um, the events, um, like movement, so long as like that, that actual lexicon gets used in, in App Proto or in, in Blue Sky or whatever, then they could continue to operate and it'd be fine.
+
+If that lexicon didn't get used then, you know, you got like some issues. But yeah, I don't know. I think there's like ways to sort of bridge that, so it's gonna be interesting 
+
+to see how it develops. But, you know, it's just a part of challenge of the space.
+
+**Scott:** Yeah. I I mean, I think also interoperability is, it can also be a double-edged sword. I, I wanna say, I think it was Andrew, I feel like I've read your, your writings on this before about how, uh, you know, maybe there's a world where it just makes it very hard to actually have something succeed 'cause it's interoperable, right?
+
+Or with private data, right? Why do I actually have to worry about interoperability at all if I can just throw it in a private space, and then I don't have to worry about anybody else, you know, stealing this from me or stealing this, quote-unquote. Um, and how do you fix that? How do you solve that? I have no idea
+
+**Justin:** ~~Commuted ~~
+
+**Andrew:** ~~Uh, Justin, should we do a future question? I feel like that was all very future-y~~
+
+**Justin:** ~~Uh, I think we can wrap, wrap it up. ~~
+
+**Andrew:** Cool. Uh, so that wraps it up for our questions this week, Scott. Thanks for coming on. This was a really fun conversation about all things co-mail, and I gotta 
+
+get, got to get a few things about @proto off my chest. So thanks for coming on and talking about it. 
+
+**Scott:** Of course. Thank you guys for having me. This was a great time 
+
+**Justin:** Yeah. Thanks, Scott 

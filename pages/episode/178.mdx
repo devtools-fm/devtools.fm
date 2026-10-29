@@ -1,0 +1,365 @@
+---
+title: Bobby Grayson - Deciduous
+description: "Bobby Grayson discusses Deciduous, a decision graph that gives coding agents a living memory."
+youtube: https://www.youtube.com/watch?v=wLiagHk5gbg
+spotify: https://open.spotify.com/episode/0MrSDUyD5UudWBpBCEQg5o?si=p1inlisRSbSVhuk1k5cyEg
+publishDate: 2026-09-27
+tags: deciduous, ai, llm, agents, claude code, memory, decision graph, sqlite, mcp, elixir, beam, local models, quantization, llama.cpp, devtools, devtools fm, podcast, programming, development, technology
+sponsor: Macro
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Bobby Grayson, a longtime Elixir developer and the creator of Deciduous, a decision graph that gives LLMs a living memory.
+Deciduous stores goals, options, and outcomes in a SQLite-backed graph that agents like Claude Code can query as they work, so they remember why decisions were made instead of repeating past mistakes.
+We talk about how it slots invisibly into an agent workflow, how teams share decision graphs, the surprising authors using it to organize their books, and where coding is headed in the next five years.
+
+- https://deciduous.dev
+- https://github.com/notactuallytreyanastasio/deciduous
+- https://github.com/notactuallytreyanastasio/shoehorn
+- https://cure-lang.org
+- https://www.destroyallsoftware.com/talks/the-birth-and-death-of-javascript
+
+{/* LINKS */}
+
+{/* Paste show notes */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:03:45] Typed BEAM and Language Experiments
+[00:08:25] What Deciduous Does
+[00:10:47] Memory Storage and Sharing
+[00:15:55] Ad
+[00:16:59] Workflow Integration and Team Adoption
+[00:36:26] Shoehorn and Local Model Quantization
+[00:43:50] Five Year Coding Predictions
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Bobby:** We're hitting a revolution in being able to build your own tools to accelerate yourself in the ways that, you are comfortable with and that you work well within. And that it's relatively novel and new, and that people are trying to figure out that, that sort of balance and relationship as we go along.
+
+**Andrew:** Hello. Welcome to Dev Tools FM. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host, Justin
+
+**Justin:** Hey everyone. Uh, we're really excited to have Bobby Grayson on with us. Uh, so Bobby, we're really excited to talk about your Deciduous project. Um, and it seems like you're doing some cool stuff in the, like, AI dev tool space in general. Uh, and so I'm really excited to sort of dig into that. But before we do, uh, would you mind telling our listeners a little bit more about yourself?
+
+**Bobby:** Yeah. Uh, my name is obviously Bobby. Um, I got into the industry in a relatively atypical way. I, I started learning to program when I was like 12, 13 years old, and then around my, what would've been college years, just kinda at the right place, right time, managed to sneak my way in, like right in the early kinda like dev bootcamp classes era, and that, that, that sorta span of time.
+
+Um, had a pretty wide, widespread career. I've done consulting, done startups, been at a unicorn, done the super corporate thing. Um, and also, like my last gig was like, uh, engineers number two and three with a friend of mine at a company that was kinda fresh outta YC. And so it's been a, an interesting and eclectic career.
+
+And, uh, along the way I've been a very early adopter and continued user of Elixir, and that has also led to some sort of interesting roads being in such a niche space. And yeah, right now I'm working at a, at a large F50 company and with a company in the financial space that is doing some pretty heavy operations.
+
+Uh, and it's been a really interesting couple of years.
+
+**Justin:** Is your current company using Elixir or was that just like a
+
+**Bobby:** Every- everywhere I'm working for clients and, uh, all, all places that I'm working are, are, uh, I have the luxury of being in Elixir land. Um, I don't know how I've managed to pull that off, but it's, it's pleasant. I, I'm, I'm a person with preferences and, uh, there's a reason I've been writing the language for 10 years plus
+
+**Justin:** Yeah. I-- There's, there's these like memes that go around Twitter now where people are just like saying, "Oh, everyone's just like reinventing the beam," 'cause it like, for all the like AI infrastructure you need, you like need actors and like, you know, they've been doing that for forever.
+
+**Bobby:** Yeah, there's so many tools in the shed that like, um, the way you think about building systems sort of changes over time because you are-- If you're inherently working with a different set of tools, you're generally gonna have a different vision, right? And so, uh, you know, I don't struggle to go back into like Ruby on Rails land or play around in TypeScript or work on whatever else, but there's certainly a fundamental like mode I have to shift when I go from thinking in a BEAM-based language or project towards, uh, working in like a more standard space.
+
+But I, I don't think that's like a, a knock on these other spaces. I think it's we, we choose different tools for different times and, um, you know, like if I'm writing a CLI, I'm not gonna go and reach for Erlang or Elixir. I'm, I'm probably gonna write it in Rust or Go or whatever. Um, but yeah, it's, uh I sort of lost my thought there.
+
+But, uh, it's, it's been a long day. I got, I got up at 5:45 today. ~~Um, um, uh, but yeah, sorry, where were we?~~
+
+**Justin:** No, all good. U
+
+
+#### [00:03:45] Typed BEAM and Language Experiments
+
+**Justin:** h, I have one question before we move on. Um, so I, I'm pretty interested in type systems, and Andrew and I both do a lot of, like, programming in TypeScript. Um, so Gleam is a really interesting language in the, the BEAM space. Uh, curious if you've played with that or if you have seen any of the developments of, like, typed Elixir and, like, what's happening in that space.
+
+I haven't really followed up with it in a little while, but seemed like they were doing some cool stuff.
+
+**Bobby:** boy do I have an interesting thing to show you today then. Uh, I, I have a, a coworker who has been working on, with some others, a programming language called Cure, and it is actually meant to kind of match the Itr- Idris specification, but being built on the BEAM. Um, so I mean, con- you know, supporting those algebraic data types and moving into like that sort of like way more complex space than the set theoretic theory that's gradual or the at- set theoretic, uh, type system that's gradual that we have in Elixir as it is.
+
+Um, but it's, uh, I th- I think it's curelang.org or something. Let me... I'm gonna, I'm gonna find this really quickly. Uh, but it was, it was really, really interesting to see sort of the approach that they've taken with this to add so much to what is already like a really complicated runtime. Um, but yeah, it's cure-lang.org and, uh, they've got a little tour language guide.
+
+It goes through kind of the pattern matching and type systems. But that, that has to be one of the more interesting things I've seen. I've seen a lot of people playing with programming languages. Um, the next one that comes to mind is another friend, uh, has built a language that they are working on that is sort of what they would want if they were running an everything shop, like a consultancy or building greenfield work pretty often or whatever.
+
+And, uh, I also advise another company, Temper Systems, that they are building a language called Temper that compiles to six other languages, which is pretty interesting. There's no AI. It's, it's all like just grinding through it compiler work. Um, but I, I see, I see a lot of interesting stuff in that space right now. Um, but yeah, like, uh, with, with regard to that impacting new systems too, like a big thing now is like, especially using LLMs, like using a type system as a guide has become a really valuable facet of my day-to-day workflow, and it has me adopting these systems even more aggressively
+
+**Justin:** It's really funny that, like, I-- And early on when, like, LLMs were starting to get good and people were, like, really starting to appreciate them for programming, there was this, like, uh, conversations that I had with people who were like, "Oh, well, like, programming languages are, like, not gonna matter. Like, they're gonna be very fungible."
+
+People are like, are-- E-everything's gonna go to the, like, least common denominator. Everybody's just gonna, like, write in, like, TypeScript or Python and, like, and it, I've-- There's almost, like, this Cambrian explo- explosion of, like, programming languages and, like, weird explorations and stuff, and it seems to be, like, only accelerating, not decelerating, which is, like, I mean, anecdotal of course, but is, like, kinda interesting.
+
+**Bobby:** I, I think that there's the phases thing there where when you give someone the tool that allows you to do something that used to be, uh, so far out of reach that the tendency will be to push it as far to the edge as you can. Um, and I, I see a world where, like, languages do still matter. Um, but there's-- There was a talk that, uh, Gary Bernhardt did in 2012, I believe, called "The Birth and J- Death of JavaScript."
+
+And the premise was sort of, uh, like, you know, what if there was some sort of cataclysmic event and we had to start over? And we-- It, it ends up basically be-- He describes pretty much what we see with Wasm runtimes now and everything being written in JavaScript. And to me, that was one of the most, like, seeing into the future kind of talks that I've ever, ever watched, and it's been, you know, 14 years now, and I see these things happening and I'm just like, wow, he did a very good job describing the future with, uh, what seemed like some somewhat wild conjecture at the time.
+
+But it, it, uh, has really come to fruition, and this is a, a very real thing.
+
+**Andrew:** I'll have to go give that a listen. Uh, that piqued my interest for sure. 
+
+
+#### [00:08:25] What Deciduous Does
+
+**Andrew:** Uh, but let's start getting into the, the tool that we're here to talk about, Deciduous. Uh, it's a interesting one. Uh, it kind of relates to a lot of things we were talking about earlier, like software evolving over time and working with LLMs.
+
+So could you give the, the listeners a high level what Deciduous is and like why you s- why you chose to code it up?
+
+**Bobby:** Yeah. Fundamentally, Deciduous is kind of like three key points. One is it's a living memory for an LLM. That's sort of the initial bigger problem that it tries to solve. Two, it tries to provide a harness that leads to better results when interacting with an LLM, specifically hoping to enable more like beginner to mid-level education on, on the tooling users.
+
+And three, it is a tool that ultimately allows, uh, archeology to be done on unknown code and find ways to break it down and understand why decisions were made and have a better informed path that you, you're able to work on yourself. Um, and all three of those things sort of came out of a, a project that I just stumbled into one day and, uh, I realized I had something pretty interesting inside of it and con- and I extracted what is now Deciduous.
+
+Um, that project, I-- There was a friend of mine who had a, a large pile of lossless audio and like, you know, say five, 600 songs, and they by ear can tell if they've ever been downsampled, but they, they didn't know if any of them had ever been like downsampled to 240 and then re-encoded as lossless and weren't truly lossless.
+
+Because if they were, they were going to get the physical media and record a proper version of it. And I thought that that, while it might be fun to listen to 500 songs in a space of music you enjoy, that that is a bit much and you have hobbies and jobs. And so I thought maybe we could do a little math and get, get somewhere interesting.
+
+And I, I tried so many approaches that along the way, uh, I implemented Deciduous to track my own decision-making and coming up with what the criteria was for a downsampled track. And then I realized that that was sort of a pretty interesting premise, and I began extracting it so that I could maybe use it in some other projects.
+
+**Justin:** 
+
+
+#### [00:10:47] Memory Storage and Sharing
+
+**Justin:** Where does the actual data for Deciduous live? Is it like stored alongside your like Git repo or is it like-
+
+**Bobby:** It's a SQLite database
+
+**Justin:** Gotcha
+
+**Bobby:** I don't-- I wouldn't say we abuse SQLite, but use it heavily. And, uh, one really nice thing is that because SQLite is wrapped up in tool calls, the difference in how it introduces context and allows the, our robot friend to kind of go gather its facts when it's querying a directed acyclic graph versus reading a, you know, 10 kilobyte document is, uh, it, uh, we're, we're past an era where everyone's super, super worried about context, but there's a directness to allowing the query engine to be there that I think that the LLM understands fundamentally a little better than something that might be written by a person
+
+**Justin:** I got you. So i-is it really local, like mostly local and then you, can you, can you share it with, with people? Do you have to like send over the, the SQLite
+
+**Bobby:** there's a very rudimentary system that just kind of does it with j-- uh, line-delimited JSON right now. But I, I basically have built, uh, in all the projects, a little tool that goes in and automatically handles any conflicts that appear in that and manage the pull request to keep up with it. So it stays out of the way as something that, like, end users really have to think about, and if they just configure once, things kind of work.
+
+It's something I really wanna put more time into. Um, right now there is a, a smart system for recognizing change IDs and linkages and all these other pieces. There's formalized specifications, but I just haven't made it yet. And, uh, it was something that it would be a lot easier once there were more people working on a team using it.
+
+But I've actually found that with the beginning users, people have tended to use it in isolation rather than collaboration. I only have two instances of people actively collaborating using the format we're discussing here, which probably means it stinks and that I should work on that.
+
+**Andrew:** So, like, what's the benefit of, uh, storing this all, like, in a graph and not in, like, other systems that exist? Like, memory systems are in, like, both Claude Code and I think Cursor now, and there's a few other services that do that, and that, that seems like it could be a corollary to this or like, uh, like why not just commit markdown files to the repo?
+
+**Bobby:** So at the time I made Deciduous, which I believe was like December, um, at the time, that was kind of where we were at, is including Markdown documents with, uh, direct context. And things have moved so quickly that I've tried to allow the tool to stay nice and stable and just if there's a direction people want me to take, I will listen and do it.
+
+Because it's very much like the, the project exists to serve its users. And I have users that do things that I never expected, and it's really opened my eyes in how I think about designing the project and scaling it out further. Um, like the most interesting example I think is I have two authors using it.
+
+Um, one is writing a parenting book and the other is, uh, working on their, their doctoral work and also, uh, some materials to go with it that are involved in their day job. And they've, they've used the decision tree making bits of it to allow them to organize their own ideas, query what was going on and how they were thinking for a given time, allows them to have spoken dialogues with this that are back and forth.
+
+And they, like, they're still fundamentally writing all of their words. They aren't having the LLM generate them, but they're using it as this sort of confidant that because of its memory and it being, you know, just smart enough to evoke further thought from you, even if it might not have its own original and novel ideas, is, uh, a really big aid.
+
+And like, I just never would've predicted that. I was targeting software developers. I didn't think that random author would hear about tool happening to read HN or whatever. Um, and so, you know, it's just that classic interesting thing of, uh, I forget what the law is, but like after sufficient time on a sufficiently large project, uh, your user-- you'll, you're gonna have a user that relies on a, a buggy behavior of the system as a feature or whatever.
+
+And, uh, I, I see a lot of that kind of coming up quicker with how, how fast LLMs allow us to build tools. So the, the big theme I've realized over the last year for myself is that we're, we're hitting a revolution in being able to build your own tools to accelerate yourself in the ways that, like, you are comfortable with and that you work well within.
+
+And that it's relatively novel and new, and that people are trying to figure out that, that sort of balance and relationship as we go along.
+
+**Justin:** Yeah. I definitely agree with that.
+
+
+#### [00:15:55] Ad
+
+**Justin:** Software engineering is a challenging job and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead when really we just want to be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers. And it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available. So if you go on a peek under the hood to see how it works, you can definitely do that.
+
+If you want to extend it, feel free. The back end is rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just like starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast, it's fun, it's a better way to build. Sign up at macro.com and get $100 off your subscription using DEVTOOLS100.
+
+
+#### [00:16:59] Workflow Integration and Team Adoption
+
+**Justin:** Um, I would love to, like, dig a little bit more into, to sort of like some of the specifics. So, um, it seems like you have, like, two general motions with this tool. So there's, there's one that, like, takes the activity that's happened in a repo already, and it sort of like does some analysis from that and builds sort of this decision graph.
+
+It tries to go and reconstruct, like, almost like what the summary of the thought process is at that time. Like, what were you, what were you doing and why were you doing it? And then there seems to also be like a proactive portion of like, you know, documenting your decisions as you're doing work. Um, I'm curious, like, how you end up using that yourself.
+
+Do you find the, like, sort of retroactive, like, decision capture useful? Um, do you use that more than you do active? Yeah.
+
+**Bobby:** it's, it's active decision capture rather than retroactive, um, for, for the most active regular development. And the, the way I try to get it to work is that if it's configured correctly, you'll notice some outputs that mention things like set a goal, added an outcome, considering an option.
+
+And it'll like, that's, it's sort of just these specific dialogues, right? Um, and that's the goal is that you aren't seeing Deciduous be a big part of your system. Deciduous is allowing the bot to work in a more effective loop where it can work with more information, and it has natural skills and tooling built in to allow it to maximize the leverage of this knowledge that it does have.
+
+And it also makes it sit down and think about weighing its decisions a little more because every phase is like exploration is given to all options. And like, because we can fan out these little teams, like it's easy to go and just say, "You know what? Forget it. Build three of them." And, and you go and you feel out what works.
+
+Um, but you know, it's this, it's this fascinating moment where the approach is the value of the software can still be very high, the cost of it is approaching zero, and the people who write it aren't losing their jobs, they're finding these new ways to work. And, and like that, that sort of triangle of stuff happening is, I think, leading to some really fundamentally interesting moments right now.
+
+**Andrew:** So like, uh, how it integrates into your workflow, it's just like completely invisible behind the scenes. Is that s- the same true of those like other people you were talking about that like the author, uh, like recording their own words into it?
+
+**Bobby:** So they, they go in and they're using more the direct commands interface where like they will say like, "Here's a new part of my book. Go in and do this to it, build out the thought tree, and then I wanna think about this and like write some review questions for myself to take to the editor." Um, in the developer mode, it's going to-- There's, there's a wide array of skills and commands that when you run Deciduous in it just kinda get thrown into your Claude config.
+
+And if you go to, uh, deciduous.dev, at the top, there are some animated, uh, examples of exactly what Deciduous kind of looks like as it's going. These are all recorded from real Claude sessions, um, and just kinda put in these CSSC, uh, add-ons here. But it really is like you, you see Claude running Deciduous commands.
+
+It'll show up in the bash loops. There are sometimes some hooks that will enforce like absolutely, positively do not force push to me, and like it'll intercept that specific command and just be like, "Nope, we're doing nothing." And so there's, there's elements of safety, elements of like proactive thought where it's telling it about like thinking about functional cores and imperative shells and designing type systems that may not represent the real world perfectly, but foster the abstractions that we have to adopt in meaningful ways.
+
+Um, you know, and so it's a, a, a lot of it almost feels like secret incantations to whisper to remind it like you can stop and take time to design this like a staff or principal engineer. And with these, uh, sort of latest frontier models, they're getting to the point where they can really kinda stack that up
+
+**Justin:** In some ways, is this like, um, a replacement for, you know, even in, in some... I mean, I know it's more complicated than this, but in some ways it's like a replacement for like the to-do tool that many of these have. Or like, it kind of makes me think of like Beads a little bit, if, if folks are familiar with that project, which is just like sort of a continuous memory tool, but like maybe more directed towards like action and, and other things.
+
+Is that
+
+**Bobby:** Yeah, it was interesting. So when I first started working on Deciduous Beads, I had-- it had either just come out or I had never heard of it. So it was, I kind of came to this on my own, and then once someone was like: "Look at this bead project," I was like, I was like: "Actually, no, I'm not ever gonna look at it, and I'm gonna try to like build something original over here, and if it sucks, it sucks."
+
+But I wanted to like try to not just like jump on a train and do whatever everyone else was doing, and I really wanted to like rethink my development process. Um, and along with that came a, a sort of evolution where it's, it's now part of my day-to-day workflow to a point where we use it to like record across the entire company everybody's Notion docs, all of the transcriptions, uh, summaries of like important meetings that they've had.
+
+And since there's that arbitrary metadata layer that allows any node to have stuff attached to it, you can start keeping those clips and those pieces that help assemble everything together and give even further context. Um, but at the time I was building it, like Letta as a company was brand, brand, brand new.
+
+Uh, we hadn't seen where Jeggi was going with all of his, that just interesting, exciting world over there. Um, and I'm, I'm sitting over here just kinda going like, you know, I'm, it-- I'm in a phase where I'm trying to sort of change up what my skillset is because I came into this industry atypically and I don't wanna date myself out of it.
+
+I do not have other skills.
+
+So, so, uh, you know, it's been a personal challenge and I was a huge AI skeptic before I started this kinda two-year journey it's been now. And it, it started off with me trying to get it to make a game of Tetris with an earlier G- I think it was like GPT-3 or 3.5 or something like that.
+
+And it started off sort of in that world of like it's barely working but I can see some hope and like what little parts of my workflow could I integrate this as to now where I'm-- I mean, I've-- the system I've built for one of my clients in the past five months, I mean, with two people working on it, it easily would've taken us a couple years to do the sheer volume of work that we've managed to punch out.
+
+And it's not like I'm working with a stranger there. There is a little bit of a cheat code, someone who I've spent five years of my career working with and have been friends with for close to a decade. So, you know, that makes the relationship a lot easier to kind of get onto the ground running. But I think that, you know, good teams foster good relationships and that, and it's, uh, far from beyond reach for others to sort of hopefully be able to get into these really nice grooves and abilities to ship Um, I've managed to avoid a lot of the internal politics that comes with all of this stuff where people are trying to figure out like token allocations and who gets what and how do we train people.
+
+I have instead taken an approach of I tap a lot of people on the shoulder and go, "Hey, look at this." And then ask if they have any tricks in their hat too. Um, and it's gotten people who are, you know, who are some of our most curmudgeonly devs who did not want things to change, starting to do really, really cool new stuff and being excited about it.
+
+And so, uh, I think that one of the things I fundamentally enjoy the most is like seeing other people light up with joy when they're doing something that they think is interesting, fun, passionate, whatever. And, uh, I've seen a lot of people who had not necessarily fallen out of love with programming, but now with this new world of tooling have fallen deeper in love with it in a way where they're making things that they never really had dreamed of before, and now it's totally invigorating them to kinda go on to these bigger projects and see a more interesting future.
+
+Um, 'cause I, I, I believe that there's a lot going on with the ethics of AI as a whole and what's, what's going on with the economy. It's like I'm a person who like when I show up in a room, I don't ask who you voted for. I try to feel out if you seem nice. And that I think is a, a piece that I've been able to work myself into, which is like I've not entered the discourse and I've instead quietly been building nice tools for myself and other people and, uh, it's been going really well and I haven't gotten yelled at a lot, which I love.
+
+**Justin:** Yeah. Uh, yeah. No, that's great. Um, I'm very happy that you've been able to avoid that 'cause, um, the, the... I don't know. This is a, a tricky moment in technology. It's both, like, filled with supreme optimism And everybody has good intentions. But That's the hard part. It's 
+
+yeah, I think most people have good
+
+intentions. Most, yes. There don't have-- Only Sith speak in absolutes. But, uh, but, but yeah, it's like I, I, I like to imagine that most people are really just trying their best, and it is a huge shakeup into an industry that has been, you know, prone to having big new worlds.
+
+**Bobby:** But I don't think that there's ever been anything that proliferates quite as quick as this has. Like, so many other things had to build much, much more infrastructure. And we're sitting in, what is it? Like something like one in seven people on the planet is using AI on a every few months, call it like a quarterly basis, I think was the last one I saw.
+
+And like in three years to go from a small circle of niche nerds to some meaningful percentage of people on the planet, even if that number's off or whatever, that's, that's a really weird moment. And the, the rules are gonna change and, you know, uh, it's been very, very interesting to be a part of it. And, uh, I, I don't know how much I'm, I'm right about, so I just try not to make predictions and instead work with what's around me and try to just keep things interesting. 
+
+**Justin:** Yeah. That makes sense. That makes sense. Uh, I, there's something, um, that resonates with me about that, just like kinda, you know, things are changing, but we still got stuff to build and put our heads down and, and get it done. Um, I, I do wanna, like, connect some of Deciduous and what you've built back to some things that maybe folks, uh, in traditional engineering, uh, processes would be, like, kind of more familiar with.
+
+So, um, there's a bunch of different documents that you can see in a code base, um, or alongside of a code base or in your company's wiki or whatever. So it's like, um, an ADR, an architect- an architectural decision record is, like, a, a pattern that some companies use to, like, document why they make certain technical decisions.
+
+Um, or, uh, the RFC, if you will. Some companies do the same, RFD, whatever. Uh, how do you think that Deciduous, like, um, balances against, like, those existing, um, documents and, like, what is it, what is it sort of like bringing over that kind of like, uh, I don't know, what we used to do?
+
+**Bobby:** Initially, I was really shooting for trying to get, um, people to be able to generate these, like, useful reports that might show connections or insights or decisions that led down a path that either were like mo- honestly mostly bad because that's what you want to fix. Um, no one wanted that, only me. And so I didn't end up pursuing it much further.
+
+But in the sense of how we use it for planning out bigger projects in, uh, sort of both my major day-to-days is we have-- I have Deciduous wired up so that it's an MCP that can talk to, uh, Claude Desktop. And so whether it's Claude Desktop via its Notion MCP or just Claude Desktop with a mic, we'll turn it on and have full dialogues with it being on the MCP able to go and query like, "Why did we make this decision?
+
+What did we do here?" And it's sort of like this extra person in the room who's just like, like whenever you need fact, like it just shows up and kind of has it. Pop, pop, here you go. And that, that has been really, really handy. Um, it's also something that like sometimes I have gone and tried to like try an approach to something and be like, "Maybe this will fix it."
+
+And it, it before it dives in, it'll go, "Well, you know, like the last time we tried this was here. Here's the code, here's the commit. Notice your increasingly frustrated messages. Maybe try another one today, pal." And, and so, so things like that can be really useful. Um, but the biggest... Yeah, it kind of goes back to what I see my vision of it is, is like it's something that's out of the way that just leads to better outcomes if it's working correctly.
+
+Um, and the, the directions that are sort of present in the repository when you do a Deciduous in it and it modifies Claude and everything else, they're, they're pretty firm about enforcing this loop, and I've seen moments where it has to be steered back a little bit. But by and large, it's been like there've been Claude models that have gotten released where it got a little better or a little worse.
+
+But o-overall, it's been pretty well-behaved as, as it goes compared to like other projects I've seen where things can sort of like go into these loops where it's like saying one thing constantly to itself or getting stuck in a logical circle, uh, things like that, that can kind of come when it gets to the end of the rabbit hole. 
+
+**Andrew:** like, in that case, do, do you have, like, two Deciduouses going or are, like, you the sole developer and, like, it's like, "Oh, here's my developer buddy," and he's how we talk to about architecture decisions? Or is it more like a cross-company, cross-person one where it, like, can pull from multiple different contexts?
+
+**Bobby:** Yeah. So I have one of each, and the one that is sort of combined, we use this patch file format that Deciduous has that allows you to apply updates to your database to get everyone else's graphs. And it, it works relatively well as long as you remember to run it, and that is a key mistake that, uh, often can just kind of come up.
+
+Uh, but, but yeah, that's a part of the system that I really do need to work on is these, I, I guess I'd call it the quote-unquote "multiplayer" region of it. Um, but it also does work great for series of sole developers where you can just send over the database file and it'll be able to go and look at that tree as if it was in on its own, as long as it has the credentials to query it.
+
+And they're able to allow inter-process communication as well. Like, I've had, like, um, on Zed's multiplexer and I spin up a few agents and they each have... I'll tell it, like, "Use your own Deciduous tree. I want you to be completely fresh on this. Don't be influenced by any existing decisions." But then every now and then it'll say, like, "I see the work going on here over in this tree.
+
+I'm not considering it, but I wanted you to know that there's another agent running." And so if you took it further and, like, and, and encouraged them to sort of have that, like, back-and-forth dialogue, I think that could go somewhere interesting. But a lot, a lot of it is just, uh, I need to get a little more hands-on with people that are using it and not just kind of fixate this to my own experiences.
+
+Um, there just hasn't been a lot of pressure and I'm, I, I work, like, 60-hour weeks, so it's, you know, the time when it's there is, is, uh, being pulled quite a few directions when it comes to the fun projects. And some days I'd rather just hook my receipt printer up to the internet and have people send me memes
+
+**Andrew:** Yeah. With, with LLMs, we have infinite capability to kick the can down the road and start another project. I, I, I myself have like three or four, maybe even five going right now.
+
+**Bobby:** That happens. I think if I-- let's see. I'm gonna write a quick little script here to see out of my projects and my code directory,~~ how many have,~~ how many have I ended up with in the last year? I'll let, it'll take-- I, I, I just told Claude to do it. I didn't wanna actually work through that 
+
+**Andrew:** Yeah, 15 minutes just writing a script.
+
+**Bobby:** yeah. But, uh, but, but yeah, it's, uh, it's, it's really exploded what I do at a project level, and like my personal website has just become this weird meme museum. It's like every strange thought and project Bobby's had, here you go.
+
+It's all framed up. Like one, like I spent like three weekends just diving really deep into the history of tree law as it ties into conservation theory and how that came to the Western world. And I'm just like, "What are you, what are you doing?" But you can also could go deeper. Just, and then, then the next week it'll be like I, I did another one where I cloned the game Soldat, which is like a multiplayer shooter from the early 2000s.
+
+And after cloning it, then I made an engine where you could put in an adapter that let you write TypeScript for how the bot played. And then after that, I was like, "Well, I might as well have Fable come up with some different ways for the bots to play, and then I'll make a tournament, and we'll see who wins."
+
+And then once I had a tournament, I was like, "Well, I'm gonna make a data format for the game that tracks it in ticks." And now I can simulate games quickly and have honest random seeds to start them being played by an AI bot at super speed. And w- eventually, I've ended up with this generational learning algorithm that's teaching these robots how to come up with new ways to play the game and kill each other.
+
+And I, I let it run for about a week, and then I was just like, "You probably shouldn't have done that. That was so pointless." But it was fun. 
+
+**Andrew:** It is a whole lot of fun. 
+
+
+#### [00:36:26] Shoehorn and Local Model Quantization
+
+**Andrew:** Uh, moving on to like one of maybe I guess your more usable projects by other people, uh, uh, Shoehorn. Uh, one thing that's interesting to me is currently, like we have a bunch of companies that provide us with AI. That can't last that long. Like w- local models I feel are gonna, what's gonna win out.
+
+Uh, like it just seem j- it's coming. Uh, so what is Shoehorn and like d- is it actually usable? Like can I actually use most models on my machine? I... Can they be fast?
+
+**Bobby:** ~~Um, ~~so with the way it began, um, on Blue Sky, Dal posted like, "What if we could just like quantize things down this way?" And I was like, "Someone has to have tried that." And then I poke around the internet and I'm like, "It appears no one's tried it this way." And I had a lunch break coming up and I was just like, "You know what?
+
+This is what I'm gonna do." And I did it with a Qwen, like 30B model that was... It's like a 60 gigabyte model. I was working on a MacBook Pro that had a bunch of stuff running and had like 14 gigs of RAM free or of memory free in general. And so I fired it up with that, quantizing it down to, uh, like, I think it was like 3.28 or some-something relatively low.
+
+And I realized that it wasn't totally lobotomized, and I was like very, very surprised by that. And so then I went on and I tried a mixture of experts model, and that seemingly worked pretty well too. I wasn't running the ~~classic,~~ classic benchmarks. I was just doing programming exercises as I would with any other bot.
+
+And, uh, I was relatively impressed with it and, uh, I showed it, showed it to some more folks, sent it over to my older brother. He's also a software developer. He's like eight, eight or nine years older than me, so he's seen a, seen a bit more as the industry's evolved, and I wondered what, what he'd think of that, a, a toy kinda like that, 'cause he also is very much on the local inference train.
+
+And, uh, from there I was like, "Well, okay, this is actually kinda working." And so I tried to do some just like bug squashing and ~~general,~~ general fixing it and not letting it be an, "I vibe coded this in an hour and a half" sort of tool. Uh, built a web layer on top of it that allows you to configure it and like pick your free memory and what model you want.
+
+And it's got a full browser of Hugging Face and all of that. So like some UX stuff, some UI stuff, a bit of trying to make it so that it's not riddled with foot guns or strange things like piping into SH from a curled web URL or whatever. Um, and, you know, it's not a project that I was taking crazy seriously, but a lot of people have been very interested in it.
+
+And when that happens, it usually means, "Ah, shoot, you gotta go learn more stuff." And so I'm, I'm gonna be hitting that like sort of dive deeper and do some research phase of how, how far I could take this. The, the first thing I was exploring was like c- is, could it be translated to like diffusion models or something, and that just mathematically doesn't work.
+
+Um, but there's, there's a lot of other angles that I'm gonna just try to learn about as I go along the way here and Uh, continue my strategy of, like, running into a room filled with tools, turning each one on and using it, and then on- then and only then deciding maybe I should read some manuals. Um, but only after I get doomed to run on the chainsaw
+
+**Justin:** So just so I understand, it's like the, uh, the method that you're using to quantize the models is really you're trying to like target like a specific resource allocation. Is that right? You're like, "Okay, we're gonna quantize, but we're not gonna arbitrarily like pick some limit. We're gonna see like what you can fit, and then we're gonna like quantize only to that degree."
+
+Um, is that more or less how it
+
+works?
+
+**Bobby:** Yeah. I was, I, I, I was working on like trying to think of an analogy to describe it, um, 'cause I was just talking to some friends about it who were interested in Bobby's weird latest project but didn't quite unders- they, they don't understand like deep level tech stuff and I was just like, okay. So like if an LLM is a room full of professors that are kinda clustered together by specialty, and the question comes in and someone says the sentence of the question and then points at a region of the room where they think one of the professor's specialties might match it, and then one g- one person says a word, and then another person says another word, and you're doing this in a huge auditorium.
+
+And as-- So the strategy here is like, let's call the herd, and then we're gonna make a VIP list, which is the I matrix, that allows us to go right directed to the people we need, and the professors are the tensors. Um, and then afterwards there's a little bit of selective lo- lobotomization to kinda make it so you only know things about your topic, but you can go really deep.
+
+Uh, but fundamentally I still need to learn, um, learn more to expand it past where, where it is. Um, it's one of those fun points where you reach the edge of your knowledge and you go, "Well, okay. Time to do some book learning." And, uh, I think that'll be, that'll be fun. But with, uh, my time limitations, it hasn't been something I've been able to dive deep into.
+
+I need a, a long plane or a train ride or a few of them to sort of get that chance in.
+
+**Justin:** Pretty cool. Um, yeah, I know, I really know nothing about quantization. I, I've like used Ollama, I've like ran some local models and it's like gotten some good results from them, but like it's, uh... I don't know. This is a,
+
+it's a pretty In, in like Elixir's Axon library, which allows you to run a lot of models and do, do this general training stuff, it like, there was two-bit quantization and eight-bit quantization, but no one had done four for acceleration on like bare metal on Apple. And I was just like, well, I, I, I at the time, another silly project, I-- between Twitter and Blue Sky since 2011, I have around 275,000 posts.
+
+**Bobby:** Um, and so that's enough that you can kinda train a robot to sound like you. And so I, I took a Qwen, Qwen 3 something model, or m- maybe it was a high two-point whatever, 2.8 or six or something. But I, I took that and I was doing some LoRA training to, with my tweets, try and get it to basically just have a bot account that would post kind of like me and my friends could laugh at it and then be like, "Why are-- You're, you're killing the forest."
+
+I'm like, "No, I'm not. It's running on a MacBook on my desk." And, uh, it, it-- that was, that was sort of the fun, fun joke that expo- exposed me to it, and then it, it just went on from there. 
+
+**Andrew:** ~~How much~~
+
+~~did you have to love--~~
+
+**Justin:** I'm seeing a pattern. Sorry,~~ go ~~
+
+**Andrew:** How much did you have to lobotomize the model to get to yourself? Sorry.
+
+**Bobby:** Oh, God. Um, the, you know, you go down to the one-bit quantizations and it becomes pretty truly useless. What an earnest 
+
+**Andrew:** Cool. 
+
+
+#### [00:43:50] Five Year Coding Predictions
+
+**Andrew:** So wrapping up, looking to the future, I think we've covered a lot of where you wanna take Deciduous teams sharing collaboration, but where do you think coding at large is going? ~~Where,~~ where do you think we're gonna be at in five years? I know six months is everybody's general, uh, assumption, but I th- I think the profession's gonna look a lot different very soon.
+
+Uh, we're just in the throes of it right now.
+
+**Bobby:** Mm-hmm. I think that this is a huge growth phase in that like fundamentally I don't know what it's gonna look like, but I'm going to put on my gloves and hat and go out there and just start making stuff and trying to like keep working in these interesting systems that are growing with this new world and not like being left behind with it.
+
+Um, but like in five years I think that, you know, one of the big things is like I don't think people will read source code. Uh, I think that stacked diff viewers that tie into documentation engines are gonna be much more useful than any kind of like text editor. Um- Version control is all gonna fundamentally change.
+
+It has to. Um, tho-those are sort of the big three that I think are, like, definitely probably gonna be a thing. Um, I do think that we're gonna have to really, really reevaluate how we think about junior developers and the cost of writing code versus the cost of creating people who can be wise enough to keep the code that's being written to be good.
+
+Um, teaching someone how to think is difficult, and when you are getting people who are used to sort of not having to think under it, that's a classic generational gap problem, but it's gonna be a bit more extreme here. Um, I do think that I'm on, I'm on your train with regard to local inference, where it's, it's going to be-- That will be the way things work.
+
+I mean, I have a Gemma 4 model with 16K context running on my iPhone 17 Pro. It gets so hot that it'll burn my skin if I have it in my pocket for long and it's on, but, like, it's pretty good. I asked it very obscure questions about Russian literature, and it was just, like, nailing them. Like, how did... You knew about a specific scene in "Pinion" where he almost figures out the meaning of life, but then he turns on a water fountain for a squirrel?
+
+How can you cite that? That's a very specific hard one. But it's, it's been, it's been fun to kind of poke around with that and see, see what's possible. But, you know, I th- I th- another thing I see is, like, there'll become a financial services industry based around programmers to allow you to lease your, your home lab rig that is gonna provide all of your inference.
+
+You know, like, mechanics have to have the truck and tools, and I think we're entering that realm where it's like it is a, it's either a five-figure purchase or something that you consistently lease because you know you need it for the work. Um, and I think that the economics of that'll be interesting.
+
+Like, that's a company that I think no one is thinking about starting, but you could actually do really well with. Um, but as, as all this plays out, it's, it's sure gonna be very interesting, and I'm just gonna try to keep up with the punches because I'm, I'm very good at once you show me something, toying around and experimenting with it and trying to find new ways to use it, but I'm not the best at coming up with a new thing.
+
+I, uh, I, I can go out and try my wacky mad scientist stuff, but I'm, I'm not, I'm not good at making calls, and I'm also very bad at hedging. So when, when I do make the calls, I tend to go all in and then look, either look really silly or do not pass go.
+
+**Andrew:** Well, I'm right there with you on a lot of those points. But thanks for coming on and talking about your work. This was a really fun time, and I think I need to use Deciduous more, 'cause, uh, I love the way you integrated it into your team and that decision-making process. That seems pretty novel and really useful.
+
+So thanks for coming on and talking about it.
+
+**Bobby:** Thank you very much. It was wonderful chatting 
+
+with y'all 
+
+**Justin:** Yeah. Thanks, Bobby 

@@ -34,23 +34,21 @@ We should automate more of this (well at least publishing).
 5. Add section markers
 6. Break sections that are 8+ minutes into clips for secondary YouTube account
 
-## Publishing
+## Andrew Pass and Publishing (automated)
 
-1. Upload video to YouTube
-   1. Make YouTube cover image from figma component
-   2. Download video and subtitles
-   3. Post video to YouTube manually
-   4. Add video description with link to devtools.fm/episode/NUMBER
-   5. Add tags
-   6. Add sections
-2. Publish to buzzsprout from descript
-   1. Add show notes
-   2. Add short description
-   3. Add tags
-   4. Add sections
-3. Create devtools.fm post
-   1. Add links
-   2. Add title
-   3. Add show notes
-   4. Add sections
-   5. Add transcript
+Everything after "Editor Handoff" in the episode issue checklist runs from Claude Code:
+
+```
+/publish-episode <N>                 # Andrew Pass → exports → website → thumbnail → drafts → go-live
+/publish-episode <N> --post-launch   # Spotify link on the website
+```
+
+It pauses twice: once to review the Descript edits, and once before anything goes public. The runbook is `.agents/skills/publish-episode/SKILL.md`. The scripts are in `scripts/publish/` (run `pnpm episode:<name>`), and the fixed settings are in `publish.config.json`.
+
+- **Descript (API):** stinger, intro/outro, guest name cards, the free/paid split, ad insertion, chapters, rendering, and transcript exports. The Underlord prompts are in `scripts/publish/underlord-prompts.ts`.
+- **Website:** `pages/episode/<N>.mdx` is built from the Descript transcript and chapters.
+- **YouTube (API):** private uploads with description, chapters, tags, thumbnail and captions, made public once approved (nothing is scheduled). End screens and the paid video's members-only 9pm launch are done in YouTube Studio through the browser.
+- **Spotify for Creators, Patreon (browser):** driven with `agent-browser` in a logged-in `devtoolsfm` session.
+- **Art:** the YouTube thumbnail and guest name cards are rendered from the Figma vectors in `assets/thumbnail/` (font: Paytone One).
+
+Setup (once per machine): run `pnpm episode:doctor --browser` and follow its instructions. That covers the Descript API token, the YouTube OAuth client, agent-browser logins, and ffmpeg.
