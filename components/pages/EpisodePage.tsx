@@ -14,8 +14,8 @@ import {
   NavControls,
   NavIcon,
   navClassName,
-  navStyles,
   tabClassName,
+  tabListClassName,
 } from "components/BrowserNav";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
@@ -87,15 +87,14 @@ const panelId = (view: string) => `episode-panel-${view.replace(/\W+/g, "-")}`;
  * Server-rendered devtools-style tabs. The first tab is selected in the HTML;
  * the script in src/pages/episode/[episodeNumber].astro handles switching,
  * ?view= syncing, and keyboard navigation (data-episode-tabs).
+ *
+ * As on the Next.js site, the selected tab is marked only by the underline
+ * from `.devtools-tablist` (aria-selected), not devtools-ds' blue selected style.
  */
 const EpisodeTabs = ({ tabs }: { tabs: EpisodeTab[] }) => (
-  <nav
-    className={navClassName}
-    data-episode-tabs
-    data-selected-class={navStyles.selected}
-  >
+  <nav className={navClassName} data-episode-tabs>
     <NavControls>
-      <div role="tablist" className={navStyles.overflow}>
+      <div role="tablist" className={tabListClassName}>
         {tabs.map((tab, index) => (
           <button
             key={tab.view}
@@ -106,7 +105,7 @@ const EpisodeTabs = ({ tabs }: { tabs: EpisodeTab[] }) => (
             aria-selected={index === 0}
             tabIndex={index === 0 ? 0 : -1}
             data-view={tab.view}
-            className={tabClassName(index === 0)}
+            className={tabClassName(false)}
           >
             <NavIcon>{tab.icon}</NavIcon>
             <div>{tab.label}</div>

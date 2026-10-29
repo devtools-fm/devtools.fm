@@ -26,6 +26,9 @@ export const NavIcon = ({ children }: { children: ReactNode }) => (
   <div className={navStyles.icon}>{children}</div>
 );
 
+/** The tab strip; `.devtools-tablist` (globals.css) adds the old @reach/tabs look. */
+export const tabListClassName = makeClass(navStyles.overflow, "devtools-tablist");
+
 export function tabClassName(selected: boolean, className?: string) {
   return makeClass(
     className,
@@ -90,7 +93,7 @@ interface SiteNavProps extends ComponentProps<"div"> {
 export const SiteNav = ({ active, className, children, ...props }: SiteNavProps) => (
   <nav className={navClassName}>
     <NavControls>
-      <div className={navStyles.overflow}>
+      <div className={tabListClassName}>
         {siteLinks.map((link) => (
           <a
             key={link.id}
