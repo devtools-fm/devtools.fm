@@ -1,6 +1,4 @@
-"use client";
-
-import { AutoThemeProvider } from "@devtools-ds/themes";
+import { ThemeProvider } from "@devtools-ds/themes";
 import { LinkShieldList } from "components/LinkShieldList";
 import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
 
@@ -18,7 +16,7 @@ const FooterLink = (
 };
 
 export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
-  // Now that this is a client component, we can safely use Date
+  // Rendered at build time; the site rebuilds whenever an episode is added.
   const year = new Date().getFullYear();
 
   return (
@@ -41,7 +39,7 @@ export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
         )}
 
         <p className="text-sm mb-8">
-          Built with <FooterLink href="https://nextjs.org">Next.js</FooterLink>
+          Built with <FooterLink href="https://astro.build">Astro</FooterLink>
           {", "}
           <FooterLink href="https://github.com/intuit/devtools-ds">
             devtools-ds
@@ -87,15 +85,29 @@ interface PageProps {
   children: React.ReactNode;
   hideShields?: boolean;
   hideFooter?: boolean;
+  /** Extra classes for the .theme-root wrapper (e.g. "home-page"). */
+  className?: string;
 }
 
-export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
+/**
+ * Server-rendered page shell. devtools-ds components always render their light
+ * firefox classes; dark mode is applied purely in CSS (prefers-color-scheme in
+ * globals.css), so no client JS is needed to pick a color scheme.
+ */
+export const Page = ({
+  children,
+  hideFooter,
+  hideShields,
+  className,
+}: PageProps) => {
   return (
-    <AutoThemeProvider theme="firefox" autoStyle>
-      <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
-        <main className="flex flex-col flex-1">{children}</main>
-        {!hideFooter && <Footer hideShields={hideShields} />}
+    <ThemeProvider theme="firefox" colorScheme="light">
+      <div className={className ? `theme-root ${className}` : "theme-root"}>
+        <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
+          <main className="flex flex-col flex-1">{children}</main>
+          {!hideFooter && <Footer hideShields={hideShields} />}
+        </div>
       </div>
-    </AutoThemeProvider>
+    </ThemeProvider>
   );
 };

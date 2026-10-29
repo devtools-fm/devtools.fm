@@ -1,0 +1,61 @@
+---
+import Analytics from "@vercel/analytics/astro";
+import { getSequoiaPublicationUri } from "utils/sequoia";
+
+import "../../styles/globals.css";
+import "@devtools-ds/icon/dist/main.css";
+import "@devtools-ds/navigation/dist/main.css";
+// Both of these set `:root { --textColor }`; globals.css pins the value on
+// .theme-root so the result doesn't depend on stylesheet order.
+import "@devtools-ds/object-inspector/dist/main.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  documentUri?: string;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.pathname,
+  image = "/opengraph-image.png",
+  documentUri,
+} = Astro.props;
+const canonicalUrl = new URL(canonical, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+const publicationUri = getSequoiaPublicationUri();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalUrl} />
+    {publicationUri && <link rel="site.standard.publication" href={publicationUri} />}
+    {documentUri && <link rel="site.standard.document" href={documentUri} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={imageUrl} />
+  </head>
+  <body>
+    <slot />
+    <Analytics />
+  </body>
+</html>

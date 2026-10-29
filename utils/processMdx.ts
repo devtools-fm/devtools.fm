@@ -1,18 +1,59 @@
-import { serialize } from "next-mdx-remote/serialize";
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 import matter from "gray-matter";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { PromiseValue } from "type-fest";
+import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { unified } from "unified";
 
 import { buildEpisodeDescription, normalizeEpisodeDescription } from "utils/episodeDescription";
 
 const hosts = ["Andrew", "Justin"];
+const STANDALONE_MDX_COMMENT_REGEX = /^\s*\{\/\*.*\*\/\}\s*$/gm;
+
+type HastNode = {
+  type: string;
+  tagName?: string;
+  value?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+};
+
+function hastText(node: HastNode): string {
+  if (node.type === "text") return node.value || "";
+  return (node.children || []).map(hastText).join("");
+}
+
+// Mirrors the old next-mdx-remote `strong` component: Andrew's speaker labels
+// are blue, everyone else's are purple (see `.episode-content strong` in globals.css).
+function rehypeSpeakerColors() {
+  return (tree: HastNode) => {
+    const visit = (node: HastNode) => {
+      if (node.type === "element" && node.tagName === "strong" && hastText(node).includes("Andrew")) {
+        node.properties = { ...node.properties, className: ["speaker-andrew"] };
+      }
+      node.children?.forEach(visit);
+    };
+    visit(tree);
+  };
+}
+
+async function renderMarkdown(raw: string) {
+  return String(
+    await unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkRehype)
+      .use(rehypeSpeakerColors)
+      .use(rehypeStringify)
+      .process(raw.replace(STANDALONE_MDX_COMMENT_REGEX, ""))
+  );
+}
 
 export function parsePodcastSections(raw: string) {
   const sections: { time: string; title: string }[] = [];
 
-  raw.split("\n").map((line) => {
+  raw.split("\n").forEach((line) => {
     const [, time, title] = line.match(/^(\[[\d:]+\]) (.*)/) || [];
 
     if (time && title) {
@@ -23,10 +64,16 @@ export function parsePodcastSections(raw: string) {
   return sections;
 }
 
+// Fallback only: every episode sets publishDate/date in frontmatter. Vercel builds
+// from a shallow clone, so git history here is not reliable outside local dev.
 function getGitCreationDate(filename: string) {
-  return execSync(`git log --format=%aD ${filename} | tail -1`, {
-    encoding: "utf-8",
-  });
+  try {
+    return execSync(`git log --format=%aD ${filename} | tail -1`, {
+      encoding: "utf-8",
+    }).trim();
+  } catch {
+    return "";
+  }
 }
 
 const TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*(.*)\s*-->|\{?\/\*\s*TAB:\s*(.*)\s*\*\/\}?)/;
@@ -65,12 +112,12 @@ function peekableIterator(array: string[]) {
 export interface ShowNotesTab {
   type: "SHOW NOTES";
   description: string;
-  mdx: MDXRemoteSerializeResult;
+  html: string;
 }
 
 export interface MDXTab {
   type: string;
-  mdx: MDXRemoteSerializeResult;
+  html: string;
 }
 
 export interface SectionsTab {
@@ -81,12 +128,12 @@ export interface SectionsTab {
 export interface TranscriptTab {
   type: "TRANSCRIPT";
   raw: string;
-  mdx: MDXRemoteSerializeResult;
+  html: string;
 }
 
 export type TabSection = ShowNotesTab | SectionsTab | TranscriptTab | MDXTab;
 
-async function parseTabs(raw: string, components: any) {
+async function parseTabs(raw: string) {
   const tabs: TabSection[] = [];
   const lineIterator = peekableIterator(raw.trim().split("\n"));
 
@@ -116,12 +163,7 @@ async function parseTabs(raw: string, components: any) {
       }
 
       showNotesTab.description = showNotesTab.description?.trim() || "";
-      showNotesTab.mdx = await serialize(mdx, {
-        mdxOptions: {
-          development: process.env.NODE_ENV === "development",
-          remarkPlugins: [remarkGfm],
-        },
-      });
+      showNotesTab.html = await renderMarkdown(mdx);
 
       tabs.push(showNotesTab as ShowNotesTab);
     } else if (line.match(SECTIONS_TAB_SECTION_REGEX)) {
@@ -155,12 +197,7 @@ async function parseTabs(raw: string, components: any) {
       }
 
       transcriptTab.raw = mdx;
-      transcriptTab.mdx = await serialize(mdx, {
-        mdxOptions: {
-          development: process.env.NODE_ENV === "development",
-          remarkPlugins: [remarkGfm],
-        },
-      });
+      transcriptTab.html = await renderMarkdown(mdx);
 
       tabs.push(transcriptTab as TranscriptTab);
     } else {
@@ -179,12 +216,7 @@ async function parseTabs(raw: string, components: any) {
         }
       }
 
-      mdxTab.mdx = await serialize(mdx, {
-        mdxOptions: {
-          development: process.env.NODE_ENV === "development",
-          remarkPlugins: [remarkGfm],
-        },
-      });
+      mdxTab.html = await renderMarkdown(mdx);
 
       tabs.push(mdxTab as MDXTab);
     }
@@ -205,12 +237,27 @@ interface FrontMatter {
   atUri?: string;
 }
 
+export interface ProcessedMdx {
+  number: string;
+  hosts: string[];
+  postCreationDate: string;
+  guests: string[];
+  runTime: string;
+  youtubeId: string;
+  thumbnailId: string | null;
+  spotifyEpisodeId: string | null;
+  spotifyEpisodeIdAlt: string | null;
+  frontMatter: FrontMatter;
+  tabSections: TabSection[];
+  description: string;
+  transcript: string;
+}
+
 export async function processMdx(
   filename: string,
-  components: any,
   includeTranscriptAndDescription = false,
   includeSection = true
-) {
+): Promise<ProcessedMdx> {
   const { data, content } = matter.read(filename);
 
   const numberMatch = filename.match(/\/(\d+)\.mdx$/);  
@@ -224,16 +271,16 @@ export async function processMdx(
   const spotifyAltMatch = data.spotify.match(/\/episode\/(.+)/);
   const spotifyEpisodeIdAlt = spotifyAltMatch?.[1] || null;
 
-  const tabSections = await parseTabs(content, components);
+  const tabSections = await parseTabs(content);
   const showNotesTab = tabSections.find(
-    (tab) => tab.type === "SHOW NOTES"
-  ) as ShowNotesTab;
+    (tab): tab is ShowNotesTab => "description" in tab
+  );
   const sectionsTab = tabSections.find(
-    (tab) => tab.type === "SECTIONS"
-  ) as SectionsTab;
+    (tab): tab is SectionsTab => "sections" in tab
+  );
   const transcriptTab = tabSections.find(
-    (tab) => tab.type === "TRANSCRIPT"
-  ) as TranscriptTab;
+    (tab): tab is TranscriptTab => "raw" in tab
+  );
 
   const guests = new Set<string>();
 
@@ -270,4 +317,3 @@ export async function processMdx(
   };
 }
 
-export type ProcessedMdx = PromiseValue<ReturnType<typeof processMdx>>;

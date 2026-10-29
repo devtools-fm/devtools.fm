@@ -1,6 +1,6 @@
 import makeClass from "clsx";
 import { firefox } from "@devtools-ds/themes";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { ColoredText } from "components/ColoredText";
 
 export const H1 = ({ className, ...props }: ComponentProps<"h1">) => (

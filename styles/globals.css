@@ -1,7 +1,13 @@
 @import "tailwindcss";
+/*
+ * Used by ObjectInspector (home page hosts). Imported here rather than from JS:
+ * the package's sideEffects field ("*.css") doesn't match dist/main.css, so a JS
+ * import of it is tree-shaken out of the bundle.
+ */
+@import "@devtools-ds/tree/dist/main.css";
 
-@source "components/**/*.{js,jsx,ts,tsx}";
-@source "pages/**/*.{js,jsx,ts,tsx}";
+@source "../components/**/*.{js,jsx,ts,tsx}";
+@source "../src/**/*.{astro,js,jsx,ts,tsx}";
 
 @theme {
   --color-*: initial;
@@ -13,32 +19,239 @@
   }
 }
 
-/* Default light theme */
+/* Match the server-rendered theme to the system preference before hydration. */
 :root {
   color-scheme: light;
+  --theme-background: #ffffff;
+  --theme-text: #47474c;
+  --theme-blue: #007feb;
+  --theme-purple: #e51ebb;
+  --theme-gray: #181818;
+  --theme-dimmed-text: #575757;
+  --browser-divider: 0.05rem solid #cccccc;
+  --browser-topbar: linear-gradient(
+    rgba(244, 244, 244, 1) 0%,
+    rgba(211, 211, 212, 1) 99%,
+    rgba(174, 174, 173, 1) 100%
+  );
+  --browser-border: 0.05rem solid #aeaeae;
+  --browser-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07),
+    0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.07),
+    0 16px 32px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.07);
 }
 
-/* Dark theme for users with dark mode preference */
+.theme-root {
+  width: 100%;
+  min-height: 100%;
+  color: var(--theme-text);
+  background-color: var(--theme-background);
+  /*
+   * Light-mode text color for devtools-ds components (nav panels use
+   * var(--textColor)). Navigation's and ObjectInspector's CSS both set it on
+   * :root (#181818 vs #6a6a6a), so pin the Next.js site's values here: the home
+   * page, the only one that loaded ObjectInspector, got its gray.
+   */
+  --textColor: #181818;
+}
+
+@media not (prefers-color-scheme: dark) {
+  .theme-root.home-page {
+    --textColor: #6a6a6a;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
+    --theme-background: #232327;
+    --theme-text: #bababb;
+    --theme-blue: #5dc0ff;
+    --theme-purple: #eb7ed9;
+    --theme-gray: #e9e9e9;
+    --theme-dimmed-text: #9d9d9e;
+    --browser-divider: black;
+    --browser-topbar: linear-gradient(
+      rgba(67, 67, 67, 1) 0%,
+      rgba(55, 55, 55, 1) 99%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    --browser-border: #888888;
+    --browser-shadow: 0 20px 68px rgba(0, 0, 0, 0.55);
   }
-  
+
   html {
-    background-color: #0c0c0d;
     color: #f9f9fa;
+    background-color: #0c0c0d;
+  }
+
+  .theme-root {
+    --labelColor: #6fb9ff;
+    --textColor: #9d9d9e;
+    --keyColor: #6fb9ff;
+    --valueColor: #eb7ed9;
+    --stringColor: #eb7ed9;
+    --regexColor: #6fb9ff;
+    --errorColor: #ffaed3;
+    --booleanColor: #81df6c;
+    --numberColor: #81df6c;
+    --undefinedColor: #9d9d9e;
+    --nullColor: #9d9d9e;
+    --prototypeColor: #9d9d9e;
+    --functionColor: #6fb9ff;
+    --functionDecoratorColor: #6fb9ff;
+  }
+
+  .theme-root nav {
+    --backgroundColor: #0c0c0d;
+    --textColor: #bababb;
+    --selectedTextColor: white;
+    --selectedIconColor: white;
+    --selectedBarColor: #0a84ff;
+    --hoverBarColor: #404046;
+    --hoverBackgroundColor: #27272c;
+    --dividerColor: #404046;
+  }
+
+  /* The host ObjectInspectors sit inside the nav; restore the inspector's own text color. */
+  .theme-root nav .hosts {
+    --textColor: #9d9d9e;
   }
 }
 
-/* Light theme for users with light mode preference */
 @media (prefers-color-scheme: light) {
   html {
-    background-color: #ffffff;
     color: #0c0c0d;
+    background-color: #ffffff;
   }
 }
 
 html,
 body {
   font-family: Menlo, monospace;
+}
+
+/*
+ * Tab-list look the Next.js site got from @reach/tabs/styles.css (which the
+ * devtools-ds Navigation tabs were built on): a faint tinted strip and a
+ * currentColor underline on the selected tab. Used by BrowserNav and the episode tabs.
+ */
+.devtools-tablist {
+  background: hsla(0, 0%, 0%, 0.05);
+}
+
+.devtools-tablist > [aria-selected="true"],
+.devtools-tablist > [aria-current="page"] {
+  border-bottom-color: currentColor;
+}
+
+.devtools-tablist > :active {
+  background: hsla(0, 0%, 0%, 0.05);
+}
+
+/*
+ * Browser-window frame (components/Browser.tsx). Ported from react-window-ui's
+ * grayscale Browser with the props the site used, so it needs no client JS.
+ */
+.browser-window {
+  position: relative;
+  z-index: 2;
+  overflow: auto;
+  min-width: 11rem;
+  min-height: 11rem;
+  max-width: 100%;
+  padding: 32px 0 0 0;
+  border: var(--browser-border);
+  border-radius: 0.5rem;
+  background: inherit;
+  box-shadow: var(--browser-shadow);
+}
+
+/* Title bar */
+.browser-window::before {
+  content: "devtools.fm";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  border-bottom: var(--browser-divider);
+  border-top-left-radius: 0.4rem;
+  border-top-right-radius: 0.4rem;
+  background: var(--browser-topbar);
+  background-clip: padding-box;
+  color: inherit;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji";
+  text-align: center;
+}
+
+/* Traffic-light dots */
+.browser-window::after {
+  content: "";
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 2;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8d8d92;
+  box-shadow:
+    0 0 0 0.2rem #8d8d92,
+    1.1rem 0 0 0.2rem #8d8d92,
+    2.2rem 0 0 0.2rem #8d8d92;
+}
+
+/* Sizes and line-heights match the Tailwind classes the old MDX components used
+   (h2 text-2xl, h3 text-xl, h4 text-lg). */
+.episode-content h2 {
+  margin: 1.5rem 0 1rem;
+  font-size: var(--text-2xl);
+  line-height: var(--text-2xl--line-height);
+}
+
+.episode-content h3 {
+  margin: 1rem 0;
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+}
+
+.episode-content h4 {
+  font-size: var(--text-lg);
+  line-height: var(--text-lg--line-height);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.episode-content p {
+  margin: 1rem 0;
+}
+
+.episode-content a {
+  color: var(--theme-blue);
+  text-decoration: underline;
+}
+
+.episode-content strong {
+  color: var(--theme-purple);
+  font-weight: 600;
+}
+
+.episode-content strong.speaker-andrew {
+  color: var(--theme-blue);
+}
+
+.episode-content blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid #6f6f78;
+}
+
+.episode-content pre {
+  overflow-x: auto;
+  margin: 1rem 0;
+  padding: 1rem;
 }

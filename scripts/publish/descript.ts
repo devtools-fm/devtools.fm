@@ -17,7 +17,7 @@ import fs from "fs";
 import path from "path";
 
 import {
-  CompositionKind,
+  type CompositionKind,
   config,
   download,
   episodeFile,

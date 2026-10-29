@@ -1,10 +1,7 @@
-import { useTheme } from "@devtools-ds/themes";
 import makeClass from "clsx";
-import { coloredTextTheme } from "./ColoredText";
 
 export const ThemedLink = (props: React.ComponentProps<"a">) => {
-  const { currentColorScheme, currentTheme } = useTheme({});
-  const color = coloredTextTheme[currentColorScheme].blue;
+  const color = "var(--theme-blue)";
 
   return (
     <a

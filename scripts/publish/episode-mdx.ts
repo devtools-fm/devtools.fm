@@ -246,7 +246,7 @@ function setField(episode: string, field: string, value: string) {
 }
 
 async function check(file: string) {
-  const parsed = await processMdx(file, {}, true, true);
+  const parsed = await processMdx(file, true, true);
   const { data } = matter.read(file);
   const sections = parsed.tabSections.find((tab) => tab.type === "SECTIONS") as any;
 

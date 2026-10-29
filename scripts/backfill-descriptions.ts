@@ -55,7 +55,7 @@ async function main() {
     const absolutePath = path.join(EPISODE_DIR, file);
     const raw = await fs.readFile(absolutePath, "utf8");
     const existingDescription = parseExistingDescription(raw);
-    const processed = await processMdx(absolutePath, {}, false, true);
+    const processed = await processMdx(absolutePath, false, true);
     const description = normalizeEpisodeDescription(processed.description);
 
     if (!description) {

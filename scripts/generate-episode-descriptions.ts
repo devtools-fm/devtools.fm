@@ -87,7 +87,7 @@ async function loadEpisodeContext(file: string) {
   const absolutePath = path.join(EPISODE_DIR, file);
   const raw = await fs.readFile(absolutePath, "utf8");
   const parsed = matter(raw);
-  const processed = await processMdx(absolutePath, {}, false, true);
+  const processed = await processMdx(absolutePath, false, true);
   const showNotesTab = processed.tabSections.find((tab) => tab.type === "SHOW NOTES");
 
   return {

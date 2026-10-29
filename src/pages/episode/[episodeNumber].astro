@@ -1,0 +1,114 @@
+---
+export const prerender = true;
+
+import fs from "node:fs";
+import path from "node:path";
+
+import EpisodePage from "components/pages/EpisodePage";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getSequoiaDocumentUri } from "utils/sequoia";
+import { processMdx, type ProcessedMdx } from "utils/processMdx";
+
+interface Props {
+  episode: ProcessedMdx;
+}
+
+export async function getStaticPaths() {
+  const episodeFiles = fs
+    .readdirSync(path.join(process.cwd(), "pages/episode"))
+    .filter((file) => file.endsWith(".mdx"));
+
+  return Promise.all(
+    episodeFiles.map(async (file) => {
+      const episodeNumber = path.basename(file, ".mdx");
+      const episode = await processMdx(
+        path.join(process.cwd(), "pages/episode", file),
+        false,
+        true
+      );
+
+      return {
+        params: { episodeNumber },
+        props: { episode },
+      };
+    })
+  );
+}
+
+const { episode } = Astro.props;
+const episodeNumber = Astro.params.episodeNumber!;
+const episodeNumberString = `Episode #${episodeNumber}`;
+const title = `${episodeNumberString}: ${episode.frontMatter.title}`;
+const image = `/episode/${episodeNumber}/opengraph-image.png`;
+const documentUri = getSequoiaDocumentUri(episodeNumber);
+---
+
+<BaseLayout
+  title={title}
+  description={episode.description}
+  canonical={`/episode/${episodeNumber}`}
+  image={image}
+  documentUri={documentUri ?? undefined}
+>
+  <EpisodePage
+    youtubeId={episode.youtubeId}
+    tabSections={episode.tabSections}
+    episodeNumberString={episodeNumberString}
+    title={episode.frontMatter.title}
+    spotifyEpisodeId={episode.spotifyEpisodeId ?? undefined}
+    spotifyEpisodeIdAlt={episode.spotifyEpisodeIdAlt ?? undefined}
+    sponsor={episode.frontMatter.sponsor}
+  />
+</BaseLayout>
+
+<script>
+  // Tab switching for the server-rendered EpisodeTabs (components/pages/EpisodePage.tsx).
+  // Mirrors the old devtools-ds/@reach tabs: ?view=<tab> selects a tab, clicks push
+  // history entries, back/forward restore the tab, and arrow keys move focus.
+  for (const root of document.querySelectorAll<HTMLElement>("[data-episode-tabs]")) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((tab) =>
+      document.getElementById(tab.getAttribute("aria-controls") ?? "")
+    );
+    const select = (index: number) => {
+      tabs.forEach((tab, i) => {
+        const selected = i === index;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        if (panels[i]) panels[i].hidden = !selected;
+      });
+    };
+
+    const indexFromUrl = () => {
+      const view = new URLSearchParams(location.search).get("view")?.toLowerCase();
+      const index = tabs.findIndex((tab) => tab.dataset.view === view);
+      return index >= 0 ? index : 0;
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        if (tab.getAttribute("aria-selected") === "true") return;
+        select(index);
+        const params = new URLSearchParams(location.search);
+        params.set("view", tab.dataset.view ?? "");
+        history.pushState({}, "", `${location.pathname}?${params}${location.hash}`);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        const last = tabs.length - 1;
+        const next =
+          event.key === "ArrowRight" ? (index === last ? 0 : index + 1)
+          : event.key === "ArrowLeft" ? (index === 0 ? last : index - 1)
+          : event.key === "Home" ? 0
+          : event.key === "End" ? last
+          : null;
+        if (next === null) return;
+        event.preventDefault();
+        tabs[next].focus();
+      });
+    });
+
+    select(indexFromUrl());
+    addEventListener("popstate", () => select(indexFromUrl()));
+  }
+</script>
