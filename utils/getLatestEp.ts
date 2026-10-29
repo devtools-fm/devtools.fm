@@ -8,7 +8,11 @@ export async function getLatestEp() {
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   const latestEpisodeNumber = episodes[episodes.length - 1];
 
+  // Only the episode-row fields are used, so skip the rendered tab sections
+  // (including the full transcript) to keep them out of the island props.
   return await processMdx(
-    path.join(process.cwd(), "pages/episode", latestEpisodeNumber)
+    path.join(process.cwd(), "pages/episode", latestEpisodeNumber),
+    false,
+    false
   );
 }

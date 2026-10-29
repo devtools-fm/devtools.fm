@@ -11,12 +11,40 @@ import { buildEpisodeDescription, normalizeEpisodeDescription } from "utils/epis
 const hosts = ["Andrew", "Justin"];
 const STANDALONE_MDX_COMMENT_REGEX = /^\s*\{\/\*.*\*\/\}\s*$/gm;
 
+type HastNode = {
+  type: string;
+  tagName?: string;
+  value?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+};
+
+function hastText(node: HastNode): string {
+  if (node.type === "text") return node.value || "";
+  return (node.children || []).map(hastText).join("");
+}
+
+// Mirrors the old next-mdx-remote `strong` component: Andrew's speaker labels
+// are blue, everyone else's are purple (see `.episode-content strong` in globals.css).
+function rehypeSpeakerColors() {
+  return (tree: HastNode) => {
+    const visit = (node: HastNode) => {
+      if (node.type === "element" && node.tagName === "strong" && hastText(node).includes("Andrew")) {
+        node.properties = { ...node.properties, className: ["speaker-andrew"] };
+      }
+      node.children?.forEach(visit);
+    };
+    visit(tree);
+  };
+}
+
 async function renderMarkdown(raw: string) {
   return String(
     await unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkRehype)
+      .use(rehypeSpeakerColors)
       .use(rehypeStringify)
       .process(raw.replace(STANDALONE_MDX_COMMENT_REGEX, ""))
   );
@@ -25,7 +53,7 @@ async function renderMarkdown(raw: string) {
 export function parsePodcastSections(raw: string) {
   const sections: { time: string; title: string }[] = [];
 
-  raw.split("\n").map((line) => {
+  raw.split("\n").forEach((line) => {
     const [, time, title] = line.match(/^(\[[\d:]+\]) (.*)/) || [];
 
     if (time && title) {
@@ -36,10 +64,16 @@ export function parsePodcastSections(raw: string) {
   return sections;
 }
 
+// Fallback only: every episode sets publishDate/date in frontmatter. Vercel builds
+// from a shallow clone, so git history here is not reliable outside local dev.
 function getGitCreationDate(filename: string) {
-  return execSync(`git log --format=%aD ${filename} | tail -1`, {
-    encoding: "utf-8",
-  });
+  try {
+    return execSync(`git log --format=%aD ${filename} | tail -1`, {
+      encoding: "utf-8",
+    }).trim();
+  } catch {
+    return "";
+  }
 }
 
 const TAB_SECTION_REGEX = /^(?:<!--\s*TAB:\s*(.*)\s*-->|\{?\/\*\s*TAB:\s*(.*)\s*\*\/\}?)/;

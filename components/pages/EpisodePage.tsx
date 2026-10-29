@@ -12,7 +12,7 @@ import {
 } from "@devtools-ds/icon";
 import { Navigation } from "@devtools-ds/navigation";
 import { titleCase } from "title-case";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Browser } from "components/Browser";
 import { ColoredText } from "components/ColoredText";
@@ -96,7 +96,7 @@ export default function EpisodeClient({
     ? (Array.isArray(sponsor) ? sponsor : [sponsor])
     : [];
 
-  const [activeTab, setActiveTab] = useState(() => {
+  const getTabFromUrl = () => {
     const view =
       typeof window === "undefined"
         ? null
@@ -111,7 +111,16 @@ export default function EpisodeClient({
     }
 
     return 0;
-  });
+  };
+
+  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+
+  // Keep the visible tab in sync with ?view= when navigating back/forward.
+  useEffect(() => {
+    const onPopState = () => setActiveTab(getTabFromUrl());
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [tabSections]);
 
   return (
     <Page>
@@ -185,16 +194,21 @@ export default function EpisodeClient({
               ? "youtube"
               : tabSections[index].type.toLowerCase();
 
-          const url = new URL(window.location.href);
-          url.searchParams.set("view", newView);
-          window.history.pushState({}, "", url);
+          const params = new URLSearchParams(window.location.search);
+          params.set("view", newView);
+          window.history.pushState(
+            {},
+            "",
+            `${window.location.pathname}?${params}${window.location.hash}`
+          );
           setActiveTab(index);
         }}
       >
         <Navigation.Controls className="overflow-x-auto">
+          {/* Tabs must be direct children: TabList clones each child with its `index`. */}
           <Navigation.TabList>
-            <>
-              {tabSections.map((tabSection) => (
+            {[
+              ...tabSections.map((tabSection) => (
                 <Navigation.Tab
                   key={tabSection.type}
                   id="about"
@@ -202,11 +216,15 @@ export default function EpisodeClient({
                 >
                   {titleCase(tabSection.type.toLowerCase())}
                 </Navigation.Tab>
-              ))}
-              <Navigation.Tab id="youtube" icon={<ConsoleIcon inline />}>
+              )),
+              <Navigation.Tab
+                key="youtube"
+                id="youtube"
+                icon={<ConsoleIcon inline />}
+              >
                 YouTube
-              </Navigation.Tab>
-            </>
+              </Navigation.Tab>,
+            ]}
           </Navigation.TabList>
 
           <Navigation.Right>

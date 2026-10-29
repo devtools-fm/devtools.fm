@@ -41,6 +41,15 @@ const episodeNumberString = `Episode #${episodeNumber}`;
 const title = `${episodeNumberString}: ${episode.frontMatter.title}`;
 const image = `/episode/${episodeNumber}/opengraph-image.png`;
 const documentUri = getSequoiaDocumentUri(episodeNumber);
+// The transcript's raw markdown is only needed at build time (guest detection);
+// drop it so the island props don't ship the transcript a second time.
+const tabSections = episode.tabSections.map((tab) => {
+  if ("raw" in tab) {
+    const { raw: _raw, ...rest } = tab;
+    return rest;
+  }
+  return tab;
+});
 ---
 
 <BaseLayout
@@ -48,11 +57,11 @@ const documentUri = getSequoiaDocumentUri(episodeNumber);
   description={episode.description}
   canonical={`/episode/${episodeNumber}`}
   image={image}
-  documentUri={documentUri}
+  documentUri={documentUri ?? undefined}
 >
   <EpisodePage
     youtubeId={episode.youtubeId}
-    tabSections={episode.tabSections}
+    tabSections={tabSections}
     episodeNumberString={episodeNumberString}
     title={episode.frontMatter.title}
     spotifyEpisodeId={episode.spotifyEpisodeId ?? undefined}
