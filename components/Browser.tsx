@@ -1,24 +1,20 @@
-import { Browser as BrowserWindow } from "react-window-ui";
+import makeClass from "clsx";
 
 interface BrowserProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export const Browser = ({ children }: BrowserProps) => {
+/**
+ * A grayscale browser-window frame around page content. Plain CSS
+ * (`.browser-window` in styles/globals.css) so it renders without client JS;
+ * this replaced react-window-ui, whose styled-components styles only exist
+ * after hydration.
+ */
+export const Browser = ({ children, className }: BrowserProps) => {
   return (
-    <BrowserWindow
-      padding="32px 0 0 0"
-      className="mb-12 md:mb-20"
-      background="inherit"
-      grayscale={true}
-      topbarTitle="devtools.fm"
-      topbarTitleColor="inherit"
-      divider="var(--browser-divider)"
-      topbarColor="var(--browser-topbar)"
-      border="var(--browser-border)"
-      boxShadow="var(--browser-shadow)"
-    >
+    <div className={makeClass("browser-window mb-12 md:mb-20", className)}>
       {children}
-    </BrowserWindow>
+    </div>
   );
 };

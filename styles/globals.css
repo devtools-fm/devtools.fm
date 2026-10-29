@@ -1,4 +1,10 @@
 @import "tailwindcss";
+/*
+ * Used by ObjectInspector (home page hosts). Imported here rather than from JS:
+ * the package's sideEffects field ("*.css") doesn't match dist/main.css, so a JS
+ * import of it is tree-shaken out of the bundle.
+ */
+@import "@devtools-ds/tree/dist/main.css";
 
 @source "../components/**/*.{js,jsx,ts,tsx}";
 @source "../src/**/*.{astro,js,jsx,ts,tsx}";
@@ -40,6 +46,19 @@
   min-height: 100%;
   color: var(--theme-text);
   background-color: var(--theme-background);
+  /*
+   * Light-mode text color for devtools-ds components (nav panels use
+   * var(--textColor)). Navigation's and ObjectInspector's CSS both set it on
+   * :root (#181818 vs #6a6a6a), so pin the Next.js site's values here: the home
+   * page, the only one that loaded ObjectInspector, got its gray.
+   */
+  --textColor: #181818;
+}
+
+@media not (prefers-color-scheme: dark) {
+  .theme-root.home-page {
+    --textColor: #6a6a6a;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,6 +112,11 @@
     --hoverBackgroundColor: #27272c;
     --dividerColor: #404046;
   }
+
+  /* The host ObjectInspectors sit inside the nav; restore the inspector's own text color. */
+  .theme-root nav .hosts {
+    --textColor: #9d9d9e;
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -105,6 +129,62 @@
 html,
 body {
   font-family: Menlo, monospace;
+}
+
+/*
+ * Browser-window frame (components/Browser.tsx). Ported from react-window-ui's
+ * grayscale Browser with the props the site used, so it needs no client JS.
+ */
+.browser-window {
+  position: relative;
+  z-index: 2;
+  overflow: auto;
+  min-width: 11rem;
+  min-height: 11rem;
+  max-width: 100%;
+  padding: 32px 0 0 0;
+  border: var(--browser-border);
+  border-radius: 0.5rem;
+  background: inherit;
+  box-shadow: var(--browser-shadow);
+}
+
+/* Title bar */
+.browser-window::before {
+  content: "devtools.fm";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  border-bottom: var(--browser-divider);
+  border-top-left-radius: 0.4rem;
+  border-top-right-radius: 0.4rem;
+  background: var(--browser-topbar);
+  background-clip: padding-box;
+  color: inherit;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji";
+  text-align: center;
+}
+
+/* Traffic-light dots */
+.browser-window::after {
+  content: "";
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 2;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8d8d92;
+  box-shadow:
+    0 0 0 0.2rem #8d8d92,
+    1.1rem 0 0 0.2rem #8d8d92,
+    2.2rem 0 0 0.2rem #8d8d92;
 }
 
 .episode-content h2 {

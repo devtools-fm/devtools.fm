@@ -41,15 +41,6 @@ const episodeNumberString = `Episode #${episodeNumber}`;
 const title = `${episodeNumberString}: ${episode.frontMatter.title}`;
 const image = `/episode/${episodeNumber}/opengraph-image.png`;
 const documentUri = getSequoiaDocumentUri(episodeNumber);
-// The transcript's raw markdown is only needed at build time (guest detection);
-// drop it so the island props don't ship the transcript a second time.
-const tabSections = episode.tabSections.map((tab) => {
-  if ("raw" in tab) {
-    const { raw: _raw, ...rest } = tab;
-    return rest;
-  }
-  return tab;
-});
 ---
 
 <BaseLayout
@@ -61,12 +52,66 @@ const tabSections = episode.tabSections.map((tab) => {
 >
   <EpisodePage
     youtubeId={episode.youtubeId}
-    tabSections={tabSections}
+    tabSections={episode.tabSections}
     episodeNumberString={episodeNumberString}
     title={episode.frontMatter.title}
     spotifyEpisodeId={episode.spotifyEpisodeId ?? undefined}
     spotifyEpisodeIdAlt={episode.spotifyEpisodeIdAlt ?? undefined}
     sponsor={episode.frontMatter.sponsor}
-    client:load
   />
 </BaseLayout>
+
+<script>
+  // Tab switching for the server-rendered EpisodeTabs (components/pages/EpisodePage.tsx).
+  // Mirrors the old devtools-ds/@reach tabs: ?view=<tab> selects a tab, clicks push
+  // history entries, back/forward restore the tab, and arrow keys move focus.
+  for (const root of document.querySelectorAll<HTMLElement>("[data-episode-tabs]")) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((tab) =>
+      document.getElementById(tab.getAttribute("aria-controls") ?? "")
+    );
+    const selectedClass = root.dataset.selectedClass ?? "";
+
+    const select = (index: number) => {
+      tabs.forEach((tab, i) => {
+        const selected = i === index;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        tab.classList.toggle(selectedClass, selected);
+        if (panels[i]) panels[i].hidden = !selected;
+      });
+    };
+
+    const indexFromUrl = () => {
+      const view = new URLSearchParams(location.search).get("view")?.toLowerCase();
+      const index = tabs.findIndex((tab) => tab.dataset.view === view);
+      return index >= 0 ? index : 0;
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => {
+        if (tab.getAttribute("aria-selected") === "true") return;
+        select(index);
+        const params = new URLSearchParams(location.search);
+        params.set("view", tab.dataset.view ?? "");
+        history.pushState({}, "", `${location.pathname}?${params}${location.hash}`);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        const last = tabs.length - 1;
+        const next =
+          event.key === "ArrowRight" ? (index === last ? 0 : index + 1)
+          : event.key === "ArrowLeft" ? (index === 0 ? last : index - 1)
+          : event.key === "Home" ? 0
+          : event.key === "End" ? last
+          : null;
+        if (next === null) return;
+        event.preventDefault();
+        tabs[next].focus();
+      });
+    });
+
+    select(indexFromUrl());
+    addEventListener("popstate", () => select(indexFromUrl()));
+  }
+</script>

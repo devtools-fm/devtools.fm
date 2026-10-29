@@ -1,8 +1,4 @@
-"use client";
-
-import { AutoThemeProvider } from "@devtools-ds/themes";
-import type { ColorScheme } from "@devtools-ds/themes";
-import { useEffect, useState } from "react";
+import { ThemeProvider } from "@devtools-ds/themes";
 import { LinkShieldList } from "components/LinkShieldList";
 import { NewsLetterSubscribe } from "components/NewsletterSubscribe";
 
@@ -20,7 +16,7 @@ const FooterLink = (
 };
 
 export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
-  // Now that this is a client component, we can safely use Date
+  // Rendered at build time; the site rebuilds whenever an episode is added.
   const year = new Date().getFullYear();
 
   return (
@@ -85,45 +81,33 @@ export const Footer = ({ hideShields }: { hideShields?: boolean }) => {
   );
 };
 
-const usePreferredColorScheme = (): ColorScheme => {
-  // Keep the server and initial client render identical, then apply the
-  // browser preference after hydration. This avoids stale inline light-theme
-  // styles when Astro hydrates in a dark-mode browser.
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateColorScheme = () =>
-      setColorScheme(query.matches ? "dark" : "light");
-
-    updateColorScheme();
-    query.addEventListener("change", updateColorScheme);
-
-    return () => query.removeEventListener("change", updateColorScheme);
-  }, []);
-
-  return colorScheme;
-};
-
 interface PageProps {
   children: React.ReactNode;
   hideShields?: boolean;
   hideFooter?: boolean;
+  /** Extra classes for the .theme-root wrapper (e.g. "home-page"). */
+  className?: string;
 }
 
-export const Page = ({ children, hideFooter, hideShields }: PageProps) => {
-  const colorScheme = usePreferredColorScheme();
-
+/**
+ * Server-rendered page shell. devtools-ds components always render their light
+ * firefox classes; dark mode is applied purely in CSS (prefers-color-scheme in
+ * globals.css), so no client JS is needed to pick a color scheme.
+ */
+export const Page = ({
+  children,
+  hideFooter,
+  hideShields,
+  className,
+}: PageProps) => {
   return (
-    <AutoThemeProvider
-      theme="firefox"
-      colorScheme={colorScheme}
-      className="theme-root"
-    >
-      <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
-        <main className="flex flex-col flex-1">{children}</main>
-        {!hideFooter && <Footer hideShields={hideShields} />}
+    <ThemeProvider theme="firefox" colorScheme="light">
+      <div className={className ? `theme-root ${className}` : "theme-root"}>
+        <div className="flex flex-col min-h-screen max-w-4xl mx-auto px-6">
+          <main className="flex flex-col flex-1">{children}</main>
+          {!hideFooter && <Footer hideShields={hideShields} />}
+        </div>
       </div>
-    </AutoThemeProvider>
+    </ThemeProvider>
   );
 };

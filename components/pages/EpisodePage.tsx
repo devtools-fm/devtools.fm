@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ChevronLeftIcon,
   ClipboardIcon,
@@ -7,14 +5,18 @@ import {
   DataIcon,
   InfoIcon,
   ListIcon,
-  MoreInfoIcon,
-  NewWindowIcon,
 } from "@devtools-ds/icon";
-import { Navigation } from "@devtools-ds/navigation";
 import { titleCase } from "title-case";
-import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 import { Browser } from "components/Browser";
+import {
+  NavControls,
+  NavIcon,
+  navClassName,
+  navStyles,
+  tabClassName,
+} from "components/BrowserNav";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import type { SectionsTab, TabSection } from "utils/processMdx";
@@ -32,48 +34,107 @@ function getTabIcon(type: string) {
   }
 }
 
-const MdxPanel = ({ html }: { html: string }) => {
-  return (
-    <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-200">
-      <div
-        className="episode-content"
-        dangerouslySetInnerHTML={{ __html: html }}
+// `html` is produced at build time by renderMarkdown() in utils/processMdx.ts
+// from the repo's own episode files. remark-rehype runs without
+// allowDangerousHtml, so raw HTML in the source is dropped, not passed through.
+const MdxPanel = ({ html }: { html: string }) => (
+  <div className="mx-3 my-4 dark:text-gray-200">
+    <div className="episode-content" dangerouslySetInnerHTML={{ __html: html }} />
+  </div>
+);
+
+const SectionsPanel = ({ sections }: Pick<SectionsTab, "sections">) => (
+  <div className="mx-3 my-4 dark:text-gray-300">
+    {sections.map((section) => (
+      <div key={section.time} className="space-x-2">
+        <ColoredText color="purple">{section.time}</ColoredText>
+        <span>{section.title}</span>
+      </div>
+    ))}
+  </div>
+);
+
+const YouTubePanel = ({ youtubeId }: { youtubeId: string }) => (
+  <div className="mx-3 mb-4">
+    <div className="relative pb-[56.25%]">
+      <iframe
+        allowFullScreen
+        width="100%"
+        height="100%"
+        // Lazy so the hidden panel doesn't load the player until it's shown.
+        loading="lazy"
+        src={`https://www.youtube.com/embed/${youtubeId}`}
+        title="YouTube video player"
+        className="absolute inset-0 border-0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       />
-    </Navigation.Panel>
-  );
-};
+    </div>
+  </div>
+);
 
-const SectionsPanel = ({ sections }: SectionsTab) => {
-  return (
-    <Navigation.Panel className="mx-3 my-4 focus:outline-none dark:text-gray-300">
-      {sections.map((section) => (
-        <div key={section.time} className="space-x-2">
-          <ColoredText color="purple">{section.time}</ColoredText>
-          <span>{section.title}</span>
-        </div>
-      ))}
-    </Navigation.Panel>
-  );
-};
-
-function renderTabPanel(tabSection: TabSection) {
-  if ("sections" in tabSection) {
-    return <SectionsPanel key={tabSection.type} {...tabSection} />;
-  }
-
-  return (
-    <MdxPanel
-      key={tabSection.type}
-      html={tabSection.html}
-    />
-  );
+interface EpisodeTab {
+  /** The `?view=` value for this tab. */
+  view: string;
+  label: string;
+  icon: ReactNode;
+  panel: ReactNode;
 }
+
+const tabId = (view: string) => `episode-tab-${view.replace(/\W+/g, "-")}`;
+const panelId = (view: string) => `episode-panel-${view.replace(/\W+/g, "-")}`;
+
+/**
+ * Server-rendered devtools-style tabs. The first tab is selected in the HTML;
+ * the script in src/pages/episode/[episodeNumber].astro handles switching,
+ * ?view= syncing, and keyboard navigation (data-episode-tabs).
+ */
+const EpisodeTabs = ({ tabs }: { tabs: EpisodeTab[] }) => (
+  <nav
+    className={navClassName}
+    data-episode-tabs
+    data-selected-class={navStyles.selected}
+  >
+    <NavControls>
+      <div role="tablist" className={navStyles.overflow}>
+        {tabs.map((tab, index) => (
+          <button
+            key={tab.view}
+            type="button"
+            role="tab"
+            id={tabId(tab.view)}
+            aria-controls={panelId(tab.view)}
+            aria-selected={index === 0}
+            tabIndex={index === 0 ? 0 : -1}
+            data-view={tab.view}
+            className={tabClassName(index === 0)}
+          >
+            <NavIcon>{tab.icon}</NavIcon>
+            <div>{tab.label}</div>
+          </button>
+        ))}
+      </div>
+    </NavControls>
+    {tabs.map((tab, index) => (
+      <div
+        key={tab.view}
+        role="tabpanel"
+        id={panelId(tab.view)}
+        aria-labelledby={tabId(tab.view)}
+        tabIndex={0}
+        hidden={index !== 0}
+        className="focus:outline-none"
+      >
+        {tab.panel}
+      </div>
+    ))}
+  </nav>
+);
 
 const sponsorLogos: Record<string, { src: string; url: string }> = {
   Macro: { src: "/macro-logo.png", url: "https://www.macro.com" },
 };
 
-interface EpisodeClientProps {
+interface EpisodePageProps {
   youtubeId: string;
   tabSections: TabSection[];
   episodeNumberString: string;
@@ -83,7 +144,7 @@ interface EpisodeClientProps {
   sponsor?: string | string[];
 }
 
-export default function EpisodeClient({
+export default function EpisodePage({
   youtubeId,
   tabSections,
   episodeNumberString,
@@ -91,36 +152,30 @@ export default function EpisodeClient({
   spotifyEpisodeId,
   spotifyEpisodeIdAlt,
   sponsor,
-}: EpisodeClientProps) {
+}: EpisodePageProps) {
   const sponsors = sponsor
     ? (Array.isArray(sponsor) ? sponsor : [sponsor])
     : [];
 
-  const getTabFromUrl = () => {
-    const view =
-      typeof window === "undefined"
-        ? null
-        : new URLSearchParams(window.location.search).get("view");
-
-    if (view === "youtube") return tabSections.length;
-    if (view) {
-      const tabIndex = tabSections.findIndex(
-        (tab) => tab.type === view.toUpperCase()
-      );
-      if (tabIndex >= 0) return tabIndex;
-    }
-
-    return 0;
-  };
-
-  const [activeTab, setActiveTab] = useState(getTabFromUrl);
-
-  // Keep the visible tab in sync with ?view= when navigating back/forward.
-  useEffect(() => {
-    const onPopState = () => setActiveTab(getTabFromUrl());
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, [tabSections]);
+  const tabs: EpisodeTab[] = [
+    ...tabSections.map((tabSection) => ({
+      view: tabSection.type.toLowerCase(),
+      label: titleCase(tabSection.type.toLowerCase()),
+      icon: getTabIcon(tabSection.type),
+      panel:
+        "sections" in tabSection ? (
+          <SectionsPanel sections={tabSection.sections} />
+        ) : (
+          <MdxPanel html={tabSection.html} />
+        ),
+    })),
+    {
+      view: "youtube",
+      label: "YouTube",
+      icon: <ConsoleIcon inline />,
+      panel: <YouTubePanel youtubeId={youtubeId} />,
+    },
+  ];
 
   return (
     <Page>
@@ -163,102 +218,26 @@ export default function EpisodeClient({
 
       {spotifyEpisodeId ? (
         <iframe
-          className="mb-8 md:mb-12"
+          className="mb-8 md:mb-12 border-0 overflow-hidden"
           src={`https://podcasters.spotify.com/pod/show/devtoolsfm/embed/episodes/${spotifyEpisodeId}`}
           height="161px"
           width="100%"
-          frameBorder="0"
-          scrolling="no"
         />
       ) : (
         spotifyEpisodeIdAlt && (
           <iframe
-            className="mb-8 md:mb-12"
+            className="mb-8 md:mb-12 border-0 overflow-hidden"
             src={`https://open.spotify.com/embed/episode/${spotifyEpisodeIdAlt}?utm_source=generator`}
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             height="161px"
             width="100%"
             loading="lazy"
-            frameBorder="0"
-            scrolling="no"
           />
         )
       )}
 
       <Browser>
-      <Navigation
-        index={activeTab}
-        onChange={(index) => {
-          const newView =
-            index === tabSections.length
-              ? "youtube"
-              : tabSections[index].type.toLowerCase();
-
-          const params = new URLSearchParams(window.location.search);
-          params.set("view", newView);
-          window.history.pushState(
-            {},
-            "",
-            `${window.location.pathname}?${params}${window.location.hash}`
-          );
-          setActiveTab(index);
-        }}
-      >
-        <Navigation.Controls className="overflow-x-auto">
-          {/* Tabs must be direct children: TabList clones each child with its `index`. */}
-          <Navigation.TabList>
-            {[
-              ...tabSections.map((tabSection) => (
-                <Navigation.Tab
-                  key={tabSection.type}
-                  id="about"
-                  icon={getTabIcon(tabSection.type)}
-                >
-                  {titleCase(tabSection.type.toLowerCase())}
-                </Navigation.Tab>
-              )),
-              <Navigation.Tab
-                key="youtube"
-                id="youtube"
-                icon={<ConsoleIcon inline />}
-              >
-                YouTube
-              </Navigation.Tab>,
-            ]}
-          </Navigation.TabList>
-
-          <Navigation.Right>
-            <Navigation.Button
-              icon={<NewWindowIcon inline />}
-              aria-label="New Window"
-            />
-
-            <Navigation.Divider />
-            <Navigation.Button
-              icon={<MoreInfoIcon inline />}
-              aria-label="More settings"
-            />
-          </Navigation.Right>
-        </Navigation.Controls>
-        <Navigation.Panels>
-          {tabSections.map(renderTabPanel)}
-
-          <Navigation.Panel className="mx-3 mb-4 focus:outline-none">
-            <div className="relative pb-[56.25%]">
-              <iframe
-                allowFullScreen
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${youtubeId}`}
-                title="YouTube video player"
-                frameBorder="0"
-                className="absolute inset-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            </div>
-          </Navigation.Panel>
-        </Navigation.Panels>
-      </Navigation>
+        <EpisodeTabs tabs={tabs} />
       </Browser>
     </Page>
   );

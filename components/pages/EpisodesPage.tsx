@@ -1,13 +1,10 @@
-"use client";
-
-import { Navigation } from "@devtools-ds/navigation";
 
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";
 import { Browser } from "components/Browser";
 import type { ProcessedMdx } from "utils/processMdx";
-import { NavigationTopBar } from "components/NavigationTopBar";
+import { SiteNav } from "components/BrowserNav";
 import { EpisodeRow } from "components/EpisodeRow";
 import { LinkShieldList } from "components/LinkShieldList";
 
@@ -33,19 +30,13 @@ export default function EpisodesClient({ episodes }: EpisodesClientProps) {
       </div>
 
       <Browser>
-        <Navigation index={1} onChange={() => {}}>
-          <NavigationTopBar />
-          <Navigation.Panels>
-            <Navigation.Panel />
-            <Navigation.Panel className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">
-              <div className="divide-y-2 divide-gray-300 dark:divide-gray-600">
-                {episodes.map((episode) => (
-                  <EpisodeRow key={episode.frontMatter.title} {...episode} />
-                ))}
-              </div>
-            </Navigation.Panel>
-          </Navigation.Panels>
-        </Navigation>
+        <SiteNav active="episodes" className="md:p-4 pt-4 mx-3 mb-4 focus:outline-none">
+          <div className="divide-y-2 divide-gray-300 dark:divide-gray-600">
+            {episodes.map((episode) => (
+              <EpisodeRow key={episode.frontMatter.title} {...episode} />
+            ))}
+          </div>
+        </SiteNav>
       </Browser>
     </Page>
   );

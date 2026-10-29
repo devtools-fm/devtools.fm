@@ -1,5 +1,3 @@
-"use client";
-
 import { Logo } from "components/Logo";
 import { ColoredText } from "components/ColoredText";
 import { Page } from "components/Page";

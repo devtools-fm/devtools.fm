@@ -100,7 +100,7 @@ devtools.fm/
 │   ├── 1.mdx               # Episode 1
 │   ├── 2.mdx               # Episode 2
 │   └── ...                  # Remaining episodes
-├── components/              # React UI components hydrated by Astro
+├── components/              # React components, rendered at build time (see CLAUDE.md)
 ├── utils/                  # Utility functions
 │   ├── processMdx.ts      # MDX parsing and processing
 │   └── generate-rss.ts    # RSS feed generation

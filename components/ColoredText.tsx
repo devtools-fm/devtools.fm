@@ -1,5 +1,3 @@
-"use client";
-
 import makeClass from "clsx";
 
 type ColoredTextColor = "blue" | "purple" | "gray";
