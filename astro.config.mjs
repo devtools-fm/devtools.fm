@@ -4,7 +4,8 @@ import react from "@astrojs/react";
 import vercel from "@astrojs/vercel";
 
 export default defineConfig({
-  site: "https://devtools.fm",
+  // www is the canonical host; the apex domain 308-redirects to it.
+  site: "https://www.devtools.fm",
   output: "server",
   adapter: vercel(),
   integrations: [react()],

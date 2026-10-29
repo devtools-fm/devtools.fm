@@ -71,7 +71,8 @@ async function getEpisodeThumbnail(videoId?: string) {
   for (const variant of ["maxresdefault", "hqdefault"]) {
     try {
       const response = await fetch(
-        `https://i.ytimg.com/vi/${videoId}/${variant}.jpg`
+        `https://i.ytimg.com/vi/${videoId}/${variant}.jpg`,
+        { signal: AbortSignal.timeout(10_000) }
       );
 
       if (response.ok) {
