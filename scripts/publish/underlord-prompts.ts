@@ -23,14 +23,15 @@ const { compositionNames, assets, adAfterMinutes, nameCard, hosts } = config.des
 const prompts: Record<string, (people: Person[], episode: string) => string> = {
   "01-main-stinger.md": (people) => `Create a stinger (cold open) at the very start of this composition.
 
-1. Find the single most compelling 15–30 second moment where ${people
+1. Find the single most compelling 15–25 second moment where ${people
     .filter((p) => !p.host)
     .map((p) => p.speaker)
-    .join(" or ")} is talking: a surprising claim, a strong opinion, or a quotable line that makes someone want to keep watching. It should make sense without any context and must not come from the first two minutes or from the ad.
+    .join(" or ")} is talking: a surprising claim, a strong opinion, or a quotable line that makes someone want to keep watching. It should make sense without any context and must not come from the first two minutes or from the ad. Start it at the beginning of a sentence, not mid-thought.
 2. Copy that moment (audio and video together) to the very beginning of the composition, before anything else. Leave the original in place.
-3. Don't change anything else.
+3. Tighten the copy only, aiming for about 15 seconds: remove filler words ("um", "uh", "like", "you know"), false starts, repeated words and pauses longer than a beat. Keep the cuts clean so it still sounds natural, and don't cut words that carry the point.
+4. Don't change anything else.
 
-Reply with the start and end timestamps of the original moment and the exact quote.`,
+Reply with the start and end timestamps of the original moment, the exact quote as it reads after tightening, and the stinger's final length.`,
 
   "02-main-intro.md": () => `Build the intro exactly like earlier devtools.fm episodes. There are four steps:
 

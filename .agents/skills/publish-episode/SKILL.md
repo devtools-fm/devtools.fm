@@ -69,7 +69,7 @@ Read every Underlord reply in `underlord.log.md`. If a reply shows it didn't do 
 
 Save each chapter list Underlord returns as `.generated/publish/<N>/full.sections.txt` and `free.sections.txt`, one `[hh:mm:ss] Title` per line. Check them against the markers export after step 2.
 
-**Pause 1.** Send the user the Descript project URL, the stinger quote, the chapter lists, and anything Underlord got wrong. Wait for "looks good" or fixes.
+**Pause 1.** Send the user the Descript project URL, the stinger quote and length (aim for about 15 seconds, tightened), the chapter lists, and anything Underlord got wrong. Wait for "looks good" or fixes.
 
 Tick: `"Andrew Pass/Generate Chapters"`, `"Generate Stinger"`, `"Andrew Pass/Intro"`, `"Andrew Pass/Outro"`, `"Guest name card"`, `"Split Free and Paid"`.
 
