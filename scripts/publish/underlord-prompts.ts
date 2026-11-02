@@ -41,9 +41,15 @@ Reply with the start and end timestamps of the original moment and the exact quo
 3. When the gap ends and the hosts' welcome begins ("Hello, welcome to devtools.fm…"), ramp the music back down to the background level over about 1 second.
 4. Let the music keep playing quietly under the welcome for about ${assets.intro.tailSeconds} seconds, easing down slightly. End the music clip there and trim off the rest of the track.
 
+Inserting the gap can strip the camera layers from the scene right after it (it happened on 180). Afterwards, check a frame 2 seconds into the welcome. If it's black, restore that scene's camera video with the same speaker layout as the scenes after it.
+
 Don't change anything else. Reply with the timestamps where the music starts, where the gap starts and ends, and where the music ends.`,
 
-  "03-main-outro.md": () => `Build the outro exactly like earlier devtools.fm episodes. There are three steps:
+  "03-main-outro.md": () => `Build the outro exactly like earlier devtools.fm episodes.
+
+The editor usually leaves "${assets.outro.frame}" and a short "${assets.outro.music}" clip at the very end already. If they're there, keep that end frame and its gap, and replace the short music clip with one music clip that follows the steps below. Don't end up with two music clips, two end frames or two gaps.
+
+There are three steps:
 
 1. Find the hosts' closing line near the end (e.g. "That wraps it up for our questions…"). Start "${assets.outro.music}" on its own audio track at the beginning of that line. Keep it quiet under the speech as a background bed, at about ${assets.bedVolumeDb} dB.
 2. After the last words, insert a ${assets.outro.seconds}-second gap in the script with no speech. During the gap:
@@ -59,7 +65,7 @@ Don't change anything else. Reply with the timestamps where the music starts, wh
         ? `- "${p.card}" for ${p.name} (host, speaker label "${p.speaker}"): during the welcome right after the intro frame, show it while ${p.speaker} is talking, from their first word until the next person starts. If another speaker only interjects briefly, split the card around the interjection rather than ending it.`
         : `- "${p.card}" for ${p.name} (guest, speaker label "${p.speaker}"): show it (a) for the whole time ${p.speaker} is on screen during the stinger at the start, and (b) from ${p.speaker}'s first words in the main conversation, after the intro, for ${nameCard.mainConversationSeconds} seconds.`
     );
-    return `Add the name card images as overlay layers on top of the video in this composition. If two cards would overlap in time, show the later one only after the earlier one has faded out.
+    return `Add the name card images as overlay layers on top of the video in this composition. If two cards would overlap in time, show the later one only after the earlier one has faded out. If a host card (e.g. "andrew-card.png") is already on the timeline, move and resize that overlay to match the timing below instead of adding a second copy.
 
 ${lines.join("\n")}
 
@@ -79,7 +85,7 @@ Reply with the start and end time of each card.`;
 
 Don't change anything else. Reply with the composition names and the Ad marker's timestamp.`,
 
-  "06-free-insert-ad.md": () => `Insert the media "Ads/ad-read" at the "Ad" marker in this composition, as its own segment between the surrounding speech. Leave the marker where the ad starts. Don't change anything else. Reply with the ad's start and end timestamps.`,
+  "06-free-insert-ad.md": () => `Insert the media "Ads/ad-read.mp4" at the "Ad" marker in this composition, as its own segment between the surrounding speech. Leave the marker where the ad starts. Don't change anything else. Reply with the ad's start and end timestamps.`,
 
   "07-full-chapters.md": () => chaptersPrompt(false),
   "08-free-chapters.md": () => chaptersPrompt(true),
@@ -91,7 +97,7 @@ function chaptersPrompt(free: boolean) {
 - The first marker is "Introduction" at 0:00. It covers the stinger, intro and welcome.
 - Then add one marker at each major topic change, usually every 4–12 minutes. Don't create chapters shorter than 1 minute.
 - Titles are short Title Case phrases of 2–6 words about the topic, e.g. "Typed BEAM and Language Experiments" or "Five Year Coding Predictions". Avoid generic titles like "Discussion".${
-    free ? `\n- Keep the "Ad" marker exactly where it is, titled "Ad".` : ""
+    free ? `\n- Keep the "Ad" marker exactly where it is, titled "Ad".\n- The Ad chapter must cover only the ad. Add a marker at the first words after the ad ends. If the ad interrupted a topic, give it a title for the rest of that topic.` : ""
   }
 - The last topic should be the closing question or wrap-up, not the outro.
 

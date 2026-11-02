@@ -61,7 +61,7 @@ pnpm episode:prompts <N> --guest "Bobby Grayson|deciduous"
 pnpm episode:descript <N> agent --composition main --prompt-file .generated/publish/<N>/prompts/01-main-stinger.md
 # … 02-main-intro, 03-main-outro, 04-main-name-cards, 05-main-split
 pnpm episode:descript <N> project        # picks up "<N>" (Full) and "<N> - Free" by name
-# import the ad read:  pnpm episode:descript <N> import <ad file> --as "Ads/ad-read.<ext>"
+# import the ad read:  pnpm episode:descript <N> import <ad file> --as "Ads/ad-read.mp4"   (convert other formats to .mp4 first)
 # … 06-free-insert-ad (composition free), 07-full-chapters (full), 08-free-chapters (free)
 ```
 
@@ -99,11 +99,12 @@ Write `.generated/publish/<N>/episode.json`:
   "publishDate": "2026-10-26",
   "description": "optional; one sentence, generated if omitted",
   "corrections": { "Tain": "Tane" },
-  "speakers": { "Speaker": "Justin" }
+  "speakers": { "Speaker": "Justin" },
+  "sectionSpeakers": { "Ad": "Justin" }
 }
 ```
 
-`corrections` fixes transcription mistakes in names and products, as whole-word replacements. `speakers` renames labels Descript couldn't resolve, usually "Speaker" on the imported ad read. Ask who read the ad if it isn't obvious. Check the guest's name, their company and the products mentioned against the prep doc. Base the show notes on the transcript (`free.txt`), and the links on the prep doc plus anything named in the episode. Match the tone of recent episodes (read `pages/episode/<N-1>.mdx`). The `tags` field should list topic tags only, because the base tags are appended automatically.
+`corrections` fixes transcription mistakes in names and products, as whole-word replacements. `speakers` renames labels Descript couldn't resolve, usually "Speaker" on the imported ad read. If the ad comes through with no label at all, `sectionSpeakers` names who speaks at the start of that section. Ask who read the ad if it isn't obvious. Check the guest's name, their company and the products mentioned against the prep doc. Base the show notes on the transcript (`free.txt`), and the links on the prep doc plus anything named in the episode. Match the tone of recent episodes (read `pages/episode/<N-1>.mdx`). The `tags` field should list topic tags only, because the base tags are appended automatically.
 
 ```bash
 pnpm episode:mdx <N> build
@@ -145,7 +146,7 @@ Then do the end screens and the paid video's members-only visibility in YouTube 
 
 Tick: `"Upload Free/Add description"`, `"Upload Free/Add chapter"`, `"Upload Free/Add Tags"`, `"Upload Free/Upload Transcript"`, `"Upload Free/Add link"`, `"Upload Free/Add end screen"`, `"Upload paid/Add description"`, `"Upload paid/Add chapter"`, `"Upload paid/Add Tags"`, `"Upload paid/Upload Transcript"`, `"Upload paid/Add end screen"`.
 
-**Spotify for Creators (browser):** Create the Free episode (`free-mono.mp3`) and the Paid episode (`full.mp4` video, subscribers only) as drafts. Use the description from `show-notes.html` and set the episode number. See `references/spotify.md`.
+**Spotify for Creators (browser):** Create the Free episode (`free-mono.mp3`) and the Paid episode (`full.mp4` video, members only) as drafts. Use the description from `show-notes.html` and set the episode number. See `references/spotify.md`.
 
 Tick: `"Spotify Podcasts/Free/Upload"`, `"Free/Add description"`, `"Free/Set episode"`, `"Paid/Upload"`, `"Paid/Add description"`, `"Paid/Set episode"`.
 

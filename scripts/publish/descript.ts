@@ -10,7 +10,7 @@
  *   pnpm episode:descript 179 publish full|free [--audio]   # render + download
  *   pnpm episode:descript 179 export full|free              # srt, txt, markdown transcripts
  *   pnpm episode:descript 179 import <file> [--as "Name Cards/Bobby Grayson.png"]   # direct upload into the project
- *   pnpm episode:descript 179 clips [--match "^s\\d+$"]       # render the editor's social clips + transcripts
+ *   pnpm episode:descript 179 clips [--match "^s\\d+($|\\))"]   # render the editor's social clips (s1, or "s1) Title") + transcripts
  *   pnpm episode:descript 179 brand                         # upload intro/outro files + host cards the project is missing
  */
 import fs from "fs";
@@ -56,14 +56,24 @@ export async function descript<T = any>(
   body?: Record<string, unknown>,
   raw = false
 ): Promise<T> {
-  const response = await fetch(`${config.descript.apiBase}${endpoint}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${token()}`,
-      ...(body ? { "Content-Type": "application/json" } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  // Descript runs one publish job per project at a time (429), and the agent endpoint
+  // occasionally 500s. Both clear up on their own, so wait and retry.
+  let response: Response;
+  for (let attempt = 1; ; attempt++) {
+    response = await fetch(`${config.descript.apiBase}${endpoint}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${token()}`,
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const retryable = response.status === 429 || (response.status >= 500 && method !== "GET" && attempt <= 3);
+    if (!retryable || attempt > 40) break;
+    const wait = response.status === 429 ? 30_000 : 20_000;
+    console.error(`  … Descript ${response.status} on ${endpoint}; retrying in ${wait / 1000}s`);
+    await new Promise((resolve) => setTimeout(resolve, wait));
+  }
 
   if (!response.ok) {
     throw new Error(`Descript ${method} ${endpoint} → ${response.status}: ${await response.text()}`);
@@ -320,22 +330,17 @@ async function exportClips(episode: string, pattern: RegExp) {
   const dir = episodeFile(episode, "clips");
   fs.mkdirSync(dir, { recursive: true });
 
-  // Rendering runs on Descript's side, so start every job at once and wait for them together.
-  const jobs = await Promise.all(
-    clips.map(async (clip) => {
-      const job = await descript<{ job_id: string }>("POST", "/jobs/publish", {
-        project_id: project.id,
-        composition_id: clip.id,
-        media_type: "Video",
-        resolution: config.descript.videoResolution,
-        access_level: "unlisted",
-      });
-      return { clip, jobId: job.job_id };
-    })
-  );
-
-  for (const { clip, jobId } of jobs) {
-    const name = clip.name.trim().replace(/[^\w-]+/g, "-");
+  // Descript allows one publish job per project at a time, so render the clips one after another.
+  for (const clip of clips) {
+    const { job_id: jobId } = await descript<{ job_id: string }>("POST", "/jobs/publish", {
+      project_id: project.id,
+      composition_id: clip.id,
+      media_type: "Video",
+      resolution: config.descript.videoResolution,
+      access_level: "unlisted",
+    });
+    // "s1) Traces: A Journey…" → s1, so files are always sN.mp4 / sN.txt.
+    const name = clip.name.trim().match(/^s\d+/i)?.[0].toLowerCase() || clip.name.trim().replace(/[^\w-]+/g, "-");
     const done = await waitForJob(jobId, { intervalMs: 10_000 });
     const downloadUrl: string | undefined = done.result?.download_url;
     if (!downloadUrl) throw new Error(`Clip ${clip.name} finished without a download_url.`);
@@ -423,7 +428,7 @@ async function main() {
       await exportTranscripts(episode, arg);
       break;
     case "clips":
-      await exportClips(episode, new RegExp(typeof flags.match === "string" ? flags.match : "^s\\d+$", "i"));
+      await exportClips(episode, new RegExp(typeof flags.match === "string" ? flags.match : "^s\\d+($|\\))", "i"));
       break;
     case "brand":
       await importBrand(episode);

@@ -39,6 +39,8 @@ export type EpisodeInfo = {
   corrections?: Record<string, string>;
   /** Rename speaker labels Descript couldn't resolve, e.g. { "Speaker": "Justin" } for the ad read. */
   speakers?: Record<string, string>;
+  /** Who speaks an unlabeled paragraph that opens a section, e.g. { "Ad": "Justin" } for the imported ad read. */
+  sectionSpeakers?: Record<string, string>;
   description?: string;
   showNotes: string;
   links: string[];
@@ -113,7 +115,11 @@ function escapeMdx(text: string) {
   return text.replace(/[{}]/g, "\\$&").replace(/<(?=[A-Za-z/!])/g, "\\<");
 }
 
-export function renderTranscript(paragraphs: Paragraph[], sections: ReturnType<typeof parseSectionsFile>) {
+export function renderTranscript(
+  paragraphs: Paragraph[],
+  sections: ReturnType<typeof parseSectionsFile>,
+  sectionSpeakers: Record<string, string> = {}
+) {
   if (!paragraphs.some((p) => p.seconds !== undefined)) {
     throw new Error("The transcript export has no timecodes, so section headings can't be placed.");
   }
@@ -122,6 +128,7 @@ export function renderTranscript(paragraphs: Paragraph[], sections: ReturnType<t
   let sectionIndex = 0;
   let lastSpeaker: string | undefined;
   let lastSeconds = 0;
+  let sectionTitle: string | undefined;
 
   for (const paragraph of paragraphs) {
     lastSeconds = paragraph.seconds ?? lastSeconds;
@@ -130,13 +137,15 @@ export function renderTranscript(paragraphs: Paragraph[], sections: ReturnType<t
       const section = sections[sectionIndex];
       out.push(`#### [${section.time}] ${section.title}`);
       sectionIndex++;
+      sectionTitle = section.title;
       // A new section always restates who is talking.
       lastSpeaker = undefined;
     }
 
-    if (paragraph.speaker && paragraph.speaker !== lastSpeaker) {
-      out.push(`**${paragraph.speaker}:** ${escapeMdx(paragraph.text)}`);
-      lastSpeaker = paragraph.speaker;
+    const speaker = paragraph.speaker ?? (lastSpeaker === undefined && sectionTitle ? sectionSpeakers[sectionTitle] : undefined);
+    if (speaker && speaker !== lastSpeaker) {
+      out.push(`**${speaker}:** ${escapeMdx(paragraph.text)}`);
+      lastSpeaker = speaker;
     } else {
       out.push(escapeMdx(paragraph.text));
     }
@@ -172,7 +181,7 @@ async function build(episode: string, out: string, force: boolean) {
       text: applyCorrections(paragraph.text, info.corrections),
     })
   );
-  const transcript = renderTranscript(paragraphs, sections);
+  const transcript = renderTranscript(paragraphs, sections, info.sectionSpeakers);
   const guests = [...new Set(paragraphs.map((p) => p.speaker).filter((s): s is string => !!s))].filter(
     (speaker) => !["Andrew", "Justin"].includes(speaker)
   );
