@@ -1,0 +1,290 @@
+---
+title: Tarun Sachdeva - Traces
+description: "Tarun Sachdeva explains how Traces turns coding agent sessions into shareable, searchable decision data that teams can learn from."
+youtube: https://www.youtube.com/watch?v=vTgAN31IVUc
+spotify: ""
+publishDate: 2026-11-01
+tags: traces, coding agents, ai, agents, agent sessions, claude code, codex, code review, pull requests, developer collaboration, mcp, privacy, observability, engineering culture, devtools, devtools fm, podcast, programming, development, technology
+sponsor: Macro
+---
+
+{/* TAB: SHOW NOTES */}
+
+This week we're joined by Tarun Sachdeva, founder of Traces and previously head of product at Wattpad.
+Traces gives coding agent sessions a home: a CLI that collects sessions from Claude Code, Codex and other harnesses, and traces.com, where you can share them like pushing code to GitHub and link them to the commits and pull requests they produced.
+We talk about why agent sessions are decision data worth keeping, privacy and sharing defaults, rethinking code review as its own agent session, Surfaces for visualizing tokens, skills and security risks, and how teams can use trace data to learn without it feeling like surveillance.
+
+- https://traces.com
+- https://traces.com/blog
+- https://traces.com/blog/surfaces
+- https://traces.com/blog/agent-sessions-are-a-dataset
+- https://x.com/tarunsachdeva
+- https://github.com/tarunsachdeva
+- https://market.dev
+
+{/* LINKS */}
+
+{/* TAB: SECTIONS */}
+
+[00:00:00] Introduction
+[00:01:14] Tarun's Background and Career
+[00:05:48] Why Traces Was Built
+[00:09:53] How Traces Works
+[00:13:57] Privacy and Sharing Defaults
+[00:17:20] Git Commits and Code Review
+[00:18:57] Ad
+[00:20:01] Reviewing PRs with Traces
+[00:23:57] What Surfaces Are
+[00:28:09] PR Storytelling and Session Effort
+[00:37:25] Cost of Agent Sessions
+[00:40:42] Traces Beyond Coding
+[00:43:31] Data Culture and Surveillance Concerns
+[00:52:04] Closing Thoughts and Thanks
+
+{/* TAB: TRANSCRIPT */}
+
+#### [00:00:00] Introduction
+
+**Tarun:** And every single time they use these agents, they are, um... This is not just like a log of your computer's activity. This is decision data. This is your decisions, your team's decisions. And that decision, that level of fidelity into those decisions should benefit the teams that are using that-- whose data it is, right? Not just the model providers that are providing the models, right?
+
+**Andrew:** Hello. Welcome to DevTools FM. This is a podcast about developer tools and the people who make them. I'm Andrew, and this is my co-host, Justin
+
+**Justin:** Hey, everyone. Uh, we're really excited to have, uh, Tarun on with us. So Tarun, you're the founder of, uh, Traces, um, uh, which is at traces.com, an incredible domain name, by the way. It's
+
+**Tarun:** was waiting for that question.
+
+**Justin:** so we're very, very excited to talk to you today about what you're building at, uh, at Traces. But, uh, before we get started, would you like to tell our audience a little bit more about yourself?
+
+#### [00:01:14] Tarun's Background and Career
+
+**Tarun:** Cool. Well, first of all, it's really great to be here. Um, really excited, uh, really excited to talk about Traces and just talk about dev tools in general. So thanks again for having me. My name's Tarun. I'm the founder of traces.com. Um, I-- well, you know, by way of background, I, I mean, I started my career as a developer. Uh, I went to the University of Waterloo as a computer engineer. Um, I started my career at, uh, a little team at amazon.com, uh, called AWS. Um, this was way back in the very, very earliest days of, of AWS, and that's sort of where I, I kind of got my start. Um, and so got into developer tools fairly, fairly early on, I would say like multiple generations ago. Um, and, uh, found my way in the world of, uh, product management and, uh, found my way in the world, uh, of consumer as well. I spent some time at this company called Wattpad where I was head of product and I helped grow that community. Um, and uh, started, uh, started this company, uh, a few years ago. Um, Traces is our second or third product now. Uh, before this I was working on a product called market.dev which was all about open source discovery. Um, and yeah, and Traces really is, uh, something that came out of our own need. Uh, as the world sort of changed underneath us last 12 months, you know, we found ourselves just, you know, not having the tools that we needed just to get our job done, uh, as developers and, and, and Traces came out of, uh, a lot of that.
+
+So yeah, but I'm really excited to talk about this with you guys.
+
+**Andrew:** That is an interesting journey you have there, especially through Wattpad. Like, uh, seems like a maybe kind of a through line through that even to, to now to Traces. So can you take us, like, along that journey? Like, uh, honestly, wild, like wild place to come from.
+
+**Tarun:** Yeah, yeah, yeah. No, that's, that's super coo- that's super cool that you observed that. Yeah. So community, uh, has been something that has been kind of like, like you said, like a through line of, of everything I've, I've worked on. And, um, you know, the, the first kind of incarnation was that it was actually like even before Wattpad was like the, in like the digital music communities is where I spent a lot of time, um, and built a bunch of products in and around, uh, the social music spaces. Um, and really just like got kind of, you know, really interested in this idea of how like, uh, this was early Web 2.0 days where, uh, you know, we were all just starting to realize how useful and valuable it was to connect around different t- types of media, uh, whether that was music, uh, in Wattpad's case that was writing. Um, and, uh, obviously with, with developers, you're connecting around code, right? You're connecting around, uh, you know, places like GitHub. I've, I've always been interested in the dynamics of those types of products. Um, the kind of lasting effect of those products has been, you know, the network effects has been like now well-studied. Um, and you know, as I started building my own thing, I always like kind of used those, those businesses as a kind of, as a kind of an anchor, as a way to think about like how to build lasting businesses and, and network effects are really the, uh, the most powerful force in digital businesses today, arguably.
+
+And so, uh, but you know, you, you think of things as like network effects in, in, in a macro sense, but really that is made up of connections between people, connections between, uh, uh, people inside communities and sub-communities. Uh, and all of the products I've worked on have really been just that, have been very, very large communities, but have-- if you look at them closely, they're actually thousands and millions of sub-communities of people coming together and just congregating in one place.
+
+So yeah, it's been really, really interesting to see that. It's been really interesting to like apply the learnings of one type of community in a completely different domain, um, and also just see what is common across all of them. So yeah, it's, uh, I've, uh, I've been very fortunate to have worked on some like really, really interesting problems in, in, in, in that-- those kinds of spaces.
+
+#### [00:05:48] Why Traces Was Built
+
+**Justin:** So you mentioned previously that like, Traces sort of spun out of the work that you were doing. Uh, previously it's like you realized that y'all didn't have the tools you needed, you needed something else. Um, what, what did you need and, and what did you sort of like set out to accomplish when you were building Traces?
+
+**Tarun:** Yeah. So when we, I mean, you know, this, I think this is like the Opus 4.6 moment, uh, about a year ago today now. It's like October last year, uh, when we really started to see that we were moving beyond the primary way of using AI in coding, uh, was for me that switch was moving beyond autocomplete, um, uh, into the agent entirely, right?
+
+Like was really around this time. And when that happened, when the agent became the sort of primary interface to how code was being generated, um You know, we, we noticed that o- one of the, the key things that we used to do as a team, and we were a small team then, we're still a small team now, um, but, uh, we're a little bit bigger, but still, still a small team.
+
+What we used to do was we used to code-- we used to write code and then, uh, collaborate, uh, at, on GitHub and talk about our things around pull requests, right? Like, that's kind of how our, our workflow worked just like everyone else, right? And, uh, we would provide input into each other's work in that way. And when we started working through agents, the one thing that we kind of lost visibility into was this like what happened, uh, what happened between you and the code, right? Where before there was no distance, it was just you and your editor, and you would, you would put it on GitHub and great, you would collaborate there. There was this whole in-between thing that you-- that is like a back and forth that, of you and the agent that was just no longer being captured. And so capturing was one thing, but because this was a new tool for everyone, everyone was at a different level, right? There was a, um, you know, there was a person we were working with at the time, um, uh, who was a senior Ruby developer a- and Rails developer, and you know, the questions that he was asking of Claude Code at the time and the way that he was approaching problems was very, very different than how some of the other folks on the team were.
+
+And what we were finding ourselves doing was, like, always asking each other, like, how we're prompting and what we're using and what models we're using. We're just like, "This is silly. We need to have one place where all of our sessions live," right? I wanna be able to learn from other people. And so all of Trace-- Traces really started off as a tool for our team to just learn from each other, right? Uh, to learn about how people are using agents in different ways, to learn about how people are, you know, adopting skills in different ways, what is their setup, what, versus ours. We just kind of, like, went into this very fragmented way, and Traces was a way to just, like, sort of bring things back together. Um, that was the, like, really core motivation behind building Traces. We, uh, we started thinking about it last, uh, in, like, December of last year. Uh, and then over Christmas, we started ideating and doing a lot of prototyping. Um, and then we kind of like, you know, was, were playing with this internal tool we built, and we were just like, "Man, this is really fun.
+
+This is really cool, and this really feels right." Um, we made a decision in the early part of January to, like, productize it and make this our own thing. We said, "All right. If we're gonna do this, we're gonna do this seriously." And I went out and bought the dot com, um, and, uh, that's a whole other story of how I got that. Uh, but You know, we said, "Let's, let's make this a product," because we feel like if it's so useful to us, then there's definitely gonna be some development teams that this is useful for as well. And, and, you know, uh, this-- the rest is history, as they
+
+#### [00:09:53] How Traces Works
+
+say
+
+**Justin:** Nice. That's awesome. Um, so for our audience who may not have, like, experienced, uh, your product yet, would you tell people a little bit more about, like, just what is the experience that you're providing?
+
+**Tarun:** Yeah. Yeah. That's great. Uh, so we intentionally shaped Traces to feel familiar, right? We want it to feel familiar, and the, the product that we, we often compare to is GitHub, right? So when you join traces.com, you get a personal Traces, uh, account, um, and you, that, you know, you get traces.com/your name, so you can, you know, grab traces.com/andrew or justin. Um- And then you can also create an organization. And when you create an organization, you can invite a bunch of folks into that organization. Um, and that's the sort of initial step that you take in just setting up your, your organization itself. The, the next part of that is actually, uh, getting your traces onto traces.com, right?
+
+And so sometimes that, that happens first, but I'm sort of describing it as like the setup, the setup of traces.com first. Uh, but, um, getting your traces from, uh, your local devices or your cloud agents to traces.com is, is the next step. And so, uh, we also have a CLI app. Uh, so, uh, it's a, it's a command line app where you can download, it's cross-platform, works on Mac, uh, Linux and, uh, and Windows, with a nice terminal user interface that when you open it up, you basically see all of your sessions that you've done on this device, right?
+
+So if you, like me, are using multiple agents that are trying Claude and Codex and Pi and FX and all of the different harnesses that are always coming out, you basically have a single view of all of your sessions across all of those harnesses in one place. That has useful utility in and of itself. So we actually have some folks that are using the CLI and the TUI without actually having a traces.com account at all, uh, because it works completely offline and completely on device. Um, and what people are doing is, uh, uh, you know, using that as a way to manage all of these different sessions. You can go into any session and resume that session, and it'll pop open the harness that you used to do that session. So it basically is like a way of multi-- like managing and orchestrating multiple agents at the same time. Um, but the key action that you can do from there is publishing a session to traces.com. Publishing a session is our equivalent of Git Push, right? When you publish a session, it's like saying, "Here's my c- my code. I'm putting it on, on github.com." Publishing onto Trace-- publishing a, a trace onto traces.com is the exact same thing. So Traces Share is the equivalent of your Git Push action. Once it's on traces.com, uh, it becomes visible to other people. And one thing I will say here before I, uh, you know, I go on, the first question I often get is like, what about privacy and security and environment keys and these types of things? So we do a lot of stripping of that data, right, uh, on your device itself. We wanna make sure that we never see any data on traces.com that it looks like an environment key, that looks like an email address, that looks like any kind of PII, right? So we actually intentionally redact that data from your, uh, your thing, and we give you a bunch of privacy settings on top of that. So you share, it ends up on traces.com, and anyone in your team or namespace can see that. So you can share it publicly so that anyone on the internet can see it, you can share it privately only within your team, or you can just share it directly. So you can just share as one link that you can send to someone and say like, "Hey, this is my session," and you can start working together in that
+
+#### [00:13:57] Privacy and Sharing Defaults
+
+way
+
+**Andrew:** Do you have users that like are default to public? 'Cause like when I use GitHub, it's like I have one decision, uh, at one point in time. I want this repo to be public and then all pushes therefore after are public. Uh, like I feel like there might, it might be a little cumbersome to be like, okay, every single chat that I do wanna share, I, I share that one.
+
+**Tarun:** Yeah. So you have a default setting and then b- by, uh, most people share privately, right? And so we give you the, uh, if you're sharing inside of a team, for example, that those are default private. Uh, you also as an administrator can set things like what your default might wanna be, and you also can set what are the allowed defaults too, right?
+
+So it's like if you don't want anyone in your team to be publishing traces publicly, uh, then, then you can do that as well, right? Um, so we, we wanna give you as much control, uh, around privacy and visibility as you want. Um, and we're constantly learning about new use cases and edges on how we can do that.
+
+But, uh, you're right, you know, you don't want to share things, uh, uh, or set a sharing visibility every single time. it does bring up an interesting, uh, point because it speaks to how we have chosen to allow people to share. So when we first launched, the idea of sharing your session was not really, uh, well... Like it wasn't a behavior that I would say is like mainstream. Um, I think the idea of sharing a session, uh, came with a little bit of apprehension. It's like, why would I wanna do that, right? Like, why would I wanna share my session? Um, so we were very intentional in the decision to say, "You can share a session one session at a time." So you don't have to, by default, share everything in all of your folders, right? You can just share one session at a time. Once you're convinced this is useful, you can use our Traces skill and then share, um, uh, in the agent itself. So while you're typing in Claude, you can say, "Share this session to Traces," and it will share it to Traces. If you're now getting to the point where you're like, "Hey, this is actually quite useful. I wanna do this for every Git commit," right? You just run Traces setup Git, and that will essentially connect all-- for any repo, it will connect all of your sessions to the commit itself. So when you are in your pull request page, you will see, uh, all of the, uh, sessions that created, that led to that pull request. For us, that basically changed the game for us in, in terms of PR, because now we actually have full context and provenance of like all of the sessions across all of the people that worked on it that were tied to this PR. Uh, and so that, that's been super, super helpful for us. And then ultimately, kind of the final form of this is just say like, "Share everything in this folder," and it just by default will share everything, uh, that are t- is tied to that folder. Uh, we're also building integrations with, uh, with routers and gateways so that, you know, you have like a full spectrum of how you want to share as well. So those are some of the... But you can start by just sharing that one session for that one specific use if you
+
+#### [00:17:20] Git Commits and Code Review
+
+want.
+
+**Andrew:** Tying it back to a Git commit like that, that seems so, so powerful. Like, we, we've talked about on the podcast lately a lot of different systems to, like, save that context in, like, various forms or new tools. But having it kind of just, like, connected there and easy, easily queryable c- I could see as, like, a huge boon just 'cause it's like, I wanna go back in time and figure out why we did this bug or why we shipped this bug.
+
+It's like we could rely on comments or Git commits or all that, but that's like artifacts and not really the paper trail that led up to it.
+
+**Tarun:** Exactly. Exactly. Like this data contains decisions the-- with a fidelity that you've never really had before, right? So our traces MCP, for example, can also give you access to all of that when in your coding agent itself. So you can fi-- you can ask, like, if you're working together, you can be like, "Hey, like, why did Max work on this? Like, why did we make this decision versus this decision?" And it's very likely that that decision was somewhere in the traces itself. And so, um, it's useful in the context of the agent itself. It's useful in the context of the PR. Um, just-- And it really starts to help you and your team start compounding your knowledge in a way that is like, oh, like our conversations now are actually much more about higher level strategy, less about like, why did you do this?
+
+'Cause that is already in the data. That's already in the sessions. Like I can ask all those questions myself, right? So it just changes like how you actually work together as a team.
+
+#### [00:18:57] Ad
+
+**Justin:** Software engineering is a challenging job, and it's harder when you're forced to constantly context switch. You have email in one tab, Slack in another, five different Google Sheets, so many accounts to keep track of. It can feel like half the job is just dealing with organizational overhead, when really we just wanna be writing code.
+
+That's where Macro comes in. Macro is a tool to cut through the noise. It's a workspace built for engineers, and it's one place for all your emails, your tasks, your chat, and your documents. The best thing is the source code's available, so if you go in and peek under the hood to see how it works, you can definitely do that.
+
+If you wanna extend it, feel free. The back end is in Rust and the front end is in TypeScript. It's easy to extend to make anything custom. And the cool thing is Macro will pay contributors for any features that they land. So if your team is tired of bloated project management, or maybe you're just, like, starting fresh and you just want one tool instead of many, give Macro a try.
+
+It's fast. It's fun. It's a better way to build. Sign up at macro.com and get $100 off your subscription using DevTools100.
+
+#### [00:20:01] Reviewing PRs with Traces
+
+**Justin:** So I'm curious, when you're actually performing a review, are you just using an agent with MCP to like probe like different parts of the code? Like what is, what is your process? How's your process in like doing a review on GitHub or whatever changed?
+
+**Tarun:** Man, I don't want to say that we figured it out. I think that like, I think pull requests and just code review is, is just like probably the biggest pain point for every development team. I, I don't want to sit here and pretend like we're, you know, we've, we've gotten that, that stuff solved. Like, as I'm talking, you know, we're sitting on like, you know, 40 open PRs and there's a lot of, there's a lot of work that, um, that we have to do to figure out like how PRs are gonna really work for us.
+
+'Cause one thing that we care about, we still care about is we do still read the code, right? So we, we try to understand what's happening. We try to make sure that we're like, we can reason around these things and, uh, perhaps that's a kind of relic of the past in, in some ways. And, you know, there's, there's, there's arguments to, for and against that. Um, and, uh, you know, it's an interesting conversation of course, and like very much like in, you know, we're not trying to hold onto something that is, uh, maybe not relevant, but right now for us it is quite relevant. Um, you know, we're building product that requires us to understand what is happening, um, at every step of the way. Um, and so pull requests are, you know, the things that we're trying, uh, are obviously like all of the automated review tools, uh, we're, we're putting in place. Um, I think having-- I think one of the things that we are w- and this is kind of goes to one of the things that we're building right now, which is called Surfaces, is actually just like understanding and visualizing what, um, a, uh, what is actually happening in a PR in a better way, right?
+
+So if the volume of PRs increases, then the amount of time that we spend on any given PR needs to decrease. And in order for that to decrease and maintain the level of quality of review, like without just like saying, "Forget it. Let's just like, you know, hit, hit accept and we're done." In order to maintain that quality, we need better tools to get to an understanding of what is happening in this PR, um, faster. And re-visualizing those PRs into different ways is, is something that we're, we're definitely trying. I think, uh, you know, Opus 5.5 has, has fixed some of this, but like we are very, very adamant about the language that is used in PRs being an active voice and, and, and very simple tone. Like simple things like that are help towards that. Um, I think eventually though The idea of a pull request really has to be reconsidered from the ground up. Um, and one of the things that we believe that we-- is that the process of review itself is a session, right? The, the process of development is a session, but the process of review actually is also a session with an agent, where an agent can help you, uh, understand what is happening inside of a PR and help you probe and ask questions.
+
+So, like, the same way that you're developing the product is the same way that you're reviewing the product. So actually, like, we're really rethinking what a review even nee- looks like in that context, right? So I think a pull request, uh, uh, um, uh, a code review actually is, is another form of conversation.
+
+And so we're really r- I think if we really extend this concept, I think that's sort of where we're gonna end up and, you know, there's some interesting ideas we have around building in that space too.
+
+#### [00:23:57] What Surfaces Are
+
+**Andrew:** So, so what constitutes a service? Uh, I don't, I don't think the listeners might really grok that quite yet
+
+**Tarun:** A service in what sense?
+
+**Andrew:** a, a surface. like,
+
+**Tarun:** Oh, a sur-- oh, a surface. yeah
+
+Okay, sorry. Uh, I, um, so a surface is a new product we've launched, uh, at just a few, just last week. Um, and so a surface is just a visualization of a session in a different way. Um, we, uh, we, you know, if you look at a session today, you know, you're looking at a chat conversation back and forth between you and an agent. There's t- thousands of tool calls happening. These can get pretty lengthy. They're not necessarily the most readable things, and but they contain so much types of data, right? So a surface is essentially a way to visualize that data in different ways. Uh, you can think of it as a kind of, uh, theme on top of your, your session itself, and it just takes that session data and visualizes it, uh, uh, around the things that you might be more interested in. For example, you might wanna look at a session, uh, from the perspective tokens, like just how tokens were used on every turn, right? How many turns were there? How many tokens were used? Which were the most meaningful turns? And w- how did this conversation actually, uh, flow through? That tokens is also directly tied to the cost associated with that, with that conversation itself.
+
+That's one. Um, the other surface might be skills, right? So skills are like these reusable assets that everyone has and, you know, uses either locally or stores them in their code base and are ways to basically, uh, you know, reuse different types of prompts. And, uh, we wanna know how skills are being used in the sessions, whether there are some skills that are lying around that are maybe not being used. Um, and the ones that are being used, are they being used correctly? So we have a skills, uh, surface that shows you how that's happening. Uh, we have a security surface that shows you what happened in this session that may be a security concern, right? Whether that is like, you know, there was some kind of like input, there was some kind of like action that was consequential, that could be something that could be a security flag.
+
+Like this agent tried to rewrite your Git history or rewrite... This agent tried to like, you know, SSH into a box that it shouldn't have tried to SSH into, right? Knowing those things is really important, and as an agent is working, it's just impossible to see that stuff. So surfaces are ways to visualize session data in different ways. Um, we are also building this as an ecosystem that you can build yourself. So surfaces today is a fixed list of those visualizations, but, uh, very soon you'll be able to create a surface and use it yourself a- and, and, and, uh, make it available to everyone in the Traces community.
+
+**Andrew:** Yeah, that's an interesting concept having these lenses into the data. Have you guys fed that back into the agent? It seems like you're getting lots of findings. Like if, if you shoot an SSH into this server, that, does that somehow feed back into like the, the coding agents?
+
+**Tarun:** That's a really interesting, uh, uh, thing. We haven't done that yet, but it's likely something we should do, right? So there's a lot of stuff that we-- The MCP right now just looks at that raw data set and can probably, can probably arrive at the same types of conclusions, but there's probably a way in which the surface itself can be something that we can feed back into the agent. That's actually a really good idea. We'll probably try that out.
+
+**Justin:** Yeah, I was, uh, reading something about like, um, self-improving like meta harnesses or something, and they're, they're talking about just looking at efficient tool use, for example. And, and when you're s- describing surfaces, this is like one of the things that I kinda wanna know is like what, how are the tool calls failing?
+
+Like what skills need to be updated with like some extra context or something, and being able to mine that out like pretty easily, especially like proactively, like, uh, would be very interesting.
+
+#### [00:28:09] PR Storytelling and Session Effort
+
+I'd like to hop back and, and talk about, uh, one more thing before we move on, um, related to just like, uh, collaboration.
+
+So one of the things that I've found in my current experience, and I think a lot of teams are going through this, is just trying to, um, decide how much human effort goes into like presenting a PR. You know? It was like historically, like making a change to a code base, you're like, you're kinda telling a story.
+
+You're like, "Here's, here's the context for this change. Here's like why I believe we need this, make this change. Here are the necessary and pertinent details that you should know about it." Um, and one of the challenges that a lot of teams are coming or facing as they like adopt coding agents is that like as people sort of get under more and more pressure to ship, they're kind of like turning the brain off a little bit and just like letting it, you know, letting the bot sort of insert a lot of details in the PR which are like mechanically like what had happened, maybe a summary of like the transcript in some ways.
+
+But li- not necessarily like, um, not necessarily a good enough of a storytelling tool. And I'm curious how much y'all have seen n- now that you're actually linking the traces so people actually have more visibility, like how much of that are you able to go with like lighter storytelling or like lighter descriptions?
+
+Just like, okay, we'll just like really focus on some like core context here, um, and then l- look to the traces for the rest. Or, um, do you find it's kinda unchanged? Like kinda I'm just curious at like how it's changed how you approach it.
+
+**Tarun:** Yeah. So w- the PR description itself, we are-- we actually use a, a PR, create PR skill that like Dex Horthy and stuff have, uh, have, uh, created, which are quite useful in ensuring that every agent, uh, is when they create a PR, uses that same type of language, right? So, uh, I think w- we are very adamant about, you know, a very clear, like inactive voice, what is actually changing here that is using simple language. I tend to use things like ELI 15 or ELI 20 as like a way of, of forcing that language, um, in other contexts. Then we also have like a section on why this change is required, and that kind of sometimes summarizes what happened in the session, but sometimes it's just like, you know, uh, just like a very, very simple, uh, breakdown of some of the motivations around it. Um, and then some of the files that were changed and things like that. But the thing is the, the, real detail is in the trace itself, right? So when you attach the PR to the session, you can go into the session and find out what actually, what major decisions were made here, right? And what are the types of things that could have led to, like, that led to this, this PR. Um, I think that, you know, the two systems are sort of, they sit side by side with each other and they're sort of like, they're connected in some ways, but I wouldn't say it's like a perfect connection where it's completely streamlined, where, you know, you have every single decision that's captured and that's visible right on the, the description for, of the PR itself. Um, because sometimes you have five sessions that led to one PR, right? And that, that PR description necessarily-- doesn't necessarily have every decision summarized across all five sessions. So there's like, uh, there's a little bit of imperfect knowledge that, that the structure of that knowledge is, uh, is like imperfectly reflected.
+
+But, um, the most important thing to us is that, uh, is really two things. One is that you can attribute a commit or a PR back to the sessions that actually co- uh, made those changes. And the second thing is that when you need to, uh, you can access the data of why those decisions were made, uh, whether it's on traces.com itself or when you are working on something that needs that, that context.
+
+So if you're working on another feature that needs the context of that, that data should be available via MCP to that agent, right? So those are the two things that I think are the most important to us and where we've seen the most value. Um, but yeah, it's, it's not quite a, um It's not quite a perfect marriage of those two tools quite yet.
+
+I think there's a lot more in points of integration there I'm
+
+not sure if that like fully answers, answers your
+
+**Justin:** question, but like, yeah, it does. It, it's just interesting to hear 'cause it's like this space is evolving so fast and the, the interesting thing about your product that I, that I feel like is, is sort of missing from so many teams' workflows right now is that, um, beyond the sort of like human poi- touchpoints that you have, you know, the, the effort that you put into writing a PR description or, you know, maybe I, I have a practice of doing, um, I have a practice of doing a self-review.
+
+So I'll actually go through my own PR and I will comment it like I was a reviewer on the PR so that when people come through, they know that like I've looked at it. I have like, you know, I'll comment on if something is weird and like why I think it should be there or should not be there, and obviously I'll fix it.
+
+But, um, the, the tricky thing with these models is there's like, it's hard to tell sometimes the difference between a one-shot prompt versus a, you know, a session that someone spent, you know, like an hour on. Um, because, you know, you can like give it to Fable or Astra and like let it rip and, you know, it'll do a bunch of stuff.
+
+Um, and then, you know, in the same vein, you can like sit down and, and really work on something for a while. And the trace sort of tells that whole story, right? It's like how many turns was spent on this? Like how many tokens are spent? Like how long was this actual session? Like, you know, it's a very different story between like, okay, I'm looking at the trace and there was like one prompt at the very top and then, you know, like 30 minutes
+
+**Tarun:** Yeah, Yeah, exactly. Exactly. It's like- Yeah, I mean, and, and sometimes that works. Sometimes that works really, really well. Um, i-it's, it's tough to, to make-- I've-- I haven't seen too many instances of, you know... I, I guess over time, this is like longer and longer horizon tasks are becoming more and more feasible.
+
+It's, um, you know, it's, it's-- I would say i-it's hard to kind of like... A-and at least this is not something we do internally. We don't, like, track how many turns necessarily it takes to solve how many types of features and stuff like that. But those metrics in aggregate over time, you probably will want to have some visibility into.
+
+And like, you know, we can surface that information, but, um, you know, knowing how someone arrived at something helps me understand what level of thought and depth they put into that, and is that appropriate for the task, right? Like d- if they one-shotted, uh, an entire feature, like I am naturally gonna be sp- skeptical. Sometimes I'm skeptical and then surprised positively that actually it did a great job, right? And there's something to be learned from how that one shot worked and why it worked. Uh, sometimes you use a very long session to solve something that, like, seems like it should be a one shot, and it maybe tells you something about why your code base is hard to reason, like your agents are having trouble reasoning around your code base in some way.
+
+So the way in which you, uh, like if you look at the task difficulty and you look at the session length, and you put those two things together and you start to, like, recognize, there's probably some really interesting patterns to recognize around that and say like, "This task should not have taken this long. This task took an appropriate amount of time," and there's probably some like JEV-like, uh, classification that can be done there around like, hey, this was actually an appropriate amount of, of work for this task. It's kind of giving me ideas on, on features to build as well, so
+
+**Justin:** Yeah. I, I think like a, um, I don't know, like a-- there's a surface here, you know, about like effort, uh, effort spent or like, I don't know, something,
+
+**Tarun:** Yeah. Yeah. Exactly. Exactly. We do have that, some of that cost data in tokens, in like our token surface, which gives you like turn-by-turn view on like how much every turn cost you. Um, and, uh, you know, reveals a lot of your, you know, things around like model choices and things like that. But yeah, there's a lot, lot more insight you can, you can get to here that, you know, it's, it's really up to you as an engineering leader or manager or developer to act on that in some way, shape, or form.
+
+Like, you know, it's a question on whether or not that's data you should use to change something or is just interesting to observe. So...
+
+#### [00:37:25] Cost of Agent Sessions
+
+**Andrew:** Y- yeah, the coding harness I, I use at work, uh, recently added a dollar amount to each, like, session, and seeing that dollar count go up as I, like, iterate more and more, I'm like, "Ah, this will just be like a nice little feature I can fire off," and it was like $400 later. Sheesh.
+
+**Tarun:** Yeah. You know what? That-- I think this is, like, a really interesting conversation that you're bringing up, man. Like, I think the idea of, like, attaching dollars to every task at that level of granularity is, uh, you know, it, for engineering is not, like, you know, unless you can also attach the, like, the dollars that, that can potentially generate, right?
+
+Is not a complete view of the story, right? Like, I, I, I think it's, it's really, I think engineering and software is, is a, uh, it, it, it's a, it's the ultimate form of leverage. And so to only focus on the cost associated with a task is, I think, probably not the best form of engineering management,
+
+uh, at least at this level of fidelity.
+
+Like, listen, DORA metrics exist, and they're useful in, in the context that they're useful, right? Uh, but, you know, to get down to this level, I think is of, of cost understanding is good, but cost manage at this level is probably, like, we're very, very young in, in, in, in, in, like, making any broad, sweeping kind of conclusions that this is the right way to do things or not.
+
+I, I know if I was in that position, I've s- I, I, I often, like, uh, I find myself looking at the cost associated with a task and then just, like, not looking at it because I'm like, it's just actually, it's kinda unfair, right? It's sort of like it doesn't matter, right? Sometimes that, that, those dollars are spent in learning, right?
+
+There's, there's so much to be, there's, there, there's so much nuance to these things and, uh, you kinda have to u- have to, like- Think of a task as not just a singular, like, I did this, I pushed this much code, this is how much it costs. It's like there's a lot more in the middle there that you, you, you have to consider
+
+**Andrew:** Yeah. Just, just on time savings alone. Like if I, I prompted $400 away, but I saved three months of my own life, like going down different paths and finding like the dead ends, like it's kind of hard to quantify that upfront. There's a lot of d- lot, a lot of, yeah
+
+**Tarun:** Yeah, exactly. Exactly. Uh, this is also why we intentionally chose to not surface token counts in the product as a default thing, right? Like, tokens are not something we are overly fixated on as a product. We are very much of, like, a tool to help developers collaborate with each other, um, in this new way. And I just find that, like, token counts are useful in some sense, but, like, it's so different in every harness, in every model. It's just like, how useful is that number really? Is, is like attaching the number of bytes your code base, like, ha- like consumes, right? It's like, okay, cool, useful in some contexts, but for the most part, it's just not useful for workflow.
+
+#### [00:40:42] Traces Beyond Coding
+
+**Andrew:** Yeah. Uh, recently Dan Abramov, uh, a famous React guy, had took a detour for a month to go into mathematics and prove, like, theorems and stuff. And th- like, talking about this makes me think that that type of work really fits to this model too, 'cause he spent a month, like, prompting LLMs and, like, probing the depths of them and using them in different ways.
+
+And it'd be very interesting to, like, actually, like, see how he went along with that. So I think, I think traces might even have, like, appeal far outside of coding, 'cause we're all using agents nowadays, and seeing that thought process behind that would be huge. 'Cause everybody's accusing everybody else of slop right now, but I don't think you'd accuse them of slop if you saw their s- their month-long chat with AI that, like, probed the depths of math- mathematics.
+
+**Tarun:** Yeah, exactly. And those conversations are some of the most interesting. Um, you know, we have some really interesting ones on our, uh, that are shared publicly as well. And I think that, um, you know, your point here is exactly-- is very astute, is that, you know, we-- agents are the primary interface to really all knowledge work.
+
+And obviously, software development is where that's sort of led the way there. Uh, and there's an argument that a lot of knowledge work can be encoded as software development. But, um, so much knowledge work, whether that's sales, marketing, um, you know, uh, any kind of operational role, uh, people are using agents for everything.
+
+And every single time they use these agents, they are, um... This is not just like a log of your computer's activity. This is decision data. This is your decisions, your team's decisions. And that decision, that level of fidelity into those decisions should benefit the teams that are using that-- whose data it is, right? Not just the model providers that are providing the models, right? So a lot of this is like, you know, uh, all, all about that, that like this idea of like these agents becoming useful beyond, uh, development is, uh, you know, is something that we're seeing as well. We're seeing a lot of sales team use, use traces.com in surprising ways on like how to use skills for different types of outreach, uh, and, and, uh, what is more effective than others.
+
+And, and for every team, what they're doing, the thing that's common is they're setting up loops of continual learning. Because their traces has so much data about how they work, that data then goes, feeds into like, um, uh, it, it creates this feedback loop that where they can observe themselves, they can orient, they can decide and act now in a way that is like better, and it sort of compounds their learning a lot more.
+
+And so it, yeah, it works for software teams of course, but it also works very much for every other type of
+
+#### [00:43:31] Data Culture and Surveillance Concerns
+
+team.
+
+**Justin:** There's something that I would, I'd love to sort of like chat through. As you were talking about like, uh, thinking of like these certain features as like a cost center or something, there's like, you know, classic examples of like engineering orgs getting treated as cost centers and that like really hampering the dynamics of the organization versus like treating it as a profit center.
+
+And it just got me sort of on the track of thinking, you know, like as you say, like a lot of people doing knowledge work now are using agents to do that. Like, so it-- we have artifacts of the thinking or the iteration in a way that we'd like never really had. Uh, it was like not a thing that we'd have previously.
+
+Um, and I'm curious, this dynamic n- now we have things that can be measured, that can be learned from, but they can also be optimized. They can be, um, you know, we can like put a price tag on certain things, on certain explorations, on like, "Oh, well, I was trying to learn this or solve this problem." It's like, "Oh, well, that problem cost us like, you know, $699."
+
+It's like, curious what you think about the like, the downsides of how places can use traces generally. And also you s- s- I mean, early, even earlier you said it's like, "Well, one of the things we're not trying to do is like, we're not really trying to elevate tokens because like tokens aren't like a super useful metric, and like we're not trying to encourage token maxing," which I think is, is um, like a, it's a, a great thoughtful point.
+
+And h- like how much have you thought more about like how the data gets used and like what kinds of things that you expose and what kinds of things you don't because of these sort of like weird side effects?
+
+**Tarun:** Yeah, yeah. So great question. Um, and very much a question I talk to engineering leaders every day and, you know, the, the one question that they ask is like: What happens, uh, when my team says this, this feels like surveillance, right? Uh, or what happens when my, my team feels like, hey, this is data that they shouldn't-- that, that is not the company's, it's not theirs. It's really my thinking, right? Um, and so I think the, the quest- the, the way I respond to this is that like, you know, I think first of all, uh, data, we have lots of data available to us already, uh, that can allow us to make good decisions and allow us to make bad decisions. There's nothing inherently bad about traces data.
+
+It is just data on how you're using these agents. I encourage every engineering leader to think of, and this is how we've built our product, um, is to think about, um, uh, the, the way that we, we, we essentially-- and this goes into like, uh, making sure people can onboard as progressively as possible so that they don't have to share everything.
+
+They just share one trace at a time, um, to start off. Uh, all the way to like not revealing token counts by default for everything. Um, all the way to focusing on like how traces can be used in your workflow. We focus on like the positive sum benefits of how your trace data is useful in helping you learn and helping you become more effective as individuals and as teams. Um- There's a couple of things that happen when you start revealing your traces in public, in, in your team. So there's a real cultural shift that happens. It happened in our team, uh, as team zero that actually did this, but it happened in every other team that we've, uh, we've enabled. And it's there-- It creates a culture of learning inside of the organization where people were maybe afraid to ask certain types of questions to senior engineers that they now can see exactly how they think. And it creates this culture where everyone learns a lot faster. The second thing it does is it creates a culture where you are starting to talk about things differently. It actually changes what you talk about because you're not actually asking someone how they did something or why they did something, because a lot of times that data is already there.
+
+You actually start talking about strategy and about why you're working on a specific feature, and you actually-- it changes the color of your conversations. So the way that we talk about-- I, I tell engineering leaders this all the time that like, you know, your team, it's, it's really about you as a leader and how you want to use this data, right?
+
+It is your choice to do performance management against it. It is your choice to use it as a tool for, and, and, you know, your security and compliance teams will, uh, would like to make sure that if someone is, is, you know, uh, SSH-ing into a production box that they shouldn't be SSH-ing into, that they know exactly how it happened, why it happened, whether it was an intentional thing or an unintentional thing. That data can already be acquired through the MDM tools and all of the other ways that companies, uh, are monitoring people's behavior on their devices. So there's actually nothing in Traces data that companies don't already have, all the way from your Slack history to any of these other things. So like there's a s-- there's nothing here that we are tracking that is different or outside of the bounds of that.
+
+There's-- This is already data that, that companies very much, uh, um, you know, if they really want to, they can parse and, and, and have But Traces as a product is a workflow tool, is a tool for learning, is a tool for teams. That's how we position it, that's how we talk about it. Um, and ultimately what makes this very, very clear, you know, the, the Ramp team has this, uh, who's like very much on the forefront of a lot of things with agents and AI generally. Uh, they published a few months ago this K curve of like how teams that are very AI native grow versus how teams that are not AI native are growing. And there's this like very clear separation where the teams that are extremely AI native are the ones that are compounding their learning faster than everyone else. And what we want is for every single team to be on the right side of that K curve, right? And the way to do that is by making sure that you're open with your data, that you're making sure your data is, um, is, is as, uh, visible to other people and that everyone can compound on that. And by the way, our opinion is shared by Shopify, by Ramp, by Stripe, by a lot of teams that have built what we have built, but for their own use internally, right?
+
+So the idea of like keeping your trace data, learning from it, keeping those decisions and, and helping every team compound from that information is not something that we have innovated. It's something that's been innovated by some of the most forward-looking teams in the world, and we essentially wanna build those tools so that everyone can access them, right? So that's really how I, how I think about it and, and you know, it's, it's, uh, you know, there's, there's a lot of data that I would say in our modern kind of, uh, software and, and highly connected, uh, work environments, uh, that is available to leaders to do performance management in different ways. Traces data can be one of those things. Uh, but what we try to lean people towards is to use that data in a positive-sum way that actually helps people's workflows. Um, just in the same way that Slack would focus on using connectivity as a way to get more work done rather than using connectivity as a way of saying, "This is-- We can monitor your conversations," right?
+
+'Cause they can do both of those things. It's really just a product positioning. Um, uh, uh, uh, it's a stance there, so.
+
+#### [00:52:04] Closing Thoughts and Thanks
+
+**Andrew:** Well, that wraps it up for our questions. Thanks for coming on and talking about this. This was a super interesting dive into what, really what the future of coding and knowledge work could look like. So thanks for coming on and talking about it
+
+**Tarun:** Thank you so much, guys. It was really, really great being here. Uh, yeah, just, uh, you know, really, really excited to talk to you about it. Thanks again
+
+**Justin:** Yeah, thanks, Tarun. Uh, Traces looks awesome. I'm excited to try it out. Um, I've only kind of experimented with some stuff, um, like locally and, uh, yeah, I'm gonna give it a go and see how... I'll let you know
+
+**Tarun:** Yeah. Yeah. Let me know if there's anything I can do to help. Uh, always open to feedback. You can find me on X. But yeah, just, uh, just let me know. I'm looking forward to that feedback.
+
+**Justin:** Nice. Thanks
