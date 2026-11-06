@@ -3,11 +3,12 @@ import { google } from "googleapis";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json() as {
-      name?: string;
-      email?: string;
-      twitter?: string;
-      description?: string;
+    const formData = await req.formData();
+    const body = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      twitter: formData.get("twitter"),
+      description: formData.get("description"),
     };
 
     console.log("body: ", body);
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.redirect(new URL("/thank-you", req.url));
+    return NextResponse.redirect(new URL("/thank-you", req.url), 303);
   } catch (e: any) {
     return NextResponse.json(
       { message: e.message },
